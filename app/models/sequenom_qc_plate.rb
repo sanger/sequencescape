@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 class SequenomQcPlate < Plate
   DEFAULT_SIZE = 384
-  @@per_page   = 50
+  self.per_page   = 50
 
   attr_accessor :gender_check_bypass
   attr_accessor :plate_prefix

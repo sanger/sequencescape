@@ -41,12 +41,12 @@
         <% end -%>
           <td width="5%"><%= request.position %></td>
           <td width="7%"><%= request.sample_name %></td>
-          <td><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
+          <td><%= link_to request.id, request_path(request) %></td>
           <% if request.asset  %>
-            <td width="15%"><%= link_to request.asset.display_name, "#{configatron.studies_url}/assets/#{request.asset.id}", :target => "_blank" %></td>
+            <td width="15%"><%= link_to request.asset.display_name, asset_path(request.asset), :target => "_blank" %></td>
             <td width="7%"><%= request.asset.barcode %></td>
             <% if request.target_asset %>
-              <td width="15%"><%= link_to request.target_asset.display_name, "#{configatron.studies_url}/assets/#{request.target_asset.id}", :target => "_blank" %></td>
+              <td width="15%"><%= link_to request.target_asset.display_name, asset_path(request.target_asset), :target => "_blank" %></td>
               <td width="7%"><%= request.target_asset.barcode %></td>
             <% else %>
               <td width="15%"></td>
@@ -80,10 +80,3 @@
 <% end -%>
 <br />
 </div>
-
-<% if edit -%>
-<%= sortable_element 'item_list',
-                      :tag => 'tr',
-                      :url => { :action => "sort", :batch_id => @batch.id },
-                      :complete => "reload_batch();" %>
-<% end -%>

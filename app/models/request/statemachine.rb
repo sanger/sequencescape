@@ -122,15 +122,18 @@ module Request::Statemachine
 
       end
 
-      # new version of combinable named_scope
-     scope :for_state, ->(state) { { :conditions => { :state => state } } }
+     scope :for_state, ->(state) { where(:state => state) }
 
      scope :completed,        -> { where(:state => COMPLETED_STATE) }
 
      scope :pipeline_pending, -> { where(:state => "pending") } #  we don't want the blocked one here }
      scope :pending,          -> { where(:state => ["pending", "blocked"]) } # block is a kind of substate of pending }
 
-     scope :open,             -> { where(:state => OPENED_STATE) }
+     scope :started,          -> { where(:state => "started") }
+     scope :cancelled,        -> { where(:state => "cancelled") }
+     scope :aborted,          -> { where(:state => "aborted") }
+
+     scope :opened,           -> { where(:state => OPENED_STATE) }
      scope :closed,           -> { where(:state => ["passed", "failed", "cancelled", "aborted"]) }
 
     end

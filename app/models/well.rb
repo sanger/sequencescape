@@ -32,6 +32,8 @@ class Well < Aliquot::Receptacle
     end
   end
 
+  has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
+
   def is_in_fluidigm?
     sta_plate_purpose_name = "#{configatron.sta_plate_purpose_name}"
     !self.target_wells.detect{|w| w.events.detect {|e| e.family == PlatesHelper::event_family_for_pick(sta_plate_purpose_name)}.nil?}
@@ -42,6 +44,26 @@ class Well < Aliquot::Receptacle
 
   scope :located_at, ->(location) {
     joins(:map).where(:maps => { :description => location })
+  }
+
+  scope :on_plate_purpose, ->(purposes) {
+      joins(:plate).
+      where(:plates_assets=>{:plate_purpose_id=>purposes})
+  }
+
+  scope :for_study_through_sample, ->(study) {
+      joins(:aliquots=>{:sample=>:study_samples}).
+      where(:study_samples=>{:study_id=>study})
+  }
+
+  scope :for_study_through_aliquot, ->(study) {
+      joins(:aliquots).
+      where(:aliquots=>{:study_id=>study})
+  }
+
+  scope :without_report, ->(product_criteria) {
+    joins(:qc_metrics => :product_criteria).
+    where(:qc_metrics => { :id=> nil},:product_criteria=>{:product_id=>product_criteria.product_id,:stage=>product_criteria.stage})
   }
 
   has_many :target_well_links,  ->() { where(sti_type:'stock') }, :class_name => 'Well::Link', :foreign_key => :source_well_id
@@ -63,7 +85,7 @@ class Well < Aliquot::Receptacle
   end
 
   delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
-  @@per_page = 500
+  self.per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
   before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
@@ -92,6 +114,11 @@ class Well < Aliquot::Receptacle
       "INNER JOIN samples ON aliquots.sample_id=samples.id"
     ]).
     where(['samples.empty_supplier_sample_name=?',true])
+  }
+
+  scope :without_blank_samples, ->() {
+    joins(:aliquots=>:sample).
+    where(:samples => { :empty_supplier_sample_name=> false })
   }
 
   scope :with_contents, -> {
@@ -248,5 +275,13 @@ class Well < Aliquot::Receptacle
 
   def can_be_created?
     plate.stock_plate?
+  end
+
+  def latest_stock_metric(product)
+    raise StandardError, 'Too many stock wells to report metrics' if stock_wells.count > 1
+    # If we don't have any stock wells, use ourself. If it is a stock well, we'll find our
+    # qc metric. If its not a stock well, then a metric won't be present anyway
+    stock_well = stock_wells.first || self
+    stock_well.qc_metrics.for_product(product).most_recent_first.first
   end
 end

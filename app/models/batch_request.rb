@@ -3,8 +3,8 @@
 #Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 class BatchRequest < ActiveRecord::Base
   include Api::BatchRequestIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
   belongs_to :batch

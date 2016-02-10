@@ -29,11 +29,11 @@
 
 <script type="text/javascript">
   function check_count_before_start(){
-    var item_limit = $('batch_item_limit').value;
-    var underrun = $('underrun').value;
+    var item_limit = $('#batch_item_limit').val();
+    var underrun = $('#underrun').val();
     var mod = Math.abs(underrun);
 
-    if ($('batch_item_limit')) {
+    if ($('#batch_item_limit')) {
       if (underrun > 0) {
         alert('Batch size is limited to ' + item_limit + '.  Please edit the batch and add ' + mod + ' or more libraries before continuing');
         return false;

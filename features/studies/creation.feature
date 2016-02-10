@@ -14,7 +14,7 @@ Feature: Creating studies
       | Do any of the samples in this study contain human DNA?                                                        | Yes/No                                                                                     |
       | Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis? | Yes/No                                                                                     |
       | Does this study require the removal of X chromosome and autosome sequence?                                    | Yes/No                                                                                     |
-      | What is the data release strategy for this study?                                                             | open/managed                                                                               |
+      | What is the data release strategy for this study?                                                             | Open (ENA)/Managed (EGA)                                                                   |
       | Study Visibility                                                                                              | Hold/Public                                                                                |
       | What sort of study is this?                                                                                   | genomic sequencing/transcriptomics/other sequencing-based assay/genotyping or cytogenetics |
       | How is the data release to be timed?                                                                          | standard/immediate/delayed/never                                                           |

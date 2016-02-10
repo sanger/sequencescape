@@ -17,7 +17,7 @@ config.whiny_nils = true
 config.eager_load = false
 
 # we don't need :debug unless we're debugging tests
-config.log_level = :debug
+config.log_level = :error
 
 config.active_record.whitelist_attributes = false
 

@@ -7,7 +7,7 @@
 <% end -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
 
-<%= page_title 'BATCH', @batch.id %>
+<%= page_title 'Batch', @batch.id %>
 <h2><% if @batch.failed? -%> (FAILED)<% end -%> <% if @batch.multiplexed? -%> (MULTIPLEXED)<% end -%></h2>
 <div class="info">
   Created at: <%= @batch.created_at.to_formatted_s(:full) %><br />

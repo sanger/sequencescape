@@ -92,7 +92,7 @@ class StudiesControllerTest < ActionController::TestCase
         end
       end
 
-      context "fail toFactoryGirl.create a new study" do
+      context "fail to create a new study" do
         setup do
           @initial_study_count = Study.count
           post :create, "study" => { "name" => "hello 2" }
@@ -104,9 +104,7 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal @initial_study_count, Study.count
         end
 
-        should 'set a message for the error' do
-          assert_contains(@controller.action_flash.values, 'Problems creating your new study')
-        end
+        should set_the_flash.now.to('Problems creating your new study')
       end
 
       context "create a new study using permission allowed (not required)" do

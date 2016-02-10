@@ -37,12 +37,12 @@
 </tbody>
   </table>
 
-<script>$$('tr.qc_pass').invoke('hide');</script>
+<script>$('tr.qc_pass').hide();</script>
 </div>
 
 <div class="help">
-  <a href= "#" onclick="$$('tr.qc_pass').invoke('show');">Show all samples</a> -
-  <a href= "#" onclick="$$('tr.qc_pass').invoke('hide');">Hide passed samples</a>
+  <a href= "#" onclick="$('tr.qc_pass').invoke('show');">Show all samples</a> -
+  <a href= "#" onclick="$('tr.qc_pass').invoke('hide');">Hide passed samples</a>
 </div>
 
   <%= render :partial => "next_stage_submit" %>

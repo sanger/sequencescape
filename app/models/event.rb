@@ -4,8 +4,8 @@
 class Event < ActiveRecord::Base
   include Api::EventIO::Extensions
   include Uuid::Uuidable
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   belongs_to :eventful, :polymorphic => true
   after_create :rescuing_update_request, :unless => :need_to_know_exceptions?
   after_create :update_request,          :if     => :need_to_know_exceptions?

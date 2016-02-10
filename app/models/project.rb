@@ -9,8 +9,8 @@ class Project < ActiveRecord::Base
   include ModelExtensions::Project
   include Api::Messages::FlowcellIO::ProjectExtensions
 
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include EventfulRecord
   include AASM
   include Uuid::Uuidable
@@ -26,7 +26,11 @@ class Project < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  aasm :column => :state do
+  aasm_column :state
+  aasm_initial_state :pending
+  aasm_state :pending
+  aasm_state :active
+  aasm_state :inactive
 
     state :pending, :initial => true
     state :active, :enter => :mark_active

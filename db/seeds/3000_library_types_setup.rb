@@ -116,6 +116,17 @@ libs_ribozero.each do |lib|
   end
 end
 
+# PCR Free Hiseq X10 RequestTypeValidator
+lt = LibraryType.find_or_create_by_name!("HiSeqX PCR free")
+rt_pf = RequestType.find_by_key("htp_pcr_free_lib")
+rt_v = RequestType::Validator.create!(
+  :request_type   => rt_pf,
+  :request_option => 'library_type',
+  :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt_pf.id)
+)
+
+
+
 ['a', 'b'].each do |pipeline|
   rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
   RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])

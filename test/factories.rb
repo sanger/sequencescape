@@ -4,77 +4,6 @@
 require 'factory_girl'
 
 FactoryGirl.define do
-  sequence :project_name do |n|
-    "Project #{n}"
-  end
-
-  sequence :study_name do |n|
-    "Study #{n}"
-  end
-
-  sequence :item_name do |n|
-    "Item #{n}"
-  end
-
-  sequence :item_version do |n|
-    n
-  end
-
-  sequence :sample_name do |n|
-    "Sample#{n}"
-  end
-
-  sequence :keys do |n|
-    "Key #{n}"
-  end
-
-  sequence :barcode do |n|
-    "DN#{n}"
-  end
-
-  sequence :request_type_id do |n|
-    n
-  end
-
-  sequence :library_type_id do |n|
-    n
-  end
-
-  sequence :purpose_name do |n|
-    "Purpose #{n}"
-  end
-
-  sequence :billing_reference do |ref|
-    ref.to_s
-  end
-
-  sequence :asset_group_name do |n|
-    "Asset_Group #{n}"
-  end
-
-  sequence :pipeline_name do |n|
-    "Lab Pipeline #{n}"
-  end
-
-  sequence :lab_workflow_name do |n|
-    "Lab Workflow #{n}"
-  end
-
-  sequence :barcode_number do |n|
-    "#{n}"
-  end
-
-  sequence :asset_name do |n|
-    "Asset #{n}"
-  end
-
-  sequence :budget_division_name do |n|
-    "Budget Division#{n}"
-  end
-
-  sequence :faculty_sponsor_name do |n|
-    "Faculty Sponsor #{n}"
-  end
 
   factory  :comment  do
     description
@@ -173,11 +102,7 @@ FactoryGirl.define do
     submission_class_name LinearSubmission.name
     name                  "my_template"
     submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
-  end
-  factory  :order_template, :class => SubmissionTemplate  do
-    submission_class_name LinearSubmission.name
-    name                  "my_template"
-    submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
+    product_catalogue {|pc| pc.association(:single_product_catalogue) }
   end
 
   factory  :report  do
@@ -400,9 +325,8 @@ FactoryGirl.define do
   end
 
   factory  :request_type  do
-    rt_value = FactoryGirl.generate :request_type_id
-    name           "Request type #{rt_value}"
-    key            "request_type_#{rt_value}"
+    name           { FactoryGirl.generate :request_type_name }
+    key            { FactoryGirl.generate :request_type_key }
     deprecated     false
     asset_type     'SampleTube'
     request_class  Request
@@ -424,7 +348,6 @@ FactoryGirl.define do
   end
 
   factory  :library_type  do
-    lt_value = FactoryGirl.generate :library_type_id
     name    "Standard"
   end
 
@@ -435,13 +358,13 @@ FactoryGirl.define do
 
   factory  :well_request_type, :parent => :request_type  do
     asset_type     'Well'
+    request_class CustomerRequest
   end
 
   factory  :library_creation_request_type, :class => RequestType  do
-    rt_value = FactoryGirl.generate :request_type_id
     request_purpose { |rt| rt.association(:request_purpose) }
-    name           "LC Request type #{rt_value}"
-    key            "request_type_#{rt_value}"
+    name           { FactoryGirl.generate :request_type_name }
+    key            { FactoryGirl.generate :request_type_key }
     asset_type     "SampleTube"
     target_asset_type "LibraryTube"
     request_class  LibraryCreationRequest
@@ -454,10 +377,9 @@ FactoryGirl.define do
   end
 
   factory  :sequencing_request_type, :class => RequestType  do
-    rt_value = FactoryGirl.generate :request_type_id
-    name           "Request type #{rt_value}"
+    name           { FactoryGirl.generate :request_type_name }
+    key            { FactoryGirl.generate :request_type_key }
     request_purpose { |rt| rt.association(:request_purpose) }
-    key            "request_type_#{rt_value}"
     asset_type     "LibraryTube"
     request_class  SequencingRequest
     order          1
@@ -478,10 +400,9 @@ FactoryGirl.define do
   end
 
   factory  :multiplexed_library_creation_request_type, :class => RequestType  do
-    rt_value = FactoryGirl.generate :request_type_id
-    name               "MX Request type #{rt_value}"
-    key                "request_type_#{rt_value}"
-   request_purpose { |rt| rt.association(:request_purpose) }
+    name           { FactoryGirl.generate :request_type_name }
+    key            { FactoryGirl.generate :request_type_key }
+    request_purpose { |rt| rt.association(:request_purpose) }
     request_class      MultiplexedLibraryCreationRequest
     asset_type         "SampleTube"
     order              1
@@ -494,10 +415,9 @@ FactoryGirl.define do
   end
 
   factory  :plate_based_multiplexed_library_creation_request_type, :class => RequestType  do
-    rt_value = FactoryGirl.generate :request_type_id
-    name               "MX Request type #{rt_value}"
-    key                "request_type_#{rt_value}"
-   request_purpose { |rt| rt.association(:request_purpose) }
+    name           { FactoryGirl.generate :request_type_name }
+    key            { FactoryGirl.generate :request_type_key }
+    request_purpose { |rt| rt.association(:request_purpose) }
     request_class      MultiplexedLibraryCreationRequest
     asset_type         "Well"
     order              1

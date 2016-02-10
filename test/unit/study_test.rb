@@ -116,7 +116,7 @@ class StudyTest < ActiveSupport::TestCase
             @study.save!
           end
           should "be in the awaiting ethical approval list" do
-            assert_contains(Study.all_awaiting_ethical_approval, @study)
+            assert_contains(Study.awaiting_ethical_approval, @study)
           end
         end
 
@@ -127,7 +127,7 @@ class StudyTest < ActiveSupport::TestCase
             @study.save!
           end
           should "not appear in the awaiting ethical approval list" do
-            assert_does_not_contain(Study.all_awaiting_ethical_approval, @study)
+            assert_does_not_contain(Study.awaiting_ethical_approval, @study)
           end
         end
       end
@@ -193,8 +193,8 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should "show in the filters" do
-        assert Study.all_with_remove_x_and_autosomes.include?(@study_remove)
-        assert !Study.all_with_remove_x_and_autosomes.include?(@study_keep)
+        assert Study.with_remove_x_and_autosomes.include?(@study_remove)
+        assert !Study.with_remove_x_and_autosomes.include?(@study_keep)
       end
     end
 

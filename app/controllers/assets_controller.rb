@@ -241,6 +241,8 @@ class AssetsController < ApplicationController
 
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
+    @study = @asset.studies.first
+    @project = @asset.projects.first
   end
 
   def create_request
@@ -314,19 +316,13 @@ class AssetsController < ApplicationController
 
   def lookup
     if params[:asset] && params[:asset][:barcode]
-      id = params[:asset][:barcode][3,7].to_i
+      id = params[:asset][:barcode][3,7]
       @assets = Asset.find(:all, :conditions => {:barcode => id}).paginate :per_page => 50, :page => params[:page]
 
       if @assets.size == 1
-        @asset = @assets.first
-        respond_to do |format|
-          format.html { render :action => "show" }
-          format.xml  { render :xml => @assets.to_xml }
-        end
+        redirect_to @assets.first
       elsif @assets.size == 0
-        if params[:asset] && params[:asset][:barcode]
-          flash[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
-        end
+        flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
         respond_to do |format|
           format.html { render :action => "lookup" }
           format.xml  { render :xml => @assets.to_xml }

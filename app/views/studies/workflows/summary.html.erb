@@ -18,7 +18,7 @@
   No events registered for this study.
 <% else -%>
   <div style="text-align:center">
-    <%= will_paginate @summary %>
+    <%= pagination @summary %>
   </div>
   <table width='100%' cellspacing="0" cellpadding="4" class="sortable">
     <thead>
@@ -46,6 +46,6 @@
   </table>
   <br />
   <div style="text-align:center">
-    <%= will_paginate @summary %>
+    <%= pagination @summary %>
   </div>
 <% end -%>

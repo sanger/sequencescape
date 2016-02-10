@@ -7,6 +7,7 @@ class FieldInfo
   SELECTION = 'Selection'
   TEXT      = 'Text'
   BOOLEAN   = 'Boolean'
+  NUMERIC   = 'Numeric'
   Kind      = [ SELECTION, TEXT, BOOLEAN ]
   attr_accessor :display_name, :key, :kind, :default_value, :parameters
 
@@ -17,15 +18,6 @@ class FieldInfo
     self.default_value = args.delete(:default_value) || args.delete("default_value")
     params = args.delete(:parameters)  || args.delete("parameters")
     args.merge!(params) if params
-    self.parameters= args
-  end
-
-  def old_initialize(display_name, key, kind, args = {})
-    raise ArgumentError, "invalid field kind '#{kind}'" unless Kind.include?(kind)
-    self.display_name = display_name
-    self.key = key
-    self.kind = kind
-    self.default_value = args.delete(:default_value)
     self.parameters= args
   end
 

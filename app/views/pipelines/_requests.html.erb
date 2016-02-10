@@ -5,9 +5,8 @@
   <%= label_tag 'filter', 'Filter by '+@information_types.find_by_key("read_length").name %>
   <input type="text" value="" id="filter-for-pipeline_inbox" rel="pipeline_inbox">
 <% end %>
-  <table width="100%" cellpadding="2" cellspacing="0" class="tablesorter" id="pipeline_inbox">
+  <table class="sortable table table-striped" id="pipeline_inbox">
     <thead>
-    <div class='label'>
       <tr>
         <th class='{sorter: false}'>&nbsp;</th>
         <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
@@ -32,7 +31,6 @@
         <% end %>
         <th><%= link_to "Study", "javascript:void(0);" %></th>
       </tr>
-     </div>
     </thead>
     <tbody>
     <div class='request'>
@@ -126,18 +124,18 @@
     }
   });
 
-  $(document).ready(function() {
-    $("#pipeline_inbox").tablesorter({
-      sortList: [[1,1], [2,0]],
-      widgets: ['zebra', 'jFilter'],
+  // $(document).ready(function() {
+  //   $("#pipeline_inbox").tablesorter({
+  //     sortList: [[1,1], [2,0]],
+  //     widgets: ['zebra', 'jFilter'],
 
-      textExtraction: function(node) {
-        // If the node has an IMG element underneath it then its 'alt' attribute is used, otherwise it's the innerHTML of the node.
-        var imgNode = $('img', node);
-        return (imgNode.size() > 0 ? imgNode.attr('alt') : $(node).text());
-      }
-    });
-  });
+  //     textExtraction: function(node) {
+  //       // If the node has an IMG element underneath it then its 'alt' attribute is used, otherwise it's the innerHTML of the node.
+  //       var imgNode = $('img', node);
+  //       return (imgNode.size() > 0 ? imgNode.attr('alt') : $(node).text());
+  //     }
+  //   });
+  // });
 })(jQuery);
 </script>
 

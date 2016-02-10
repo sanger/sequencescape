@@ -29,7 +29,7 @@ Feature: Study administration
     Given I am an "administrator" user logged in as "xyz1"
     Given I am visiting study "Study B" homepage
     When I follow "Manage"
-    Then I should see "Manage study Study B"
+    Then I should see "Manage Study Study B"
     And the checkbox labeled "HMDMC approved" should not be checked
     And the field labeled "HMDMC approval number" should contain ""
     When I check "HMDMC approved"
@@ -45,7 +45,7 @@ Feature: Study administration
   Scenario: Administrator edits study state
     Given I am visiting study "Study B" homepage
     When I follow "Manage"
-    Then I should see "Manage study Study B"
+    Then I should see "Manage Study Study B"
     And option "active" in the menu labeled "State" should be selected
     When I select "Inactive" from "State"
     And I press "Update"

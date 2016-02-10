@@ -214,6 +214,10 @@ class Aliquot < ActiveRecord::Base
     end
   end
 
+  def clone
+    raise StandardError, "The Behaviour of clone has changed in Rails 3. Please use dup instead!"
+  end
+
   # return all aliquots originated from the current one
   # ie aliquots sharing the sample, tag information, descending the requess graph
   def descendants(include_self=false)

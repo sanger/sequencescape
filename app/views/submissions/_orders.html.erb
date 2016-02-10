@@ -1,16 +1,6 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2014 Genome Research Ltd.%>
-<script type="text/javascript">
-  (function(window, $, undefined){
-   "use strict";
-
-   // Check for the SCAPE object.  This is the only place in the global
-   // namespace we should be storing things.
-   if (window.SCAPE == undefined) window.SCAPE = {};
-   SCAPE.user_project_names =  <%= raw(stringify_array(@presenter.user_valid_projects)) %>;
-   })(window, jQuery);
-</script>
 
 <%= javascript_include_tag('submissions') %>
 
@@ -27,7 +17,7 @@
          <%= f.grouped_collection_select :template_id,
           @presenter.product_lines, :last, :first, :id, :name,
           {:prompt => "Please select a template..."},
-          {:class=>'form-control'}
+          {:class=>'form-control select2'}
         %>
       </div>
 

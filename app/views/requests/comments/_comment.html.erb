@@ -7,8 +7,8 @@
   </div>
   <div id='right'>
     <% unless comment.user.nil? %>
-      Added by <%= comment.user.login %> <%= comment.created_at.to_formatted_s(:short)%> &nbsp;
-      <% if (current_user.id == comment.user.id) || current_user.administrator? %>
+      Added by <%= comment.user.try(:login)||"Unknown user" %> <%= comment.created_at.to_formatted_s(:short)%> &nbsp;
+      <% if (current_user.id == comment.user.try(:id)) || current_user.administrator? %>
         <%= link_to image_tag("delete.png", :alt => "Delete", :title => "Delete"), :update => "request_annotations_#{commentable.id}",
             :url => { :action => "destroy", :id => comment.id }, :method => :delete, :remote => true  %>
       <% end %>

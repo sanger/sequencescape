@@ -7,9 +7,20 @@
 .table-summary th:after {
   content: ":";
 }
-table.sortable { table-layout:fixed; }
+/*table.sortable { table-layout:fixed; }*/
+
+table.sortable th:focus {
+  outline: none;
+}
 
 /* main-row encomasses the bulk of the application */
 .main-row { margin-bottom:10px; }
 
 
+.loading-bar { width: 100% !important; }
+.loading-bar-container { display: none; }
+.loading-bar-placeholder {  margin: 11px 0;}
+
+.formtastic label.ft-label { width: 25%; }
+
+.formtastic .boolean label.ft-label { width: auto; }

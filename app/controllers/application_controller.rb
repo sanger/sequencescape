@@ -7,6 +7,7 @@ require "exceptions"
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  helper :all # include all helpers, all the time
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -67,17 +68,6 @@ class ApplicationController < ActionController::Base
     value  = params[key]
     value ? value.first : nil
   end
-  #--
-  # We are using flash irresponsibly, using it as a convenient way to get error messages displayed on the
-  # page we are rendering, rather than as a mechanism to pass those messages across redirects.  Because
-  # this is so prevalent this 'action_flash' has been created for the former cases.
-  #
-  # TODO: remove this once the code has been converted across to properly using model error messages.
-  #++
-  def action_flash
-    @action_flash ||= {}
-  end
-  helper_method(:action_flash)
 
   def evil_parameter_hack!
     # WARNING! This hack is purely in place while we manually update ALL our

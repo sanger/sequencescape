@@ -79,6 +79,6 @@
 
 <div style="text-align: center;">
   <% if @study.nil? && @item.nil? %>
-    <%= will_paginate @samples %>
+    <%= pagination @samples %>
   <% end %>
 </div>

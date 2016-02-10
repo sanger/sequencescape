@@ -15,6 +15,7 @@
 .target_plate th.corner-tl {}
 .target_plate th.corner-br {border-bottom-right-radius: 10px;}
 .target_plate th.corner-bl {border-bottom-left-radius: 10px;}
+.tube_source {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
 .interface_group {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
 .pac_well {margin:0; padding:0; height: 2em;}
 #error_messages { background-color: #ff7070; padding: 2em; margin:1em; border:3px solid red; border-radius:20px; display:none;}
@@ -40,6 +41,22 @@ div.quota {
   padding-left: 3px;
   background: #CBDCEF;
   border: 1px solid #7BBDD8;
+}
+
+#barcode_list li {
+  width: 20em;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 0.2em;
+  margin: 0.2em;
+}
+
+#barcode_list li a {
+  float: right;
+}
+
+#barcode_list {
+    list-style: none;
 }
 
 
@@ -377,7 +394,7 @@ color: #666;
 padding-left: 12px;
 }
 
-.help, .priority_changer {
+.help {
   background: #FBFFC7;
   padding: 5px;
   -moz-border-radius: 3px;
@@ -707,6 +724,10 @@ table.bed_verification{
   width: 100%;
 }
 
+table.detailed {
+  width: 100%;
+}
+
 tr.destination{
   background-color: #ccc;
 }
@@ -830,6 +851,9 @@ background-color: #F5A9F2;
 .plate td.colour11 {
 background-color: #F5A9D0;
 }
+.plate td.placehold {
+background-color: #BBBBBB;
+}
 
 
 /* New style CSS plate this needs to slowly replace the existing table style */
@@ -947,11 +971,10 @@ body.yui-skin-sam ul.ui-menu {
 }
 
 ul#orders {
-  max-width: 950px;
   color:#333129;
   padding: 0;
   clear: both;
-  margin: 15px 5px;
+  margin: 15px 0;
   list-style: none outside none;
   -moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
@@ -961,7 +984,6 @@ ul#orders {
 
 /* This overly verbose rule is needed to override formtastic styling  */
 ul#orders li.order, ul#orders li.buttons {
-  padding: 15px;
   margin: 15px 0;
   color: #00498C;
   background: #fff;
@@ -984,7 +1006,7 @@ ul#orders li.completed {
   opacity: 0.95;
 }
 
-ul#orders li.active {
+ul#orders li.selected {
   opacity: 1;
   -moz-box-shadow: 0 2px 5px #C3CEDA;
   box-shadow:     0 2px 5px #C3CEDA;
@@ -1060,17 +1082,6 @@ ul#orders ul.sub-panel li {
   position: relative;
 }
 
-#orders ul.sub-panel .assets {
-  height: 120px;
-}
-
-#orders li.completed h3, #orders li.completed textarea, #orders li.completed input:not(.delete-order) {
-  background: #EBFFEB;
-}
-
-form.comments-box #comments { margin-left: 2em; margin-right: 0px; display: inline; width: 65ex;}
-form.comments-box .add-comment {float: right; background-color: #00498C !important ;}
-
 #orders .comments {
   width: 100%;
 }
@@ -1136,20 +1147,6 @@ ul#orders > li.buttons {
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
   background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
 }
-.button.final {
-  border-color: #1C7C00;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 21%)), color-stop(1, hsl(120, 100%, 14%)) );
-  background: -moz-linear-gradient( center top, hsl(102, 100%, 21%) 5%, hsl(120, 100%, 14%) 100% );
-  background-color: #1C7C00;
-}
-
-.button.final:hover {
-  color: #FAF9F5;
-  background-color: #1C7C00;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(120, 100%, 14%)), color-stop(1, hsl(120, 100%, 16%)) );
-  background: -moz-linear-gradient( center top, hsl(120, 100%, 14%) 5%, hsl(120, 100%, 16%) 100% );
-
-}
 
 .button[disabled] {
   -moz-box-shadow: 0 0 0 0;
@@ -1174,19 +1171,6 @@ ul#orders > li.buttons {
   text-shadow:0px 0px 0px #528ecc;
   color: #ddd;
 }
-
-.danger-button {
-  box-shadow: inset 0px 1px 0px 0px darkRed, 0 1px 3px #999;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, red) );
-  background:-moz-linear-gradient( center top, Red 5%, darkRed 100% );
-  border: 1px solid darkRed;
-}
-
-.danger-button.button:hover {
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, darkRed) );
-  background:-moz-linear-gradient( center top, darkRed 5%, darkRed 100% );
-}
-
 
 #asset_input_methods td { vertical-align: top; }
 #asset_input_methods td.separator { vertical-align: middle; }
@@ -1354,3 +1338,112 @@ ul.options li {
 #main-row {
   margin-bottom: 10px;
 }
+
+form#new_labwhere_reception label {
+    display: inline-block;
+    width: 20em;
+  }
+form#new_labwhere_reception .form-group {
+  margin-bottom: 0.5em;
+}
+
+form#new_labwhere_reception ul li a {
+  cursor: pointer;
+}
+
+/* Table for manual sample registration was inheriting white color for text from bootstrap-sass */
+table#samples_to_register .label {
+  font-size: inherit;
+  color: inherit;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav .selected {
+    margin: 0 .16em 0px 0;
+}
+
+.yui-skin-sam .yui-navset .yui-content, .yui-skin-sam .yui-navset .yui-navset-top .yui-content {
+    padding: 0 0;
+}
+
+
+ul.nav.nav-tabs li {
+  padding: inherit;
+  margin: inherit;
+  border-color: inherit;
+  border-style: inherit;
+  border-radius: inherit;
+  border-width: inherit;
+  margin-bottom: -1px;
+}
+
+ul#orders div.sub-panel li {
+  list-style-type: none;
+  margin-bottom: -1px;
+}
+
+ul#orders li.order { text-align: left;}
+
+.nav.nav-tabs li:hover {
+  cursor: pointer;
+}
+
+.selected { background-color: inherit;}
+
+.yui-skin-sam .yui-navset .yui-content {
+  border: 1px solid #ddd;
+}
+
+.yui-skin-sam .yui-navset .yui-content .table {
+  background: white;
+}
+.nav.nav-tabs { border-bottom: inherit; }
+
+.nav.nav-tabs li a { color: inherit;}
+
+.nav.nav-tabs li.selected { box-shadow: inherit;}
+
+ul#orders li.selected { box-shadow: inherit;}
+
+
+ul.nav.nav-tabs > li.selected > a {
+  color: #555555;
+  background-color: #edf5ff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+
+ul#orders .yui-content li[data-tab-content] h3 { display: none;}
+
+ul#orders ul.sub-panel .assets li[data-tab-content] {
+  padding-right: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+ul#orders ul.sub-panel .assets li[data-tab-content] textarea {
+  width: 100%;
+  height: 100%;
+}
+
+ul.sub-panel h3 {
+  font-size: large;
+}
+
+ul#orders .panel-body ul.sub-panel li { padding-top: 0px;}
+
+
+.yui-skin-sam .yui-navset .yui-content { padding: 1em;}
+
+div.grouper { padding-left: 1em; padding-right: 1em;}
+
+.grouped_items div.grouped_item { font-size: 13px;}
+
+section { margin-bottom: 0.5em;}
+
+table.sortable tbody tr td { padding-left: 0.5em;}
+
+.tablesorter-header-inner { overflow: hidden; text-overflow: ellipsis;}
+
+.file_drop { border: 2px dotted gray; width:80%; padding:1em; }
+

@@ -7,4 +7,12 @@ class IlluminaHtp::DownstreamPlatePurpose < PlatePurpose
     Well.in_column_major_order.stock_wells_for(stock_wells)
   end
 
+  def library_source_plates(plate)
+    super.map {|s| s.source_plates }.flatten.uniq
+  end
+
+  def library_source_plate(plate)
+    super.source_plate
+  end
+
 end

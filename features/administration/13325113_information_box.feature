@@ -11,7 +11,7 @@ Feature:  Site Wide Information Box
       # This should be set up via DB seeds...
       And there is a CustomText with identifier: "app_info_box", differential: "1"
      When I edit the CustomText
-     Then I should see "EDIT CUSTOM TEXT"
+     Then I should see "Custom Text Edit"
       And the field labeled "Custom text identifier" should contain "app_info_box"
       And the field labeled "Custom text differential" should contain "1"
       And the field labeled "Custom text content type" should contain "text/html"

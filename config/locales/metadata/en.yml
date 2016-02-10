@@ -373,7 +373,7 @@ en:
           values:
             open: "Open (ENA)"
             managed: "Managed (EGA)"
-            not_applicable: "Not Applicable (Requires approval)"
+            not_applicable: "Not Applicable (Contact Datasharing)"
 
         data_release_standard_agreement:
           label: "Will you be using WTSI's standard access agreement?"
@@ -413,7 +413,7 @@ en:
 
         data_access_group:
           label: Data access group
-          help: Access to product data in the iRODs seq zone will be limited to the members of the Sanger UNIX group set here. Leaving the field empty allow public access within the Sanger. Entering an invalid group will stop all access. Multiple access groups can be specified and should be separated with spaces.
+          help: "This field helps control access to product data in the iRODs seq zone.<ul></li>Leave the field empty to allow public access within the Sanger.</li><li>Supply one or more Sanger UNIX groups to restrict access to members of that group. Multiple access groups can be specified and should be separated with spaces.</li><li>You can also add individual users by their sanger user name.</li><li>All access will be prevented if all provided groups and usernames are invalid.</li></ul>"
 
         bam:
           label: Alignments in BAM

@@ -7,7 +7,10 @@ Sequencescape::Application.configure do
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
   # since you don't have to restart the webserver when you make code changes.
-  #config.cache_classes = false
+  # TODO: Refactor our code to make it easier to set this to false
+  # Main issue is it causing problems with nested single table inheritance, such
+  # as on plate purpose.
+  config.cache_classes = ENV.fetch('CACHE_CLASSES','true') == 'true'
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true

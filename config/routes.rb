@@ -2,8 +2,9 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 Sequencescape::Application.routes.draw do
-
   root to:'studies#index'
+  resource :home, :only => [:show]
+
   mount Api::RootService.new => '/api/1'
 
   resources :samples do
@@ -380,6 +381,12 @@ Sequencescape::Application.routes.draw do
   resources :tasks
   resources :asset_audits
 
+  resources :qc_reports, :except => [:delete,:update] do
+    collection do
+      post :qc_file
+    end
+  end
+
   get 'assets/snp_import' => 'assets#snp_import'
   get 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
   get 'assets/receive_barcode' => 'assets#receive_barcode'
@@ -576,6 +583,8 @@ Sequencescape::Application.routes.draw do
 
     get '/' => 'home#index'
   end
+
+  resources :labwhere_receptions, :only => [:index, :create]
 
   # The default routes: We should consider replacing these
   get '/:controller(/:action(/:id))'

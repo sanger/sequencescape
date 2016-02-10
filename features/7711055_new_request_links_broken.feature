@@ -174,19 +174,3 @@ Feature: Creating new requests from an asset
       | Library tube             |
       | Multiplexed library tube |
 
-  @error
-  Scenario: Requesting more libraries on an asset but not providing enough information
-    Given user "John Smith" is a manager of "Study testing new request"
-      And the asset "Sample tube for testing new request" belongs to study "Study testing new request"
-
-    Given I am on the new request page for "Sample tube for testing new request"
-    When I select "Illumina-C Library creation" from "Request type"
-     And I fill in "Fragment size required (from)" with "Small"
-     And I fill in "Fragment size required (to)" with "Large"
-     And I select "Study testing new request" from "Study"
-     And I select "Project testing new request" from "Project"
-     And I press "Create"
-    Then I should see "Validation failed"
-     And "Illumina-C Library creation" should be selected from a disabled "Request type"
-     And "Study testing new request" should be selected from "Study"
-     And "Project testing new request" should be selected from "Project"

@@ -51,7 +51,7 @@ module ApplicationHelper
 
   def render_flashes
     output = String.new.html_safe
-    (flash.to_a + action_flash.to_a).each do |key, message|
+    flash.to_a.each do |key, message|
       content = message
       content = message.map { |m| content_tag(:div, m) }.join if message.is_a?(Array)
       output << alert(key,:id=>"message_#{key}") { content }
@@ -64,19 +64,15 @@ module ApplicationHelper
   end
 
   def display_user_guide(display_text, link=nil)
-    if link.nil?
-      content_tag(:div, display_text, :class => "user_guide")
-    else
-      content_tag(:div, link_to(display_text, link), :class => "user_guide")
-   end
+    alert(:info) do
+      link.present? ? link_to(display_text, link) : display_text
+    end
   end
 
   def display_user_error(display_text, link=nil)
-    unless link.nil?
-      content_tag(:div, link_to(display_text, link), :class => "user_error")
-    else
-      content_tag(:div, display_text, :class => "user_error")
-   end
+    alert(:danger) do
+      link.present? ? link_to(display_text, link) : display_text
+    end
   end
 
   def display_status(status)
@@ -158,12 +154,11 @@ module ApplicationHelper
       color = "DAEE34"
     end
 
-    html = %Q{<span style="display:none">#{count}</span>}
-    html = html + %Q{<div style="width: 100px; background-color: #CCCCCC; color: inherit;">}
-    html = html + %Q{<div style="width: #{count}px; background-color: ##{color}; color: inherit;">}
-    html = html + %Q{<center>#{count}%</center>}
-    html = html + %Q{  </div>}
-    html = html + %Q{</div>}
+    # TODO: Refactor this to use the bootstrap styles
+    content_tag(:span,count,style:"display:none") <<
+    content_tag(:div,style:"width: 100px; background-color: #CCCCCC; color: inherit;") do
+      content_tag(:div,"#{count}%",style:"width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
+    end
   end
 
   def completed(object, request_type = nil, cache = {})
@@ -245,8 +240,10 @@ module ApplicationHelper
     end
   end
 
+
   def horizontal_tab(name, key, related_div, tab_no, selected = false)
-     link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
+    link_to raw("#{name}"), "javascript:void(0);", :'data-tab-refers' => "##{related_div}", :'data-tab-group' => tab_no, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
+    #link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
   end
 
   def item_status(item)
@@ -317,25 +314,9 @@ module ApplicationHelper
 
   def help_text(label_text = nil, suggested_id = nil, &block)
     content = capture(&block)
-
-    # TODO: This regexp isn't obvious until you stare at it for a while but:
-    #   * The $1 is at least 20 characters long on match
-    #   * $1 will end with a complete word (even if 20 characters is in the middle)
-    #   * If there's no match then $1 is nil
-    # Hence shortened_text is either nil or at least 20 characters
-    shortened_text = (content =~ /^(.{20}\S*)\s\S/ and $1)
-
-    if content.blank?
-      concat(non_breaking_space)
-    elsif shortened_text.nil?
-      concat(content.html_safe)
-    else
-      concat(shortened_text.html_safe)
-      tooltip_id = "prop_#{suggested_id || content.hash}_help"
-      concat(label_tag("tooltip_content_#{tooltip_id}", label_text, :style => 'display:none;').html_safe)
-
-      tooltip('?', :id => tooltip_id, &block)
-    end
+    return if content.blank?
+    tooltip_id = "prop_#{suggested_id || content.hash}_help"
+    tooltip('?', :id => tooltip_id, &block)
   end
 
   # The admin email address should be stored in config.yml for the current environment

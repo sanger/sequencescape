@@ -3,7 +3,7 @@
 #Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
-class TransferRequest < Request
+class TransferRequest < SystemRequest
 
   module InitialTransfer
     def perform_transfer_of_contents
@@ -28,6 +28,7 @@ class TransferRequest < Request
     state :started
     state :failed,	    :enter => :on_failed
     state :passed
+    state :qc_complete
     state :cancelled,  :enter => :on_cancelled
 
     # State Machine events
@@ -53,6 +54,12 @@ class TransferRequest < Request
 
     event :detach do
       transitions :to => :pending, :from => [:pending]
+    end
+
+    # Not all transfer quests will make this transition, but this way we push the
+    # decision back up to the pipeline
+    event :qc     do
+      transitions :to => :qc_complete, :from => [:passed]
     end
   end
 

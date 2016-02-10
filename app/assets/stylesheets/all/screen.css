@@ -278,12 +278,7 @@ div.message {
   font-size: 11px;
 }
 
-#message a, #message a:link, #message a:visited {
-  color: #ff9900;
-}
-
 #message a:hover {
-  color: #880000;
   text-decoration: underline;
 }
 
@@ -947,16 +942,6 @@ input.enhanced {
   font-size: 1.1em;
 }
 
-table.sortable thead tr th.sortasc:after {
-  content: '▲';
-  margin-right:-100%;
-}
-
-table.sortable thead tr th.sortdesc:after {
-  content: '▼';
-  margin-right:-100%;
-}
-
 .nested {
 	background:#ffffff;
 }
@@ -1028,7 +1013,7 @@ table.checktext_field td {
   border-spacing: 0px;
   margin: 0;
   padding: 0;
-  /*padding-right: 2px;*/
+  padding-right: 2px;
   vertical-align: bottom;
   border: 0px solid #cf3;
 }
@@ -1078,13 +1063,6 @@ div.order_in_submission h2 {
   right : 10px;
   top : 10px;
 }
-.priority_changer {
-  position : relative;
-}
-.priority_changer input {
-  clear : left;
-}
-
 .submission_project_name {
   width: 100%;
 }

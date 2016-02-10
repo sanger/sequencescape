@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2013 Genome Research Ltd.%>
 <% add :manager_option, "New Project" => new_project_path -%>
 
-<%= will_paginate @projects %>
+<%= pagination @projects %>
 <table class="sortable table table-striped" id="summary">
   <thead>
     <tr>
@@ -21,5 +21,5 @@
 </tbody>
 
 </table>
-<%= will_paginate @projects %>
+<%= pagination @projects %>
 <br />

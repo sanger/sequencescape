@@ -82,9 +82,8 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_equal @initial_project_count, Project.count
         end
 
-        should 'set a message for the error' do
-          assert_contains(@controller.action_flash.values, 'Problems creating your new project')
-        end
+        should set_the_flash.now.to('Problems creating your new project')
+
       end
 
       context "create a new project using permission allowed (not required)" do

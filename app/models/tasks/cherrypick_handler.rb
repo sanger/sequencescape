@@ -51,7 +51,7 @@ module Tasks::CherrypickHandler
     end
 
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
-    action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
+    flash.now[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     if @spreadsheet_layout

@@ -32,7 +32,7 @@ module IlluminaHtp::Requests
     validate :valid_purpose?
     def valid_purpose?
       return true if request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
-      errors.add("#{asset.plate.purpose.name} is not a suitable plate purpose.")
+      errors.add(:asset,"#{asset.plate.purpose.name} is not a suitable plate purpose.")
       false
     end
 
@@ -104,6 +104,10 @@ module IlluminaHtp::Requests
   end
 
   class PrePcrToPcr < TransferRequest
+    # This is a legacy state machine.
+    redefine_state_machine do
+      aasm_column :state
+      aasm_initial_state :pending
 
     redefine_aasm :column => :state do
 

@@ -22,6 +22,10 @@ class Plate < Asset
     plate_purpose.state_of(self)
   end
 
+  def occupied_well_count
+    wells.with_contents.count
+  end
+
   def summary_hash
     {
       :asset_id => id,
@@ -138,6 +142,11 @@ class Plate < Asset
       Comment.create!(options.merge(:commentable=>plate))
     end
 
+    def create(options)
+      plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
+      Comment.create(options.merge(:commentable=>plate))
+    end
+
   end
 
   def comments
@@ -250,8 +259,8 @@ WHERE c.container_id=?
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
   self.prefix = "DN"
-  cattr_reader :per_page
-  @@per_page = 50
+
+  self.per_page = 50
 
   before_create :set_plate_name_and_size
 
@@ -364,7 +373,7 @@ WHERE c.container_id=?
   end
 
   def plate_rows
-    ("A".."#{(?A+height-1).chr}").to_a
+    ("A".."#{(?A.getbyte(0)+height-1).chr}").to_a
   end
 
   def plate_columns
@@ -405,14 +414,33 @@ WHERE c.container_id=?
     end
   end
 
-  def get_storage_location
-    plate_location = HashWithIndifferentAccess.new
-    return {"storage_area" => "Control"} if self.is_a?(ControlPlate)
-    return {} if self.barcode.blank?
-    ['storage_area', 'storage_device', 'building_area', 'building'].each do |key|
-      plate_location[key] = self.get_external_value(key)
+  def storage_location
+    @storage_location ||= obtain_storage_location
+  end
+
+  def storage_location_service
+    @storage_location_service
+  end
+
+  def obtain_storage_location
+    # From LabWhere
+    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode)
+    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
+      @storage_location_service = 'LabWhere'
+      return info_from_labwhere.location.location_info
     end
-    plate_location
+
+    # From ETS
+    @storage_location_service = 'ETS'
+    return "Control" if self.is_a?(ControlPlate)
+    return "" if self.barcode.blank?
+    return ['storage_area', 'storage_device', 'building_area', 'building'].map do |key|
+      self.get_external_value(key)
+    end.compact.join(' - ')
+
+  rescue LabWhereClient::LabwhereException => e
+    @storage_location_service = 'None'
+    return "Not found (#{e.message})"
   end
 
   def barcode_for_tecan
@@ -594,6 +622,11 @@ WHERE c.container_id=?
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
     self.ancestors.order('created_at DESC').where(:plate_purpose_id=>ancestor_purpose_id).first
+  end
+
+  def ancestors_of_purpose(ancestor_purpose_id)
+    return [self] if self.plate_purpose_id == ancestor_purpose_id
+    ancestors.find(:all,:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
   end
 
   def child_dilution_plates_filtered_by_type(parent_model)

@@ -20,10 +20,12 @@ class User < ActiveRecord::Base
   has_many :comments
   has_many :settings
   has_many :roles
+  has_many :submissions
   has_many :project_roles, ->() { where(authorizable_type:'Project') }, :class_name => 'Role'
   has_many :study_roles,   ->() { where(authorizable_type:'Study') },   :class_name => 'Role'
   has_many :study_roles
   has_many :batches
+  has_many :assigned_batches, :class_name => 'Batch', :foreign_key => :assignee_id, :inverse_of => :assignee
   has_many :pipelines, ->() { order('batches.id DESC').distinct }, :through => :batches
 
   before_save :encrypt_password
@@ -38,7 +40,7 @@ class User < ActiveRecord::Base
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where('last_name IS NOT NULL').joins(:roles).where(:roles=>{:name=>'owner'}).order('last_name ASC') }
+  scope :owners, ->() { where('last_name IS NOT NULL').joins(:roles).where(:roles=>{:name=>'owner'}).order('last_name ASC').uniq }
 
   attr_accessor :password
 
@@ -75,7 +77,7 @@ class User < ActiveRecord::Base
   end
 
   def profile_incomplete?
-    name_incomplete? or email.blank?
+    name_incomplete? or email.blank? or swipecard_code.blank?
   end
 
   def profile_complete?
@@ -111,7 +113,11 @@ class User < ActiveRecord::Base
   end
 
   def sorted_valid_project_names_and_ids
-    projects.valid.alphabetical.map{|p| [p.name, p.id] }
+    valid_projects.map{|p| [p.name, p.id] }
+  end
+
+  def valid_projects
+    projects.valid.alphabetical
   end
 
 

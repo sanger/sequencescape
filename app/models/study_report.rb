@@ -6,8 +6,8 @@ class StudyReport < ActiveRecord::Base
 
   class ProcessingError < Exception
   end
-  cattr_reader :per_page
-  @@per_page = 50
+
+  self.per_page = 50
 
  scope :for_study, ->(study) { { :conditions => { :study_id => study.id } } }
  scope :for_user, ->(user) { { :conditions => { :user_id => user.id } } }

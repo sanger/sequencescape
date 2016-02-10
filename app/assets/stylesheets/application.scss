@@ -1,13 +1,16 @@
 /*
  * Import all the required stylesheets. We use SASS,so that we can use bootstrap
- * @import "all/*"
+ * Note we don't use wildcards/globbing to ensure we can control load order and to avoid importing
+ * eg .orig files
  */
 
-@import "jquery-tablesorter/theme.blue";
+@import "jquery-tablesorter/theme.bootstrap";
 @import "jquery-ui";
+@import "all/sequencescape";
+@import "all/screen";
+@import "all/components";
 @import "bootstrap-sprockets";
 @import "bootstrap";
-/* SEQUENCESCAPE */
-@import "all/components";
-@import "all/screen";
-@import "all/sequencescape";
+@import "formtastic";
+@import "select2";
+@import "select2-bootstrap"

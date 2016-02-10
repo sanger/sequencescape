@@ -62,6 +62,41 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         end
       end
 
+      context 'with qc_criteria' do
+        setup do
+          @our_product_criteria = create :product_criteria
+          @current_report = create :qc_report, :product_criteria => @our_product_criteria
+          @stock_well = create :well
+
+          @metric =  create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
+
+          @assets.each do |qced_well|
+            qced_well.stock_wells.attach!([@stock_well])
+            qced_well.reload
+          end
+
+          @mpx_submission = FlexibleSubmission.build!(
+            :study            => @study,
+            :project          => @project,
+            :workflow         => @workflow,
+            :user             => @user,
+            :assets           => @assets,
+            :request_types    => @request_type_ids,
+            :request_options  => @request_options,
+            :product          => @our_product_criteria.product
+          )
+          @mpx_submission.save!
+        end
+
+        should 'set an appropriate criteria and set responsibility' do
+          @mpx_submission.process!
+          @mpx_submission.requests.each do |request|
+            assert request.qc_metrics.include?(@metric), "Metric not included in #{request.request_type.name}: List #{request.qc_metrics.inspect}, Expected: #{@metric}"
+            assert_equal true, request.request_metadata.customer_accepts_responsibility, "Customer doesn't accept responsibility"
+          end
+        end
+      end
+
       context 'cross study/project submissions' do
         setup do
           @study_b   = create :study

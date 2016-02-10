@@ -1,12 +1,13 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 <% add(:tab, I18n.t('navigation.tabs.studies')   => studies_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.projects')  => projects_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.admin')     => admin_path) if logged_in? && current_user.is_administrator? -%>
 <% add(:tab, I18n.t('navigation.tabs.pipelines') => pipelines_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.batches')   => batches_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.reception') => receptions_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.labwhere_reception') => labwhere_receptions_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.labview')   => lab_view_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.labsearch') => new_lab_search_path) -%>
 
@@ -19,12 +20,10 @@
       Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%= stylesheet_link_tag "grids-min", "tabview", "application", :media => "all" %>
+    <%= stylesheet_link_tag "tabview", "application", :media => "all" %>
 
 
-    <%= stylesheet_link_tag("formtastic") + stylesheet_link_tag("formtastic_changes") %>
-    <%= javascript_include_tag 'prototype_libs' %>
-    <%= javascript_include_tag  "tablekit",  :cache => false %>
+    <%#= stylesheet_link_tag("formtastic") + stylesheet_link_tag("formtastic_changes") %>
     <%= javascript_include_tag "application" %>
 
     <%= csrf_meta_tags %>

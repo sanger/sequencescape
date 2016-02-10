@@ -62,6 +62,10 @@ class LibraryTube < Tube
     self.specialized_from_manifest= library_information
   end
 
+  def library_source_plates
+    purpose.try(:library_source_plates,self)||[]
+  end
+
   def find_tag(tag_info)
     tag_group = Uuid.with_resource_type('TagGroup').include_resource.find_by_external_id!(tag_info['tag_group']).resource
     tag_group.tags.find_by_map_id!(tag_info['tag_index'])

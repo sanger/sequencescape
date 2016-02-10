@@ -38,7 +38,7 @@
   <div id='main-links'>
     <div>
       Find batch by user:
-      <%= form_tag ({:controller => :batches, :action => :index, :id => 'user'}) do -%>
+      <%= form_tag({:controller => :batches, :action => :index, :id => 'user'}) do -%>
         <div class='entry'>
           <%= hidden_field_tag :id, 'user' %>
           <%= text_field :user_id, {} , :size => "25" %>

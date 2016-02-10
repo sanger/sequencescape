@@ -43,11 +43,10 @@
 
 <script type="text/javascript">
   function select_reference() {
-    kind = $('assembly_kind').value;
-    new Ajax.Updater(
-      'assembly', '/projects/choice/' + kind, {
-        asynchronous:true, evalScripts:true,
-        onComplete: function() { $('submit').style.display = 'block'; }
+    kind = $('#assembly_kind').val();
+    $.ajax('/projects/choice/' + kind, {
+        success: function(data) {$('#assembly').html(data);},
+        complete: function() { $('#submit').style.display = 'block'; }
     });
   }
 </script>

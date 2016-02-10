@@ -9,7 +9,7 @@ Feature: Studies have a release agreement
     And I fill in "Study description" with "Checking that release agreements behave properly"
     And I select "No" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
-    And I select "managed" from "What is the data release strategy for this study?"
+    And I select "Managed (EGA)" from "What is the data release strategy for this study?"
 
   Scenario: Using the standard WTSI agreement
     Given I select "Yes" from "Will you be using WTSI's standard access agreement?"

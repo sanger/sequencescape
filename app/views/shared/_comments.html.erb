@@ -8,7 +8,7 @@
     <% commentable.comments.each do |comment| %>
       <tr>
       <td class="comment"> <%= comment.description %></td>
-      <td class="commentable"> added <%= h(comment.created_at.to_formatted_s(:short)) %> on <%= link_to "#{commentable.class.name} #{commentable.id}", "#{configatron.studies_url}/#{resource}/#{commentable.id}/comments" %></td>
+      <td class="commentable"> added <%= h(comment.created_at.to_formatted_s(:short)) %> on <%= link_to "#{commentable.class.name} #{commentable.id}", "/#{resource}/#{commentable.id}/comments" %></td>
     </tr>
     <% end %>
   </tbody>

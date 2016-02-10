@@ -53,6 +53,12 @@ class PlatePurpose < Purpose
   def source_plate(plate)
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
   end
+  alias_method :library_source_plate, :source_plate
+
+  def source_plates(plate)
+    source_purpose_id.present? ? plate.ancestors_of_purpose(source_purpose_id) : [plate.stock_plate]
+  end
+  alias_method :library_source_plates, :source_plates
 
   def cherrypick_strategy
     Cherrypick::Strategy.new(self)
@@ -156,8 +162,8 @@ class PlatePurpose < Purpose
   private :_pool_wells
 
   include Api::PlatePurposeIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
 
   # TODO: change to purpose_id
   has_many :plates, :foreign_key => :plate_purpose_id
@@ -215,4 +221,3 @@ class PlatePurpose < Purpose
   def supports_multiple_submissions?; false; end
 
 end
-

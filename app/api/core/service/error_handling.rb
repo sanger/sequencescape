@@ -45,7 +45,6 @@ module Core::Service::ErrorHandling
     end
 
     def general_error(code, errors = nil)
-      p exception_thrown.backtrace
       errors ||= [ exception_thrown.message ]
       error(code, JsonError.new(:general => errors))
     end

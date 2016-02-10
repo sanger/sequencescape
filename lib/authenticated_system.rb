@@ -71,6 +71,7 @@ module AuthenticatedSystem
 
       respond_to do |accepts|
         accepts.html   { logged_in? && authorized? ? true : access_denied }
+        accepts.csv   { logged_in? && authorized? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }

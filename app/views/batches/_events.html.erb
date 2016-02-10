@@ -11,27 +11,32 @@
   </thead>
   <tbody>
     <% if events.empty? -%>
-    <tr>
-      <td colspan="4">No events</td>
-    </tr>
+      <tr>
+        <td colspan="4">No events</td>
+      </tr>
     <% else -%>
       <% events.each do |event| -%>
-      <% unless event.description.nil? -%>
-      <tr class="<%= cycle('rowodd', 'roweven') %>">
-        <td width="15%"><div class='<%= event.description.downcase %> label'><%= event.description.capitalize %></td>
-        <% if event.descriptors.size != 0 -%>
-        <td><%= event.descriptor_value "task" %></td>
-        <% else -%>
-        <td><%= event.message %></td>
+        <% unless event.description.nil? -%>
+          <tr>
+
+            <td><span class='<%= event.description.downcase %>'><%= event.description.capitalize %></td>
+
+            <% if event.descriptors.size != 0 -%>
+              <td><%= event.descriptor_value "task" %></td>
+            <% else -%>
+              <td><%= event.message %></td>
+            <% end -%>
+
+            <td><%= event.created_at.nil? ? 'Unknown' : event.created_at.strftime("%A %d %B at %H:%M") %></td>
+
+            <% if event.user -%>
+              <td><%= event.user.try(:login)||'Unknown' %></td>
+            <% else -%>
+              <td>&#8211;</td>
+            <% end -%>
+
+          </tr>
         <% end -%>
-        <td><%= event.created_at.nil? ? 'Unknown' : event.created_at.strftime("%A %d %B at %H:%M") %></td>
-        <% if event.user -%>
-        <td><%= event.user.login %></td>
-        <% else -%>
-        <td>&#8211;</td>
-        <% end -%>
-      </tr>
-      <% end -%>
       <% end -%>
     <% end -%>
   </tbody>

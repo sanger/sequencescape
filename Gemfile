@@ -8,6 +8,14 @@ group :default do
   gem "configatron"
   gem "rest-client" # curb substitute.
   gem "formtastic"
+
+  # By default formtastic applies styles which clash with bootstrap.
+  # The configuration provides no means of overriding this
+  # Fixing it means monkey patches, or extensive re-implementation
+  # formtastic-bootstrap is essentially these cludgy fixes in a gem
+  # Fixing things proper means actually updating formtastic
+  # gem "formtastic-bootstrap"
+
   gem "activerecord-jdbc-adapter", :platforms => :jruby
   gem "jdbc-mysql", :platforms => :jruby
   gem "mysql", :platforms => :mri
@@ -18,9 +26,6 @@ group :default do
   gem 'net-ldap'
   gem 'carrierwave'
   gem 'jruby-openssl', :platforms => :jruby
-
-  # Provides legacy prototype helpers
-  gem 'prototype-rails', github: 'rails/prototype-rails', branch: '4.2'
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
   gem 'dynamic_form'
@@ -71,6 +76,7 @@ group :default do
   gem 'bootstrap-sass'
   gem 'sass-rails'
   gem 'coffee-rails'
+  gem "select2-rails"
   # gem 'font-awesome-sass'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
@@ -81,7 +87,7 @@ end
 
 group :warehouse do
   #the most recent one that actually compiles
-  gem "ruby-oci8", "1.0.7", :platforms => :mri
+  gem "ruby-oci8", :platforms => :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   #any newer version requires ruby-oci8 => 2.0.1
   gem "activerecord-oracle_enhanced-adapter" , "1.2.3"

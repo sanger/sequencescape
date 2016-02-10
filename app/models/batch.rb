@@ -3,13 +3,14 @@
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'timeout'
 require "tecan_file_generation"
+require 'aasm'
 
 class Batch < ActiveRecord::Base
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
 
+  self.per_page = 500
+  include AASM
   include SequencingQcBatch
   include Commentable
   include Uuid::Uuidable
@@ -63,11 +64,13 @@ class Batch < ActiveRecord::Base
   }
 
   scope :includes_for_ui,    -> { limit(5).includes(:user) }
-  scope :pending_for_ui,     -> { where(:state => 'pending',   :production_state => nil   ).order('created_at DESC') }
-  scope :released_for_ui,    -> { where(:state => 'released',  :production_state => nil   ).order('created_at DESC') }
-  scope :completed_for_ui,   -> { where(:state => 'completed', :production_state => nil   ).order('created_at DESC') }
-  scope :failed_for_ui,      -> { where(                       :production_state => 'fail').order('created_at DESC') }
-  scope :in_progress_for_ui, -> { where(:state => 'started',   :production_state => nil   ).order('created_at DESC') }
+  scope :pending_for_ui,     -> { where(:state => 'pending',   :production_state => nil   ).latest_first }
+  scope :released_for_ui,    -> { where(:state => 'released',  :production_state => nil   ).latest_first }
+  scope :completed_for_ui,   -> { where(:state => 'completed', :production_state => nil   ).latest_first }
+  scope :failed_for_ui,      -> { where(                       :production_state => 'fail').latest_first }
+  scope :in_progress_for_ui, -> { where(:state => 'started',   :production_state => nil   ).latest_first }
+
+  scope :latest_first,       -> { order('created_at DESC') }
 
   delegate :size, :to => :requests
 

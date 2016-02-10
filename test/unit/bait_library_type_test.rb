@@ -11,7 +11,7 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
       @bait_library = create :bait_library
     end
 
-    should "bait library types exist" do
+    should "Bait Library Types exist" do
       assert BaitLibraryType.count > 0
     end
 

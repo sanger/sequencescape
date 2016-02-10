@@ -12,7 +12,7 @@ class Assets::CommentsController < ApplicationController
   end
 
   def create
-    @asset.comments.create(:description => params[:comment], :user_id => current_user.id)
+    @asset.comments.create(:description => params[:comment], :user => current_user)
     @comments = @asset.comments
     render :partial => "list", :locals => { :commentable => @asset, :visible => true }
   end
