@@ -1,60 +1,61 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
-<% add :menu, "SLF Lab view" => lab_sample_logistics_path() %>
+<% add :menu, "Sample Management Lab view" => lab_sample_logistics_path() %>
 <div id="slf">
-<h1>Sample Logistics</h1>
+<%= page_title "Sample Management" %>
 
 <% if current_user.slf_manager? || current_user.manager_or_administrator? %>
-<fieldset>
-  <legend>Studies</legend>
-  <ul>
-    <li><%= link_to "Create", new_study_path  %></li>
-    <li><%= link_to "View All", studies_path  %></li>
-    <li><%= link_to "Manage", url_for(:controller => "admin/studies", :action => "index") %></li>
-  </ul>
-</fieldset>
 
-<fieldset>
-  <legend>Projects</legend>
-  <ul>
-    <li><%= link_to "Create", new_project_path  %></li>
-    <li><%= link_to "View All", projects_path  %></li>
-    <li><%= link_to "Manage", url_for(:controller => "admin/projects", :action => "index") %></li>
-  </ul>
-</fieldset>
+<div class="col-sm-4">
+  <%= link_panel(:default,title:"Studies") do %>
+    <ul>
+      <li><%= link_to "Create", new_study_path  %></li>
+      <li><%= link_to "View All", studies_path  %></li>
+      <li><%= link_to "Manage", url_for(:controller => "admin/studies", :action => "index") %></li>
+    </ul>
+  <% end %>
+</div>
 
+<div class="col-sm-4">
+  <%= link_panel(:default,title:"Projects") do %>
+    <ul>
+      <li><%= link_to "Create", new_project_path  %></li>
+      <li><%= link_to "View All", projects_path  %></li>
+      <li><%= link_to "Manage", url_for(:controller => "admin/projects", :action => "index") %></li>
+    </ul>
+  <% end %>
+</div>
 
-<fieldset>
-  <legend>Sample Registration</legend>
-  <ul>
-    <li><%= link_to "Create", new_sample_manifest_path  %></li>
-    <li><%= link_to "View All", sample_manifests_path  %></li>
-  </ul>
-</fieldset>
+<div class="col-sm-4">
+  <%= link_panel(:default,title:"Sample Registration") do %>
+    <ul>
+      <li><%= link_to "Create", new_sample_manifest_path  %></li>
+      <li><%= link_to "View All", sample_manifests_path  %></li>
+    </ul>
+  <% end %>
+  <%= link_panel(:default,title:"Suppliers") do %>
+    <ul>
+      <li><%= link_to "Create", new_supplier_path  %></li>
+      <li><%= link_to "View All", suppliers_path  %></li>
+    </ul>
+  <% end %>
+</div>
 
-<fieldset>
-  <legend>Suppliers</legend>
-  <ul>
-    <li><%= link_to "Create", new_supplier_path  %></li>
-    <li><%= link_to "View All", suppliers_path  %></li>
-  </ul>
-</fieldset>
-<% end %>
-
-<fieldset>
-  <legend>QC</legend>
-  <ul>
-    <% if current_user.slf_manager? || current_user.slf_gel? || current_user.manager_or_administrator? %>
-    <li><%= link_to "Gel", gels_path %></li>
-    <% end %>
-    <% if current_user.slf_manager? || current_user.manager_or_administrator? %>
-    <li><%= link_to "QC overview", qc_overview_sample_logistics_path %></li>
-    <li><%= link_to "Pico Green", "#{configatron.pico_green_url}" %></li>
-    <li><%= link_to "Study QC Reports", study_reports_path %></li>
-    <li><%= link_to "Cherrypicking plate templates", plate_templates_path %></li>
-    <li><%= link_to "Convert Plates to Tubes", to_sample_tubes_plates_path  %></li>
-    <% end %>
-  </ul>
-</fieldset>
+<div class="col-sm-4">
+  <%= link_panel(:default,title:"QC") do %>
+    <ul>
+      <% if current_user.slf_manager? || current_user.slf_gel? || current_user.manager_or_administrator? %>
+      <li><%= link_to "Gel", gels_path %></li>
+      <% end %>
+      <% if current_user.slf_manager? || current_user.manager_or_administrator? %>
+      <li><%= link_to "QC overview", qc_overview_sample_logistics_path %></li>
+      <li><%= link_to "Pico Green", "#{configatron.pico_green_url}" %></li>
+      <li><%= link_to "QC Reports", qc_reports_path %></li>
+      <li><%= link_to "Study QC Reports", study_reports_path %></li>
+      <li><%= link_to "Cherrypicking plate templates", plate_templates_path %></li>
+      <li><%= link_to "Convert Plates to Tubes", to_sample_tubes_plates_path  %></li>
+      <% end %>
+    </ul>
+  <% end %>
 </div>
