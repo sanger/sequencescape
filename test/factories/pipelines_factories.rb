@@ -29,6 +29,10 @@ FactoryGirl.define do
     resource            nil
     sti_type            "Plate"
     barcode             {|a| FactoryGirl.generate :barcode_number }
+
+    factory :source_plate do
+      plate_purpose {|pp| pp.association(:source_plate_purpose)}
+    end
   end
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|

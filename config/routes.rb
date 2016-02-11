@@ -72,6 +72,8 @@ Sequencescape::Application.routes.draw do
 
   end
 
+  resources :uuids, :only => [ :show ]
+
   match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch
   match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch
   match 'run/:run' => 'items#run_lanes'
