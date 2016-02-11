@@ -26,11 +26,7 @@ class Project < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  aasm_column :state
-  aasm_initial_state :pending
-  aasm_state :pending
-  aasm_state :active
-  aasm_state :inactive
+  aasm :column => :state do
 
     state :pending, :initial => true
     state :active, :enter => :mark_active

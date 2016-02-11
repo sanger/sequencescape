@@ -105,10 +105,6 @@ module IlluminaHtp::Requests
 
   class PrePcrToPcr < TransferRequest
     # This is a legacy state machine.
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
-
     redefine_aasm :column => :state do
 
       state :pending, :initial => true

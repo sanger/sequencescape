@@ -24,27 +24,27 @@ class QcReport < ActiveRecord::Base
         # When adding new states, please make sure you update the config/locals/en.yml file
         # with decriptions.
 
-        aasm_column :state
+        aasm :column => :state do
 
-        aasm_state :queued
-        aasm_state :generating, :after_enter => :generate_report
-        aasm_state :awaiting_proceed
-        aasm_state :complete
+          state :queued, :initial => true
+          state :generating, :after_enter => :generate_report
+          state :awaiting_proceed
+          state :complete
 
-        aasm_event :generate do
-          transitions :from => :queued, :to => :generating
+          event :generate do
+            transitions :from => :queued, :to => :generating
+          end
+
+          event :generation_complete do
+            transitions :from => :generating, :to => :awaiting_proceed
+          end
+
+          # A QC report might be uploaded multiple times
+          event :proceed_decision do
+            transitions :from => [:complete,:awaiting_proceed], :to => :complete
+          end
+
         end
-
-        aasm_event :generation_complete do
-          transitions :from => :generating, :to => :awaiting_proceed
-        end
-
-        # A QC report might be uploaded multiple times
-        aasm_event :proceed_decision do
-          transitions :from => [:complete,:awaiting_proceed], :to => :complete
-        end
-
-        aasm_initial_state :queued
 
         def available?
           awaiting_proceed? or complete?
