@@ -1,0 +1,28 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011 Genome Research Ltd.%>
+<h1>Listing All Programs</h1>
+<table id="program_list" width="100%" class="sortable" cellpadding="3" cellspacing="0">
+  <thead>
+    <tr>
+      <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th><%= link_to "Number of Studies", "javascript:void(0);" %></th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for program in @programs %>
+    <tr>
+      <td><%= link_to program.name, admin_program_path(program), :title => "View #{program.name}" %></td>
+      <td><%= program.count_studies %></td>
+      <td><%= link_to 'Edit', edit_admin_program_path(program), :title => "Edit #{program.name}" %></td>
+      <td><%= link_to 'Delete', [:admin,program], :title => "Delete #{program.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br />
+
+<%= link_to 'New Program', new_admin_program_path %>

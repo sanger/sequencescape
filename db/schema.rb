@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160202142910) do
+ActiveRecord::Schema.define(:version => 20160211160016) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -947,6 +947,12 @@ ActiveRecord::Schema.define(:version => 20160202142910) do
     t.datetime "deprecated_at"
   end
 
+  create_table "programs", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "project_managers", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1510,6 +1516,7 @@ ActiveRecord::Schema.define(:version => 20160202142910) do
     t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
     t.string   "data_access_group"
     t.string   "prelim_id"
+    t.integer  "program_id"
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"

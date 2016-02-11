@@ -216,11 +216,13 @@ class Study < ActiveRecord::Base
     include DataReleaseStudyType::Associations
     include ReferenceGenome::Associations
     include FacultySponsor::Associations
+    include Program::Associations
 
     association(:study_type, :name, :required => true)
     association(:data_release_study_type, :name, :required => true)
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
+    association(:program, :name, :required => true)
 
     attribute(:prelim_id, :with => /^[a-zA-Z]\d{4}$/, :required => false)
     attribute(:study_description, :required => true)
