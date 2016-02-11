@@ -72,7 +72,7 @@ Feature: Set roles for SLF functionality
     Given I am an "<role>" user logged in as "john"
     And I am on the sample logistics homepage
     Then I should see "Sample Management"
-    When I follow "SLF Lab view"
+    When I follow "Sample Management Lab View"
     Then I should see "Print plate barcodes"
     Examples:
     | role          |
