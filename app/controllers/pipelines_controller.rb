@@ -29,7 +29,8 @@ class PipelinesController < ApplicationController
     @completed_batches   = @pipeline.batches.completed_for_ui.includes_for_ui
     @released_batches    = @pipeline.batches.released_for_ui.includes_for_ui
     @failed_batches      = @pipeline.batches.failed_for_ui.includes_for_ui
-    @last_5_batches      = @pipeline.batches.latest_first.includes_for_ui
+
+    @batches = @last_5_batches = @pipeline.batches.latest_first.includes_for_ui
 
 
     unless @pipeline.qc?
@@ -118,6 +119,10 @@ class PipelinesController < ApplicationController
       flash[:notice] = "Failed to deactivate pipeline"
       redirect_to pipeline_path(@pipeline)
     end
+  end
+
+  def batches
+    @batches = @pipeline.batches.paginate :page => params[:page], :order => 'id DESC'
   end
 
   # to modify when next_request will be ready
