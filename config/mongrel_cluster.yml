@@ -1,8 +1,0 @@
----
-cwd: ./
-log_file: log/mongrel.log
-port: "1234"
-environment: development
-address: localhost
-pid_file: tmp/pids/mongrel.pid
-servers: 5
