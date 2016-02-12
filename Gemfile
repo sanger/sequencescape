@@ -29,7 +29,7 @@ group :default do
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
   gem 'dynamic_form'
 
-  gem 'trinidad', :platforms => :jruby
+  gem 'puma'
 
   gem 'sanger_barcode', '~>0.2',
     :github => 'sanger/sanger_barcode', :branch => 'ruby-1.9'
@@ -134,6 +134,5 @@ group :deployment do
     :github => "sanger/psd_logger"
   gem "gmetric", "~>0.1.3"
   gem "exception_notification"
-  gem "trinidad_daemon_extension", :platforms => :jruby
 end
 
