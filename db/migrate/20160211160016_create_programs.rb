@@ -8,6 +8,8 @@ class CreatePrograms < ActiveRecord::Migration
       change_table :study_metadata do |t|
         t.references :program, index: true
       end
+      # Default program
+      Program.create!(:name => 'General').save
     end
   end
 
