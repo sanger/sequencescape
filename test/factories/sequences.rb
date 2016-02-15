@@ -26,6 +26,10 @@ FactoryGirl.define do
     "Faculty Sponsor #{n}"
   end
 
+  sequence :program_name do |n|
+    "Program #{n}"
+  end
+
   sequence :item_name do |n|
     "Item #{n}"
   end

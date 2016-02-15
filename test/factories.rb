@@ -37,6 +37,7 @@ FactoryGirl.define do
   factory  :study_metadata, :class => Study::Metadata  do
     faculty_sponsor             { |faculty_sponsor| faculty_sponsor.association(:faculty_sponsor)}
     study_description           'Some study on something'
+    program                     { |program| program.association(:program)}
     contaminated_human_dna      'No'
     contains_human_dna          'No'
     commercially_available      'No'
@@ -712,6 +713,10 @@ FactoryGirl.define do
 
   factory(:faculty_sponsor) do
     name  {|a| FactoryGirl.generate :faculty_sponsor_name }
+  end
+
+  factory(:program) do
+    name  {|a| FactoryGirl.generate :program_name }
   end
 
   factory(:pooling_method, :class=> 'RequestType::PoolingMethod')  do
