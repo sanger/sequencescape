@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - jruby-19mode
+  - jruby-9.0.3.0
 bundler_args: --without warehouse development deployment
 before_install:
   - export TZ=Europe/London
