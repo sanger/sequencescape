@@ -4,7 +4,6 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-require 'minitest'
 require 'minitest/autorun'
 require 'shoulda'
 require 'rails/test_help'

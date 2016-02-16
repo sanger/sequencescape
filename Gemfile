@@ -114,7 +114,6 @@ group :test do
   gem "treetop", :require => false
   # gem 'parallel_tests', :require => false
   gem 'rgl', :require => false
-  gem "minitest"
 end
 
 group :cucumber do

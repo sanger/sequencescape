@@ -68,7 +68,7 @@ en:
       reception: "Reception"
       labwhere_reception: "Labwhere Reception"
       labsearch: "Lab search"
-      labview:  "Lab view"
+      labview:  "Lab View"
 
   errors:
     occured: "Something has gone wrong!"
