@@ -27,9 +27,9 @@
           <th><%= link_to "Tag", "javascript:void(0);" %></th>
           <% @information_types.each do |information_type| %>
             <% next if information_type.hide_in_inbox %>
-            <th class='label' style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+            <th style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
           <% end %>
-          <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
+          <th width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
         </tr>
       </thead>
       <tbody>
