@@ -16,20 +16,20 @@
     <% end -%>
 
     <!-- _pac_bio_sequencing_inbox.html.erb -->
-    <table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id='request_inbox'>
+    <table class="sortable table table-stripped" id='request_inbox'>
       <thead>
         <tr>
-          <th class='label' style='text-align: left' width='2%'>&nbsp;<!-- Checkboxes --></th>
-          <th class='label' style='text-align: left' width='2%'>&nbsp; <!-- Notify --></th>
-          <th class='label'>Request ID</th>
-          <th class='label'><%= link_to "Name", "javascript:void(0);" %></th>
-          <th class='label'><%= link_to "Asset", "javascript:void(0);" %></th>
-          <th class='label'><%= link_to "Tag", "javascript:void(0);" %></th>
+          <th style='text-align: left' width='2%'>&nbsp;<!-- Checkboxes --></th>
+          <th style='text-align: left' width='2%'>&nbsp; <!-- Notify --></th>
+          <th>Request ID</th>
+          <th><%= link_to "Name", "javascript:void(0);" %></th>
+          <th><%= link_to "Asset", "javascript:void(0);" %></th>
+          <th><%= link_to "Tag", "javascript:void(0);" %></th>
           <% @information_types.each do |information_type| %>
             <% next if information_type.hide_in_inbox %>
-            <th class='label' style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+            <th style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
           <% end %>
-          <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
+          <th width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
         </tr>
       </thead>
       <tbody>
