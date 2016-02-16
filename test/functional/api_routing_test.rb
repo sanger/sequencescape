@@ -10,7 +10,7 @@ class ApiRoutingTest < ActionController::TestCase
 
       should matcher.description do
         # Not only can we not be allowed the method, we also might not even have the route!
-        assert_raises(ActionController::MethodNotAllowed,MiniTest::Assertion) do
+        assert_raises(ActionController::MethodNotAllowed,Test::Unit::AssertionFailedError) do
           assert_accepts matcher.in_context(self), self
         end
       end
