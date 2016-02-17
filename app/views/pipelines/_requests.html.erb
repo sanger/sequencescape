@@ -21,6 +21,7 @@
         <th><%= link_to "Asset type", "javascript:void(0);" %></th>
         <th><%= link_to "Asset ID", "javascript:void(0);" %></th>
         <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
+        <th><%= link_to "Num. Samples", "javascript:void(0);" %></th>
         <th><%= link_to "Conc", "javascript:void(0);" %></th>
         <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
         <th><%= link_to "Submitted at (Y-M-D)", "javascript:void(0);" %></th>
@@ -78,6 +79,7 @@
             <% else -%>
               <td>&nbsp;</td>
             <% end -%>
+            <td><%= request.asset.samples.count %></td>
             <td><%= request.asset.concentration %></td>
             <td><%= request.asset.scanned_in_date %></td>
             <td><%= request.submitted_at %></td>
