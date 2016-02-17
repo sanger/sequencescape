@@ -10,7 +10,6 @@ before_script:
   - "bundle exec rake db:create RAILS_ENV=test"
   - "bundle exec rake db:test:load"
   - export CUCUMBER_FORMAT=progress
-  - export RUBY_OPT=--profile
 matrix:
   allow_failures:
     - rvm: jruby-9.0.5.0

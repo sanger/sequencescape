@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem "rails"
+  gem "rails", "~>3.2"
 
   gem "aasm", "~>2.4.0"
   gem "configatron"
