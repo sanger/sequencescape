@@ -170,7 +170,6 @@ GEM
       railties (>= 3.2.16)
     jrjackson (0.3.7)
     jruby-openssl (0.9.12-java)
-    jruby-rack (1.1.19)
     json (1.8.3)
     json (1.8.3-java)
     launchy (2.4.3)
@@ -212,6 +211,8 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
+    puma (2.16.0)
+    puma (2.16.0-java)
     rack (1.4.7)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
@@ -299,13 +300,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    trinidad (1.4.6)
-      jruby-rack (~> 1.1.13)
-      trinidad_jars (>= 1.3.0, < 1.5.0)
-    trinidad_daemon_extension (0.4.0)
-      trinidad (>= 1.3.5)
-    trinidad_jars (1.4.2)
-    tzinfo (0.3.45)
+    tzinfo (0.3.46)
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
@@ -373,6 +368,7 @@ DEPENDENCIES
   poltergeist
   pry
   psd_logger!
+  puma
   rack-acceptable
   rails
   rdoc
@@ -392,8 +388,6 @@ DEPENDENCIES
   therubyrhino
   timecop
   treetop
-  trinidad
-  trinidad_daemon_extension
   uglifier (>= 1.0.3)
   uuidtools
   will_paginate
