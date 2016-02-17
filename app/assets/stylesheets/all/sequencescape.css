@@ -1479,3 +1479,11 @@ table.sortable tbody tr td { padding-left: 0.5em;}
 
 .file_drop { border: 2px dotted gray; width:80%; padding:1em; }
 
+table.sortable {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
