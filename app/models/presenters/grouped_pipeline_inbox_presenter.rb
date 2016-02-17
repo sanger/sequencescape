@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 module Presenters
-  class PipelineInboxPresenter
+  class GroupedPipelineInboxPresenter
 
     class << self
 
@@ -53,9 +53,9 @@ module Presenters
 
     # Yields a line presenter
     def each_line
-      input_request_groups.each_with_index do |(group, requests),index|
-        yield GroupLinePresenter.new(group, requests,index,pipeline,self)
-        # yield group, requests, index
+      grouped_requests.each_with_index do |request,index|
+        group = [request.container_id, request.submission_id]
+        yield GroupLinePresenter.new(group, request,index,pipeline,self)
       end
     end
 
@@ -65,8 +65,8 @@ module Presenters
 
     private
 
-    def input_request_groups
-      @request_groups ||= @pipeline.get_input_request_groups(@show_held_requests)
+    def grouped_requests
+      @request_groups ||= @pipeline.grouped_requests(@show_held_requests)
     end
 
     def valid_fields
@@ -99,9 +99,9 @@ module Presenters
 
     include PipelinesHelper
 
-    attr_reader :group, :requests, :index, :pipeline, :inbox
-    def initialize(group,requests,index,pipeline,inbox)
-      @group, @requests, @index,@pipeline,@inbox = group,requests,index,pipeline,inbox
+    attr_reader :group, :request, :index, :pipeline, :inbox
+    def initialize(group,request,index,pipeline,inbox)
+      @group, @request, @index,@pipeline,@inbox = group,request,index,pipeline,inbox
     end
 
     def group_id
@@ -117,15 +117,15 @@ module Presenters
     end
 
     def submission_id
-       pipeline.group_by_submission? && group[1]
+      request.submission_id
     end
 
     def submission
-      Submission.find(submission_id) if submission_id.present?
+      request.submission
     end
 
     def submitted_at
-      requests.first.submitted_at
+      request.submitted_at
     end
 
     def submission_name
@@ -133,7 +133,7 @@ module Presenters
     end
 
     def priority
-      requests.max_by(&:priority).priority
+      request.max_priority
     end
 
     def each_field
@@ -151,7 +151,7 @@ module Presenters
     end
 
     def wells
-      requests.size
+      request.request_count
     end
 
     def plate_purpose
@@ -159,11 +159,11 @@ module Presenters
     end
 
     def pick_to
-      target_purpose_for(requests.first)
+      target_purpose_for(request)
     end
 
     def next_pipeline
-      next_pipeline_name_for(requests.first)
+      next_pipeline_name_for(request)
     end
 
     def study
@@ -175,7 +175,7 @@ module Presenters
     end
 
     def still_required
-      requests.size/parent.height
+      wells/parent.height
     end
 
     # Gates

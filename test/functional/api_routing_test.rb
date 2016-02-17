@@ -9,8 +9,9 @@ class ApiRoutingTest < ActionController::TestCase
       matcher = route(method, path).to(options)
 
       should matcher.description do
+        exception_class = defined?(Test::Unit::AssertionFailedError) ? Test::Unit::AssertionFailedError : MiniTest::Assertion
         # Not only can we not be allowed the method, we also might not even have the route!
-        assert_raises(ActionController::MethodNotAllowed,MiniTest::Assertion) do
+        assert_raises(ActionController::MethodNotAllowed,exception_class) do
           assert_accepts matcher.in_context(self), self
         end
       end

@@ -74,6 +74,9 @@ Sequencescape::Application.routes.draw do
 
   resources :uuids, :only => [ :show ]
 
+  match 'batches/released/clusters' => 'batches#released'
+  match 'batches/released/:id' => 'batches#released'
+
   match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch
   match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch
   match 'run/:run' => 'items#run_lanes'
@@ -371,10 +374,6 @@ Sequencescape::Application.routes.draw do
   resources :lab_searches
   resources :errors
   resources :events
-
-  match 'batches/all' => 'batches#all'
-  match 'batches/released' => 'batches#released'
-  match 'batches/released/clusters' => 'batches#released'
 
   resources :items do
     collection do

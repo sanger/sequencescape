@@ -24,4 +24,5 @@ class CherrypickPipeline < CherrypickingPipeline
     # 1. The requests should just be detached, not blocked
     # 2. The assets are not removed because they are not considered unused
   end
+
 end

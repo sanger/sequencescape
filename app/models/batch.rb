@@ -27,7 +27,7 @@ class Batch < ActiveRecord::Base
   end
 
   def cluster_formation_requests_must_be_over_minimum
-    if (!pipeline.min_size.nil?) && (@requests.size < pipeline.min_size)
+    if (!pipeline.min_size.nil?) && (requests.size < pipeline.min_size)
       errors.add :base, "You must create batches of at least " + pipeline.min_size.to_s+" requests in the pipeline " + pipeline.name
     end
   end

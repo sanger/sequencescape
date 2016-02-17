@@ -29,12 +29,12 @@ GEM
   specs:
     aasm (2.4.0)
       activerecord
-    actionmailer (3.2.19)
-      actionpack (= 3.2.19)
+    actionmailer (3.2.22.1)
+      actionpack (= 3.2.22.1)
       mail (~> 2.5.4)
-    actionpack (3.2.19)
-      activemodel (= 3.2.19)
-      activesupport (= 3.2.19)
+    actionpack (3.2.22.1)
+      activemodel (= 3.2.22.1)
+      activesupport (= 3.2.22.1)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
@@ -42,22 +42,22 @@ GEM
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2.1)
-    activemodel (3.2.19)
-      activesupport (= 3.2.19)
+    activemodel (3.2.22.1)
+      activesupport (= 3.2.22.1)
       builder (~> 3.0.0)
-    activerecord (3.2.19)
-      activemodel (= 3.2.19)
-      activesupport (= 3.2.19)
+    activerecord (3.2.22.1)
+      activemodel (= 3.2.22.1)
+      activesupport (= 3.2.22.1)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
     activerecord-jdbc-adapter (1.3.18)
       activerecord (>= 2.2)
     activerecord-oracle_enhanced-adapter (1.2.3)
       activerecord (>= 2.0.0)
-    activeresource (3.2.19)
-      activemodel (= 3.2.19)
-      activesupport (= 3.2.19)
-    activesupport (3.2.19)
+    activeresource (3.2.22.1)
+      activemodel (= 3.2.22.1)
+      activesupport (= 3.2.22.1)
+    activesupport (3.2.22.1)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     acts-as-dag (3.0.0)
@@ -170,7 +170,6 @@ GEM
       railties (>= 3.2.16)
     jrjackson (0.3.7)
     jruby-openssl (0.9.12-java)
-    jruby-rack (1.1.19)
     json (1.8.3)
     json (1.8.3-java)
     launchy (2.4.3)
@@ -212,26 +211,28 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
+    puma (2.16.0)
+    puma (2.16.0-java)
     rack (1.4.7)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
-    rack-cache (1.6.0)
+    rack-cache (1.6.1)
       rack (>= 0.4)
     rack-ssl (1.3.4)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rails (3.2.19)
-      actionmailer (= 3.2.19)
-      actionpack (= 3.2.19)
-      activerecord (= 3.2.19)
-      activeresource (= 3.2.19)
-      activesupport (= 3.2.19)
+    rails (3.2.22.1)
+      actionmailer (= 3.2.22.1)
+      actionpack (= 3.2.22.1)
+      activerecord (= 3.2.22.1)
+      activeresource (= 3.2.22.1)
+      activesupport (= 3.2.22.1)
       bundler (~> 1.0)
-      railties (= 3.2.19)
-    railties (3.2.19)
-      actionpack (= 3.2.19)
-      activesupport (= 3.2.19)
+      railties (= 3.2.22.1)
+    railties (3.2.22.1)
+      actionpack (= 3.2.22.1)
+      activesupport (= 3.2.22.1)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
@@ -299,13 +300,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    trinidad (1.4.6)
-      jruby-rack (~> 1.1.13)
-      trinidad_jars (>= 1.3.0, < 1.5.0)
-    trinidad_daemon_extension (0.4.0)
-      trinidad (>= 1.3.5)
-    trinidad_jars (1.4.2)
-    tzinfo (0.3.45)
+    tzinfo (0.3.46)
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
@@ -373,8 +368,9 @@ DEPENDENCIES
   poltergeist
   pry
   psd_logger!
+  puma
   rack-acceptable
-  rails
+  rails (~> 3.2)
   rdoc
   rest-client
   rgl
@@ -392,8 +388,6 @@ DEPENDENCIES
   therubyrhino
   timecop
   treetop
-  trinidad
-  trinidad_daemon_extension
   uglifier (>= 1.0.3)
   uuidtools
   will_paginate

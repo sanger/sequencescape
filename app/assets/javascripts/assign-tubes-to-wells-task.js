@@ -39,7 +39,7 @@
     reportError = function(error) { $('#error_messages').show(100).text(error) };
     doNothing = function(){};
 
-    attach = function(tube,target) { document.getElementById('locations_for_'+tube.dataset.requestId).value=target.dataset.wellLocation };
+    attach = function(tube,target) { document.getElementById('locations_for_'+tube.dataset.requestId).value=target.dataset.wellLocation||'' };
     detach = function(tube) { document.getElementById('locations_for_'+tube.dataset.requestId).value='' };
 
     // moveTo bypasses the receive and remove checks.
@@ -84,6 +84,9 @@
       receive: function( event,ui ) {
         if (clashChecker($(this).children('.library_tube'),ui.item,reportError)) {
           $(ui.sender).sortable('cancel');
+          console.log(ui);
+          console.log(this);
+          attach(ui.item.get(0),ui.sender.context);
         } else {
           attach(ui.item.get(0),this)
         }

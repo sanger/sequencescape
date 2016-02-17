@@ -252,12 +252,14 @@ class Request < ActiveRecord::Base
 
   scope :loaded_for_inbox_display, -> { includes([{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}])}
   scope :loaded_for_grouped_inbox_display, -> { includes([ {:submission => :orders}, :asset , :target_asset, :request_type ])}
+
   scope :ordered_for_ungrouped_inbox, -> { order('id DESC') }
   scope :ordered_for_submission_grouped_inbox, -> { order('submission_id DESC, id ASC') }
 
   scope :group_conditions, ->(conditions, variables) {
     where([ conditions.join(' OR '), *variables ])
   }
+
   def self.group_requests(finder_method, options = {})
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
 
@@ -278,6 +280,11 @@ class Request < ActiveRecord::Base
    }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
+
+  scope :for_group_by, ->(attributes) {
+    group(attributes).
+    select('requests.*, MAX(priority) AS max_priority, hl.container_id AS container_id, count(DISTINCT requests.id) AS request_count')
+  }
 
   def self.for_study(study)
     Request.for_study_id(study.id)
