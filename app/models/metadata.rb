@@ -162,7 +162,7 @@ private
       end
 
       def metadata_attribute_path(field)
-        metadata_attribute_path_store(field)
+        metadata_attribute_path_store[field]
       end
 
       def localised_sections_store
