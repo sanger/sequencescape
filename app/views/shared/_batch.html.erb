@@ -6,9 +6,9 @@
     <thead>
       <tr>
         <% if edit -%>
-          <th class='label' width="3%"><%= link_to 'Drag', "javascript:void(0);" %></th>
+          <th width="3%"><%= link_to 'Drag', "javascript:void(0);" %></th>
         <% elsif stage %>
-          <th class="label nosort" width="7%"><%= link_to_function 'Select', "select_all()" -%> | <%= link_to_function 'Deselect', "deselect_all()" -%></th>
+          <th class="nosort" width="7%"><%= link_to_function 'Select', "select_all()" -%> | <%= link_to_function 'Deselect', "deselect_all()" -%></th>
         <% end -%>
         <th>Poition</th>
         <th>Sample</th>
