@@ -1,4 +1,3 @@
 compat.version=1.9
 objectspace.enabled=false
 compile.invokedynamic=true
-thread.pooling=true
