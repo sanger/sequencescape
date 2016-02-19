@@ -1,0 +1,16 @@
+<%= page_title("plate summary", "overview") %>
+<%= form_tag(search_plate_summaries_path, method: :get) do %>
+  <%= label_tag :plate_barcode, "Plate barcode" %>
+  <%= search_field_tag :plate_barcode, class: "form-control" %>
+<% end %>
+
+<h2>Owned Plates</h2>
+<ul>
+<%= pagination @plates %>
+<% @plates.each do |plate| %>
+  <li>
+    <%= link_to plate.sanger_human_barcode, plate_summary_path(plate.sanger_human_barcode) %>
+  </li>
+<% end %>
+</ul>
+<%= pagination @plates %>

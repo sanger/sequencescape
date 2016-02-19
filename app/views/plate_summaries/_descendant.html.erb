@@ -1,0 +1,44 @@
+<%= bs_custom_panel(:info, :table, {class: 'table table-summary'}, {title: "#{descendant.sanger_human_barcode} - #{descendant.purpose.name}"}) do %>
+  <tr>
+    <th>
+      Machine barcode
+    </th>
+    <td>
+      <%= descendant.ean13_barcode %>
+    </td>
+  </tr>
+  <tr>
+    <th>
+      Created
+    </th>
+    <td>
+      <% descendant.plate_creations.each do |plate_creation| %>
+        <%= plate_creation.created_at %>
+        <%= plate_creation.user.try(:name) %>
+      <% end %>
+    </td>
+  </tr>
+  <% descendant.state_changes.each do |state_change| %>
+    <tr>
+      <th>
+        <%= state_change.target_state %>
+      </th>
+      <td>
+          <%= state_change.created_at %>
+          <%= state_change.user.try(:name) %>
+      </td>
+    </tr>
+  <% end %>
+  <% descendant.tag_layouts.each do |tag_layout| %>
+    <tr>
+      <th>
+        Tagged with <%= tag_layout.tag_group.name %>
+      </th>
+      <td>
+          <%= tag_layout.created_at %>
+          <%= tag_layout.user.try(:name) %>
+      </td>
+    </tr>
+  <% end %>
+
+<% end %>

@@ -94,5 +94,6 @@ class AssetTest < ActiveSupport::TestCase
         assert @asset.child.nil?
       end
     end
+
   end
 end

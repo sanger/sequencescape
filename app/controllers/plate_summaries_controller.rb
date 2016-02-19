@@ -6,8 +6,21 @@ class PlateSummariesController < ApplicationController
   before_filter :login_required
 
   def index
+    @plates = Plate.source_plates.with_descendants_owned_by(current_user).order("assets.id desc").page(params[:page])
   end
 
   def show
+    @plate = Plate.find_from_any_barcode(params[:id])
+    raise ActiveRecord::RecordNotFound if @plate.nil?
+  end
+
+  def search
+    candidate_plate = Plate.find_from_any_barcode(params[:plate_barcode])
+    if candidate_plate.nil? || candidate_plate.source_plate.nil?
+      redirect_to :back, flash: { error: "No suitable plates found for barcode #{params[:plate_barcode]}" }
+    else
+      redirect_to plate_summary_path(candidate_plate.source_plate.sanger_human_barcode)
+    end
   end
 end
+  

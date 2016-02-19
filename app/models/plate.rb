@@ -13,6 +13,7 @@ class Plate < Asset
   include Plate::Iterations
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
+  include PlateCreation::CreationChild
 
   extend QcFile::Associations
   has_qc_files
@@ -316,6 +317,19 @@ WHERE c.container_id=?
       select('DISTINCT assets.*').
       joins(:container_associations).
       where(:container_associations=>{:content_id=> wells.map(&:id) })
+  }
+  #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
+  has_many :descendant_plates, :class_name => "Plate", :conditions => {:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :tag_layouts
+
+  scope :with_descendants_owned_by, ->(user) {
+    joins(:descendant_plates => :plate_owner).
+    where(:plate_owners=>{:user_id=>user.id})
+  }
+
+  scope :source_plates, -> {
+    joins(:plate_purpose).
+    where("plate_purposes.id = plate_purposes.source_purpose_id")
   }
 
   def wells_sorted_by_map_id

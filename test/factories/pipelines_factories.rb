@@ -33,6 +33,22 @@ FactoryGirl.define do
     factory :source_plate do
       plate_purpose {|pp| pp.association(:source_plate_purpose)}
     end
+
+    factory :child_plate do
+
+      transient do
+        parent { create(:source_plate)}
+      end
+
+      plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
+
+     
+
+      after(:build) do |child_plate, evaluator|
+        child_plate.parents << evaluator.parent
+        child_plate.purpose.source_purpose = evaluator.parent.purpose
+      end
+    end
   end
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
@@ -383,6 +399,13 @@ previous_pipeline_id  nil
 
   factory :plate_purpose do |plate_purpose|
     name    {|a| FactoryGirl.generate :purpose_name }
+
+    factory :source_plate_purpose do |source_plate_purpose|
+
+      after(:build) do |source_plate_purpose, evaluator|
+        source_plate_purpose.source_purpose = source_plate_purpose
+      end
+    end
   end
 
   factory :purpose do |purpose|

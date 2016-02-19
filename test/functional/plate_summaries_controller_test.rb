@@ -12,6 +12,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user       = create :user
+      @controller.stubs(:current_user).returns(@user)
     end
 
     context "with some plates" do
@@ -21,6 +22,70 @@ class PlateSummariesControllerTest < ActionController::TestCase
         @child_plate_a  = create :child_plate, :parent => @source_plate_a
         @child_plate_b  = create :child_plate, :parent => @source_plate_b
       end
+
+      should "test factory is created" do
+        assert @source_plate_a
+      end
+
+      context "#index" do
+
+        setup do
+          create :plate_owner, user: @user, plate: @child_plate_a
+        end
+
+        should "include owned plates" do
+          get :index
+          assert_response :success
+          assert_includes assigns(:plates), @source_plate_a
+        end
+      end
+
+      context '#search' do
+
+        should "find expected plates" do
+          plates = {
+            @source_plate_a => [@source_plate_a.sanger_human_barcode, 
+                                @source_plate_a.ean13_barcode, 
+                                @child_plate_a.sanger_human_barcode,
+                                @child_plate_a.ean13_barcode],
+            @source_plate_b => [@source_plate_b.sanger_human_barcode, 
+                                @source_plate_b.ean13_barcode, 
+                                @child_plate_b.sanger_human_barcode,
+                                @child_plate_b.ean13_barcode]
+          }
+          plates.each do |plate, barcodes|
+            barcodes.each do |barcode|
+              get :search, plate_barcode: barcode
+              assert_redirected_to plate_summary_path(plate.sanger_human_barcode)
+            end
+          end
+        end
+
+        context "return users to search page if barcode not found" do
+
+          setup do
+            @request.env['HTTP_REFERER'] = "back"
+            get :search, plate_barcode: "abcd"
+          end
+
+          should redirect_to "back"
+          should set_the_flash.to "No suitable plates found for barcode abcd"
+        
+        end
+      end
+
+      context '#show' do
+
+
+        should 'return expected plate' do
+          get :show, id: @source_plate_a.sanger_human_barcode
+          assert_response :success
+          assert_equal @source_plate_a, assigns(:plate)
+        end
+      end
+
     end
+
+
   end
 end

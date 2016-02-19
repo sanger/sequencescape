@@ -37,6 +37,12 @@ Sequencescape::Application.routes.draw do
   match '/login' => 'sessions#login', :as => :login
   match '/logout' => 'sessions#logout', :as => :logout
 
+  resources :plate_summaries, only: [:index, :show] do
+    collection do
+      get :search
+    end
+  end
+
   resources :reference_genomes
   resources :barcode_printers
 
