@@ -7,18 +7,18 @@
 <h1>MANUAL QC FOR BATCH <%= @batch.id %></h1>
 <table width="100%" cellpadding="4" cellspacing="0">
   <tr>
-    <th class='label' width="5%">Library QC state (not in use)</th>
-    <th class='label' width="5%">Lane QC state (shown in NPG)</th>
-    <th class='label' width="5%">Request state (shown in Studies)</th>
-    <th class='label' width="5%">Sample</th>
-    <th class='label' width="7%">Library ID</th>
-    <th class='label' width="15%">Library</th>
-    <th class='label' width="7%">Request</th>
-    <th class='label' width="4%">Cycles</th>
-    <th class='label' width="4%">Order</th>
-    <th class='label' width="4%">From</th>
-    <th class='label' width="4%">To</th>
-    <th class='label' width="4%">Conc.</th>
+    <th width="5%">Library QC state (not in use)</th>
+    <th width="5%">Lane QC state (shown in NPG)</th>
+    <th width="5%">Request state (shown in Studies)</th>
+    <th width="5%">Sample</th>
+    <th width="7%">Library ID</th>
+    <th width="15%">Library</th>
+    <th width="7%">Request</th>
+    <th width="4%">Cycles</th>
+    <th width="4%">Order</th>
+    <th width="4%">From</th>
+    <th width="4%">To</th>
+    <th width="4%">Conc.</th>
   </tr>
 
   <% @batch.batch_requests.each do |br| -%>

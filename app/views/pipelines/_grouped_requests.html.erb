@@ -4,25 +4,25 @@
 <table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id="pipeline_inbox">
   <thead>
     <tr>
-      <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-      <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-      <th id="priority_flag" class='label' style='text-align: center' width='5%'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
-      <th class='label' width='5%'><%= link_to "Item ID", "javascript:void(0);" %></th>
-      <th style="display:none" class='label' width='5%'><%= link_to "", "javascript:void(0);" %></th>
-      <th class='label' width='5%'>Request ID</th>
-      <th class='label' width='10%'><%= link_to "Name", "javascript:void(0);" %></th>
-      <th class='label' width='15%'><%= link_to "Request comments", "javascript:void(0);" %></th>
-      <th class='label' width='10%'><%= link_to "Asset", "javascript:void(0);" %></th>
-      <th class='label' width='15%'><%= link_to "Asset comments", "javascript:void(0);" %></th>
+      <th style='text-align: left' width='2%'>&nbsp;</th>
+      <th style='text-align: left' width='2%'>&nbsp;</th>
+      <th id="priority_flag" style='text-align: center' width='5%'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
+      <th width='5%'><%= link_to "Item ID", "javascript:void(0);" %></th>
+      <th style="display:none" width='5%'><%= link_to "", "javascript:void(0);" %></th>
+      <th width='5%'>Request ID</th>
+      <th width='10%'><%= link_to "Name", "javascript:void(0);" %></th>
+      <th width='15%'><%= link_to "Request comments", "javascript:void(0);" %></th>
+      <th width='10%'><%= link_to "Asset", "javascript:void(0);" %></th>
+      <th width='15%'><%= link_to "Asset comments", "javascript:void(0);" %></th>
       <% if @pipeline.multiplexed? %>
-        <th class='label'><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
+        <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
       <% end %>
       <% @information_types.each do |information_type| %>
         <% next if information_type.hide_in_inbox %>
-        <th class='label' style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+        <th style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
       <% end %>
-      <th class='label' width='5%'><%= link_to "Concentration", "javascript:void(0);" %></th>
-      <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
+      <th width='5%'><%= link_to "Concentration", "javascript:void(0);" %></th>
+      <th width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
     </tr>
   </thead>
   <tbody>
