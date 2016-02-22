@@ -224,6 +224,10 @@ class Batch < ActiveRecord::Base
       #assets.holder_id = plate_assets.id group by plate_assets.barcode")
   end
 
+  def first_output_plate
+    Plate.output_by_batch(self).with_wells_and_requests.first
+  end
+
   ## WARNING! This method is used in the sanger barcode gem. Do not remove it without
   ## refactoring the sanger barcode gem.
   def output_plate_purpose

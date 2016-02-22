@@ -55,7 +55,7 @@ class Api::Base
           helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
           helper.to_hash(value)
         end
-        json_attributes.update({association.to_s => all_targets })
+        json_attributes.update({helper.alias.to_s => all_targets })
       end
       self.related_resources.each do |relation|
         json_attributes[ relation.to_s ] = File.join(object.url, relation.to_s)
@@ -186,6 +186,7 @@ class Api::Base
     association_helper.class_eval(&block)
     association_helper.singleton_class.class_eval do
       define_method(:association) { association }
+      define_method(:alias) { options[:as]||association }
     end
     self.nested_has_many_associations[ association.to_sym ] = association_helper
   end

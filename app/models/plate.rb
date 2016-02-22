@@ -300,11 +300,39 @@ WHERE c.container_id=?
     }
   }
 
+  named_scope :output_by_batch, lambda { |batch|
+    {
+      :joins => {
+        :container_associations => {
+          :content => {
+            :requests_as_target => :batch
+          }
+        }
+      },
+      :conditions=>['batches.id = ?',batch.id]
+    }
+  }
+
   named_scope :with_wells, lambda { |wells|
     {
       :select => 'DISTINCT assets.*',
       :joins=>[:container_associations],
       :conditions=>{:container_associations=>{:content_id=> wells.map(&:id) }}
+    }
+  }
+
+  named_scope :with_wells_and_requests, {
+    :include => {
+      :wells => [
+        :uuid_object, :map,
+        {
+          :requests_as_target => [
+            {:initial_study=>:uuid_object},
+            {:initial_project=>:uuid_object},
+            {:asset=>{:aliquots=>:sample}}
+          ]
+        }
+      ]
     }
   }
 
