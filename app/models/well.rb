@@ -14,7 +14,7 @@ class Well < Aliquot::Receptacle
 
   class Link < ActiveRecord::Base
     self.table_name = 'well_links'
-    set_inheritance_column
+    self.inheritance_column = nil
     belongs_to :target_well, :class_name => 'Well'
     belongs_to :source_well, :class_name => 'Well'
   end

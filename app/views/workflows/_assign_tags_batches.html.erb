@@ -15,18 +15,18 @@
          data-disable-checks="<%= @batch.pipeline.allow_tag_collision_on_tagging_task?.to_s %>" >
         <thead>
           <tr>
-            <th class='label'>Order</th>
-            <th class='label'>Sample</th>
-            <th class='label'>Request</th>
-            <th class='label'>Source</th>
-            <th class='label'>Target</th>
+            <th>Order</th>
+            <th>Sample</th>
+            <th>Request</th>
+            <th>Source</th>
+            <th>Target</th>
             <% if @batch.multiplexed? %>
-              <th class='label'>Sample name</th>
-              <th class='label'>Tag #</th>
+              <th>Sample name</th>
+              <th>Tag #</th>
             <% end %>
-            <th class='label'>State</th>
+            <th>State</th>
 
-            <th class='label'>Tag</th>
+            <th>Tag</th>
           </tr>
         </thead>
         <tbody id="item_list">

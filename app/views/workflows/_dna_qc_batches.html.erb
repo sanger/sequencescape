@@ -8,7 +8,7 @@
   <thead>
     <tr>
   <% %w(Qc Plate Well Request Gel Pico Sequenom Gender Concentration Volume Genotyped Empty?).zip([nil, nil, "5%"]).each do |column, width| %>
-    <th class='label' <%= width ? 'width="#{width}"' : ""%>>
+    <th <%= width ? 'width="#{width}"' : ""%>>
     <%= column %>
     </th>
   <% end %>
