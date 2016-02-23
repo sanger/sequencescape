@@ -356,7 +356,7 @@ class BulkSubmission
     well_locations = well_list.map(&:strip)
     wells = plate.wells.located_at(well_locations)
     raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
-    attributes[:assets] = wells
+    wells
   end
 
   def find_tubes_for!(details)
