@@ -92,7 +92,7 @@ Feature: Creating Spiked phiX
     And I check "sample 8 checkbox"
     And I press "Next step"
     When I follow "Lane" within ".row0"
-    Then I should see "Spiked Buffer"
+    Then I should see "Aliquot #1  (Spiked Buffer)"
 
   # TODO: use factories for controls and batch
   @npg @xml
