@@ -2,14 +2,15 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 FactoryGirl.define do
-  factory :qc_report do |qc|
-    qc.study {|study| study.association(:study) }
-    qc.product_criteria {|pc| pc.association(:product_criteria) }
-    qc.exclude_existing false
+  factory :qc_report do
+    study {|study| study.association(:study) }
+    product_criteria {|pc| pc.association(:product_criteria) }
+    exclude_existing false
   end
 
-  factory :qc_metric do |qc|
-    qc.qc_report        {|qcr| qcr.association(:qc_report) }
-    qc.asset            {|a|  a.association(:well) }
+  factory :qc_metric do
+    qc_report        {|qcr| qcr.association(:qc_report) }
+    asset            {|a|  a.association(:well) }
+    qc_decision      'passed'
   end
 end
