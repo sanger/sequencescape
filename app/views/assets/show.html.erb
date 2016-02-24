@@ -55,7 +55,7 @@
   <tbody>
     <% @asset.parents.each do |parent| %>
     <tr>
-      <td><%= link_to parent.display_name, asset_url(parent) %></td>
+      <td><%= link_to "#{(parent.label or "").titleize}: #{parent.display_name}", asset_url(parent) %></td>
       <td>Parent</td>
       <td>
         <% if parent.is_a?(Well) && parent.map %>
@@ -68,7 +68,7 @@
     <% child_assets = @asset.is_a?(Plate) ? @asset.children_and_holded : @asset.children %>
     <% child_assets.each do |child| %>
     <tr>
-      <td><%= link_to child.display_name, asset_url(child) %></td>
+      <td><%= link_to "#{(child.label or "").titleize}: #{child.display_name}", asset_url(child) %></td>
       <td>Child</td>
       <td>
       <% if child.is_a?(Well) && child.map %>

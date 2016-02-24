@@ -34,7 +34,4 @@ class SpikedBuffer < LibraryTube
     end
   end
 
-  def display_name
-    "#{super} (Spiked Buffer)"
-  end
 end
