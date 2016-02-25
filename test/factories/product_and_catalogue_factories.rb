@@ -19,6 +19,6 @@ FactoryGirl.define do
     pc.product       {|product| product.association(:product) }
     pc.stage         'stock'
     pc.behaviour     'Basic'
-    pc.configuration { {:total_micrograms=>{:greater_than=>50}} }
+    pc.configuration { {:total_micrograms=>{:greater_than=>50},:sanger_sample_id=>{}} }
   end
 end

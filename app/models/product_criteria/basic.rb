@@ -67,7 +67,7 @@ class ProductCriteria::Basic
 
   delegate(:sample_metadata, :to => :sample)
 
-  SUPPORTED_SAMPLE.each do |attribute|
+  SUPPORTED_SAMPLE_METADATA.each do |attribute|
     delegate(attribute, :to => :sample_metadata)
   end
 
