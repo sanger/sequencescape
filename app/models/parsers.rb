@@ -6,12 +6,11 @@ module Parsers
 
   def self.parser_for(filename, content_type, content)
     return nil unless filename.ends_with?('.csv') || content_type == 'text/csv'
- 	# While FasterCSV tries to detect line endings, it isn't so great with some excel
+ 	# While CSV tries to detect line endings, it isn't so great with some excel
     # exported CSVs, where a mix of \n and \r\n are used in the same document
     # This converts everything to \n before processing
-	# This may no longer be required after the ruby 1.9 upgrade
     cleaned_content = content.gsub(/\r\n?/,"\n")
-    csv = CSV.parse(content)
+    csv = CSV.parse(cleaned_content)
     return Parsers::BioanalysisCsvParser.new(csv) if Parsers::BioanalysisCsvParser.is_bioanalyzer?(csv)
     return Parsers::ISCXTenParser.new(csv) if Parsers::ISCXTenParser.is_isc_xten_file?(csv)
     nil
