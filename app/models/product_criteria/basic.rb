@@ -62,17 +62,17 @@ class ProductCriteria::Basic
   end
 
   SUPPORTED_SAMPLE.each do |attribute|
-    delegate(attribute, :to => :sample)
+    delegate(attribute, :to => :sample, :allow_nil => true)
   end
 
-  delegate(:sample_metadata, :to => :sample)
+  delegate(:sample_metadata, :to => :sample, :allow_nil => true)
 
   SUPPORTED_SAMPLE_METADATA.each do |attribute|
-    delegate(attribute, :to => :sample_metadata)
+    delegate(attribute, :to => :sample_metadata, :allow_nil => true)
   end
 
   SUPPORTED_WELL_ATTRIBUTES.each do |attribute|
-    delegate(attribute, :to => :well_attribute)
+    delegate(attribute, :to => :well_attribute, :allow_nil => true)
   end
 
   # Return the sample gender, returns nil if it can't be determined

@@ -3,13 +3,13 @@
 #Copyright (C) 2015 Genome Research Ltd.
 FactoryGirl.define do
   factory :qc_report do
-    study {|study| study.association(:study) }
-    product_criteria {|pc| pc.association(:product_criteria) }
+    study
+    product_criteria
     exclude_existing false
   end
 
   factory :qc_metric do
-    qc_report        {|qcr| qcr.association(:qc_report) }
+    qc_report
     asset            {|a|  a.association(:well) }
     qc_decision      'passed'
   end
