@@ -29,6 +29,7 @@ class QcReportTest < ActiveSupport::TestCase
           2.times do |i|
             @attribute = create :well_attribute, :measured_volume => 500, :concentration => 200
             sample = create(:study_sample, :study => study).sample
+            sample.update_attributes!(:sanger_sample_id=>'TEST1')
             well = create :well, :samples => [sample], :plate => @stock_plate, :map => create(:map, :location_id => i), :well_attribute => @attribute
             well.aliquots.each {|a| a.update_attributes!(:study => study) }
           end
@@ -55,7 +56,8 @@ class QcReportTest < ActiveSupport::TestCase
           assert_equal nil, metric.proceed
           assert_equal({
             :total_micrograms => 100,
-            :comment => ''
+            :comment => '',
+            :sanger_sample_id => 'TEST1'
           }, metric.metrics)
         end
       end
