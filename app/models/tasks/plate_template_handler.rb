@@ -26,7 +26,7 @@ module Tasks::PlateTemplateHandler
       plate_size = PlateTemplate.find(params[:plate_template]["0"].to_i).size
     end
 
-    parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file],plate_size)
+    parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read,plate_size)
     @spreadsheet_layout = map_parsed_spreadsheet_to_plate(parsed_plate_details,@batch,plate_size)
 
     true
