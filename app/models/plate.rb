@@ -320,11 +320,13 @@ WHERE c.container_id=?
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, :class_name => "Plate", :conditions => {:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_lanes, :class_name => "Lane", :conditions => {:assets=>{:sti_type=>"Lane"}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
   has_many :tag_layouts
 
   scope :with_descendants_owned_by, ->(user) {
     joins(:descendant_plates => :plate_owner).
-    where(:plate_owners=>{:user_id=>user.id})
+    where(:plate_owners=>{:user_id=>user.id}).
+    uniq
   }
 
   scope :source_plates, -> {

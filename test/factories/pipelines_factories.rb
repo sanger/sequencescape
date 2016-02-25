@@ -216,6 +216,18 @@ previous_pipeline_id  nil
     end
   end
 
+  factory :library_completion, :class => IlluminaHtp::Requests::LibraryCompletion do |request|
+    request_type { |target| RequestType.find_by_name('Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
+    asset        { |target| target.association(:well_with_sample_and_plate) }
+    target_asset { |target| target.association(:empty_well) }
+    request_purpose
+    after(:build) do |request|
+      request.request_metadata.fragment_size_required_from = 300
+      request.request_metadata.fragment_size_required_to   = 500
+    end
+  end
+
+
   factory :pulldown_library_creation_pipeline do |p|
     name                  {|a| FactoryGirl.generate :pipeline_name }
     automated             false
@@ -230,6 +242,8 @@ previous_pipeline_id  nil
       pipeline.build_workflow(:name => pipeline.name, :locale => 'Internal')
     end
   end
+
+
 
   factory :task do |t|
     name                  "New task"

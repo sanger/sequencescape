@@ -39,6 +39,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, :class_name => 'Transfer::BetweenPlateAndTubes::WellToTube', :foreign_key => :transfer_id
+  has_many :destinations, through: :well_to_tubes, uniq: true
   scope :include_transfers, -> { includes( :well_to_tubes => DESTINATION_INCLUDES ) }
 
   def transfers
@@ -127,4 +128,9 @@ class Transfer::BetweenPlateAndTubes < Transfer
     destination.transfer_request_type_from(source)
   end
   private :request_type_between
+
+  def build_asset_links
+    AssetLink::Job.create(source, destinations)
+  end
+  private :build_asset_links
 end

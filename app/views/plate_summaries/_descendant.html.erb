@@ -40,5 +40,14 @@
       </td>
     </tr>
   <% end %>
-
+  <% descendant.qc_files.each do |qc_file| %>
+    <tr>
+      <th>
+        <%= qc_file.filename %>
+      </th>
+      <td>
+        <%= link_to "Download", qc_file_path(qc_file) %>
+      </td>
+    </tr>
+  <% end %>
 <% end %>

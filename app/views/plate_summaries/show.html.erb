@@ -16,6 +16,17 @@
          <th>Plate link</th>
          <td><%= link_to "Plate page", asset_path(@plate) %></td>
        </tr>
+       <tr>
+         <th>Sequencing batches</th>
+         <td><ul><% @sequencing_batches.each do |batch| %>
+                <li>
+                  <%= link_to "Batch #{batch.id}", batch_path(batch) %>
+                  (<%= link_to "Show in NPG", "#{configatron.run_data_by_batch_id_url}#{batch.id}" %>)
+                </li>
+                <% end %>
+              </ul>
+          </td>
+       </tr>
      </table>
    </div>
  </div>

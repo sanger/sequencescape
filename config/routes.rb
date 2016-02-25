@@ -599,6 +599,8 @@ Sequencescape::Application.routes.draw do
 
   resources :labwhere_receptions, :only => [:index, :create]
 
+  resources :qc_files, only: [:show]
+
   match '/:controller(/:action(/:id))'
 
 end
