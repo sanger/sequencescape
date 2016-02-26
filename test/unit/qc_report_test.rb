@@ -71,7 +71,7 @@ class QcReportTest < ActiveSupport::TestCase
         @current_criteria = create :product_criteria
         @other_criteria = create :product_criteria
 
-        @matching_report = create :qc_report, :study => @study, :exclude_existing => true, :product_criteria => @current_criteria
+        @matching_report = create :qc_report, :study => @study, :exclude_existing => true, :product_criteria => @current_criteria, :report_identifier => 'Override'
         @other_report   = create :qc_report, :study => @study, :exclude_existing => true, :product_criteria => @other_criteria
 
         @attribute = create :well_attribute, :measured_volume => 500, :concentration => 200
