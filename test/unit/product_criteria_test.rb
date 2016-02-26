@@ -13,7 +13,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     setup do
       @product_a = create :product
-      @criteria_a = create :product_criteria, :product => @product_a
+      @criteria_a = create :product_criteria, :product => @product_a, :configuration => {:total_micrograms=>{:greater_than=>50}}
     end
 
 
