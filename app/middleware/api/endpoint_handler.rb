@@ -29,7 +29,10 @@ module Api
           report("file") do
             filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[],1)||"unnamed_file"
             begin
+
               file = Tempfile.new(filename)
+              file.binmode
+              file.unlink
               file.write(request.body.read)
               # Be kind...
               file.rewind
