@@ -147,6 +147,22 @@ class Plate < Asset
       Comment.create(options.merge(:commentable=>plate))
     end
 
+    # By default rails treats sizes for grouped queries different to sizes
+    # for ungrouped queries. Unfortunately plates could end up performing either.
+    # Grouped return a hash, for which we want the length
+    # otherwise we get an integer
+    # We need to urgently revisit this, as this solution is horrible.
+    def size(*args)
+      s = super
+      return s.length if s.respond_to?(:length)
+      s
+    end
+    def count(*args)
+      s = super
+      return s.length if s.respond_to?(:length)
+      s
+    end
+
   end
 
   def comments
