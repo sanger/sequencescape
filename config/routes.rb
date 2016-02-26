@@ -215,7 +215,7 @@ Sequencescape::Application.routes.draw do
   match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
 
   resources :requests do
-    resources :comments
+    resources :comments, :controller => "requests/comments"
 
     member do
       get :history
