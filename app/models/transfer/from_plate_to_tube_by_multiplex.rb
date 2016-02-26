@@ -37,4 +37,11 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   end
   private :create_transfer_requests
 
+  def build_asset_links
+    destinations.each do |destination|
+      AssetLink.create_edge!(source, destination)
+    end
+  end
+  private :build_asset_links
+
 end

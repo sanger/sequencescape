@@ -34,7 +34,7 @@ class Transfer::BetweenTubesBySubmission < Transfer
   private :request_type_between
 
   def build_asset_links
-    AssetLink::Job.create(source, destination)
+    AssetLink::Job.create(source, [destination])
   end
   private :build_asset_links
 end
