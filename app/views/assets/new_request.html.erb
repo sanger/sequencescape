@@ -116,11 +116,11 @@
       handler();
 
       checkStudyHandler = function() {
-        var cross_study = ($('#cross_study_request')[0] === undefined) || $('#cross_study_request')[0].checked;
+        var cross_study = ($('#cross_study_request')[0] !== undefined) && $('#cross_study_request')[0].checked;
         $('#study_id').attr('disabled',cross_study);
       }
       checkProjectHandler = function() {
-        var cross_project = ($('#cross_project_request')[0] === undefined) || $('#cross_project_request')[0].checked;
+        var cross_project = ($('#cross_project_request')[0] !== undefined) && $('#cross_project_request')[0].checked;
         $('#project_id').attr('disabled',cross_project);
       }
       $('#cross_study_request').change(checkStudyHandler);

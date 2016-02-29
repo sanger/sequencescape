@@ -239,7 +239,7 @@ class AssetsController < ApplicationController
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
     @study = @asset.studies.first
-    @project = @asset.projects.first || @asset.studies.first.projects.first
+    @project = @asset.projects.first || @asset.studies.first && @asset.studies.first.projects.first
   end
 
   def create_request
