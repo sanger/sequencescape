@@ -22,7 +22,12 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
       params.fetch(decision,[]).each do |attribute,comparisons|
         value = fetch_attribute(attribute)
         values[attribute] = value
-        invalid(attribute,'%s has not been recorded',decision) && next if value.nil? && comparisons.present?
+
+        if value.blank? && comparisons.present?
+          invalid(attribute,'%s has not been recorded',decision)
+          next
+        end
+
         comparisons.each do |comparison,target|
           value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison),decision)
         end

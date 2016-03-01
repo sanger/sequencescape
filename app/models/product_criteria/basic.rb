@@ -78,7 +78,7 @@ class ProductCriteria::Basic
   # Return the sample gender, returns nil if it can't be determined
   # ie. mixed input, or not male/female
   def sample_gender
-    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender.downcase.strip }.uniq
+    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
     return nil if markers.count > 1
     GENDER_MARKER_MAPS[markers.first]
   end
@@ -111,6 +111,7 @@ class ProductCriteria::Basic
   def invalid(attribute,message)
     @passed = false
     @comment << message % attribute.to_s.humanize
+    @comment.uniq!
   end
 
   def assess!
@@ -118,7 +119,12 @@ class ProductCriteria::Basic
     params.each do |attribute,comparisons|
       value = fetch_attribute(attribute)
       values[attribute] = value
-      invalid(attribute,'%s has not been recorded') && next if value.nil? && comparisons.present?
+
+      if value.blank? && comparisons.present?
+        invalid(attribute,'%s has not been recorded')
+        next
+      end
+
       comparisons.each do |comparison,target|
         value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison))
       end
