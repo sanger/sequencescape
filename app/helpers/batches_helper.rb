@@ -50,17 +50,6 @@ module BatchesHelper
     batch.workflow.name.gsub(/Cluster formation | \([^\)]*\)/,'')
   end
 
-  def bootstrapify_batch_state(state)
-    {
-      'completed' => 'info',
-      'discarded' => 'default',
-      'failed' => 'danger',
-      'pending' => 'warning',
-      'released' => 'success',
-      'started' => 'primary'
-    }[state]||'default'
-  end
-
   def batch_link(batch,options)
     link_text = content_tag(:strong,"Batch #{batch.id} ") <<
     content_tag(:span,batch.pipeline.name,:class=>'pipline-name') << ' ' <<

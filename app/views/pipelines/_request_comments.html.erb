@@ -2,8 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2014 Genome Research Ltd.%>
 <td class='request' style='text-align: left' width='15%'><%= link_to (pluralize comments.count, 'comment'), request_comments_path(request) %>
-  <a href="#" onclick="Effect.SlideDown('comment_for_<%= "#{request.id}"%>'); return false;">+</a>
-  <a href="#" onclick="Effect.SlideUp('comment_for_<%= "#{request.id}"%>'); return false;">-</a>
+  <a class="toggle-comment" data-comment-field="#comment_for_<%= request.id %>">+/-</a>
   <div id="<%= "comment_for_#{request.id}" %>" style="display:none; text-align:center;">
     <div style='text-align: left'>
       <ul>
