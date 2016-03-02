@@ -3,10 +3,10 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class ProductCriteria::Basic
 
-  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity]
+  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity, :sequenom_count]
   SUPPORTED_SAMPLE = [:sanger_sample_id]
   SUPPORTED_SAMPLE_METADATA = [:gender, :sample_ebi_accession_number, :supplier_name]
-  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender]
+  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender, :well_location, :plate_barcode]
 
   PASSSED_STATE = 'passed'
   FAILED_STATE = 'failed'
@@ -59,6 +59,14 @@ class ProductCriteria::Basic
 
   def metrics
     values.merge({:comment => @comment.join(';')})
+  end
+
+  def well_location
+    @well_or_metric.map_description
+  end
+
+  def plate_barcode
+    @well_or_metric.plate.try(:sanger_human_barcode) || "Unknown"
   end
 
   SUPPORTED_SAMPLE.each do |attribute|
