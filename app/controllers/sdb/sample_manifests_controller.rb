@@ -86,6 +86,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   # Show the manifest
   def show
+    @samples = @sample_manifest.samples.paginate(:page => params[:page])
   end
 
   def index
