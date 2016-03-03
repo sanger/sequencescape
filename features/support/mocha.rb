@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.
 # This file is here to ensure that the mock objects get cleared down properly after each scenario.
-require "mocha"
+require "mocha/api"
 
 World(Mocha::API)
 
