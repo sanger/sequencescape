@@ -8,8 +8,11 @@
   var attachEvents;
 
   attachEvents = function(){
-    $('.toggle-comment').on('click',function(){
-      $(this.dataset.commentField).slideToggle();
+    $('.show-comment').on('click',function(){
+      $(this.dataset.commentField).slideDown();
+    })
+    $('.hide-comment').on('click',function(){
+      $(this.dataset.commentField).slideUp();
     })
   };
 

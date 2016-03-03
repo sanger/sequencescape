@@ -28,15 +28,6 @@ module BootstrapHelper
     end
   end
 
-  def bootstrapify(level)
-    {
-      'notice' => 'success','error' => 'danger',
-      'pending' => 'muted', 'started'=> 'primary',
-      'passed' => 'success', 'failed' => 'danger',
-      'cancelled' => 'warning'
-    }[level]||level
-  end
-
   # <div class="alert alert-warning" role="alert">
   #  block_content
   # </div>

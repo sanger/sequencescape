@@ -5,7 +5,12 @@ class Requests::CommentsController < ApplicationController
   before_filter :discover_request
 
   def index
-    @comments = @request.comments.all(:order => "created_at ASC")
+    @comments = @request.comments.order("created_at ASC")
+    if request.xhr?
+      render :partial => "simple_list", :locals => { :descriptions => @comments.pluck(:description) }
+    else
+      # Perform default
+    end
   end
 
   def create

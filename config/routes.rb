@@ -396,11 +396,8 @@ Sequencescape::Application.routes.draw do
   match 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
   match 'assets/receive_barcode' => 'assets#receive_barcode'
   match 'assets/import_from_snp' => 'assets#import_from_snp'
-  match 'assets/combine' => 'assets#combine'
-  match 'assets/get_plate_layout' => 'assets#get_plate_layout'
-  match 'assets/create_plate_layout' => 'assets#create_plate_layout'
-  match 'assets/make_plate_from_rack' => 'assets#make_plate_from_rack'
   match 'assets/find_by_barcode' => 'assets#find_by_barcode'
+
   match 'lab_view' => 'assets#lab_view', :as => :lab_view
 
   resources :families
