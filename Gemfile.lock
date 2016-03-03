@@ -90,6 +90,7 @@ GEM
       activesupport (>= 3.2.0)
       json (>= 1.7)
       mime-types (>= 1.16)
+    chronic (0.10.2)
     cliver (0.3.2)
     coderay (1.1.0)
     coffee-rails (3.2.2)
@@ -315,6 +316,8 @@ GEM
     websocket-driver (0.6.2-java)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
+    whenever (0.9.4)
+      chronic (>= 0.6.3)
     will_paginate (3.0.7)
     will_paginate-bootstrap (1.0.1)
       will_paginate (>= 3.0.3)
@@ -390,6 +393,7 @@ DEPENDENCIES
   treetop
   uglifier (>= 1.0.3)
   uuidtools
+  whenever
   will_paginate
   will_paginate-bootstrap
 

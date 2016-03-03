@@ -82,6 +82,9 @@ group :default do
   gem 'therubyrhino'
 
   gem 'uglifier', '>= 1.0.3'
+
+  # Whenever allows us to manage crons as part of Sequencescape
+  gem "whenever"
 end
 
 group :warehouse do
