@@ -159,8 +159,8 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         :project_metadata_attributes => {
           :project_cost_code => 'UATA',
           :project_funding_model => 'Internal',
-          :project_manager_id => ProjectManager.find_or_create_by_name('UAT manager').id,
-          :budget_division_id => BudgetDivision.find_or_create_by_name('UAT internal division').id
+          :project_manager_id => ProjectManager.find_or_create_by(name:'UAT manager').id,
+          :budget_division_id => BudgetDivision.find_or_create_by(name:'UAT internal division').id
         }
       )
       Project.create!(
@@ -171,8 +171,8 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         :project_metadata_attributes => {
           :project_cost_code => 'UATA',
           :project_funding_model => 'External',
-          :project_manager_id => ProjectManager.find_or_create_by_name('UAT manager').id,
-          :budget_division_id => BudgetDivision.find_or_create_by_name('UAT external division').id
+          :project_manager_id => ProjectManager.find_or_create_by(name:'UAT manager').id,
+          :budget_division_id => BudgetDivision.find_or_create_by(name:'UAT external division').id
         }
       )
 

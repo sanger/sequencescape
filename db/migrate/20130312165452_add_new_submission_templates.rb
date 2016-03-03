@@ -39,7 +39,7 @@ class AddNewSubmissionTemplates < ActiveRecord::Migration
       sequencing_requests.each do |sequencing_request|
         request_type_ids = cherrypick ? [[RequestType.find_by_key('cherrypick_for_illumina_b').id]] : []
         request_type_ids.concat(new_st[:middle_request_types]) << [RequestType.find_by_key(sequencing_request[:key]).id]
-        order_role_id = Order::OrderRole.find_or_create_by_role(new_st[:order_role]).id
+        order_role_id = Order::OrderRole.find_or_create_by(role:new_st[:order_role]).id
         yield({
           :name => "Illumina-B -#{cherrypick ? 'Cherrypicked -':''} #{new_st[:middle_name]} - #{sequencing_request[:name]}",
           :submission_class_name => 'LinearSubmission',

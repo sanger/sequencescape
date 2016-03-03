@@ -28,7 +28,7 @@ class Item < ActiveRecord::Base
   before_validation :set_version, :on => :create
 
   def set_version
-    things_with_same_name = self.class.all(:conditions => {:name => self.name, :workflow_id => self.workflow_id})
+    things_with_same_name = self.class.where(:name => self.name, :workflow_id => self.workflow_id)
     if things_with_same_name.empty?
       self.increment(:version)
     else

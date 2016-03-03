@@ -5,7 +5,7 @@ class PipelinesRequestType < ActiveRecord::Base; end
 
 class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
   LIB_PREP_REQUEST_TYPES = {
-    'Illumina-A' => [ 
+    'Illumina-A' => [
       'Cherrypicking for Pulldown',
       'Pulldown WGS',
       'Pulldown SC',
@@ -15,7 +15,7 @@ class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
   }
 
   def self.product_lined_request_type(product_line, request_type)
-    RequestType.find_or_create_by_key(
+    RequestType.find_or_create_by(key:
       {
       'key'          => product_lined_key(product_line, request_type),
       'name'         => "#{product_line.name} #{request_type.name}",
@@ -38,11 +38,11 @@ class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
 
       # Create new RequestTypes for the ProductLine
       prd_and_rtypes.each do |product_line, rtypes|
-        rtypes.each do |rt| 
+        rtypes.each do |rt|
           new_rtype = product_lined_request_type(product_line, rt)
 
           # Add new RequestTypes to matching pipelines
-          Pipeline.for_request_type(rt).each do |p| 
+          Pipeline.for_request_type(rt).each do |p|
             p.request_types << new_rtype
             say "Adding RequestType: #{new_rtype.name} to Pipeline: #{p.name}"
           end

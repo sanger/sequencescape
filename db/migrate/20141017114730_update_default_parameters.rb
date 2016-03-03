@@ -10,7 +10,7 @@ class UpdateDefaultParameters < ActiveRecord::Migration
       each_request_type_and_validators do |rt_key,validators|
         rt = RequestType.find_by_key!(rt_key)
         validators.each do |v|
-          rt.request_type_validators.find_or_create_by_request_option(v.option).tap do |validator|
+          rt.request_type_validators.find_or_create_by(request_option:v.option).tap do |validator|
             validator.valid_options = RequestType::Validator::ArrayWithDefault.new(v.values||validator.valid_options,v.default)
           end.save!
         end

@@ -63,7 +63,7 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |key, login|
-  User.find_or_create_by_login(login).update_attributes!(:api_key=>key)
+  User.find_or_create_by(login:login).update_attributes!(:api_key=>key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|

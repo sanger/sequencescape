@@ -27,7 +27,7 @@ class ProductCatalogue < ActiveRecord::Base
         product_assocations = products.map do |criterion,product_name|
           {
             :selection_criterion => criterion,
-            :product => Product.find_or_create_by_name(product_name)
+            :product => Product.find_or_create_by(name:product_name)
           }
         end
         self.create!(arguments) do |catalogue|

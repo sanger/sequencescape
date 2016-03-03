@@ -12,7 +12,7 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
           :workflow => "short_read_sequencing"
         }
       })
-      lt = LibraryType.find_or_create_by_name("HiSeqX PCR free")
+      lt = LibraryType.find_or_create_by(name:"HiSeqX PCR free")
       rt = RequestType.find_by_key("illumina_c_nopcr").library_types << lt
       ["illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |xtlb_name|
         RequestType.find_by_key(xtlb_name).library_types << lt

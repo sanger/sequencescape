@@ -63,8 +63,8 @@ module SubmissionSerializer
      st[key.to_sym] = hash[key.to_sym]
    end
 
-   st[:product_line_id] = ProductLine.find_or_create_by_name!(hash[:product_line]).id if hash[:product_line]
-   st[:product_catalogue_id]  = ProductCatalogue.find_or_create_by_name!(hash[:product_catalogue]).id if hash[:product_catalogue]
+   st[:product_line_id] = ProductLine.find_or_create_by(name!:hash[:product_line]).id if hash[:product_line]
+   st[:product_catalogue_id]  = ProductCatalogue.find_or_create_by(name!:hash[:product_catalogue]).id if hash[:product_catalogue]
    st[:superceded_by_id] = hash.has_key?(:superceded_by) ? SubmissionTemplate.find_by_name(hash[:superceded_by]).try(:id)||-2 : hash[:superceded_by_id]||-1
    st[:superceded_at] =  DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
 
@@ -82,7 +82,7 @@ module SubmissionSerializer
 
    sp[:request_type_ids_list] = ensp[:request_types].map {|rtk| [ RequestType.find_by_key!(rtk).id ] }
    sp[:workflow_id] = Submission::Workflow.find_by_key!(ensp[:workflow]).id if ensp[:workflow]
-   sp[:order_role_id] = Order::OrderRole.find_or_create_by_role(ensp[:order_role]).id if ensp[:order_role]
+   sp[:order_role_id] = Order::OrderRole.find_or_create_by(role:ensp[:order_role]).id if ensp[:order_role]
 
    SubmissionTemplate.create!(st)
  end

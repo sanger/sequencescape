@@ -17,7 +17,7 @@ Given /^user "(.*)" has a workflow "(.*)"$/ do |login, workflow_name|
 end
 
 Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |type_of_user, login|
-  wk = Submission::Workflow.first(:conditions => { :key => 'short_read_sequencing' }) or
+  wk = Submission::Workflow.where(:key => 'short_read_sequencing').first or
     raise 'Cannot find Next-gen sequencing workflow'
 
   @current_user = User.create!(

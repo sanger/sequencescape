@@ -5,7 +5,7 @@ class PipelinesRequestType < ActiveRecord::Base; end
 
 class CreateNewSequencingRequestTypes < ActiveRecord::Migration
   def self.product_lined_request_type(product_line, request_type)
-    RequestType.find_or_create_by_key(
+    RequestType.find_or_create_by(key:
       {
         'key'          => product_lined_key(product_line, request_type),
         'name'         => "#{product_line.name} #{request_type.name}",

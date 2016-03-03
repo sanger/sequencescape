@@ -19,7 +19,7 @@ module ControlRequestTypeCreation
   end
 
   def add_control_request_type
-      RequestType.find_or_create_by_key(key_name) do |crt|
+      RequestType.find_or_create_by(key:key_name) do |crt|
         crt.name               = control_type_name
         crt.request_class_name = 'ControlRequest'
         crt.multiples_allowed  = last_request_type.multiples_allowed

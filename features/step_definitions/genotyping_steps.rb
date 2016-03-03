@@ -54,7 +54,7 @@ end
 Given /^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/ do |plate_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
   plate = Plate.find_by_barcode(plate_barcode)
-  asset_group = AssetGroup.find_or_create_by_name_and_study_id(asset_group_name, study.id)
+  asset_group = AssetGroup.find_or_create_by(name:asset_group_name, study_id:study.id)
   plate.wells.each do |well|
     asset_group.assets << well
   end

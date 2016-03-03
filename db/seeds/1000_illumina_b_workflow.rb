@@ -207,7 +207,7 @@ re_request = RequestType.create!(
         :request_option => 'library_type',
         :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt.id)
       )
-      rt.library_types << LibraryType.find_or_create_by_name!("HiSeqX PCR free")
+      rt.library_types << LibraryType.find_or_create_by(name!:"HiSeqX PCR free")
     end
 
   RequestType.create!(

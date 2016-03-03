@@ -42,7 +42,7 @@ module User::Authentication
         authenticated = authenticate_by_local(login, password)
       end
       if authenticated
-        u = find_or_create_by_login(login)
+        u = find_or_create_by(login:login)
         if u.nil?
           logger.error "Failed to find or create user #{login}"
         else

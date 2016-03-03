@@ -117,7 +117,7 @@ libs_ribozero.each do |lib|
 end
 
 # PCR Free Hiseq X10 RequestTypeValidator
-lt = LibraryType.find_or_create_by_name!("HiSeqX PCR free")
+lt = LibraryType.find_or_create_by(name!:"HiSeqX PCR free")
 rt_pf = RequestType.find_by_key("htp_pcr_free_lib")
 rt_v = RequestType::Validator.create!(
   :request_type   => rt_pf,

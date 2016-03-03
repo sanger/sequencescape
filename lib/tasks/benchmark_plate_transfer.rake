@@ -3,9 +3,9 @@ namespace :benchmark do
 
     $stdout.puts "Preparing"
     stock = Purpose.find_by_name('Shear').create!
-    sample = Sample.find_or_create_by_name('test_sample')
-    stock.wells.each {|w| w.aliquots.create!(:sample=>sample, :study_id=>Study.find_or_create_by_name('test_study').id)}
-    user = User.find_or_create_by_login('test_user')
+    sample = Sample.find_or_create_by(name:'test_sample')
+    stock.wells.each {|w| w.aliquots.create!(:sample=>sample, :study_id=>Study.find_or_create_by(name:'test_study').id)}
+    user = User.find_or_create_by(login:'test_user')
     targets = []
 
     30.times do
