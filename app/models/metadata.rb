@@ -151,15 +151,24 @@ private
     end
 
     class << self
-      # We used to have memoization going on here, but unless I'm missing something there doesn't seem to be
-      # anything happening here that particularly merits it.
 
-      def metadata_attribute_path(field)
+      def metadata_attribute_path_store
+        @md_a_p ||= Hash.new {|h,field| h[field] = metadata_attribute_path_generator(field) }
+      end
+
+      def metadata_attribute_path_generator(field)
         self.name.underscore.split('/').map(&:to_sym) + [ field.to_sym ]
       end
 
-      # TODO: A Struct would be far more useful than an OpenStruct here!
-      def localised_sections(field)
+      def metadata_attribute_path(field)
+        metadata_attribute_path_store[field]
+      end
+
+      def localised_sections_store
+        @loc_sec ||= Hash.new {|h,field| h[field] = localised_sections_generator(field) }
+      end
+
+      def localised_sections_generator(field)
         Section.new(
           * (SECTION_FIELDS.map do |section|
             I18n.t(
@@ -171,6 +180,9 @@ private
         )
       end
 
+      def localised_sections(field)
+        localised_sections_store[field]
+      end
     end
   end
 end

@@ -61,9 +61,15 @@ class Well < Aliquot::Receptacle
       where(:aliquots=>{:study_id=>study})
   }
 
+  #
   scope :without_report, ->(product_criteria) {
-    joins(:qc_metrics => :product_criteria).
-    where(:qc_metrics => { :id=> nil},:product_criteria=>{:product_id=>product_criteria.product_id,:stage=>product_criteria.stage})
+    joins([
+      'LEFT OUTER JOIN qc_metrics AS wr_qcm ON wr_qcm.asset_id = assets.id',
+      'LEFT OUTER JOIN qc_reports AS wr_qcr ON wr_qcr.id = wr_qcm.qc_report_id',
+      'LEFT OUTER JOIN product_criteria AS wr_pc ON wr_pc.id = wr_qcr.product_criteria_id'
+    ]).
+    group('assets.id').
+    having("NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)",product_criteria.product_id,product_criteria.stage)
   }
 
   has_many :target_well_links,  ->() { where(sti_type:'stock') }, :class_name => 'Well::Link', :foreign_key => :source_well_id

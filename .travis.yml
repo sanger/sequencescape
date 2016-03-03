@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - jruby-19mode
+  - jruby-9.0.5.0
 bundler_args: --without warehouse development deployment
 before_install:
   - export TZ=Europe/London
@@ -8,4 +8,3 @@ before_script:
   - "bundle exec rake db:create RAILS_ENV=test"
   - "bundle exec rake db:test:load"
   - export CUCUMBER_FORMAT=progress
-  - export RUBY_OPT=--profile

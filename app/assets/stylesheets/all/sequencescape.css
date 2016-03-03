@@ -1,5 +1,10 @@
 /* This is the canonical CSS file for Sequencescape. */
 /* Please use it instead of screen.css which is deprecated. */
+a {
+  color: #0046BF;
+  text-decoration:none;
+  cursor: pointer;
+}
 
 /* Formats the tubes in the layout_tubes_on_plate task */
 .library_tube { margin:0.1em; padding:0.2em; background:#E3EEFC; border-radius:5px; }

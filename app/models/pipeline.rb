@@ -125,16 +125,14 @@ class Pipeline < ActiveRecord::Base
     group_requests( inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)))
   end
 
+  def grouped_requests(show_held_requests=true)
+    inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)).for_group_by(grouping_attributes)
+  end
+
   def inbox_scope_on(inbox_scope)
     custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
   end
   private :inbox_scope_on
-
-  def get_input_requests_for_group(group)
-    #TODO add named_scope to load only the required requests
-    key = hash_to_group_key(group)
-    get_input_request_groups[key]
-  end
 
   def hash_to_group_key(hash)
     if hash.is_a? Array
@@ -161,6 +159,14 @@ class Pipeline < ActiveRecord::Base
     end
   end
   private :grouping_function
+
+  def grouping_attributes
+    [].tap do |group_key|
+      group_key << 'hl.container_id' if group_by_parent?
+      group_key << 'requests.submission_id' if group_by_submission?
+    end
+  end
+  private :grouping_attributes
 
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})

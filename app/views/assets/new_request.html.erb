@@ -96,15 +96,15 @@
    */
   (function($, undefined) {
     $(function() {
-      request_type_element   = $('#request_type_id');
-      request_options        = $('.request_options');
+      var request_type_element   = $('#request_type_id');
+      var request_options        = $('.request_options');
 
       // Can't use ':input' selector as it ignores disabled inputs!
-      disable_inputs = function(context) { $('input,select,textarea', context).attr('disabled', true);  }
-      enable_inputs  = function(context) { $('input,select,textarea', context).attr('disabled', false); }
+      var disable_inputs = function(context) { $('input,select,textarea', context).attr('disabled', true);  }
+      var enable_inputs  = function(context) { $('input,select,textarea', context).attr('disabled', false); }
 
       handler = function() {
-        selected_request_type_id = $('option:selected', request_type_element).attr('value');
+        var selected_request_type_id = $('option:selected', request_type_element).attr('value');
 
         // Not only hide but disable inputs; not only show, but enable inputs.  If this isn't done
         // the parameters passed to the server are incorrect.
@@ -116,15 +116,15 @@
       handler();
 
       checkStudyHandler = function() {
-        var cross_study = $('#cross_study_request').attr('checked')=='checked';
+        var cross_study = ($('#cross_study_request')[0] !== undefined) && $('#cross_study_request')[0].checked;
         $('#study_id').attr('disabled',cross_study);
       }
       checkProjectHandler = function() {
-        var cross_project = $('#cross_project_request').attr('checked')=='checked';
+        var cross_project = ($('#cross_project_request')[0] !== undefined) && $('#cross_project_request')[0].checked;
         $('#project_id').attr('disabled',cross_project);
       }
-      $('#study_id').change(checkStudyHandler);
-      $('#project_id').change(checkProjectHandler);
+      $('#cross_study_request').change(checkStudyHandler);
+      $('#cross_project_request').change(checkProjectHandler);
       checkStudyHandler();
       checkProjectHandler();
     });

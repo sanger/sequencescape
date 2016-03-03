@@ -3,10 +3,10 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class ProductCriteria::Basic
 
-  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity]
+  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity, :sequenom_count]
   SUPPORTED_SAMPLE = [:sanger_sample_id]
   SUPPORTED_SAMPLE_METADATA = [:gender, :sample_ebi_accession_number, :supplier_name]
-  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender]
+  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender, :well_location, :plate_barcode]
 
   PASSSED_STATE = 'passed'
   FAILED_STATE = 'failed'
@@ -61,24 +61,32 @@ class ProductCriteria::Basic
     values.merge({:comment => @comment.join(';')})
   end
 
-  SUPPORTED_SAMPLE.each do |attribute|
-    delegate(attribute, :to => :sample)
+  def well_location
+    @well_or_metric.map_description
   end
 
-  delegate(:sample_metadata, :to => :sample)
+  def plate_barcode
+    @well_or_metric.plate.try(:sanger_human_barcode) || "Unknown"
+  end
 
   SUPPORTED_SAMPLE.each do |attribute|
-    delegate(attribute, :to => :sample_metadata)
+    delegate(attribute, :to => :sample, :allow_nil => true)
+  end
+
+  delegate(:sample_metadata, :to => :sample, :allow_nil => true)
+
+  SUPPORTED_SAMPLE_METADATA.each do |attribute|
+    delegate(attribute, :to => :sample_metadata, :allow_nil => true)
   end
 
   SUPPORTED_WELL_ATTRIBUTES.each do |attribute|
-    delegate(attribute, :to => :well_attribute)
+    delegate(attribute, :to => :well_attribute, :allow_nil => true)
   end
 
   # Return the sample gender, returns nil if it can't be determined
   # ie. mixed input, or not male/female
   def sample_gender
-    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender.downcase.strip }.uniq
+    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
     return nil if markers.count > 1
     GENDER_MARKER_MAPS[markers.first]
   end
@@ -111,6 +119,7 @@ class ProductCriteria::Basic
   def invalid(attribute,message)
     @passed = false
     @comment << message % attribute.to_s.humanize
+    @comment.uniq!
   end
 
   def assess!
@@ -118,7 +127,12 @@ class ProductCriteria::Basic
     params.each do |attribute,comparisons|
       value = fetch_attribute(attribute)
       values[attribute] = value
-      invalid(attribute,'%s has not been recorded') && next if value.nil? && comparisons.present?
+
+      if value.blank? && comparisons.present?
+        invalid(attribute,'%s has not been recorded')
+        next
+      end
+
       comparisons.each do |comparison,target|
         value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison))
       end

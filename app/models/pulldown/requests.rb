@@ -83,7 +83,6 @@ module Pulldown::Requests
       state :cancelled
 
       event :start       do transitions :to => :started,        :from => [:pending]                    end
-      event :nx_progress do transitions :to => :nx_in_progress, :from => [:pending, :started]          end
       event :pass        do transitions :to => :passed,         :from => [:nx_in_progress, :failed, :started, :pending]    end
       event :cancel      do transitions :to => :cancelled,      :from => [:started, :passed]           end
     end

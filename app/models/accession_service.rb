@@ -34,7 +34,7 @@ class AccessionService
             file.puts(acc.xml)
             file.open # reopen for read
 
-            Rails::logger.debug { file.lines.to_a.join("\n") }
+            Rails::logger.debug { file.each_line.to_a.join("\n") }
 
             {:name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
           end

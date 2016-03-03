@@ -23,7 +23,7 @@ class TransferRequest < SystemRequest
 
   redefine_aasm :column => :state do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
-    # as being more concise as it has less states.
+    # as being more concise as it has fewer states.
     state :pending, :initial => true
     state :started
     state :failed,	    :enter => :on_failed
@@ -45,7 +45,7 @@ class TransferRequest < SystemRequest
     end
 
     event :cancel do
-      transitions :to => :cancelled, :from => [:started, :passed]
+      transitions :to => :cancelled, :from => [:started, :passed, :qc_complete]
     end
 
     event :cancel_before_started do

@@ -13,6 +13,11 @@ table.sortable th:focus {
   outline: none;
 }
 
+/* Dense Information tables use smaller fonts */
+table.table-dense-information tbody {
+  font-size: smaller;
+}
+
 /* main-row encomasses the bulk of the application */
 .main-row { margin-bottom:10px; }
 

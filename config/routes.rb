@@ -209,7 +209,7 @@ Sequencescape::Application.routes.draw do
   match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
 
   resources :requests do
-    resources :comments
+    resources :comments, :controller => "requests/comments"
 
     member do
       get :history
@@ -391,10 +391,6 @@ Sequencescape::Application.routes.draw do
   get 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
   get 'assets/receive_barcode' => 'assets#receive_barcode'
   get 'assets/import_from_snp' => 'assets#import_from_snp'
-  get 'assets/combine' => 'assets#combine'
-  get 'assets/get_plate_layout' => 'assets#get_plate_layout'
-  get 'assets/create_plate_layout' => 'assets#create_plate_layout'
-  get 'assets/make_plate_from_rack' => 'assets#make_plate_from_rack'
   get 'assets/find_by_barcode' => 'assets#find_by_barcode'
   get 'lab_view' => 'assets#lab_view', :as => :lab_view
 

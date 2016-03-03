@@ -93,7 +93,7 @@ module IlluminaHtp::Requests
 
 
       event :start                 do transitions :to => :started, :from => [:pending] end
-      event :pass                  do transitions :to => :passed, :from => [:fx_transfer, :failed] end
+      event :pass                  do transitions :to => :passed, :from => [:pending,:fx_transfer, :failed] end
       event :fail                  do transitions :to => :failed, :from => [:pending, :started, :passed] end
       event :cancel                do transitions :to => :cancelled, :from => [:started, :passed] end
       event :cancel_before_started do transitions :to => :cancelled, :from => [:pending] end
@@ -152,7 +152,7 @@ module IlluminaHtp::Requests
       event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
       event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
       event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
+      event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc_complete]      end
     end
   end
 
