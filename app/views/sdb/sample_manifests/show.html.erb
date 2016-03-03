@@ -27,29 +27,15 @@
 <% end %>
 
 <% if @sample_manifest.barcodes %>
-  <h2>Barcodes</h2>
-  <ul>
-  <% @sample_manifest.barcodes.each do |barcode| %>
-    <li><%= barcode %></li>
+  
+  <%= bs_column do %>
+    <h2>Barcodes</h2>
+    <ul>
+    <% @sample_manifest.barcodes.each do |barcode| %>
+      <li><%= barcode %></li>
+    <% end %>
+    </ul>
   <% end %>
-  </ul>
 <% end %>
 
-<% if @sample_manifest.samples.size < 50 %>
-  <h2>Samples</h2>
-  <% @sample_manifest.samples.each do |sample| %>
-    <%= link_to "#{sample.sanger_sample_id} (#{sample.name})", sample_path(sample) %><br />
-  <% end %>
-<% else %>
-  <h3>Contains</h3>
-  <p>
-  <%= pluralize(@sample_manifest.count, @sample_manifest.asset_type) %>
-  </p>
-<% end %>
-
-<% if @sample_manifest.samples.size == 0 %>
-  <div class="help">
-    Samples may take a few minutes to be processed.
-  </div>
-<% end %>
-
+<%= render partial: "samples", locals: { samples: @samples} %>
