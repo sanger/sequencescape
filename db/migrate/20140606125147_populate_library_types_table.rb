@@ -13,7 +13,7 @@ class PopulateLibraryTypesTable < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      LibraryType.find_all_by_name(existing_library_types).each(&:destroy)
+      LibraryType.where(name: existing_library_types).each(&:destroy)
     end
   end
 

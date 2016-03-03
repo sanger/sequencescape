@@ -74,7 +74,7 @@ class RequestEventTest < ActiveSupport::TestCase
         setup do
           @old_request_id = @request.id
           @request.destroy
-          @destroyed_ids = RequestEvent.find_all_by_event_name('destroyed').map(&:request_id)
+          @destroyed_ids = RequestEvent.where(event_name: 'destroyed').map(&:request_id)
         end
 
         should 'record a destroy RequestEvent for each request' do

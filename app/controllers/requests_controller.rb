@@ -67,7 +67,7 @@ class RequestsController < ApplicationController
 
   def edit
     @request = Request.find(params[:id])
-    @request_types = RequestType.find_all_by_asset_type(@request.request_type.asset_type)
+    @request_types = RequestType.where(asset_type: @request.request_type.asset_type)
     if current_user.is_administrator?
       respond_to do |format|
         format.html

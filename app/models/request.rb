@@ -380,7 +380,7 @@ class Request < ActiveRecord::Base
   end
 
   def lab_events_for_batch(batch)
-    self.lab_events.find_all_by_batch_id(batch.id)
+    self.lab_events.where(batch_id: batch.id)
   end
 
   def event_with_key_value(k, v = nil)

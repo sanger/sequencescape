@@ -175,7 +175,7 @@ module IlluminaHtp::PlatePurposes
 
     def destroy_tube_purposes
       self::TUBE_PURPOSE_FLOWS.each do |flow|
-        Tube::Purpose.find_all_by_name(flow.flatten).map(&:destroy)
+        Tube::Purpose.where(name: flow.flatten).map(&:destroy)
       end
     end
 
@@ -210,7 +210,7 @@ module IlluminaHtp::PlatePurposes
 
     def destroy_plate_purposes
       self::PLATE_PURPOSE_FLOWS.each do |flow|
-        PlatePurpose.find_all_by_name(flow.flatten).map(&:destroy)
+        PlatePurpose.where(name: flow.flatten).map(&:destroy)
       end
     end
 

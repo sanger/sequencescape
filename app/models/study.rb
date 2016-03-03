@@ -155,7 +155,7 @@ class Study < ActiveRecord::Base
   scope :for_listing, ->()  { select('name, id') }
 
   def each_well_for_qc_report(exclude_existing,product_criteria)
-    base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate'])).
+    base_scope = Well.on_plate_purpose(PlatePurpose.where(name: ['Stock Plate','Stock RNA Plate'])).
       for_study_through_aliquot(self).
       without_blank_samples
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope

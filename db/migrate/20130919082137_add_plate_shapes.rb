@@ -27,7 +27,7 @@ class AddPlateShapes < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      AssetShape.find_all_by_name(['Standard','Fluidigm96','Fluidigm192'])
+      AssetShape.where(name: ['Standard','Fluidigm96','Fluidigm192'])
     end
   end
 end

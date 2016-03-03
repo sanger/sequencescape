@@ -5,11 +5,11 @@ class MoveIlluminaAAndBLabwareToNewFreezerLocation < ActiveRecord::Migration
 
   def self.plate_purposes
     names = IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten.concat(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
-    PlatePurpose.find_all_by_name(names)
+    PlatePurpose.where(name: names)
   end
 
   def self.stock_plate_purposes
-    PlatePurpose.find_all_by_name([IlluminaB::PlatePurposes::STOCK_PLATE_PURPOSE,IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE])
+    PlatePurpose.where(name: [IlluminaB::PlatePurposes::STOCK_PLATE_PURPOSE,IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE])
   end
 
   def self.freezer

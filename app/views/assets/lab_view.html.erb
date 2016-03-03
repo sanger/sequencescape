@@ -13,8 +13,8 @@
       <tr><td>Barcode: </td><td><%= @asset.barcode %></td></tr>
       <tr><td>Location: </td><td><%= @asset.location.nil? ? 'Not known' : @asset.location.name %></td></tr>
       <tr><td>Batches: </td></tr>
-      <% requests = Request.find_all_by_asset_id(@asset.id) %>
-      <% requests << Request.find_all_by_target_asset_id(@asset.id) %>
+      <% requests = Request.where(asset_id: @asset.id) %>
+      <% requests << Request.where(target_asset_id: @asset.id) %>
       <% requests.flatten.each do |request| %>
         <% request.batches.each do |batch| %>
           <tr><td></td><td><%= link_to "#{batch.id} - #{batch.pipeline.name}", :controller => :batches, :action => :show, :id => batch.id %></td><tr/>

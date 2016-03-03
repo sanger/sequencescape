@@ -12,7 +12,7 @@ module SequencingQcPipeline
   end
 
   def cluster_formation_pipeline_id
-    Pipeline.find_all_by_sti_type("SequencingPipeline").map(&:id)
+    Pipeline.where(sti_type: "SequencingPipeline").map(&:id)
   end
 
   def qc_pending_auto_batches

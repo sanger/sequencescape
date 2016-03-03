@@ -76,7 +76,7 @@ class WorkflowsController < ApplicationController
   def batches
     @workflow = LabInterface::Workflow.find(params[:id])
     #TODO association broken here - something to do with the attachables polymorph?
-    @batches = Batch.find_all_by_workflow_id(@workflow.id).sort_by {|batch| batch.id}.reverse
+    @batches = Batch.where(workflow_id: @workflow.id).sort_by {|batch| batch.id}.reverse
   end
 
   def create

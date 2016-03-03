@@ -315,12 +315,12 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           end
 
           should "create 2 library requests" do
-            lib_requests = Request.find_all_by_submission_id_and_request_type_id(@submission_with_multiplication_factor, @lib_request_type.id)
+            lib_requests = Request.where(submission_id_and_request_type_id: @submission_with_multiplication_factor, @lib_request_type.id)
             assert_equal 2, lib_requests.size
           end
 
           should "create 10 sequencing requests" do
-            seq_requests = Request.find_all_by_submission_id_and_request_type_id(@submission_with_multiplication_factor, @pe_request_type.id)
+            seq_requests = Request.where(submission_id_and_request_type_id: @submission_with_multiplication_factor, @pe_request_type.id)
             assert_equal 10, seq_requests.size
           end
         end

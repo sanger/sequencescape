@@ -160,7 +160,7 @@ class AssignTagsToWellsTask < Task
   end
 
   def find_sequencing_requests(pulldown_requests)
-    Request.find_all_by_submission_id(pulldown_requests.first.submission_id).select{ |sequencing_request| sequencing_request.is_a?(SequencingRequest) }
+    Request.where(submission_id: pulldown_requests.first.submission_id).select{ |sequencing_request| sequencing_request.is_a?(SequencingRequest) }
   end
 
   def link_pulldown_indexed_libraries_to_multiplexed_library(requests)

@@ -25,7 +25,7 @@ class AddHistoricEvents < ActiveRecord::Migration
     # Strictly speaking we don't need these yet, but it ensures consistency with start events
     # If we made start events Xten only it would be a pain
     say 'Adding MX Library complete'
-    mx_library_purpose_id = Purpose.find_all_by_name(['Lib Pool Norm','Lib Pool SS-XP-Norm']).map(&:id)
+    mx_library_purpose_id = Purpose.where(name: ['Lib Pool Norm','Lib Pool SS-XP-Norm']).map(&:id)
 
     ActiveRecord::Base.transaction do
       StateChange.find_each(:joins=>:target,:conditions=>{:target_state=>'passed',:assets=>{:plate_purpose_id=>mx_library_purpose_id}}) do |sc|
@@ -43,7 +43,7 @@ class AddHistoricEvents < ActiveRecord::Migration
     end
 
     say 'Adding Plate Library complete'
-    plate_library_purpose_id = Purpose.find_all_by_name('Lib Norm 2')
+    plate_library_purpose_id = Purpose.where(name: 'Lib Norm 2')
     ActiveRecord::Base.transaction do
       StateChange.find_each(:joins=>:target,:conditions=>{:target_state=>'passed',:assets=>{:plate_purpose_id=>plate_library_purpose_id}}) do |sc|
         print ','
@@ -65,7 +65,7 @@ class AddHistoricEvents < ActiveRecord::Migration
     end
 
     say 'Adding Sequencing'
-    pipeline = Pipeline.find_all_by_name(['HiSeq X PE (no controls)','HiSeq X PE (spiked in controls)','HiSeq X PE (spiked in controls) from strip-tubes'])
+    pipeline = Pipeline.where(name: ['HiSeq X PE (no controls)','HiSeq X PE (spiked in controls)','HiSeq X PE (spiked in controls) from strip-tubes'])
     ActiveRecord::Base.transaction do
       SequencingPipeline.find_each do |pipeline|
         pipeline.batches.find_each(:conditions=>'state != "pending" OR state != "discarded"') do |batch|

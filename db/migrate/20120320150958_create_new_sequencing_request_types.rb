@@ -20,7 +20,7 @@ class CreateNewSequencingRequestTypes < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      Pipeline.find_all_by_sti_type('SequencingPipeline').each do |sequencing_pipeline|
+      Pipeline.where(sti_type: 'SequencingPipeline').each do |sequencing_pipeline|
         existing_request_type = sequencing_pipeline.request_types.last
 
         ProductLine.all.each do |product_line|

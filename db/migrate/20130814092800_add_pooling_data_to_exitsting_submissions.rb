@@ -5,7 +5,7 @@ class AddPoolingDataToExitstingSubmissions < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
 
-      rids=RequestType.find_all_by_key(['illumina_a_isc','pulldown_isc','illumina_a_pulldown_isc']).map(&:id).join(',')
+      rids=RequestType.where(key: ['illumina_a_isc','pulldown_isc','illumina_a_pulldown_isc']).map(&:id).join(',')
 
       Submission.find_each({
         :select => 'DISTINCT submissions.id',

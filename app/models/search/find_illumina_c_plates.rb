@@ -13,7 +13,7 @@ class Search::FindIlluminaCPlates < Search
 
   def illumina_c_plate_purposes
     names = IlluminaC::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten
-    PlatePurpose.find_all_by_name(names)
+    PlatePurpose.where(name: names)
   end
   private :illumina_c_plate_purposes
 

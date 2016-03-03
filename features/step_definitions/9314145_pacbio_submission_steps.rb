@@ -128,13 +128,13 @@ end
 
 Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |number_of_requests, asset_barcode, state|
   library_tube = PacBioLibraryTube.find_by_barcode(asset_barcode)
-  assert_equal number_of_requests.to_i, PacBioSequencingRequest.find_all_by_asset_id_and_state(library_tube.id,state).count
+  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.id,state:state).count
 end
 
 Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asset_barcode, state|
   plate_barcode, location = asset_barcode.split(':')
   well = Plate.find_by_barcode(plate_barcode.gsub(/[A-Z]/,'')).wells.located_at(location).first
-  assert_equal 1, PacBioSamplePrepRequest.find_all_by_asset_id_and_state(well.id,state).count
+  assert_equal 1, PacBioSamplePrepRequest.where(asset_id: well.id, state: state).count
 end
 
 Then /^the plate layout should look like:$/ do |expected_results_table|

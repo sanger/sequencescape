@@ -4,7 +4,7 @@
 class AddReadLength300ToExistingTemplates < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      SubmissionTemplate.find_all_by_name(templates).each do |template|
+      SubmissionTemplate.where(name: templates).each do |template|
         sub_params = template.submission_parameters
         sub_params[:input_field_infos].each do |field|
           next unless field.display_name == "Read length"
@@ -17,7 +17,7 @@ class AddReadLength300ToExistingTemplates < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      SubmissionTemplate.find_all_by_name(templates).each do |template|
+      SubmissionTemplate.where(name: templates).each do |template|
         sub_params = template.submission_parameters
         sub_params[:input_field_infos].each do |field|
           next unless field.display_name == "Read length"

@@ -43,7 +43,7 @@ class AddCherrypickForFluidigmPipeline < ActiveRecord::Migration
         :summary => true,
         :group_name => 'Sample Logistics',
         :workflow => liw,
-        :request_types => RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_fluidigm']),
+        :request_types => RequestType.where(key: ['pick_to_sta','pick_to_sta2','pick_to_fluidigm']),
         :control_request_type_id => 0,
         :max_size => 192
       ) do |pipeline|

@@ -6,7 +6,7 @@ module Batch::TecanBehaviour
     return false if user_id.nil?
     return false if requests.nil? || requests.size == 0
 
-    requests.find_all_by_state("passed").each do |request|
+    requests.where(state: "passed").each do |request|
       next unless request.target_asset.plate.barcode == target_barcode
       return false unless Well.find(request.asset).valid_well_on_plate
       return false unless Well.find(request.target_asset).valid_well_on_plate

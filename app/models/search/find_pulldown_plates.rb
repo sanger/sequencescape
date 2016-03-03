@@ -9,7 +9,7 @@ class Search::FindPulldownPlates < Search
   end
 
   def pulldown_plate_purposes
-    PlatePurpose.find_all_by_name(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
+    PlatePurpose.where(name: Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
   end
   private :pulldown_plate_purposes
 end

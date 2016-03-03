@@ -84,7 +84,7 @@ module Authorization
           end
           begin
             authorizable_class.find(
-              self.roles.find_all_by_authorizable_type(authorizable_class.base_class.to_s).map(&:authorizable_id).uniq
+              self.roles.where(authorizable_type: authorizable_class.base_class.to_s).map(&:authorizable_id).uniq
             )
           rescue ActiveRecord::RecordNotFound
             []

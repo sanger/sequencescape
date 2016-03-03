@@ -12,7 +12,7 @@ class Search::FindIlluminaAPlates < Search
   end
 
   def illumina_a_plate_purposes
-    PlatePurpose.find_all_by_name(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
+    PlatePurpose.where(name: IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
   end
   private :illumina_a_plate_purposes
 

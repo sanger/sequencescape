@@ -17,12 +17,12 @@ class Search::FindIlluminaBTubes < Search
   end
 
   def self.illumina_b_tube_purposes
-    Tube::Purpose.find_all_by_name(IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.flatten)
+    Tube::Purpose.where(name: IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.flatten)
   end
   delegate :illumina_b_tube_purposes, :to => 'self.class'
 
   def self.illumina_b_final_tube_purpose
-    Tube::Purpose.find_all_by_name(IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.map(&:last))
+    Tube::Purpose.where(name: IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.map(&:last))
   end
   delegate :illumina_b_final_tube_purpose, :to => 'self.class'
 

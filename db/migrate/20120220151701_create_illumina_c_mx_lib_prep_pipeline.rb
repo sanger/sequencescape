@@ -90,8 +90,8 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
 
       LabInterface::Workflow.find_by_name('Illumina-C MX Library Preparation').destroy
 
-      PipelineRequestInformationType.find_all_by_pipeline_id(pipeline.id).each(&:destroy)
-      RequestType.find_all_by_key('illumina_c_multiplexed_library_creation').each(&:destroy)
+      PipelineRequestInformationType.where(pipeline_id: pipeline.id).each(&:destroy)
+      RequestType.where(key: 'illumina_c_multiplexed_library_creation').each(&:destroy)
 
       pipeline.destroy
     end

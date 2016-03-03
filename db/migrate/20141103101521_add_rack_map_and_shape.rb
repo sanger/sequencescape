@@ -16,7 +16,7 @@ class AddRackMapAndShape < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       AssetShape.find_by_name('StripTubeRack').tap do |shape|
-        Map.find_all_by_shape(shape).each(&:destroy)
+        Map.where(shape: shape).each(&:destroy)
         shape.destroy
       end
     end

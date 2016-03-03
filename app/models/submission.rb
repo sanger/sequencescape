@@ -152,7 +152,7 @@ class Submission < ActiveRecord::Base
   def multiplex_started_passed
     multiplex_started_passed_result = false
     if self.multiplexed?
-      requests = Request.find_all_by_submission_id(self.id)
+      requests = Request.where(submission_id: self.id)
       states = requests.map(&:state).uniq
       if ( states.include?("started") || states.include?("passed") )
         multiplex_started_passed_result = true

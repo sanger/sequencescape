@@ -27,7 +27,7 @@ class CorrectQuotaDiscrepencies < ActiveRecord::Migration
   end
 
   def self.each_quota_for(request_type)
-    Quota.find_all_by_request_type_id(request_type.id).each {|q| yield q}
+    Quota.where(request_type_id: request_type.id).each {|q| yield q}
   end
 
   def self.adjust_by(old_quota,adjustment)

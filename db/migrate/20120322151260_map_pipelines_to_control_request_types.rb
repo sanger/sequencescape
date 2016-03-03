@@ -26,7 +26,7 @@ class MapPipelinesToControlRequestTypes < ActiveRecord::Migration
     def down
       remove_column(:pipelines, :control_request_type_id)
       say "Removing Control RequestTypes"
-      RequestType.find_all_by_request_class_name(ControlRequest.to_s).each(&:destroy)
+      RequestType.where(request_class_name: ControlRequest.to_s).each(&:destroy)
     end
   end
 end

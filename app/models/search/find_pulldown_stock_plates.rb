@@ -3,7 +3,7 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class Search::FindPulldownStockPlates < Search::FindPulldownPlates
   def pulldown_plate_purposes
-    PlatePurpose.find_all_by_name(Pulldown::PlatePurposes::STOCK_PLATE_PURPOSES)
+    PlatePurpose.where(name: Pulldown::PlatePurposes::STOCK_PLATE_PURPOSES)
   end
   private :pulldown_plate_purposes
 end

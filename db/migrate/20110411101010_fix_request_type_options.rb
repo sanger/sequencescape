@@ -7,7 +7,7 @@ class FixRequestTypeOptions < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      Submission.find_all_by_request_options("--- []\n\n").each do |submission|
+      Submission.where(request_options: "--- []\n\n").each do |submission|
         if submission.request_options.blank?
           submission.request_options = nil
           submission.save!

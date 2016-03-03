@@ -9,7 +9,7 @@ module StudyReport::StudyDetails
     handle_wells(
       "INNER JOIN requests ON requests.asset_id=assets.id",
       "requests.initial_study_id",
-      PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate']).map(&:id),
+      PlatePurpose.where(name: ['Stock Plate','Stock RNA Plate']).map(&:id),
       &block
     )
 
@@ -17,7 +17,7 @@ module StudyReport::StudyDetails
     handle_wells(
       "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
       "aliquots.study_id",
-      PlatePurpose.find_all_by_name(['Aliquot 1','Aliquot 2','Aliquot 3','Aliquot 4','Aliquot 1']).map(&:id),
+      PlatePurpose.where(name: ['Aliquot 1','Aliquot 2','Aliquot 3','Aliquot 4','Aliquot 1']).map(&:id),
       &block
     )
   end

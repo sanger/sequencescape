@@ -14,7 +14,7 @@ class BatchesController < ApplicationController
   def index
     if logged_in?
       @user = current_user
-      assigned_batches = Batch.find_all_by_assignee_id(@user.id)
+      assigned_batches = Batch.where(assignee_id: @user.id)
       @batches = (@user.batches + assigned_batches).sort_by {|batch| batch.id}.reverse
     else
       # not reachable !!! if not login redirect to login

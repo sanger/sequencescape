@@ -45,7 +45,7 @@ LibraryType.create!([
 
 RequestType.find_each do |request_type|
 
-  library_types = LibraryType.find_all_by_name(SetupLibraryTypes.existing_associations_for(request_type))
+  library_types = LibraryType.where(name: SetupLibraryTypes.existing_associations_for(request_type))
 
   if library_types.present?
     library_types.each do |library_type|

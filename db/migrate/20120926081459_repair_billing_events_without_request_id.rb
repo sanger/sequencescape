@@ -19,7 +19,7 @@ class RepairBillingEventsWithoutRequestId < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       BillingEvent.do_not_record_timestamps do
 
-        BillingEvent.find_all_by_request_id(nil).each do |billing_event|
+        BillingEvent.where(request_id: nil).each do |billing_event|
           request_match = /RT*([0-9]*)/.match(billing_event.reference)
 
           raise "#{billing_event.reference} is in unexpected reference format and has not been repaired. Aborting." if request_match.nil?

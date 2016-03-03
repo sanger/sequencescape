@@ -34,7 +34,7 @@ class PopulatePlateCreators < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      PlatePurpose.find_all_by_qc_display(true).each do |plate_purpose|
+      PlatePurpose.where(qc_display: true).each do |plate_purpose|
         PlateCreator.create!(:plate_purpose => plate_purpose, :name => plate_purpose.name).tap do |creator|
           creator.plate_purposes = plate_purpose.child_plate_purposes
         end

@@ -13,7 +13,7 @@ class AddXtenSpeciesValidation < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      ExtendedValidator.find_all_by_behaviour('SpeciesValidator').each do |ev|
+      ExtendedValidator.where(behaviour: 'SpeciesValidator').each do |ev|
         ev.destroy if ev.options == {:taxon_id=>9606}
       end
     end

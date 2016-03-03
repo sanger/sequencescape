@@ -36,7 +36,7 @@ class AddFluidigmSubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.down
-    SubmissionTemplate.find_all_by_name(['Cherrypick for Fluidigm 96:96','Cherrypick for Fluidigm 192:24']).map(&:destroy)
+    SubmissionTemplate.where(name: ['Cherrypick for Fluidigm 96:96','Cherrypick for Fluidigm 192:24']).map(&:destroy)
   end
 end
 

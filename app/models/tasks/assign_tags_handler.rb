@@ -15,7 +15,7 @@ module Tasks::AssignTagsHandler
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
       return false
     end
-    if MultiplexedLibraryTube.find_all_by_name(params[:mx_library_name]).size > 0
+    if MultiplexedLibraryTube.where(name: params[:mx_library_name]).size > 0
       flash[:warning] = "Name already in use."
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
       return false

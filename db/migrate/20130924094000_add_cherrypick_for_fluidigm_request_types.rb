@@ -45,7 +45,7 @@ class AddCherrypickForFluidigmRequestTypes < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_fluidigm']).each(&:destroy)
+      RequestType.where(key: ['pick_to_sta','pick_to_sta2','pick_to_fluidigm']).each(&:destroy)
     end
   end
 end

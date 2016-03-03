@@ -59,7 +59,7 @@ class AddLibraryTypesIllC < ActiveRecord::Migration
   end
 
   def self.clear_library_types(request_class_symbol)
-    library_types = LibraryType.find_all_by_name(library_type_names(request_class_symbol))
+    library_types = LibraryType.where(name: library_type_names(request_class_symbol))
     unless library_types.empty?
       request_type = RequestType.find_by_key(request_class_symbol.to_s)
       unless request_type.nil?

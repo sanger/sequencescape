@@ -5,7 +5,7 @@ class UpdateDefaultPlateLocations < ActiveRecord::Migration
 
   def self.plate_purposes
     names = IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten.concat(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
-    PlatePurpose.find_all_by_name(names)
+    PlatePurpose.where(name: names)
   end
 
 

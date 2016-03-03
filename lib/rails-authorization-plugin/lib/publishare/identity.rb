@@ -79,9 +79,9 @@ module Authorization
 
         def has_role_for_objects(role_name, type)
           if type.nil?
-            roles = self.roles.find_all_by_name( role_name )
+            roles = self.roles.where(name:  role_name )
           else
-            roles = self.roles.find_all_by_authorizable_type_and_name( type.name, role_name )
+            roles = self.roles.where(authorizable_type:  type.name, name:role_name )
           end
           roles.collect do |role|
             if role.authorizable_id.nil?
@@ -103,11 +103,11 @@ module Authorization
           if method_name =~ /^has_(\w+)\?$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact
-            self.accepted_roles.find_all_by_name(roles, :include => :users).any? { |role| role.users.compact.any? }
+            self.accepted_roles.where(name: roles, :include => :users).any? { |role| role.users.compact.any? }
           elsif method_name =~ /^has_(\w+)$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact
-            users = self.accepted_roles.find_all_by_name(roles, :include => :users).collect { |role| role.users }
+            users = self.accepted_roles.where(name: roles, :include => :users).collect { |role| role.users }
             users.flatten.compact.uniq if users
           else
             super
