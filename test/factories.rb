@@ -6,7 +6,7 @@ require 'factory_girl'
 FactoryGirl.define do
 
   factory  :comment  do
-    description
+    description 'It is okay I guess'
   end
 
   factory :aliquot do

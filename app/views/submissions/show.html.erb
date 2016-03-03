@@ -56,7 +56,7 @@ end %>
 <% if @presenter.submission.cancellable? %>
 <%= form_for(@presenter,
      :url => { :id=> @presenter.submission.id, :action => :cancel }, :as => :submission) do |f| %>
-  <%= submit_tag "&varnothing; Cancel Submission",
+  <%= submit_tag "✖ Cancel Submission",
   :style=>'
   ',
   :id       => "cancel-submission",

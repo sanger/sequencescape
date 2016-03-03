@@ -32,7 +32,6 @@ class PipelinesController < ApplicationController
 
     @batches = @last_5_batches = @pipeline.batches.latest_first.includes_for_ui
 
-
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types
       @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
@@ -41,9 +40,14 @@ class PipelinesController < ApplicationController
         # We use the inbox presenter
         @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline,current_user,@show_held_requests)
       elsif @pipeline.group_by_submission?
-        @grouped_requests  = @pipeline.requests.inbox(@show_held_requests,@current_page).group_by(&:submission_id)
+        requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        @grouped_requests  = requests.group_by(&:submission_id)
+        @requests_comment_count = Comment.counts_for(requests)
+        @assets_comment_count = Comment.counts_for(requests.map(&:asset))
       else
         @requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        @requests_comment_count = Comment.counts_for(@requests)
+        @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
       end
     end
   end
