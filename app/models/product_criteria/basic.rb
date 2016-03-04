@@ -102,7 +102,7 @@ class ProductCriteria::Basic
   end
 
   def sample
-    @well_or_metric.sample
+    @well_or_metric.samples.first
   end
 
   def conflicting_marker?(marker)
