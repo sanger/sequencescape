@@ -151,7 +151,6 @@ private
     end
 
     class << self
-      extend ActiveSupport::Memoizable
 
       def metadata_attribute_path_store
         @md_a_p ||= Hash.new {|h,field| h[field] = metadata_attribute_path_generator(field) }
