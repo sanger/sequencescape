@@ -12,7 +12,7 @@ class AssetLink < ActiveRecord::Base
   class BuilderJob < Struct.new(:links)
     def perform
       ActiveRecord::Base.transaction do
-        links.map { |parent,child| AssetLink.create!(:ancestor_id => parent, :descendant_id => child) }
+        links.map { |parent,child| AssetLink.create_edge(:ancestor_id => parent, :descendant_id => child) }
       end
     end
 
