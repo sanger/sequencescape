@@ -287,7 +287,7 @@ class StudiesController < ApplicationController
      flash[:error] = 'Please fill in the required fields'
      render(:action => :edit)
    rescue AccessionService::NumberNotRequired => exception
-     flash[:warning] = 'An accession number is not required for this study'
+     flash[:warning] = exception.message || 'An accession number is not required for this study'
      redirect_to(study_path(@study))
    rescue AccessionService::NumberNotGenerated => exception
      flash[:warning] = 'No accession number was generated'

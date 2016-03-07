@@ -607,9 +607,11 @@ class Study < ActiveRecord::Base
 
   def accession_service
     if data_release_strategy == "open"
-      return EraAccessionService.new
+      EraAccessionService.new
     elsif data_release_strategy == "managed"
-      return EgaAccessionService.new
+      EgaAccessionService.new
+    else
+      NoAccessionService.new(self)
     end
   end
 
