@@ -37,7 +37,7 @@ class QcReportTest < ActiveSupport::TestCase
 
         @qc_report = create :qc_report, :study => @study
         @qc_metric_count = QcMetric.count
-        @qc_report.generate!
+        @qc_report.generate_without_delay!
       end
 
       should 'generate qc_metrics per sample' do
@@ -98,7 +98,7 @@ class QcReportTest < ActiveSupport::TestCase
 
         @qc_report = create :qc_report, :study => @study, :exclude_existing => true, :product_criteria => @current_criteria
         @qc_metric_count = QcMetric.count
-        @qc_report.generate!
+        @qc_report.generate_without_delay!
       end
 
       should 'generate qc_metrics per sample which needs them' do
@@ -121,7 +121,7 @@ class QcReportTest < ActiveSupport::TestCase
 
     should 'follow expected state machine' do
       assert_equal 'queued', @qc_report.state
-      @qc_report.generate!
+      @qc_report.generate_without_delay!
       assert_equal 'generating', @qc_report.state
       @qc_report.generation_complete!
       assert_equal 'awaiting_proceed', @qc_report.state
