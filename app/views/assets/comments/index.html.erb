@@ -13,6 +13,6 @@
 
 <div>
   <p>Type your comment:</p>
-  <%= form_remote_tag(:url => asset_comments_path(@asset), :update => "asset_annotations_#{@asset.id}") %>
+  <%= form_tag(:url => asset_comments_path(@asset), :remote => true, :update => "asset_annotations_#{@asset.id}") %>
   <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
 </div>

@@ -42,7 +42,7 @@ class SubmissionsController < ApplicationController
 
     flash[:error] = "The submission could not be built: #{@presenter.submission.errors.full_messages}" if @presenter.submission.errors.present?
 
-    render :show
+    redirect_to @presenter.submission
   end
 
   def change_priority

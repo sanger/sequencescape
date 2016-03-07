@@ -30,7 +30,7 @@
   Assign this batch to another user
   </div>
   <div>
-    <% form_for :assignee, :url => {:action => "assign_batch", :id => @batch} do |form| -%>
+    <%= form_for :assignee, :url => {:action => "assign_batch", :id => @batch} do |form| -%>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
           <td width="45%" class="item"><%= select :assignee, :id, @users.map {|u| [u.login, u.id]}, :selected => current_user.id %></td>
@@ -47,7 +47,7 @@
       This will release all requests in the batch back into the inbox. The batch itself will be destroyed, target assets, such as lanes, will be removed.
     </div>
     <div>
-      <% form_tag(:controller => :batches, :action => :reset_batch, :id => @batch.id) do -%>
+      <%= form_tag(:controller => :batches, :action => :reset_batch, :id => @batch.id) do -%>
         <table width="100%" cellspacing="0" cellpadding="0">
           <tr>
             <td width="45%" class="item"><%= submit_tag "Reset", :confirm => 'Do you really want to do this?' %></td><td width="55%"></td>
@@ -64,7 +64,7 @@
       This will move the batch to it's previous QC state.
     </div>
     <div>
-      <% form_tag(:controller => :batches, :action => :previous_qc_state, :id => @batch.id) do -%>
+      <%= form_tag(:controller => :batches, :action => :previous_qc_state, :id => @batch.id) do -%>
         <table width="100%" cellspacing="0" cellpadding="0">
           <tr>
             <td width="45%" class="item"><%= submit_tag "Move to previous state", :confirm => 'Do you really want to do this?' %></td><td width="55%"></td>

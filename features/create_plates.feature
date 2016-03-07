@@ -2,7 +2,7 @@
 Feature: Printing new plate barcodes
   Background:
     Given I am logged in as "user"
-    And the plate barcode webservice returns "1234567"
+    And the plate barcode webservice returns "1234569"
     And the "96 Well Plate" barcode printer "xyz" exists
     And I freeze time at "Mon Jul 12 10:23:58 UTC 2010"
     Given user "jack" exists with barcode "ID100I"
@@ -146,6 +146,7 @@ Feature: Printing new plate barcodes
     And plate with barcode "1220077777868" should exist
 
     Given I am on the events page for asset with barcode "1221234567841"
+
     Then the events table should be:
       | Message                              | Content    | Created by | Created at           |
       | Created child Working Dilution plate | 2010-07-12 | jack       | Monday 12 July, 2010 |

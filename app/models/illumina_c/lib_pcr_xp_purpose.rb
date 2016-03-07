@@ -5,8 +5,8 @@ class IlluminaC::LibPcrXpPurpose < PlatePurpose
 
   include PlatePurpose::RequestAttachment
 
-  write_inheritable_attribute :connect_on, 'qc_complete'
-  write_inheritable_attribute :connected_class, IlluminaC::Requests::LibraryRequest
-  write_inheritable_attribute :connect_downstream, false
+  self.connect_on = 'qc_complete'
+  self.connected_class = IlluminaC::Requests::LibraryRequest
+  self.connect_downstream = false
 
 end

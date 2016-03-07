@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <h1>New Plate Purpose</h1>
 
-<% form_for(@plate_purpose) do |f| %>
+<%= form_for([:admin,@plate_purpose]) do |f| %>
   <%= f.error_messages %>
 
   <p>
@@ -15,4 +15,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', plate_purposes_path %>
+<%= link_to 'Back', admin_plate_purposes_path %>

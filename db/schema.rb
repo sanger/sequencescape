@@ -1,22 +1,24 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
-# then regenerate this schema definition.
+# encoding: UTF-8
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your database schema. If you need
-# to create the application database on another system, you should be using db:schema:load, not running
-# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151029152735) do
+ActiveRecord::Schema.define(:version => 20160304100345) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
     t.integer  "lane_id",       :null => false
     t.integer  "aliquot_index", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   add_index "aliquot_indices", ["aliquot_id"], :name => "index_aliquot_indices_on_aliquot_id", :unique => true
@@ -309,8 +311,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.integer  "seed_id"
     t.integer  "user_id"
     t.text     "properties"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "budget_divisions", :force => true do |t|
@@ -391,6 +393,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "queue"
   end
 
   create_table "depricated_attempts", :force => true do |t|
@@ -715,6 +718,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.integer  "submission_id"
     t.integer  "pre_cap_group"
     t.integer  "order_role_id"
+    t.integer  "product_id"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -798,8 +802,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
   create_table "plate_creator_parent_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
     t.integer  "plate_purpose_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "plate_creator_purposes", :force => true do |t|
@@ -901,8 +905,46 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.datetime "updated_at"
   end
 
+  create_table "product_catalogues", :force => true do |t|
+    t.string   "name",                                             :null => false
+    t.string   "selection_behaviour", :default => "SingleProduct", :null => false
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+  end
+
+  create_table "product_criteria", :force => true do |t|
+    t.integer  "product_id",                         :null => false
+    t.string   "stage",                              :null => false
+    t.string   "behaviour",     :default => "Basic", :null => false
+    t.text     "configuration"
+    t.datetime "deprecated_at"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.integer  "version"
+  end
+
+  add_index "product_criteria", ["product_id", "stage", "version"], :name => "index_product_criteria_on_product_id_and_stage_and_version", :unique => true
+
   create_table "product_lines", :force => true do |t|
     t.string "name", :null => false
+  end
+
+  create_table "product_product_catalogues", :force => true do |t|
+    t.integer  "product_id",           :null => false
+    t.integer  "product_catalogue_id", :null => false
+    t.string   "selection_criterion"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
+
+  add_index "product_product_catalogues", ["product_catalogue_id"], :name => "fk_product_product_catalogues_to_product_catalogues"
+  add_index "product_product_catalogues", ["product_id"], :name => "fk_product_product_catalogues_to_products"
+
+  create_table "products", :force => true do |t|
+    t.string   "name",          :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.datetime "deprecated_at"
   end
 
   create_table "project_managers", :force => true do |t|
@@ -966,6 +1008,43 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "qc_metric_requests", :force => true do |t|
+    t.integer  "qc_metric_id", :null => false
+    t.integer  "request_id",   :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "qc_metric_requests", ["qc_metric_id"], :name => "fk_qc_metric_requests_to_qc_metrics"
+  add_index "qc_metric_requests", ["request_id"], :name => "fk_qc_metric_requests_to_requests"
+
+  create_table "qc_metrics", :force => true do |t|
+    t.integer  "qc_report_id", :null => false
+    t.integer  "asset_id",     :null => false
+    t.text     "metrics"
+    t.string   "qc_decision",  :null => false
+    t.boolean  "proceed"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "qc_metrics", ["asset_id"], :name => "fk_qc_metrics_to_assets"
+  add_index "qc_metrics", ["qc_report_id"], :name => "fk_qc_metrics_to_qc_reports"
+
+  create_table "qc_reports", :force => true do |t|
+    t.string   "report_identifier",   :null => false
+    t.integer  "study_id",            :null => false
+    t.integer  "product_criteria_id", :null => false
+    t.boolean  "exclude_existing",    :null => false
+    t.string   "state"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "qc_reports", ["product_criteria_id"], :name => "fk_qc_reports_to_product_criteria"
+  add_index "qc_reports", ["report_identifier"], :name => "index_qc_reports_on_report_identifier", :unique => true
+  add_index "qc_reports", ["study_id"], :name => "fk_qc_reports_to_studies"
 
   create_table "qcable_creators", :force => true do |t|
     t.integer  "lot_id",     :null => false
@@ -1064,8 +1143,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
 
   create_table "request_purposes", :force => true do |t|
     t.string   "key",        :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "request_quotas_bkp", :force => true do |t|
@@ -1173,6 +1252,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
+    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
@@ -1509,9 +1589,11 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.integer  "product_line_id"
     t.integer  "superceded_by_id",      :default => -1, :null => false
     t.datetime "superceded_at"
+    t.integer  "product_catalogue_id"
   end
 
   add_index "submission_templates", ["name", "superceded_by_id"], :name => "name_and_superceded_by_unique_idx", :unique => true
+  add_index "submission_templates", ["product_catalogue_id"], :name => "fk_submission_templates_to_product_catalogues"
 
   create_table "submission_workflows", :force => true do |t|
     t.string   "key",        :limit => 50
@@ -1561,7 +1643,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.string   "contact_name"
     t.string   "phone_number"
     t.string   "fax"
-    t.string   "url"
+    t.string   "supplier_url"
     t.string   "abbreviation"
   end
 
@@ -1573,8 +1655,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
   create_table "tag2_layout_template_submissions", :force => true do |t|
     t.integer  "submission_id",           :null => false
     t.integer  "tag2_layout_template_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   add_index "tag2_layout_template_submissions", ["submission_id", "tag2_layout_template_id"], :name => "tag2_layouts_used_once_per_submission", :unique => true
@@ -1583,8 +1665,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
   create_table "tag2_layout_templates", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "tag_id",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "tag2_layouts", :force => true do |t|

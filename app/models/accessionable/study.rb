@@ -57,7 +57,7 @@ module Accessionable
         xml.CENTER_NAME         self.center_name
         xml.STUDY_ABSTRACT      self.study_abstract
 
-        xml.PROJECT_ID(self.object_id || "0")
+        xml.PROJECT_ID(self.accessionable_id || "0")
         study_type = self.existing_study_type
         if StudyType.include?(study_type)
           xml.STUDY_TYPE(:existing_study_type => study_type)
@@ -83,7 +83,7 @@ module Accessionable
       return xml.target!
     end
 
-    def object_id
+    def accessionable_id
       @study.id
     end
 

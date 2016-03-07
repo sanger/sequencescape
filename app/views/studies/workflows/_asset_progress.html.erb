@@ -8,7 +8,8 @@
 <%= observe_field(:asset_type, :url => { :action => 'show_summary'}, :method=>'GET', :loading => "show_update_loader();", :complete => "hide_update_loader();", :update => :everything, :with => :asset_type) %>
 
 <span class="filter_options">Currently showing <strong><%= @asset_type_name %></strong></span>
-<%= will_paginate @page_elements %>
+
+<%= pagination @page_elements %>
 <% submissions = @submissions %>
 <table id="summary" width="100%" class="sortable">
   <thead>
@@ -18,7 +19,7 @@
       <th>Sample</th>
       <th>Closed?</th>
       <% @request_types.each do |request_type| %>
-        <th class='label'><center><%= request_type.name %></center></th>
+        <th><center><%= request_type.name %></center></th>
       <% end %>
       <th>Latest update</th>
       <th>Update date</th>
@@ -34,7 +35,11 @@
         <tr class="<%= label_asset_state(asset) %>">
           <td><%= link_to(h(asset.display_name), asset_path(asset), :title => asset.label.capitalize) %></td>
           <td><%= asset.label %></td>
-          <td><% if asset.is_a?(Aliquot::Receptacle) %><%= asset.aliquots.map { |a| link_to(a.sample.name, a.sample) }.join(', ') %><% end %></td>
+          <td><% if asset.is_a?(Aliquot::Receptacle) %>
+            <% asset.aliquots.each do |a| %>
+              <%= link_to(a.sample.name, a.sample) %>;
+            <% end %>
+          <% end %>
           <td><%= asset.closed? ? 'Yes' : 'No' %></td>
 
           <% @request_types.each do |request_type| %>
@@ -71,4 +76,4 @@
     <% end %>
   </tbody>
 </table>
-<%= will_paginate @page_elements %>
+<%= pagination @page_elements %>

@@ -61,7 +61,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "content": {
-          "key": ["can't be blank", "Key can only contain letters, numbers or _"]
+          "key": ["Key can only contain letters, numbers or _"]
         }
       }
       """

@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
 <h1>Editing asset group</h1>
 
-<% form_for @asset_group, :url => study_asset_group_path(@study), :html => {:method => :put} do |f| %>
+<%= form_for @asset_group, :url => study_asset_group_path(@study), :html => {:method => :put} do |f| %>
   <%= f.error_messages %>
 
   <p>

@@ -4,7 +4,7 @@
 module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
-    object = model.find_by_name(name) or raise StandardError, "#{ model.name } #{ name.inspect } does not exist"
+    object = model.find_by_name!(name)
     routing_method = "#{ model.name.underscore }_path"
     routing_method = "#{ page }_#{ routing_method }" unless page == 'show'
     send(routing_method.to_sym, object)
@@ -26,7 +26,7 @@ module NavigationHelpers
     case page_name
 
     when /the homepage/
-      root_path
+     '/'
     when /login/
       login_path
     when /the admin page/
@@ -38,7 +38,7 @@ module NavigationHelpers
       send(:"#{ $1 }_path")
 
     when /the custom texts admin page/
-      custom_texts_path
+      admin_custom_texts_path
     when /the search page/
       searches_path
     when /the gel QC page/
@@ -151,6 +151,11 @@ module NavigationHelpers
       study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
       new_study_sample_registration_path(study)
 
+    when /the spreadsheet sample registration page for study "([^\"]+)"/
+      study_name = $1
+      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      spreadsheet_study_sample_registration_index_path(study)
+
     when /the sample error page for study "([^\"]+)"/
       study_name = $1
       study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
@@ -179,12 +184,10 @@ module NavigationHelpers
       profile_path(user)
 
     when /the plate purpose homepage/
-      plate_purposes_path
+      admin_plate_purposes_path
 
-    when /the pulldown homepage/
-      '/pulldown/plates'
     when /the pico dilution index page/
-      pico_dilutions_path
+      "#{pico_dilutions_path}.xml"
     when /the sequenom qc home page/
       sequenom_qc_plates_path
     when /the plate template homepage/
@@ -193,7 +196,7 @@ module NavigationHelpers
       sample_logistics_path
 
     when /the delayed jobs admin page/
-      url_for(:controller => "admin/delayed_Jobs", :action => :index)
+      url_for(:controller => "admin/delayed_jobs", :action => :index)
 
     when /the management page for (study|project) "([^\"]+)"/
       model, model_name = $1, $2
@@ -293,9 +296,9 @@ module NavigationHelpers
       new_request_asset_path(:id => asset)
 
     when /the faculty sponsor homepage/
-      faculty_sponsors_path
+      admin_faculty_sponsors_path
     when /the bait library management/
-      bait_libraries_path
+      admin_bait_libraries_path
 
     # Add more page name => path mappings above here
     else

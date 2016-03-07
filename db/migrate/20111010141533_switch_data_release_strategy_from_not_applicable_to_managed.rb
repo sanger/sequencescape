@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class SwitchDataReleaseStrategyFromNotApplicableToManaged < ActiveRecord::Migration
   class StudyMetadata < ActiveRecord::Base
-    set_table_name('study_metadata')
+    self.table_name =('study_metadata')
   end
 
   def self.up

@@ -13,21 +13,23 @@ module RequestType::Validation
     Class.new(RequestTypeValidator) do
       request_type.request_type_validators.each do |validator|
         message = "is '%{value}' should be #{validator.valid_options.to_sentence(:last_word_connector=>' or ')}"
-        validates_inclusion_of :"#{validator.request_option}", :in => validator.valid_options, :if => :"#{validator.request_option}_needs_checking?", :message => message
-        delegate_attribute(:"#{validator.request_option}", :to => :target, :default => validator.default, :type_cast => validator.type_cast)
+        vro = :"#{validator.request_option}"
+        delegate_attribute(vro, :to => :target, :default => validator.default, :type_cast => validator.type_cast)
+        validates_inclusion_of vro, :in => validator.valid_options, :if => :"#{validator.request_option}_needs_checking?", :message => message
       end
     end.tap do |sub_class|
-      sub_class.write_inheritable_attribute(:request_type, request_type)
+      sub_class.request_type =  request_type
     end
 
   end
 
   class RequestTypeValidator < DelegateValidation::Validator
-    class_inheritable_reader :request_type
-    write_inheritable_attribute :request_type, nil
+    class_attribute :request_type, :instance_writer => false
+    request_type =  nil
 
     def library_types_present?
       request_type.library_types.present?
     end
+
   end
 end

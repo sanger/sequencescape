@@ -4,32 +4,33 @@
 <% add :title, "Administrators can customise Sequencescape from here, including data management and reporting tools." -%>
 <% add :menu, "View all studies" => studies_path -%>
 
-<h1>Sequencescape <%= Deployed::VERSION_ID %></h1>
+<%= page_title 'Sequencescape', 'Administration' %>
 
-<h2>Administration</h2>
-<h3><%= link_to "Study management", url_for(:controller => "admin/studies", :action => "index") %></h3>
-<p>Make changes to studies.</p>
-<h3><%= link_to "Project management", url_for(:controller => "admin/projects", :action => "index") %></h3>
-<p>Make changes to projects.</p>
-<h3><%= link_to "User management", users_path %></h3>
-<p>View current users in the system.</p>
-<h3><%= link_to "Role management", roles_path %></h3>
-<p>Add new roles to users.</p>
+<dl>
+<dt><%= link_to "Study management", url_for(:controller => "admin/studies", :action => "index") %></dt>
+<dd>Make changes to studies.</dd>
+<dt><%= link_to "Project management", url_for(:controller => "admin/projects", :action => "index") %></dt>
+<dd>Make changes to projects.</dd>
+<dt><%= link_to "User management", admin_users_path %></dt>
+<dd>View current users in the system.</dd>
+<dt><%= link_to "Role management", admin_roles_path %></dt>
+<dd>Add new roles to users.</dd>
 
-<h3><%= link_to "Help text management", custom_texts_url %></h3>
-<p>Update help texts used in the application.</p>
+<dt><%= link_to "Help text management", admin_custom_texts_url %></dt>
+<dd>Update help texts used in the application.</dd>
 
-<h3><%= link_to "Printer management", barcode_printers_url %></h3>
-<p>Add and remove printers.</p>
-<h3><%= link_to "Plate purpose management", plate_purposes_url %></h3>
-<p>Add and remove plate purposes.</p>
-<h3><%= link_to "Robot management", robots_url %></h3>
-<p>Add and remove robots.</p>
-<h3><%= link_to "Delayed jobs queue", url_for(:controller => "admin/delayed_jobs", :action => "index") %></h3>
-<p>See the delayed jobs queue</p>
-<h3><%= link_to "Reference genome management", reference_genomes_path %></h3>
-<p>Add and remove reference genomes.</p>
-<h3><%= link_to "Faculty Sponsors", faculty_sponsors_path %></h3>
-<p>Manage the faculty sponsors for studies.</p>
-<h3><%= link_to "Bait library management", bait_libraries_path %></h3>
-<p>Manage the bait libraries.</p>
+<dt><%= link_to "Printer management", barcode_printers_url %></dt>
+<dd>Add and remove printers.</dd>
+<dt><%= link_to "Plate purpose management", admin_plate_purposes_url %></dt>
+<dd>Add and remove plate purposes.</dd>
+<dt><%= link_to "Robot management", admin_robots_url %></dt>
+<dd>Add and remove robots.</dd>
+<dt><%= link_to "Delayed jobs queue", url_for(:controller => "admin/delayed_jobs", :action => "index") %></dt>
+<dd>See the delayed jobs queue</dd>
+<dt><%= link_to "Reference genome management", reference_genomes_path %></dt>
+<dd>Add and remove reference genomes.</dd>
+<dt><%= link_to "Faculty Sponsors", admin_faculty_sponsors_path %></dt>
+<dd>Manage the faculty sponsors for studies.</dd>
+<dt><%= link_to "Bait library management", admin_bait_libraries_path %></dt>
+<dd>Manage the bait libraries.</dd>
+</dl>

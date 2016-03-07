@@ -1,0 +1,30 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
+<h1>Robot Properties for <%= @robot.name %></h1>
+<p class="info">Location: <%= @robot.location %></p>
+
+<table>
+  <thead>
+    <th>Name</th>
+    <th>Key</th>
+    <th>Value</th>
+    <th>Show</th>
+    <th>Edit</th>
+    <th>Delete</th>
+  </thead>
+  <% @robot_properties.each do |property| %>
+  <tr>
+    <td><%= property.name %></td>
+    <td><%= property.key %></td>
+    <td><%= property.value %></td>
+    <td><%= link_to 'Show', admin_robot_robot_property_path(@robot, property) %></td>
+    <td><%= link_to 'Edit', edit_admin_robot_robot_property_path(@robot, property) %></td>
+    <td><%= link_to 'Delete', admin_robot_robot_property_path(@robot, property), :confirm => 'Are you sure?', :method => :delete %></td>
+
+  </tr>
+  <% end %>
+</table>
+
+<br />
+<%= link_to 'New property', new_admin_robot_robot_property_path(@robot) %> <%= link_to 'Back to Robot', [:admin,@robot] %>

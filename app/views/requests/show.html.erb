@@ -39,31 +39,31 @@
 
 <div class="info">
 <h3>Assets</h3>
-<table width='100%' class='sortable'>
+<table class='table sortable'>
   <thead>
     <tr>
-      <th width='10%'>Asset ID</th>
-      <th width='10%'>Asset name</th>
-      <th width='20%'>Asset type</th>
-      <th width='30%'>Source/Target</th>
+      <th>Asset ID</th>
+      <th>Asset name</th>
+      <th>Asset type</th>
+      <th>Source/Target</th>
     </tr>
   </thead>
   <tbody>
     <% if @request.asset %>
-    <tr>
-      <td><%= link_to @request.asset.id, asset_url(@request.asset) %></td>
-      <td><%= link_to(h(@request.asset.display_name), asset_url(@request.asset)) %></td>
-      <td><%= @request.asset.label %></td>
-      <td>Source</td>
-    </tr>
+      <tr>
+        <td><%= link_to @request.asset.id, asset_url(@request.asset) %></td>
+        <td><%= link_to(h(@request.asset.display_name), asset_url(@request.asset)) %></td>
+        <td><%= @request.asset.label %></td>
+        <td>Source</td>
+      </tr>
     <% end %>
     <% if @request.target_asset %>
-    <tr>
-      <td><%= link_to @request.target_asset.id, asset_url(@request.target_asset) %></td>
-      <td><%= link_to(h(@request.target_asset.display_name), asset_url(@request.target_asset)) %></td>
-      <td><%= @request.target_asset.label %></td>
-      <td>Target</td>
-    </tr>
+      <tr>
+        <td><%= link_to @request.target_asset.id, asset_url(@request.target_asset) %></td>
+        <td><%= link_to(h(@request.target_asset.display_name), asset_url(@request.target_asset)) %></td>
+        <td><%= @request.target_asset.label %></td>
+        <td>Target</td>
+      </tr>
     <% end %>
   </tbody>
  </table>
@@ -72,7 +72,7 @@
 <div class="info">
 <h3>Batch</h3>
   <% @request.with_batch_id do |batch_id| %>
-    <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
+    <%= link_to batch_id, batch_path(batch_id) %>
   <% end %>
 </div>
 

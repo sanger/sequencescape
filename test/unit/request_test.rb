@@ -6,37 +6,39 @@ require "test_helper"
 class RequestTest < ActiveSupport::TestCase
   include AASM
   context "A Request" do
-    should_belong_to :user, :request_type, :item
-    should_have_many :events
-    should_validate_presence_of :request_purpose
+    should belong_to :user
+    should belong_to :request_type
+    should belong_to :item
+    should have_many :events
+    should validate_presence_of :request_purpose
     should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
 
     context "while scoping with #for_order_including_submission_based_requests" do
       setup do
-        @study =  Factory :study
-        @project =  Factory :project
+        @study =  create :study
+        @project =  create :project
 
-        @asset = Factory :empty_sample_tube
-        @asset.aliquots.create!(:sample => Factory(:sample, :studies => [@study]))
+        @asset = create :empty_sample_tube
+        @asset.aliquots.create!(:sample => create(:sample, :studies => [@study]))
 
-        @asset2 = Factory :empty_sample_tube
-        @asset2.aliquots.create!(:sample => Factory(:sample, :studies => [@study]))
+        @asset2 = create :empty_sample_tube
+        @asset2.aliquots.create!(:sample => create(:sample, :studies => [@study]))
 
-        @order1 = Factory :order_with_submission, :study => @study, :assets => [@asset], :project => @project
-        @order2 = Factory :order,  :study => @study, :assets => [@asset], :project => @project
-        @order3 = Factory :order,  :study => @study, :assets => [@asset2], :project => @project
-        @order4 = Factory :order_with_submission,  :study => @study, :assets => [@asset2], :project => @project
+        @order1 = create :order_with_submission, :study => @study, :assets => [@asset], :project => @project
+        @order2 = create :order,  :study => @study, :assets => [@asset], :project => @project
+        @order3 = create :order,  :study => @study, :assets => [@asset2], :project => @project
+        @order4 = create :order_with_submission,  :study => @study, :assets => [@asset2], :project => @project
 
         @submission = @order1.submission
         @submission.orders.push(@order2)
         @submission.orders.push(@order3)
 
-        @sequencing_request = Factory :request_with_sequencing_request_type, :submission => @submission
-        @request = Factory :request, :order => @order1, :asset => @asset, :submission => @submission
-        @request2 = Factory :request, :order => @order2, :submission => @submission
+        @sequencing_request = create :request_with_sequencing_request_type, :submission => @submission
+        @request = create :request, :order => @order1, :asset => @asset, :submission => @submission
+        @request2 = create :request, :order => @order2, :submission => @submission
 
-        @request3 = Factory :request, :order => @order4, :submission => @order4.submission
-        @sequencing_request2 = Factory :request_with_sequencing_request_type, :submission => @order4.submission
+        @request3 = create :request, :order => @order4, :submission => @order4.submission
+        @sequencing_request2 = create :request_with_sequencing_request_type, :submission => @order4.submission
       end
       should "the sequencing requests are included" do
         assert_equal 1, @order1.requests.length
@@ -73,20 +75,20 @@ class RequestTest < ActiveSupport::TestCase
 
     context "#next_request" do
       setup do
-        @sample = Factory :sample
+        @sample = create :sample
 
-        @genotyping_request_type = Factory :request_type, :name => "genotyping"
-        @cherrypick_request_type = Factory :request_type, :name => "cherrypick", :target_asset_type => nil
-        @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
-        @item = Factory :item, :submission => @submission
+        @genotyping_request_type = create :request_type, :name => "genotyping"
+        @cherrypick_request_type = create :request_type, :name => "cherrypick", :target_asset_type => nil
+        @submission  = FactoryHelp::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
+        @item = create :item, :submission => @submission
 
-        @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_types => [ @genotyping_request_type ]
-        @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_types => [ @cherrypick_request_type ], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
+        @genotype_pipeline = create :pipeline, :name =>"genotyping pipeline", :request_types => [ @genotyping_request_type ]
+        @cherrypick_pipeline = create :pipeline, :name => "cherrypick pipeline", :request_types => [ @cherrypick_request_type ], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
-        @request1 = Factory(
+        @request1 = create(
           :request_without_assets,
           :item         => @item,
-          :asset        => Factory(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) },
+          :asset        => create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) },
           :target_asset => nil,
           :submission   => @submission,
           :request_type => @cherrypick_request_type,
@@ -95,7 +97,7 @@ class RequestTest < ActiveSupport::TestCase
       end
       context "with valid input" do
         setup do
-          @request2 = Factory :request, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request2 = create :request, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
         end
         should "return the correct next request" do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
@@ -104,7 +106,7 @@ class RequestTest < ActiveSupport::TestCase
 
       context "where asset hasnt been created for second request" do
         setup do
-          @request2 = Factory :request, :asset => nil, :item => @item, :submission => @submission,:request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request2 = create :request, :asset => nil, :item => @item, :submission => @submission,:request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
         end
         should "return the correct next request" do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
@@ -113,8 +115,8 @@ class RequestTest < ActiveSupport::TestCase
 
       context "#associate_pending_requests_for_downstream_pipeline" do
         setup do
-          @request2 = Factory :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
-          @request3 = Factory :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request2 = create :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request3 = create :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
 
           @batch = @cherrypick_pipeline.batches.create!(:requests => [ @request1 ])
 
@@ -130,11 +132,11 @@ class RequestTest < ActiveSupport::TestCase
 
     context "#copy" do
        setup do
-         @study = Factory :study
-         @workflow = Factory :submission_workflow
-         @request_type = Factory :request_type
-         @item         = Factory :item
-         @request = Factory :request, :request_type => @request_type, :study => @study, :workflow => @workflow, :item => @item, :state => 'failed'
+         @study = create :study
+         @workflow = create :submission_workflow
+         @request_type = create :request_type
+         @item         = create :item
+         @request = create :request, :request_type => @request_type, :study => @study, :workflow => @workflow, :item => @item, :state => 'failed'
          @new_request = @request.copy
        end
 
@@ -161,11 +163,11 @@ class RequestTest < ActiveSupport::TestCase
 
     context "#workflow" do
       setup do
-        @study = Factory :study
-        @workflow = Factory :submission_workflow
-        @request_type = Factory :request_type
-        @item         = Factory :item
-        @request = Factory :request, :request_type => @request_type, :study => @study, :workflow => @workflow, :item => @item
+        @study = create :study
+        @workflow = create :submission_workflow
+        @request_type = create :request_type
+        @item         = create :item
+        @request = create :request, :request_type => @request_type, :study => @study, :workflow => @workflow, :item => @item
       end
 
       should "return a workflow id on request" do
@@ -181,11 +183,11 @@ class RequestTest < ActiveSupport::TestCase
     context "#after_create" do
       context "successful" do
         setup do
-          @workflow = Factory :submission_workflow
-          @study = Factory :study
+          @workflow = create :submission_workflow
+          @study = create :study
           # Create a new request
           assert_nothing_raised do
-            @request = Factory :request, :study => @study
+            @request = create :request, :study => @study
           end
         end
 
@@ -194,27 +196,27 @@ class RequestTest < ActiveSupport::TestCase
         end
 
         should "have request as valid" do
-          assert_valid @request
+          assert @request.valid?
         end
       end
 
       context "failure" do
         setup do
-          @workflow = Factory :submission_workflow
-          @user = Factory :user
-          @study = Factory :study
+          @workflow = create :submission_workflow
+          @user = create :user
+          @study = create :study
         end
 
         should "not return an AR error" do
           assert_nothing_raised do
-            @request = Factory :request, :study => @study
+            @request = create :request, :study => @study
           end
         end
 
         should "fail to create a new request" do
           begin
             @requests = Request.all
-            @request = Factory :request, :study => @study
+            @request = create :request, :study => @study
           rescue
             assert_equal @requests, Request.all
           end
@@ -226,10 +228,10 @@ class RequestTest < ActiveSupport::TestCase
 
     context "#state" do
       setup do
-        @study = Factory :study
-        @item  = Factory :item
-        @request = Factory :request_suitable_for_starting, :study => @study, :item => @item
-        @user = Factory :admin
+        @study = create :study
+        @item  = create :item
+        @request = create :request_suitable_for_starting, :study => @study, :item => @item
+        @user = create :admin
         @user.has_role 'owner', @study
       end
 
@@ -365,14 +367,14 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal 6, @all_states.size
 
         @all_states.each do |state|
-          Factory :request, :state => state
+          create :request, :state => state
         end
 
         assert_equal 6, Request.count
       end
       context "open requests" do
         should "total right number" do
-          assert_equal @open_states.size, Request.open.count
+          assert_equal @open_states.size, Request.opened.count
         end
       end
       context "closed requests" do
@@ -384,19 +386,19 @@ class RequestTest < ActiveSupport::TestCase
 
     context "#ready?" do
       setup do
-        @library_creation_request = Factory(:library_creation_request_for_testing_sequencing_requests)
-        @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
+        @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
+        @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(:project => create(:project)) }
         @library_tube = @library_creation_request.target_asset
 
-        @library_creation_request_2 = Factory(:library_creation_request_for_testing_sequencing_requests, :target_asset => @library_tube)
-        @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
+        @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, :target_asset => @library_tube)
+        @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(:project => create(:project)) }
 
 
         # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
         # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
         @request_type = RequestType.find_by_key("single_ended_sequencing")
 
-        @sequencing_request = Factory(:sequencing_request, { :asset => @library_tube, :request_type => @request_type })
+        @sequencing_request = create(:sequencing_request, { :asset => @library_tube, :request_type => @request_type })
       end
 
       should "check any non-sequencing request is always ready" do
@@ -444,7 +446,7 @@ class RequestTest < ActiveSupport::TestCase
     context "#customer_responsible" do
 
       setup do
-        @request = Factory :library_creation_request
+        @request = create :library_creation_request
         @request.state = 'started'
       end
 

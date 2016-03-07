@@ -53,7 +53,7 @@ class SequenomQcPlatesController < ApplicationController
     respond_to do |format|
       if bad_plate
         # Something's gone wrong, render the errors on the first plate that failed
-        flash[:error] = bad_plate.errors.on_base || "Failed to create Sequenom QC Plate"
+        flash[:error] = bad_plate.errors.full_messages || "Failed to create Sequenom QC Plate"
         format.html { render :new }
       else
         # Everything's tickity boo so...

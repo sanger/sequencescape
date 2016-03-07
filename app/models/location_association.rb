@@ -6,7 +6,7 @@ class LocationAssociation < ActiveRecord::Base
   belongs_to :location
 
   validates_uniqueness_of :locatable_id
-  validates_presence_of :location_id, :locatable_id
+  validates :location_id, :locatable_id, :presence => true
 
   after_save :update_locatable
 
@@ -22,7 +22,7 @@ class LocationAssociation < ActiveRecord::Base
         has_one :location, :through => :location_association
         delegate :location_id, :to => :location_association, :allow_nil => true
 
-        named_scope :located_in, lambda { |location| {
+       scope :located_in, ->(location) { {
           :joins => 'INNER JOIN `location_associations` ON `assets`.id=`location_associations`.`locatable_id`',
           :conditions => [ '`location_associations`.`location_id`=?', location.id ]
         } }

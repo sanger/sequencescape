@@ -2,8 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 class Submission::PresenterSkeleton
-  class_inheritable_reader :attributes
-  write_inheritable_attribute :attributes,  []
+  class_attribute :attributes, :instance_writer => false
+  self.attributes = Array.new
 
   def initialize(user, submission_attributes = {})
     submission_attributes = {} if submission_attributes.blank?
@@ -75,7 +75,7 @@ class Submission::PresenterSkeleton
 
   def method_missing(name, *args, &block)
     name_without_assignment = name.to_s.sub(/=$/, '').to_sym
-    return super unless attributes.include?(name_without_assignment)
+    return super unless self.attributes.include?(name_without_assignment)
 
     instance_variable_name = :"@#{name_without_assignment}"
     return instance_variable_get(instance_variable_name) if name_without_assignment == name.to_sym

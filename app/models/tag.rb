@@ -9,8 +9,8 @@ class Tag < ActiveRecord::Base
   end
 
   include Api::TagIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
 
@@ -19,7 +19,7 @@ class Tag < ActiveRecord::Base
   has_many :assets, :as => :material
   has_many :requests, :through => :assets, :uniq => true
 
-  named_scope :sorted , :order => "map_id ASC"
+  scope :sorted , order("map_id ASC")
 
   def name
     "Tag #{map_id}"

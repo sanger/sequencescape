@@ -20,7 +20,7 @@ end
 
 Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, serialized_xml|
   regexp = Regexp.new(key_regexp)
-  block  = lambda { |key| key.to_s =~ regexp }
+  block  = ->(key) { key.to_s =~ regexp }
   assert_hash_equal(
     sort_arrays(walk_hash_structure(Hash.from_xml(serialized_xml), &block)),
     sort_arrays(walk_hash_structure(Hash.from_xml(page.source), &block)),

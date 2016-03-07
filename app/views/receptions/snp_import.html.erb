@@ -20,7 +20,7 @@
       <p>Enter plate IDs (1 per line)</p>
     </div>
     <br />
-    <% form_for :asset, :url => { :action => :receive_snp_barcode } do |f| %>
+    <%= form_for :asset, :url => { :action => :receive_snp_barcode } do |f| %>
     <ul class="plate_import">
       <li><%= text_area_tag "barcodes", nil, :rows => 20 %></li>
       <li><%= submit_tag "Submit" %></li>

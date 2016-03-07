@@ -6,34 +6,34 @@ require "test_helper"
 class StudyTest < ActiveSupport::TestCase
   context "Study" do
 
-    should_belong_to :user
+    should belong_to :user
 
-    should_have_many :samples, :through => :study_samples
+    should have_many :samples#, :through => :study_samples
 
     context "Request" do
       setup do
-        @study         = Factory :study
-        @request_type    = Factory :request_type
-        @request_type_2  = Factory :request_type, :name => "request_type_2", :key => "request_type_2"
-        @request_type_3  = Factory :request_type, :name => "request_type_3", :key => "request_type_3"
+        @study         = create :study
+        @request_type    = create :request_type
+        @request_type_2  = create :request_type, :name => "request_type_2", :key => "request_type_2"
+        @request_type_3  = create :request_type, :name => "request_type_3", :key => "request_type_3"
         requests = []
-        # Failed
-        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
+        # Cancelled
+        3.times do
+          requests << (create :cancelled_request, :study => @study, :request_type => @request_type)
+        end
 
         # Failed
-        requests << (Factory :failed_request, :study => @study, :request_type => @request_type)
+        requests << (create :failed_request, :study => @study, :request_type => @request_type)
         # Passed
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_2)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
+        3.times do
+          requests << (create :passed_request, :study => @study, :request_type => @request_type)
+        end
+        requests << (create :passed_request, :study => @study, :request_type => @request_type_2)
+        requests << (create :passed_request, :study => @study, :request_type => @request_type_3)
+        requests << (create :passed_request, :study => @study, :request_type => @request_type_3)
         # Pending
-        requests << (Factory :pending_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :pending_request, :study => @study, :request_type => @request_type_3)
+        requests << (create :pending_request, :study => @study, :request_type => @request_type)
+        requests << (create :pending_request, :study => @study, :request_type => @request_type_3)
 
         #we have to hack t
         requests.each do |request|
@@ -45,7 +45,7 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should "Calculate correctly and be valid" do
-        assert_valid @study
+        assert @study.valid?
         assert_equal 3, @study.cancelled_requests(@request_type)
         assert_equal 4, @study.completed_requests(@request_type)
         assert_equal 1, @study.completed_requests(@request_type_2)
@@ -62,11 +62,11 @@ class StudyTest < ActiveSupport::TestCase
 
     context "Role system" do
       setup do
-        @study = Factory :study, :name => "role test1"
-        @another_study = Factory :study, :name => "role test2"
+        @study = create :study, :name => "role test1"
+        @another_study = create :study, :name => "role test2"
 
-        @user1 = Factory :user
-        @user2 = Factory :user
+        @user1 = create :user
+        @user2 = create :user
 
         @user1.has_role("owner", @study)
         @user1.has_role("follower", @study)
@@ -98,7 +98,7 @@ class StudyTest < ActiveSupport::TestCase
 
     context "#ethical approval?: " do
       setup do
-        @study = Factory :study
+        @study = create :study
       end
 
       context "when contains human DNA" do
@@ -116,7 +116,7 @@ class StudyTest < ActiveSupport::TestCase
             @study.save!
           end
           should "be in the awaiting ethical approval list" do
-            assert_contains(Study.all_awaiting_ethical_approval, @study)
+            assert_contains(Study.awaiting_ethical_approval, @study)
           end
         end
 
@@ -127,7 +127,7 @@ class StudyTest < ActiveSupport::TestCase
             @study.save!
           end
           should "not appear in the awaiting ethical approval list" do
-            assert_does_not_contain(Study.all_awaiting_ethical_approval, @study)
+            assert_does_not_contain(Study.awaiting_ethical_approval, @study)
           end
         end
       end
@@ -184,23 +184,23 @@ class StudyTest < ActiveSupport::TestCase
 
     context "which needs x and autosomal DNA removed" do
       setup do
-        @study_remove = Factory :study
+        @study_remove = create :study
         @study_remove.study_metadata.remove_x_and_autosomes = Study::YES
         @study_remove.save!
-        @study_keep = Factory :study
+        @study_keep = create :study
         @study_keep.study_metadata.remove_x_and_autosomes = Study::NO
         @study_keep.save!
       end
 
       should "show in the filters" do
-        assert Study.all_with_remove_x_and_autosomes.include?(@study_remove)
-        assert !Study.all_with_remove_x_and_autosomes.include?(@study_keep)
+        assert Study.with_remove_x_and_autosomes.include?(@study_remove)
+        assert !Study.with_remove_x_and_autosomes.include?(@study_keep)
       end
     end
 
     context "with check y separation" do
       setup do
-        @study = Factory :study
+        @study = create :study
         @study.study_metadata.separate_y_chromosome_data = true
       end
 
@@ -219,14 +219,14 @@ class StudyTest < ActiveSupport::TestCase
 
     context "#unprocessed_submissions?" do
       setup do
-        @study = Factory :study
-        @asset = Factory :sample_tube
+        @study = create :study
+        @asset = create :sample_tube
       end
       context "with submissions still unprocessed" do
         setup do
-          Factory::submission :study => @study, :state => 'building', :assets => [@asset]
-          Factory::submission :study => @study, :state => "pending", :assets => [@asset]
-          Factory::submission :study => @study, :state => "processing", :assets => [@asset]
+          FactoryHelp::submission :study => @study, :state => 'building', :assets => [@asset]
+          FactoryHelp::submission :study => @study, :state => "pending", :assets => [@asset]
+          FactoryHelp::submission :study => @study, :state => "processing", :assets => [@asset]
         end
         should "return true" do
           assert @study.unprocessed_submissions?
@@ -234,8 +234,8 @@ class StudyTest < ActiveSupport::TestCase
       end
       context "with no submissions unprocessed" do
         setup do
-          Factory::submission :study => @study, :state => "ready", :assets => [@asset]
-          Factory::submission :study => @study, :state => "failed", :assets => [@asset]
+          FactoryHelp::submission :study => @study, :state => "ready", :assets => [@asset]
+          FactoryHelp::submission :study => @study, :state => "failed", :assets => [@asset]
         end
         should "return false" do
           assert ! @study.unprocessed_submissions?
@@ -250,9 +250,9 @@ class StudyTest < ActiveSupport::TestCase
 
     context '#deactivate!' do
       setup do
-        @study, @request_type = Factory(:study), Factory(:request_type)
-        (1..2).each { |_| @study.requests << Factory(:passed_request, :request_type => @request_type) }
-        (1..2).each { |_| Factory(:order, :study => @study ) }
+        @study, @request_type = create(:study), create(:request_type)
+        (1..2).each { |_| @study.requests << create(:passed_request, :request_type => @request_type) }
+        (1..2).each { |_| create(:order, :study => @study ) }
         @study.projects.each do |project|
           project.enforce_quotas=true
         end
@@ -275,7 +275,7 @@ class StudyTest < ActiveSupport::TestCase
     context 'policy text' do
 
       setup do
-        @study = Factory :managed_study
+        @study = create(:managed_study)
       end
 
       should 'accept valid urls' do
@@ -310,7 +310,7 @@ class StudyTest < ActiveSupport::TestCase
     context 'policy text' do
 
       setup do
-        @study = Factory :managed_study
+        @study = create :managed_study
       end
 
       should 'accept valid data access group names' do
@@ -334,7 +334,7 @@ class StudyTest < ActiveSupport::TestCase
     context 'study name' do
 
       setup do
-        @study = Factory :study
+        @study = create :study
       end
 
       should 'accept names shorter than 200 characters' do

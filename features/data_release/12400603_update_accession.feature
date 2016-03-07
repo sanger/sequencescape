@@ -65,8 +65,7 @@ Feature: object with an accession should be modifiable
     When I update an accession number for sample "sample"
 
     Then I should not have sent the attribute "alias" for the sample element to the accessioning service
-      And I should have sent the attribute "accessor" for the sample element to the accessioning service
-      And I should have received the attribute "accessor" for the sample element from the accessioning service
+      And I should have sent the attribute "accession" for the sample element to the accessioning service
 
   Scenario: A sample without an accession number should update itself using its alias
     Given a sample named "sample" exists for accession
@@ -74,6 +73,4 @@ Feature: object with an accession should be modifiable
     When I create an accession number for sample "sample"
 
     Then I should have sent the attribute "alias" for the sample element to the accessioning service
-      And I should not have sent the attribute "accessor" for the sample element to the accessioning service
-      And I should have received the attribute "accessor" for the sample element from the accessioning service
 

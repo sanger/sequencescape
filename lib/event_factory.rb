@@ -20,7 +20,15 @@ class EventFactory
     )
     event.save
 
-    EventfulMailer.deliver_confirm_event(User.all_administrators_emails.reject(&:blank?), event.eventful, event.message, event.content, "No Milestone")
+    admin_emails = User.all_administrators_emails.reject(&:blank?)
+
+    EventfulMailer.confirm_event(
+      admin_emails,
+      event.eventful,
+      event.message,
+      event.content,
+      "No Milestone"
+    ).deliver unless admin_emails.empty?
   end
 
   # Creates an event and sends an email or emails when a project is approved
@@ -50,7 +58,7 @@ class EventFactory
       end
     end
 
-    EventfulMailer.deliver_confirm_event(recipients_email, event.eventful, event.message, event.content, "No Milestone")
+    EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content, "No Milestone").deliver
   end
 
   ################################
@@ -74,7 +82,7 @@ class EventFactory
     recipients = User.all_administrators_emails
 
     if project.blank?
-      EventfulMailer.deliver_confirm_sample_event(recipients.reject(&:blank?), sample_event.eventful, sample_event.message, sample_event.content, "No Milestone")
+      EventfulMailer.confirm_sample_event(recipients.reject(&:blank?), sample_event.eventful, sample_event.message, sample_event.content, "No Milestone").deliver
     else
       # Create project centric event
       content = "New '#{sample.name}' registered by #{user.login}: #{sample.name}. This sample was assigned to the '#{project.name}' project."
@@ -88,7 +96,7 @@ class EventFactory
         :of_interest_to => "administrators"
       )
 
-      EventfulMailer.deliver_confirm_event(recipients.reject(&:blank?), project_event.eventful, project_event.message, project_event.content, "No Milestone")
+      EventfulMailer.confirm_event(recipients.reject(&:blank?), project_event.eventful, project_event.message, project_event.content, "No Milestone").deliver
     end
 
     sample_event
@@ -133,7 +141,7 @@ class EventFactory
       recipients << project.manager.email if project.manager
     end
 
-    EventfulMailer.deliver_confirm_event(recipients.reject(&:blank?), study_event.eventful, study_event.message, study_event.content, "No Milestone")
+    EventfulMailer.confirm_event(recipients.reject(&:blank?), study_event.eventful, study_event.message, study_event.content, "No Milestone").deliver
   end
 
   #################################
@@ -158,7 +166,7 @@ class EventFactory
       recipients << project.manager.email if project && project.manager
     end
 
-    EventfulMailer.deliver_confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message, request_event.content, "No Milestone")
+    EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message, request_event.content, "No Milestone").deliver
   end
 
 end

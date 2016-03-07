@@ -14,8 +14,8 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     When I check "Select DN1S for batch"
     When I check "Select DN10I for batch"
     When I check "Select DN5W for batch"
-    And I select "Create Batch" from "action_on_requests"
-    And I press "Submit"
+    And I select "Create Batch" from the first "action_on_requests"
+    And I press the first "Submit"
     Given a plate barcode webservice is available and returns "99999"
     Given a plate template exists
     Given a robot exists with barcode "444"

@@ -19,9 +19,9 @@ class Admin::StudiesControllerTest < ActionController::TestCase
 
     context "management UI" do
       setup do
-        @user     = Factory :admin
-        @study  = Factory :study
-        @request_type = Factory :request_type
+        @user     =FactoryGirl.create :admin
+        @study  =FactoryGirl.create :study
+        @request_type =FactoryGirl.create :request_type
         @controller.stubs(:current_user).returns(@user)
         @controller.stubs(:logged_in?).returns(@user)
         @emails = ActionMailer::Base.deliveries
@@ -37,7 +37,7 @@ class Admin::StudiesControllerTest < ActionController::TestCase
           assert_equal [], @emails
         end
 
-        should_redirect_to("admin studies path") { "/admin/studies/#{@study.id}" }
+        should redirect_to("admin studies path") { "/admin/studies/#{@study.id}" }
       end
 
     end

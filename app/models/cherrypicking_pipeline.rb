@@ -7,4 +7,8 @@ class CherrypickingPipeline < GenotypingPipeline
     [:holder_not_control]
   end
 
+  def inbox_eager_loading
+    :loaded_for_grouped_inbox_display
+  end
+
 end

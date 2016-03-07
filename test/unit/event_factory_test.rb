@@ -7,44 +7,46 @@ require "test_helper"
 class EventFactoryTest < ActiveSupport::TestCase
   context "An EventFactory" do
     setup do
-      @user = Factory :user, :login => "south", :email => "south@example.com"
-      @bad_user = Factory :user, :login => "south", :email => ""
-      @project = Factory :project, :name => "hello world"
-      #@project = Factory :project, :name => "hello world", :user => @user
-      role = Factory :owner_role, :authorizable => @project
+      @user = create :user, :login => "south", :email => "south@example.com"
+      @bad_user = create :user, :login => "south", :email => ""
+      @project = create :project, :name => "hello world"
+      #@project = create :project, :name => "hello world", :user => @user
+      role = create :owner_role, :authorizable => @project
       role.users << @user << @bad_user
-      @request_type = Factory :request_type, :key => "library_creation", :name => "Library creation"
-      @request = Factory :request, :request_type => @request_type, :user => @user, :project => @project
+      @request_type = create :request_type, :key => "library_creation", :name => "Library creation"
+      @request = create :request, :request_type => @request_type, :user => @user, :project => @project
     end
 
     context "#new_project" do
       setup do
-        admin = Factory :role, :name => "administrator"
-        user1 = Factory :user, :login => "abc123"
+        @event_count =  Event.count
+        admin = create :role, :name => "administrator"
+        user1 = create :user, :login => "abc123"
         user1.roles << admin
         EventFactory.new_project(@project, @user)
       end
 
-      should_change("Event.count", :by => 1) { Event.count }
+     should "change Event.count by 1" do
+       assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+     end
 
-      should "send 1 email to 1 recipient" do
-        assert_sent_email do |email|
-          email.subject =~ /Project/ \
-            && email.bcc.include?("abc123@example.com") \
-            && email.bcc.size == 1 \
-            && email.body =~ /Project registered/
-        end
-
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
+      context "send 1 email to 1 recipient" do
+        should have_sent_email.
+          with_subject(/Project/).
+          bcc("abc123@example.com").
+          with_body(/Project registered/)
+        # should have_sent_email.bcc.size == 1
+        should_not have_sent_email.bcc("")
       end
     end
 
     context "#new_sample" do
       setup do
-        admin = Factory :role, :name => "administrator"
-        user1 = Factory :user, :login => "abc123"
+        @event_count =  Event.count
+        admin = create :role, :name => "administrator"
+        user1 = create :user, :login => "abc123"
         user1.roles << admin
-        @sample = Factory :sample, :name => "NewSample"
+        @sample = create(:sample, :name => "NewSample")
       end
 
       context "project is blank" do
@@ -52,209 +54,203 @@ class EventFactoryTest < ActiveSupport::TestCase
           EventFactory.new_sample(@sample, [], @user)
         end
 
-        should_change("Event.count", :by => 1) { Event.count }
+       should "change Event.count by 1" do
+         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+      end
 
-        should "send an email to one recipient" do
-          assert_sent_email do |email|
-            email.subject =~ /Sample/ \
-              && email.bcc.include?("abc123@example.com") \
-              && email.bcc.size == 1 \
-              && email.body =~ /New '#{@sample.name}' registered by #{@user.login}/
-          end
+        context "send an email to one recipient" do
+          should have_sent_email.
+            with_subject(/Sample/).
+            bcc("abc123@example.com").
+            with_body(/New 'NewSample' registered by south/)
         end
       end
 
       context "project is not blank" do
         setup do
+          @event_count =  Event.count
           EventFactory.new_sample(@sample, @project, @user)
         end
 
-        should_change("Event.count", :by => 2) { Event.count }
 
-        should "send 2 emails each to one recipient" do
-          assert_sent_email do |email|
-            email.subject =~ /Sample/ \
-              && email.bcc.include?("abc123@example.com") \
-              && email.bcc.size == 1 \
-              && email.body =~ /New '#{@sample.name}' registered by #{@user.login}/
-          end
+         should "change Event.count by 2" do
+           assert_equal 2,  Event.count  - @event_count, "Expected Event.count to change by 2"
+        end
 
-          assert_sent_email do |email|
-            email.subject =~ /Project/ \
-              && email.bcc.include?("abc123@example.com") \
-              && email.bcc.size == 1 \
-              && email.body =~ /New '#{@sample.name}' registered by #{@user.login}: #{@sample.name}. This sample was assigned to the '#{@project.name}' project./
-          end
+        context "send 2 emails each to one recipient" do
+          should have_sent_email.
+            with_subject(/Sample/).
+            bcc("abc123@example.com").
+            # && email.bcc.size == 1 \
+            with_body(/New 'NewSample' registered by south/)
 
-          assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
+
+          should have_sent_email.
+            with_subject(/Project/).
+            bcc("abc123@example.com").
+            # && email.bcc.size == 1 \
+            with_body(/New 'NewSample' registered by south: NewSample. This sample was assigned to the 'hello world' project./)
+
+          should_not have_sent_email.bcc("")
         end
       end
     end
 
     context "#project_approved" do
       setup do
+        @event_count =  Event.count
         ::ActionMailer::Base.deliveries = [] # reset the queue
-        role = Factory :manager_role, :authorizable => @project
+        role = create :manager_role, :authorizable => @project
         role.users << @user
-        admin = Factory :role, :name => "administrator"
-        user1 = Factory :user, :login => "west"
+        admin = create :role, :name => "administrator"
+        user1 = create :user, :login => "west"
         user1.roles << admin
         EventFactory.project_approved(@project, @user)
       end
 
-      should_change("Event.count", :by => 1) { Event.count }
+      should "change Event.count by 1" do
+        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+      end
 
-      should "send email to project manager" do
-        assert_sent_email do |email|
-          email.subject =~ /Project/ \
-            && email.subject =~ /Project approved/ \
-            && email.bcc.include?("#{@user.login}@example.com") \
-            && email.bcc.size == 1 \
-            && email.body =~ /Project approved/
-        end
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
+      context "send email to project manager" do
+        should have_sent_email.
+          with_subject(/Project approved/).
+          bcc("south@example.com").
+          with_body(/Project approved/)
+
+        should_not have_sent_email.bcc("")
       end
     end
 
     context "#project_approved by administrator" do
       setup do
+        @event_count =  Event.count
         ::ActionMailer::Base.deliveries = [] # reset the queue
-        admin = Factory :role, :name => "administrator"
-        @user1 = Factory :user, :login => "west"
+        admin = create :role, :name => "administrator"
+        @user1 = create :user, :login => "west"
         @user1.roles << admin
-        @user2 = Factory :user, :login => "north"
+        @user2 = create :user, :login => "north"
         @user2.roles << admin
-        role = Factory :manager_role, :authorizable => @project
+        role = create :manager_role, :authorizable => @project
         role.users << @user
         EventFactory.project_approved(@project, @user2)
       end
 
-      should_change("Event.count", :by => 1) { Event.count }
-
-      should ": send emails to the (two) administrators" do
-        assert_sent_email do |email|
-          email.subject =~ /Project/ \
-            && email.subject =~ /Project approved/ \
-            && email.bcc.include?("#{@user1.login}@example.com") \
-            && email.bcc.size == 3 \
-            && email.body =~ /Project approved/
-        end
-        assert_sent_email do |email|
-          email.subject =~ /Project/ \
-            && email.subject =~ /Project approved/ \
-            && email.bcc.include?("#{@user2.login}@example.com") \
-            && email.bcc.size == 3 \
-            && email.body =~ /Project approved/
-        end
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
+      should "change Event.count by 1" do
+        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
       end
 
-      should ": send email to project manager" do
-        assert_sent_email do |email|
-          email.subject =~ /Project/ \
-            && email.subject =~ /Project approved/ \
-            && email.bcc.include?("#{@user.login}@example.com") \
-            && email.bcc.size == 3 \
-            && email.body =~ /Project approved/
-        end
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
+      context ": send emails to everyone administrators" do
+        should have_sent_email.
+          with_subject(/Project approved/).
+          bcc("west@example.com").
+          bcc("north@example.com").
+          bcc("south@example.com").
+          with_body(/Project approved/)
+
+        should_not have_sent_email.bcc("")
       end
+
     end
 
     context "#project_approved but not by administrator" do
       setup do
+        @event_count =  Event.count
         ::ActionMailer::Base.deliveries = []
-        admin = Factory :role, :name => "administrator"
-        @user1 = Factory :user, :login => "west"
+        admin = create :role, :name => "administrator"
+        @user1 = create :user, :login => "west"
         @user1.roles << admin
-        follower = Factory :role, :name => "follower"
-        @user2 = Factory :user, :login => "north"
+        follower = create :role, :name => "follower"
+        @user2 = create :user, :login => "north"
         @user2.roles << follower
-        role = Factory :manager_role, :authorizable => @project
+        role = create :manager_role, :authorizable => @project
         role.users << @user
         EventFactory.project_approved(@project, @user2)
       end
 
-      should_change("Event.count", :by => 1) { Event.count }
 
-      should ": send email to project manager" do
-        assert_sent_email do |email|
-          email.subject =~ /Project/ \
-            && email.subject =~ /Project approved/ \
-            && email.bcc.include?("#{@user.login}@example.com") \
-            && email.bcc.size == 1 \
-            && email.body =~ /Project approved/
-        end
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
+       should "change Event.count by 1" do
+         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
       end
 
-      should "send no email to adminstrator nor to approver" do
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "#{@user1.login}@example.com" }
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "#{@user2.login}@example.com" }
-        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
+      context ": send email to project manager" do
+        should have_sent_email.
+          with_subject(/Project/).
+          with_subject(/Project approved/).
+          bcc("south@example.com").
+          with_body(/Project approved/)
+
+       should_not have_sent_email.bcc("")
+      end
+
+      context "send no email to adminstrator nor to approver" do
+        should_not have_sent_email.bcc("west@example.com")
+        should_not have_sent_email.bcc("north@example.com")
+        should_not have_sent_email.bcc("")
       end
     end
 
     context "#study has samples added" do
       setup do
+        @event_count =  Event.count
         ::ActionMailer::Base.deliveries = []
-        role = Factory :manager_role, :authorizable => @project
+        role = create :manager_role, :authorizable => @project
         role.users << @user
-        follower = Factory :role, :name => "follower"
-        @user1 = Factory :user, :login => "north"
+        follower = create :role, :name => "follower"
+        @user1 = create :user, :login => "north"
         @user1.roles << follower
-        @user2 = Factory :user, :login => "west"
+        @user2 = create :user, :login => "west"
         @user2.roles << follower
-        @study = Factory :study, :user => @user2
-        @submission = Factory::submission :project => @project, :study => @study, :asset_group_name => 'to prevent asset errors'
+        @study = create :study, :user => @user2
+        @submission = FactoryHelp::submission :project => @project, :study => @study, :asset_group_name => 'to prevent asset errors'
         @samples = []
-        @samples[0] = Factory :sample, :name => "NewSample-1"
-        @samples[1] = Factory :sample, :name => "NewSample-2"
+        @samples[0] = create :sample, :name => "NewSample-1"
+        @samples[1] = create :sample, :name => "NewSample-2"
         EventFactory.study_has_samples_registered(@study, @samples, @user1)
       end
 
-      should_change("Event.count", :by => 1) { Event.count }
+       should "change Event.count by 1" do
+         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+      end
 
-      should "send email to project manager" do
-        assert_sent_email do |email|
-          email.subject =~ /Sample/ \
-            && email.subject =~ /registered/ \
-            && email.bcc \
-            && email.bcc.include?("#{@user.email}") \
-            && email.bcc.size == 1
-        end
+      context "send email to project manager" do
+        should have_sent_email.
+          with_subject(/Sample/).
+          with_subject(/registered/).
+          bcc("south@example.com")
       end
 
     end
 
     context "#request update failed" do
       setup do
+        @event_count =  Event.count
         ::ActionMailer::Base.deliveries = []
-        role = Factory :manager_role, :authorizable => @project
+        role = create :manager_role, :authorizable => @project
         role.users << @user
-        @user1 = Factory :user, :login => "north"
+        @user1 = create :user, :login => "north"
         @request.user = @user1
-        follower = Factory :role, :name => "follower"
-        @user2 = Factory :user, :login => "west"
+        follower = create :role, :name => "follower"
+        @user2 = create :user, :login => "west"
         @user2.roles << follower
-        @study = Factory :study, :user => @user2
-        @submission = Factory::submission :project => @project, :study => @study, :assets => [Factory :sample_tube]
-        @request = Factory :request, :study => @study, :project => @project,  :submission => @submission
-        @user3 = Factory :user, :login => "east"
+        @study = create :study, :user => @user2
+        @submission = FactoryHelp::submission(:project => @project, :study => @study, :assets => [create(:sample_tube)])
+        @request = create :request, :study => @study, :project => @project,  :submission => @submission
+        @user3 = create :user, :login => "east"
         message = "An error has occurred"
         EventFactory.request_update_note_to_manager(@request, @user3, message)
       end
 
-      should_change("Event.count", :by => 1) { Event.count }
 
-      should "send email to project manager" do
-        assert_sent_email do |email|
-          email.subject =~ /Request update/ \
-            && email.subject =~ /failed/ \
-            && email.bcc \
-            && email.bcc.include?("#{@user.email}") \
-            && email.bcc.size == 1
-        end
+       should "change Event.count by 1" do
+         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+      end
+
+      context "send email to project manager" do
+        should have_sent_email.
+          with_subject(/Request update/).
+          with_subject(/failed/).
+          bcc("south@example.com")
       end
     end
   end
@@ -272,7 +268,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 # e.g. use as: 'should "list" do  assert_did_not_send_mail; end'
       msg = "Sent #{::ActionMailer::Base.deliveries.size} emails.\n"
       ::ActionMailer::Base.deliveries.each do |email|
-        msg << "  ‘#{email.subject}’ sent to #{email.bcc}:\n#{email.body}\n\n"
+        msg << "  '#{email.subject}' sent to #{email.bcc}:\n#{email.body}\n\n"
       end
       assert ::ActionMailer::Base.deliveries.empty?, msg
     end

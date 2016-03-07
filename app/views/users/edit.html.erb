@@ -4,7 +4,7 @@
 <%- add :title, "Update your user profile." %>
 
 <h1>EDIT PROFILE: <%=h @user.login %></h1>
-<% form_for :user, :url => profile_path(@user), :html => {:method => :put} do |f| %>
+<%= form_for :user, :url => profile_path(@user), :html => {:method => :put} do |f| %>
   <div class="info">
     <table width='100%'>
       <tr>

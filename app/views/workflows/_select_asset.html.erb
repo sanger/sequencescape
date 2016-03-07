@@ -36,7 +36,7 @@
           <td><%= asset.descriptor_value('Start') %></td>
           <td><%= asset.descriptor_value('End') %></td>
           <td><%= asset.descriptor_value('Location') %></td>
-          <td><%= link_to_remote 'Add', :update => 'selected_samples', :url => { :action => 'add_resource', :id => asset.id, :resource => false, :batch_id => @batch.id } %></td>
+          <td><%= link_to'Add', :update => 'selected_samples', :url => { :action => 'add_resource', :id => asset.id, :resource => false, :batch_id => @batch.id }, :remote => true  %></td>
         </tr>
         <% end -%>
       <% end -%>
@@ -47,12 +47,12 @@
 <% end %>
 <script type="text/javascript">
   function toggle_fragments(){
-    if ($('fragments').style.display == 'none'){
-      Element.show('fragments');
-      $('toggle_fragments_link').innerHTML = 'Hide';
+    if ($('#fragments').style.display == 'none'){
+      $('#fragments').show();
+      $('#toggle_fragments_link').innerHTML = 'Hide';
     } else{
-      Element.hide('fragments');
-      $('toggle_fragments_link').innerHTML = 'Expand';
+      $('#fragments').hide();
+      $('#toggle_fragments_link').innerHTML = 'Expand';
     }
   }
 </script>

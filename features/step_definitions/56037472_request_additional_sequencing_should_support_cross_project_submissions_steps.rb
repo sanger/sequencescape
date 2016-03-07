@@ -16,7 +16,7 @@ end
 Then /^the multiplexed library tube "(.*?)" contains "(.*?)"$/ do |tube_name, library_tube_name|
   library_tube = LibraryTube.find_by_name(library_tube_name)
   library_tube.aliquots.each do |aliquot|
-    new_aliquot = aliquot.clone
+    new_aliquot = aliquot.dup
     new_aliquot.library = library_tube
     MultiplexedLibraryTube.find_by_name(tube_name).aliquots << new_aliquot
     new_aliquot.save!

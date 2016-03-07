@@ -13,7 +13,7 @@ class Api::AliquotIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [
+        scope :including_associations_for_json, -> { includes([
             :uuid_object,
             { :sample => :uuid_object} ,
             { :study => :uuid_object },
@@ -21,8 +21,7 @@ class Api::AliquotIO < Api::Base
             { :tag => :uuid_object },
             { :library => :uuid_object },
             { :receptacle => :uuid_object }
-          ]
-        }
+          ])}
       end
     end
   end

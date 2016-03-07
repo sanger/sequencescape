@@ -5,11 +5,11 @@ class Assets::CommentsController < ApplicationController
   before_filter :discover_asset
 
   def index
-    @comments = @asset.comments.all(:order => "comments.created_at ASC")
+    @comments = @asset.comments.order("created_at ASC")
   end
 
   def create
-    @asset.comments.create(:description => params[:comment], :user_id => current_user.id)
+    @asset.comments.create(:description => params[:comment], :user => current_user)
     @comments = @asset.comments
     render :partial => "list", :locals => { :commentable => @asset, :visible => true }
   end

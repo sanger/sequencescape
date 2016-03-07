@@ -27,7 +27,7 @@ class AddCherryPickForIlluminaBRequestType < ActiveRecord::Migration
 
     # Add a new request_type
     def new_request_type
-      @new_request_type ||= old_request_type.clone.tap do |new_request_type|
+      @new_request_type ||= old_request_type.dup.tap do |new_request_type|
         # Duplicate request_type
         new_request_type.name = 'Cherrypick for Illumina-B'
         new_request_type.key  = 'cherrypick_for_illumina_b'

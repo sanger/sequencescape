@@ -2,8 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.%>
 <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
-<% fields_for(study) do |form| %>
-  <% form.fields_for(:study_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
+<%= fields_for(study) do |form| %>
+  <%= form.fields_for(:study_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
     <%= metadata_fields.association_attribute(:faculty_sponsor, :name, :grouping => 'Specification') %>
 
     <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>

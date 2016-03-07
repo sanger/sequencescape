@@ -2,8 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
 Given /^I have a project called "([^\"]*)"$/ do |project|
-#  proj = Factory :project_with_order, :name => project
-  Factory(:project, :name => project)
+#  proj = FactoryGirl.create :project_with_order, :name => project
+  FactoryGirl.create(:project, :name => project)
 end
 
 Given /^project "([^\"]*)" approval is "([^\"]*)"$/ do |project, approval|

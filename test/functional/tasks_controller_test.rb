@@ -11,11 +11,11 @@ class TasksControllerTest < ActionController::TestCase
       @controller = TasksController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user       = Factory :admin
+      @user       =FactoryGirl.create :admin
       @controller.stubs(:current_user).returns(@user)
-      @pipeline = Factory :pipeline, :name => "Normal pipeline"
+      @pipeline =FactoryGirl.create :pipeline, :name => "Normal pipeline"
       @workflow = @pipeline.workflow
-      @task = Factory :task, :workflow => @workflow, :name => "A new task name"
+      @task =FactoryGirl.create :task, :workflow => @workflow, :name => "A new task name"
     end
     should_require_login
 
@@ -24,7 +24,7 @@ class TasksControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_render_template :index
+      should render_template :index
     end
 
     context "#show" do
@@ -32,7 +32,7 @@ class TasksControllerTest < ActionController::TestCase
         get :show, :id => @task.id
       end
 
-      should_render_template :show
+      should render_template :show
     end
 
     context "#new" do

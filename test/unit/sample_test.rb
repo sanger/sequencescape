@@ -12,15 +12,15 @@ end
 class SampleTest < ActiveSupport::TestCase
   context "A Sample" do
 
-    should_have_many :study_samples
-    should_have_many :studies, :through => :study_samples
+    should have_many :study_samples
+    should have_many :studies#, :through => :study_samples
 
     context "when used in older assets" do
 
       setup do
-        @sample = Factory :sample
-        @tube_a = Factory :empty_library_tube
-        @tube_b = Factory :empty_sample_tube
+        @sample = create :sample
+        @tube_a = create :empty_library_tube
+        @tube_b = create :empty_sample_tube
 
         @tube_b.aliquots.create!(:sample=>@sample)
         @tube_a.aliquots.create!(:sample=>@sample)
@@ -34,47 +34,47 @@ class SampleTest < ActiveSupport::TestCase
 
     context "move a Sample" do
       setup do
-        @study_from = Factory :study
-        @study_to   = Factory :study
-        @sample_from = Factory :sample
-          @sample_from_ok = Factory(:sample,:studies => [@study_from])
-        @workflow = Factory :submission_workflow
+        @study_from = create :study
+        @study_to   = create :study
+        @sample_from = create :sample
+          @sample_from_ok = create(:sample,:studies => [@study_from])
+        @workflow = create :submission_workflow
         @new_assets_name = ""
-        @current_user = Factory :user
+        @current_user = create :user
 
-        @asset_1 = Factory(:empty_sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
+        @asset_1 = create(:empty_sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
 
-        @asset_group = Factory :asset_group, :name => "not mx"
-        @asset_group_asset = Factory :asset_group_asset, :asset_id => @asset_1.id, :asset_group_id => @asset_group.id
+        @asset_group = create :asset_group, :name => "not mx"
+        @asset_group_asset = create :asset_group_asset, :asset_id => @asset_1.id, :asset_group_id => @asset_group.id
 
 
-        @request_type_1 = Factory :request_type, :name => "request type 1"
-        @request_type_2 = Factory :request_type, :name => "request type 2"
-        @request_type_3 = Factory :request_type, :name => "Pair end sequencing"
+        @request_type_1 = create :request_type, :name => "request type 1"
+        @request_type_2 = create :request_type, :name => "request type 2"
+        @request_type_3 = create :request_type, :name => "Pair end sequencing"
 
         @request_type_ids = [@request_type_1.id, @request_type_3.id]
 
         @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
 
-        @submission_to = Factory::submission :study => @study_to, :workflow => @workflow, :assets => [ @asset_1 ],
+        @submission_to = FactoryHelp::submission :study => @study_to, :workflow => @workflow, :assets => [ @asset_1 ],
                          :request_types => @request_type_ids, :request_options => @request_options
 
       end
 
       context "only valid assets and without submissions" do
         setup do
-          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
-          @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_New", :study => @study_from
-          @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
+          @asset_from = create(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
+          @asset_group_from_new = create :asset_group, :name => "Asset_Sample_New", :study => @study_from
+          @asset_group_asset_from = create :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
 
           @asset_from.aliquots.each {|a| a.study= @study_from}
           @asset_from.save!
 
-          @sample_to = Factory :sample
-          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
-          @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample"
-          @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
+          @sample_to = create :sample
+          @asset_to = create(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
+          @asset_group_to_new = create :asset_group, :name => "Asset_Sample"
+          @asset_group_asset_to = create :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
 
         end
 
@@ -92,23 +92,23 @@ class SampleTest < ActiveSupport::TestCase
 
       context  "With Study_from with submission and New assets or assets without submission" do
         setup do
-          @sample_from_ok = Factory :sample
-          @asset_from = Factory(:empty_sample_tube,
+          @sample_from_ok = create :sample
+          @asset_from = create(:empty_sample_tube,
                                 :name => @sample_from_ok.name).tap { |sample_tube|
             sample_tube.aliquots.create!(:sample => @sample_from_ok, :study => @study_from) }
-          @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_From", :study => @study_from
-          @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
+          @asset_group_from_new = create :asset_group, :name => "Asset_Sample_From", :study => @study_from
+          @asset_group_asset_from = create :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
-          @sample_to = Factory :sample
-          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
-          @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample_To"
-          @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
+          @sample_to = create :sample
+          @asset_to = create(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
+          @asset_group_to_new = create :asset_group, :name => "Asset_Sample_To"
+          @asset_group_asset_to = create :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
 
           @request_type_ids_from = [@request_type_2.id, @request_type_3.id]
-          @item = Factory :item
-          @submission_from_1 = Factory::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
+          @item = create :item
+          @submission_from_1 = FactoryHelp::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
                            :request_types => @request_type_ids_from, :request_options => @request_options
-          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type_1, :study => @study_from, :workflow => @workflow, :item => @item
+          @request = create :request, :submission => @submission_from_1, :request_type => @request_type_1, :study => @study_from, :workflow => @workflow, :item => @item
         end
 
         should "return true" do
@@ -132,29 +132,29 @@ class SampleTest < ActiveSupport::TestCase
 
       context  "With 2 submissions, with same requests" do
         setup do
-          @sample_from_ok = Factory :sample
-          @asset_from = Factory(:empty_sample_tube,
+          @sample_from_ok = create :sample
+          @asset_from = create(:empty_sample_tube,
                                 :name => @sample_from_ok.name).tap { |sample_tube|
             sample_tube.aliquots.create!(:sample => @sample_from_ok, :study => @study_from) }
-          @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_From", :study => @study_from
-          @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
+          @asset_group_from_new = create :asset_group, :name => "Asset_Sample_From", :study => @study_from
+          @asset_group_asset_from = create :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
-          @sample_to = Factory :sample
-          @asset_to = Factory(:empty_sample_tube,
+          @sample_to = create :sample
+          @asset_to = create(:empty_sample_tube,
                               :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
-          @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample_To"
-          @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
+          @asset_group_to_new = create :asset_group, :name => "Asset_Sample_To"
+          @asset_group_asset_to = create :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
 
           @request_type_ids_both = [@request_type_2.id, @request_type_3.id]
-          @item = Factory :item
-          @submission_from_1 = Factory::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
+          @item = create :item
+          @submission_from_1 = FactoryHelp::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
                            :request_types => @request_type_ids_both, :request_options => @request_options
-          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type_1, :study => @study_from, :workflow => @workflow, :item => @item
+          @request = create :request, :submission => @submission_from_1, :request_type => @request_type_1, :study => @study_from, :workflow => @workflow, :item => @item
 
-          @item_to = Factory :item
-          @submission_to_1 = Factory::submission :study => @study_to, :workflow => @workflow, :assets => [ @asset_to ],
+          @item_to = create :item
+          @submission_to_1 = FactoryHelp::submission :study => @study_to, :workflow => @workflow, :assets => [ @asset_to ],
                              :request_types => @request_type_ids_both, :request_options => @request_options
-          @request = Factory :request, :submission => @submission_to_1, :request_type => @request_type_1, :study => @study_to, :workflow => @workflow, :item => @item_to
+          @request = create :request, :submission => @submission_to_1, :request_type => @request_type_1, :study => @study_to, :workflow => @workflow, :item => @item_to
         end
 
         should "return true" do
@@ -176,7 +176,7 @@ class SampleTest < ActiveSupport::TestCase
 
     context "#accession_number?" do
       setup do
-        @sample = Factory :sample
+        @sample = create :sample
       end
       context "with nil accession number" do
         setup do

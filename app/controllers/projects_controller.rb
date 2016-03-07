@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
  #TODO: before_filter :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
-    @projects = Project.all(:order => 'name ASC').paginate(:page => params[:page])
+    @projects = Project.alphabetical.page(params[:page])
 
     respond_to do |format|
       format.html
@@ -17,7 +17,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    if current_user != :false
+    if current_user.present?
       @workflow = current_user.workflow
       # TODO[xxx]: filtered the project based on user workflow
     end
@@ -63,7 +63,7 @@ class ProjectsController < ApplicationController
       format.json { render :json => @project, :status => :created, :location => @project }
     end
   rescue ActiveRecord::RecordInvalid => exception
-    action_flash[:error] = "Problems creating your new project"
+    flash.now[:error] = "Problems creating your new project"
     respond_to do |format|
       format.html {
         render :action => "new"

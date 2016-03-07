@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.
 Given /^a state "([^"]*)" to lane named "([^"]*)"$/ do |status,name|
-  Factory(:lane, :name => name, :qc_state => status)
+  FactoryGirl.create(:lane, :name => name, :qc_state => status)
 end
 
 Given /^an unreleasable lane named "([^"]*)"$/ do |name|

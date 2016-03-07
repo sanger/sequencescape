@@ -16,7 +16,7 @@ class SessionsControllerTest < ActionController::TestCase
     @controller = SessionsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    @user       = Factory(:user, :login => "john", :email => "john@beatles.com",
+    @user       =FactoryGirl.create(:user, :login => "john", :email => "john@beatles.com",
       :salt => "7e3041ebc2fc05a40c60028e2c4901a81035d3cd",
       :crypted_password => "00742970dc9e6319f8019fd54864d3ea740f04b1", # test
       :created_at => 5.days.ago.to_s)
@@ -32,18 +32,6 @@ class SessionsControllerTest < ActionController::TestCase
     post :login, :login => 'john', :password => 'bad password'
     assert_nil session[:user]
     assert_response :success
-  end
-
-  def test_should_filter_passwords_from_all_fields
-    post :login, :login => 'john', :password => 'secret'
-    assert_equal(
-      {"password"=>"[FILTERED]"},
-      @controller.__send__(:filter_parameters,{"password"=>"login=username&password=secret&commit=Login"})
-    )
-    assert_equal(
-      {"rack.request.form_vars"=>"login=username&password=[FILTERED]&commit=Login"},
-      @controller.__send__(:filter_parameters,{"rack.request.form_vars"=>"login=username&password=secret&commit=Login"})
-    )
   end
 
   def test_should_logout

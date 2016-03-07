@@ -14,7 +14,7 @@ class Accessionable::Submission < Accessionable::Base
   end
 
   def alias
-    @accessionables.map(&:alias).join(" - ")
+    @accessionables.map(&:alias).join(" - ") << DateTime.now.strftime('%Y%m%dT%H%M')
   end
 
   def <<(accessionable)

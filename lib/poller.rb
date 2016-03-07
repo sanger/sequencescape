@@ -15,9 +15,9 @@ if File.exists? merb_init_file
   require merb_init_file
 else
   # Load Rails
-  RAILS_ROOT ||= File.expand_path(File.join(File.dirname(__FILE__), '..'))
-  require File.join(RAILS_ROOT, 'config', 'boot')
-  require File.join(RAILS_ROOT, 'config', 'environment')
+  Rails.root ||= File.expand_path(File.join(File.dirname(__FILE__), '..'))
+  require File.join(Rails.root, 'config', 'boot')
+  require File.join(Rails.root, 'config', 'environment')
 end
 
 # Load ActiveMessaging processors

@@ -5,7 +5,7 @@ module ModelExtensions::Project
   def self.included(base)
     base.class_eval do
       has_many :submissions
-      named_scope :include_roles, :include => { :roles => :users }
+      scope :include_roles, -> { includes( :roles => :users ) }
     end
   end
 

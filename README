@@ -40,6 +40,8 @@ $ bundle exec ./script/server
 For background processing Sequencescape uses delayed_job ensure
 that the server is running.
 
+$ bundle exec rake jobs:work
+
 === Supporting applications ===
 
 There are a number of services that are needed in certain parts

@@ -4,7 +4,7 @@
 module Presenters
   class BatchSubmenuPresenter
     attr_reader :options
-    include ActionController::UrlWriter
+    include Rails.application.routes.url_helpers
     include ActionView::Helpers::TextHelper
 
     private

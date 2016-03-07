@@ -35,5 +35,16 @@ class Transfer::FromPlateToTube < Transfer
     destination.transfer_request_type_from(source)
   end
   private :request_type_between
+
+  after_create :update_tube_name
+
+  def update_tube_name
+    source_barcode = source.source_plate.try(:sanger_human_barcode)
+    range = "#{transfers.first}:#{transfers.last}"
+    destination.update_attributes!(:name=>"#{source_barcode} #{range}")
+  end
+  private :update_tube_name
+
+
 end
 

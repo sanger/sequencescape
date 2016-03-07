@@ -26,22 +26,22 @@ class Lot < ActiveRecord::Base
 
   has_many :stamps, :inverse_of => :lot
 
-  validates_presence_of :lot_number, :lot_type, :user, :template, :received_at
+  validates :lot_number, :lot_type, :user, :template, :received_at, :presence => true
   validates_uniqueness_of :lot_number
 
   validate :valid_template?
 
   delegate :valid_template_class, :target_purpose, :to => :lot_type
 
-  named_scope :include_lot_type, { :include => :lot_type }
-  named_scope :include_template, { :include => :template }
-  named_scope :with_lot_number, lambda { |lot_number| {:conditions=>{:lot_number=>lot_number} } }
+ scope :include_lot_type, -> { includes(:lot_type) }
+ scope :include_template, -> { includes(:template) }
+ scope :with_lot_number,  ->(lot_number) { {:conditions=>{:lot_number=>lot_number} } }
 
-  named_scope :with_qc_asset, lambda {|qc_asset|
+ scope :with_qc_asset, ->(qc_asset) {
     return { :conditions => 'FALSE' } if qc_asset.nil?
     sibling = qc_asset.transfers_as_destination.first.source
 
-    {:include=>:qcables,:conditions=>['qcables.asset_id IN(?) AND qcables.state != ?',[qc_asset.id,sibling.id],'exhausted' ]}
+    includes(:qcables).where(['qcables.asset_id IN(?) AND qcables.state != ?',[qc_asset.id,sibling.id],'exhausted' ])
   }
 
   private

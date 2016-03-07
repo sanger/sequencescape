@@ -12,13 +12,13 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_inheritable_reader :instance_handler
+      base.class_attribute :instance_handler, :instance_writer => false
     end
 
     def instance(&block)
       handler = Class.new(Handler).tap { |handler| const_set(:Instance, handler) }.new(&block)
       handler.instance_variable_set(:@name, name)
-      write_inheritable_attribute(:instance_handler, handler)
+      self.instance_handler = handler
     end
   end
 
@@ -39,12 +39,12 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_inheritable_reader :model_handler
+      base.class_attribute :model_handler, :instance_writer => false
     end
 
     def model(&block)
       handler = Class.new(Handler).tap { |handler| const_set(:Model, handler) }.new(&block)
-      write_inheritable_attribute(:model_handler, handler)
+      self.model_handler = handler
     end
   end
 

@@ -5,6 +5,7 @@ require "test_helper"
 
 class LabEventTest < ActiveSupport::TestCase
   context "An event" do
-    should_belong_to :user, :eventful
+    should belong_to :user
+    should belong_to :eventful
   end
 end

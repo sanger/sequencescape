@@ -7,10 +7,6 @@
 	<% add :menu, "Back to #{study.name}" => study_url(study) %>
 <% end %>
 
-<div id="content-title">
-  <div id="content-name">
-    <em><strong><%= @asset.label %> <%= @asset.id %></strong>
-  </div>
-  &nbsp;
-</div>
+<%= page_title "Print Labels", "#{@asset.label} #{@asset.id} (#{@asset.sanger_human_barcode})" %>
+
 <%= render :partial => 'print_form', :locals => { :asset => @asset } %>

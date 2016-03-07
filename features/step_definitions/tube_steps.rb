@@ -11,7 +11,7 @@ Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
 end
 
 Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)" from "([^"]*)"$/ do |tube_name, state, request_type, source_name|
-  submission = Submission.last || Factory(:submission)
+  submission = Submission.last || FactoryGirl.create(:submission)
   tube = Tube.find_by_name(tube_name)
   source = Asset.find_by_name(source_name)
   source = source.wells.first if source.is_a?(Plate)

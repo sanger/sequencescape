@@ -11,8 +11,8 @@ class BatchesControllerTest < ActionController::TestCase
       @controller = BatchesController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user       = Factory :admin
-      @pipeline_user = Factory :pipeline_admin, :login => @user.login
+      @user       =FactoryGirl.create :admin
+      @pipeline_user =FactoryGirl.create :pipeline_admin, :login => @user.login
     end
     should_require_login
 
@@ -27,14 +27,14 @@ class BatchesControllerTest < ActionController::TestCase
         setup do
           pipeline = Pipeline.find_by_name('Cluster formation PE (no controls)') or raise StandardError, "Cannot find 'Cluster formation PE (no controls)' pipeline"
 
-          @study, @project = Factory(:study), Factory(:project)
-          @sample = Factory :sample
-          @submission = Factory :submission_without_order, {:priority => 3}
+          @study, @project =FactoryGirl.create(:study),FactoryGirl.create(:project)
+          @sample =FactoryGirl.create :sample
+          @submission =FactoryGirl.create :submission_without_order, {:priority => 3}
 
-          @library = Factory(:empty_library_tube).tap do |library_tube|
+          @library =FactoryGirl.create(:empty_library_tube).tap do |library_tube|
             library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study, :library => library_tube, :library_type => 'Standard')
           end
-          @lane        = Factory(:empty_lane, :qc_state => 'failed')
+          @lane        =FactoryGirl.create(:empty_lane, :qc_state => 'failed')
           @request_one = pipeline.request_types.first.create!(
             :asset => @library, :target_asset => @lane,
             :project => @project, :study => @study,
@@ -42,15 +42,15 @@ class BatchesControllerTest < ActionController::TestCase
             :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 76 }
           )
 
-          batch = Factory :batch, :pipeline => pipeline
+          batch =FactoryGirl.create :batch, :pipeline => pipeline
           batch.batch_requests.create!(:request => @request_one, :position => 1)
           batch.reload
-          batch.start!(Factory(:user))
+          batch.start!(create(:user))
 
-          get :show, :id => batch.id, :format => "xml"
+          get :show, :id => batch.id, :format => :xml
         end
 
-        should_respond_with_content_type :xml
+        should respond_with_content_type :xml
 
         should "have api version attribute on root object" do
           assert_response :success
@@ -78,34 +78,34 @@ class BatchesControllerTest < ActionController::TestCase
 
       context "actions" do
         setup do
-          @pipeline_next = Factory :pipeline, :name => 'Next pipeline'
-          @pipeline = Factory :pipeline, :name => 'New Pipeline', :automated => false, :next_pipeline_id => @pipeline_next.id
-          @pipeline_qc_manual = Factory :pipeline, :name => 'Manual quality control', :automated => false, :next_pipeline_id => @pipeline_next.id
-          @pipeline_qc = Factory :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_qc_manual.id
+          @pipeline_next =FactoryGirl.create :pipeline, :name => 'Next pipeline'
+          @pipeline =FactoryGirl.create :pipeline, :name => 'New Pipeline', :automated => false, :next_pipeline_id => @pipeline_next.id
+          @pipeline_qc_manual =FactoryGirl.create :pipeline, :name => 'Manual quality control', :automated => false, :next_pipeline_id => @pipeline_next.id
+          @pipeline_qc =FactoryGirl.create :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_qc_manual.id
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2
           @ws_two.update_attributes!(:locale => 'External')
 
-          @batch_one = Factory(:batch, :pipeline => @pipeline)
-          @batch_two = Factory(:batch, :pipeline => @pipeline_qc)
+          @batch_one =FactoryGirl.create(:batch, :pipeline => @pipeline)
+          @batch_two =FactoryGirl.create(:batch, :pipeline => @pipeline_qc)
 
-          @sample   = Factory :sample_tube
-          @library1 = Factory :empty_library_tube
+          @sample   =FactoryGirl.create :sample_tube
+          @library1 =FactoryGirl.create :empty_library_tube
           @library1.parents << @sample
-          @library2 = Factory :empty_library_tube
+          @library2 =FactoryGirl.create :empty_library_tube
           @library2.parents << @sample
 
           @library1.update_attributes(:location=>@pipeline.location)
           @library2.update_attributes(:location=>@pipeline.location)
 
-          @target_one = Factory(:sample_tube)
-          @target_two = Factory(:sample_tube)
+          @target_one =FactoryGirl.create(:sample_tube)
+          @target_two =FactoryGirl.create(:sample_tube)
 
           # todo add a control_request_type to pipeline...
-          @request_one = @pipeline.request_types.first.create!(:asset => @library1, :target_asset => @target_one, :project => Factory(:project))
+          @request_one = @pipeline.request_types.first.create!(:asset => @library1, :target_asset => @target_one, :project =>FactoryGirl.create(:project))
           @batch_one.batch_requests.create!(:request => @request_one, :position => 1)
-          @request_two = @pipeline.request_types.first.create!(:asset => @library2, :target_asset => @target_two, :project => Factory(:project))
+          @request_two = @pipeline.request_types.first.create!(:asset => @library2, :target_asset => @target_two, :project =>FactoryGirl.create(:project))
           @batch_one.batch_requests.create!(:request => @request_two, :position => 2)
           @batch_one.reload
         end
@@ -130,7 +130,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context "with control" do
             setup do
-              @cn = Factory :control, :name => "Control 1", :item_id => 2, :pipeline => @pipeline
+              @cn =FactoryGirl.create :control, :name => "Control 1", :item_id => 2, :pipeline => @pipeline
               @pipeline.controls << @cn
             end
             should "#add control" do
@@ -159,8 +159,8 @@ class BatchesControllerTest < ActionController::TestCase
             @old_count = Batch.count
             #@user.expects(:batches).returns(Batch.all)
 
-            @request_three = @pipeline.request_types.first.create!(:asset => @library1, :project => Factory(:project))
-            @request_four  = @pipeline.request_types.first.create!(:asset => @library2, :project => Factory(:project))
+            @request_three = @pipeline.request_types.first.create!(:asset => @library1, :project =>FactoryGirl.create(:project))
+            @request_four  = @pipeline.request_types.first.create!(:asset => @library2, :project =>FactoryGirl.create(:project))
           end
 
           context "redirect to #show new batch" do
@@ -176,7 +176,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context "redirect to action #control" do
             setup do
-              @cn = Factory :control, :name => "Control 1", :item_id => 2, :pipeline => @pipeline
+              @cn =FactoryGirl.create :control, :name => "Control 1", :item_id => 2, :pipeline => @pipeline
               @pipeline.controls << @cn
               post :create, :id => @pipeline.id, :request => {@request_three.id => "0", @request_four.id => "1"}
             end
@@ -186,15 +186,6 @@ class BatchesControllerTest < ActionController::TestCase
               assert_equal "Batch created - now add a control", flash[:notice]
               assert_redirected_to :controller => "batches", :action => "control", :id => Batch.last.id
             end
-          end
-
-          context "multiplexed batches for library prep" do
-            should "have items created that share an internal tracking id"
-            should "send internal tracking id back to projects"
-          end
-
-          context "non-multiplexed batches" do
-            should "have items created that have different internal tracking ids"
           end
 
           context "create and assign requests" do
@@ -216,11 +207,6 @@ class BatchesControllerTest < ActionController::TestCase
         context "#released" do
           should "return all released batches if passed params" do
             get :released, :id => @pipeline.id
-            assert_response :success
-          end
-
-          should "return released batches without params passed" do
-            get :released
             assert_response :success
           end
         end
@@ -245,7 +231,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           setup do
             # We need to ensure the batch is started before we fail it.
-            @batch_one.start!(Factory(:user))
+            @batch_one.start!(create(:user))
           end
 
           context "posting without a failure reason" do
@@ -253,7 +239,7 @@ class BatchesControllerTest < ActionController::TestCase
               post :fail_items, :id => @batch_one.id, :failure => { :reason => "", :comment => "" }
             end
             should "not allow failing a batch/items without specifying a reason and set the flash" do
-              @controller.session[:flash][:error].grep /Please specify a failure reason for this batch/
+              assert /Please specify a failure reason for this batch/ === @controller.session[:flash][:error]
               assert_redirected_to :action => :fail, :id => @batch_one.id
             end
           end
@@ -286,39 +272,33 @@ class BatchesControllerTest < ActionController::TestCase
     context "Find by barcode (found)" do
       setup do
         @controller.stubs(:current_user).returns(@admin)
-        @batch = Factory :batch
-        request = Factory :request
+        @batch =FactoryGirl.create :batch
+        request =FactoryGirl.create :request
         @batch.requests << request
         r = @batch.requests.first
         @e = r.lab_events.create(:description => "Cluster generation")
         @e.add_descriptor Descriptor.new({:name => "Chip Barcode", :value => "Chip Barcode: 62c7gaaxx"})
         @e.batch_id = @batch.id
         @e.save
-        get :find_batch_by_barcode, :id => "62c7gaaxx", :format => "xml"
+        get :find_batch_by_barcode, :id => "62c7gaaxx", :format => :xml
       end
-      # should "lab event" do
-      #   assert_equal "Cluster generation", @e.description
-      #   assert_equal "Request", @e.eventful_type
-      #   assert_true @e.descriptors.to_yaml.include? "Chip Barcode: 62c7gaaxx"
-      # end
-      # should "get batch" do
-      #   assert_equal @batch.id, LabEvent.find_by_barcode("62c7gaaxx")
-      # end
       should "show batch" do
         assert_response :success
-        assert_template "batches/show.xml.builder"
+        assert_equal "application/xml", @response.content_type
+        assert_template "batches/show"
       end
     end
 
     context "Find by barcode (not found)" do
       setup do
         @controller.stubs(:current_user).returns(@admin)
-        get :find_batch_by_barcode, :id => "62c7axx", :format => "xml"
+        get :find_batch_by_barcode, :id => "62c7axx", :format => :xml
       end
       should "show error" do
         # this is the wrong response!
         assert_response :success
-        assert_template "batches/batch_error.xml.builder"
+        assert_equal "application/xml", @response.content_type
+        assert_template "batches/batch_error"
       end
     end
   end

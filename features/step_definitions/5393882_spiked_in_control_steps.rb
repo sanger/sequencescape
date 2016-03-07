@@ -2,14 +2,14 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.
 Given /^I have a tag instance called "([^\"]+)"$/ do |name|
-  Factory(:tag_instance, :name => name)
+  FactoryGirl.create(:tag_instance, :name => name)
 end
 
 Given /^I have a hybridization spiked buffer called "([^\"]+)"$/ do |name|
-  Factory(:spiked_buffer, :name => name)
+  FactoryGirl.create(:spiked_buffer, :name => name)
 end
 Given /^I have a tag called "([^\"]+)"$/ do |name|
-  Factory(:tag, :map_id=> name)
+  FactoryGirl.create(:tag, :map_id=> name)
 end
 
 Then /^the "([^\"]+)" of the asset "([^\"]+)" should be "([^\"]+)"$/ do |field, id, value|

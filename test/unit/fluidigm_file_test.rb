@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013 Genome Research Ltd.
+#Copyright (C) 2013,2015 Genome Research Ltd.
 require "test_helper"
 
 class FluidigmFileTest < ActiveSupport::TestCase
@@ -13,8 +13,11 @@ class FluidigmFileTest < ActiveSupport::TestCase
   context "A fluidigm file" do
 
     setup do
-      @file = File.open("#{RAILS_ROOT}/test/data/fluidigm.csv")
-      @fluidigm = FluidigmFile.new(@file.read)
+
+      File.open("#{Rails.root}/test/data/fluidigm.csv") do |file|
+        @fluidigm = FluidigmFile.new(file.read)
+      end
+
       @well_maps = {
         'S06' => {
           :markers => [ XY,XY,XY ],

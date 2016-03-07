@@ -7,6 +7,8 @@
 
 # require 'qcable/state_machine'
 
+require 'aasm'
+
 class Qcable < ActiveRecord::Base
 
   include Uuid::Uuidable
@@ -20,25 +22,21 @@ class Qcable < ActiveRecord::Base
   has_one :stamp_qcable, :inverse_of => :qcable, :class_name => 'Stamp::StampQcable'
   has_one :stamp, :through => :stamp_qcable
 
-  validates_presence_of :lot, :asset, :state, :qcable_creator
+  validates :lot, :asset, :state, :qcable_creator, :presence => true
 
   before_validation :create_asset!, :on => :create
 
   delegate :bed, :order, :to => :stamp_qcable, :nil => true
 
-  named_scope :include_for_json, { :include => [:asset,:lot,:stamp,:stamp_qcable] }
+  scope :include_for_json, -> { includes([:asset,:lot,:stamp,:stamp_qcable]) }
 
-  named_scope :stamped, {
-    :include => [:stamp_qcable, :stamp],
-    :conditions => 'stamp_qcables.id IS NOT NULL',
-      :order => 'stamps.created_at ASC, stamp_qcables.order ASC'
-  }
+  scope :stamped, -> { includes([:stamp_qcable, :stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC')}
 
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
   # to their appropriate query conditions (as though they operated on their own) and then we join
   # them together with 'OR' to get the overall conditions.
-  named_scope :with_machine_barcode, lambda { |*barcodes|
+ scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       barcode_number = Barcode.number_to_human(source_barcode)
       prefix_string  = Barcode.prefix_from_barcode(source_barcode)

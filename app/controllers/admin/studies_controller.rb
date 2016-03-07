@@ -10,21 +10,22 @@ class Admin::StudiesController < ApplicationController
 
   def show
     @study = Study.find(params[:id])
-    action_flash[:warning] = @study.warnings if @study.warnings.present?
+    flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 
   def update
    @study = Study.find(params[:id])
+   flash.now[:warning] = @study.warnings if @study.warnings.present?
    flash[:notice] = "Your study has been updated"
    render :partial => "manage_single_study"
   end
 
-  def editor
+  def edit
     @request_types = RequestType.all(:order => "name ASC")
     if params[:id] != "0"
       @study = Study.find(params[:id])
-      action_flash[:warning] = @study.warnings if @study.warnings.present?
-      render :partial => "editor", :locals => { :study => @study }
+	  flash.now[:warning] = @study.warnings if @study.warnings.present?
+      render :partial => "edit", :locals => { :study => @study }
     else
       render :nothing => true
     end

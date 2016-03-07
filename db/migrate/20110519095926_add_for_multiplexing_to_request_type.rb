@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class AddForMultiplexingToRequestType < ActiveRecord::Migration
   class RequestType < ActiveRecord::Base
-    set_table_name('request_types')
+    self.table_name =('request_types')
 
     def request_class
       @request_class ||= request_class_name.constantize

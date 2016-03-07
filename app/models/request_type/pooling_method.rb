@@ -7,11 +7,9 @@ class RequestType::PoolingMethod < ActiveRecord::Base
   validates_presence_of :pooling_behaviour
   serialize :pooling_options
 
-  set_table_name('pooling_methods')
+  self.table_name=('pooling_methods')
 
-  def after_initialize
-    import_behaviour
-  end
+  after_initialize :import_behaviour
 
   def import_behaviour
     return if pooling_behaviour.nil?

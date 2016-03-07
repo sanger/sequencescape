@@ -3,14 +3,14 @@
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class PipelinesController < ApplicationController
   before_filter :find_pipeline_by_id, :only => [ :show, :setup_inbox,
-                                   :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
+                                   :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
 
-  before_filter :lab_manager_login_required, :only => [:update_priority]
+  before_filter :lab_manager_login_required, :only => [:update_priority,:deactivate,:activate]
 
   after_filter :set_cache_disabled!, :only => [:show]
 
   def index
-    @pipelines = Pipeline.active.internally_managed.all(:order => "sorter ASC")
+    @pipelines = Pipeline.active.internally_managed.alphabetical.all
     @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p ; h }
 
     respond_to do |format|
@@ -30,10 +30,7 @@ class PipelinesController < ApplicationController
     @released_batches    = @pipeline.batches.released_for_ui.includes_for_ui
     @failed_batches      = @pipeline.batches.failed_for_ui.includes_for_ui
 
-    @batches = @pipeline.batches.all(:limit => 5, :order => "created_at DESC")
-
-    # TODO: The presenter currently only handles 'group_by_parent' pipelines.
-    @inbox_presenter = Presenters::PipelineInboxPresenter.new(@pipeline,current_user,@show_held_requests)
+    @batches = @last_5_batches = @pipeline.batches.latest_first.includes_for_ui
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types
@@ -41,10 +38,16 @@ class PipelinesController < ApplicationController
 
       if @pipeline.group_by_parent?
         # We use the inbox presenter
+        @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline,current_user,@show_held_requests)
       elsif @pipeline.group_by_submission?
-        @grouped_requests  = @pipeline.requests.inbox(@show_held_requests,@current_page).group_by(&:submission_id)
+        requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        @grouped_requests  = requests.group_by(&:submission_id)
+        @requests_comment_count = Comment.counts_for(requests)
+        @assets_comment_count = Comment.counts_for(requests.map(&:asset))
       else
         @requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        @requests_comment_count = Comment.counts_for(@requests)
+        @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
       end
     end
   end
@@ -71,25 +74,6 @@ class PipelinesController < ApplicationController
     @controls = @pipeline.controls
   end
 
-  def show_comments
-    hash_group = params[:group]
-    unless hash_group
-      flash[:error] = "No assets selected"
-      redirect_to :controller => :pipelines, :action => :show, :id => @pipeline.id
-    end
-
-    if @pipeline.group_by_parent?
-      parent_id = hash_group[:parent]
-      parent = Asset.find(parent_id)
-      @assets = [parent] #+parent.wells
-
-      @requests = @pipeline.get_input_requests_for_group(hash_group)
-      @group_name = "#{parent.name}"
-    else
-      @group_name = hash_grou
-    end
-
-  end
 
   before_filter :prepare_batch_and_pipeline, :only => [ :summary, :finish ]
   def prepare_batch_and_pipeline
@@ -139,18 +123,6 @@ class PipelinesController < ApplicationController
       flash[:notice] = "Failed to deactivate pipeline"
       redirect_to pipeline_path(@pipeline)
     end
-  end
-
-  def destroy
-    unless current_user.is_administrator?
-      flash[:error]  = "User #{current_user.name} can't delete pipelines"
-      redirect_to :action => "index"
-      return
-    end
-
-    @pipeline.destroy
-    flash[:notice] = "Pipeline deleted"
-    redirect_to :action => "index"
   end
 
   def batches

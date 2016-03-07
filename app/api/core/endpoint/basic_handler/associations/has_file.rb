@@ -13,8 +13,10 @@ module Core::Endpoint::BasicHandler::Associations::HasFile
     @supported_types[content_type]
   end
 
-  def file_through(content_type)
-    content_type(content_type)
+  def file_through(content_types)
+    content_type(content_types.detect do |ct|
+      content_type(ct)
+    end)
   end
 
 end

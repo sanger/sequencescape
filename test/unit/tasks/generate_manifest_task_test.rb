@@ -1,14 +1,14 @@
+# encoding: utf-8
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2013,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class DummyTaskGroup
-  attr_reader :study, :batch
+  attr_reader :params
   include Tasks::GenerateManifestHandler
   def initialize(params)
-    @study = params[:study]
-    @batch = params[:batch]
+    @params = params
   end
 end
 
@@ -17,14 +17,14 @@ class GenerateManifestTaskTest < ActiveSupport::TestCase
     context '#generate_manifest_task' do
       context 'when obtaining a new manifest' do
         should 'filter incorrect characters' do
-          @batch                = Factory :batch, :id => 1
-          @study                = Factory :study, :name => [
+          @batch                = create :batch, :id => 1
+          @study                = create :study, :name => [
           "Study name with any content:’'[](){}⟨⟩:,،、‒–—―…......!.‐-?‘’“”'';/⁄· &*@•^†",
           "‡°″¡¿#№÷×ºª%‰+−=‱¶′″‴§~_|‖‗¦©℗®℠™¤₳฿₵¢₡₢$₫₯₠€ƒ₣₲₴₭₺ℳ₥₦₧₱₰£៛₽₹₨₪৳₸₮₩¥⁂❧☞‽⸮◊※",
           "⁀and no more"].join('')
-          @task = DummyTaskGroup.new(:study => @study, :batch => @batch)
+          @task = DummyTaskGroup.new(:study_id => @study.id, :batch_id => @batch.id)
           name = 'Study_name_with_any_content.......-_and_no_more_1_manifest.csv'
-          assert_equal name, @task.manifest_filename
+          assert_equal name, @task.manifest_filename(@study.name,@batch.id)
         end
       end
     end

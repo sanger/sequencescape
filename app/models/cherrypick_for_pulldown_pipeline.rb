@@ -25,7 +25,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
   end
 
   def all_requests_from_submissions_selected?(request_ids)
-    requests = Request.find(request_ids, :include => [:submission])
+    requests = Request.where(:id=>request_ids).includes(:submission).all
     expected_requests = all_request_from_submissions_filtered_by_request_type(submissions_from_requests(requests),requests.first.request_type)
     return true if requests.size == expected_requests.size
 

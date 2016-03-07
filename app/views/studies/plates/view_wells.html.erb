@@ -8,7 +8,7 @@
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>
 
-<% form_tag asset_group_study_plates_path(@study) do %>
+<%= form_tag asset_group_study_plates_path(@study) do %>
   <div class="help" style="text-align:center">
     Enter a new asset group name: <%= text_field_tag 'asset_group_name', nil -%> <%= submit_tag "Create asset group using selected wells" %>
   </div>

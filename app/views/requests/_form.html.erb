@@ -8,7 +8,7 @@
   <tr>
     <% if @request.pending? %>
       <tr>
-        <td width="40%" class="item"><%= label_tag(:request_request_type_id, 'Request Type: ') %>: </td>
+        <td width="40%" class="item"><%= label_tag(:request_request_type_id, 'Request Type:')%> </td>
         <td width="60%"><%= form.collection_select(:request_type_id, @request_types, :id, :name) %></td>
         <td></td>
       </tr>

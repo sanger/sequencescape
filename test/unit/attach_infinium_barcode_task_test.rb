@@ -3,23 +3,19 @@
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.
 require "test_helper"
 
-class WorkflowsController
-  attr_writer :batch
-end
-
 class AttachInfiniumBarcodeTest < TaskTestBase
   context "Attach Infinium Barcode task" do
     setup do
       @workflow  = WorkflowsController.new
-      @br        = Factory :batch_request
-      @task      = Factory :attach_infinium_barcode_task
+      @br        = create :batch_request
+      @task      = create :attach_infinium_barcode_task
     end
 
     expected_partial("attach_infinium_barcode_batches")
 
     context "#render_task" do
       setup do
-        @workflow.batch = @br.batch
+
         params = {}
         @task.render_task(@workflow, params)
       end
@@ -27,11 +23,10 @@ class AttachInfiniumBarcodeTest < TaskTestBase
 
     context "#do_task" do
       setup do
-        @pipeline       = Factory :pipeline
-        @batch          = Factory :batch, :pipeline => @pipeline
-        @plate1 = Factory :plate
-        @plate2 = Factory :plate
-        @workflow.batch = @batch
+        @pipeline       = create :pipeline
+        @batch          = create :batch, :pipeline => @pipeline
+        @plate1 = create :plate
+        @plate2 = create :plate
       end
       context "with valid parameters" do
         setup do

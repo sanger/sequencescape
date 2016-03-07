@@ -12,7 +12,7 @@ class ApiApplication < ActiveRecord::Base
   before_validation :generate_new_api_key, :unless => :key?
 
   def generate_new_api_key
-    self.key = SecureRandom.base64(configatron.retrieve('api_key_length')||20)
+    self.key = SecureRandom.base64(configatron.fetch('api_key_length')||20)
   end
 
   def generate_new_api_key!

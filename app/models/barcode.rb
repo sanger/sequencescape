@@ -7,7 +7,7 @@ class Barcode
     def self.included(base)
       base.class_eval do
         before_create :set_default_prefix
-        class_inheritable_accessor :prefix
+        class_attribute :prefix
         self.prefix = "NT"
 
         if ActiveRecord::Base.observers.include?(:amqp_observer)
@@ -75,8 +75,8 @@ class Barcode
   # Sanger barcoding scheme
 
   def self.prefix_to_number(prefix)
-    first  = prefix[0]-64
-    second = prefix[1]-64
+    first  = prefix.getbyte(0)-64
+    second = prefix.getbyte(1)-64
     first  = 0 if first < 0
     second  = 0 if second < 0
     return ((first * 27) + second) * 1000000000
@@ -89,7 +89,7 @@ class Barcode
       raise ArgumentError, "Number : #{number} to big to generate a barcode." if number_s.size > 7
       human = prefix + number_s + calculate_checksum(prefix, number)
       barcode = prefix_to_number(prefix) + (number * 100)
-      barcode = barcode + human[human.size-1]
+      barcode = barcode + human.getbyte(human.length-1)
   end
 
   def self.calculate_barcode(prefix, number)
@@ -99,14 +99,13 @@ class Barcode
 
   def self.calculate_checksum(prefix, number)
     string = prefix + number.to_s
-    list = string.split(//)
-    len  = list.size
+    len  = string.length
     sum = 0
-    list.each do |character|
-      sum += character[0] * len
+    string.each_byte do |byte|
+      sum += byte * len
       len = len - 1
     end
-    return (sum % 23 + "A"[0]).chr
+    return (sum % 23 + 'A'.getbyte(0)).chr
   end
 
   def self.split_barcode(code)
@@ -147,7 +146,10 @@ class Barcode
 
   def self.human_to_machine_barcode(human_barcode)
     human_prefix, bcode, human_suffix = split_human_barcode(human_barcode)
-    if Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
+    # Bugfix Exception 8:39 am Dec 22th 2015
+    #  undefined method `+' for nil:NilClass app/models/barcode.rb:101:in `calculate_checksum'
+    # Incorrect barcode format
+    if human_prefix.nil? || Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
       raise InvalidBarcode, "The human readable barcode was invalid, perhaps it was mistyped?"
     else
       calculate_barcode(human_prefix,bcode.to_i)

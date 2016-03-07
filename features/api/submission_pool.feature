@@ -40,7 +40,7 @@ And I have a "full" authorised user with the key "cucumber"
   @read
   Scenario: With a submission and a used template
     Given the plate with ID 1 has a barcode of "1220000001831"
-    And plate "1" has "1" wells with samples
+    And plate "1" has "2" wells with samples
     Given the plate with UUID "00000000-1111-2222-3333-444444444444" has been submitted to "Illumina-B - Pooled PATH - HiSeq Paired end sequencing"
     And the tag 2 layout template "test template" exists
     And the UUID for the last tag2 layout template is "00000000-2222-2222-3333-444444444444"

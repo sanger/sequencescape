@@ -6,8 +6,8 @@ require 'test_helper'
 class TransferRequestTest < ActiveSupport::TestCase
 
   def shared_setup
-    @source = LibraryTube.create!.tap { |tube| tube.aliquots.create!(:sample => Factory(:sample)) }
-    Factory(:tag).tag!(@source)
+    @source = LibraryTube.create!.tap { |tube| tube.aliquots.create!(:sample => create(:sample)) }
+    create(:tag).tag!(@source)
     @destination = LibraryTube.create!
   end
 
@@ -40,7 +40,7 @@ class TransferRequestTest < ActiveSupport::TestCase
     end
 
     should 'not permit transfers to the same asset' do
-      asset = Factory(:sample_tube)
+      asset = create(:sample_tube)
       assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(:asset => asset, :target_asset => asset) }
     end
 

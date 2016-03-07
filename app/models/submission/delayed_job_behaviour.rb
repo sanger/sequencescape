@@ -4,7 +4,7 @@
 module Submission::DelayedJobBehaviour
   def self.included(base)
     base.class_eval do
-      conf_priority = configatron.delayed_job.submission_process_priority
+      conf_priority = configatron.delayed_job.fetch(:submission_process_priority)
       priority = conf_priority.present? ? conf_priority : 0
       handle_asynchronously :build_batch, :priority => priority
     end
@@ -16,9 +16,9 @@ module Submission::DelayedJobBehaviour
   end
 
   def build_batch
-  ActiveRecord::Base.transaction do
-    finalize_build!
-  end
+    ActiveRecord::Base.transaction do
+      finalize_build!
+    end
   rescue Submission::ProjectValidation::Error => project_exception
     fail_set_message_and_save(project_exception.message)
   rescue ActiveRecord::StatementInvalid => sql_exception
@@ -41,7 +41,7 @@ module Submission::DelayedJobBehaviour
   def fail_set_message_and_save(message)
     self.fail!
     self.message = message[0..254]
-    self.save(false)        # Just in case the cause is it being invalid!
+    self.save(:validate => false)        # Just in case the cause is it being invalid!
   end
   private :fail_set_message_and_save
 end

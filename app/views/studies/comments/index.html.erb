@@ -14,7 +14,7 @@
 <% if current_user.privileged? @study %>
   <div>
     <p>Type your comment:</p>
-    <%= form_remote_tag(:url => study_comments_path(@study), :update => "study_annotations_#{@study.id}") %>
+    <%= form_tag(:url => study_comments_path(@study), :update => "study_annotations_#{@study.id}", :remote => true) %>
     <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
   </div>
 <% end %>

@@ -58,7 +58,7 @@ class Accessionable::Dac < Accessionable::Base
     service.dac_visibility(@study) == AccessionService::Protect
   end
 
-  def object_id
+  def accessionable_id
     @study.id
   end
 end

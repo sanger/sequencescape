@@ -11,12 +11,12 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
       @controller = LabwhereReceptionsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user = Factory :user, :barcode => 'ID123', :swipecard_code=>'02face'
-      @other_user = Factory :user, :barcode => 'ID123', :swipecard_code=>'02face'
-      @plate   = Factory :plate, :barcode => 1
-      @plate_2 = Factory :plate, :barcode => 2
-      @sample_tube = Factory :sample_tube, :barcode => 1
-      @location = Factory :location
+      @user = create :user, :barcode => 'ID123', :swipecard_code=>'02face'
+      @other_user = create :user, :barcode => 'ID123', :swipecard_code=>'02face'
+      @plate   = create :plate, :barcode => 1
+      @plate_2 = create :plate, :barcode => 2
+      @sample_tube = create :sample_tube, :barcode => 1
+      @location = create :location
     end
 
     context "#create" do
@@ -49,8 +49,8 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-        should_set_the_flash_to "Locations updated!"
-        should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
+        should set_the_flash.to "Locations updated!"
+        should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
 
       context 'with no location' do
@@ -82,8 +82,8 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-        should_set_the_flash_to "Locations updated!"
-        should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
+        should set_the_flash.to "Locations updated!"
+        should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
 
       context 'with missing assets' do
@@ -109,8 +109,8 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-       should_set_the_flash_to "Could not find labware 1220000044838 in Sequencescape"
-       should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
+       should set_the_flash.to "Could not find labware 1220000044838 in Sequencescape"
+       should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
     end
 

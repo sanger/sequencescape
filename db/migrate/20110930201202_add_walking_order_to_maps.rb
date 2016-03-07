@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class AddWalkingOrderToMaps < ActiveRecord::Migration
   class Map < ActiveRecord::Base
-    set_table_name('maps')
+    self.table_name =('maps')
 
     def self.plate_dimensions(plate_size, &block)
       case plate_size

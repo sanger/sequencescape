@@ -11,9 +11,10 @@
 
 class ExtendedValidator < ActiveRecord::Base
 
+
   class RequestTypeExtendedValidator < ActiveRecord::Base
 
-    set_table_name('request_types_extended_validators')
+    self.table_name=('request_types_extended_validators')
 
     belongs_to :extended_validator
     belongs_to :request_type
@@ -22,9 +23,7 @@ class ExtendedValidator < ActiveRecord::Base
 
   end
 
-  def after_initialize
-    import_behaviour
-  end
+  after_initialize :import_behaviour
 
   def import_behaviour
     return if behaviour.nil?
@@ -40,7 +39,7 @@ class ExtendedValidator < ActiveRecord::Base
   validates_presence_of :behaviour
   serialize :options
 
-  named_scope :for_submission, lambda {|submission|
+  scope :for_submission, ->(submission) {
     {
       :joins => 'INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id',
       :conditions => {:request_types_extended_validators => { :request_type_id => submission.request_types }}

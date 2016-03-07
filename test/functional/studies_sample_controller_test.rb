@@ -14,9 +14,9 @@ class Studies::SamplesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @user     = Factory :user
+      @user     =FactoryGirl.create :user
       @controller.stubs(:current_user).returns(@user)
-      @workflow = Factory :submission_workflow
+      @workflow =FactoryGirl.create :submission_workflow
     end
 
     should_require_login(:index)

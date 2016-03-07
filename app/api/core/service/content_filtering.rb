@@ -53,7 +53,7 @@ module Core::Service::ContentFiltering
     end
 
     def request_accepted
-      request.acceptable_media_types.prioritize(*acceptable_types).to_s
+      request.acceptable_media_types.prioritize(*acceptable_types).map(&:to_s)
     end
 
   end

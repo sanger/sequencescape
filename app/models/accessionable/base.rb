@@ -31,7 +31,7 @@ class Accessionable::Base
   end
 
   def alias
-    "#{name.gsub(/[^a-z\d]/i, '_')}-sc-#{object_id}"
+    "#{name.gsub(/[^a-z\d]/i, '_')}-sc-#{accessionable_id}"
   end
 
   def file_name
@@ -55,7 +55,7 @@ class Accessionable::Base
   def update_array_express_accession_number!(accession_number)
   end
 
-  def object_id
+  def accessionable_id
     raise NotImplementError, "abstract method"
   end
 

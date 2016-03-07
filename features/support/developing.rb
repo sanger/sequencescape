@@ -8,6 +8,6 @@ end
 
 # If the environment is setup correctly then kill Cucumber if any scenario fails.
 After do |scenario|
-  Cucumber.wants_to_quit = !!(scenario.failed? && ENV['CUCUMBER_MUST_DIE_ASAP'])
+  Cucumber.wants_to_quit = !!(scenario.failed? && ENV['FAIL_FAST'])
 end
 

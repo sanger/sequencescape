@@ -1,6 +1,9 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
+
+require 'carrierwave'
+
 class PlateVolume < ActiveRecord::Base
   extend DbFile::Uploader
 
@@ -31,7 +34,7 @@ class PlateVolume < ActiveRecord::Base
 
   def extract_well_volumes
     return if self.uploaded.nil?
-    head, *tail = FasterCSV.parse(self.uploaded.file.read)
+    head, *tail = CSV.parse(self.uploaded.file.read)
     tail.each { |(barcode, location, volume)| yield(location, volume) }
   end
   private :extract_well_volumes
@@ -79,7 +82,7 @@ class PlateVolume < ActiveRecord::Base
 
     def find_for_filename(filename)
       self.find_by_uploaded_file_name(filename) or
-      lambda { |filename, file| PlateVolume.create!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file) }
+      ->(filename, file) { PlateVolume.create!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file) }
     end
 
   end

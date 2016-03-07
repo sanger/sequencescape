@@ -6,7 +6,7 @@
 <% else %>
   <% html_options = {:method => :post} %>
 <% end %>
-<% form_for :plate_templates, :url => {:action => "#{target_action}"}, :html => html_options  do |f| -%>
+<%= form_for :plate_templates, :url => {:action => "#{target_action}"}, :html => html_options  do |f| -%>
   <label>Template name:</label>
   <% if pattern.nil? -%>
     <%= text_field_tag "name" %>

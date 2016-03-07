@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 require "test_helper"
 
-class WorkflowsController
+class TestWorkflowsController < WorkflowsController
   attr_accessor :batch, :tags, :workflow, :stage
 end
 
@@ -14,18 +14,18 @@ class AssignTagsTaskTest < TaskTestBase
       # Basically 'flash' is pulled from 'session[:flash]' which is not configured properly on @workflow
       # @workflow needs 'workflow' and 'stage' set
       # @workflow does not like redirect_to (think this might be shoulda)
-      @controller  = WorkflowsController.new
-      @workflow = Factory :lab_workflow_for_pipeline
-      @user = Factory :user
+      @controller  = TestWorkflowsController.new
+      @workflow = create :lab_workflow_for_pipeline
+      @user = create :user
       @controller.stubs(:current_user).returns(@user)
-      @pipeline       = Factory :pipeline
-      @batch          = Factory :batch, :pipeline => @pipeline
+      @pipeline       = create :pipeline
+      @batch          = create :batch, :pipeline => @pipeline
       @controller.batch = @batch
-      @br        = Factory :batch_request
+      @br        = create :batch_request
       @batch.batch_requests << @br
-      @task      = Factory :assign_tags_task
-      @tag_group = Factory :tag_group
-      @tag       = Factory :tag, :tag_group => @tag_group
+      @task      = create :assign_tags_task
+      @tag_group = create :tag_group
+      @tag       = create :tag, :tag_group => @tag_group
 
     end
 
@@ -51,17 +51,18 @@ class AssignTagsTaskTest < TaskTestBase
 
     context "#do_task" do
       setup do
-        @pipeline       = Factory :pipeline
-        @batch          = Factory :batch, :pipeline => @pipeline
+        @multiplexedlibrarytube_count =  MultiplexedLibraryTube.count
+        @pipeline       = create :pipeline
+        @batch          = create :batch, :pipeline => @pipeline
         # TODO: Move this into factory. Create library and sample_tube factory
-        @sample_tube    = Factory(:sample_tube)
-        @library        = Factory(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:clone) }
+        @sample_tube    = create(:sample_tube)
+        @library        = create(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:dup) }
         @sample_tube.children << @library
 
         submission = Submission.last # probably built in batch ...?
-        @mx_request     = Factory :request, :request_type_id => 1, :submission => submission, :asset => @sample_tube, :target_asset => @library
+        @mx_request     = create :request, :request_type_id => 1, :submission => submission, :asset => @sample_tube, :target_asset => @library
         $stop = true
-        @cf_request     = Factory :request_without_assets, :request_type_id => 2, :submission => submission, :asset => nil
+        @cf_request     = create :request_without_assets, :request_type_id => 2, :submission => submission, :asset => nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
 
@@ -77,7 +78,10 @@ class AssignTagsTaskTest < TaskTestBase
         assert_equal 2, @controller.batch.request_count
       end
 
-      should_change("MultiplexedLibraryTube.count", :by => 1) { MultiplexedLibraryTube.count }
+
+      should "change MultiplexedLibraryTube.count by 1" do
+        assert_equal 1,  MultiplexedLibraryTube.count  - @multiplexedlibrarytube_count, "Expected MultiplexedLibraryTube.count to change by 1"
+      end
 
       should "should update library" do
         assert_equal 1, @sample_tube.children.size

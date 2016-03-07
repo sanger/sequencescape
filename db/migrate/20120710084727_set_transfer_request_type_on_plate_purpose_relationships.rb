@@ -3,12 +3,12 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class SetTransferRequestTypeOnPlatePurposeRelationships < ActiveRecord::Migration
   class PlatePurposeRelationship < ActiveRecord::Base
-    set_table_name('plate_purpose_relationships')
+    self.table_name =('plate_purpose_relationships')
     belongs_to :transfer_request_type, :class_name => 'SetTransferRequestTypeOnPlatePurposeRelationships::RequestType'
   end
 
   class RequestType < ActiveRecord::Base
-    set_table_name('request_types')
+    self.table_name =('request_types')
 
     def self.transfer
       @transfer ||= self.find_by_key('transfer') or raise "Cannot find transfer request type"

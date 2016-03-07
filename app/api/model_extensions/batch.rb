@@ -6,28 +6,21 @@ module ModelExtensions::Batch
     base.class_eval do
       # These were in Batch but it makes more sense to keep them here for the moment
       has_many :batch_requests, :include => :request, :inverse_of => :batch
-      has_many :requests, :through => :batch_requests, :inverse_of => :batch, :order => 'batch_requests.position ASC, requests.id ASC' do
-        # we redefine count to use the fast one.
-        # the normal request.count is slow because of the eager load of requests in batch_request
-        def count
-          proxy_owner.request_count
-        end
-
-      end
+      has_many :requests, :through => :batch_requests, :inverse_of => :batch, :order => 'batch_requests.position ASC, requests.id ASC'
 
       # This is the new stuff ...
       accepts_nested_attributes_for :requests
 
-      named_scope :include_pipeline, :include => { :pipeline => :uuid_object }
-      named_scope :include_user, :include => :user
-      named_scope :include_requests, :include => {
+      scope :include_pipeline, -> { includes( :pipeline => :uuid_object ) }
+      scope :include_user, -> { includes(:user) }
+      scope :include_requests, -> { includes(
         :requests => [
           :uuid_object, :request_metadata, :request_type,
           { :submission   => :uuid_object },
           { :asset        => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] },
           { :target_asset => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] }
         ]
-      }
+      )}
 
       after_create :generate_target_assets_for_requests, :if => :need_target_assets_on_requests?
       before_save :manage_downstream_requests

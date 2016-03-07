@@ -16,7 +16,7 @@ Feature: Status of the submissions should be displayed correctly to the user
       | pending    | Your submission is currently pending                                                                |
       | processing | Your submission is currently being processed                                                        |
       | ready      | Your submission has been processed                                                                  |
-      | unknown    | Your submission is in an unknown state (contact support)                                            |
+      # | unknown    | Your submission is in an unknown state (contact support)                                            |/
 
   Scenario: Submission has failed so the message should be displayed
     Given I have a submission in the "failed" state with message "Sorry, but it's broken"

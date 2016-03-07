@@ -1,8 +1,8 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.%>
 <!--% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id, :task_id => @task.id }, :html => { :id => 'stage_form'} do |form| %-->
-<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
 
   <% plate_class = {}%>
   <h4>Source Plates</h4>
@@ -29,14 +29,8 @@
 <% if @plate.nil? -%>
   <script type="text/javascript">
     (function($, undefined) {
-      /*
-       * Sortable only supports direct child elements, which have to have an 'id' attribute.  Hence this Sortable's of each
-       * row in the the plate tables, and allows dragging between them and the scratch pad.
-       */
-      <% plate_ids.each do |plate| %>
-      Sortable.create('<%= plate %>', { containment: ['<%= plate_ids.join("','") %>'], tag: 'td', overlap: 'horizontal' });
-      <% end%>
-    })($);
+      $('table.plate tbody tr').sortable({appendTo:document.body,items:'td',placeholder:'placehold',connectWith:'table.plate tbody tr'});
+    })(jQuery);
   </script>
 <% end -%>
 
@@ -57,28 +51,30 @@
 
 <script type="text/javascript">
   (function($, undefined) {
-    return $('#stage_button').click(function() {
-      return verifyplate(<%= @plate_cols %>, <%= @plate_rows %>, <%= @plates.size %>);
+    return $('#stage_button').click(function(e) {
+      if (verifyplate(<%= @plate_cols %>, <%= @plate_rows %>, <%= @plates.size %>)) {
+        return true;
+      } else {
+        e.preventDefault();
+        return false
+      };
     });
   })(jQuery);
 
-  // WARNING: '$' is using prototype *not* jQuery, and it's as ugly as hell!
   function verifyplate(num_cols,num_rows,num_plates) {
     var hiddenFields = '';
-    for(var p =0; p < num_plates; p++) {
-      for(var r = 0 ; r < num_rows; r++) {
-        var col_length = $('plate['+p+']['+r+']').children.length;
-        if((col_length-1) > num_cols) {
-          alert('All rows must have '+num_cols+' wells ');
-          return false;
-        }
 
-        for(var c = 1; c <= num_cols; c++) {
-          var value = (c >= col_length) ? '' : $('plate['+p+']['+r+']').children[c].id;
-          hiddenFields += '<input type="hidden" name="plate['+p+']['+r+']['+(c-1)+']" value="'+value+'"/>';
-        }
+    jQuery('table.destination_plate tbody tr').each(function(){
+      var wells;
+      wells = $(this).children('td');
+      if ( wells.length > 12 ) { alert('All rows must have at most '+num_cols+' wells '); return false; }
+      for ( var i=0; i < wells.length; i += 1 ) {
+        var value, name;
+        value = wells[i].id
+        name = wells[i].parentNode.id
+        hiddenFields += '<input type="hidden" name="'+name+'['+i+']" value="'+value+'"/>';
       }
-    }
+    })
 
     jQuery('#stage_form').append(hiddenFields);
     return true;

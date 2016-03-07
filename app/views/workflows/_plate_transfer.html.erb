@@ -10,6 +10,6 @@
 </dl>
 <%= render :partial => 'assets/print_form', :locals => { :asset => @target} %>
 
-<% form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
   <%= render :partial => "next_stage_submit" %>
 <% end %>

@@ -12,7 +12,7 @@ class DummyWorkflowController < WorkflowsController
   end
 
   def current_user
-    @current_user ||= Factory :user
+    @current_user ||= FactoryGirl.create(:user)
   end
 end
 
@@ -21,15 +21,15 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
     setup do
       @workflows_controller = DummyWorkflowController.new
-      @task                 = Factory :plate_transfer_task
+      @task                 = create :plate_transfer_task
       @params               = "UNUSED_PARAMS"
-      @batch                = Factory :batch
+      @batch                = create :batch
       @workflows_controller.batch = @batch
-      @source_plate         = Factory :plate
+      @source_plate         = create :plate
       @source_plate.wells   = ['A1','B1','C1'].map do |loc|
-        Factory(:well_with_sample_and_without_plate).tap do |w|
+        create(:well_with_sample_and_without_plate).tap do |w|
           w.map = Map.find_by_description_and_asset_size(loc,96)
-          request = Factory :pac_bio_sample_prep_request, :asset => w
+          request = create :pac_bio_sample_prep_request, :asset => w
           @batch.requests << request
         end
       end
@@ -45,13 +45,21 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       context 'when used for the first time' do
 
         setup do
+          @plate_count =  Plate.count
+          @transferrequest_count =  TransferRequest.count
           params = { :batch_id => @batch.id }
           @task.render_task(@workflows_controller, params)
         end
 
-        should_change("Plate.count", :by => 1) { Plate.count }
 
-        should_change("TransferRequest.count", :by => 6) { TransferRequest.count }
+         should "change Plate.count by 1" do
+           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+        end
+
+
+         should "change TransferRequest.count by 6" do
+           assert_equal 6,  TransferRequest.count  - @transferrequest_count, "Expected TransferRequest.count to change by 6"
+        end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
@@ -77,12 +85,16 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       context 'when used subsequently' do
 
         setup do
+          @plate_count =  Plate.count
           params = { :batch_id => @batch.id }
           @task.render_task(@workflows_controller, params)
           @task.render_task(@workflows_controller, params)
         end
 
-        should_change("Plate.count", :by => 1) { Plate.count }
+
+         should "change Plate.count by 1" do
+           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+        end
 
         should 'find the existing plate' do
 
@@ -92,10 +104,10 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
       context 'when spanning multiple plates' do
         setup do
-          plate_b = Factory :plate
-          plate_b.wells << Factory(:well_with_sample_and_without_plate).tap do |w|
+          plate_b = create :plate
+          plate_b.wells << create(:well_with_sample_and_without_plate).tap do |w|
             w.map = Map.find_by_description_and_asset_size('A1',96)
-            request = Factory :well_request, :asset => w, :target_asset => Factory(:pac_bio_library_tube)
+            request = create :well_request, :asset => w, :target_asset => create(:pac_bio_library_tube)
             w.requests << request
             @batch.requests << request
           end

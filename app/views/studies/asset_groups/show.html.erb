@@ -35,7 +35,7 @@
 </div>
 <hr />
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
-  <% form_for @asset_group, :url => search_study_asset_group_path(@study, @asset_group), :html => {:method => :post} do |f| %>
+  <%= form_for @asset_group, :url => search_study_asset_group_path(@study, @asset_group), :html => {:method => :post} do |f| %>
     <p><%= label_tag(:q, 'Search for assets to add to group') %>: <%= text_field_tag :q %> <%= f.submit "Search" %></p>
   <% end %>
 <hr />

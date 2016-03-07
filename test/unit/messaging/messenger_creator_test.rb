@@ -9,9 +9,10 @@ class MessengerCreatorTest < ActiveSupport::TestCase
 
     setup do
 
-      @purpose =           Factory.build :plate_purpose
-      @messenger_creator = Factory.build :messenger_creator, :purpose => @purpose
-      @plate =             Factory.build :plate, :plate_purpose => @purpose
+      @purpose =           FactoryGirl.build :plate_purpose
+      @messenger_creator = FactoryGirl.build :messenger_creator, :purpose => @purpose
+      @plate =             FactoryGirl.build :plate, :plate_purpose => @purpose
+      @start_count = Messenger.count
 
     end
 
@@ -24,9 +25,9 @@ class MessengerCreatorTest < ActiveSupport::TestCase
     end
 
     should 'be handled automatically by the purpose' do
-      @start_count = Messenger.count
+      @purpose.messenger_creators << @messenger_creator
       @plate.cherrypick_completed
-      assert 1, Messenger.count - @start_count
+      assert_equal 1, Messenger.count - @start_count
     end
 
   end

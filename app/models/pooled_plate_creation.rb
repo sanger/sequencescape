@@ -6,7 +6,7 @@
 class PooledPlateCreation < AssetCreation
 
   class ParentAssociation < ActiveRecord::Base
-    set_table_name('asset_creation_parents')
+    self.table_name =('asset_creation_parents')
     belongs_to :asset_creation
     belongs_to :parent, :class_name => 'Asset'
   end

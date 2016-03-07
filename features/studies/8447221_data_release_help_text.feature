@@ -7,7 +7,7 @@ Feature: Update the data release fields for creating a study
     And I am on the new study page
 
   Scenario: Add help text to study description (8348119)
-    Then the help text for "Study description help text" should contain:
+    Then the help text for "Study description" should contain:
       """
       Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). If you use the second statement, replace [doi or ref] by a reference or doi for your publication:
 
@@ -22,7 +22,7 @@ Feature: Update the data release fields for creating a study
   Scenario Outline: Add help text opposite delay drop down (4044305)
     When I select "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
-    Then the help text for "Reason for delaying release help text" should contain:
+    Then the help text for "Reason for delaying release" should contain:
       """
       To apply for a delay, please send the following information to John Doe (foo):
       SAC sponsor
@@ -37,13 +37,13 @@ Feature: Update the data release fields for creating a study
 
     Examples:
       | release strategy |
-      | managed          |
-      | open             |
+      | Managed (EGA)    |
+      | Open (ENA)       |
 
   Scenario: Add help text to has this been approved for never release (4044343)
-    When I select "not applicable" from "What is the data release strategy for this study?"
+    When I select "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
     When I select "never" from "How is the data release to be timed?"
-    Then the help text for "Has this been approved? help text" should contain:
+    Then the help text for "Has this been approved?" should contain:
       """
       If this is for data validity reasons: approval from the sponsor is required
       If this is for legal reasons: approval from the Data Sharing Committee is required (please contact sd4)
@@ -64,7 +64,7 @@ Feature: Update the data release fields for creating a study
   	And I select "Jack Sponsor" from "Faculty Sponsor"
     And I select "Yes" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
-    And I select "open" from "What is the data release strategy for this study?"
+    And I select "Open (ENA)" from "What is the data release strategy for this study?"
     When I press "Create"
     Then I should be on the study workflow page for "new study"
 

@@ -33,6 +33,12 @@ When /^(?:|I )press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
   end
 end
 
+When /^(?:|I )press the first "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
+  with_scope(selector) do
+    first(:button,button).click
+  end
+end
+
 When /^(?:|I )follow "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
   with_scope(selector) do
     click_link(link)
@@ -93,9 +99,16 @@ When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value,
   end
 end
 
-When /^(?:|I )check "([^"]*)"(?: within "([^"]*)")?$/ do |field, selector|
+When /^(?:|I )select "([^"]*)" from the first "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector) do
-    check(field)
+    first(:select,field).select(value)
+  end
+end
+
+When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible,field, selector|
+  visible = invisible != "the invisible "
+  with_scope(selector) do
+    check(field,:visible=>visible)
   end
 end
 
@@ -129,7 +142,7 @@ Then /^(?:|I )should see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, selector|
     if page.respond_to? :should
       page.should have_content(text)
     else
-      assert page.has_content?(text)
+      assert page.has_content?(text), "Could not see #{text} on page."
     end
   end
 end
@@ -146,11 +159,11 @@ Then /^(?:|I )should see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, selec
 end
 
 Then /^I should see "(.*?)" within the javascript$/ do |text|
-  assert all('script').any? {|s| s.has_content?(text) }, "Didn't find #{text} in javascript"
+  assert all('script', :visible=>false).any? {|s| s.native.text.include?(text) }, "Didn't find #{text} in javascript"
 end
 
 Then /^I should not see "(.*?)" within the javascript$/ do |text|
-  assert all('script').none? {|s| s.has_content?(text) }, "Found #{text} in javascript"
+  assert all('script', :visible=>false).none? {|s| s.native.text.include?(text) }, "Found #{text} in javascript"
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
@@ -246,12 +259,12 @@ Then /^show me the page$/ do
   # We don't use save_and_open_source as
   # it passes the source through Nokogiri
   # first and passes it out as xml.
-  require 'capybara/util/save_and_open_page'
-  Capybara.save_and_open_page(source)
+  # require 'capybara/util/save_and_open_page'
+  Capybara.save_and_open_page("tmp/#{Time.now.strftime('%Y%m%d%H%M%S')}.htm")
 end
 
 Given /^the "([^\"]*)" field is hidden$/ do |field_name|
-  assert find_field(field_name).visible? == false
+  assert find_field(field_name,visible: false).visible? == false
 end
 
 Given /^I drag "(.*?)" to "(.*?)"$/ do |source, target|

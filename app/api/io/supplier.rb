@@ -24,7 +24,7 @@ class ::Io::Supplier < ::Core::Io::Base
     contact_name  => contact_name
     phone_number  => phone_number
              fax  => fax
-             url  => url
+    supplier_url  => url
     abbreviation  => abbreviation
   })
 end

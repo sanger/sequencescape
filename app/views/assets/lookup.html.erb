@@ -13,7 +13,7 @@
         <strong>Scan your asset:</strong>
       </div>
       <br />
-      <% form_for(:asset) do |f| %>
+      <%= form_for(:asset) do |f| %>
         <div class='entry'>
           <%= text_field :asset, :barcode, { :class => 'big' } %>
         </div>

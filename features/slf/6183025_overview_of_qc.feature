@@ -19,7 +19,7 @@ Feature: display an overview of all plates going through QC in SLF
 
    @qc_event @barcode-service
    Scenario: A plate has only had a dilution plates created
-     When I follow "SLF Lab view"
+     When I follow "Sample Management Lab View"
      And I follow "Print plate barcodes"
      Then I create a "Working dilution" from plate "1221234567841"
      Given plate "1221234567841" is part of study "Test study"
@@ -41,7 +41,7 @@ Feature: display an overview of all plates going through QC in SLF
 
    @barcode-service
    Scenario: A plate has had pico assays created but not analysed
-     When I follow "SLF Lab view"
+     When I follow "Sample Management Lab View"
      And I follow "Print plate barcodes"
      Then I create a "Working dilution" from plate "1221234567841"
      Then I create a "Pico dilution" from plate "6251234567836"
@@ -54,7 +54,7 @@ Feature: display an overview of all plates going through QC in SLF
 
    @barcode-service
    Scenario: A plate has had pico assays and has been analysed
-     When I follow "SLF Lab view"
+     When I follow "Sample Management Lab View"
      And I follow "Print plate barcodes"
      Then I create a "Working dilution" from plate "1221234567841"
      Then I create a "Pico dilution" from plate "6251234567836"
@@ -68,7 +68,7 @@ Feature: display an overview of all plates going through QC in SLF
 
    @barcode-service
    Scenario: A plate has only completed Gel
-     When I follow "SLF Lab view"
+     When I follow "Sample Management Lab View"
      And I follow "Print plate barcodes"
      Then I create a "Working dilution" from plate "1221234567841"
      Then I create a "Gel Dilution Plates" from plate "6251234567836"
@@ -81,7 +81,7 @@ Feature: display an overview of all plates going through QC in SLF
 
    @barcode-service
    Scenario: A plate hasnt had a sequenom plate generated
-     When I follow "SLF Lab view"
+     When I follow "Sample Management Lab View"
      And I follow "Print plate barcodes"
      Then I create a "Working dilution" from plate "1221234567841"
      Then I create a "Pico dilution" from plate "6251234567836"
@@ -100,14 +100,14 @@ Feature: display an overview of all plates going through QC in SLF
      Given the plate barcode webservice returns "11111"
      Given plate "1221234567841" is part of study "Test study"
 
-     When I follow "SLF Lab view"
+     When I follow "Sample Management Lab View"
      And I follow "Print plate barcodes"
      Then I create a "Working dilution" from plate "1221234567841"
      Then I create a "Pico dilution" from plate "6251234567836"
      Then I create a "Pico Assay Plates" from plate "4361234567667"
      Then I create a "Gel Dilution Plates" from plate "6251234567836"
      Given I am on the sample logistics homepage
-     When I follow "SLF Lab view"
+     When I follow "Sample Management Lab View"
      And I follow "Print Sequenom plate barcode"
      When I fill in "Plate 1" with "6251234567836"
      And I fill in "User barcode" with "2470000100730"

@@ -4,7 +4,7 @@
 <% add :menu, "Create Sequenom Plate" => new_sequenom_qc_plate_path %>
 <h1>Sequenom Plates</h1>
 
-<%= will_paginate @sequenom_qc_plates %>
+<%= pagination @sequenom_qc_plates %>
 <table id="study_list" width="100%"  cellpadding="4" cellspacing="0">
   <thead>
   <tr>
@@ -25,5 +25,5 @@
   <% end %>
   </tbody>
 </table>
-<%= will_paginate @sequenom_qc_plates %>
+<%= pagination @sequenom_qc_plates %>
 

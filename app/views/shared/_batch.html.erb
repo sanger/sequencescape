@@ -2,63 +2,63 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.%>
 <div class="info">
-  <table width="100%" cellpadding="5" cellspacing="0" class="sortable">
+  <table class="sortable table table-stripped">
     <thead>
       <tr>
         <% if edit -%>
-          <th class='label' width="3%"><%= link_to 'Drag', "javascript:void(0);" %></th>
+          <th width="3%"><%= link_to 'Drag', "javascript:void(0);" %></th>
         <% elsif stage %>
-          <th class="label nosort" width="7%"><%= link_to_function 'Select', "select_all()" -%> | <%= link_to_function 'Deselect', "deselect_all()" -%></th>
+          <th class="nosort" width="7%"><%= link_to_function 'Select', "select_all()" -%> | <%= link_to_function 'Deselect', "deselect_all()" -%></th>
         <% end -%>
-        <th class='label' width="5%"><%= link_to 'Order', "javascript:void(0);" %></th>
-        <th class='label' width="7%"><%= link_to 'Sample', "javascript:void(0);" %></th>
-        <th class='label' width="7%"><%= link_to 'Request', "javascript:void(0);" %></th>
-        <th class='label' width="15%"><%= link_to 'Source', "javascript:void(0);" %></th>
-        <th class='label' width="15%"><%= link_to 'Source barcode', "javascript:void(0);" %></th>
-        <th class='label' width="15%"><%= link_to 'Target Type', "javascript:void(0);" %></th>
-        <th class='label' width="15%"><%= link_to 'Target barcode', "javascript:void(0);" %></th>
+        <th>Position</th>
+        <th>Sample</th>
+        <th>Request</th>
+        <th>Source</th>
+        <th>Source barcode</th>
+        <th>Target Type</th>
+        <th>Target barcode</th>
         <% if @batch.display_tags? %>
-          <th class='label' width="15%"><%= link_to 'Tag #', "javascript:void(0);" %></th>
+          <th>Tag #</th>
         <% end %>
         <% @rits.each do |rit| %>
-          <th class='label' width="5%"><%= link_to rit.label, "javascript:void(0);" %></th>
+          <th><%= rit.label %></th>
         <% end %>
-        <th class='label' width="4%"><%= link_to 'State', "javascript:void(0);" %></th>
-        <th class='label' width="3%"><%= link_to 'Comments', "javascript:void(0);" %></th>
+        <th>State</th>
+        <th>Comments</th>
       </tr>
     </thead>
     <tbody id="requests_list">
       <% requests.each_with_index do |request, i| -%>
-        <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
+        <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %> row<%= i %>">
           <% if edit -%>
-            <td width="3%" class="center" style="cursor:move;"><%= image_tag "arrow_out.png", :size =>"13x13" %></td>
+            <td class="center" style="cursor:move;"><%= image_tag "arrow_out.png", :size =>"13x13" %></td>
           <% elsif stage %>
-              <td class="7%"><input name='request[<%= request.id %>]' id="sample <%= i+1  %> checkbox" class='sample_check' value="on" type='checkbox' checked></td>
+              <td><input name='request[<%= request.id %>]' id="sample <%= i+1  %> checkbox" class='sample_check' value="on" type='checkbox' checked></td>
           <% end -%>
-          <td width="5%"><%= request.position %></td>
+          <td><%= request.position %></td>
 
           <% if request.asset %>
-            <td width="7%"><%= h(request.asset.display_name) %></td>
+            <td><%= h(request.asset.display_name) %></td>
           <% else %>
-            <td width="7%"></td>
+            <td></td>
           <% end %>
 
           <td><%= link_to request.id, request_url(request) %></td>
           <% if request.asset  %>
-            <td width="15%"><%= link_to request.asset.sti_type, asset_url(request.asset) %></td>
-            <td width="7%"><%= request.asset.barcode %></td>
+            <td><%= link_to request.asset.sti_type, asset_url(request.asset) %></td>
+            <td><%= request.asset.barcode %></td>
             <% if request.target_asset %>
-              <td width="15%"><%= link_to request.target_asset.sti_type, asset_url(request.target_asset) %></td>
-              <td width="7%"><%= request.target_asset.barcode %></td>
+              <td><%= link_to request.target_asset.sti_type, asset_url(request.target_asset) %></td>
+              <td><%= request.target_asset.barcode %></td>
             <% else %>
-              <td width="15%"></td>
-              <td width="15%"></td>
+              <td></td>
+              <td></td>
             <% end %>
           <% else %>
-            <td width="15%"></td>
-            <td width="7%"></td>
-            <td width="7%"></td>
-            <td width="15%"></td>
+            <td></td>
+            <td></td>
+            <td ></td>
+            <td></td>
           <% end %>
           <% if @batch.display_tags? -%>
             <% tag = request.target_asset.primary_aliquot.try(:tag) %>
@@ -70,11 +70,11 @@
           <% end %>
 
           <% @rits.each do |rit| %>
-            <td width="10%"><%= request.value_for(rit.name, @batch) %></td>
+            <td><%= request.value_for(rit.name, @batch) %></td>
           <% end %>
-          <td width='3%'><%= request.state.humanize %></td>
+          <td><%= request.state.humanize %></td>
           <% unless request.comments.blank? -%>
-          <td width='4%'><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
+          <td><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
           <% else -%>
           <td>None</td>
           <% end -%>
@@ -84,10 +84,3 @@
   </table>
   <br />
 </div>
-
-<% if edit -%>
-<%= sortable_element 'requests_list',
-    :tag => 'tr',
-    :url => { :action => "sort", :batch_id => @batch.id },
-    :complete => "reload_batch();" %>
-<% end -%>

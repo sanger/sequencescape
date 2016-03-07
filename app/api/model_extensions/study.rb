@@ -4,8 +4,8 @@
 module ModelExtensions::Study
   def self.included(base)
     base.class_eval do
-      named_scope :include_samples, :include => :samples
-      named_scope :include_projects, :include => :projects
+      scope :include_samples, -> { includes(:samples) }
+      scope :include_projects, -> { includes(:projects) }
     end
   end
 end

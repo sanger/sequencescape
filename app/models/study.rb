@@ -1,15 +1,17 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
-class Study < ActiveRecord::Base
 
+require 'aasm'
+
+class Study < ActiveRecord::Base
 
   include StudyReport::StudyDetails
   include ModelExtensions::Study
 
   include Api::StudyIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
   include EventfulRecord
@@ -17,7 +19,7 @@ class Study < ActiveRecord::Base
   include DataRelease
   include Commentable
   include Identifiable
-  include Named
+  include SharedBehaviour::Named
   include ReferenceGenome::Associations
   include SampleManifest::Associations
   include Request::Statistics::DeprecatedMethods
@@ -73,6 +75,7 @@ class Study < ActiveRecord::Base
   def requests(reload=nil)
     Request.for_study(self)
   end
+
   has_many :asset_groups
   has_many :study_reports
 
@@ -100,7 +103,7 @@ class Study < ActiveRecord::Base
   has_many :initial_requests, :class_name => "Request", :foreign_key => :initial_study_id
 
   has_many :comments, :as => :commentable
-  has_many :events, :as => :eventful
+  has_many :events, :as => :eventful, :order => 'created_at ASC, id ASC'
   has_many :documents, :as => :documentable
   has_many :sample_manifests
   has_many :suppliers, :through => :sample_manifests, :uniq => true
@@ -134,26 +137,39 @@ class Study < ActiveRecord::Base
   end
   private :set_default_ethical_approval
 
-  named_scope :for_search_query, lambda { |query,with_includes|
-    { :joins => :study_metadata, :conditions => [ 'name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query ] }
+ scope :for_search_query, ->(query,with_includes) {
+    joins(:study_metadata).where([ 'name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query ])
   }
 
-  named_scope :with_no_ethical_approval, { :conditions => { :ethically_approved => false } }
+ scope :with_no_ethical_approval, -> { where( :ethically_approved => false ) }
 
-  named_scope :is_active,   { :conditions => { :state => 'active'   } }
-  named_scope :is_inactive, { :conditions => { :state => 'inactive' } }
-  named_scope :is_pending,  { :conditions => { :state => 'pending'  } }
+ scope :is_active,   -> { where( :state => 'active' ) }
+ scope :is_inactive, -> { where( :state => 'inactive' ) }
+ scope :is_pending,  -> { where( :state => 'pending' ) }
 
-  named_scope :newest_first, { :order => "#{ self.quoted_table_name }.created_at DESC" }
-  named_scope :with_user_included, { :include => :user }
+  scope :newest_first, -> { order("#{ self.quoted_table_name }.created_at DESC" ) }
+  scope :with_user_included, -> { includes(:user) }
 
-  named_scope :in_assets, lambda { |assets| {
-    :select => 'DISTINCT studies.*',
-    :joins => [
+  scope :in_assets, ->(assets) {
+    select('DISTINCT studies.*').
+    joins([
       'LEFT JOIN aliquots ON aliquots.study_id = studies.id',
-    ],
-    :conditions => ['aliquots.receptacle_id IN (?)',assets.map(&:id)]
-  }}
+    ]).
+    where(['aliquots.receptacle_id IN (?)',assets.map(&:id)])
+  }
+
+  scope :alphabetical, ->() { order('name ASC') }
+  scope :for_listing, ->()  { select('name, id') }
+
+  def each_well_for_qc_report_in_batches(exclude_existing,product_criteria)
+    base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate'])).
+      for_study_through_aliquot(self).
+      without_blank_samples.
+      includes(:well_attribute, samples: :sample_metadata ).
+      readonly(true)
+    scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
+    scope.find_in_batches {|wells| yield wells }
+  end
 
   YES = 'Yes'
   NO  = 'No'
@@ -284,7 +300,9 @@ class Study < ActiveRecord::Base
     end
 
   end
+
   class Metadata
+
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES
     end
@@ -313,7 +331,7 @@ class Study < ActiveRecord::Base
 
     has_one :data_release_non_standard_agreement, :class_name => 'Document', :as => :documentable
     accepts_nested_attributes_for :data_release_non_standard_agreement
-    validates_presence_of :data_release_non_standard_agreement, :if => :non_standard_agreement?
+    validates :data_release_non_standard_agreement, :presence => true, :if => :non_standard_agreement?
     validates_associated  :data_release_non_standard_agreement, :if => :non_standard_agreement?
 
     validate :valid_policy_url?
@@ -518,47 +536,34 @@ class Study < ActiveRecord::Base
     end
   end
 
-  named_scope :awaiting_ethical_approval, {
-    :joins => :study_metadata,
-    :conditions => {
+  scope :awaiting_ethical_approval,
+    joins(:study_metadata).
+    where(
       :ethically_approved => false,
       :study_metadata => {
         :contains_human_dna => Study::YES,
         :contaminated_human_dna => Study::NO,
         :commercially_available => Study::NO
       }
-    }
-  }
+    )
 
-  named_scope :contaminated_with_human_dna, {
-    :joins => :study_metadata,
-    :conditions => {
+
+  scope :contaminated_with_human_dna,
+    joins(:study_metadata).
+    where(
       :study_metadata => {
         :contaminated_human_dna => Study::YES
       }
-    }
-  }
+    )
 
-  named_scope :with_remove_x_and_autosomes, {
-    :joins => :study_metadata,
-    :conditions => {
+  scope :with_remove_x_and_autosomes,
+    joins(:study_metadata).
+    where(
       :study_metadata => {
         :remove_x_and_autosomes => Study::YES
       }
-    }
-  }
+    )
 
-  def self.all_awaiting_ethical_approval
-    self.awaiting_ethical_approval
-  end
-
-  def self.all_contaminated_with_human_dna
-    self.contaminated_with_human_dna
-  end
-
-  def self.all_with_remove_x_and_autosomes
-    self.with_remove_x_and_autosomes
-  end
 
   def ebi_accession_number
     self.study_metadata.study_ebi_accession_number
@@ -602,9 +607,11 @@ class Study < ActiveRecord::Base
 
   def accession_service
     if data_release_strategy == "open"
-      return EraAccessionService.new
+      EraAccessionService.new
     elsif data_release_strategy == "managed"
-      return EgaAccessionService.new
+      EgaAccessionService.new
+    else
+      NoAccessionService.new(self)
     end
   end
 
@@ -629,8 +636,8 @@ class Study < ActiveRecord::Base
       nil
     when object.respond_to?(:study_id)
       self.id == object.study_id
-    when object.respond_to?(:study_ids)
-      object.study_ids.include?(self.id)
+    when object.respond_to?(:studies)
+      object.studies.include?(self)
     else
       nil
     end
@@ -659,7 +666,7 @@ class Study < ActiveRecord::Base
     assets_to_move = sample.assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
 
     raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
-    helper = lambda { |object| decide_if_object_should_be_taken(study_from, sample, object) }
+    helper = ->(object) { decide_if_object_should_be_taken(study_from, sample, object) }
     objects_to_move =
       sample.walk_objects(
         :sample     => [:receptacles, :study_samples],
@@ -731,4 +738,5 @@ class Study < ActiveRecord::Base
       )
     end
   end
+
 end

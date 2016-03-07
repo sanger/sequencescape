@@ -6,7 +6,7 @@ module ModelExtensions::Order
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
-        delegate_validation :request_options_for_validation, :to => :request_types, :if => :validate_request_options?
+        delegate_validation :request_options_for_validation, :as => 'request_options', :to => :request_types, :if => :validate_request_options?
       end
     end
 
@@ -35,25 +35,25 @@ module ModelExtensions::Order
     end
   end
 
+  def validate_new_record(assets)
+    raise StandardError, 'requested action is not supported on this resource' if not new_record? and  asset_group? and assets.present?
+    true
+  end
+
   def self.included(base)
     base.class_eval do
       include Validations
 
       before_validation :merge_in_structured_request_options
 
-      named_scope :include_study,   :include => { :study => :uuid_object }
-      named_scope :include_project, :include => { :project => :uuid_object }
-      named_scope :include_assets,  :include => { :assets => :uuid_object }
+      scope :include_study, -> { includes( :study => :uuid_object ) }
+      scope :include_project, -> { includes( :project => :uuid_object ) }
+      scope :include_assets, -> { includes( :assets => :uuid_object ) }
 
       has_many :submitted_assets
-      has_many :assets, :through => :submitted_assets do
-        def replace(*args, &block)
-          raise StandardError, 'requested action is not supported on this resource' if not proxy_owner.new_record? and  proxy_owner.send(:asset_group?) and not empty?
-          super
-        end
-      end
+      has_many :assets, :through => :submitted_assets, :before_add => :validate_new_record
 
-      named_scope :that_submitted_asset_id, lambda { |asset_id|
+     scope :that_submitted_asset_id, ->(asset_id) {
         { :conditions => { :submitted_assets => { :asset_id => asset_id } }, :joins => :submitted_assets }
       }
 

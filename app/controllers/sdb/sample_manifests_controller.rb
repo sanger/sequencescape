@@ -17,11 +17,10 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       flash[:error] = "Cannot find details about the sample manifest"
       return
     end
-
     @sample_manifest.update_attributes(params[:sample_manifest])
     @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
     flash[:notice] = "Manifest being processed"
-  rescue FasterCSV::MalformedCSVError
+  rescue CSV::MalformedCSVError
     flash[:error] = "Invalid CSV file"
   ensure
     redirect_to sample_manifests_path
@@ -87,6 +86,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   # Show the manifest
   def show
+    @samples = @sample_manifest.samples.paginate(:page => params[:page])
   end
 
   def index

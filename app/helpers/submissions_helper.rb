@@ -9,17 +9,23 @@ module SubmissionsHelper
     projects_array.inspect
   end
 
+  #<label for="submission_order_params_field_info_key">field_info.display_name/label>
   def order_input_label(field_info)
-    label("submission[order_params][#{field_info.key}]", field_info.display_name)
+    label('submission[order_params]',field_info.key, field_info.display_name,:class=>'control-label col-sm-6')
   end
 
   # Returns a either a text input or a selection tag based on the 'kind'
   # of the order parameter passed in.
   # field_info is expected to be FieldInfo [sic]
   def order_input_tag(order, field_info)
-    case field_info.kind
-    when "Selection" then order_selection_tag(order, field_info)
-    when "Text"      then order_text_tag(order, field_info)
+    content_tag(:div,:class=>'col-sm-6') do
+      case field_info.kind
+      when "Selection" then order_selection_tag(order, field_info)
+      when "Text"      then order_text_tag(order, field_info)
+      when "Numeric"   then order_number_tag(order, field_info)
+      # Fall back to a text field
+      else order_text_tag(order, field_info)
+      end
     end
   end
 
@@ -30,7 +36,8 @@ module SubmissionsHelper
         field_info.selection.map(&:to_s),
         order.request_options.try(:[], field_info.key)
       ),
-      :class => "required",
+      :class => "required form-control",
+      :required => true,
       :disabled => (field_info.selection.size == 1)
     )
   end
@@ -40,7 +47,18 @@ module SubmissionsHelper
     text_field_tag(
       "submission[order_params][#{field_info.key}]",
       order.request_options.try(:[], field_info.key) || field_info.default_value,
-      :class => "required"
+      :class => "required form-control",
+      :required => true
+    )
+  end
+  private :order_text_tag
+
+  def order_number_tag(order, field_info)
+    number_field_tag(
+      "submission[order_params][#{field_info.key}]",
+      order.request_options.try(:[], field_info.key) || field_info.default_value,
+      :class => "required form-control",
+      :required => true
     )
   end
   private :order_text_tag
@@ -56,7 +74,25 @@ module SubmissionsHelper
       :study_id,
       studies, :id, :name,
       { :prompt => prompt },
-      { :disabled => true, :class => 'study_id' }
+      { :disabled => true, :class => 'study_id form-control' }
+    )
+  end
+
+  def projects_select(form, projects)
+    prompt = case projects.count
+             when 0 then "There are no valid projects available"
+             else "Please select a Project for this Submission..."
+             end
+# form.text_field :project_name,
+#       :class       => 'submission_project_name form-control form-control',
+#       :placeholder => "enter the first few characters of the financial project name",
+#       :disabled    => true
+
+    form.collection_select(
+      :project_name,
+      projects, :name, :name,
+      { :prompt => prompt },
+      { :disabled => true, :class => 'submission_project_name form-control' }
     )
   end
 
@@ -72,7 +108,7 @@ module SubmissionsHelper
       asset_groups, :id, :name,
       { :prompt => prompt },
       {
-        :class => 'submission_asset_group_id required',
+        :class => 'submission_asset_group_id required form-control',
         :disabled => (asset_groups.size == 0)
       }
     )
@@ -91,13 +127,13 @@ module SubmissionsHelper
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      display_user_error("<h2>Your submission has failed:</h2><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>")
+      display_user_error(raw("<h3>Your submission has failed:</h3><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>"))
     when 'ready'
-      content_tag(:p, 'Your submission has been <strong>processed</strong>.')
+      alert(:success) { raw('Your submission has been <strong>processed</strong>.') }
     when 'cancelled'
-      content_tag(:p, 'Your submission has been <strong>cancelled</strong>.')
+      alert(:info) { raw('Your submission has been <strong>cancelled</strong>.') }
     else
-      content_tag(:p, 'Your submission is in an unknown state (contact support).')
+      alert(:danger) { 'Your submission is in an unknown state (contact support).' }
     end
   end
 
@@ -111,5 +147,11 @@ module SubmissionsHelper
     return request_type_name unless request_type.request_class_name =~ /SequencingRequest$/
 
     content_tag(:em, pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
+  end
+
+  def submission_link(submission,options)
+    link_text = content_tag(:strong,submission.name) << ' ' <<
+    content_tag(:span,submission.state,:class=>"batch-state label label-#{bootstrapify_submission_state(submission.state)}")
+    link_to(link_text, submission_path(submission), options)
   end
 end

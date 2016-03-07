@@ -6,7 +6,7 @@
   <%= Date.today %>
 </div>
 <div class="info">
-  <%= form_tag ('/assets/create_stocks', :multipart => true) %>
+  <%= form_tag('/assets/create_stocks', :multipart => true) %>
     <%= hidden_field_tag "batch_id", "#{@batch.id}" %>
      <table cellpadding="4" cellspacing="0" width="50%">
        <thead>

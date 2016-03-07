@@ -10,14 +10,14 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
       @controller = Studies::SampleRegistrationController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @study    = Factory :study
+      @study      = FactoryGirl.create :study
     end
 
     should_require_login
 
     context "when logged in" do
       setup do
-        @user = Factory :user
+        @user =FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
         @controller.stubs(:current_user).returns(@user)
       end
@@ -27,8 +27,8 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           get :index, :study_id => @study
         end
 
-        should_respond_with :success
-        should_render_template :index
+        should respond_with :success
+        should render_template :index
       end
 
       context "#new" do
@@ -55,7 +55,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
         context "with attached file" do
           setup do
             @controller.stubs(:current_user).returns(@user)
-            post :new, :study_id => @study, :file => File.open(RAILS_ROOT + '/test/data/two_plate_sample_info_valid.xls')
+            post :spreadsheet, :study_id => @study, :file => Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls','')
           end
 
           should "respond successfully and render the new template" do
@@ -66,11 +66,11 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "with invalid file" do
           setup do
-            post :new, :study_id => @study, :file => File.open(RAILS_ROOT + '/config/environment.rb')
+            post :spreadsheet, :study_id => @study, :file => Rack::Test::UploadedFile.new(Rails.root.to_s + '/config/environment.rb','text/csv')
           end
 
-          should_set_the_flash_to "Problems processing your file. Only Excel spreadsheets accepted"
-          should_redirect_to("upload study sample registration") { upload_study_sample_registration_path }
+          should set_the_flash.to( "Problems processing your file. Only Excel spreadsheets accepted")
+          should redirect_to("upload study sample registration") { upload_study_sample_registration_index_path }
         end
       end
 
@@ -79,8 +79,8 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           get :upload, :study_id => @study
         end
 
-        should_respond_with :success
-        should_render_template :upload
+        should respond_with :success
+        should render_template :upload
       end
 
       context "#create" do
@@ -89,12 +89,15 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             post :create, :study_id => @study, :sample_registrars => {}
           end
 
-          should_set_the_flash_to 'You do not appear to have specified any samples'
-          should_render_template :new
+
+          should set_the_flash.now.to('You do not appear to have specified any samples')
+
+          should render_template :new
         end
 
         context "one sample with values given" do
           setup do
+            @sscount =  @study.samples.count
             post :create, :study_id => @study,
               :sample_registrars => {
                 '1' => {
@@ -104,12 +107,16 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
               }
           end
 
-          should_respond_with :redirect
-          should_change('@study.samples.count', :by => 1) { @study.samples.count }
+          should respond_with :redirect
+
+          should "change @study.samples.count by 1" do
+          assert_equal 1,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 1"
+          end
         end
 
         context "two samples with values given" do
           setup do
+            @sscount =  @study.samples.count
             post :create, :study_id => @study,
               :sample_registrars => {
                 '1' => {
@@ -123,12 +130,16 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
               }
           end
 
-          should_respond_with :redirect
-          should_change('@study.samples.count', :by => 2) { @study.samples.count }
+          should respond_with :redirect
+
+          should "change @study.samples.count by 2" do
+            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+          end
         end
 
         context 'three samples with one ignored' do
           setup do
+            @sscount =  @study.samples.count
             post :create, :study_id => @study,
               :sample_registrars => {
                 '1' => {
@@ -147,8 +158,11 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
               }
           end
 
-          should_respond_with :redirect
-          should_change('@study.samples.count', :by => 2) { @study.samples.count }
+          should respond_with :redirect
+
+          should "change @study.samples.count by 2" do
+            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+          end
 
           should 'not have registered sample 2' do
             assert_nil(Sample.find_by_name('Sam2'))
@@ -157,6 +171,8 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "when a 2D barcode is passed in" do
           setup do
+            @sscount =  @study.samples.count
+            @asset_count = Asset.count
             post :create, :study_id => @study,
                 :sample_registrars => {
                   '1' => {
@@ -172,24 +188,35 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
                 }
           end
 
-          should_respond_with :redirect
-          should_change('@study.samples.count', :by => 2) { @study.samples.count }
-          should_change('Asset.count', :by => 2) { Asset.count }
+          should respond_with :redirect
+
+          should "change @study.samples.count by 2" do
+            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+          end
+
+          should "change Asset.count by 2" do
+            assert_equal 2,  Asset.count  - @asset_count, "Expected Asset.count to change by 2"
+          end
 
           context 'sample 1' do
-            subject { Sample.find_by_name("Sam1") }
+
+            setup do
+              @sample = Sample.find_by_name("Sam1")
+            end
 
             should 'have the 2D barcode on the asset' do
-              assert_equal "SI0000012345", subject.assets.first.two_dimensional_barcode
+              assert_equal "SI0000012345", @sample.assets.first.two_dimensional_barcode
             end
 
           end
 
           context 'sample 2' do
-            subject { Sample.find_by_name('Sam2') }
+            setup do
+              @sample = Sample.find_by_name('Sam2')
+            end
 
             should 'have the 2D barcode on the asset' do
-              assert_equal "SI0000098765", subject.assets.first.two_dimensional_barcode
+              assert_equal "SI0000098765", @sample.assets.first.two_dimensional_barcode
             end
           end
         end
@@ -199,7 +226,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             post :create, :study_id => @study,
               :sample_registrars => { '1' => { } }
           end
-          should_render_template :new
+          should render_template :new
         end
 
         # TODO: samples with duplicate well IDs

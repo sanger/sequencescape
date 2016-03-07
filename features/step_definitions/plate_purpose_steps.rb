@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2014 Genome Research Ltd.
 Given /^a (plate|tube) purpose "([^"]+)" with UUID "([^"]+)"$/ do |type, name, uuid_value|
-  set_uuid_for(Factory("#{type}_purpose", :name => name), uuid_value)
+  set_uuid_for(FactoryGirl.create("#{type}_purpose", :name => name), uuid_value)
 end
 
 Transform /^the plate purpose "([^\"]+)"$/ do |name|

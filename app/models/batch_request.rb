@@ -3,15 +3,15 @@
 #Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 class BatchRequest < ActiveRecord::Base
   include Api::BatchRequestIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
   belongs_to :batch
   belongs_to :request, :inverse_of => :batch_request
 
-  named_scope :ordered, :order => 'position ASC'
-  named_scope :at_position, lambda { |position| { :conditions => { :position => position } } }
+  scope :ordered, -> { order('position ASC') }
+  scope :at_position, ->(position) { { :conditions => { :position => position } } }
 
   # Ensure that any requests that are added have a position that is unique and incremental in the batch,
   # unless we're moving them around in the batch, in which case we assume it'll be valid.

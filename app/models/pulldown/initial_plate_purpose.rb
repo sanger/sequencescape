@@ -17,7 +17,7 @@ class Pulldown::InitialPlatePurpose < PlatePurpose
 
   def outer_requests(plate,contents)
     well_ids = contents.present? ? plate.wells.located_at(contents).map(&:id) : plate.wells.map(&:id)
-    transfer_request_sti = [TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')
+    transfer_request_sti = [TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')
     Request.find(:all, {
       :select => "requests.*",
       :joins => [

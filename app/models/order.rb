@@ -3,7 +3,7 @@
 #Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 class Order < ActiveRecord::Base
   class OrderRole < ActiveRecord::Base
-    set_table_name('order_roles')
+    self.table_name =('order_roles')
   end
 
   module InstanceMethods
@@ -25,13 +25,15 @@ class Order < ActiveRecord::Base
 
   # Required at initial construction time ...
   belongs_to :study
-  validates_presence_of :study, :unless => :cross_study_allowed
+  validates :study, :presence => true, :unless => :cross_study_allowed
 
   belongs_to :project
-  validates_presence_of :project, :unless => :cross_project_allowed
+  validates :project, :presence => true, :unless => :cross_project_allowed
 
   belongs_to :order_role, :class_name => 'Order::OrderRole'
   delegate :role, :to => :order_role, :allow_nil => true
+
+  belongs_to :product
 
   belongs_to :user
   validates_presence_of :user
@@ -42,7 +44,7 @@ class Order < ActiveRecord::Base
   has_many :requests, :inverse_of => :order
 
   belongs_to :submission, :inverse_of => :orders
-  named_scope :include_for_study_view, :include => [:submission]
+  scope :include_for_study_view, -> { includes(:submission) }
   #validates_presence_of :submission
 
   before_destroy :is_building_submission?
@@ -111,23 +113,30 @@ class Order < ActiveRecord::Base
     assets
   end
 
-  named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
-  named_scope :with_plate_as_target, lambda {|plate|
+  scope :for_studies, ->(*args) { {:conditions => { :study_id => args[0]} } }
+  scope :with_plate_as_target, ->(plate) {
     # Essentially :joins => {:requests=>{:target_asset=>:container_association}}
     # But container_association only exists on wells
-    {
-      :select => "DISTINCT orders.*",
-      :joins => [
+    # Note: This is a basic update of the scope performed during the merge. Need to make more rails-threey
+      select("DISTINCT orders.*").
+      joins([
         'INNER JOIN requests AS wpat_r ON wpat_r.order_id = orders.id',
         'INNER JOIN container_associations ON container_associations.content_id = wpat_r.target_asset_id'
-      ],
-      :conditions => ['container_associations.container_id = ?',plate.id]
-    }
+      ]).
+      where(['container_associations.container_id = ?',plate.id])
   }
 
-  cattr_reader :per_page
-  @@per_page = 500
-  named_scope :including_associations_for_json, { :include => [:uuid_object, {:assets => [:uuid_object] }, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
+
+  self.per_page = 500
+  scope :including_associations_for_json, -> {
+    includes([
+      :uuid_object,
+      {:assets => [:uuid_object] },
+      { :project => :uuid_object },
+      { :study => :uuid_object },
+      :user
+    ])
+  }
 
 
   def self.render_class
@@ -213,12 +222,16 @@ class Order < ActiveRecord::Base
 
   #  attributes which are not saved for a submission but can be pre-set via SubmissionTemplate
   # return a list of request_types lists  (a sequence of choices) to display in the new view
-  attr_accessor_with_default :request_type_ids_list, [[]]
+  attr_writer :request_type_ids_list
+
+  def request_type_ids_list; @request_type_ids_list ||= [[]]; end
+
   attr_accessor :info_differential # aggrement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
   DefaultAssetInputMethods = ["select an asset group"]
   #DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
-  attr_accessor_with_default :asset_input_methods, DefaultAssetInputMethods
+  attr_writer :asset_input_methods
+  def asset_input_methods; @asset_input_methods ||= DefaultAssetInputMethods; end
 
   # return a hash with the values needed to be saved as a template
   # beware nil values are filtered to not overwride default value set in the initializer
@@ -352,7 +365,7 @@ class Order < ActiveRecord::Base
     [
      PacBioSequencingRequest,
      SequencingRequest,
-     *Class.subclasses_of(SequencingRequest)
+     *SequencingRequest.descendants
     ].include?(RequestType.find(request_types.last).request_class)
   end
 

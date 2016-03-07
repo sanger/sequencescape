@@ -35,7 +35,8 @@ module XmlCacheHelper
       #
       # This is the best way of doing this, hence we simply implement an observer here and then
       # include & delegate everything we need to interact with the cache.
-      include ActionController::UrlWriter
+      include Rails.application.routes.url_helpers
+
       delegate :expire_page, :perform_caching, :to => 'ActionController::Base'
       alias_method(:perform_caching?, :perform_caching)
       private :expire_page, :perform_caching, :perform_caching?

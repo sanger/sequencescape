@@ -13,7 +13,7 @@ class Api::BatchIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }] }
+        scope :including_associations_for_json, -> { includes( [ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }] ) }
       end
     end
   end

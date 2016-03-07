@@ -21,7 +21,7 @@ class StateChange < ActiveRecord::Base
   validates_presence_of :target
 
   # If the state change is a known failure state then a reason must be included
-  validates_presence_of :reason, :if => :targetted_for_failure?
+  validates :reason, :presence => true, :if => :targetted_for_failure?
 
   def targetted_for_failure?
     [ 'failed', 'cancelled' ].include?(target_state)

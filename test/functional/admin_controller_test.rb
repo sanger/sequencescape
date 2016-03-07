@@ -17,7 +17,7 @@ class AdminControllerTest < ActionController::TestCase
     should_require_login
     context "admin frontpage" do
       setup do
-        @user     = Factory :admin
+        @user     =FactoryGirl.create :admin
         @controller.stubs(:current_user).returns(@user)
         @controller.stubs(:logged_in?).returns(@user)
       end
@@ -25,24 +25,24 @@ class AdminControllerTest < ActionController::TestCase
         setup do
           get :index
         end
-        should_respond_with :success
-        should_render_template :index
+        should respond_with :success
+        should render_template :index
       end
 
       context "#filter" do
         setup do
           get :filter
         end
-        should_respond_with :success
-        should_render_template "admin/users/_users"
+        should respond_with :success
+        should render_template "admin/users/_users"
       end
 
       context "#filter with query" do
         setup do
           get :filter, :q => "abc123"
         end
-        should_respond_with :success
-        should_render_template "admin/users/_users"
+        should respond_with :success
+        should render_template "admin/users/_users"
       end
 
     end

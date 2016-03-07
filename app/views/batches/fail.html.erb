@@ -11,7 +11,7 @@
   Failing a request will result in an email being generated and sent to the project's PM.  This request will not be returned to the inbox. <br/>
   Batches will automatically be failed when all requests in them have been failed, cancelled or removed.
 </div>
-<% form_tag(:controller => :batches, :action => :fail_items, :id => @batch.id ) do -%>
+<%= form_tag(:controller => :batches, :action => :fail_items, :id => @batch.id ) do -%>
 
 <%= render :partial => "batch_fail", :locals => { :requests => @batch.ordered_requests, :edit => false } %>
 

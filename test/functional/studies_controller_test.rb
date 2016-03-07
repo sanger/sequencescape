@@ -33,7 +33,7 @@ class StudiesControllerTest < ActionController::TestCase
       @controller = StudiesController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user = Factory :user
+      @user = FactoryGirl.create(:user)
       @user.has_role('owner')
       @controller.stubs(:logged_in?).returns(@user)
       @controller.stubs(:current_user).returns(@user)
@@ -44,85 +44,93 @@ class StudiesControllerTest < ActionController::TestCase
         get :new
       end
 
-      should_respond_with :success
-      should_render_template :new
+      should respond_with :success
+      should render_template :new
     end
 
     context "#new_plate_submission" do
       setup do
-        @study = Factory :study
-        @project = Factory :project
+        @study = FactoryGirl.create(:study)
+        @project = FactoryGirl.create(:project)
         @user.is_administrator
         @user.save
         get :new_plate_submission, :id => @study.id
       end
 
-      should_respond_with :success
-      should_render_template :new_plate_submission
+      should respond_with :success
+      should render_template :new_plate_submission
     end
 
     context "#create" do
       setup do
-        @request_type_1 = Factory :request_type
+        @request_type_1 =FactoryGirl.create :request_type
       end
 
-      context "successfully create a new study" do
+      context "successfullyFactoryGirl.create a new study" do
         setup do
+          @study_count = Study.count
           post :create, "study" => {
             "name" => "hello",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
-              'faculty_sponsor' => FacultySponsor.create!(:name => 'Me'),
+              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me'),
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
-              'data_release_study_type' => DataReleaseStudyType.find_by_name('genomic sequencing'),
+              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing'),
               'data_release_strategy' => 'open',
-              'study_type' => StudyType.find_by_name("Not specified")
+              'study_type_id' => StudyType.find_by_name("Not specified").id
             }
           }
         end
 
-        should_set_the_flash_to "Your study has been created"
-        should_redirect_to("study path") { study_path(Study.last) }
-        should_change('Study.count', 1) { Study.count }
+        should set_the_flash.to( "Your study has been created")
+        should redirect_to("study path") { study_path(Study.last) }
+        should "change Study.count by 1" do
+          assert_equal 1, Study.count - @study_count
+        end
       end
 
       context "fail to create a new study" do
         setup do
+          @initial_study_count = Study.count
           post :create, "study" => { "name" => "hello 2" }
         end
 
-        should_render_template :new
-        should_not_change('Study.count') { Study.count }
+        should render_template :new
 
-        should 'set a message for the error' do
-          assert_contains(@controller.action_flash.values, 'Problems creating your new study')
+        should "not change Study.count" do
+          assert_equal @initial_study_count, Study.count
         end
+
+        should set_the_flash.now.to('Problems creating your new study')
       end
 
       context "create a new study using permission allowed (not required)" do
         setup do
+          @study_count = Study.count
           post :create, "study" => {
             "name" => "hello 3",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
-              'faculty_sponsor' => FacultySponsor.create!(:name => 'Me'),
+              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
-              'data_release_study_type' => DataReleaseStudyType.find_by_name('genomic sequencing'),
+              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
               'data_release_strategy' => 'open',
-              'study_type' => StudyType.find_by_name("Not specified")
+              'study_type_id' => StudyType.find_by_name("Not specified").id
             }
           }
         end
 
-        should_change('Study.count', 1) { Study.count }
-        should_redirect_to("study path") { study_path(Study.last) }
-        should_set_the_flash_to "Your study has been created"
+        should "change Study.count by 1" do
+          assert_equal 1, Study.count - @study_count
+        end
+        should redirect_to("study path") { study_path(Study.last) }
+        should set_the_flash.to( "Your study has been created")
       end
 
     end

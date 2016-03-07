@@ -2,8 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
 <h1>Reception</h1>
-<div class="content">
-<div id='accept'>
+  <div class="content">
+    <div id='accept'>
       <table>
         <thead><th>Name</th><th>Barcode</th><th>Type</th></thead>
       <% @assets.each do |asset| %>
@@ -17,16 +17,16 @@
       <br />
       <strong>I have placed the above barcoded Samples in the reception fridge in the following lab:</strong>
       <br /><br />
-      <% form_for :asset, @asset, :url => { :action => "confirm_reception" } do |f| %>
-              <%= f.label :location_id, 'Freezers', :style => "display:none" %>
-              <%= f.collection_select :location_id, Location.all, :id, :name %>
-              <% @assets.each_with_index do |asset,index| %>
-                <%= hidden_field_tag "asset_id[#{index}]", asset.id %>
-              <% end %>
-              <%= f.submit 'Confirm' %> or  <%= link_to 'cancel', :action => 'reception' %>
+      <%= form_for @asset, :as => :asset, :url => confirm_reception_receptions_path do |f| %>
+        <%= f.label :location_id, 'Freezers', :style => "display:none" %>
+        <%= f.collection_select :location_id, Location.all, :id, :name %>
+        <% @assets.each_with_index do |asset,index| %>
+          <%= hidden_field_tag "asset_id[#{index}]", asset.id %>
+        <% end %>
+        <%= f.submit 'Confirm' %> or <%= link_to 'cancel', :action => 'reception' %>
       <% end %>
-</div>
-</div>
+    </div>
+  </div>
 </div>
 
 

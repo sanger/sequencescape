@@ -21,7 +21,6 @@ Feature: Studies should be able to generate accession numbers
     Given an accessioning webservice exists which returns a study accession number "EGAN00001000234"
     Given an accession number is required for study "Study for accession number testing"
     And the study "Study for accession number testing" has the accession number "EGAN00001000235"
-
     When I follow "Generate Accession Number"
     Then I should see "Accession number generated: EGAN00001000234"
 

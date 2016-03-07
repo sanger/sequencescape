@@ -17,7 +17,7 @@ Feature: Interacting with samples through the API
     And the JSON should be:
       """
       {
-        "name": [ "can't be blank", "Sample name can only contain letters, numbers, _ or -" ]
+        "name": [ "can't be blank", "can only contain letters, numbers, _ or -" ]
       }
       """
 
@@ -353,7 +353,7 @@ Feature: Interacting with samples through the API
     And the JSON should be:
       """
       {
-        "name": ["can't be blank", "cannot be changed", "Sample name can only contain letters, numbers, _ or -"]
+        "name": ["can't be blank", "can only contain letters, numbers, _ or -", "cannot be changed"]
       }
       """
 
@@ -373,3 +373,25 @@ Feature: Interacting with samples through the API
     Then the HTTP response should be "200 OK"
     And the HTTP response body should be empty
     And the reference genome for the sample "sample_testing_the_json_api" should be "Staphylococcus_aureus (NCTC_8325)"
+
+  Scenario: Attempting to change a sample name
+    Given a reference genome table
+    Given the sample named "sample_testing_the_json_api" exists
+    And the UUID for the sample "sample_testing_the_json_api" is "00000000-1111-2222-3333-444444444444"
+
+    When I PUT the following JSON to the API path "/samples/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "sample": {
+          "reference_genome": "Staphylococcus_aureus (NCTC_8325)",
+          "name": "valid_but_new_name"
+        }, "lims": "SQSCP"
+      }
+      """
+     Then the HTTP response should be "422 Unprocessable Entity"
+    And the JSON should be:
+      """
+      {
+        "name": ["cannot be changed"]
+      }
+      """

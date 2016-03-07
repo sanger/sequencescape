@@ -8,7 +8,7 @@ module EventfulRecord
         line = __LINE__ + 1
         class_eval(%Q{
           def #{name}(*args)
-            #{event_class.name}.#{event_class_method}(self.proxy_owner, *args).tap { |event| self << event }
+            #{event_class.name}.#{event_class_method}(self.proxy_association.owner, *args).tap { |event| self << event unless event.eventful.present? }
           end
         }, __FILE__, line)
       end

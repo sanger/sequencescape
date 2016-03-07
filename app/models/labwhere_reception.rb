@@ -4,6 +4,10 @@
 
 # A simple class to handle the behaviour from the labwhere reception controller
 class LabwhereReception
+  # The following two modules include methods used by a number of rails
+  # helpers, such that we can use them in eg. form_for
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
 
   attr_reader :errors, :asset_barcodes, :user_code, :location_barcode, :location_id
 
@@ -20,6 +24,7 @@ class LabwhereReception
   end
 
   def id; nil; end
+  def persisted?; false; end
   def new_record?; true; end
 
   # save attempts to perform the actions, and returns true if it was successful

@@ -11,87 +11,58 @@ end
 
 class Pipeline < ActiveRecord::Base
   include ::ModelExtensions::Pipeline
+  include SequencingQcPipeline
+  include Uuid::Uuidable
+  include Pipeline::InboxUngrouped
+  include Pipeline::BatchValidation
 
+  INBOX_PARTIAL               = 'default_inbox'
+  ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
+
+  self.inheritance_column = "sti_type"
+
+  delegate :item_limit, :has_batch_limit?, :to => :workflow
+  validates_presence_of :workflow
+
+  belongs_to :location
+  belongs_to :control_request_type, :class_name => 'RequestType'
+  belongs_to :next_pipeline,     :class_name => 'Pipeline'
+  belongs_to :previous_pipeline, :class_name => 'Pipeline'
+
+  has_one :workflow, :class_name => "LabInterface::Workflow", :foreign_key => :pipeline_id
+
+  has_many :controls
+  has_many :pipeline_request_information_types
+  has_many :request_information_types, :through => :pipeline_request_information_types
+  has_many :tasks, :through => :workflows
+  has_many :pipelines_request_types, :inverse_of => :pipeline
+  has_many :request_types, :through => :pipelines_request_types, :validate => false
+  has_many :requests, :through => :request_types, :extend => [ Pipeline::InboxExtensions, Pipeline::RequestsInStorage]
   has_many :batches do
     def build(attributes = nil)
       attributes ||= {}
-      attributes[:item_limit] = proxy_owner.workflow.item_limit
+      attributes[:item_limit] = proxy_association.owner.workflow.item_limit
       super(attributes)
     end
   end
 
-  has_one :workflow, :class_name => "LabInterface::Workflow", :foreign_key => :pipeline_id
-  delegate :item_limit, :has_batch_limit?, :to => :workflow
-  validates_presence_of :workflow
-
-  has_many :controls
-  has_many :pipeline_request_information_types
-
-  has_many :request_information_types, :through => :pipeline_request_information_types
-  has_many :tasks, :through => :workflows
-  belongs_to :location
-
-  has_many :pipelines_request_types, :inverse_of => :pipeline
-  has_many :request_types, :through => :pipelines_request_types, :validate => false
-
   validates_presence_of :request_types
+  validates_presence_of :name
+  validates_uniqueness_of :name, :on => :create, :message => "name already in use"
 
-  belongs_to :control_request_type, :class_name => 'RequestType'
 
-  class RequestsProxy
-    include Pipeline::RequestsInStorage
+  scope :externally_managed, -> { where( :externally_managed => true ) }
+  scope :internally_managed, -> { where( :externally_managed => false ) }
+  scope :active,             -> { where( :active => true  ) }
+  scope :inactive,           -> { where( :active => false ) }
+  scope :alphabetical,       -> { order('name ASC') }
 
-    def initialize(pipeline)
-      @pipeline = pipeline
-    end
-
-    attr_reader :pipeline
-    alias_method(:proxy_owner, :pipeline)
-    private :proxy_owner
-
-    def requests
-      Request.for_pipeline(proxy_owner)
-    end
-    private :requests
-
-    def respond_to?(name, include_private = false)
-      super or requests.respond_to?(name, include_private)
-    end
-
-    def method_missing(name, *args, &block)
-      requests.send(name, *args, &block)
-    end
-    protected :method_missing
-
-    def inbox(show_held_requests = true, current_page = 1, action = nil)
-      # Build a list of methods to invoke to build the correct request list
-      actions = [ :unbatched ]
-      actions.concat(proxy_owner.custom_inbox_actions)
-      actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
-      actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
-      if action != :count
-        actions << :include_request_metadata
-        actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
-        actions << proxy_owner.inbox_eager_loading
-      end
-      if action.present?
-        actions << [ action ]
-      elsif proxy_owner.paginate?
-        actions << [ :paginate, { :per_page => 50, :page => current_page } ]
-      end
-
-      actions.inject(requests) { |context, action| context.send(*Array(action)) }
-    end
-
-    # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
-    def inputs(show_held_requests = false)
-      ready_in_storage.send(show_held_requests ? :full_inbox : :pipeline_pending)
-    end
-  end
-
-  def requests
-    RequestsProxy.new(self)
-  end
+  scope :for_request_type, ->(rt) {
+     {
+       :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.pipeline_id = pipelines.id' ],
+       :conditions => ['prt.request_type_id = ?', rt.id]
+     }
+   }
 
   def request_types_including_controls
     [control_request_type].compact + request_types
@@ -101,38 +72,6 @@ class Pipeline < ActiveRecord::Base
     []
   end
 
-  belongs_to :next_pipeline,     :class_name => 'Pipeline'
-  belongs_to :previous_pipeline, :class_name => 'Pipeline'
-
-  named_scope :externally_managed, :conditions => { :externally_managed => true }
-  named_scope :internally_managed, :conditions => { :externally_managed => false }
-  named_scope :active,   :conditions => { :active => true }
-  named_scope :inactive, :conditions => { :active => false }
-
-  named_scope :for_request_type, lambda { |rt|
-    {
-      :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.pipeline_id = pipelines.id' ],
-      :conditions => ['prt.request_type_id = ?', rt.id]
-    }
-  }
-
-
-
-  self.inheritance_column = "sti_type"
-
-  include SequencingQcPipeline
-  include Uuid::Uuidable
-  include Pipeline::InboxUngrouped
-  include Pipeline::BatchValidation
-
-  validates_presence_of :name
-  validates_uniqueness_of :name, :on => :create, :message => "name already in use"
-
-  INBOX_PARTIAL               = 'default_inbox'
-
-  # Override this in subclasses if you want to display action links
-  # for released batches
-  ALWAYS_SHOW_RELEASE_ACTIONS = false
 
   def inbox_partial
     INBOX_PARTIAL
@@ -186,16 +125,14 @@ class Pipeline < ActiveRecord::Base
     group_requests( inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)))
   end
 
+  def grouped_requests(show_held_requests=true)
+    inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)).for_group_by(grouping_attributes)
+  end
+
   def inbox_scope_on(inbox_scope)
     custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
   end
   private :inbox_scope_on
-
-  def get_input_requests_for_group(group)
-    #TODO add named_scope to load only the required requests
-    key = hash_to_group_key(group)
-    get_input_request_groups[key]
-  end
 
   def hash_to_group_key(hash)
     if hash.is_a? Array
@@ -212,7 +149,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def grouping_function(option = {})
-    return lambda { |r| [r.container_id] } if option[:group_by_holder_only]
+    return ->(r) { [r.container_id] } if option[:group_by_holder_only]
 
     lambda do |request|
       [].tap do |group_key|
@@ -222,6 +159,14 @@ class Pipeline < ActiveRecord::Base
     end
   end
   private :grouping_function
+
+  def grouping_attributes
+    [].tap do |group_key|
+      group_key << 'hl.container_id' if group_by_parent?
+      group_key << 'requests.submission_id' if group_by_submission?
+    end
+  end
+  private :grouping_attributes
 
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})

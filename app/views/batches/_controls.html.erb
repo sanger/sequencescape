@@ -7,7 +7,7 @@
 
 <div id="sample">
   <table width="100%" cellspacing="0" cellpadding="0">
-  <% form_tag(:controller => :batches, :action => :add_control, :id => @batch.id) do -%>
+  <%= form_tag(:controller => :batches, :action => :add_control, :id => @batch.id) do -%>
   <tr>
     <td width="40%" class="item">Select control:</td>
     <td width="60%"><%= select :control, :id, @controls.map { |c| [c.name, c.id] } %></td>

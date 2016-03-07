@@ -3,8 +3,8 @@
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
 <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
 <div class="project_information">
-<% fields_for(project) do |form| %>
-  <% form.fields_for(:project_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
+<%= fields_for(project) do |form| %>
+  <%= form.fields_for(:project_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
     <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
     <% metadata_fields.with_options(:grouping => 'Specification') do |group| %>
       <%= group.plain_value(:project_cost_code) %>

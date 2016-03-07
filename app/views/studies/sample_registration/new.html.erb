@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <% add :title, I18n.t("studies.about") -%>
-<% add :menu, "Register using spreadsheet" => upload_study_sample_registration_path -%>
+<% add :menu, "Register using spreadsheet" => upload_study_sample_registration_index_path -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 
 <h1>Sample registration for <%= current_user.workflow.name %></h1>

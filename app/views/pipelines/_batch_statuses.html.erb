@@ -3,9 +3,9 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <div class='info'>
   <div id="" class="yui-navset">
-    <ul class="yui-nav">
+    <ul class="nav nav-tabs">
       <% ["Pending", "In progress", "Completed (unreleased)", "Released", "Failed", "Last 5"].each_with_index do |type, index|-%>
-      <li><%= horizontal_tab "<em>#{type}</em>", "#{index}", "#{index}_definition", 0, index == 0 ? true : false %></li>
+      <li><%= horizontal_tab("<em>#{type}</em>", "#{index}", "#{index}_definition", 0, index == 0 ? true : false) %></li>
       <% end -%>
     </ul>
     <div id="" class="yui-content">
@@ -25,7 +25,7 @@
         <%= render :partial => "shared/batches", :locals => { :batches => @failed_batches, :in_progress => false, :showing_all => false, :batch_state => 'failed' } %>
       </div>
       <div id="5_definition" class="tab_content0 last_5" style="display:none;">
-        <%= render :partial => "shared/batches", :locals => { :batches => @batches, :in_progress => false, :showing_all => false, :batch_state => 'last 5' } %>
+        <%= render :partial => "shared/batches", :locals => { :batches => @last_5_batches, :in_progress => false, :showing_all => false, :batch_state => 'last 5' } %>
       </div>
     </div>
   </div>

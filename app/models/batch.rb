@@ -3,14 +3,13 @@
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'timeout'
 require "tecan_file_generation"
-
-include Sanger::Robots::Tecan
+require 'aasm'
 
 class Batch < ActiveRecord::Base
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include AASM
   include SequencingQcBatch
   include Commentable
@@ -18,24 +17,24 @@ class Batch < ActiveRecord::Base
   include ModelExtensions::Batch
   include StandardNamedScopes
 
-  validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?
+  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, :on => :create
 
   def all_requests_are_ready?
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
-    unless @requests.all?(&:ready?)
-      errors.add_to_base "All requests must be ready to be added to a batch"
+    unless requests.all?(&:ready?)
+      errors.add :base, "All requests must be ready to be added to a batch"
     end
   end
 
   def cluster_formation_requests_must_be_over_minimum
-    if (!pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
-      errors.add_to_base "You must create batches of at least " + @pipeline.min_size.to_s+" requests in the pipeline " + @pipeline.name
+    if (!pipeline.min_size.nil?) && (requests.size < pipeline.min_size)
+      errors.add :base, "You must create batches of at least " + pipeline.min_size.to_s+" requests in the pipeline " + pipeline.name
     end
   end
 
   def requests_have_same_read_length
     unless pipeline.is_read_length_consistent_for_batch?(self)
-      errors.add_to_base "The selected requests must have the same values in their 'Read length' field."
+      errors.add :base, "The selected requests must have the same values in their 'Read length' field."
     end
   end
 
@@ -56,20 +55,22 @@ class Batch < ActiveRecord::Base
   has_many :messengers, :as => :target, :inverse_of => :target
 
   # Named scope for search by query string behavior
-  named_scope :for_search_query, lambda { |query,with_includes|
+ scope :for_search_query, ->(query,with_includes) {
     conditions = [ 'id=?', query ]
     if user = User.find_by_login(query)
       conditions = [ 'user_id=?', user.id ]
     end
-    { :conditions => conditions }
+    where(conditions)
   }
 
-  named_scope :includes_for_ui,    { :limit => 5, :include => :user }
-  named_scope :pending_for_ui,     { :conditions => { :state => 'pending',   :production_state => nil    }, :order => 'created_at DESC' }
-  named_scope :released_for_ui,    { :conditions => { :state => 'released',  :production_state => nil    }, :order => 'created_at DESC' }
-  named_scope :completed_for_ui,   { :conditions => { :state => 'completed', :production_state => nil    }, :order => 'created_at DESC' }
-  named_scope :failed_for_ui,      { :conditions => {                        :production_state => 'fail' }, :order => 'created_at DESC' }
-  named_scope :in_progress_for_ui, { :conditions => { :state => 'started',   :production_state => nil    }, :order => 'created_at DESC' }
+  scope :includes_for_ui,    -> { limit(5).includes(:user) }
+  scope :pending_for_ui,     -> { where(:state => 'pending',   :production_state => nil   ).latest_first }
+  scope :released_for_ui,    -> { where(:state => 'released',  :production_state => nil   ).latest_first }
+  scope :completed_for_ui,   -> { where(:state => 'completed', :production_state => nil   ).latest_first }
+  scope :failed_for_ui,      -> { where(                       :production_state => 'fail').latest_first }
+  scope :in_progress_for_ui, -> { where(:state => 'started',   :production_state => nil   ).latest_first }
+
+  scope :latest_first,       -> { order('created_at DESC') }
 
   delegate :size, :to => :requests
 
@@ -140,7 +141,7 @@ class Batch < ActiveRecord::Base
   end
 
   def underrun
-    self.has_limit? ? (self.item_limit - self.requests.size) : 0
+    self.has_limit? ? (self.item_limit - self.batch_requests.size) : 0
   end
 
   def control
@@ -213,15 +214,6 @@ class Batch < ActiveRecord::Base
   def output_plates
     holder_ids = Request.get_target_holder_asset_id_map(request_ids).values
     Plate.find(holder_ids, :group => :barcode)
-
-
-    #TODO: replace output_plates SQL with proper rails way of doing things with equal speed
-    #Plate.find_by_sql("select plate_assets.* from batch_requests batch_requests, requests requests, assets assets,
-      #assets plate_assets where batch_requests.batch_id = #{self.id} and
-      #batch_requests.request_id = requests.id and
-      #requests.target_asset_id is not null and
-      #requests.target_asset_id = assets.id and
-      #assets.holder_id = plate_assets.id group by plate_assets.barcode")
   end
 
   ## WARNING! This method is used in the sanger barcode gem. Do not remove it without
@@ -311,7 +303,7 @@ class Batch < ActiveRecord::Base
       barcode = barcodes["#{request.position}"]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
-          self.errors.add_to_base("The tube at position #{request.position} is incorrect.")
+          self.errors.add(:base,"The tube at position #{request.position} is incorrect.")
         end
       end
     end
@@ -516,7 +508,7 @@ class Batch < ActiveRecord::Base
   end
 
   def pulldown_batch_report
-    report_data = FasterCSV.generate( :row_sep => "\r\n") do |csv|
+    report_data = CSV.generate( :row_sep => "\r\n") do |csv|
       csv << pulldown_report_headers
 
       self.requests.each do |request|

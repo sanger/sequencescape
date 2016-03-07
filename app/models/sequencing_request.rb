@@ -1,7 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.
-class SequencingRequest < Request
+#Copyright (C) 2007-2011,2011,2013,2014,2015 Genome Research Ltd.
+class SequencingRequest < CustomerRequest
 
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
@@ -60,9 +60,9 @@ class SequencingRequest < Request
   def concentration
     return "&nbsp" if lab_events_for_batch(batch).empty?
     conc = lab_events_for_batch(batch).first.descriptor_value("Concentration")
-    return "#{conc}&#x3BC;l" if conc.present?
+    return "#{conc}μl" if conc.present?
     dna = lab_events_for_batch(batch).first.descriptor_value("DNA Volume")
     rsb = lab_events_for_batch(batch).first.descriptor_value("RSB Volume")
-    "#{dna}&#x3BC;l DNA in #{rsb}&#x3BC;l RSB"
+    "#{dna}μl DNA in #{rsb}μl RSB"
   end
 end

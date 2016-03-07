@@ -6,7 +6,7 @@ require "test_helper"
 class PulldownLibraryCreationPipelineTest < ActiveSupport::TestCase
   context "Pipeline" do
     setup do
-      @pipeline = Factory :pulldown_library_creation_pipeline, :name => "Pulldown Library creation pipeline"
+      @pipeline = create :pulldown_library_creation_pipeline, :name => "Pulldown Library creation pipeline"
     end
 
     should "return true for library_creation?" do

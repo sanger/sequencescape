@@ -1,0 +1,13 @@
+<% if @about.present? %>
+  <%= panel(:default,title:"About this page") do %>
+    <%= @about %>
+  <% end %>
+<% end %>
+
+<%= panel(:default,title:"Links") do %>
+  <%= render :partial => "shared/menu" %>
+<% end %>
+
+<%= panel(:info) do %>
+  <%= image_tag "information.png", :size => "16x16" %><span style="vertical-align: middle;">If you need help using Sequencescape please email:</span> <span style="text-align: center"><%= help_email_link %></span>
+<% end %>

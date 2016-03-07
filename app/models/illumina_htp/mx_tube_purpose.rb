@@ -22,7 +22,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       :conditions=>[
         "state IN (?) OR (state='passed' AND sti_type IN (?))",
         Request::Statemachine::OPENED_STATE,
-        Class.subclasses_of(TransferRequest).map(&:to_s)
+        TransferRequest.descendants.map(&:to_s)
       ])
   end
   private :target_requests

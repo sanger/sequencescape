@@ -9,7 +9,7 @@
 <% else %>
 <div class="info">
   <p>There are no problems with this layout</p>
-  <% form_tag("../make_plate_and_batch_from_rack/") do |form| %>
+  <%= form_tag("../make_plate_and_batch_from_rack/") do |form| %>
     <div>
       Plate barcode: <%= text_field_tag :plate_barcode %> : <%= submit_tag "make plate" %>
       <%= hidden_field_tag 'pipeline_id', @pipeline.id %>

@@ -26,7 +26,7 @@ module Submission::AccessionBehaviour
     elsif not study.accession_number?
       errors.add(:study,"#{study.name} and all samples must have accession numbers")
     elsif not all_samples_have_accession_numbers?
-      errors.add_to_base("Samples #{unaccessioned_samples} are missing accession numbers")
+      errors.add(:base,"Samples #{unaccessioned_samples} are missing accession numbers")
     end
   end
 

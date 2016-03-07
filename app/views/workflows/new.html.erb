@@ -10,7 +10,7 @@
   To create a new workflow, complete the form below. Required fields are marked with <%= required_marker %>.
   </div>
   <div id="sample">
-    <% form_for :workflow, :url => workflows_path do |form| -%>
+    <%= form_for :workflow, :url => workflows_path do |form| -%>
       <%= render :partial => "workflow", :locals => {:read_only => false, :form => form} %>
     <% end -%>
   </div>

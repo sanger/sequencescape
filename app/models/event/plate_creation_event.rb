@@ -7,14 +7,14 @@ class Event::PlateCreationEvent < Event
       :eventful => asset,
       :message => "Created child #{plate_purpose.name} plate",
       :content => Date.today.to_s,
-      :family => "create_#{plate_purpose.class.name.methodize}",
+      :family => "create_#{plate_purpose.class.name.underscore}",
       :created_by => user ? user.login : nil
     )
     self.create!(
       :eventful => child_plate,
       :message => "Created #{plate_purpose.name} plate",
       :content => Date.today.to_s,
-      :family => "create_#{plate_purpose.class.name.methodize}",
+      :family => "create_#{plate_purpose.class.name.underscore}",
       :created_by => user ? user.login : nil
     )
   end
@@ -24,7 +24,7 @@ class Event::PlateCreationEvent < Event
       :eventful => asset,
       :message => "Created #{plate_purpose.name} from #{parent_plate.id}",
       :content => date.to_s,
-      :family => "create_#{plate_purpose.class.name.methodize}"
+      :family => "create_#{plate_purpose.class.name.underscore}"
     )
   end
 

@@ -6,22 +6,22 @@ require "test_helper"
 class FlexibleSubmissionTest < ActiveSupport::TestCase
   context "FlexibleSubmission" do
     setup do
-      @assets       = Factory(:two_column_plate).wells
-      @workflow     = Factory :submission_workflow
-      @pooling      = Factory :pooling_method
+      @assets       = create(:two_column_plate).wells
+      @workflow     = create :submission_workflow
+      @pooling      = create :pooling_method
     end
 
-    should_belong_to :study
-    should_belong_to :user
+    should belong_to :study
+    should belong_to :user
 
     context "build (Submission factory)" do
       setup do
-        @study    = Factory :study
-        @project  = Factory :project
-        @user     = Factory :user
+        @study    = create :study
+        @project  = create :project
+        @user     = create :user
 
-        @library_creation_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
-        @sequencing_request_type = Factory :sequencing_request_type
+        @library_creation_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
+        @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
@@ -50,19 +50,58 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
           context 'multiple requests' do
             setup do
-               @mpx_submission.process!
+              @request_count = Request.count
+              @mpx_submission.process!
             end
 
-            should_change("Request.count", :by => (16+8)) { Request.count }
+            should "change Request.count by #{16+8}" do
+              assert_equal (16+8), Request.count - @request_count
+            end
           end
 
         end
       end
 
+      context 'with qc_criteria' do
+        setup do
+          @our_product_criteria = create :product_criteria
+          @current_report = create :qc_report, :product_criteria => @our_product_criteria
+          @stock_well = create :well
+
+          @metric =  create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
+
+          @assets.each do |qced_well|
+            qced_well.stock_wells.attach!([@stock_well])
+            qced_well.reload
+          end
+
+          @mpx_submission = FlexibleSubmission.build!(
+            :study            => @study,
+            :project          => @project,
+            :workflow         => @workflow,
+            :user             => @user,
+            :assets           => @assets,
+            :request_types    => @request_type_ids,
+            :request_options  => @request_options,
+            :product          => @our_product_criteria.product
+          )
+          @mpx_submission.save!
+        end
+
+        should 'set an appropriate criteria and set responsibility' do
+          @mpx_submission.process!
+          @mpx_submission.requests.each do |request|
+            assert request.qc_metrics.include?(@metric), "Metric not included in #{request.request_type.name}: List #{request.qc_metrics.inspect}, Expected: #{@metric}"
+            assert_equal true, request.request_metadata.customer_accepts_responsibility, "Customer doesn't accept responsibility"
+          end
+        end
+      end
+
       context 'cross study/project submissions' do
         setup do
-          @study_b   = Factory :study
-          @project_b = Factory :project
+          @study_b   = create :study
+          @project_b = create :project
+          @request_count = Request.count
         end
 
         context "specified at submission" do
@@ -101,7 +140,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 @xs_mpx_submission.process!
               end
 
-              should_change("Request.count", :by => (16+8)) { Request.count }
+              should "change Request.count by #{(16+8)}" do
+                assert_equal (16+8), Request.count - @request_count
+              end
 
               should 'not set study or project post multiplexing' do
                 assert_equal nil, @sequencing_request_type.requests.last.initial_study_id
@@ -129,7 +170,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
           context "On pooled assets" do
             setup do
-              @pooled = Factory :cross_pooled_well
+              @request_count = Request.count
+              @pooled = create :cross_pooled_well
               @sub = FlexibleSubmission.build!(
                 :study            => nil,
                 :project          => nil,
@@ -142,7 +184,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @sub.process!
             end
 
-             should_change("Request.count", :by => (1+8)) { Request.count }
+             should "change Request.count by #{1+8}" do
+               assert_equal (1+8), Request.count - @request_count
+             end
 
              should 'not set request study or projects' do
               assert @sub.requests.all? {|r| r.initial_study_id.nil? && r.initial_project_id.nil? }
@@ -158,12 +202,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
     context "with target asset creation" do
       setup do
-        @study    = Factory :study
-        @project  = Factory :project
-        @user     = Factory :user
+        @study    = create :study
+        @project  = create :project
+        @user     = create :user
 
-        @library_creation_request_type = Factory :well_request_type, {:for_multiplexing=>true, :target_asset_type=>'MultiplexedLibraryTube', :pooling_method=>@pooling}
-        @sequencing_request_type = Factory :sequencing_request_type
+        @library_creation_request_type = create :well_request_type, {:for_multiplexing=>true, :target_asset_type=>'MultiplexedLibraryTube', :pooling_method=>@pooling}
+        @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
@@ -192,13 +236,16 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
           context 'multiple requests' do
             setup do
-               @mpx_submission.process!
+              @request_count = Request.count
+              @mpx_submission.process!
             end
 
-            should_change("Request.count", :by => (16+8)) { Request.count }
+            should "change Request.count by #{16+8}" do
+              assert_equal (16+8), Request.count - @request_count
+            end
 
             should "set target assets according to the request_type.pool_by" do
-              rows = (0...8).map
+              rows = (0...8).to_a
               used_assets = []
 
               @assets.group_by {|well| well.map.row }.each do |row,wells|
@@ -220,13 +267,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
     context "process with a multiplier for request type" do
       setup do
 
-        @study = Factory :study
-        @project = Factory :project
-        @user = Factory :user
+        @study = create :study
+        @project = create :project
+        @user = create :user
 
-        @ux_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>false}
-        @mx_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
-        @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
+        @ux_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing=>false}
+        @mx_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
+        @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
 
         @request_type_ids = [ @mx_request_type.id, @pe_request_type.id ]
 
@@ -264,13 +311,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
     context "correctly calculate multipliers" do
       setup do
 
-        @study = Factory :study
-        @project = Factory :project
-        @user = Factory :user
+        @study = create :study
+        @project = create :project
+        @user = create :user
 
-        @ux_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>false}
-        @mx_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
-        @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
+        @ux_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing=>false}
+        @mx_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
+        @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
 
         @mx_request_type_ids = [ @mx_request_type.id, @pe_request_type.id ]
         @ux_request_type_ids = [ @ux_request_type.id, @pe_request_type.id ]

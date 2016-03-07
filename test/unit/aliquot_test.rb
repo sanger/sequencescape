@@ -6,14 +6,12 @@ require "test_helper"
 class AliquotTest < ActiveSupport::TestCase
   context "#match" do
     setup do
-      @tag1 = Factory :tag
-      @tag2 = Factory :tag
+      @tag1 = create :tag
+      @tag2 = create :tag
+      @sample1 = create :sample
+      @sample2 = create :sample
 
-      @sample1 = Factory :sample
-      @sample2 = Factory :sample
-
-      @asset = Factory :empty_sample_tube
-
+      @asset = create :empty_sample_tube
     end
 
     should "match aliquots with same tags and tag2s" do

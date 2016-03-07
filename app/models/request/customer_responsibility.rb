@@ -6,7 +6,7 @@ module Request::CustomerResponsibility
     base::Metadata.class_eval do
       attribute(:customer_accepts_responsibility, :boolean => true)
 
-      validate_on_update :customer_can_accept_responsibility?, :if => :customer_accepts_responsibility_changed?
+      validate :customer_can_accept_responsibility?, :if => :customer_accepts_responsibility_changed?, :on => :update
 
       def customer_can_accept_responsibility?
         return true unless request.try(:failed?)

@@ -6,10 +6,10 @@ class TagGroup < ActiveRecord::Base
 
   has_many :tags, :order => 'map_id ASC'
 
-  named_scope :include_tags, :include => :tags
+  scope :include_tags, ->() { includes(:tags) }
 
 
-  named_scope :visible, :conditions => {:visible => true}
+ scope :visible, -> { where(:visible => true) }
 
   validates_presence_of :name
   validates_uniqueness_of :name

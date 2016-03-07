@@ -17,8 +17,8 @@ class AssetGroupTest < ActiveSupport::TestCase
       @asset3 = mock("Asset 3")
       @asset3.stubs(:id).returns(3)
       @assets = []
-      @study = Factory :study
-      @asset_group = Factory :asset_group, :study_id => @study.id
+      @study = create :study
+      @asset_group = create :asset_group, :study_id => @study.id
       @asset_group.stubs(:assets).returns([@asset1,@asset2])
     end
 
@@ -53,8 +53,8 @@ class AssetGroupTest < ActiveSupport::TestCase
       @asset2.stubs(:id).returns(2)
       @asset2.stubs(:sti_type).returns('Well')
       @assets = []
-      @study = Factory :study
-      @asset_group = Factory :asset_group, :study_id => @study.id
+      @study = create :study
+      @asset_group = create :asset_group, :study_id => @study.id
       @asset_group.stubs(:assets).returns([@asset1,@asset2])
     end
 
@@ -80,8 +80,8 @@ class AssetGroupTest < ActiveSupport::TestCase
       @asset2.stubs(:id).returns(2)
       @asset2.stubs(:sti_type).returns('Tube')
       @assets = []
-      @study = Factory :study
-      @asset_group = Factory :asset_group, :study_id => @study.id
+      @study = create :study
+      @asset_group = create :asset_group, :study_id => @study.id
       @asset_group.stubs(:assets).returns([@asset1,@asset2])
     end
 
@@ -93,39 +93,41 @@ class AssetGroupTest < ActiveSupport::TestCase
 
   context "Validation" do
     setup do
+      @ag_count = AssetGroup.count
       Study.destroy_all
-      @study = Factory :study
-
+      @study = create :study
     end
     should "not allow an AssetGroup to be created without a study" do
       assert_raises ActiveRecord::RecordInvalid do
-        @asset_group = Factory :asset_group, :study_id => nil
+        @asset_group = create :asset_group, :study_id => nil
       end
     end
 
     should "not allow an AssetGroup to be created without a name" do
       assert_raises ActiveRecord::RecordInvalid do
-        @asset_group = Factory :asset_group, :name => "", :study_id => @study.id
+        @asset_group = create :asset_group, :name => "", :study_id => @study.id
       end
     end
 
-    should_not_change("AssetGroup.count") { AssetGroup.count }
+    should "not change AssetGroup.count" do
+      assert_equal AssetGroup.count, @ag_count
+    end
 
     should "only allow a name to be used once" do
-      Factory :asset_group, :name => "Another-Name", :study_id => @study.id
+      create :asset_group, :name => "Another-Name", :study_id => @study.id
       assert_raises ActiveRecord::RecordInvalid do
-        Factory :asset_group, :name => "Another-Name", :study_id => @study.id
+        create :asset_group, :name => "Another-Name", :study_id => @study.id
       end
     end
 
     context "#all_samples_have_accession_numbers?" do
       setup do
-        @asset_group = Factory :asset_group
+        @asset_group = create :asset_group
       end
       context "where all samples" do
         setup do
           5.times do |i|
-            asset = Factory(:sample_tube)
+            asset = create(:sample_tube)
             asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => 'ERS00001' })
             @asset_group.assets << asset
           end
@@ -139,7 +141,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         end
         context "except 1 have accession numbers" do
           setup do
-            asset = Factory(:sample_tube)
+            asset = create(:sample_tube)
             asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => '' })
             @asset_group.assets << asset
           end
@@ -151,7 +153,7 @@ class AssetGroupTest < ActiveSupport::TestCase
       context "no samples have accession numbers" do
         setup do
           5.times do |i|
-            asset = Factory(:sample_tube)
+            asset = create(:sample_tube)
             asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => '' })
             @asset_group.assets << asset
           end

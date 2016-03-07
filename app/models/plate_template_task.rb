@@ -14,8 +14,6 @@ class PlateTemplateTask < Task
       # self.requests
       # populate plates from Template
       # display plates
-      @testing = "testing"
-
     end
 
 

@@ -1,6 +1,6 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 <% add(:tab, I18n.t('navigation.tabs.studies')   => studies_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.projects')  => projects_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.admin')     => admin_path) if logged_in? && current_user.is_administrator? -%>
@@ -9,126 +9,50 @@
 <% add(:tab, I18n.t('navigation.tabs.reception') => receptions_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.labwhere_reception') => labwhere_receptions_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.labview')   => lab_view_path) -%>
-<% add(:tab, I18n.t('navigation.tabs.labsearch') => new_search_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.labsearch') => new_lab_search_path) -%>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
   <head>
     <meta charset="UTF-8" />
     <title>
       Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
     </title>
-    <%= stylesheet_link_tag "grids-min", "tabview", "application","screen", :media => "all", :cache => false %>
-    <%= stylesheet_link_tag '/javascripts/tablesorter/themes/blue/style.css', 'jquery-ui' %>
-    <%= formtastic_stylesheet_link_tag %>
-    <!--[if IE 7]>
-      <%= stylesheet_link_tag 'ie7-hacks' %>
-    <![endif]-->
-    <!--[if IE 8]>
-      <%= stylesheet_link_tag 'ie7-hacks' %>
-    <![endif]-->
-    <%= javascript_include_tag :defaults, "tablekit",  :cache => false %>
-    <%= javascript_include_tag 'jquery', 'jquery-ui' %>
-    <script type="text/javascript">
-      jQuery.noConflict();
-    </script>
-    <%= javascript_include_tag 'tablesorter/jquery.tablesorter.js' %>
-    <%= javascript_include_tag 'tablesorter/jquery.metadata.js' %>
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/vnd.microsoft.icon" />
-    <link rel="icon" href="/images/favicon.ico" type="image/vnd.microsoft.icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= stylesheet_link_tag "tabview", "application", :media => "all", :cache => false %>
+
+
+    <%#= stylesheet_link_tag("formtastic") + stylesheet_link_tag("formtastic_changes") %>
+    <%= javascript_include_tag "application" %>
+
+    <%= csrf_meta_tags %>
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
+    <link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
   </head>
+
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %> yui-skin-sam">
-    <div id="doc3" class="yui-t4">
-      <div id="hd">
-        <div id="logo_container">
-          <div id="sequencescape_logo">
-            <%= link_to image_tag("sequencescape.gif"), :controller => root_path %>
-          </div>
-        </div>
-        <div id="quick_links">
-          <div id="description" class="bar">
-            <ul>
-              <li>
-                <span id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></span>
-              </li>
-            </ul>
-          </div>
-          <div id="user_links" class="bar">
-            <ul><% if logged_in? -%>
-              <li>
-                <%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %> ·
-              </li>
-              <li>
-                <%= I18n.t('global_links.workflow') %>
-                <% unless current_user.workflow.nil? -%>
-                <%= link_to current_user.workflow_name, edit_profile_path(current_user) %> ·
-                <% else -%>
-                <strong><%= link_to I18n.t('global_links.workflow_not_set'), edit_profile_path(current_user) %></strong> ·
-                <% end -%>
-              </li>
-              <li>
-                <%= link_to I18n.t('global_links.logout'), logout_path -%>
-              </li>
-              <% end -%>
-            </ul>
-          </div>
-          <br/>
-        </div>
-        <div id="header">
-          <div id='header_container'>
-            <div id="app_name"><%= link_to I18n.t('application.name').upcase, root_path %></div>
+  <div id="doc3" class="container-fluid yui-t4">
 
-          <%# Only show the info-box if there's something to talk about... %>
-          <%- unless custom_text("app_info_box", 1).blank? -%>
-            <div id="app-info-box">
-              <span><%= custom_text("app_info_box", 1) %></span>
-            </div>
-          <%- end -%>
+    <header><%= render :partial => 'shared/header' %></header>
 
-            <div id="search">
-            <% form_tag searches_path, :method => :get do %>Search
-              <%= select_tag :type, options_for_select(search_options), :id => 'layout_search_options' %>
-              <%= text_field_tag :q, "", :size => 20, :type => "search", :placeholder => "name, id, barcode", :id => 'layout_search' %>
-            <% end %>
-            </div>
-          </div>
-          <div id="tab_bar">
-            <div id="tabs">
-              <ul>
-                <%= render :partial => '/tab', :collection => @tabs.items %>
-              </ul>
-            </div>
-            <br/>
-          </div>
+    <section class="clearfix main-row">
+      <section class="col-md-10">
+        <%= render_flashes %>
+        <div id="yield">
+          <%= yield %>
         </div>
+      </section>
+      <div id="menu" class="col-md-2"><%= render :partial => 'shared/sidebar' %></div>
+    </section>
+
+    <footer>
+      <div class="well">
+        <%= link_to "Feedback", "mailto:#{configatron.admin_email}" %> · <%= Deployed::VERSION_STRING %> · A tool from <%= link_to configatron.fetch(:team_name,'LIMS and Informatics'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %>
       </div>
-      <div id="bd">
-        <div id="yui-main">
-          <div class="yui-b">
-            <%= render_flashes %>
-            <div id="yield">
-              <%= yield %>
-            </div>
-          </div>
-        </div>
-        <div id="menu" class="yui-b">
-          <div class="callout">
-            <h3><%= @title %></h3>
-            <div id="links">
-              <%= render :partial => "/menu" %>
-            </div>
-          </div>
-          <div class="callout">
-            <%= image_tag "information.png", :size => "16x16" %><span style="vertical-align: middle;">If you need help using Sequencescape please email:</span> <span style="text-align: center"><%= help_email_link %></span>
-          </div>
-        </div>
-      </div>
-      <div id="ft">
-        <div id="footer">
-          <%= link_to "Feedback", "mailto:#{configatron.admin_email}" %> · <%= Deployed::VERSION_STRING %> · A tool from <%= link_to "Sequencing Informatics", "http://intweb/Software/launch" %>
-        </div>
-      </div>
+    </footer>
+
     </div>
   </body>
 </html>

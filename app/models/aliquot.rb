@@ -36,12 +36,14 @@ class Aliquot < ActiveRecord::Base
     has_one :most_tagged_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'tag2_id DESC, tag_id DESC', :readonly => true
 
     # Named scopes for the future
-    named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
-    named_scope :with_aliquots, :joins => :aliquots
+    scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
+
+    # This is a lambda as otherwise the scope selects Aliquot::Receptacles
+    scope :with_aliquots, -> { joins(:aliquots) }
 
     # Provide some named scopes that will fit with what we've used in the past
-    named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => Array(id)     } }, :joins => :aliquots } }
-    named_scope :with_sample,    lambda { |sample| { :conditions => { :aliquots => { :sample_id => Array(sample) } }, :joins => :aliquots } }
+    scope :with_sample_id, ->(id)     { { :conditions => { :aliquots => { :sample_id => Array(id)     } }, :joins => :aliquots } }
+    scope :with_sample,    ->(sample) { { :conditions => { :aliquots => { :sample_id => Array(sample) } }, :joins => :aliquots } }
 
     # TODO: Remove these at some point in the future as they're kind of wrong!
     has_one :sample, :through => :primary_aliquot
@@ -119,25 +121,15 @@ class Aliquot < ActiveRecord::Base
 
         has_many :aliquots
         has_many :receptacles, :through => :aliquots, :uniq => true
-        has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
+        # has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
 
-        # Unfortunately we cannot use has_many :through because it ends up being a through through a through.  Really we want:
-        #   has_many :requests, :through => :assets
-        #   has_many :submissions, :through => :requests
-        # But 'assets' is already a through!
-        has_many :requests, :finder_sql => %q{
-          SELECT DISTINCT requests.*
-          FROM requests
-          JOIN aliquots ON aliquots.receptacle_id=requests.asset_id
-          WHERE aliquots.sample_id=#{id}
-        }
-        has_many :submissions, :finder_sql => %q{
-          SELECT DISTINCT submissions.*
-          FROM submissions
-          JOIN requests ON requests.submission_id=submissions.id
-          JOIN aliquots ON aliquots.receptacle_id=requests.asset_id
-          WHERE aliquots.sample_id=#{id}
-        }
+        def primary_receptacle
+          receptacles.order('aliquots.created_at, aliquots.id ASC').first
+        end
+
+        has_many :requests, :through => :assets
+        has_many :submissions, :through => :requests
+
       end
     end
 
@@ -161,7 +153,7 @@ class Aliquot < ActiveRecord::Base
 
   has_one :aliquot_index
 
-  named_scope :include_summary, :include => [ :sample, :tag, :tag2 ]
+  scope :include_summary, -> { includes([:sample, :tag, :tag2]) }
 
   def aliquot_index_value
     aliquot_index.try(:aliquot_index)
@@ -215,12 +207,16 @@ class Aliquot < ActiveRecord::Base
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
   # also reset the timestamp information as this is a new aliquot really.
-  def clone
+  def dup
     super.tap do |cloned_aliquot|
       cloned_aliquot.receptacle_id = nil
       cloned_aliquot.created_at = nil
       cloned_aliquot.updated_at = nil
     end
+  end
+
+  def clone
+    raise StandardError, "The Behaviour of clone has changed in Rails 3. Please use dup instead!"
   end
 
   # return all aliquots originated from the current one

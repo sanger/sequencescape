@@ -2,6 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.
 
+require 'lib/rails-authorization-plugin/lib/authorization'
+
 # Can be 'object roles' or 'hardwired'
 AUTHORIZATION_MIXIN = "object roles"
 

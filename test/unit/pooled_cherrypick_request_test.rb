@@ -7,13 +7,18 @@ class PooledCherrypickRequestTest < ActiveSupport::TestCase
 
   context "Requests with the same sample and a shared target" do
     setup do
-      @well_a    = Factory :well_with_sample_and_without_plate
-      @well_b    = Factory :well
-      @well_b.aliquots = [@well_a.aliquots.first.clone]
-      @target_well = Factory :well
-      @study = Factory :study
-      @request_a = Factory :pooled_cherrypick_request, :asset=> @well_a, :target_asset => @target_well, :initial_study => @study
-      @request_b = Factory :pooled_cherrypick_request, :asset=> @well_b, :target_asset => @target_well, :initial_study => @study
+      @study = create :study
+
+      @well_a = create :well
+      @well_b = create :well
+
+      @a1 = create :aliquot, :receptacle => @well_a, :study => @study
+      @a2 = create :aliquot, :sample => @a1.sample, :study =>  @study, :project => @a1.project, :receptacle => @well_b, :tag => @a1.tag, :tag2 => @a1.tag2
+
+      @target_well = create :well
+
+      @request_a = create :pooled_cherrypick_request, :asset=> @well_a, :target_asset => @target_well, :initial_study => @study
+      @request_b = create :pooled_cherrypick_request, :asset=> @well_b, :target_asset => @target_well, :initial_study => @study
     end
 
     should 'only transfer one aliquot' do
@@ -24,14 +29,15 @@ class PooledCherrypickRequestTest < ActiveSupport::TestCase
 
     context 'when started via a batch' do
       setup do
-        @batch = Factory :batch
+        @batch = create :batch
         @batch.requests << @request_a << @request_b
       end
 
       should 'behave the same' do
         @batch.start_requests
         assert_equal 1, @target_well.aliquots.count
-        assert_equal @well_a.aliquots.first.sample, @target_well.aliquots.first.sample
+        expected_sample = @well_a.aliquots.first.sample
+        assert_equal expected_sample, @target_well.aliquots.first.sample
       end
 
     end

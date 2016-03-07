@@ -38,7 +38,7 @@ class Task < ActiveRecord::Base
   # END descriptors
 
   # BEGIN subclass_to_attribute, could be move into a mixin
-  has_many :subclass_attributes, :as =>  :attributable, :dependent => :destroy
+  has_many :subclass_attributes, :as =>  :attributable, :dependent => :destroy, :autosave => true
   def get_subclass_attribute_value(name, default=nil)
     name_s = name.to_s
     self.subclass_attributes.each do |desc|
@@ -111,10 +111,6 @@ class Task < ActiveRecord::Base
     define_method("#{name}=") do |value|
       set_subclass_attribute_value(name, value, kind)
     end
-  end
-
-  def after_save
-    subclass_attributes.each { |a| a.save }
   end
 
   # END of subclass_to_attiribuet

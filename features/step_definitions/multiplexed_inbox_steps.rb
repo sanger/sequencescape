@@ -9,10 +9,10 @@ Given /^that there are (\d+) requests in that pipeline$/ do |number_requests|
   asset_type = pipeline_name_to_asset_type(@pipeline.name)
 
   number_requests.to_i.times do
-    request  = Factory(
+    request  = FactoryGirl.create(
       :request,
       :request_type => @pipeline.request_types.last,
-      :asset        => Factory(asset_type)
+      :asset        => FactoryGirl.create(asset_type)
     )
 
     request.asset.location = @pipeline.location

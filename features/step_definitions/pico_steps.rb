@@ -1,14 +1,13 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011 Genome Research Ltd.
-Given /^the Stock Plate's Pico pass state is set to "([^"]*)"$/ do |current_state|
+Given /^the Stock Plate's Pico pass state is set to "([^"]*)"$/ do |current_state| #'
   current_state = nil if current_state.blank?
   @stock_plate.wells.first.well_attribute.update_attributes( :pico_pass => current_state )
 end
 
-
 When /^I post the JSON below to update the plate:$/ do |update_json|
-  post(url_for(:controller => 'pico_set_results', :action => 'create'), update_json, 'Content-Type' => 'application/json')
+  post(url_for(:controller => :pico_set_results, :action => :create), update_json, 'CONTENT_TYPE' => 'application/json')
 end
 
 Then /^well "([^"]*)" on plate "([^"]*)" should have a concentration of (\d+\.\d+)$/ do |well_description, raw_barcode, concentration|
@@ -17,7 +16,7 @@ Then /^well "([^"]*)" on plate "([^"]*)" should have a concentration of (\d+\.\d
   assert_equal well.get_concentration, concentration.to_f
 end
 
-Then /^the Stock Plate's Pico pass state is "([^"]*)"$/ do |pico_status|
+Then /^the Stock Plate's Pico pass state is "([^"]*)"$/ do |pico_status| #'
   assert_equal pico_status, @stock_plate.wells.first.well_attribute.pico_pass
 end
 

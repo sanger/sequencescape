@@ -108,7 +108,7 @@ Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(FasterCSV.parse(page.source).collect{|r| r.collect{|c| c ? c :""  }})
+  expected_results_table.diff!(CSV.parse(page.source).collect{|r| r.collect{|c| c ? c :""  }})
 end
 
 Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
@@ -144,7 +144,7 @@ Given /^I have a pulldown batch$/ do
   step(%Q{I am on the show page for pipeline "Cherrypicking for Pulldown"})
   step(%Q{I check "Select DN1234567T for batch"})
   step(%Q{I check "Select DN222J for batch"})
-  step(%Q{I select "Create Batch" from "action_on_requests"})
+  step(%Q{I select "Create Batch" from the first "action_on_requests"})
   step(%Q{I press "Submit"})
   step(%Q{I follow "Cherrypick Group By Submission"})
   step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
@@ -164,7 +164,7 @@ Given /^I have 2 pulldown plates$/ do
   step(%Q{the plate barcode webservice returns "99999"})
   step(%Q{I am on the show page for pipeline "Cherrypicking for Pulldown"})
   step(%Q{I check "Select DN1234567T for batch"})
-  step(%Q{I select "Create Batch" from "action_on_requests"})
+  step(%Q{I select "Create Batch" from the first "action_on_requests"})
   step(%Q{I press "Submit"})
   step(%Q{I follow "Cherrypick Group By Submission"})
   step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
@@ -210,7 +210,7 @@ Given /^the CherrypickForPulldownPipeline pipeline has a max batch size of (\d+)
 end
 
 Given /^I have a plate "([^"]*)" with the following wells:$/ do |plate_barcode, well_details|
-  plate = Factory :plate, :barcode => plate_barcode
+  plate = FactoryGirl.create :plate, :barcode => plate_barcode
   well_details.hashes.each do |well_detail|
     well = Well.create!(:map => Map.find_by_description_and_asset_size(well_detail[:well_location],96), :plate => plate)
     well.well_attribute.update_attributes!(:concentration => well_detail[:measured_concentration], :measured_volume => well_detail[:measured_volume])
@@ -218,10 +218,10 @@ Given /^I have a plate "([^"]*)" with the following wells:$/ do |plate_barcode, 
 end
 
 Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_name|
-    project = Factory :project
-    study = Factory :study
-    plate_1 = Factory :plate, :barcode => "333"
-    plate_2 = Factory :plate, :barcode => "222"
+    project = FactoryGirl.create :project
+    study = FactoryGirl.create :study
+    plate_1 = FactoryGirl.create :plate, :barcode => "333"
+    plate_2 = FactoryGirl.create :plate, :barcode => "222"
     [plate_1, plate_2].each do |plate|
       Well.create!(:map_id => 1, :plate => plate)
     end

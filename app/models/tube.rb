@@ -26,13 +26,16 @@ class Tube < Aliquot::Receptacle
     'tube'
   end
 
-  has_one :submission, :through => :requests_as_target
+  has_many :submissions, :through => :requests_as_target, :uniq =>true
+  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
-  named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
-
-  named_scope :with_purpose, lambda { |*purposes|
-    { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
+ scope :with_purpose, ->(*purposes) {
+    where(:plate_purpose_id => purposes.flatten.map(&:id))
   }
+
+  def submission
+    submissions.first
+  end
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
@@ -94,13 +97,13 @@ class Tube < Aliquot::Receptacle
 
   class StockMx < Tube::Purpose
     def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility=false)
-      tube.requests_as_target.open.each do |request|
+      tube.requests_as_target.opened.each do |request|
         request.transition_to(state)
       end
     end
 
     def pool_id(tube)
-      tube.submission.id
+      tube.submission.try(:id)
     end
 
     def name_for_child_tube(tube)
@@ -118,7 +121,7 @@ class Tube < Aliquot::Receptacle
     # set to the same state
     def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility=false)
       update_all_requests = ![ 'started', 'pending' ].include?(state)
-      tube.requests_as_target.open.for_billing.each do |request|
+      tube.requests_as_target.opened.for_billing.each do |request|
         request.transition_to(state) if update_all_requests or request.is_a?(TransferRequest)
       end
     end

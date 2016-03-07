@@ -8,13 +8,7 @@ module Aliquot::DeprecatedBehaviours
       base.class_eval do
         #Shouldn't be used . Here for compatibility with the previous code
         #having request having one sample
-        has_many :samples, :finder_sql => %q{
-          SELECT DISTINCT samples.*
-          FROM samples
-          JOIN aliquots ON aliquots.sample_id=samples.id
-          JOIN requests ON requests.asset_id=aliquots.receptacle_id
-          WHERE requests.id=#{id}
-        }
+        has_many :samples, :through => :asset
         deprecate :samples,  :sample_ids
       end
     end

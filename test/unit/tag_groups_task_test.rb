@@ -20,7 +20,7 @@ class TagGroupsTaskTest < TaskTestBase
     end
 
     should "not have at least one entry in tag_groups" do
-      assert 'tag_groups empty', !@object.tag_groups.empty?
+      assert @object.tag_groups.present?
     end
 
     should "assign tag_groups" do
@@ -30,17 +30,17 @@ class TagGroupsTaskTest < TaskTestBase
 
   context 'with a task' do
     setup do
-      @task = Factory :tag_groups_task
-      @batch = Factory :batch
+      @task = create :tag_groups_task
+      @batch = create :batch
     end
 
     context '#render_task' do
       should 'call render_tag_groups_task on workflow' do
         @controller  = DummyWorkflowController.new
-        @user = Factory :user
+        @user = create :user
         @controller.stubs(:current_user).returns(@user)
         @controller.batch = @batch
-        @workflow = Factory :lab_workflow_for_pipeline
+        @workflow = create :lab_workflow_for_pipeline
         params = {:batch_id => @batch.id, :workflow_id => @workflow.id}
         @task.render_task(@controller, params)
       end

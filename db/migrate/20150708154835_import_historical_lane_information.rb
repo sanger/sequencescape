@@ -6,7 +6,7 @@ class ImportHistoricalLaneInformation < ActiveRecord::Migration
   require './lib/aliquot_tag_migration'
 
   class AliquotIndex < ActiveRecord::Base
-    set_table_name('aliquot_indices')
+    self.table_name=('aliquot_indices')
   end
 
   def self.up

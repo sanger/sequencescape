@@ -3,8 +3,9 @@
 #Copyright (C) 2007-2011,2013 Genome Research Ltd.
 class PlateBarcode < ActiveResource::Base
   self.site = configatron.plate_barcode_service
+  self.format = ActiveResource::Formats::XmlFormat
 
- if RAILS_ENV == 'development'
+  if Rails.env == 'development'
    def self.create
      if @barcode.nil?
        @barcode = Asset.first(
@@ -17,6 +18,6 @@ class PlateBarcode < ActiveResource::Base
 
      OpenStruct.new(:barcode => (@barcode += 1))
    end
- end
+  end
 
 end

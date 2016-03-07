@@ -3,6 +3,10 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class MigratePipelinesToAppropriateProductLine < ActiveRecord::Migration
 
+  class RequestType < ActiveRecord::Base
+    self.table_name = 'request_types'
+  end
+
   def self.request_type_product_line
     {
       "illumina_a_hiseq_paired_end_sequencing"=>"Illumina-A",
@@ -31,14 +35,14 @@ class MigratePipelinesToAppropriateProductLine < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      ihtp = ProductLine.find_by_name!("Illumina-HTP")
+      ihtp = ProductLine.find_by_name("Illumina-HTP")||ProductLine.create!(:name=>"Illumina-HTP")
       request_type_product_line.each do |key,old_line|
         rt = RequestType.find_by_key(key)
         if rt.nil?
           say "Skipping #{rt}"
           next
         end
-        rt.update_attributes!(:product_line=>ihtp)
+        rt.update_attributes!(:product_line_id=>ihtp.id)
       end
     end
   end
@@ -51,7 +55,7 @@ class MigratePipelinesToAppropriateProductLine < ActiveRecord::Migration
           say "Skipping #{rt}"
           next
         end
-        rt.update_attributes!(:product_line=>ProductLine.find_by_name!(old_line))
+        rt.update_attributes!(:product_line_id=>ProductLine.find_by_name!(old_line).id)
       end
     end
   end

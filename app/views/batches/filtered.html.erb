@@ -9,7 +9,7 @@
 <div class="content">
   <div class="info">
   </div>
-  <% form_tag swap_batch_path(@batch) do %>
+  <%= form_tag swap_batch_path(@batch) do %>
     <h3>First Batch</h3>
     <div><%= label_tag "batch_1", "<strong>ID:</strong>" %><br /><%= text_field_tag "batch[1]", @batch.id %></div>
     <div><%= label_tag "position_batch_1", "<strong>Position:</strong>" %><br /><%= text_field_tag "batch[position][1]" %></div>

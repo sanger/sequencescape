@@ -67,6 +67,9 @@ class AmqpObserver < ActiveRecord::Observer
     # Converts metadata entries to their owner records, if necessary
     def determine_record_to_broadcast(record, &block)
       case
+      when record.nil? then nil # Do nothing if we have no record.
+        # This occurs with roles with no authorizable, but may also happen in cases where we have
+        # orphaned records.
       when record.is_a?(WellAttribute)  then yield(record.well,  nil)
       when record.is_a?(Metadata::Base) then yield(record.owner, nil)
       when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)
@@ -165,7 +168,7 @@ class AmqpObserver < ActiveRecord::Observer
     def activate_exchange(&block)
       return yield unless @exchange.nil?
 
-      client = Bunny.new(configatron.amqp.url, :spec => '09', :frame_max => configatron.amqp.retrieve(:maximum_frame,0))
+      client = Bunny.new(configatron.amqp.url, :spec => '09', :frame_max => configatron.amqp.fetch(:maximum_frame,0))
       begin
         client.start
         @exchange = client.exchange('psd.sequencescape', :passive => true)

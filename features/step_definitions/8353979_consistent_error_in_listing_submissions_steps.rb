@@ -6,7 +6,7 @@ Given /^the submission with UUID "([^\"]+)" has no request types$/ do |uuid|
   resource.resource.tap do |submission|
     submission.orders.map do |order|
       request_types = nil
-      order.save(false)  # This is in complete violation of the laws of nature
+      order.save(:validate => false)  # This is in complete violation of the laws of nature
     end
   end
 end

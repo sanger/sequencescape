@@ -5,7 +5,7 @@ class AddSingleEnded2500Pipelines < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       cloned_pipeline = SequencingPipeline.find_by_name('Cluster formation SE HiSeq (spiked in controls)')
-      cloned_pipeline.clone.tap do |pipeline|
+      cloned_pipeline.dup.tap do |pipeline|
         pipeline.name = 'HiSeq 2500 SE (spiked in controls)'
         pipeline.max_size = 2 # Can only take one tube
         pipeline.request_information_types = cloned_pipeline.request_information_types

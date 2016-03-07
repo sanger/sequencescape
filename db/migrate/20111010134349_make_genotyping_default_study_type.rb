@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class MakeGenotypingDefaultStudyType < ActiveRecord::Migration
   class DataReleaseStudyType < ActiveRecord::Base
-    set_table_name('data_release_study_types')
+    self.table_name =('data_release_study_types')
   end
 
   def self.up

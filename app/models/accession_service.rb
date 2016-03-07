@@ -34,7 +34,7 @@ class AccessionService
             file.puts(acc.xml)
             file.open # reopen for read
 
-            Rails::logger.debug { file.lines.to_a.join("\n") }
+            Rails::logger.debug { file.each_line.to_a.join("\n") }
 
             {:name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
           end
@@ -254,7 +254,7 @@ private
         # UA required to get through Sanger proxy
         # Although currently this UA is actually being set elsewhere in the
         # code as RestClient doesn't pass this header to the proxy.
-        rc.options[:headers]={:user_agent=>"Sequencescape Accession Client (#{RAILS_ENV})"}
+        rc.options[:headers]={:user_agent=>"Sequencescape Accession Client (#{Rails.env})"}
       end
 
       payload = {}

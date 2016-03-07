@@ -13,7 +13,7 @@ class AssetRack < Asset
   # Yuck! Yuck! Yuck!
   self.prefix = "DN"
 
-  named_scope :include_asset_rack_purpose, :include=>:purpose
+  scope :include_asset_rack_purpose, ->{ includes(:purpose) }
   belongs_to :purpose, :class_name => 'AssetRack::Purpose', :foreign_key => :plate_purpose_id
   alias_method :asset_rack_purpose, :purpose
 
@@ -23,16 +23,16 @@ class AssetRack < Asset
 
     def construct!(source=nil)
 
-      source ||= proxy_owner.source_plate||proxy_owner
+      source ||= proxy_association.owner.source_plate||proxy_association.owner
 
-      strips = proxy_owner.maps.map do |map|
+      strips = proxy_association.owner.maps.map do |map|
         {
           :name => "#{source.sanger_human_barcode}:#{map.description}",
           :map  => map
         }
       end
-      proxy_owner.strip_tubes.build(strips)
-      proxy_owner.save!
+      proxy_association.owner.strip_tubes.build(strips)
+      proxy_association.owner.save!
 
     end
 
@@ -107,7 +107,7 @@ class AssetRack < Asset
   class Purpose < ::Purpose
 
     has_many :asset_racks, :foreign_key => :plate_purpose_id, :inverse_of => :purpose
-    belongs_to :asset_shape, :class_name => 'Map::AssetShape'
+    belongs_to :asset_shape, :class_name => 'AssetShape'
 
     def source_plate_purpose
       ::Purpose.find_by_name!('Cherrypicked')
@@ -132,7 +132,7 @@ class AssetRack < Asset
     ##
     # We're fixed to a standard 96 well plate map for the moment.
     def well_maps
-      Map.where_plate_size(self.size*strip_size).where_plate_shape(Map::AssetShape.default)
+      Map.where_plate_size(self.size*strip_size).where_plate_shape(AssetShape.default)
     end
 
     def strip_size

@@ -3,7 +3,7 @@
 #Copyright (C) 2012,2013,2014 Genome Research Ltd.
 class TubeCreation < AssetCreation
   class ChildTube < ActiveRecord::Base
-    set_table_name('tube_creation_children')
+    self.table_name =('tube_creation_children')
     belongs_to :tube_creation
     belongs_to :tube
   end

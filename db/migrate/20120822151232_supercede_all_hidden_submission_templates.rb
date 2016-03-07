@@ -3,8 +3,8 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class SupercedeAllHiddenSubmissionTemplates < ActiveRecord::Migration
   class SubmissionTemplate < ActiveRecord::Base
-    set_table_name('submission_templates')
-    named_scope :hidden, :conditions => { :visible => false }
+    self.table_name =('submission_templates')
+    scope :hidden, -> { where( :visible => false ) }
   end
 
   def self.up

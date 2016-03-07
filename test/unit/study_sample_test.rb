@@ -5,7 +5,7 @@ require "test_helper"
 
 class StudySampleTest < ActiveSupport::TestCase
   context "A StudySample" do
-    should_belong_to :study
-    should_belong_to :sample
+    should belong_to :study
+    should belong_to :sample
   end
 end

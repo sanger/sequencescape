@@ -11,13 +11,13 @@ class BaitLibrary < ActiveRecord::Base
   end
 
   class Supplier < ActiveRecord::Base
-    set_table_name('bait_library_suppliers')
+    self.table_name =('bait_library_suppliers')
 
     # The names of suppliers needs to be unique
     validates_presence_of :name
     validates_uniqueness_of :name
 
-    named_scope :visible, :conditions => { :visible => true }
+    scope :visible, -> { where(:visible => true) }
 
     # They supply many bait libraries
     has_many :bait_libraries, :foreign_key => :bait_library_supplier_id
@@ -52,7 +52,7 @@ class BaitLibrary < ActiveRecord::Base
   # All bait libraries have a bait library type
   belongs_to :bait_library_type
 
-  named_scope :visible, :conditions => { :visible => true }
+  scope :visible, -> { where(:visible => true) }
 
   def hide
     self.visible = false

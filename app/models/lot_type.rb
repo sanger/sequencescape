@@ -11,7 +11,7 @@ class LotType < ActiveRecord::Base
   has_many :lots, :inverse_of => :lot_type
   belongs_to :target_purpose, :class_name => 'Purpose'
 
-  validates_presence_of :name, :template_class
+  validates :name, :template_class, :presence => true
   validates_uniqueness_of :name
 
   def valid_template_class

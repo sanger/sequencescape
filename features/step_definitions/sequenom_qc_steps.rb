@@ -4,7 +4,7 @@
 # TODO: Remove these methods from Plate because it's bad to do this in a test
 class Plate
   def add_wells_to_plate(number_of_wells)
-    sample = Factory(:sample)
+    sample = FactoryGirl.create(:sample)
     1.upto(number_of_wells.to_i) do |i|
       wells.create!(:map_id => i).tap { |well| well.aliquots.create!(:sample => sample) }
     end
@@ -12,7 +12,7 @@ class Plate
 
   def self.create_source_plates(source_barcodes, first_well_gender=true, number_of_wells = 96)
     source_barcodes.each do |encoded_barcode|
-      plate = Factory.create(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
+      plate = FactoryGirl.create(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
       plate.add_wells_to_plate(number_of_wells)
 
       # Unless we say otherwise give the first sample on the plate

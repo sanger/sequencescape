@@ -24,7 +24,7 @@ class Admin::BaitLibrariesController < ApplicationController
     respond_to do |format|
       if @bait_library.save
         flash[:notice] = 'Bait Library was successfully created.'
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       else
         format.html { render :action => "new" }
       end
@@ -35,7 +35,7 @@ class Admin::BaitLibrariesController < ApplicationController
     respond_to do |format|
       if @bait_library.update_attributes(params[:bait_library])
         flash[:notice] = 'Bait Library was successfully updated.'
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       else
         format.html { render :action => "edit" }
       end
@@ -47,7 +47,7 @@ class Admin::BaitLibrariesController < ApplicationController
       if @bait_library.hide
         flash[:notice] = 'Bait Library was successfully deleted.'
       end
-      format.html { redirect_to(bait_libraries_path) }
+      format.html { redirect_to(admin_bait_libraries_path) }
     end
   end
 

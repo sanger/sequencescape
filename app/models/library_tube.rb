@@ -17,7 +17,7 @@ class LibraryTube < Tube
     true
   end
 
-  named_scope :include_tag, :include => { :aliquots => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } }
+  scope :include_tag, -> { includes( :aliquots => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } ) }
 
   def sorted_tags_for_select
     self.get_tag.tag_group.tags.sort{ |a,b| a.map_id <=> b.map_id }.collect { |t| [t.name, t.id] }
@@ -60,6 +60,10 @@ class LibraryTube < Tube
     library_information[:tag2] = find_tag(library_information[:tag2]) if library_information[:tag2]
 
     self.specialized_from_manifest= library_information
+  end
+
+  def library_source_plates
+    purpose.try(:library_source_plates,self)||[]
   end
 
   def find_tag(tag_info)

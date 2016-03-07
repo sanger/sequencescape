@@ -50,9 +50,9 @@ end
 
 def create_submission_of_assets(template, assets, request_options = {})
   template.create_and_build_submission!(
-    :user            => Factory(:user),
-    :study           => Factory(:study),
-    :project         => Factory(:project),
+    :user            => FactoryGirl.create(:user),
+    :study           => FactoryGirl.create(:study),
+    :project         => FactoryGirl.create(:project),
     :assets          => assets,
     :request_options => request_options
   )
@@ -73,9 +73,9 @@ end
 Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
 
 
-  submission = Factory :submission
+  submission = FactoryGirl.create :submission
   plate.wells.select(&range.method(:include?)).each do |well|
-    Factory :transfer_request, :submission => submission, :target_asset => well
+    FactoryGirl.create :transfer_request, :submission => submission, :target_asset => well
   end
 
 end
@@ -113,7 +113,7 @@ def work_pipeline_for(submissions, name, template=nil)
   source_plate = source_plates.first
   source_plate.wells.each do |w|
     next if w.aliquots.empty?
-    Factory(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
+    FactoryGirl.create(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
     w.requests_as_source.first.start!                           # Ensure request is considered started
   end
 
@@ -121,7 +121,7 @@ def work_pipeline_for(submissions, name, template=nil)
 
   final_plate_type.create!.tap do |final_plate|
     AssetLink.create!(:ancestor => source_plate, :descendant => final_plate)
-    template.create!(:source => source_plate, :destination => final_plate, :user => Factory(:user))
+    template.create!(:source => source_plate, :destination => final_plate, :user => FactoryGirl.create(:user))
   end
 end
 
@@ -208,16 +208,16 @@ Given /^all requests are in the last submission$/ do
 end
 
 Given /^(the plate .+) will pool into 1 tube$/ do |plate|
-  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [Factory(:empty_well)] }
+  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [FactoryGirl.create(:empty_well)] }
   stock_well  = stock_plate.wells.first
-  submission  = Submission.create!(:user => Factory(:user))
+  submission  = Submission.create!(:user => FactoryGirl.create(:user))
 
   AssetLink.create!(:ancestor => stock_plate, :descendant => plate)
 
-  plate.wells.in_column_major_order.each do |well|
+  plate.wells.in_column_major_order.readonly(false).each do |well|
     RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
     well.stock_wells.attach!([stock_well])
-    Factory :library_creation_request, :asset=> stock_well, :target_asset => well, :submission => submission
+    FactoryGirl.create :library_creation_request, :asset=> stock_well, :target_asset => well, :submission => submission
     # LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
   end
 end

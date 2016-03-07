@@ -41,6 +41,7 @@ class Api::Base
 
       json_attributes = {}
       json_attributes["deleted_at"] = Time.now if object.destroyed?
+
       self.attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
         json_attributes[ json_attribute ] = object.send(attribute)
       end
@@ -122,32 +123,32 @@ class Api::Base
   end
 
   # The model class that our I/O methods are responsible for
-  class_inheritable_accessor :model_class
+  class_attribute :model_class
 
   def self.renders_model(model)
     self.model_class = model
   end
 
   # Contains the mapping from the ActiveRecord attribute to the key in the JSON hash
-  class_inheritable_reader :attribute_to_json_attribute_mappings
-  write_inheritable_attribute :attribute_to_json_attribute_mappings, {}
+  class_attribute :attribute_to_json_attribute_mappings, :instance_writer => false
+  self.attribute_to_json_attribute_mappings =  {}
 
   # TODO[xxx]: Need to warn about 'id' not being 'internal_id'
   def self.map_attribute_to_json_attribute(attribute, json_attribute = attribute)
-    self.attribute_to_json_attribute_mappings[ attribute.to_sym ] = json_attribute.to_s
+    self.attribute_to_json_attribute_mappings = self.attribute_to_json_attribute_mappings.merge(attribute.to_sym => json_attribute.to_s)
   end
 
   # Contains a list of resources that are related and should be exposed as URLs
-  class_inheritable_accessor :related_resources
-  write_inheritable_attribute :related_resources, []
+  class_attribute :related_resources
+  self.related_resources =  []
 
   # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
-  class_inheritable_reader :associations
-  write_inheritable_attribute :associations, {}
+  class_attribute :associations, :instance_writer => false
+  self.associations =  {}
 
     # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
-  class_inheritable_reader :nested_has_many_associations
-  write_inheritable_attribute :nested_has_many_associations, {}
+  class_attribute :nested_has_many_associations
+  self.nested_has_many_associations = {}
 
   def self.newer_than(object, timestamp, &block)
     return if object.nil? or timestamp.nil?
@@ -178,7 +179,8 @@ class Api::Base
       define_method(:lookup_by) { options[:lookup_by] }
       define_method(:association) { association }
     end
-    self.associations[ association.to_sym ] = association_helper
+    self.associations = Hash.new if self.associations.empty?
+    self.associations[association.to_sym] = association_helper
   end
 
   def self.with_nested_has_many_association(association, options = {}, &block)
@@ -187,6 +189,7 @@ class Api::Base
     association_helper.singleton_class.class_eval do
       define_method(:association) { association }
     end
+    self.nested_has_many_associations = Hash.new if self.nested_has_many_associations.empty?
     self.nested_has_many_associations[ association.to_sym ] = association_helper
   end
 
@@ -202,8 +205,7 @@ class Api::Base
   end
 
   # Contains the mapping from the ActiveRecord attribute to the key in the JSON hash when listing objects
-  class_inheritable_accessor :attribute_to_json_attribute_mappings_for_list
-  write_inheritable_attribute :attribute_to_json_attribute_mappings_for_list, {}
+  class_attribute :attribute_to_json_attribute_mappings_for_list
 
   self.attribute_to_json_attribute_mappings_for_list = {
     :id   => 'id',
@@ -214,10 +216,11 @@ class Api::Base
 
   # Additional JSON attribute handling, that cannot be done with the simple stuff, should be passed
   # done through a block
-  class_inheritable_reader :extra_json_attribute_handlers
-  write_inheritable_attribute :extra_json_attribute_handlers, []
+  class_attribute :extra_json_attribute_handlers, :instance_writer => false
+  self.extra_json_attribute_handlers =  []
 
   def self.extra_json_attributes(&block)
+    self.extra_json_attribute_handlers = Array.new if self.extra_json_attribute_handlers.empty?
     self.extra_json_attribute_handlers.push(block)
   end
 

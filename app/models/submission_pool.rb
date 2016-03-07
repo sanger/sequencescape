@@ -9,53 +9,62 @@ class SubmissionPool < ActiveRecord::Base
     module Plate
       def self.included(base)
         base.class_eval do
-          has_many :submission_pools, :finder_sql => %q{
-              SELECT DISTINCT submissions.* FROM submissions
-              INNER JOIN requests as tfr ON tfr.submission_id = submissions.id
-              INNER JOIN container_associations as pw ON pw.content_id = tfr.target_asset_id
-              WHERE pw.container_id = #{id};
-            }
-          # We override the default rails method, as the api attempts to inject pagination.
-          # Meanwhile we need to still specify the association, as the api uses it to work
-          # out the appropriate class.
-          def submission_pools
-            SubmissionPool.for_plate(self)
+
+          # Rails 4 takes scopes as second argument, we can probablu also tidy up and remove the counter_sql
+          # as it is the :group by seems to throw rails, and distinct will throw off out count.
+          has_many :submission_pools, :through => :active_requests,
+            :select => 'submissions.*, requests.id AS outer_request_id',
+            :group => 'submissions.id', :uniq => true do
+
+              def count(*args)
+                # Horrid hack due to the behaviour of count with a group_by
+                # We can't use uniq alone, as the outer_request_id makes
+                # the vairous rows unique.
+                s = super
+                return s if s.is_a?(Numeric)
+                s.length
+              end
           end
+
+          has_many :active_requests, :conditions => {
+            :state => Request::Statemachine::ACTIVE,
+            :request_purpose_id => RequestPurpose.standard
+          },
+          :through => :wells, :source => :requests
+
         end
       end
 
     end
   end
 
-  set_table_name('submissions')
+  self.table_name = 'submissions'
 
   belongs_to :outer_request, :class_name => 'Request'
   has_many :tag2_layout_template_submissions, :class_name => 'Tag2Layout::TemplateSubmission', :foreign_key => 'submission_id'
   has_many :tag2_layout_templates, :through => :tag2_layout_template_submissions
 
-  named_scope :include_uuid, { }
-  named_scope :include_outer_request, { :include => :outer_request}
+  scope :include_uuid, ->() { }
+  scope :include_outer_request, ->() { includes(:outer_request) }
 
-  named_scope :for_plate, lambda {|plate|
+  scope :for_plate, ->(plate) {
 
     stock_plate = plate.stock_plate
 
-    return {:conditions=>'false'} if stock_plate.nil?
+    return where('false') if stock_plate.nil?
 
-    {
-      :select => 'submissions.*, our.id AS outer_request_id',
-      :joins  => [
-        'LEFT JOIN requests as our ON our.submission_id = submissions.id',
-        'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
-      ],
-      :conditions => [
-        'spw.container_id =? AND our.sti_type NOT IN (?) AND our.state IN (?)',
-        stock_plate.id,
-        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name),
-        Request::Statemachine::ACTIVE
-      ],
-      :group => 'submission_id'
-    }
+    select('submissions.*, our.id AS outer_request_id').
+    joins([
+      'LEFT JOIN requests as our ON our.submission_id = submissions.id',
+      'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
+    ]).
+    where([
+      'spw.container_id =? AND our.sti_type NOT IN (?) AND our.state IN (?)',
+      stock_plate.id,
+      [TransferRequest,*TransferRequest.descendants].map(&:name),
+      Request::Statemachine::ACTIVE
+    ]).
+    group('submission_id')
   }
 
   def plates_in_submission

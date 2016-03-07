@@ -6,13 +6,14 @@ module Core::Endpoint::BasicHandler::Actions::Standard
     base.class_eval do
       include InstanceMethods
 
-      class_inheritable_reader :standard_actions
-      write_inheritable_attribute(:standard_actions, {})
+      class_attribute :standard_actions, :instance_writer => false
+      self.standard_actions = {}
     end
   end
 
   def standard_action(*names)
-    standard_actions.merge!(Hash[names.map { |a| [a.to_sym, a.to_sym] }])
+    self.standard_actions = {} if self.standard_actions.empty?
+    self.standard_actions.merge!(Hash[names.map { |a| [a.to_sym, a.to_sym] }])
   end
 
   module InstanceMethods

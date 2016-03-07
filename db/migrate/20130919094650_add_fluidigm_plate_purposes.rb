@@ -11,7 +11,7 @@ class AddFluidigmPlatePurposes < ActiveRecord::Migration
         :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
         :cherrypickable_target => true,
         :cherrypick_direction => 'column',
-        :asset_shape => Map::AssetShape.find_by_name('Standard')
+        :asset_shape => AssetShape.find_by_name('Standard')
       )
       PlatePurpose.create!(
         :name=>'STA2',
@@ -19,7 +19,7 @@ class AddFluidigmPlatePurposes < ActiveRecord::Migration
         :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
         :cherrypickable_target => true,
         :cherrypick_direction => 'column',
-        :asset_shape => Map::AssetShape.find_by_name('Standard')
+        :asset_shape => AssetShape.find_by_name('Standard')
       )
       PlatePurpose.create!(
         :name=>'Fluidigm 96-96',
@@ -27,7 +27,7 @@ class AddFluidigmPlatePurposes < ActiveRecord::Migration
         :cherrypickable_target => true,
         :cherrypick_direction => 'interlaced_column',
         :size => 96,
-        :asset_shape => Map::AssetShape.find_by_name('Fluidigm96')
+        :asset_shape => AssetShape.find_by_name('Fluidigm96')
       )
       PlatePurpose.create!(
         :name=>'Fluidigm 192-24',
@@ -35,7 +35,7 @@ class AddFluidigmPlatePurposes < ActiveRecord::Migration
         :cherrypickable_target => true,
         :cherrypick_direction => 'interlaced_column',
         :size => 192,
-        :asset_shape => Map::AssetShape.find_by_name('Fluidigm192')
+        :asset_shape => AssetShape.find_by_name('Fluidigm192')
       )
     end
   end

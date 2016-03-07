@@ -1,7 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
-<h3>Properties</h3>
+<%= panel(:info,title:'Properties') do %>
 <%= render(:partial => 'shared/metadata/edit/study', :locals => { :study => study, :form => form }) %>
 
 <% if logged_in? && current_user.privileged? %>
@@ -22,3 +22,4 @@
     </td>
   </tr>
 </table>
+<% end %>

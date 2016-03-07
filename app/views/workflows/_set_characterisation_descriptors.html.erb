@@ -20,7 +20,7 @@
   </fieldset>
 </form>
 
-<% form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
 
 <h2><%= pluralize(@batch.requests.count, @batch.requests.first.asset.sti_type.underscore.humanize) %> in total</h2>
 
