@@ -1,17 +1,16 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
-
-<%= label_tag(:asset_type,'Filter by') %>
-<%= select_tag(:asset_type,options_for_select(asset_types_for_select,@asset_type)) %>
-
-<%= observe_field(:asset_type, :url => { :action => 'show_summary'}, :method=>'GET', :loading => "show_update_loader();", :complete => "hide_update_loader();", :update => :everything, :with => :asset_type) %>
+<%= form_tag show_summary_study_workflow_path(@study,@workflow), :method => :get, :remote=>true, :class=>'remote-form observed', :data => {:update => "#everything", :throbber => '#loading' } do %>
+  <%= label_tag(:asset_type,'Filter by') %>
+  <%= select_tag(:asset_type,options_for_select(asset_types_for_select,@asset_type), :class=>'form-control') %>
+<% end %>
 
 <span class="filter_options">Currently showing <strong><%= @asset_type_name %></strong></span>
 
 <%= pagination @page_elements %>
 <% submissions = @submissions %>
-<table id="summary" width="100%" class="sortable">
+<table id="summary" class="sortable table table-striped">
   <thead>
     <tr>
       <th>Name</th>
@@ -24,8 +23,6 @@
       <th>Latest update</th>
       <th>Update date</th>
       <th>Updates</th>
-      <th></th>
-      <th></th>
     </tr>
   </thead>
   <tbody>

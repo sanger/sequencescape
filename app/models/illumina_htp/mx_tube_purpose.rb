@@ -38,7 +38,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       :conditions=>[
         'requests.target_asset_id = ? AND requests.sti_type IN (?)',
         tube.id,
-        [Request::LibraryCreation,*Class.subclasses_of(Request::LibraryCreation)].map(&:name)
+        [Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
       ]
     ).map(&:source_plate)
   end

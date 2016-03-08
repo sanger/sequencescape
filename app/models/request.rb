@@ -107,7 +107,7 @@ class Request < ActiveRecord::Base
   scope :for_event_notification_by_order, ->(order) {
       where([
         'requests.sti_type NOT IN (?) AND requests.state = "passed" AND requests.order_id=?',
-        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), order.id
+        [TransferRequest,*TransferRequest.descendants].map(&:name), order.id
       ])
   }
 
