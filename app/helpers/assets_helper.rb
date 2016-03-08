@@ -88,4 +88,13 @@ module AssetsHelper
       end
     end
   end
+
+  def asset_types
+    ['All', *Aliquot::Receptacle.descendants.map(&:name)]
+  end
+
+  def asset_types_for_select
+    asset_types.map {|at| [at.underscore.humanize, at] }
+  end
+
 end
