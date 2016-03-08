@@ -297,9 +297,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
 
           should "create 16 library requests and 40 sequencing requests" do
-            lib_requests = Request.where(submission_id_and_request_type_id: @mx_submission_with_multiplication_factor, @mx_request_type.id)
+            lib_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor, request_type_id: @mx_request_type.id)
             assert_equal 16, lib_requests.count
-            seq_requests = Request.where(submission_id_and_request_type_id: @mx_submission_with_multiplication_factor, @pe_request_type.id)
+            seq_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor, request_type_id: @pe_request_type.id)
             assert_equal 16, seq_requests.count
           end
 
