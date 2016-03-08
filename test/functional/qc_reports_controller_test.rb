@@ -39,7 +39,7 @@ class QcReportsControllerTest < ActionController::TestCase
         post :create, :qc_report => { :study_id => @study.id, :product_id => @product.id }
       end
       should respond_with :redirect
-      should set_the_flash.to('Your report has been requested and will be presented on this page when complete.')
+      should set_flash.to('Your report has been requested and will be presented on this page when complete.')
       should redirect_to('show') { "/qc_reports/#{QcReport.last.report_identifier}" }
 
       should 'create a qc report for the study and product' do
@@ -55,7 +55,7 @@ class QcReportsControllerTest < ActionController::TestCase
       end
       should respond_with :redirect
       should redirect_to('index') { "/" }
-      should set_the_flash.to('You must select a product')
+      should set_flash.to('You must select a product')
     end
   end
 end

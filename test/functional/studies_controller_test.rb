@@ -104,7 +104,7 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal @initial_study_count, Study.count
         end
 
-        should set_the_flash.now.to('Problems creating your new study')
+        should set_flash.now.to('Problems creating your new study')
       end
 
       context "create a new study using permission allowed (not required)" do

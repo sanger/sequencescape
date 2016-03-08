@@ -90,7 +90,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           end
 
 
-          should set_the_flash.now.to('You do not appear to have specified any samples')
+          should set_flash.now.to('You do not appear to have specified any samples')
 
           should render_template :new
         end
