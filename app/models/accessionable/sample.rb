@@ -12,9 +12,6 @@ module Accessionable
       @name = sampname.blank? ? sample.name : sampname
       @name = @name.gsub(/[^a-z\d]/i,'_') unless @name.blank?
 
-      #@__filename = "#{ submission_id }-#{ sample.id }.sample.xml"
-      #@__alias    = "#{ submission_id }-#{ sample.id }"
-
       @common_name = sample.sample_metadata.sample_common_name
       @taxon_id    = sample.sample_metadata.sample_taxon_id
 
