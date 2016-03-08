@@ -3,7 +3,11 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <% add :menu, "SampleDB Home" => '/sdb/' %>
 <% add :menu, "&nbsp;" => '' -%>
-<% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate"}) %>
+<%- if @sample_manifest %>
+  <% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate", study_id: @sample_manifest.study_id}) %>
+<% else %>
+  <% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate"}) %>
+<% end %>
 <% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({:type => "1dtube"}) %>
 <% add :menu, "Create manifest for multiplexed libraries" => new_sample_manifest_path({:type => "multiplexed_library"}) %>
 <% add :menu, "View all manifests" => sample_manifests_path %>

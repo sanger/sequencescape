@@ -42,6 +42,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def new
     @sample_manifest  = SampleManifest.new(:asset_type => params[:type])
+    @study_id         = params[:study_id] || ""
     @studies          = Study.all.sort{ |a,b,| a.name <=> b.name }
     @suppliers        = Supplier.all.sort{ |a,b,| a.name <=> b.name }
     @barcode_printers = @sample_manifest.applicable_barcode_printers
