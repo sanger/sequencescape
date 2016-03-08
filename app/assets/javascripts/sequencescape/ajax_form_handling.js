@@ -30,17 +30,18 @@
       var target;
       target = this.dataset.success ||  this.dataset.update;
       $(target).html(data);
-      attachEvents();
+      $(document.body).trigger("ajaxDomUpdate");
     }).bind('ajax:error', function(xhr, data, status) {
       var target;
       target = this.dataset.failure ||  this.dataset.update;
       $(target).html(data);
-      attachEvents();
+      $(document.body).trigger("ajaxDomUpdate");
     });
 
     $('.observed').bind('keyup',throttledUpdate).bind('change',throttledUpdate)
   };
 
   $(document).ready( attachEvents );
+  $(document).on('ajaxDomUpdate', attachEvents );
 
 })(jQuery);

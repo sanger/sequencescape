@@ -33,4 +33,5 @@ class SpikedBuffer < LibraryTube
       new_asset.index = index.transfer(index_volume_to_transfer)
     end
   end
+
 end

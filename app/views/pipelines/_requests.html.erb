@@ -5,7 +5,7 @@
   <%= label_tag 'filter', 'Filter by '+@information_types.find_by_key("read_length").name %>
   <input type="text" value="" id="filter-for-pipeline_inbox" rel="pipeline_inbox">
 <% end %>
-  <table class="sortable table table-striped" id="pipeline_inbox">
+  <table class="sortable table table-striped table-dense-information" id="pipeline_inbox">
     <thead>
       <tr>
         <th class='{sorter: false}'>&nbsp;</th>
@@ -21,6 +21,7 @@
         <th><%= link_to "Asset type", "javascript:void(0);" %></th>
         <th><%= link_to "Asset ID", "javascript:void(0);" %></th>
         <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
+        <th><%= link_to "Num. Samples", "javascript:void(0);" %></th>
         <th><%= link_to "Conc", "javascript:void(0);" %></th>
         <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
         <th><%= link_to "Submitted at (Y-M-D)", "javascript:void(0);" %></th>
@@ -33,10 +34,9 @@
       </tr>
     </thead>
     <tbody>
-    <div class='request'>
       <%- requests.each do |request| -%>
-        <% request_comments = request.comments -%>
-        <% request_asset_comments = request.asset.comments -%>
+        <% request_comments_count = @requests_comment_count.fetch(request.id,0) -%>
+        <% asset_comments_count = @assets_comment_count.fetch(request.asset_id,0)-%>
         <tr>
           <td class="request center">
             <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
@@ -57,7 +57,7 @@
           <td>
             <%= request.request_type.product_line.try(:name) %>
           </td>
-          <td class="request">
+          <td>
             <%= link_to request.submission_id, submission_path(request.submission) %>
           </td>
           <td>
@@ -65,19 +65,20 @@
           </td>
           <td><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
 
-          <% unless request_comments.empty? -%>
-            <%= render :partial => "request_comments", :locals => { :request => request, :comments => request_comments } %>
+          <% unless request_comments_count.zero? -%>
+            <%= render :partial => "request_comments", :locals => { :request => request, :comments_count => request_comments_count } %>
           <% else -%>
             <td>&nbsp;</td>
           <% end -%>
           <% if request.asset %>
             <td><%=  request.asset.sti_type %></td>
             <td><%=  link_to "#{request.asset.barcode}", asset_path(request.asset) %></td>
-            <% unless request_asset_comments.empty? -%>
-              <%= render :partial => "asset_comments", :locals => { :request => request, :comments => request_asset_comments } %>
+            <% unless asset_comments_count.zero? -%>
+              <%= render :partial => "asset_comments", :locals => { :request => request, :comments_count => asset_comments_count } %>
             <% else -%>
               <td>&nbsp;</td>
             <% end -%>
+            <td><%= request.asset.samples.count %></td>
             <td><%= request.asset.concentration %></td>
             <td><%= request.asset.scanned_in_date %></td>
             <td><%= request.submitted_at %></td>
@@ -96,47 +97,8 @@
           <td width=100px><%= truncate(request.try(:submission).try(:study_names), :separator => ' ') %></td>
         </tr>
       <%- end -%>
-      </div>
     </tbody>
   </table>
-<script type="text/javascript" id="js">
-(function($) {
-  $.tablesorter.addWidget({
-    id: 'jFilter',
-    format: function(element) {
-      var __jFilter = this;
 
-      $('#filter-for-'+$(element).attr('id')).bind('keyup',function(ev){
-        __jFilter.jFilterRun(element,$('#filter-for-'+$(element).attr('id')).val());
-      });
-    },
-    jFilterRun: function(table, s){
-      $('tbody tr:hidden', table).show();
-      $('tbody tr',$(table)).each(function(n,r){
-        var content = false;
-        $('td',$(r)).each(function(i,f){
-          if (($(f).html() || $(f).text()).toLowerCase().indexOf(s.toLowerCase()) >= 0)
-            if (f.title=='read_length')
-              content = true;
-        });
-        if (content) $(r).show(); else $(r).hide();
-      });
-    }
-  });
-
-  // $(document).ready(function() {
-  //   $("#pipeline_inbox").tablesorter({
-  //     sortList: [[1,1], [2,0]],
-  //     widgets: ['zebra', 'jFilter'],
-
-  //     textExtraction: function(node) {
-  //       // If the node has an IMG element underneath it then its 'alt' attribute is used, otherwise it's the innerHTML of the node.
-  //       var imgNode = $('img', node);
-  //       return (imgNode.size() > 0 ? imgNode.attr('alt') : $(node).text());
-  //     }
-  //   });
-  // });
-})(jQuery);
-</script>
 
 <%= javascript_include_tag 'pipeline.js' %>

@@ -14,6 +14,7 @@
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>
+    <%= render :partial => 'inbox_submission_button' %>
     <%= render :partial => "grouped_requests", :locals => {:grouped_requests => @grouped_requests } %>
     <%= render :partial => 'inbox_submission_button' %>
   <% end -%>

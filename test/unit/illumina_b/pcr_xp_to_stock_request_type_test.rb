@@ -12,6 +12,6 @@ class IlluminaB::PcrXpToStockRequestTypeTest < ActiveSupport::TestCase
     check_event(:pass!, :pending, :started, :failed)
     check_event(:qc!, :passed)
     check_event(:fail, :pending, :started, :passed)
-    check_event(:cancel, :started, :passed)
+    check_event(:cancel, :started, :passed, :qc_complete)
   end
 end

@@ -164,6 +164,12 @@ en:
   cherrypick:
     picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."
 
+  accession_service:
+    not_required:
+      not_applicable_study: "This study has its data release policy set to not applicable, which prevents accessioning. If you wish to accession the study, first select an appropriate release policy."
+      not_applicable_study_for_sample: "The primary study of this sample (%{study_id}) has its data release policy set to not applicable, which prevents accessioning. Either remove the sample from this study, or enable accessioning on the primary study."
+      not_applicable_study_for_dac: "This study has its data release policy set to not applicable, it does not require a DAC accession."
+
   activerecord:
     attributes:
       sample_metadata: &sample_metadata
@@ -179,6 +185,7 @@ en:
     state_descriptions:
       default: "No description has been provided for this state."
       queued: "Your report has been queued for processing. There are currently %{queue_count} items in the queue."
+      requeued: "Your report was processed but experienced a problem. It has been re-queued for processing, your you will probably need to contact support."
       generating: "The report has reached the front of the queue and is being generated."
       awaiting_proceed: "The report can be delivered to the customer and is currently awaiting their proceed decision."
       complete: "Proceed decisions have been made."

@@ -12,9 +12,6 @@ module Accessionable
       @name = sampname.blank? ? sample.name : sampname
       @name = @name.gsub(/[^a-z\d]/i,'_') unless @name.blank?
 
-      #@__filename = "#{ submission_id }-#{ sample.id }.sample.xml"
-      #@__alias    = "#{ submission_id }-#{ sample.id }"
-
       @common_name = sample.sample_metadata.sample_common_name
       @taxon_id    = sample.sample_metadata.sample_taxon_id
 
@@ -43,7 +40,7 @@ module Accessionable
      @sample.id
     end
 
-    def alias_attribute
+    def alias
       @sample.uuid
     end
 
@@ -54,7 +51,7 @@ module Accessionable
     def sample_element_attributes
       # In case the accession number is defined, we won't send the alias
       {
-        :alias => alias_attribute,
+        :alias => self.alias,
         :accession => accession_number
       }.tap do |obj|
         obj.delete(:alias) unless self.accession_number.blank?

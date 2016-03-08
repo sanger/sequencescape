@@ -67,6 +67,9 @@ class AmqpObserver < ActiveRecord::Observer
     # Converts metadata entries to their owner records, if necessary
     def determine_record_to_broadcast(record, &block)
       case
+      when record.nil? then nil # Do nothing if we have no record.
+        # This occurs with roles with no authorizable, but may also happen in cases where we have
+        # orphaned records.
       when record.is_a?(WellAttribute)  then yield(record.well,  nil)
       when record.is_a?(Metadata::Base) then yield(record.owner, nil)
       when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)

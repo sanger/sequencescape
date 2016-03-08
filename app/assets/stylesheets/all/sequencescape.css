@@ -3,6 +3,7 @@
 a {
   color: #0046BF;
   text-decoration:none;
+  cursor: pointer;
 }
 
 /* Formats the tubes in the layout_tubes_on_plate task */

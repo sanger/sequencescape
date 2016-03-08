@@ -24,6 +24,7 @@ class Admin::StudiesController < ApplicationController
     @request_types = RequestType.all(:order => "name ASC")
     if params[:id] != "0"
       @study = Study.find(params[:id])
+	  flash.now[:warning] = @study.warnings if @study.warnings.present?
       render :partial => "edit", :locals => { :study => @study }
     else
       render :nothing => true

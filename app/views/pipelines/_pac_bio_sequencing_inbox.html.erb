@@ -69,9 +69,9 @@
             <td class="request" colspan=3><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
           </tr>
           <%- requests.each_with_index do |request, indice| -%>
-            <% request_comments = request.comments -%>
+
             <% request_asset = request.asset -%>
-            <% request_asset_comments = request_asset.comments -%>
+
             <% request_tag = request_asset.aliquots.map {|a| a.tag.present? ? "#{a.tag.tag_group.name}:#{a.tag.map_id}" : "Untagged" }.join(',') -%>
             <% progr = indice + 1 %>
             <tr class="nested request<%= indice %>" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">

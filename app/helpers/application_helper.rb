@@ -76,21 +76,7 @@ module ApplicationHelper
   end
 
   def display_status(status)
-    case status
-      when "passed"
-        formatted_status = "<span style='color:green;font-weight:bold;'>Passed</span>"
-      when "failed"
-        formatted_status = "<span style='color:red;font-weight:bold;'>Failed</span>"
-      when "started"
-        formatted_status = "<span style='color:blue;font-weight:bold;'>Started</span>"
-      when "pending"
-        formatted_status = "<span style='font-weight:bold;'>Pending</span>"
-      when "completed"
-        formatted_status = "<span style='color:green;font-weight:bold;'>Completed</span>"
-      else
-        formatted_status = "<span style='font-weight:bold;'>#{status.humanize}</span>"
-    end
-    return formatted_status
+    content_tag(:span,status,:class=>"request-state label label-#{bootstrapify_request_state(status)}")
   end
 
   def dynamic_link_to(summary_item)
