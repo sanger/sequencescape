@@ -8,6 +8,8 @@ class Aliquot < ActiveRecord::Base
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
 
+  TagClash = Class.new(ActiveRecord::RecordInvalid)
+
   class Receptacle < Asset
     include Transfer::State
     include Aliquot::Remover
@@ -170,9 +172,9 @@ class Aliquot < ActiveRecord::Base
   belongs_to :tag2, :class_name => 'Tag'
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
 
-  # Might need to remove these if we get a performance hit
-  validates_uniqueness_of :tag_id,       :scope => [:receptacle_id, :tag2_id]
-  validates_uniqueness_of :tag2_id, :scope => [:receptacle_id, :tag_id]
+  # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
+  # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
+  # would result in sample dropouts. (presumably because << triggers save not save!)
 
   def untagged?
     self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG
