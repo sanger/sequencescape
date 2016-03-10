@@ -27,7 +27,6 @@
         <th><%= link_to "Submitted at (Y-M-D)", "javascript:void(0);" %></th>
         <th><%= link_to "Number of tags", "javascript:void(0);" %></th>
         <% @information_types.each do |information_type| %>
-          <% next if information_type.hide_in_inbox %>
           <th><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
         <% end %>
         <th><%= link_to "Study", "javascript:void(0);" %></th>
@@ -89,7 +88,6 @@
           <% end %>
           <td><%= request.asset.tag_count %></td>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
             <td  title='<%="#{information_type.key}"%>'>
               <%= h(request.request_metadata[information_type.key]) %>
             </td>
