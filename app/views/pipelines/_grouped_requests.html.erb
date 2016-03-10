@@ -51,7 +51,7 @@
           <% @information_types.each do |information_type| %>
             <td><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
-          <td><%= request.asset.concentration || "&nbsp;" -%></td>
+          <td><%= request.asset.concentration -%></td>
           <td><%= request.submission.study_names %></td>
         </tr>
 
