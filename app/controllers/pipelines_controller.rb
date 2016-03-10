@@ -33,7 +33,7 @@ class PipelinesController < ApplicationController
     @batches = @last_5_batches = @pipeline.batches.latest_first.includes_for_ui
 
     unless @pipeline.qc?
-      @information_types = @pipeline.request_information_types
+      @information_types = @pipeline.request_information_types.shown_in_inbox
       @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
 
       if @pipeline.group_by_parent?

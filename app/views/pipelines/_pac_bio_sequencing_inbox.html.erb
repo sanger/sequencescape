@@ -26,7 +26,6 @@
           <th><%= link_to "Asset", "javascript:void(0);" %></th>
           <th><%= link_to "Tag", "javascript:void(0);" %></th>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
             <th style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
           <% end %>
           <th width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
@@ -56,7 +55,6 @@
             <td class='request'><!-- Asset -->&nbsp;</td>
             <td class='request'><!-- Tag -->&nbsp;</td>
             <% @information_types.each do |information_type| %>
-              <% next if information_type.hide_in_inbox %>
               <td class='request'><%= h(request.request_metadata[information_type.key]) %></td>
             <% end %>
             <td class='request'><%= request.submission.study_names %></td>
@@ -97,7 +95,6 @@
                 <%= request_tag %>
               </td>
               <% @information_types.each do |information_type| %>
-                <% next if information_type.hide_in_inbox %>
                 <td class='request'><%= h(request.request_metadata[information_type.key]) %></td>
               <% end %>
               <td class='request'><%= request.submission.study_names %></td>
