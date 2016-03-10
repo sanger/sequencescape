@@ -1297,6 +1297,18 @@ x10_requests_types = ['a', 'b'].map do |pipeline|
   })
 end
 
+RequestType.create!({
+  :key => "bespoke_hiseq_x_paired_end_sequencing",
+  :name => "Bespoke HiSeq X Paired end sequencing",
+  :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+  :asset_type => "LibraryTube",
+  :order => 2,
+  :initial_state => "pending",
+  :request_class_name => "HiSeqSequencingRequest",
+  :billable => true,
+  :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}")
+})
+
 st_x10 = [RequestType.create!({
     :key => "hiseq_x_paired_end_sequencing",
     :name => "HiSeq X Paired end sequencing",

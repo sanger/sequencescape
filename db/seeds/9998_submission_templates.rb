@@ -2277,13 +2277,21 @@
      ["illumina_c_multiplexed_library_creation",
       "illumina_c_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
- {:name=>"Illumina-C - General PCR - HiSeq X 10 sequencing",
+ {:name=>"Illumina-C - General PCR - HiSeq-X sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-C",
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:request_types=>
-     ["illumina_c_pcr", "illumina_b_hiseq_x_paired_end_sequencing"],
+     ["illumina_c_pcr", "bespoke_hiseq_x_paired_end_sequencing"],
+    :workflow=>"short_read_sequencing"}},
+{:name=>"Illumina-C - General no PCR - HiSeq-X sequencing",
+  :submission_class_name=>"LinearSubmission",
+  :product_line=>"Illumina-C",
+  :product_catalogue=>"Generic",
+  :submission_parameters=>
+   {:request_types=>
+     ["illumina_c_nopcr", "bespoke_hiseq_x_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Illumina-C Cherrypicked - General PCR - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
