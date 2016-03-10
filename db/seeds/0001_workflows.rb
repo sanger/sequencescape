@@ -1306,7 +1306,7 @@ RequestType.create!({
   :initial_state => "pending",
   :request_class_name => "HiSeqSequencingRequest",
   :billable => true,
-  :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}")
+  :product_line => ProductLine.find_by_name("Illumina-C")
 })
 
 st_x10 = [RequestType.create!({
