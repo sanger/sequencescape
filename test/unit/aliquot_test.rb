@@ -69,21 +69,6 @@ class AliquotTest < ActiveSupport::TestCase
       @asset.save!
     end
 
-    should "disallow mixing same tags with no tag 2" do
-      assert_raise ActiveRecord::RecordInvalid do
-        @asset.aliquots << Aliquot.new(:tag => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :sample=>@sample2)
-        @asset.save!
-      end
-    end
-
-    should "disallow mixing same tags with same tag 2" do
-      assert_raise ActiveRecord::RecordInvalid do
-        @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag2, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag2 => @tag2, :sample=>@sample2)
-        @asset.save!
-      end
-    end
-
-
   end
 
 end
