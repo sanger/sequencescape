@@ -126,6 +126,7 @@ GEM
       activerecord (>= 3.0, < 5)
       delayed_job (>= 3.0, < 5)
     diff-lcs (1.2.5)
+    docile (1.1.5)
     domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
     dynamic_form (1.1.4)
@@ -277,6 +278,11 @@ GEM
     shoulda-context (1.2.1)
     shoulda-matchers (1.4.1)
       activesupport (>= 3.0.0)
+    simplecov (0.11.2)
+      docile (~> 1.1.0)
+      json (~> 1.8)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
     sinatra (1.1.4)
       rack (~> 1.1)
       tilt (>= 1.2.2, < 2.0)
@@ -382,6 +388,7 @@ DEPENDENCIES
   sass-rails
   select2-rails
   shoulda (~> 3.4.0)
+  simplecov
   sinatra (~> 1.1.0)
   spoon
   spreadsheet
