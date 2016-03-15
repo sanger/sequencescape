@@ -50,9 +50,10 @@ class Plate < Asset
   validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
-  def transfer_requests
-    wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
-  end
+  has_many :transfer_requests, :through => :wells, :source => :transfer_requests_as_target
+  # def transfer_requests
+  #   wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
+  # end
 
   # About 10x faster than going through the wells
   def submission_ids
