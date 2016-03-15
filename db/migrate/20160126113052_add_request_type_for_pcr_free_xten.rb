@@ -21,7 +21,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
 
       rt.acceptable_plate_purposes << Purpose.find_by_name!("PF Cherrypicked")
 
-      lt = LibraryType.find_or_create_by(name!:"HiSeqX PCR free")
+      lt = LibraryType.find_or_create_by(name:"HiSeqX PCR free")
       rt_v = RequestType::Validator.create!(
         :request_type   => rt,
         :request_option => 'library_type',

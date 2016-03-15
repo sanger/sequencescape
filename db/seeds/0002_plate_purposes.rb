@@ -43,14 +43,14 @@ ActiveRecord::Base.transaction do
     end
 
     # Ensure that the transfer to the tube at the end is possible
-    tube_purpose = Tube::Purpose.find_by_name('Legacy MX tube') or raise "Cannot find standard MX tube purpose"
+    tube_purpose = Purpose.find_by_name!('Legacy MX tube')
     final_purpose.child_relationships.create!(:child => tube_purpose, :transfer_request_type => RequestType.transfer)
   end
 
   qc_plate_purpose = PlatePurpose.create!(:name => 'Pulldown QC plate', :cherrypickable_target => false)
 
   Pulldown::PlatePurposes::PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
-    plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+    plate_purpose = Purpose.find_by_name!(name)
     plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.transfer)
   end
 end

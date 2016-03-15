@@ -29,7 +29,7 @@ ActiveRecord::Base.transaction do
     {
       :name               => "Illumina-B STD",
       :key                => pipeline_name.downcase.gsub(/\W+/, '_'),
-      :target_purpose     => Tube::Purpose.find_by_name!('ILB_STD_MX'),
+      :target_purpose     => Purpose.find_by_name!('ILB_STD_MX'),
       :for_multiplexing   => true,
       :request_class_name => "IlluminaB::Requests::StdLibraryRequest"
     },
@@ -134,7 +134,7 @@ ActiveRecord::Base.transaction do
       RequestType.find_by_name!(request_type_name)
     end
 
-    RequestType.find_each(:conditions => { :name => sequencing_request_type_names_for('Illumina-B') }) do |sequencing_request_type|
+    RequestType.where(:name => sequencing_request_type_names_for('Illumina-B')).find_each do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
       submission.info_differential = workflow.id
@@ -152,7 +152,7 @@ ActiveRecord::Base.transaction do
       RequestType.find_by_name!(request_type_name)
     end
 
-    RequestType.find_each(:conditions => { :name => sequencing_request_type_names_for('Illumina-A') }) do |sequencing_request_type|
+    RequestType.where(:name => sequencing_request_type_names_for('Illumina-A')).find_each do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
       submission.info_differential = workflow.id
@@ -207,7 +207,7 @@ re_request = RequestType.create!(
         :request_option => 'library_type',
         :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt.id)
       )
-      rt.library_types << LibraryType.find_or_create_by(name!:"HiSeqX PCR free")
+      rt.library_types << LibraryType.find_or_create_by(name:"HiSeqX PCR free")
     end
 
   RequestType.create!(

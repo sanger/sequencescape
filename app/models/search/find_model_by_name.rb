@@ -2,10 +2,10 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.
 class Search::FindModelByName < Search
-  validates_presence_of :model_name
+  validates_presence_of :target_model_name
 
   def model
-    model_name.constantize
+    target_model_name.constantize
   end
   private :model
 

@@ -19,12 +19,13 @@ class OwnerTest < ActionController::TestCase
       @barcode_printer.stubs(:blank?).returns(true)
 
       @user = create :user
-      @parent_plate = PlatePurpose.find_by_name('WGS stock DNA').create!(:barcode=>'12345')
+      @parent_plate_purpose = create :parent_plate_purpose
+      @parent_plate = create :plate, purpose: @parent_plate_purpose
 
       @pc_event = PlateCreation.create(
         :user          => @user,
         :parent        => @parent_plate,
-        :child_purpose => PlatePurpose.find_by_name('WGS Covaris')
+        :child_purpose => @parent_plate_purpose.child_purposes.first
       )
       @child_plate = @pc_event.child
     end

@@ -10,7 +10,7 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Tagged Library Prep') do |pipe
   pipeline.asset_type           = 'PacBioLibraryTube'
   pipeline.group_by_parent      = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'PacBio library prep freezer' }) or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
+  pipeline.location = Location.find_by(:name => 'PacBio library prep freezer') or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_tagged_library_prep', :name => 'PacBio Tagged Library Prep') do |request_type|
     request_type.initial_state     = 'pending'

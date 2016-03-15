@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2011,2013,2014,2015 Genome Research Ltd.
 class CherrypickForPulldownRequest < TransferRequest
 
-  aasm :column => :state do
+  redefine_aasm :column => :state do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has less states.
     state :pending, :initial => true

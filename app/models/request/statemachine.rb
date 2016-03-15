@@ -14,8 +14,7 @@ module Request::Statemachine
   module ClassMethods
     def redefine_aasm(options={},&block)
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
-      @aasm = nil
-
+      AASM::StateMachine[self][:default].events.keys.each {|event| undef_method(event); undef_method(:"#{event}!"); undef_method(:"may_#{event}?") }
       AASM::StateMachine[self] = {}
       aasm(options,&block)
     end

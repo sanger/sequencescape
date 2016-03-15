@@ -27,7 +27,7 @@ module IlluminaC::Requests
   end
 
   class QcCompleteable < TransferRequest
-    aasm :column => :state do
+    redefine_aasm :column => :state do
 
 
       state :pending, :initial => true

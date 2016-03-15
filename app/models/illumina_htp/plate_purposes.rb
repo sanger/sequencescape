@@ -288,7 +288,7 @@ module IlluminaHtp::PlatePurposes
 
     def create_qc_plate_for(name)
       qc_plate_purpose = purpose_for("#{name} QC").create!(:name => "#{name} QC", :cherrypickable_target => false)
-      plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+      plate_purpose = Purpose.find_by_name!(name)
       plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.find_by_name('Transfer'))
     end
   end

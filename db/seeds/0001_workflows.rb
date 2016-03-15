@@ -27,7 +27,7 @@ ProductLine.create(:name=>'Illumina-HTP')
 #     workflow.pipeline = PipelineClass.create!(:name => XXXX) do |pipeline|
 #       # Set the Pipeline attributes here
 #
-#       pipeline.location = Location.first(:conditions => { :name => YYYY }) or raise StandardError, "Cannot find 'YYYY' location'
+#       pipeline.location = Location.where(:name => YYYY).first or raise StandardError, "Cannot find 'YYYY' location'
 #       pipeline.request_types << RequestType.create!(:workflow => submission_workflow, :key => xxxx, :name => XXXX) do |request_type|
 #         # Set the RequestType attributes here
 #       end
@@ -42,7 +42,7 @@ ProductLine.create(:name=>'Illumina-HTP')
 # flow from left to right, if you get what I mean!
 def set_pipeline_flow_to(sequence)
   sequence.each do |current_name, next_name|
-    current_pipeline, next_pipeline = [ current_name, next_name ].map { |name| Pipeline.first(:conditions => { :name => name }) or raise "Cannot find pipeline '#{ name }'" }
+    current_pipeline, next_pipeline = [ current_name, next_name ].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{ name }'" }
     current_pipeline.update_attribute(:next_pipeline_id, next_pipeline.id)
     next_pipeline.update_attribute(:previous_pipeline_id, current_pipeline.id)
   end
@@ -105,7 +105,7 @@ LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |p
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'library_creation', :name => 'Library creation',
     :deprecated => true) do |request_type|
@@ -151,7 +151,7 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-B MX Library Prepa
   pipeline.active              = true
   pipeline.multiplexed         = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(
     :workflow => next_gen_sequencing,
@@ -210,9 +210,7 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-C MX Library Prepa
   pipeline.multiplexed = true
   pipeline.group_name  = "Library creation"
 
-  pipeline.location = Location.first(
-    :conditions => { :name => 'Library creation freezer' }
-  ) or raise StandardError, "Cannot find 'Library creation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
@@ -264,7 +262,7 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pulldown_library_creation', :name => 'Pulldown library creation') do |request_type|
     request_type.billable          = true
@@ -325,7 +323,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)',
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation SE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
@@ -354,7 +352,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => cl
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation SE') do |workflow|
     workflow.locale     = 'Internal'
@@ -382,7 +380,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :reque
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation SE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -433,7 +431,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation SE HiSeq') do |workflow|
     workflow.locale     = 'Internal'
@@ -461,7 +459,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', 
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation SE HiSeq (no controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -539,7 +537,7 @@ SequencingPipeline.create!(:name => 'Cluster formation PE', :request_types => cl
   pipeline.sorter     = 3
   pipeline.automated  = false
   pipeline.active     = true
-  pipeline.location   = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location   = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation PE') do |workflow|
     workflow.locale     = 'Internal'
@@ -567,7 +565,7 @@ SequencingPipeline.create!(:name => 'Cluster formation PE (no controls)', :reque
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location        = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation PE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -594,7 +592,7 @@ SequencingPipeline.create!(:name => 'Cluster formation PE (spiked in controls)',
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location        = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -623,7 +621,7 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (spiked in contr
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location        = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -653,7 +651,7 @@ SequencingPipeline.create!(:name => 'HiSeq 2500 PE (spiked in controls)', :reque
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location        = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq 2500 PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -682,7 +680,7 @@ SequencingPipeline.create!(:name => 'HiSeq 2500 SE (spiked in controls)', :reque
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location        = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq 2500 SE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -709,7 +707,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (spiked in contr
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location        = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cluster formation SE HiSeq (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -738,7 +736,7 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
+  pipeline.location        = Location.find_by(:name => 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   ['a','b','c'].each do |pl|
     pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_hiseq_paired_end_sequencing", :name => "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
@@ -800,7 +798,7 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
   pipeline.active              = true
   pipeline.group_by_parent     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
+  pipeline.location = Location.find_by(:name => 'Sample logistics freezer') or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => microarray_genotyping, :key => 'cherrypick', :name => 'Cherrypick') do |request_type|
     request_type.initial_state     = 'pending'
@@ -831,7 +829,7 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
   pipeline.active              = true
   pipeline.group_by_parent     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
+  pipeline.location = Location.find_by(:name => 'Sample logistics freezer') or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   cherrypicking_attributes = lambda do |request_type|
     request_type.initial_state     = 'pending'
@@ -868,7 +866,7 @@ DnaQcPipeline.create!(:name => 'DNA QC') do |pipeline|
   pipeline.active              = true
   pipeline.group_by_parent     = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
+  pipeline.location = Location.find_by(:name => 'Sample logistics freezer' ) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => microarray_genotyping, :key => 'dna_qc', :name => 'DNA QC', :no_target_asset => true) do |request_type|
     request_type.initial_state     = 'pending'
@@ -893,7 +891,7 @@ GenotypingPipeline.create!(:name => 'Genotyping') do |pipeline|
   pipeline.active = true
   pipeline.group_by_parent = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'Genotyping freezer' }) or raise StandardError, "Cannot find 'Genotyping freezer' location"
+  pipeline.location = Location.find_by(:name => 'Genotyping freezer') or raise StandardError, "Cannot find 'Genotyping freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => microarray_genotyping, :key => 'genotyping', :name => 'Genotyping') do |request_type|
     request_type.initial_state     = 'pending'
@@ -923,7 +921,7 @@ PulldownMultiplexLibraryPreparationPipeline.create!(:name => 'Pulldown Multiplex
   pipeline.max_size             = 96
   pipeline.max_number_of_groups = 1
 
-  pipeline.location = Location.first(:conditions => { :name => 'Pulldown freezer' }) or raise StandardError, "Cannot find 'Pulldown freezer' location"
+  pipeline.location = Location.find_by(:name => 'Pulldown freezer') or raise StandardError, "Cannot find 'Pulldown freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pulldown_multiplexing', :name => 'Pulldown Multiplex Library Preparation') do |request_type|
     request_type.billable          = true
@@ -956,7 +954,7 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Library Prep') do |pipeline|
   pipeline.asset_type           = 'PacBioLibraryTube'
   pipeline.group_by_parent      = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'PacBio library prep freezer' }) or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
+  pipeline.location = Location.find_by(:name => 'PacBio library prep freezer' ) or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_sample_prep', :name => 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
@@ -988,7 +986,7 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
 
   pipeline.group_by_parent = false
 
-  pipeline.location = Location.first(:conditions => { :name => 'PacBio sequencing freezer' }) or raise StandardError, "Cannot find 'PacBio sequencing freezer' location"
+  pipeline.location = Location.find_by(:name => 'PacBio sequencing freezer') or raise StandardError, "Cannot find 'PacBio sequencing freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_sequencing', :name => 'PacBio Sequencing') do |request_type|
     request_type.initial_state     = 'pending'
