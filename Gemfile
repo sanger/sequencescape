@@ -17,6 +17,7 @@ group :default do
   # gem "formtastic-bootstrap"
 
   gem "activerecord-jdbc-adapter", :platforms => :jruby
+  gem "activeresource", require: 'active_resource'
   gem "jdbc-mysql", :platforms => :jruby
   gem "mysql", :platforms => :mri
   gem "spreadsheet"

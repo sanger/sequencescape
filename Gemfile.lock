@@ -61,6 +61,10 @@ GEM
       activerecord (>= 2.2)
     activerecord-oracle_enhanced-adapter (1.2.3)
       activerecord (>= 2.0.0)
+    activeresource (4.0.0)
+      activemodel (~> 4.0)
+      activesupport (~> 4.0)
+      rails-observers (~> 0.1.1)
     activesupport (4.2.5)
       i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
@@ -354,6 +358,7 @@ DEPENDENCIES
   aasm
   activerecord-jdbc-adapter
   activerecord-oracle_enhanced-adapter (= 1.2.3)
+  activeresource
   acts-as-dag
   bootstrap-sass
   bullet
