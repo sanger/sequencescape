@@ -270,3 +270,7 @@ end
 Given /^I drag "(.*?)" to "(.*?)"$/ do |source, target|
   find(source).drag_to(find(target))
 end
+
+When /^I refresh the page$/ do
+  visit page.driver.browser.current_url
+end
