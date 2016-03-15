@@ -52,7 +52,7 @@ Feature: Sample manifest
     Given a manifest has been created for "Test study"
     When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors | State   | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Pending | john       |
@@ -117,7 +117,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "<filename>"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State  | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest | Errors | Failed | john       |
@@ -134,7 +134,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed | john       |
@@ -273,7 +273,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_no_vol_conc.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
@@ -289,7 +289,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_dna_sources_invalid.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State  |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
@@ -302,7 +302,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_dna_sources_valid.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors   | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |          | Completed |
@@ -319,7 +319,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_is_control_is_resubmit.csv"
     And I press "Upload manifest"
     Given the manifests are successfully processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
@@ -341,7 +341,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
@@ -360,11 +360,11 @@ Feature: Sample manifest
       | sample_11        | None          | true                       |                 |
       | sample_12        | gggg          | false                      | 9617            |
 
-
+    When I follow "Manifest for Test study"
     When I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
@@ -390,7 +390,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
@@ -409,12 +409,12 @@ Feature: Sample manifest
      | sample_11        | None          | true                       |                 |
      | sample_12        | gggg          | false                      | 9617            |
 
-
+    When I follow "Manifest for Test study"    
     When I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
@@ -439,15 +439,16 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/<initial>"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
+    When I follow "Manifest for Test study"    
     When I fill in "File to upload" with the file "test/data/<update>"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Errors   | State   |
       | 1 plate  | Test study | Test supplier name | Blank manifest | <errors> | <state> |
@@ -480,7 +481,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/sample_manifest_reference_genomes.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
@@ -506,7 +507,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/sample_manifest_reference_genomes.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then I should see the manifest table:
        | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State  |
        | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
