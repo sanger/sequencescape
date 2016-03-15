@@ -76,4 +76,6 @@ class ActionController::TestCase
 end
 
 require 'mocha'
-require 'mocha/test_unit'
+require 'minitest/unit'
+require 'mocha/mini_test'
+
