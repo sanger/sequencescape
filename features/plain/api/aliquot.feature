@@ -14,6 +14,7 @@ Feature: Interacting with aliquot through the API
     Given study "test study" has a registered sample "sample"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
+    And all studies have sequential UUIDs based on "cccccccc-1111-2222-3333"
     Given the UUID for the last aliquot is "22222222-2222-3333-4444-ffffffffffff"
 
     When I GET the API path "/aliquots/22222222-2222-3333-4444-ffffffffffff"
@@ -28,7 +29,9 @@ Feature: Interacting with aliquot through the API
          "receptacle_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
          "receptacle_type": "sample_tube",
          "sample_url": "http://localhost:3000/0_5/samples/bbbbbbbb-1111-2222-3333-000000000002",
-         "sample_uuid": "bbbbbbbb-1111-2222-3333-000000000002"
+         "sample_uuid": "bbbbbbbb-1111-2222-3333-000000000002",
+         "study_url": "http://localhost:3000/0_5/studies/cccccccc-1111-2222-3333-000000000001",
+         "study_uuid": "cccccccc-1111-2222-3333-000000000002"
       }, "lims": "SQSCP"
     }
     """

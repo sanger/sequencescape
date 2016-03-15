@@ -154,7 +154,7 @@ class SamplesController < ApplicationController
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample))
   rescue AccessionService::NumberNotRequired => exception
-    flash[:warning] = 'An accession number is not required for this study'
+    flash[:warning] = exception.message || 'An accession number is not required for this study'
     redirect_to(sample_path(@sample))
   rescue AccessionService::NumberNotGenerated => exception
     flash[:warning] = 'No accession number was generated'

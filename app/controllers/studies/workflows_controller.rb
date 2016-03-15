@@ -67,7 +67,9 @@ class Studies::WorkflowsController < ApplicationController
         sample_ids      = @page_elements.map(&:id)
         render :partial => "sample_progress"
       when "Assets progress"
-        @page_elements= @study.assets_through_aliquots.paginate(page_params)
+        @asset_type = Aliquot::Receptacle.descendants.detect {|cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
+        @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
+        @page_elements= @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
 
         @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)

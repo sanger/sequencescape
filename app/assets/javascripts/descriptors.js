@@ -74,7 +74,6 @@ function removeRow(type, identity) {
 }
 
 function increment_counter(ident, callback) {
-  console.log(ident);
   var counterElement    = document.getElementById(ident);
   var currentCount      = parseInt(counterElement.value);
   currentCount         += 1;

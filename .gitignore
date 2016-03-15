@@ -20,4 +20,4 @@ capybara*.html
 .Rakelist
 database_suffix
 tags
-sequencescape.sublime-workspace
+*.sublime-workspace

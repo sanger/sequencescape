@@ -44,5 +44,24 @@ class TransferRequestTest < ActiveSupport::TestCase
       assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(:asset => asset, :target_asset => asset) }
     end
 
+    context "with a tag clash" do
+      setup do
+        tag = create :tag
+        tag2 = create :tag
+        @aliquot_1 = create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well)
+        @aliquot_2 = create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well)
+
+        @target_asset = create :well
+      end
+
+      should 'raise an exception' do
+        @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_1.receptacle.reload, :target_asset =>  @target_asset)
+        assert_raise Aliquot::TagClash do
+          @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_2.receptacle.reload, :target_asset =>  @target_asset)
+        end
+      end
+    end
+
   end
+
 end
