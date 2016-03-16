@@ -29,7 +29,7 @@ FactoryGirl.define do
 
   factory :well_with_sample_and_without_plate, :parent => :empty_well do |well|
     after(:build) do |well|
-      well.aliquots.build(:sample => create(:sample))
+      well.aliquots << create(:aliquot, :receptacle => well)
     end
   end
 
