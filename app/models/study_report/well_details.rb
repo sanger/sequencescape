@@ -46,6 +46,7 @@ module StudyReport::WellDetails
       :gel => self.well_attribute.gel_pass,
       :plate_barcode => self.plate.barcode,
       :measured_volume => self.well_attribute.measured_volume,
+      :current_volume => self.well_attribute.current_volume,
       :gel_qc_date => self.gel_qc_date,
       :pico_date => self.pico_date,
       :qc_started_date => self.plate.qc_started_date,
