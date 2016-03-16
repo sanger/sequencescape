@@ -6,6 +6,11 @@ class Assets::CommentsController < ApplicationController
 
   def index
     @comments = @asset.comments.order("created_at ASC")
+    if request.xhr?
+      render :partial => "simple_list", :locals => { :descriptions => @comments.pluck(:description) }
+    else
+      # Perform default
+    end
   end
 
   def create
