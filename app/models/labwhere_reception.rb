@@ -33,6 +33,8 @@ class LabwhereReception
     return false unless valid?
 
     begin
+      
+
       scan = LabWhereClient::Scan.create(
         :location_barcode=> location_barcode,
         :user_code => user_code,
@@ -57,7 +59,7 @@ class LabwhereReception
   def valid?
     @valid = true
     add_error('Could not find specified location in Sequencescape') if location.nil?
-    add_error("Could not find labware #{missing_assets.join(', ')} in Sequencescape") unless missing_assets.empty?
+    add_error('No barcodes scanned in!') if asset_barcodes.empty?
     add_error("No user supplied") if user_code.blank?
     @valid
   end
@@ -69,11 +71,6 @@ class LabwhereReception
 
   def assets
     @assets ||= Asset.with_machine_barcode(asset_barcodes)
-  end
-
-  def missing_assets
-    add_error('No barcodes scanned in!') if asset_barcodes.empty?
-    asset_barcodes - assets.map(&:machine_barcode)
   end
 
 end
