@@ -86,32 +86,6 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
         should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
 
-      context 'with missing assets' do
-        setup do
-          post :create, { :labwhere_reception =>{
-            :barcodes => {"1" => "1220000001831", "2" => "1220000044838", "3" => "3980000001795" },
-            :location_id => @location.id,
-            :user_code => 'ID123',
-            :location_barcode => 'labwhere_location'
-          }}
-        end
-
-        should 'Not move anything' do
-          [@plate,@plate_2,@sample_tube].each do |asset|
-            asset.reload
-            assert @location != asset.location, "Did move #{asset} (But shouldn't have done)"
-          end
-        end
-
-        should 'NOt create an event' do
-          [@plate,@plate_2,@sample_tube].each do |asset|
-            assert asset.events.empty?
-          end
-        end
-
-       should set_the_flash.to "Could not find labware 1220000044838 in Sequencescape"
-       should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
-      end
     end
 
   end
