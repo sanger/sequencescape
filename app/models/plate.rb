@@ -51,9 +51,7 @@ class Plate < Asset
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, :through => :wells, :source => :transfer_requests_as_target
-  # def transfer_requests
-  #   wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
-  # end
+
 
   # About 10x faster than going through the wells
   def submission_ids
@@ -323,10 +321,38 @@ WHERE c.container_id=?
     }
   }
 
+  scope :output_by_batch, ->(batch) {
+
+      joins({
+        :container_associations => {
+          :content => {
+            :requests_as_target => :batch
+          }
+        }
+      }).
+      where(['batches.id = ?',batch.id])
+ 
+  }
+
   scope :with_wells, ->(wells) {
       select('DISTINCT assets.*').
       joins(:container_associations).
       where(:container_associations=>{:content_id=> wells.map(&:id) })
+  }
+
+  scope :with_wells_and_requests, ->() {
+    includes({
+      :wells => [
+        :uuid_object, :map,
+        {
+          :requests_as_target => [
+            {:initial_study=>:uuid_object},
+            {:initial_project=>:uuid_object},
+            {:asset=>{:aliquots=>:sample}}
+          ]
+        }
+      ]
+    })
   }
 
   def wells_sorted_by_map_id
