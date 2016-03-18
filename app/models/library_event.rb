@@ -1,7 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2016 Genome Research Ltd.
-class LibraryEvent < BroadcastEvent::LibraryEventBase
+class LibraryEvent < BroadcastEvent
 
   def event_type
     properties[:event_type]
@@ -11,5 +11,26 @@ class LibraryEvent < BroadcastEvent::LibraryEventBase
     self.properties ||= {}
     properties[:event_type] = event_type
   end
+
+
+  # Properties takes :order_id
+
+  seed_class Plate
+
+  has_subjects(:study,:studies)
+  has_subjects(:project,:projects)
+  has_subjects(:submission,:submissions)
+
+
+  has_subject(:library_source_labware,:source_plate)
+
+  has_subjects(:stock_plate,:original_stock_plates)
+  has_subjects(:order,:orders_as_target)
+  has_subjects(:sample,:contained_samples)
+
+  # Not perfect, but our order type is almost always the same
+  has_metadata(:order_type) {|plate,e| plate.orders_as_target.first.order_role.try(:role)||'UNKNOWN' }
+
+  has_metadata(:team) {|plate,e| plate.team }
 
 end

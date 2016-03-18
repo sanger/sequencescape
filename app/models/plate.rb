@@ -16,6 +16,19 @@ class Plate < Asset
 
   extend QcFile::Associations
   has_qc_files
+
+  # Contained associations all look up through wells (Wells in turn delegate to aliquots)
+  has_many :contained_samples, :through => :wells, :source => :samples
+  has_many :conatined_aliquots, :through => :wells, :source => :aliquots
+
+  # We also look up studies and projects through wells
+  has_many :studies, :through=> :wells, :uniq => true
+  has_many :projects, :through=> :wells, :uniq => true
+
+
+  has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
+  has_many :orders_as_target, :through => :well_requests_as_target, :source => :order, :uniq => true
+
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
@@ -190,16 +203,6 @@ class Plate < Asset
 
   def study
     wells.first.try(:study)
-  end
-
-  def studies
-    Study.find_by_sql([ %Q{
-SELECT DISTINCT s.*
-FROM container_associations c
-INNER JOIN aliquots a ON a.receptacle_id=c.content_id
-INNER JOIN studies s ON a.study_id=s.id
-WHERE c.container_id=?
-}, self.id ])
   end
 
   contains :wells do #, :order => '`assets`.map_id ASC' do
@@ -781,20 +784,12 @@ WHERE c.container_id=?
     true
   end
 
-  def orders_as_target
-    Order.with_plate_as_target(self)
-  end
-
   def samples_in_order(order_id)
     Sample.for_plate_and_order(self.id,order_id)
   end
 
   def samples_in_order_by_target(order_id)
     Sample.for_plate_and_order_as_target(self.id,order_id)
-  end
-
-  def contained_samples
-    Sample.on_plate(self)
   end
 
   def team
