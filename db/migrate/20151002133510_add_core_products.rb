@@ -10,6 +10,7 @@ require './lib/product_helpers'
     'ISC',
     'SC',
     'HSqX',
+    'PFHSqX',
     'ReISC',
     'PacBio',
     'Fluidigm',
