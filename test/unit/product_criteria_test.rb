@@ -65,7 +65,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'validate wells with the provided criteria' do
-      well_attribute = create :well_attribute, :concentration => 800, :measured_volume => 100
+      well_attribute = create :well_attribute, :concentration => 800, :current_volume => 100
       well = create :well, :well_attribute => well_attribute
       assesment = @criteria_a.assess(well)
       assert assesment.is_a?(ProductCriteria::Basic)
@@ -75,7 +75,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     should 'be able to take metrics' do
       well = {
         :concentration => 800,
-        :measured_volume => 100,
+        :current_volume => 100,
         :total_micrograms => 90
       }
       assesment = @criteria_a.assess(well)
