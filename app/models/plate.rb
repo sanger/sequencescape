@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -28,6 +28,11 @@ class Plate < Asset
 
   has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
   has_many :orders_as_target, :through => :well_requests_as_target, :source => :order, :uniq => true
+
+  # We use stock well associations here as stock_wells is already used to generate some kind of hash.
+  has_many :stock_requests, :through => :stock_well_associations, :source => :requests, :uniq => true
+  has_many :stock_well_associations, :through => :wells, :source => :stock_wells, :uniq => true
+  has_many :stock_orders, :through => :stock_requests, :source => :order, :uniq => true
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
@@ -630,13 +635,13 @@ class Plate < Asset
   end
 
   def lookup_stock_plate
-    spp = PlatePurpose.where(:can_be_considered_a_stock_plate=>true).all.map(&:id)
+    spp = PlatePurpose.considered_stock_plate.pluck(:id)
     self.ancestors.order('created_at DESC').where(:plate_purpose_id=>spp).first
   end
   private :lookup_stock_plate
 
   def original_stock_plates
-    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+    ancestors.where(:plate_purpose_id => PlatePurpose.stock_plate_purpose)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)

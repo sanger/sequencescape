@@ -25,11 +25,11 @@ class LibraryEvent < BroadcastEvent
   has_subject(:library_source_labware,:source_plate)
 
   has_subjects(:stock_plate,:original_stock_plates)
-  has_subjects(:order,:orders_as_target)
+  has_subjects(:order,:stock_orders)
   has_subjects(:sample,:contained_samples)
 
   # Not perfect, but our order type is almost always the same
-  has_metadata(:order_type) {|plate,e| plate.orders_as_target.first.order_role.try(:role)||'UNKNOWN' }
+  has_metadata(:order_type,:role)
 
   has_metadata(:team) {|plate,e| plate.team }
 

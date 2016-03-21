@@ -392,6 +392,3 @@ DEPENDENCIES
   uuidtools
   will_paginate
   will_paginate-bootstrap
-
-BUNDLED WITH
-   1.11.2

@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
   def created_with_request_options(tube)
     tube.requests_as_target.where_is_a?(Request::LibraryCreation).first.try(:request_options_for_creation) || {}
@@ -14,7 +14,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       request.transition_to(to_state) unless to_state.nil?
       orders << request.order.id unless request.is_a?(TransferRequest)
     end
-    generate_events_for(tube,orders,user) if state == 'qc_complete'
+    generate_events_for(tube,orders,user) if mappings[state] == 'passed'
   end
 
   def target_requests(tube)
@@ -32,14 +32,12 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def library_source_plates(tube)
-    Plate.find(:all,
-      :select=>'DISTINCT assets.*',
-      :joins=>{:wells=>:requests},
-      :conditions=>[
-        'requests.target_asset_id = ? AND requests.sti_type IN (?)',
-        tube.id,
-        [Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
-      ]
+    Plate.select('DISTINCT assets.*').
+      joins(:wells=>:requests).
+      where(:requests=>{
+        :target_asset_id => tube.id,
+        :sti_type=>[Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
+      }
     ).map(&:source_plate)
   end
 
