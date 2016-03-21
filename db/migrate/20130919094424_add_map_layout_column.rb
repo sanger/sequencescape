@@ -3,7 +3,7 @@
 #Copyright (C) 2013 Genome Research Ltd.
 class AddMapLayoutColumn < ActiveRecord::Migration
   def self.up
-    default = Map::AssetShape.find_by_name('Standard').id
+    default = AssetShape.find_by_name('Standard').id
     ActiveRecord::Base.transaction do
       add_column :maps, :asset_shape_id, :integer, :default => default, :null=>false
     end

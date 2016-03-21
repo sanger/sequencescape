@@ -1,11 +1,12 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.%>
-<h1>Listing All Bait Library Suppliers</h1>
-<table id="bait_library_supplier_list" width="100%" class="sortable" cellpadding="3" cellspacing="0">
+#Copyright (C) 2012,2015 Genome Research Ltd.%>
+
+<%= page_title 'Bait Library Suppliers', 'Index' %>
+<table id="bait_library_supplier_list" class="sortable table table-striped">
   <thead>
     <tr>
-      <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th><a>Name</a></th>
       <th>Edit</th>
       <th>Delete</th>
     </tr>
@@ -14,8 +15,8 @@
   <% for bait_library_supplier in @bait_library_suppliers %>
     <tr>
       <td><%= bait_library_supplier.name %></td>
-      <td><%= link_to 'Edit', edit_bait_library_supplier_path(bait_library_supplier), :title => "Edit #{bait_library_supplier.name}" %></td>
-      <td><%= link_to 'Delete', bait_library_supplier, :title => "Delete #{bait_library_supplier.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%= link_to 'Edit', edit_admin_bait_library_supplier_path(bait_library_supplier), :title => "Edit #{bait_library_supplier.name}" %></td>
+      <td><%= link_to 'Delete', admin_bait_library_supplier_path(bait_library_supplier), :title => "Delete #{bait_library_supplier.name}", :confirm => 'Are you sure?', :method => :delete %></td>
     </tr>
   <% end %>
   </tbody>
@@ -23,4 +24,4 @@
 
 <br />
 
-<%= link_to 'New Bait Library Supplier', new_bait_library_supplier_path %>
+<%= link_to 'New Bait Library Supplier', new_admin_bait_library_supplier_path %>

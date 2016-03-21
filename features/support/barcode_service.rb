@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 require File.expand_path(File.join(File.dirname(__FILE__), 'fake_sinatra_service.rb'))
 
 class FakeBarcodeService < FakeSinatraService
@@ -61,17 +62,17 @@ class FakeBarcodeService < FakeSinatraService
   end
 
   # Barcode printing related
-  def printed_labels()
+  def printed_labels
     @printed_labels ||= []
   end
 
-  def printed_labels!()
+  def printed_labels!
     labels = printed_labels
     clear_printed_labels!
     labels
   end
 
-  def printed_barcodes!()
+  def printed_barcodes!
     barcodes = []
     each_message_with_index! do |message, index|
       barcodes += Nokogiri(message).xpath("/env:Envelope/env:Body//labels/item/barcode/text()").map(&:to_s)
@@ -79,14 +80,14 @@ class FakeBarcodeService < FakeSinatraService
     barcodes
   end
 
-  def clear_printed_labels!()
+  def clear_printed_labels!
     @printed_labels=[]
   end
 
-  def first_printed_labels!()
+  def first_printed_labels!
     @printed_labels.shift
   end
-  def last_printed_label!()
+  def last_printed_label!
     @printed_labels.pop
   end
 
@@ -134,7 +135,7 @@ class FakeBarcodeService < FakeSinatraService
 
     # Hand crafted SOAP envelope to say success!
     post('/barcode_service') do
-      data = request.body.map
+      data = request.body.to_a
       FakeBarcodeService.instance.printed_labels << data
       status(200)
       headers('Content-Type' => 'text/xml')

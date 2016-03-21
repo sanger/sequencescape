@@ -10,8 +10,8 @@ class DuplicateLanesWithMultipleSequencingRequests < ActiveRecord::Migration
         say_with_time("Duplicating for lane #{lane.id}, original request #{original_request.id}, duplicates #{requests.map(&:id).inspect}") do
           requests.each do |request|
             # Duplicate the lane
-            duplicated_lane = request.target_asset.clone.tap do |duplicated_lane|
-              duplicated_lane.aliquots = request.target_asset.aliquots.map(&:clone)
+            duplicated_lane = request.target_asset.dup.tap do |duplicated_lane|
+              duplicated_lane.aliquots = request.target_asset.aliquots.map(&:dup)
               duplicated_lane.save!
 
               duplicated_lane.comments.create!(

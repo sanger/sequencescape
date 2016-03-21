@@ -71,6 +71,7 @@ module AuthenticatedSystem
 
       respond_to do |accepts|
         accepts.html   { logged_in? && authorized? ? true : access_denied }
+        accepts.csv   { logged_in? && authorized? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -170,7 +171,7 @@ module AuthenticatedSystem
     #
     # We can return to this location by calling #redirect_back_or_default.
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.original_url
     end
 
     # Redirect to the URI stored by the most recent store_location call or

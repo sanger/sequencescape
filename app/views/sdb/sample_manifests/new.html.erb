@@ -1,30 +1,30 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
+
 <%= render :partial => "side_links" %>
 
-<h2>Create sample manifest</h2>
+<%= page_title 'Sample Manifest', 'Create' %>
 
-<% semantic_form_for(@sample_manifest) do |form| %>
-  <% form.inputs :name => "Manifest Type" do %>
+<%= semantic_form_for(@sample_manifest) do |form| %>
+  <%= form.inputs :name => "Manifest Type" do %>
     <%= form.input :template,  :as => :select, :collection => @templates%>
   <% end %>
-  <% form.inputs :name => "Manifest For" do %>
+  <%= form.inputs :name => "Manifest For" do %>
     <%= form.input :study,  :as => :select, :collection => @studies %>
     <%= form.input :supplier,  :as => :select, :collection => @suppliers %>
   <% end %>
 
-  <% form.inputs :name => "Barcodes" do %>
+  <%= form.inputs :name => "Barcodes" do %>
     <%= form.input :count, :input_html => { :size => 3, :value => "1" }, :label => count_label_for(params[:type]) %>
     <%= form.input :barcode_printer,  :as => :select, :collection => @barcode_printers %>
     <%= form.input :only_first_label, :as => :boolean, :label => 'Print only the first label' %>
   <% end %>
 
+  <%= form.input :asset_type, :value => params[:type], :as => :hidden %>
 
-
-  <% form.buttons do %>
-    <%= form.input :asset_type, :value => params[:type], :as => :hidden %>
-    <%= form.commit_button 'Create manifest and print labels' %>
+  <%= form.actions do %>
+    <%= form.action(:submit, :as=>:button, :label => 'Create manifest and print labels') %>
   <% end %>
 
 

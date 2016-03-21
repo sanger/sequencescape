@@ -12,7 +12,7 @@ class RemovePlatePurposeAssignmentFromCherrypickWorkflow < ActiveRecord::Migrati
       tasks.each_with_index.map do |task, index|
         task.tap do
           task.sorted = index+1
-          task.save(false)
+          task.save(:validate => false)
         end
       end
     end

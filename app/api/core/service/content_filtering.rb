@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 # Everything coming in and going out should be JSON.
 module Core::Service::ContentFiltering
   class InvalidRequestedContentType < ::Core::Service::Error
@@ -53,7 +54,7 @@ module Core::Service::ContentFiltering
     end
 
     def request_accepted
-      request.acceptable_media_types.prioritize(*acceptable_types).to_s
+      request.acceptable_media_types.prioritize(*acceptable_types).map(&:to_s)
     end
 
   end

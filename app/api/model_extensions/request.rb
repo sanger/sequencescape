@@ -1,29 +1,30 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 module ModelExtensions::Request
   def self.included(base)
     base.class_eval do
-      named_scope :include_source_asset, :include => {
+      scope :include_source_asset, -> { includes(
         :asset => [
           :uuid_object,
           :barcode_prefix,
           :scanned_into_lab_event,
           { :aliquots => [ :sample, :tag ] }
         ]
-      }
-      named_scope :include_target_asset, :include => {
+      )}
+      scope :include_target_asset, -> { includes(
         :target_asset => [
           :uuid_object,
           :barcode_prefix,
           { :aliquots => [ :sample, :tag ] }
         ]
-      }
+      )}
 
-      named_scope :include_study, :include => { :study => :uuid_object }
-      named_scope :include_project, :include => { :project => :uuid_object }
-      named_scope :include_request_type, :include => :request_type
-      named_scope :include_submission, :include => { :submission => :uuid_object }
+      scope :include_study, -> { includes( :study => :uuid_object ) }
+      scope :include_project, -> { includes( :project => :uuid_object ) }
+      scope :include_request_type, -> { includes( :request_type ) }
+      scope :include_submission, -> { includes( :submission => :uuid_object ) }
 
       # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
       # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.

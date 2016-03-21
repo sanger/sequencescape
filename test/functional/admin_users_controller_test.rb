@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 require 'samples_controller'
 
@@ -8,7 +9,7 @@ require 'samples_controller'
 class Admin::UsersController; def rescue_action(e) raise e end; end
 
 class Admin::UsersControllerTest < ActionController::TestCase
-  context "Studies controller" do
+  context "Admin Users controller" do
     setup do
       @controller = Admin::UsersController.new
       @request    = ActionController::TestRequest.new
@@ -23,22 +24,22 @@ class Admin::UsersControllerTest < ActionController::TestCase
         :actions => ['show','edit','index'],
         :formats => ['html'],
         :defaults => {:login =>"abc1234"},
-        :user => lambda { user = Factory(:user) ; user.is_administrator ; user },
+        :user => -> { user = FactoryGirl.create(:user) ; user.is_administrator ; user },
 
         # Setup needed because 'edit' assumes presence of at least one Study and Project
-        :setup => lambda { Factory(:study) ; Factory(:project) }
+        :setup => -> { FactoryGirl.create(:study) ; FactoryGirl.create(:project) }
       }
     )
 
     context "#filter" do
       setup do
-        @user = Factory :user
-        @admin = Factory :admin
+        @user = FactoryGirl.create :user
+        @admin = FactoryGirl.create :admin
         @controller.stubs(:current_user).returns(@admin)
         @controller.stubs(:logged_in?).returns(@admin)
 
-        @user_to_find = Factory :user, :first_name => "Some", :last_name => "Body", :login => "sb1"
-        @another_user = Factory :user, :first_name => "No", :last_name =>"One", :login => "no1"
+        @user_to_find = FactoryGirl.create :user, :first_name => "Some", :last_name => "Body", :login => "sb1"
+        @another_user = FactoryGirl.create :user, :first_name => "No", :last_name =>"One", :login => "no1"
 
       end
 

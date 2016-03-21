@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 class Admin::CustomTextsController < ApplicationController
   before_filter :admin_login_required
 
@@ -30,7 +31,7 @@ class Admin::CustomTextsController < ApplicationController
     respond_to do |format|
       if @custom_text.save
         flash[:notice] = "Custom text successfully created"
-        format.html { redirect_to custom_text_url(@custom_text) }
+        format.html { redirect_to admin_custom_text_path(@custom_text) }
       else
         flash[:error] = "Problems creating your new custom text"
         format.html { render :action => :new }
@@ -49,7 +50,7 @@ class Admin::CustomTextsController < ApplicationController
     @custom_text = CustomText.find(params[:id])
     if @custom_text.update_attributes(params[:custom_text])
       flash[:notice] = "Details have been updated"
-      redirect_to custom_text_url(@custom_text)
+      redirect_to admin_custom_text_path(@custom_text)
     else
       flash[:error] = "Failed to update attributes"
       render :action => "edit", :id => @custom_text.id
@@ -63,7 +64,7 @@ class Admin::CustomTextsController < ApplicationController
     else
       flash[:notice] = "Failed to destroy custom text"
     end
-    redirect_to custom_texts_url
+    redirect_to admin_custom_texts_url
   end
 
 end

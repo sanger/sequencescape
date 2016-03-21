@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+
 
 module Asset::Ownership
 
@@ -36,32 +37,23 @@ module Asset::Ownership
   module Owned
     # Currently only plates can be owned.
 
-    class Owner < ActiveRecord::Base
-      set_table_name('plate_owners')
-      belongs_to :user
-      belongs_to :plate
-      belongs_to :eventable, :polymorphic => true
-
-      validates_presence_of :eventable
-    end
-
     def self.included(base)
       base.class_eval do
-        has_one :plate_owner, :class_name => 'Plate::Owner'
+
+        has_one :plate_owner
         has_one :owner, :source => :user, :through => :plate_owner
-        named_scope :for_user, lambda { |user|
-          {
-            :joins => "LEFT OUTER JOIN `plate_owners` AS `for_usr_plate_owner` ON `for_usr_plate_owner`.plate_id = assets.id",
-            :conditions => ["`for_usr_plate_owner`.user_id = ?", user.id]
+
+         scope :for_user, ->(user) {
+            joins(:plate_owner).
+            where(:plate_owners => {:user_id => user })
           }
-        }
 
       end
     end
 
     def change_owner_to(owner,source_event)
       if plate_owner.nil?
-        update_attributes!(:plate_owner => Owner.create!(:user => owner, :eventable => source_event, :plate => self))
+        self.update_attributes!(:plate_owner=>PlateOwner.create!(:user => owner, :eventable => source_event, :plate => self))
       else
         plate_owner.update_attributes!(:user => owner, :eventable => source_event)
       end

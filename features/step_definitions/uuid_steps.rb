@@ -1,11 +1,12 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 def set_uuid_for(object, uuid_value)
   uuid   = object.uuid_object
   uuid ||= object.build_uuid_object
   uuid.external_id = uuid_value
-  uuid.save(false)
+  uuid.save(:validate => false)
 end
 
 ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
@@ -66,19 +67,19 @@ Given /^the UUID for the last asset rack purpose is "(.*?)"$/ do |uuid_value|
 end
 
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUID "([^\"]+)"$/ do |model,name,uuid_value|
-  set_uuid_for(Factory(model.gsub(/\s+/, '_').to_sym, :name => name), uuid_value)
+  set_uuid_for(FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, :name => name), uuid_value)
 end
 
 Given /^a tube purpose called "([^\"]+)" with UUID "([^\"]+)"$/ do |name,uuid_value|
-  set_uuid_for(Factory(:tube_purpose, :name => name), uuid_value)
+  set_uuid_for(FactoryGirl.create(:tube_purpose, :name => name), uuid_value)
 end
 
 Given /^an asset rack purpose called "(.*?)" with UUID "(.*?)"$/ do |name,uuid_value|
-set_uuid_for( Factory(:asset_rack_purpose, :name => name), uuid_value )
+set_uuid_for( FactoryGirl.create(:asset_rack_purpose, :name => name), uuid_value )
 end
 
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with ID (\d+)$/ do |model, name, id|
-  Factory(model.gsub(/\s+/, '_').to_sym, :name => name, :id => id)
+  FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, :name => name, :id => id)
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^\"]+)" and IDs starting at (\d+)$/ do |count, model, name, id|
@@ -153,7 +154,7 @@ SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.
 PLURAL_MODELS_BASED_ON_ID_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.map(&:pluralize).join('|')
 
 Given /^a (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with UUID "([^"]*)" exists$/ do |model,uuid_value|
-  set_uuid_for(Factory(model.gsub(/\s+/, '_').to_sym), uuid_value)
+  set_uuid_for(FactoryGirl.create(model.gsub(/\s+/, '_').to_sym), uuid_value)
 end
 
 Given /^the UUID for the last (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) is "([^\"]+)"$/ do |model, uuid_value|
@@ -177,12 +178,20 @@ end
 Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created will be "([^\"]+)"$/ do |model,uuid_value|
   model_class = model.gsub(/\s+/, '_').classify.constantize
 
-  next_id = ActiveRecord::Base.connection.execute("SHOW TABLE STATUS WHERE `name` = '#{model_class.table_name}'").first['Auto_increment']
+  query = ActiveRecord::Base.connection.execute("SHOW TABLE STATUS WHERE `name` = '#{model_class.table_name}'")
+
+  # Behaviour changes between MRI and Jruby MySQl drivers.
+  # TODO: See if we can do this through the ORM
+  if query.respond_to?(:fetch_hash)
+    next_id = query.fetch_hash['Auto_increment']
+  else
+    next_id = query.first['Auto_increment']
+  end
 
   # Unforunately we need to find the root of the tree
   root_class = model_class
   root_class = root_class.superclass until root_class.superclass == ActiveRecord::Base
-  Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(false)
+  Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(:validate => false)
 end
 
 Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|
@@ -209,22 +218,22 @@ end
 
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model,uuid_value|
-  set_uuid_for(model.gsub(/\s+/, '_').methodize.camelize.constantize.create!(:message => model), uuid_value)
+  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/,'_').camelize.constantize.create!(:message => model), uuid_value)
 end
 
 Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model,uuid_value|
-  set_uuid_for(Factory(model.to_sym), uuid_value)
+  set_uuid_for(FactoryGirl.create(model.to_sym), uuid_value)
 end
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/ do |model, id|
-  Factory(model.gsub(/\s+/, '_').to_sym, :id => id)
+  FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, :id => id)
 end
 
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the following attributes:$/ do |model, id, table|
   attributes = table.hashes.inject({}) { |h, att|  h.update(att["name"] => att["value"]) }
   attributes[:id] ||= id
-  Factory(model.gsub(/\s+/, '_').to_sym, attributes)
+  FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, attributes)
 end
 
 Given /^a asset_link with uuid "([^"]*)" exists and connects "([^"]*)" and "([^"]*)"$/ do |uuid_value, uuid_plate, uuid_well|
@@ -247,7 +256,7 @@ end
 
 Given /^all of the requests have appropriate assets with samples$/ do
   Request.find_each do |request|
-    request.update_attributes!(:asset => Factory(request.request_type.asset_type.underscore.to_sym))
+    request.update_attributes!(:asset => FactoryGirl.create(request.request_type.asset_type.underscore.to_sym))
   end
 end
 

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+
 module IlluminaHtp::Requests
 
   class StdLibraryRequest < Request::LibraryCreation
@@ -32,7 +33,7 @@ module IlluminaHtp::Requests
     validate :valid_purpose?
     def valid_purpose?
       return true if request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
-      errors.add("#{asset.plate.purpose.name} is not a suitable plate purpose.")
+      errors.add(:asset,"#{asset.plate.purpose.name} is not a suitable plate purpose.")
       false
     end
 
@@ -93,7 +94,7 @@ module IlluminaHtp::Requests
       aasm_initial_state :pending
 
       aasm_event :start                 do transitions :to => :started, :from => [:pending] end
-      aasm_event :pass                  do transitions :to => :passed, :from => [:fx_transfer, :failed] end
+      aasm_event :pass                  do transitions :to => :passed, :from => [:pending, :fx_transfer, :failed] end
       aasm_event :fail                  do transitions :to => :failed, :from => [:pending, :started, :passed] end
       aasm_event :cancel                do transitions :to => :cancelled, :from => [:started, :passed] end
       aasm_event :cancel_before_started do transitions :to => :cancelled, :from => [:pending] end
@@ -104,6 +105,7 @@ module IlluminaHtp::Requests
   end
 
   class PrePcrToPcr < TransferRequest
+    # This is a legacy state machine.
     redefine_state_machine do
       aasm_column :state
       aasm_initial_state :pending
@@ -152,11 +154,11 @@ module IlluminaHtp::Requests
       aasm_state :failed
       aasm_state :cancelled
 
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
+      aasm_event :start  do transitions :to => :started,     :from => [:pending]                        end
+      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed]     end
+      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                         end
+      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed]     end
+      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc_complete] end
     end
   end
 

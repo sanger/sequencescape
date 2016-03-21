@@ -1,11 +1,12 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 class SpikedBuffer < LibraryTube
   # The index of a spiked buffer is the first parent library tube.  Note that this does not cover cases where
   # the sti_type is a derivative of LibraryTube, which is actually fine because SpikedBuffer is a LibraryTube
   # and we definitely don't want that in the list.
-  has_one_as_child(:index, :conditions => { :sti_type => 'LibraryTube' })
+  has_one_as_child(:index, :conditions => { :sti_type => 'LibraryTube' },:order => 'id DESC')
 
   def library_prep?
     false
@@ -18,7 +19,7 @@ class SpikedBuffer < LibraryTube
   end
 
   def self.phiX_sample
-    @phiX_sample ||= Sample.find_by_name('phiX_for_spiked_buffers') or raise StandardError, "Cannot find phiX_for_spiked_buffers sample"
+    Sample.find_by_name('phiX_for_spiked_buffers') or raise StandardError, "Cannot find phiX_for_spiked_buffers sample"
   end
 
   def percentage_of_index
@@ -26,12 +27,12 @@ class SpikedBuffer < LibraryTube
     100*index.volume/volume
   end
 
-  def transfer(volume)
-    volume = volume.to_f
-    index_volume_to_transfer = index.volume*volume/self.volume # to do before super which modifies self.volume
+  def transfer(transfer_volume)
 
-    super(volume).tap do |new_asset|
+    index_volume_to_transfer = index.volume*transfer_volume.to_f/self.volume # to do before super which modifies self.volume
+    super(transfer_volume).tap do |new_asset|
       new_asset.index = index.transfer(index_volume_to_transfer)
     end
   end
+
 end

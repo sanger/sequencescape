@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # It associates a name to a pre-filled submission (subclass) and a serialized set of attributes
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
@@ -16,17 +17,20 @@ class SubmissionTemplate < ActiveRecord::Base
 
   has_many :orders
   belongs_to :product_line
-  belongs_to :order_role, :class_name => 'Order::OrderRole'
 
   has_many   :supercedes,    :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
   belongs_to :superceded_by, :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
 
+  belongs_to :product_catalogue, :inverse_of => :submission_templates
+  delegate :product_for, :to => :product_catalogue
+  validates_presence_of :product_catalogue
+
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
-  named_scope :hidden, :order => 'product_line_id ASC', :conditions => [ 'superceded_by_id != ?', LATEST_VERSION ]
-  named_scope :visible, :order => 'product_line_id ASC', :conditions => { :superceded_by_id => LATEST_VERSION }
-  named_scope :include_product_line, :include => [:product_line]
+  scope :hidden,               -> { order('product_line_id ASC').where([ 'superceded_by_id != ?', LATEST_VERSION ]) }
+  scope :visible,              -> { order('product_line_id ASC').where( :superceded_by_id => LATEST_VERSION ) }
+  scope :include_product_line, -> { includes(:product_line) }
 
   def visible
     self.superceded_by_id == LATEST_VERSION
@@ -38,7 +42,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   def supercede(&block)
     ActiveRecord::Base.transaction do
-      self.clone.tap do |cloned|
+      self.dup.tap do |cloned|
         yield(cloned) if block_given?
         name, cloned.name = cloned.name, "Superceding #{cloned.name}"
         cloned.save!
@@ -66,11 +70,14 @@ class SubmissionTemplate < ActiveRecord::Base
 
   # create a new submission of the good subclass and with pre-set attributes
   def new_order(params={})
-    attributes = submission_attributes.deep_merge(safely_duplicate(params))
+    duped_params = safely_duplicate(params)
+    # NOTE: Stringifying request_option keys here is NOT a good idea as it affects multipliers
+    attributes = submission_attributes.with_indifferent_access.deep_merge(duped_params)
     infos      = SubmissionTemplate.unserialize(attributes.delete(:input_field_infos))
 
     submission_class.new(attributes).tap do |order|
       order.template_name = self.name
+      order.product = product_for(params)
       order.set_input_field_infos(infos) unless infos.nil?
     end
   end
@@ -78,6 +85,7 @@ class SubmissionTemplate < ActiveRecord::Base
   # TODO[xxx]: This is a hack just so I can move forward but the request_types stuff should come directly
   def submission_attributes
     return {} if self.submission_parameters.nil?
+
     submission_attributes = Marshal.load(Marshal.dump(self.submission_parameters))  # Deep clone
     submission_attributes[:request_types] = submission_attributes[:request_type_ids_list].flatten
     submission_attributes
@@ -130,8 +138,6 @@ class SubmissionTemplate < ActiveRecord::Base
   def self.unserialize(object)
     if object.respond_to? :map
       return object.map { |o| unserialize(o) }
-    elsif object.is_a?(YAML::Object)
-      return object.class.constantize.new(object.ivars)
     else
       return object
     end

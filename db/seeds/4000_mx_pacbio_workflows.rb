@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 
 next_gen_sequencing = Submission::Workflow.find_by_key!('short_read_sequencing')
 PacBioSamplePrepPipeline.create!(:name => 'PacBio Tagged Library Prep') do |pipeline|
@@ -64,16 +65,9 @@ pbs = PlatePurpose.create!(
   :cherrypickable_target => false,
   :cherrypickable_source => false,
   :size => 96,
-  :asset_shape => Map::AssetShape.find_by_name('Standard'),
+  :asset_shape => AssetShape.find_by_name('Standard'),
   :barcode_for_tecan => 'ean13_barcode'
 )
 AssignTubesToMultiplexedWellsTask.all.each {|task| task.update_attributes!(:purpose=>pbs)}
 
 set_pipeline_flow_to('PacBio Tagged Library Prep' => 'PacBio Sequencing')
-
-      SubmissionTemplate.create!( {
-        :name => "Multiplexed PacBio",
-        :submission_class_name => 'LinearSubmission',
-        :submission_parameters => { :request_type_ids_list=>['pacbio_tagged_library_prep','pacbio_multiplexed_sequencing'].map{|key| RequestType.find_by_key(key).id},
-        :workflow_id => 1 }
-        })

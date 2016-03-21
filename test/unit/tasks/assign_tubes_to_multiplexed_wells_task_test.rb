@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
+
 require "test_helper"
 
 
@@ -25,7 +26,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
   context "AssignTubesToMultiplexedWellsHandler" do
     setup do
       @workflows_controller = DummyWorkflowController.new
-      @task                 = Factory :assign_tubes_to_multiplexed_wells_task
+      @task                 = create :assign_tubes_to_multiplexed_wells_task
       @wells = mock('wells')
       @fake_plate = mock('plate', :wells=>@wells)
       @workflows_controller.stubs(:find_or_create_plate).returns(@fake_plate)
@@ -52,10 +53,10 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
       context "with no tag clashes" do
         setup do
           request_target = [:none,0,1,2,3,4,5,6,6]
-          tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+          tag_hash = Hash.new {|h,i| h[i] = create :tag }
           @tags = [1,2,3,4,5,5,7,8].map {|i| tag_hash[i] }
           @requests = (1..8).map do |i|
-            asset = Factory :pac_bio_library_tube
+            asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(:tag=>@tags[i-1])
             mock("request_#{i}",
               :asset=> asset
@@ -78,10 +79,10 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
 
       context "with tag clashes" do
         setup do
-          tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+          tag_hash = Hash.new {|h,i| h[i] = create :tag }
           @tags = [1,2,3,4,5,5,6,6].map {|i| tag_hash[i] }
           @requests = (1..8).map do |i|
-            asset = Factory :pac_bio_library_tube
+            asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(:tag=>@tags[i-1])
             mock("request_#{i}",
               :asset=> asset
@@ -108,10 +109,10 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
 
       context "with incompatible attributes" do
         setup do
-          tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+          tag_hash = Hash.new {|h,i| h[i] = create :tag }
           @tags = [1,2,3,4,5,5,7,8].map {|i| tag_hash[i] }
           @requests = (1..8).map do |i|
-            asset = Factory :pac_bio_library_tube
+            asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(:tag=>@tags[i-1])
             mock("request_#{i}",
               :asset=> asset

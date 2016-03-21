@@ -8,8 +8,8 @@ Feature: If a batch is released, the section Action/Task shouldn't be shown unle
   Given I have a "<batch_state>" batch in "<pipeline>"
     And I am on the last batch show page
   Then I should see "This batch belongs to pipeline: <pipeline>"
-    And I should see "EVENTS"
-    And I <should_or_should_not> see "ACTIONS"
+    And I should see "Events"
+    And I <should_or_should_not> see "Actions"
   Examples:
     | pipeline                               | batch_state | should_or_should_not |
     | Cluster formation PE                   | released    | should not           |

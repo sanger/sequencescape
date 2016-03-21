@@ -1,20 +1,21 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% unless batches.empty? %>
-<table width="100%" cellpadding="5" cellspacing="0" class="sortable">
+<table class="sortable table table-striped">
   <thead>
     <tr>
-      <th class='label' width="5%"><%= link_to 'Batch', "javascript:void(0);" %></th>
-      <th class='label' width="5%"><%= link_to 'Items', "javascript:void(0);" %></th>
-      <th class='label' width="8%"><%= link_to 'Created by', "javascript:void(0);" %></th>
-      <th class='label' width="8%"><%= link_to 'Assigned to', "javascript:void(0);" %></th>
-      <th class='label' width="15%"><%= link_to 'Created at', "javascript:void(0);" %></th>
-      <th class='label' width="15%"><%= link_to 'Status', "javascript:void(0);" %></th>
+      <th><a>Batch</a></th>
+      <th><a>Items</a></th>
+      <th><a>Created by</a></th>
+      <th><a>Assigned to</a></th>
+      <th><a>Created at</a></th>
+      <th><a>Status</a></th>
       <% if in_progress %>
-        <th class='label' width="15%"><%= link_to 'Last completed task', "javascript:void(0);" %></th>
+        <th><a>Last completed task</a</th>
       <% end %>
-      <th class='label' width="5%">&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>

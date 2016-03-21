@@ -1,37 +1,28 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
-<div class="yui-gf">
-<div class="yui-u first grouped_items"  style="width: 20%">
-  <% @alternatives.each_with_index do |description, index| -%>
-    <div class="grouped_item" id="<%= index %>_link">
-      <%= link_to description.humanize, studies_path(:scope => index) %>
-    </div>
-  <% end -%>
-</div>
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
 
-<div class="yui-u group_contents">
-
-  <%= loading_bar %>
-  <%= remote_error %>
-  <div class="group_content" id="everything">
-    <script>
-    Event.observe(window, 'load', function() {
-      <%= remote_function(:url => study_list_studies_path(:scope => scope),
-        :update => "everything",
-        :method => :get,
-        :loading => "Element.show('loading')",
-        :complete => "try {
-            TableSorterFacade.extend_table('study_list');
-            Element.highlight('study_list');
-          } catch (e) {
-            (e.name == 'ElementDoesNotExistError') || console.warn(e);
-          } finally {
-            Element.hide('loading');
-          };",
-        :failure => "Element.show('remote_error')") %>
-    });
-    </script>
+<div class="row">
+  <div class="grouped_items col-sm-2">
+    <% @alternatives.each_with_index do |description, index| -%>
+      <div class="grouped_item" id="<%= index %>_link">
+        <%= link_to description.humanize, study_list_studies_path(:scope => index), :remote => true, :'data-throbber' => '#update_loader', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
+      </div>
+    <% end -%>
   </div>
-</div>
+
+  <div class="group_contents col-sm-10">
+
+    <%= loading_bar %>
+    <%= remote_error %>
+    <div class="group_content" id="everything">
+      <script type="text/javascript">
+      (function($, undefined){
+        $("#everything").load('<%= study_list_studies_path(:scope => scope)%>', function() {
+          $(document.body).trigger("ajaxDomUpdate");
+        });
+      })(jQuery);
+      </script>
+    </div>
+  </div>
 </div>

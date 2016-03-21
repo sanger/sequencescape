@@ -4,7 +4,7 @@
 class ImportOriginalApplicationKey < ActiveRecord::Migration
 
   class ApiApplication < ActiveRecord::Base
-    set_table_name('api_applications')
+    self.table_name =('api_applications')
   end
 
   def self.up

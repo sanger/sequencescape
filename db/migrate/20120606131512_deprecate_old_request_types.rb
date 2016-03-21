@@ -3,7 +3,7 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class DeprecateOldRequestTypes < ActiveRecord::Migration
   class RequestType < ActiveRecord::Base
-    set_table_name('request_types')
+    self.table_name =('request_types')
   end
 
   def self.up

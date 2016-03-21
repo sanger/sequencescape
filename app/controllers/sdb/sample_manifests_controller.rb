@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_filter :set_sample_manifest_id, :only => [:show, :generated]
   before_filter :validate_type,    :only => [:new, :create]
@@ -17,11 +18,10 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       flash[:error] = "Cannot find details about the sample manifest"
       return
     end
-
     @sample_manifest.update_attributes(params[:sample_manifest])
     @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
     flash[:notice] = "Manifest being processed"
-  rescue FasterCSV::MalformedCSVError
+  rescue CSV::MalformedCSVError
     flash[:error] = "Invalid CSV file"
   ensure
     redirect_to sample_manifests_path
@@ -87,6 +87,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   # Show the manifest
   def show
+    @samples = @sample_manifest.samples.paginate(:page => params[:page])
   end
 
   def index

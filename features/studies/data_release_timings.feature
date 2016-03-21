@@ -10,7 +10,7 @@ Feature: Studies have timings for release of their data
     And I fill in "Study description" with "Checking that the data release strategies behave appropriately"
     And I select "No" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
-    And I select "open" from "What is the data release strategy for this study?"
+    And I select "Open (ENA)" from "What is the data release strategy for this study?"
 
   Scenario: When the data release is standard
     Given I select "standard" from "How is the data release to be timed?"
@@ -42,7 +42,8 @@ Feature: Studies have timings for release of their data
     And I select "<period>" from "Delay for"
     When I press "Create"
     Then I should be on the studies page
-    And I should see "Data release delay reason comment can't be blank"
+    # Ideally this should be without the study metadata qualification
+    And I should see "Study metadata data release delay reason comment can't be blank"
 
     Examples:
       | period    |
@@ -69,14 +70,15 @@ Feature: Studies have timings for release of their data
       | 12 months |
 
   Scenario: When the data release is never but the comment is not supplied
-    When I select "not applicable" from "What is the data release strategy for this study?"
+    When I select "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
     When I press "Create"
     Then I should be on the studies page
-    And I should see "Data release prevention reason comment can't be blank"
+    # Again, ideally without study metadata
+    And I should see "Study metadata data release prevention reason comment can't be blank"
 
   Scenario: When the data release is never and the comment is supplied
-    When I select "not applicable" from "What is the data release strategy for this study?"
+    When I select "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
     And I fill in "Comment regarding prevention of data release and approval" with "Some reason"
     When I press "Create"

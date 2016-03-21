@@ -12,7 +12,7 @@ Feature: Access plates through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
     Given the plate exists with ID 1
     And the plate with ID 1 has a plate purpose of "Cherrypicked"
@@ -40,11 +40,41 @@ And I have a "full" authorised user with the key "cucumber"
   @read
   Scenario: With a submission and a used template
     Given the plate with ID 1 has a barcode of "1220000001831"
-    And plate "1" has "1" wells with samples
+    And plate "1" has "2" wells with samples
     Given the plate with UUID "00000000-1111-2222-3333-444444444444" has been submitted to "Illumina-B - Pooled PATH - HiSeq Paired end sequencing"
     And the tag 2 layout template "test template" exists
     And the UUID for the last tag2 layout template is "00000000-2222-2222-3333-444444444444"
     And the tag2 layout template "test template" is associated with the last submission
+    When I GET the API path "/00000000-1111-2222-3333-444444444444/submission_pools"
+    Then the HTTP response should be "200 OK"
+    And the JSON should match the following for the specified fields:
+      """
+      {
+      "actions":
+        {"read":
+          "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/submission_pools/1",
+         "first":
+          "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/submission_pools/1",
+         "last":
+          "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/submission_pools/1"},
+       "size":1,
+       "submission_pools":[{
+          "plates_in_submission":1,
+          "used_tag2_layout_templates":[{"uuid":"00000000-2222-2222-3333-444444444444","name":"test template"}]
+       }]
+       }
+      """
+
+  @read
+  Scenario: With a submission and a used template on children
+    Given the plate with ID 1 has a barcode of "1220000001831"
+    And plate "1" has "2" wells with samples
+    Given the plate with UUID "00000000-1111-2222-3333-444444444444" has been submitted to "Illumina-B - Pooled PATH - HiSeq Paired end sequencing"
+    And the tag 2 layout template "test template" exists
+    And the UUID for the last tag2 layout template is "00000000-2222-2222-3333-444444444444"
+    And the tag2 layout template "test template" is associated with the last submission
+    Given a destination transfer plate called "child" exists as a child of "Plate name"
+    And the UUID for the last plate is "00000000-1111-2222-3333-444444444444"
     When I GET the API path "/00000000-1111-2222-3333-444444444444/submission_pools"
     Then the HTTP response should be "200 OK"
     And the JSON should match the following for the specified fields:

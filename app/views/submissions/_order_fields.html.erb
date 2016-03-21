@@ -1,18 +1,19 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.%>
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.%>
+
 <% if @presenter.order.present? -%>
-  <h2><%= @presenter.order.template_name %> template</h2>
+  <h4><%= @presenter.order.template_name %> template</h4>
 
   <% if @presenter.order_fields.present? -%>
-    <table>
-      <% @presenter.order_fields.sort {|a, b| a.display_name <=> b.display_name }.each_with_index do |order_param, index| -%>
-        <%= "<tr>" if index.even? %>
-          <th><%= order_input_label(order_param) %></th>
-          <td><%= order_input_tag(@presenter.order, order_param) %></td>
-          <%= "</tr>" if index.odd? || index + 1 == @presenter.order_fields.size %>
-      <% end -%>
-    </table>
+
+    <% @presenter.order_fields.sort_by(&:display_name).each do |order_param| -%>
+      <div class="col-md-6 form-group">
+        <div><%= order_input_label(order_param) %></div>
+        <div><%= order_input_tag(@presenter.order, order_param) %></div>
+      </div>
+    <% end -%>
+
   <% end -%>
 
   <script type="text/javascript">
@@ -25,13 +26,13 @@
     SCAPE.submission.cross_compatible = <%= @presenter.cross_compatible? %>;
 
     <% unless @presenter.order.new_record? -%>
-    $(function(){
-      $('#order-template').
-        removeClass('active').
-        addClass('completed').
-        find('input, select, textarea').not('.delete-order').
-        attr('disabled',true);
-    });
+      $(function(){
+        $('#order-template').
+          removeClass('active').
+          addClass('completed').
+          find('input, select, textarea').not('.delete-order').
+          attr('disabled',true);
+      });
     <% end -%>
   })(window,jQuery);
   </script>

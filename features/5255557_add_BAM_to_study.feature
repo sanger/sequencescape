@@ -10,7 +10,7 @@ Feature: Study creation with a checkbox for BAM file.
   Scenario: A study is created with a BAM property as true
     When I follow "Create study"
     Then I should be on the new study page
-    Then I should see "CREATE STUDY"
+    Then I should see "Study Create"
     Then I should see "Alignments in BAM"
     And the checkbox labeled "Alignments in BAM" should be checked
     When I uncheck "Alignments in BAM"
@@ -24,7 +24,7 @@ Feature: Study creation with a checkbox for BAM file.
     And I select "Yes" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "No" from "Does this study require the removal of X chromosome and autosome sequence?"
-    And I select "open" from "What is the data release strategy for this study?"
+    And I select "Open (ENA)" from "What is the data release strategy for this study?"
     When I press "Create"
     Then I should be on the study workflow page for "new study"
     Then abbreviation for Study "new study" should be "CCC3"

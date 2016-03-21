@@ -9,7 +9,7 @@ Feature: Studies have a release agreement
     And I fill in "Study description" with "Checking that release agreements behave properly"
     And I select "No" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
-    And I select "managed" from "What is the data release strategy for this study?"
+    And I select "Managed (EGA)" from "What is the data release strategy for this study?"
 
   Scenario: Using the standard WTSI agreement
     Given I select "Yes" from "Will you be using WTSI's standard access agreement?"
@@ -21,7 +21,10 @@ Feature: Studies have a release agreement
     Given I select "No" from "Will you be using WTSI's standard access agreement?"
     When I press "Create"
     Then I should be on the studies page
-    And I should see "Data release non standard agreement can't be blank"
+    #TODO: This is not ideal. It would be better without the 'study metadata' bit.
+    # Problem is changing this here has impact on the API messages
+    # Once we're fully upgraded we should look at the proper way of handling this
+    And I should see "Study metadata data release non standard agreement can't be blank"
 
   Scenario: Using a non-standard agreement with a file uploaded
     Given I select "No" from "Will you be using WTSI's standard access agreement?"

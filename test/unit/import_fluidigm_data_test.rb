@@ -1,18 +1,17 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2013,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class ImportFluidigmDataTest < ActiveSupport::TestCase
-  context "With a fluidigm file" do
-
     def create_fluidigm_file
       @XY = 'M'
       @XX = 'F'
       @YY = 'F'
       @NC = 'Unknown'
 
-      @file = File.open("#{RAILS_ROOT}/test/data/fluidigm.csv")
+      @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
       @fluidigm = FluidigmFile.new(@file.read)
       @well_maps = {
         'S06' => {
@@ -32,20 +31,20 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     end
 
     def create_stock_plate(barcode)
-      plate_source = Factory :plate, {
+      plate_source = create :plate, {
         :name => "Stock plate #{barcode}",
         :size => 192,
         :purpose=>Purpose.find_by_name('Stock Plate'),
         :barcode => barcode
       }
-      @sample = Factory :sample, :name=>"abc"
+      @sample = create :sample, :name=>"abc"
             well_source = Well.create!.tap { |well| well.aliquots.create!(:sample => @sample) }
       plate_source.add_and_save_well(well_source)
       plate_source
     end
 
     def create_plate_with_fluidigm(barcode, fluidigm_barcode, stock_plate)
-      plate_target = Factory :plate, {
+      plate_target = create :plate, {
         :name => "Cherrypicked #{barcode}",
         :size => 192,
         :barcode => barcode,
@@ -67,6 +66,8 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
         })
       plate_target
     end
+
+  context "With a fluidigm file" do
     setup do
       @fluidigm_file = create_fluidigm_file
       @stock_plate = create_stock_plate("87654321")

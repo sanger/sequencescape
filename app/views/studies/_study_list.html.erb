@@ -1,14 +1,15 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% unless studies.empty? -%>
-<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+<table id="study_list" class="sortable table table-striped">
   <thead>
     <tr>
-      <th><%= link_to "ID", "javascript:void(0);" %></th>
-      <th><%= link_to "Study name", "javascript:void(0);" %></th>
-      <th><%= link_to "Date created", "javascript:void(0);" %></th>
-      <th><%= link_to "Study Owner", "javascript:void(0);" %></th>
+      <th><a>ID</a></th>
+      <th><a>Study name</a></th>
+      <th><a>Date created</a></th>
+      <th><a>Study Owner</a></th>
     </tr>
   </thead>
   <tbody>

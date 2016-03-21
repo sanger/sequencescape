@@ -1,0 +1,16 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015 Genome Research Ltd.%>
+<% if @about.present? %>
+  <%= panel(:default,title:"About this page") do %>
+    <%= @about %>
+  <% end %>
+<% end %>
+
+<%= panel(:default,title:"Links") do %>
+  <%= render :partial => "shared/menu" %>
+<% end %>
+
+<%= panel(:info) do %>
+  <%= image_tag "information.png", :size => "16x16" %><span style="vertical-align: middle;">If you need help using Sequencescape please email:</span> <span style="text-align: center"><%= help_email_link %></span>
+<% end %>

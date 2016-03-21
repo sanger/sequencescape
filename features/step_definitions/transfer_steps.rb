@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+
 TRANSFER_TYPES = [
   'between plates',
   'from plate to tube'
@@ -17,7 +18,7 @@ Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "(
 end
 
 Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ do |name,id|
-  Factory(:"transfer_#{name.gsub(/\s+/, '_')}", :id => id)
+  FactoryGirl.create(:"transfer_#{name.gsub(/\s+/, '_')}", :id => id)
 end
 
 Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |target, model, id, uuid_value|
@@ -25,7 +26,7 @@ Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_
 end
 
 Given /^the ((?:pooling ||multiplex )?transfer template) called "([^\"]+)" exists$/ do |type, name|
-  Factory(type.gsub(/\s/, '_').to_sym, :name => name)
+  FactoryGirl.create(type.gsub(/\s/, '_').to_sym, :name => name)
 end
 
 Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |source, destination, table|
@@ -49,16 +50,16 @@ Then /^the transfers from (the plate .+) to (the asset rack .+) should be:$/ do 
 end
 
 Given /^a transfer plate exists with ID (\d+)$/ do |id|
-  Factory(:transfer_plate, :id => id)
+  FactoryGirl.create(:transfer_plate, :id => id)
 end
 
 Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |type, name|
-  Factory("#{type}_transfer_plate", :name => name)
+  FactoryGirl.create("#{type}_transfer_plate", :name => name)
 end
 
 
 Given /^a destination transfer asset rack called "([^\"]+)" exists$/ do |name|
-  far  = Factory(:fuller_asset_rack, :name => name)
+  far  = FactoryGirl.create(:fuller_asset_rack, :name => name)
   ppp  = Purpose.find_by_name('Parent plate purpose')
   carp = far.purpose
   ppp.child_relationships.create!(:child => carp, :transfer_request_type => RequestType.transfer)
@@ -68,8 +69,8 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
   Plate.find_by_name(name).tap do |plate|
     plate.wells.import(
       [ 'C1', 'D1' ].map do |location|
-        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-        Factory(:tagged_well, :map => map)
+        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        FactoryGirl.create(:tagged_well, :map => map)
       end
     )
   end
@@ -77,12 +78,12 @@ end
 
 Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
   parent_plate = Plate.find_by_name(parent) or raise "Cannot find parent plate #{parent.inspect}"
-  AssetLink.create!(:ancestor => parent_plate, :descendant => Factory(:destination_transfer_plate, :name => name))
+  AssetLink.create!(:ancestor => parent_plate, :descendant => FactoryGirl.create(:destination_transfer_plate, :name => name))
 end
 
 Given /^a destination transfer asset rack called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
   parent_plate = Plate.find_by_name(parent) or raise "Cannot find parent plate #{parent.inspect}"
-  AssetLink.create!(:ancestor => parent_plate, :descendant => Factory(:fuller_asset_rack, :name => name))
+  AssetLink.create!(:ancestor => parent_plate, :descendant => FactoryGirl.create(:fuller_asset_rack, :name => name))
 end
 
 
@@ -90,7 +91,7 @@ Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "(
   template    = TransferTemplate.find_by_name(template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
   source      = Plate.find_by_name(source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
   destination = Plate.find_by_name(destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
-  template.create!(:source => source, :destination => destination, :user => Factory(:user))
+  template.create!(:source => source, :destination => destination, :user => FactoryGirl.create(:user))
 end
 
 

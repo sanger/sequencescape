@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+
 class Cherrypick::Strategy
   PickFailureError = Class.new(StandardError)
 
@@ -36,7 +37,7 @@ class Cherrypick::Strategy
     # Orders the plexes by the optimum fitting
     class BestFit
       def call(plexes, current_plate)
-        comparator = lambda { |l,r| r.size <=> l.size }
+        comparator = ->(l,r) { r.size <=> l.size }
         comparator = lambda do |left, right|
           left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
           sorted_fill =  left_fill <=> right_fill
@@ -150,10 +151,6 @@ class Cherrypick::Strategy
     class << empty
       def barcode
         nil
-      end
-
-      def representation
-        [0, 'Empty', '']
       end
 
       # This well really isn't present!

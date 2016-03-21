@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class AssetGroup < ActiveRecord::Base
 
   include Uuid::Uuidable
@@ -13,12 +14,10 @@ class AssetGroup < ActiveRecord::Base
   has_many :asset_group_assets
   has_many :assets, :through => :asset_group_assets
 
-  validates_presence_of :name, :study
-  validates_uniqueness_of :name
+  validates :name, :presence => true, :uniqueness => true
+  validates :study, :presence => true
 
-
-
-  named_scope :for_search_query, lambda { |query,with_includes| { :conditions => [ 'name LIKE ?', "%#{query}%" ] } }
+ scope :for_search_query, ->(query,with_includes) { where([ 'name LIKE ?', "%#{query}%" ]) }
 
   def all_samples_have_accession_numbers?
     unaccessioned_samples.count == 0

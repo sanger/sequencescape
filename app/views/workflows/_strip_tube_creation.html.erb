@@ -1,11 +1,12 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.%>
+#Copyright (C) 2014,2015 Genome Research Ltd.%>
+
 <h2>Strip Tube Creation</h2>
 <p><%= @tubes_available %> remaining <strong><%= @tubes_requested %></strong> requested.</p>
 <p>Select the number of stips to create. Any remaining requests will be returned to the inbox.</p>
 
-<% form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
   <dl>
     <dt><label for="source_plate_barcode">Scan source plate:</label></dt>
     <dd><%= text_field_tag("source_plate_barcode", nil, :size=>13, :maxlength=>13, :inputmode=>'numeric', :minlength=>13)  %></dd>

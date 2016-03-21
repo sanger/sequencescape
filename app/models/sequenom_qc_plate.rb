@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 class SequenomQcPlate < Plate
   DEFAULT_SIZE = 384
-  @@per_page   = 50
+  self.per_page   = 50
 
   attr_accessor :gender_check_bypass
   attr_accessor :plate_prefix
@@ -119,10 +120,10 @@ class SequenomQcPlate < Plate
     source_well = plate.find_well_by_rowcol(row, col)
     return nil if source_well.nil?
 
-    source_well.clone.tap do |cloned_well|
+    source_well.dup.tap do |cloned_well|
       cloned_well.plate    = self
       cloned_well.map      = destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
-      cloned_well.aliquots = source_well.aliquots.map(&:clone)
+      cloned_well.aliquots = source_well.aliquots.map(&:dup)
       cloned_well.save!
 
       # FIXME: This fix seems a bit dirty but it works
@@ -151,7 +152,7 @@ class SequenomQcPlate < Plate
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
 
       if source_plate.nil?
-        errors.add_to_base("Source Plate: #{source_plate_barcode} cannot be found")
+        errors.add(:base,"Source Plate: #{source_plate_barcode} cannot be found")
         return false
       end
     end
@@ -160,13 +161,13 @@ class SequenomQcPlate < Plate
 
   def at_least_one_source_plate?(input_plate_names)
     !if input_plate_names.values.select {|v| !v.blank? }.size == 0
-      errors.add_to_base("At least one source input plate barcode must be entered.")
+      errors.add(:base,"At least one source input plate barcode must be entered.")
     end
   end
 
 def user_barcode_exist?(user_barcode)
   if User.lookup_by_barcode(user_barcode).nil?
-    errors.add_to_base("Please scan your user barcode") if User.lookup_by_barcode(user_barcode).nil?
+    errors.add(:base,"Please scan your user barcode") if User.lookup_by_barcode(user_barcode).nil?
     false
   else
     true
@@ -186,13 +187,13 @@ end
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
 
       if source_plate.nil?
-        errors.add_to_base("Source Plate: #{source_plate_barcode} cannot be found")
+        errors.add(:base,"Source Plate: #{source_plate_barcode} cannot be found")
         return false
       end
       # Unless our source plates all contain some samples with gender then
       # add an error to say things went wrong.
       unless source_plate.contains_gendered_samples?
-        errors.add_to_base("Failed to create Sequenom QC Plate - Source Plate: #{source_plate_barcode} lacks gender information")
+        errors.add(:base,"Failed to create Sequenom QC Plate - Source Plate: #{source_plate_barcode} lacks gender information")
         return false
         # errors.add(input_plate_names[source_plate_number], "Source Plate: #{source_plate_barcode} lacks gender information")
       end

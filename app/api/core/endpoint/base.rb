@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 class Core::Endpoint::Base
   module InstanceBehaviour
     class Handler < Core::Endpoint::BasicHandler
@@ -12,13 +13,13 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_inheritable_reader :instance_handler
+      base.class_attribute :instance_handler, :instance_writer => false
     end
 
     def instance(&block)
       handler = Class.new(Handler).tap { |handler| const_set(:Instance, handler) }.new(&block)
       handler.instance_variable_set(:@name, name)
-      write_inheritable_attribute(:instance_handler, handler)
+      self.instance_handler = handler
     end
   end
 
@@ -39,12 +40,12 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_inheritable_reader :model_handler
+      base.class_attribute :model_handler, :instance_writer => false
     end
 
     def model(&block)
       handler = Class.new(Handler).tap { |handler| const_set(:Model, handler) }.new(&block)
-      write_inheritable_attribute(:model_handler, handler)
+      self.model_handler = handler
     end
   end
 

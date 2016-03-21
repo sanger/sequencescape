@@ -17,7 +17,7 @@ Feature: Registering samples
     When I press "Register samples"
     Then I should be on the sample error page for study "Testing registering samples"
     And I should see "Your samples have not been registered"
-    And I should see "Name can't be blank"
+    And I should see "Sample name can't be blank"
 
   Scenario: Registering a single sample
     When I fill in "Sample name for sample 0" with "sample_name_for_0"
@@ -30,7 +30,7 @@ Feature: Registering samples
     When I fill in "Sample name for sample 0" with "sample_already_exists"
     And I press "Register samples"
     Then I should be on the sample error page for study "Testing registering samples"
-    And I should see "Name already in use"
+    And I should see "Sample name already in use"
 
   Scenario: Registering a sample with a new asset group
     When I fill in "Sample name for sample 0" with "sample_for_asset_group"
@@ -69,7 +69,7 @@ Feature: Registering samples
     And I press "Register samples"
     Then I should be on the sample error page for study "Testing registering samples"
     And I should see "Your samples have not been registered"
-    And I should see "Name can't be blank"
+    And I should see "Sample name can't be blank"
     And the "Sample name for sample 0" field should be marked in error
 
     When I fill in "Sample name for sample 0" with "sample_name_for_0"
@@ -84,13 +84,12 @@ Feature: Registering samples
     And I press "Register samples"
     Then I should be on the sample error page for study "Testing registering samples"
     And I should see "Your samples have not been registered"
-    And I should see "Name can't be blank"
+    And I should see "Sample name can't be blank"
     And the "2D barcode for sample 0" field should contain "12345"
     And the "Organism for sample 0" field should contain "Weird green jelly like thing"
 
   @sample_registration
    Scenario: Uploading a spreadsheet of data for sequencing
-   # Stuff goes wrong here!
     Given user "John Smith" has a workflow "Next-gen sequencing"
 
     Given I am on the page for choosing how to register samples for study "Testing registering samples"
@@ -99,7 +98,7 @@ Feature: Registering samples
 
     When I attach the relative file "test/data/sample_info_valid.xls" to "File to upload"
     And I press "Upload spreadsheet"
-    Then I should be on the sample registration page for study "Testing registering samples"
+    Then I should be on the spreadsheet sample registration page for study "Testing registering samples"
     And the following samples should be in the sample registration fields:
       |Sample name           |Cohort|Country of origin|Geographical region|Gender|Volume (µl)| Ethnicity | DNA source | Donor Id |
       |cn_dev_96_inc_blank_01|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      | 12345    |

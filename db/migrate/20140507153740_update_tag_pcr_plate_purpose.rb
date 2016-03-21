@@ -3,7 +3,7 @@
 #Copyright (C) 2014 Genome Research Ltd.
 class UpdateTagPcrPlatePurpose < ActiveRecord::Migration
 
-  class ModPurpose < ActiveRecord::Base ; set_table_name(:plate_purposes) ; end
+  class ModPurpose < ActiveRecord::Base ; self.table_name =(:plate_purposes) ; end
 
   def self.up
     ActiveRecord::Base.transaction do

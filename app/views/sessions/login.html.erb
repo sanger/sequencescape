@@ -1,37 +1,43 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
 <%= render_flashes %>
 <div style="padding: 0px 5px 5px 0px; margin: 0px 10px 3px 10px; border-bottom: 1px solid #ccc;">
-  <strong>SEQUENCESCAPE <%= Deployed::VERSION_ID %></strong>
+  <h1>SEQUENCESCAPE <small><%= Deployed::VERSION_ID %></small></h1>
   <div class='intro'>
     Sample and study management for sequencing and genotyping at the Wellcome Trust Sanger Institute.
   </div>
 </div>
 <div id="account_box">
   <div id="account_form">
-    <% form_tag do -%>
-    <table width="100%" cellspacing="0" cellpadding="0">
-      <tr class="account_item">
-        <td colspan="2" class="account_item account_label">
-          <div style="padding:0px 10px 10px 0px;font-weight:bold;color:green;">Please use your UNIX username and password to login</div>
-        </td>
-      </tr>
-      <tr class="account_item">
-        <td width="25%" class="account_item account_label">Username: </td>
-        <td width="75%" class="account_item"><%= text_field_tag "login", "", { :size => 35 } %></td>
-      </tr>
+    <%= form_tag({}, {:class=>'form-horizontal'}) do %>
 
-      <tr>
-        <td class="account_label">Password: </td>
-        <td><%= password_field_tag "password", "", { :size => 35 } %></td>
-      </tr>
+        <div class="account_item account_labe col-sm-10 col-sm-offset-2">
+          <div style="padding:0px 10px 10px 0px;font-weight:bold;color:green;">Please use your Sanger username and password to login</div>
+        </div>
 
-      <tr>
-        <td>&nbsp;</td>
-        <td><br /><%= submit_tag I18n.t('global_links.login') %></td>
-      </tr>
-    </table>
-    <% end -%>
+        <div class='form-group'>
+          <%= label_tag 'login', 'Username', :class=>'control-label col-sm-2' %>
+          <div class="col-sm-8">
+          <%= text_field_tag "login", "", { :class=>'form-control' } %>
+          </div>
+        </div>
+
+        <div class='form-group'>
+          <%= label_tag 'password', 'Password', :class=>'control-label col-sm-2' %>
+          <div class="col-sm-8">
+            <%= password_field_tag "password", "", { :class=>'form-control' } %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-8">
+            <%= submit_tag I18n.t('global_links.login'), :class=>'btn btn-default' %>
+          </div>
+        </div>
+
+
+    <% end %>
   </div>
 </div>

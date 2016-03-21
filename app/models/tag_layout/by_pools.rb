@@ -1,11 +1,12 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011 Genome Research Ltd.
+#Copyright (C) 2011,2015 Genome Research Ltd.
+
 # Lays out the tags so that they are based on the pool.
 class TagLayout::ByPools < TagLayout
   # The direction of the tagging is column major, within the pools.
-  class_inheritable_reader :direction
-  write_inheritable_attribute(:direction, 'column')
+  class_attribute :direction, :instance_writer => false
+  self.direction = 'column'
 
   def walk_wells(&block)
     # Take the pools for this plate and flatten them out.  This ensures that the wells within a pool are

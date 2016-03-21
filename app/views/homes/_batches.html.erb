@@ -1,0 +1,23 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2016 Genome Research Ltd.%>
+<%= link_panel(style,title:"Latest Batches") do %>
+  <% if latest_batches.present? %>
+    <div class="panel-body">
+      <h4>Owned batches</h4>
+      <p>Your most recent owned batches</p>
+    </div>
+    <% latest_batches.each do |batch| -%>
+      <%= batch_link(batch, :class=>"list-group-item") %>
+    <% end -%>
+  <% end %>
+  <% if assigned_batches.present? %>
+    <div class="panel-body">
+      <h4>Assigned batches</h4>
+      <p>The most recent batches assigned to you. This excludes any you may have taken ownership of.</p>
+    </div>
+    <% assigned_batches.each do |batch| -%>
+      <%= batch_link(batch, :class=>"list-group-item") %>
+    <% end -%>
+  <% end %>
+<% end %>

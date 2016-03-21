@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <h3>Plate layout for rack with barcode <%= @rack_barcode %></h3>
 <% unless @problems.zero? %>
 <div class="info">
@@ -9,7 +10,7 @@
 <% else %>
 <div class="info">
   <p>There are no problems with this layout</p>
-  <% form_tag("../make_plate_and_batch_from_rack/") do |form| %>
+  <%= form_tag("../make_plate_and_batch_from_rack/") do |form| %>
     <div>
       Plate barcode: <%= text_field_tag :plate_barcode %> : <%= submit_tag "make plate" %>
       <%= hidden_field_tag 'pipeline_id', @pipeline.id %>

@@ -1,7 +1,9 @@
-<h1>Labware Reception</h1>
-<%= javascript_include_tag 'labwhere_reception' %>
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015,2016 Genome Research Ltd.%>
+<h1>Labwhere Reception</h1>
 
-<% form_for(@labwhere_reception) do |form| %>
+<%= form_for(@labwhere_reception) do |form| %>
 
   <div class="form-group">
   <%= form.label :location_id, 'Sequencescape location' %>
@@ -20,7 +22,7 @@
 
   <div class="form-group">
   <%= form.label :asset_scan, 'Scan plate or tube' %>
-  <%= text_field_tag :asset_scan, {}, :class => 'rescannable', :class=>'form-control' %>
+  <%= text_field_tag :asset_scan, '', :class=>'rescannable form-control' %>
   </div>
 
   <ul id="barcode_list" class="barcode_list">
@@ -28,3 +30,5 @@
 
   <%= form.submit 'Update locations', :class=>'btn btn-success' %>
 <% end %>
+
+<%= javascript_include_tag 'labwhere_reception' %>

@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
 <%- add :title, "This page displays details of a asset" %>
 <% add :menu, (pluralize @asset.comments.size, "comment") => asset_comments_path(@asset) -%>
 <% add :manager_option, "Print label" => print_asset_path(@asset) -%>
@@ -18,8 +19,6 @@
 <% add(:menu, 'Request additional sequencing' => new_request_asset_path_in_context(@asset)) if current_user_can_request_additional_sequencing_on?(@asset) -%>
 
 <% if current_user.administrator? %>
-  <% add :menu, { "Move asset to different study" => filtered_move_asset_path(@asset.id) } -%>
-  <% add :menu, { "Move asset to 2D tube" => move_to_2D_asset_path(@asset.id) } -%>
   <% add(:menu, 'Request a new library' => new_request_asset_path_in_context(@asset)) if current_user_can_request_additional_library_on?(@asset) -%>
 <% end %>
 
@@ -35,12 +34,12 @@
 <% end %>
 
 
-<h1>Asset Specification</h1>
+<%= page_title('Asset',@asset.display_name) %>
 
 <%= render :partial => "asset", :locals => { :asset => @asset } %>
 <br />
 
-<h3>RELATIONS</h3>
+<h3>Relations</h3>
 <div class='help'>
   This asset has <%= pluralize @asset.parents.size+@asset.children.size, "relation" %>.
   <a data-collapse-element-id="relations-table" data-hidden="false" class="shown-button">Collapse</a>
@@ -57,16 +56,20 @@
   <tbody>
     <% @asset.parents.each do |parent| %>
     <tr>
-      <td><%= link_to "#{(parent.label or "").titleize} #{parent.id}", asset_url(parent) %></td>
+      <td><%= link_to "#{(parent.label or "").titleize}: #{parent.display_name}", asset_url(parent) %></td>
       <td>Parent</td>
-      <td></td>
+      <td>
+        <% if parent.is_a?(Well) && parent.map %>
+          <%= parent.map.description %>
+        <% end %>
+      </td>
     </tr>
     <% end %>
 
     <% child_assets = @asset.is_a?(Plate) ? @asset.children_and_holded : @asset.children %>
     <% child_assets.each do |child| %>
     <tr>
-      <td><%= link_to "#{(child.label or "").titleize} #{child.id}", asset_url(child) %></td>
+      <td><%= link_to "#{(child.label or "").titleize}: #{child.display_name}", asset_url(child) %></td>
       <td>Child</td>
       <td>
       <% if child.is_a?(Well) && child.map %>
@@ -78,7 +81,7 @@
   </tbody>
  </table>
 
-<h3>REQUESTS</h3>
+<h3>Requests</h3>
 <div class='help'>
   This asset has <%= pluralize @asset.requests.size, "request" %>.
   <a data-collapse-element-id="requests_table" data-hidden="false" class="shown-button">Collapse</a>

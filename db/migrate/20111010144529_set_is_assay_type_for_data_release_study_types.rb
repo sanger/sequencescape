@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class SetIsAssayTypeForDataReleaseStudyTypes < ActiveRecord::Migration
   class DataReleaseStudyType < ActiveRecord::Base
-    set_table_name('data_release_study_types')
+    self.table_name =('data_release_study_types')
 
     def self.set_to(state)
       DataReleaseStudyType.update_all(

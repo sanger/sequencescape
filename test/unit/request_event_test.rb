@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2013,2015 Genome Research Ltd.
+
 require 'test_helper'
 
 class RequestEventTest < ActiveSupport::TestCase
@@ -10,12 +11,12 @@ class RequestEventTest < ActiveSupport::TestCase
     context "#{request_type.name} Requests" do
       setup do
 
-        well_with_sample_and_without_plate = Factory(:well_with_sample_and_without_plate)
+        well_with_sample_and_without_plate = create(:well_with_sample_and_without_plate)
 
 
         @request = request_type.new(
             :asset => well_with_sample_and_without_plate,
-            :target_asset => Factory(:empty_well),
+            :target_asset => create(:empty_well),
             :request_metadata_attributes=>{:bait_library_id => BaitLibrary.last.id, :insert_size => 200, :fragment_size_required_from => 200, :fragment_size_required_to =>201}
           ).tap do |r|
           r.stubs(:valid?).returns(true)

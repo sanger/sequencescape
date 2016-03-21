@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 module StudyReport::WellDetails
   def self.included(base)
     base.class_eval do
-      named_scope :for_study_report, { :include => [
+      scope :for_study_report, -> { includes([
         :map, :well_attribute, :events, :target_wells, { :plate => :plate_purpose, :primary_aliquot => { :sample => :sample_metadata } }
-      ] }
+      ])}
     end
   end
 

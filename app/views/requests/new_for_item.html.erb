@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
 <% add :title, "You can request work from this page." -%>
 
 <h1>AMOUNT OF <%= @request.request_type.name.downcase %></h1>
@@ -11,7 +12,7 @@ Enter the number of <%= ActiveSupport::Inflector.pluralize @request.request_type
 </div>
 
 <div id="study">
-<% form_for(:request, :url => requests_path) do |form| %>
+<%= form_for(:request, :url => requests_path) do |form| %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>

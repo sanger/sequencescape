@@ -41,7 +41,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
 
     Examples:
-      | field   | json                                            |
+      | field   | json                                              |
       | study   | "project": "22222222-3333-4444-5555-000000000001" |
       | project | "study": "22222222-3333-4444-5555-000000000000"   |
 

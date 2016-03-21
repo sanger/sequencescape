@@ -10,7 +10,7 @@ class AddSnpTypePlate < ActiveRecord::Migration
         :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
         :cherrypickable_target => true,
         :cherrypick_direction => 'column',
-        :asset_shape => Map::AssetShape.find_by_name('Standard')
+        :asset_shape => AssetShape.find_by_name('Standard')
       )
     end
   end

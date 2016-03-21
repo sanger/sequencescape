@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
+
 # Lays out the tags in the specified tag group in a particular pattern.
 #
 # Applies a single tag 2 to the entire plate
@@ -36,8 +37,8 @@ class Tag2Layout < ActiveRecord::Base
 
   belongs_to :source, :class_name => 'Asset'
 
-  named_scope :include_tag, :include => :tag
-  named_scope :include_plate, :include => :plate
+  scope :include_tag, ->() { includes(:tag) }
+  scope :include_plate, ->() { includes(:plate) }
 
   before_create :record_template_use
   # After creating the instance we can layout the tags into the wells.

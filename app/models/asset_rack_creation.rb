@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class AssetRackCreation < AssetCreation
@@ -8,8 +9,8 @@ class AssetRackCreation < AssetCreation
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   belongs_to :parent, :class_name => 'Asset'
-  # named_scope :include_parent, :include => :parent
-  named_scope :include_child, :include => :child
+
+  scope :include_child, -> { includes(:child) }
 
   def record_creation_of_children
     parent.events.create_plate!(child_purpose, child, user)

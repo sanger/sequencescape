@@ -20,6 +20,6 @@ class AddFluidigmMaps < ActiveRecord::Migration
   end
 
   def self.configurations
-    FluidigmHelper.map_configuration_for(6,16,Map::AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,Map::AssetShape.find_by_name('Fluidigm192').id)
+    FluidigmHelper.map_configuration_for(6,16,AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,AssetShape.find_by_name('Fluidigm192').id)
   end
 end

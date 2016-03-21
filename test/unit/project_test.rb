@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class ProjectTest < ActiveSupport::TestCase
   context "Project" do
 
-    should_validate_presence_of :name
+    should validate_presence_of :name
 
     context "#metadata" do
       setup do
@@ -14,8 +15,10 @@ class ProjectTest < ActiveSupport::TestCase
       end
 
       should "require cost-code and project funding model" do
-        assert_equal false, @project.save
-        assert  @project.errors.full_messages.include?("Project cost code can't be blank")
+        assert_equal false, @project.project_metadata.valid?, "Validation not working"
+        assert_equal false, @project.valid?, "Validation not delegating"
+        assert_equal false, @project.save, "Save behaving badly"
+        assert  @project.errors.full_messages.include?("Project metadata project cost code can't be blank")
       end
 
     end
@@ -62,33 +65,33 @@ class ProjectTest < ActiveSupport::TestCase
 
    context "Request" do
       setup do
-        @project         = Factory :project
-        @request_type    = Factory :request_type
-        @request_type_2  = Factory :request_type, :name => "request_type_2", :key => "request_type_2"
-        @request_type_3  = Factory :request_type, :name => "request_type_3", :key => "request_type_3"
-        @submission       = Factory::submission :project => @project, :asset_group_name => 'to avoid asset errors'
+        @project         = create :project
+        @request_type    = create :request_type
+        @request_type_2  = create :request_type, :name => "request_type_2", :key => "request_type_2"
+        @request_type_3  = create :request_type, :name => "request_type_3", :key => "request_type_3"
+        @submission       = FactoryHelp::submission :project => @project, :asset_group_name => 'to avoid asset errors'
         # Failed
-        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
 
         # Failed
-        Factory :failed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :failed_request, :project => @project, :request_type => @request_type, :submission => @submission
         # Passed
-        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type_2, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        create :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :passed_request, :project => @project, :request_type => @request_type_2, :submission => @submission
+        create :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        create :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
         # Pending
-        Factory :pending_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :pending_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        create :pending_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :pending_request, :project => @project, :request_type => @request_type_3, :submission => @submission
         @submission.save!
       end
 
       should "Be valid" do
-        assert_valid @project
+        assert @project.valid?
       end
 
       should "Calculate correctly" do

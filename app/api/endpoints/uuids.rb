@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 #--
 # This is a complete hack of the standard behaviour and quite rightly so: people shouldn't be using it and
 # so it is going to go.  Rather than pollute the main API code with this rubbish it's here.
@@ -69,7 +70,9 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     end
 
     def self.create!(attributes)
-      self.new(attributes).tap { |search| search.validate! }
+      search = self.new(attributes)
+      search.validate! {}
+      search
     end
 
     def self.create_bulk!(list_of_attributes)
@@ -92,7 +95,8 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
 
     # Does an individual resource lookup
     bind_action(:create, :to => 'lookup', :as => :lookup) do |_,request, response|
-      uuid = Search.create!(request.json['lookup']).find
+      lookup = request.json.respond_to?(:keys) ? request.json['lookup'] : nil
+      uuid = Search.create!(lookup).find
 
       # Hack time ...
       class << response ; include ::Endpoints::Uuids::Response ; end
@@ -109,7 +113,8 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
 
     # Handles trying to find multiple resources
     bind_action(:create, :to => 'bulk', :as => :bulk) do |_,request, response|
-      uuids = Search.create_bulk!(request.json['lookup']).map(&:find)
+      lookup = request.json.respond_to?(:keys) ? request.json['lookup'] : nil
+      uuids = Search.create_bulk!(lookup).map(&:find)
 
       # Hack time ...
       class << response ; include ::Endpoints::Uuids::Response ; end

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [
@@ -18,6 +19,17 @@ module IlluminaHtp::PlatePurposes
       'Lib Norm',
       'Lib Norm 2',
       'Lib Norm 2 Pool'
+    ],
+    [
+      'PF Cherrypicked',
+      'PF Shear',
+      'PF Post Shear',
+      'PF Post Shear XP',
+      'PF Lib',
+      'PF Lib XP',
+      'PF Lib XP2',
+      'PF EM Pool',
+      'PF Lib Norm'
     ]
   ]
 
@@ -35,13 +47,21 @@ module IlluminaHtp::PlatePurposes
     ],
     [
       'Cap Lib Pool Norm'
-    ]
+    ],
+    [
+      'PF MiSeq Stock',
+      'PF MiSeq QC'
+    ],
+    ['PF MiSeq QCR']
   ]
 
   BRANCHES = [
+    [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
+    [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
+    [ 'PF MiSeq Stock','PF MiSeq QCR'],
     [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
-    [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
+    [ 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
     [ 'Lib PCR-XP','ISC lib pool' ],
     [ 'Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
     [ 'Lib PCRR-XP','ISC lib pool' ],
@@ -53,14 +73,23 @@ module IlluminaHtp::PlatePurposes
   OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP','Lib PCRR-XP']
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-    'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm'
+    'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm', 'PF EM Pool'
   ]
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
     'Cherrypicked'  => 'illumina_b_shared'
   }
 
+  PF_PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
+    ['PF Cherrypicked', 'PF Shear', 'IlluminaHtp::Requests::CherrypickedToShear'],
+    ['PF Shear', 'PF Post Shear'],
+    ['PF Post Shear', 'PF Post Shear XP'],
+    ['PF Post Shear XP', 'PF Lib XP'],
+    ['PF Lib XP', 'PF Lib XP2']
+  ]
+
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
+    [ 'PF Cherrypicked', 'PF Shear',            'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Shear',           'Post Shear',          'IlluminaHtp::Requests::CovarisToSheared'      ],
     [ 'Post Shear',      'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
@@ -80,11 +109,25 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
+    'PF Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'PF Shear'               => IlluminaHtp::CovarisPlatePurpose,
+    'PF Post Shear'          => PlatePurpose,
+    'PF Post Shear XP'       => PlatePurpose,
+    'PF Lib'                 => PlatePurpose,
+    'PF Lib XP'              => PlatePurpose,
+    'PF Lib XP2'             => IlluminaHtp::LibraryCompleteOnQcPurpose,
+    'PF EM Pool'             => PlatePurpose,
+    'PF Lib Norm'            => IlluminaHtp::PooledPlatePurpose,
+    'PF MiSeq Stock'         => IlluminaHtp::StockTubePurpose,
+    'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
+    'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
+
+
     'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
     'Shear'               => IlluminaHtp::CovarisPlatePurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
-    'Lib PCR'             => IlluminaHtp::LibPcrPlatePurpose,
+    'Lib PCR'             => PlatePurpose,
     'Lib PCRR'            => PlatePurpose,
     'Lib PCR-XP'          => IlluminaHtp::TransferablePlatePurpose,
     'Lib PCRR-XP'         => IlluminaHtp::TransferablePlatePurpose,
@@ -101,6 +144,7 @@ module IlluminaHtp::PlatePurposes
     'Lib PCR-XP QC'    => PlatePurpose,
     'Lib PCRR-XP QC'   => PlatePurpose,
     'Lib Norm QC'      => PlatePurpose,
+    'PF EM Pool QC'    => PlatePurpose,
 
     'Lib Norm'        => IlluminaHtp::InitialDownstreamPlatePurpose,
     'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
@@ -154,7 +198,7 @@ module IlluminaHtp::PlatePurposes
       )
 
       flow.each do |name|
-        create_plate_purpose(name, :default_location => library_creation_freezer)
+        create_plate_purpose(name, :default_location => library_creation_freezer, :source_purpose_id => stock_plate.id)
       end
     end
 
@@ -173,8 +217,8 @@ module IlluminaHtp::PlatePurposes
 
     def create_branch(branch_o)
       branch = branch_o.clone
-      branch.inject(Purpose.find_by_name(branch.shift)) do |parent, child|
-        Purpose.find_by_name(child).tap do |child_purpose|
+      branch.inject(Purpose.find_by_name!(branch.shift)) do |parent, child|
+        Purpose.find_by_name!(child).tap do |child_purpose|
           parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => request_type_between(parent, child_purpose))
         end
       end
@@ -191,15 +235,18 @@ module IlluminaHtp::PlatePurposes
     end
 
     def purpose_for(name)
-      self::PLATE_PURPOSE_TYPE[name]
+      self::PLATE_PURPOSE_TYPE[name] || raise("NO class configured for #{name}")
     end
     private :purpose_for
 
     def request_type_between(parent, child)
+      std = RequestPurpose.find_by_key('standard')
       _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
       request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
-      RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1)
+      RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1,
+        :request_purpose => std
+        )
     end
     private :request_type_between
 
@@ -213,7 +260,8 @@ module IlluminaHtp::PlatePurposes
         :name                  => plate_purpose_name,
         :cherrypickable_target => false,
         :cherrypick_direction  => 'column',
-        :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name)
+        :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
+        :asset_shape_id => AssetShape.default.id
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
       end

@@ -1,14 +1,15 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/ do |create_mx_tube, table|
   number_of_tubes = table.rows.size
   step(%Q{I have a tag group called "My tag group" with #{number_of_tubes} tags})
 
-  mx_tube = Factory(:multiplexed_library_tube) if create_mx_tube
+  mx_tube = FactoryGirl.create(:multiplexed_library_tube) if create_mx_tube
   table.hashes.each do |row|
     barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
-    tube = Factory(:full_library_tube, :barcode => barcode.to_i)
+    tube = FactoryGirl.create(:full_library_tube, :barcode => barcode.to_i)
     tag  = Tag.find_by_map_id(tag_id.match(/(\d+)/)[1].to_i) or raise StandardError, "Cannot find tag #{tag_id.inspect}"
     #tube.aliquots.create!(:tag => tag, :sample => Sample.create!(:name => "sample for tube #{tube.barcode}".gsub(" ","_")))
     tag.tag!(tube)

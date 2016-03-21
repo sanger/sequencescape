@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
 Given /^I release the last completed batch$/ do
   batch =Batch.find(:last, :conditions => {:state => "Completed"})
   visit release_batch_path(batch)
@@ -24,7 +25,7 @@ end
 
 Given /^the last batch has (\d+) requests?$/ do |count|
   batch          = Batch.last or raise StandardError, 'There appear to be no batches'
-  batch.requests = (1..count.to_i).map { |_| Factory(:request_suitable_for_starting, :request_type => batch.pipeline.request_type) }
+  batch.requests = (1..count.to_i).map { |_| FactoryGirl.create(:request_suitable_for_starting, :request_type => batch.pipeline.request_type) }
 end
 
 Given /^"([^\"]+)" is the owner of batch with ID (\d+)$/ do |login, id|

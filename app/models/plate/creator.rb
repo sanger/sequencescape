@@ -1,13 +1,14 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
+
 
 class Plate::Creator < ActiveRecord::Base
 
   PlateCreationError = Class.new(StandardError)
 
   class PurposeRelationship < ActiveRecord::Base
-    set_table_name('plate_creator_purposes')
+    self.table_name =('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, :class_name => 'Plate::Creator'
@@ -15,12 +16,12 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   class ParentPurposeRelationship < ActiveRecord::Base
-    set_table_name('plate_creator_parent_purposes')
+    self.table_name=('plate_creator_parent_purposes')
 
     belongs_to :plate_purpose, :class_name => 'Purpose'
   end
 
-  set_table_name('plate_creators')
+  self.table_name = 'plate_creators'
 
   # These are the plate purposes that will be created when this creator is used.
   has_many :plate_creator_purposes, :class_name => 'Plate::Creator::PurposeRelationship', :dependent => :destroy, :foreign_key => :plate_creator_id
@@ -79,9 +80,8 @@ class Plate::Creator < ActiveRecord::Base
   end
   private :create_plates
 
-
-  def create_child_plates_from(plate, current_user, creator_parameters)
-    stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
+  def create_child_plates_from(plate, current_user,creator_parameters)
+    stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
@@ -90,8 +90,8 @@ class Plate::Creator < ActiveRecord::Base
         child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
       end.tap do |child_plate|
           child_plate.wells << plate.wells.map do |well|
-            well.clone.tap do |child_well|
-              child_well.aliquots = well.aliquots.map(&:clone)
+            well.dup.tap do |child_well|
+              child_well.aliquots = well.aliquots.map(&:dup)
               child_well.stock_wells.attach(stock_well_picker.call(well))
             end
           end

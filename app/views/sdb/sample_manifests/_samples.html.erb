@@ -1,0 +1,18 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2016 Genome Research Ltd.%>
+<%= bs_column do %>
+  <h2>Samples</h2>
+  <%= pagination samples %>
+
+  <% samples.each do |sample| %>
+    <%= link_to "#{sample.sanger_sample_id} (#{sample.name})", sample_path(sample) %><br />
+  <% end %>
+  <%= pagination samples %>
+
+  <% if samples.size == 0 %>
+    <div class="help">
+      Samples may take a few minutes to be processed.
+    </div>
+  <% end %>
+<% end %>

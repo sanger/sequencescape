@@ -14,7 +14,7 @@ Feature: Display the errors that occur during cherrypicking for pulldown
 
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     Then I should see "This batch belongs to pipeline: Cherrypicking for Pulldown"
     And I should see "Cherrypick Group By Submission"
 

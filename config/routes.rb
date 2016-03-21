@@ -1,293 +1,594 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
-ActionController::Routing::Routes.draw do |map|
-  map.resources :reference_genomes
-  map.resources :barcode_printers
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-  map.resources :robot_verifications, :collection => {:submission => [:post, :get], :download => [:post]}
-  map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  }
+Sequencescape::Application.routes.draw do
+  root to:'studies#index'
+  resource :home, :only => [:show]
 
-  #### NPG start ####
-  map.with_options(:path_prefix => '/npg_actions', :conditions => { :method => :post, :format => :xml }) do |npg|
-    npg.with_options(:controller => 'npg_actions/assets') do |assets|
-      assets.pass_qc_state 'assets/:id/pass_qc_state', :action => 'pass'
-      assets.fail_qc_state 'assets/:id/fail_qc_state', :action => 'fail'
-    end
-  end
-  #### NPG end ####
+  mount Api::RootService.new => '/api/1'
 
-  map.resources :items
-  map.resources :batches, :member => {:print_labels => :get, :print_stock_labels => :get, :print_plate_labels => :get, :filtered => :get, :swap => :post, :gwl_file => :get} do |batch|
-    batch.resources :requests, :controller => "batches/requests"
-    batch.resources :comments, :controller => "batches/comments"
-  end
+  resources :samples do
 
-  map.release_batch 'pipelines/release/:id', :action => 'release', :controller =>'pipelines'
-  map.finish_batch 'pipelines/finish/:id', :action => 'finish', :controller =>'pipelines'
-  map.connect "run/:run", :controller => "items", :action => "run_lanes"
-  map.connect "run/:run.json", :controller => "items", :action => "run_lanes", :format => "json"
-  map.connect "run/:run.xml", :controller => "items", :action => "run_lanes", :format => "xml"
-  map.login "/login", :controller => "sessions", :action => "login"
-  map.logout "/logout", :controller => "sessions", :action => "logout"
+    resources :assets
+    resources :comments
+    resources :studies
 
-  # Main objects
-  map.resources :events
-  map.resources :sources
-  map.resources :samples, :has_many => :assets, :member => {:history => :get }
-  map.resources :samples, :collection => { :upload => :get, :review => :post } do |sample|
-    sample.resources :comments, :controller => "samples/comments"
-    sample.resources :studies, :controller => "samples/studies"
-  end
-
-  map.connect '/taxon_lookup_by_term/:term', :controller => "samples", :action => "taxon_lookup"
-  map.connect '/taxon_lookup_by_id/:id', :controller => "samples", :action => "taxon_lookup"
-
-  map.connect '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id', :controller => "studies/workflows", :action => "summary_detailed"
-  map.connect 'studies/accession/:id', :controller =>"studies", :action =>"accession"
-  map.connect 'studies/policy_accession/:id', :controller =>"studies", :action =>"policy_accession"
-  map.connect 'studies/dac_accession/:id', :controller =>"studies", :action =>"dac_accession"
-  map.study_show_accession 'studies/accession/show/:id', :controller =>"studies", :action =>"show_accession"
-  map.study_show_dac_accession 'studies/accession/dac/show/:id', :controller =>"studies", :action =>"show_dac_accession"
-  map.study_show_policy_accession 'studies/accession/policy/show/:id', :controller =>"studies", :action =>"show_policy_accession"
-  #map.connect 'studies/accession/submission/:id', :controller =>"studies", :action =>"show_submission" doesn't exist anymore
-  map.connect 'samples/accession/:id', :controller =>"samples", :action =>"accession"
-  map.connect 'samples/accession/show/:id', :controller =>"samples", :action =>"show_accession"
-  map.destroy_sample 'samples/destroy/:id', :controller => "samples", :action => "destroy"
-  map.sample_show_accession 'samples/accession/show/:id', :controller =>"samples", :action =>"show_accession"
-
-  map.connect '/taxon_lookup_by_term/:term', :controller => "samples", :action => "taxon_lookup"
-  map.connect '/taxon_lookup_by_id/:id', :controller => "samples", :action => "taxon_lookup"
-
-  map.resources :studies, :has_many => :assets, :collection => {:study_list => :get},
-    :member => { :study_reports => [:get], :sample_manifests => :get, :suppliers => :get, :assembly => [:put, :get], :new_plate_submission => :get, :create_plate_submission => :post, :close => :get, :open => :get, :follow => :get, :projects => :get, :study_status => :get, :collaborators => :get, :properties => :get, :state => :get, :grant_role => :post, :remove_role => :post , :related_studies => :get, :relate_study => :post, :unrelate_study => :post} do |study|
-    study.resources :sample_registration, :controller => "studies/sample_registration",
-      :only => [:index, :new, :create], :collection => {:new => [:get, :post], :upload => :get}
-    study.resources :samples, :controller => "studies/samples"
-    study.resources :events, :controller => "studies/events"
-
-    study.resources :requests, :member => { :reset => :post, :cancel => :get }
-    study.resources :comments, :controller => "studies/comments"
-
-    study.resources :asset_groups, :controller => "studies/asset_groups", :member => {:search => :post, :add => :post, :print => :get, :print_labels => :post, :printing => :get}
-
-    study.resources :plates, :controller => "studies/plates", :except => [:destroy], :collection => {:view_wells => :post, :asset_group => :post, :show_asset_group => :get}, :member => {:remove_wells => :post} do |plate|
-      plate.resources :wells, :except => [:destroy, :edit], :controller => "studies/plates/wells"
+    member do
+      get :history
     end
 
-    study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get} do |workflow|
-      workflow.resources :assets, :collection => { :print => :post }
+    collection do
+      get :upload
+      post :review
+    end
+  end
+
+  resources :projects do
+    resources :studies
+    member do
+      get :related_studies
+      get :collaborators
+      get :follow
+      post :grant_role
+      post :remove_role
+    end
+  end
+
+  match '/login' => 'sessions#login', :as => :login
+  match '/logout' => 'sessions#logout', :as => :logout
+
+  resources :reference_genomes
+  resources :barcode_printers
+
+  resources :robot_verifications do
+    collection do
+      post :submission
+      get :submission
+      post :download
+    end
+  end
+
+  scope 'npg_actions', :module => 'npg_actions' do
+    resources :assets, :only => [] do
+      post :pass_qc_state, :action => :pass, :format => :xml
+      post :fail_qc_state, :action => :fail, :format => :xml
+    end
+  end
+
+  resources :items
+
+  resources :batches do
+    resources :requests
+    resources :comments
+
+    member do
+      get :print_labels
+      get :print_stock_labels
+      get :print_plate_labels
+      get :filtered
+      post :swap
+      get :gwl_file
     end
 
-    study.resources :documents, :controller => "studies/documents", :only => [:show, :destroy]
-
   end
 
-  # TODO (jr16) move to a more appropriate location
-  map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
+  match 'batches/released/clusters' => 'batches#released'
+  match 'batches/released/:id' => 'batches#released'
 
-  map.resources :submissions, :collection => { :study_assets => :get, :order_fields => :get, :project_details => :get }
-  map.resources :orders, :only => [:destroy, :update]
+  match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch
+  match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch
+  match 'run/:run' => 'items#run_lanes'
+  match 'run/:run.json' => 'items#run_lanes', :format => 'json'
+  match 'run/:run.xml' => 'items#run_lanes', :format => 'xml'
 
-  map.resources :documents, :only => [ :show ]
+  resources :events
+  resources :sources
 
+  match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
+  match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
 
-  #Same path but two different actions. GET for put parameter in the form and show the error. PUT for the action.
-  map.filter_change_decision_request 'requests/:id/change_decision', :controller => 'requests', :action => 'filter_change_decision', :conditions => { :method => :get }
-  map.change_decision_request        'requests/:id/change_decision', :controller => 'requests', :action => 'change_decision',        :conditions => { :method => :put }
+  match '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id' => 'studies/workflows#summary_detailed'
+  match 'studies/accession/:id' => 'studies#accession'
+  match 'studies/policy_accession/:id' => 'studies#policy_accession'
+  match 'studies/dac_accession/:id' => 'studies#dac_accession'
+  match 'studies/accession/show/:id' => 'studies#show_accession', :as => :study_show_accession
+  match 'studies/accession/dac/show/:id' => 'studies#show_dac_accession', :as => :study_show_dac_accession
+  match 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession
+  match 'samples/accession/:id' => 'samples#accession'
+  match 'samples/accession/show/:id' => 'samples#show_accession'
+  match 'samples/destroy/:id' => 'samples#destroy', :as => :destroy_sample
+  match 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession
+  match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
+  match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
 
-  map.resources :requests,
-                :has_many => :batches,
-                :member => { :copy => :get, :cancel => :get, :print => :get, :history => :get },
-                :collection => { :incomplete_requests_for_family => :get, :pending => :get, :get_children_requests => :get, :mpx_requests_details => :get} do |request|
-    request.resources :comments, :controller => "requests/comments"
-  end
+  resources :studies do
 
-  map.resources :items, :only => :none, :shallow => true do |item|
-    item.resource :request, :only => [:new, :create]
-  end
-
-  map.study_workflow_status "studies/:study_id/workflows/:id", :controller => "study_workflows", :action => "show"
-
-  map.resources :searches, :only => [:index]
-
-  # Administrative things
-  map.admin "admin", :controller => "admin", :action => "index"
-  map.resources :custom_texts,     :controller => "admin/custom_texts",     :path_prefix => "/admin"
-  map.resources :settings,         :controller => "admin/settings",         :path_prefix => "/admin", :collection => { :reset => :get, :apply => :get }
-  map.resources :studies,          :controller => "admin/studies",          :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
-  map.resources :projects,         :controller => "admin/projects",         :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
-  map.resources :plate_purposes,   :controller => "admin/plate_purposes",   :path_prefix => "/admin", :only => [:index,:edit,:new,:create,:update]
-  map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]
-  map.resources :faculty_sponsors, :controller => "admin/faculty_sponsors", :path_prefix => "/admin"
-  map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]
-  map.resources :users,            :controller => "admin/users",            :path_prefix => "/admin",
-    :collection => { :filter => :post }, :member => { :switch => :get, :grant_user_role => :post, :remove_user_role => :post }
-  map.resources :profile,          :controller => "users",:member => {:study_reports => :get, :projects => :get }, :only => [:show, :edit, :update, :projects]
-  map.resources :roles, :path_prefix => "/admin", :shallow => true do |role|
-    role.resources :users, :controller => "roles/users"
-  end
-  map.resources :robots, :controller => "admin/robots", :path_prefix => "/admin", :has_many => :robot_properties
-  map.resources :bait_libraries, :controller => "admin/bait_libraries", :path_prefix => "/admin"
-  map.resources :bait_library_types, :controller => "admin/bait_libraries/bait_library_types", :path_prefix => "/admin"
-  map.resources :bait_library_suppliers, :controller => "admin/bait_libraries/bait_library_suppliers", :path_prefix => "/admin"
-
-  ## From pipelines
-  map.resources :verifications, :collection => {:input => :get, :verify => :post }
-  map.resources :plate_templates
-
-  map.connect 'implements/print_labels', :controller => 'implements', :action => 'print_labels'
-  map.resources :implements
-  map.resources :pico_sets, :member => { :analyze => :get, :score => :post, :normalise_plate => :get}, :collection => { :create_from_stock => :get }
-  map.resources :gels, :member => { :show => :get, :update => :post}, :collection => { :lookup => :post, :find => :get }
-
-  map.resources :locations
-
-  map.resources :request_information_types
-
-  map.logout "/logout", :controller => "sessions", :action => "logout"
-  map.login "/login", :controller => "sessions", :action => "login"
-
-  # TODO: Decide if this route and the associated controller are actually required (used by library prep pipeline)
-  map.connect 'pipelines/assets/new/:id', :controller => 'pipelines/assets', :action => 'new', :conditions => { :method => :get }
-
-  map.resources :pipelines, :member => { :reception => :get, :show_comments => :get}, :collection => { :update_priority => :post }, :except => [ :edit, :update, :create, :new ]
-
-  map.resource :search, :controller => 'search', :only => [:new, :index]
-
-  map.resources :events
-
-  map.connect 'batches/all', :controller => 'batches', :action => 'all'
-  map.connect 'batches/released', :controller => 'batches', :action => 'released'
-  map.connect 'batches/released/clusters', :controller => 'batches', :action => 'released'
-
-
-  map.resources :items, :collection => { :samples_for_autocomplete => :get }
-
-  map.connect 'workflows/refresh_sample_list', :controller => 'workflows', :action => 'refresh_sample_list'
-
-  map.resources :workflows
-
-  map.resources :tasks
-  map.resources :asset_audits
-
-  map.connect 'assets/snp_import', :controller => 'assets', :action => 'snp_import'
-  map.assets_lookup 'assets/lookup', :controller => 'assets', :action => 'lookup'
-  map.connect 'assets/receive_barcode', :controller => 'assets', :action => 'receive_barcode'
-  map.connect 'assets/import_from_snp', :controller => 'assets', :action => 'import_from_snp'
-  map.connect 'assets/confirm_reception', :controller => 'assets', :action => 'confirm_reception'
-  map.connect 'assets/combine', :controller => 'assets', :action => 'combine'
-  map.connect 'assets/get_plate_layout', :controller => 'assets', :action => 'get_plate_layout'
-  map.connect 'assets/create_plate_layout', :controller => 'assets', :action => 'create_plate_layout'
-  map.connect 'assets/make_plate_from_rack', :controller => 'assets', :action => 'make_plate_from_rack'
-
-  map.controller 'assets/find_by_barcode', :controller => 'assets', :action => 'find_by_barcode'
-
-  map.lab_view "lab_view", :controller => 'assets', :action => 'lab_view'
-
-  map.resources :families
-  map.resources :tag_groups, :except => [:destroy] do |tag|
-    tag.resources :tags, :except => [:destroy, :index, :create, :new, :edit]
-  end
-
-  map.resources :assets, :has_many => :assets, :collection => { :snp_register => :get, :reception => :get, :print_labels => :post}, :member => { :parent_assets => :get, :child_assets => :get, :show_plate => :get, :new_request => :get, :create_request => :post, :summary => :get, :close => :get, :print => :get, :print_items => :post, :history => :get, :filtered_move => :get, :move => :post, :move_to_2D => :get,  :complete_move_to_2D => :post} do |asset|
-    asset.resources :comments, :controller => "assets/comments"
-  end
-
-  map.resources :plates, :collection => { :upload_pico_results => :post, :create => :post, :to_sample_tubes => :get, :create_sample_tubes => :post }
-
-
-  map.resources :pico_set_results, :collection => {:upload_pico_results => :post, :create => :post}
-
-  map.resources :receptions, :collection => { :snp_register => :get, :reception => :get, :snp_import => :get, :receive_snp_barcode => :get}
-
-  map.with_options(:controller => 'sequenom') do |sequenom|
-    sequenom.sequenom_root 'sequenom/index', :action => 'index', :conditions => { :method => :get }
-    sequenom.sequenom_search 'sequenom/search', :action => 'search', :conditions => { :method => :post }
-    sequenom.sequenom_plate 'sequenom/:id', :action => 'show', :conditions => { :method => :get }, :requirements => { :id => /\d+/ }
-    sequenom.sequenom_update 'sequenom/:id', :action => 'update', :conditions => { :method => :put }, :requirements => { :id => /\d+/ }
-    sequenom.sequenom_quick_update 'sequenom/quick', :action => 'quick_update', :conditions => { :method => :post }
-  end
-
-  map.resources :sequenom_qc_plates, :only => [ :new, :create, :index]
-
-  map.resources :pico_dilutions
-
-  map.resources :study_reports
-  map.resources :sample_logistics, :collection => { :lab => :get, :qc_overview => :get }
-
-  map.resources :machine_barcodes, :only => [ :show ]
-
-  ### Standard routes
-  # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  map.root :controller => "studies"
-
-  map.health 'health', :controller => 'health', :action => :index
-
-  ######  API  #####
-  map.with_options(:path_prefix => "/#{API_VERSION}") do |api|
-    # Some of our resources are read-only (default behaviour but this just makes it clearer) ...
-    api.with_options(:read_only => true) do |read_only|
-      read_only.model :asset_audits, :controller => "api/asset_audits"
-      read_only.model :asset_links, :controller => "api/asset_links"
-      read_only.model :batch_requests, :controller => "api/batch_requests"
-      read_only.asset :batches, :controller => "api/batches"
-      read_only.model :events, :controller => "api/events"
-      read_only.asset :lanes, :controller => "api/lanes"
-      read_only.asset :library_tubes, :controller => "api/library_tubes" do |library_tube|
-        library_tube.asset :lanes, :controller => "api/lanes"
-        library_tube.model :requests, :controller => "api/requests"
-      end
-      read_only.asset :multiplexed_library_tubes, :controller => "api/multiplexed_library_tubes"
-      read_only.asset :pulldown_multiplexed_library_tubes, :controller => "api/pulldown_multiplexed_library_tubes"
-      read_only.model :plate_purposes, :controller => "api/plate_purposes"
-      read_only.asset :plates, :controller => "api/plates"
-      read_only.asset :sample_tubes, :controller => "api/sample_tubes" do |sample_tube|
-        sample_tube.asset :library_tubes, :controller => "api/library_tubes"
-        sample_tube.model :requests, :controller => "api/requests"
-      end
-      read_only.model :study_samples, :controller => "api/study_samples"
-      read_only.model :submissions, :controller => "api/submissions" do |submission|
-        submission.model :orders, :controller => "api/orders"
-      end
-      read_only.model :orders, :controller => "api/orders"
-      read_only.model :tags, :controller => "api/tags"
-      read_only.asset :wells, :controller => "api/wells"
-      read_only.model :aliquots, :controller => "api/aliquots"
+    collection do
+      get :study_list
     end
 
-    # ... others are CRUD resources ...
-    api.with_options(:read_only => false) do |crud|
-      crud.model :projects, :controller => "api/projects" do |project|
-        project.model :studies, :controller => "api/studies"
-      end
-      crud.model :requests, :controller => "api/requests"
-      crud.model :samples, :controller => "api/samples" do |smp|
-        smp.asset :sample_tubes, :controller => "api/sample_tubes", :read_only => true
-      end
-      crud.model :studies, :controller => "api/studies" do |study|
-        study.model :samples, :controller => "api/samples"
-        study.model :projects, :controller => "api/projects"
+    member do
+      get :study_reports
+      get :sample_manifests
+      get :suppliers
+      get :assembly
+      put :assembly
+      get :new_plate_submission
+      post :create_plate_submission
+      get :close
+      get :open
+      get :follow
+      get :projects
+      get :study_status
+      get :collaborators
+      get :properties
+      get :state
+      post :grant_role
+      post :remove_role
+      get :related_studies
+      post :relate_study
+      post :unrelate_study
+    end
+
+    resources :assets
+
+    resources :sample_registration, :only => [:index,:new,:create], :controller => "studies/sample_registration" do
+      collection do
+        post :spreadsheet
+        # get :new
+        get :upload
       end
     end
 
-    # ... and some are specialised (but should not be!)
+    resources :samples, :controller => "studies/samples"
+    resources :events, :controller => "studies/events"
+
+    resources :requests do
+      member do
+        post :reset
+        get :cancel
+      end
+    end
+
+    resources :comments, :controller => "studies/comments"
+
+    resources :asset_groups, :controller => "studies/asset_groups" do
+      member do
+        post :search
+        post :add
+        get :print
+        post :print_labels
+        get :printing
+      end
+    end
+
+    resources :plates, :controller => "studies/plates", :excpet => :destroy do
+
+      collection do
+        post :view_wells
+        post :asset_group
+        get :show_asset_group
+      end
+
+      member do
+        post :remove_wells
+      end
+
+      resources :wells, :expect => [:destroy,:edit]
+    end
+
+    resources :workflows, :controller => "studies/workflows" do
+
+      member do
+        get :summary
+        get :show_summary
+      end
+
+      resources :assets do
+        collection do
+          post :print
+        end
+      end
+    end
+
+    resources :documents, :controller => "studies/documents", :only => [:show,:destroy]
 
   end
-  #### API end ####
 
-  ### SDB ###
-  map.with_options(:namespace => "sdb/", :path_prefix => "/sdb") do |sdb|
-    sdb.resources :sample_manifests, :collection => {:upload => :post} ,:member => {:export => :get, :uploaded_spreadsheet => :get}
-    #/:relative_root/:class/:attachment/:id?style=:style
-    sdb.resources :suppliers, :member => {:sample_manifests => :get, :studies => :get}
-    sdb.connect "/", :controller => "home"
+  match 'bulk_submissions' => 'bulk_submissions#new'
+
+  resources :submissions do
+    collection do
+      get :study_assets
+      get :order_fields
+      get :project_details
+    end
+    member do
+      post :change_priority
+    end
   end
 
-  map.resources :labwhere_receptions, :only => [:index, :create]
+  resources :orders
+  resources :documents
+
+  match 'requests/:id/change_decision' => 'requests#filter_change_decision', :as => :filter_change_decision_request, :via => 'get'
+  match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
+
+  resources :requests do
+    resources :comments, :controller => "requests/comments"
+
+    member do
+      get :history
+      get :copy
+      get :cancel
+      get :print
+    end
+
+    collection do
+      get :incomplete_requests_for_family
+      get :pending
+      get :get_children_requests
+      get :mpx_requests_details
+    end
+
+  end
+
+  resources :items do
+    resource :request
+  end
+
+  match 'studies/:study_id/workflows/:id' => 'study_workflows#show', :as => :study_workflow_status
+
+  resources :searches
+
+  namespace :admin do
+    resources :custom_texts
+
+    resources :settings do
+      collection do
+        get :reset
+        get :apply
+      end
+    end
+
+    resources :studies, except:[:destroy]  do
+      collection do
+        get :index
+        post :filter
+        post :edit
+      end
+      member do
+        put :managed_update
+      end
+    end
+
+    resources :projects, except:[:destroy] do
+      collection do
+        get :index
+        post :filter
+        post :edit
+      end
+      member do
+        put :managed_update
+      end
+    end
+
+    resources :plate_purposes
+    resources :delayed_jobs
+    resources :faculty_sponsors
+    resources :delayed_jobs
+
+    resources :users do
+
+      collection do
+        post :filter
+      end
+
+      member do
+        get :switch
+        post :grant_user_role
+        post :remove_user_role
+      end
+
+    end
+
+    resources :roles do
+      resources :users
+    end
+
+    resources :robots do
+      resources :robot_properties
+    end
+    resources :bait_libraries
 
 
-  # Install the default routes as the lowest priority.
-  map.connect ":controller/:action/:id"
-  map.connect ":controller/:action/:id.:format"
+    scope :module => :bait_libraries do
+      resources :bait_library_types
+      resources :bait_library_suppliers
+    end
+  end
+  match 'admin' => 'admin#index', :as => :admin
+
+  resources :profile, :controller => 'Users' do
+    member do
+      get :study_reports
+      get :projects
+    end
+  end
+
+  resources :verifications do
+    collection do
+      get :input
+      post :verify
+    end
+  end
+
+  resources :plate_templates
+
+  match 'implements/print_labels' => 'implements#print_labels'
+
+  resources :implements
+  resources :pico_sets do
+    collection do
+      get :create_from_stock
+    end
+    member do
+      get :analyze
+      post :score
+      get :normalise_plate
+    end
+  end
+
+  resources :gels do
+    collection do
+      post :lookup
+      get :find
+    end
+    # TODO: Remove this route. get gels/:id should be show
+    member do
+      get :show
+    end
+  end
+
+  resources :locations
+  resources :request_information_types
+
+  match '/logout' => 'sessions#logout', :as => :logout
+  match '/login' => 'sessions#login', :as => :login
+  match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
+
+  resources :pipelines, :except => [:delete] do
+    collection do
+      post :update_priority
+    end
+    member do
+      get :reception
+      get :deactivate
+      get :activate
+      get :show_comments
+    end
+  end
+
+  resources :lab_searches
+  resources :errors
+  resources :events
+
+  resources :items do
+    collection do
+      get :samples_for_autocomplete
+    end
+  end
+
+  match 'workflows/refresh_sample_list' => 'workflows#refresh_sample_list'
+
+  resources :workflows
+
+  resources :tasks
+  resources :asset_audits
+
+  resources :qc_reports, :except => [:delete,:update] do
+    collection do
+      post :qc_file
+    end
+  end
+
+  match 'assets/snp_import' => 'assets#snp_import'
+  match 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
+  match 'assets/receive_barcode' => 'assets#receive_barcode'
+  match 'assets/import_from_snp' => 'assets#import_from_snp'
+  match 'assets/find_by_barcode' => 'assets#find_by_barcode'
+
+  match 'lab_view' => 'assets#lab_view', :as => :lab_view
+
+  resources :families
+
+  resources :tag_groups, :excpet=>[:destroy] do
+    resources :tags, :except => [:destroy, :index, :create, :new, :edit]
+  end
+
+  resources :assets do
+    collection do
+      get :snp_register
+      get :reception
+      post :print_labels
+    end
+
+    member do
+      get :parent_assets
+      get :child_assets
+      get :show_plate
+      get :new_request
+      post :create_request
+      get :summary
+      get :close
+      get :print
+      post :print_items
+      get :history
+      post :move
+    end
+
+    resources :comments, :controller => "assets/comments"
+  end
+
+  resources :plates do
+    collection do
+      post :upload_pico_results
+      post :create
+      get :to_sample_tubes
+      post :create_sample_tubes
+    end
+  end
+
+  resources :pico_set_results do
+    collection do
+      post :upload_pico_results
+      post :create
+    end
+  end
+
+  resources :receptions, :only => [:index] do
+    collection do
+      post :confirm_reception
+      get :snp_register
+      get :reception
+      get :snp_import
+      get :receive_snp_barcode
+    end
+  end
+
+  match 'sequenom/index' => 'sequenom#index', :as => :sequenom_root, :via => 'get'
+  match 'sequenom/search' => 'sequenom#search', :as => :sequenom_search, :via => 'post'
+  match 'sequenom/:id' => 'sequenom#show', :as => :sequenom_plate, :constraints => 'id(?-mix:\d+)', :via => 'get'
+  match 'sequenom/:id' => 'sequenom#update', :as => :sequenom_update, :constraints => 'id(?-mix:\d+)', :via => 'put'
+  match 'sequenom/quick' => 'sequenom#quick_update', :as => :sequenom_quick_update, :via => 'post'
+
+  resources :sequenom_qc_plates
+  resources :pico_dilutions
+  resources :study_reports
+
+  resources :sample_logistics do
+    collection do
+      get :lab
+      get :qc_overview
+    end
+  end
+
+  scope '0_5', :module => 'api' do
+
+    resources 'asset_audits', :only => [:index, :show]
+    resources 'asset_links', :only => [:index, :show]
+    resources 'batch_requests', :only => [:index, :show]
+    resources 'batches', :only => [:index, :show] do
+      member do
+        get :children
+        get :parents
+      end
+    end
+    resources 'billing_events', :only => [:index, :show]
+    resources 'events', :only => [:index, :show]
+    resources 'lanes', :only => [:index, :show] do
+      member do
+        get :children
+        get :parents
+      end
+    end
+    resources 'library_tubes', :only => [:index, :show] do
+      member do
+        get :children
+        get :parents
+      end
+
+      resources 'lanes', :only => [:index, :show]
+      resources 'requests', :only => [:index, :show]
+    end
+    resources 'multiplexed_library_tubes', :only => [:index, :show] do
+      member do
+        get :children
+        get :parents
+      end
+    end
+    resources 'pulldown_multiplexed_library_tubes', :only => [:index, :show]
+    resources 'plate_purposes', :only => [:index, :show]
+
+    resources 'plates', :only => [:index, :show] do
+      member do
+        get :children
+        get :parents
+      end
+    end
+
+    resources 'sample_tubes', :only => [:index, :show] do
+      resources 'library_tubes', :only => [:index, :show]
+      resources 'requests', :only => [:index, :show]
+      member do
+        get :children
+        get :parents
+      end
+    end
+
+    resources 'study_samples', :only => [:index, :show]
+    resources 'submissions', :only => [:index, :show] do
+      resources 'orders', :only => [:index, :show]
+    end
+    resources 'orders', :only => [:index, :show]
+    resources 'tags', :only => [:index, :show]
+    resources 'wells', :only => [:index, :show] do
+      member do
+        get :children
+        get :parents
+      end
+    end
+    resources 'aliquots', :only => [:index, :show]
+
+
+    resources 'projects', :except => :destroy do
+      resources 'studies', :except => :destroy
+    end
+    resources 'requests', :except => :destroy
+    resources 'samples', :except => :destroy do
+      member do
+        get :children
+        get :parents
+      end
+      resources 'sample_tubes', :only => [:index, :show] do
+        member do
+          get :children
+          get :parents
+        end
+      end
+    end
+    resources 'studies', :except => :destroy do
+      resources 'samples', :except => :destroy
+      resources 'projects', :except => :destroy
+    end
+
+  end
+
+  namespace :sdb, as:'' do
+    resources :sample_manifests do
+      collection do
+        post :upload
+      end
+      member do
+        get :export
+        get :uploaded_spreadsheet
+      end
+    end
+
+    resources :suppliers do
+
+      member do
+        get :sample_manifests
+        get :studies
+      end
+    end
+
+    match '/' => 'home#index'
+  end
+
+  resources :labwhere_receptions, :only => [:index, :create]
+
+  match '/:controller(/:action(/:id))'
+
 end

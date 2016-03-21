@@ -1,115 +1,101 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.%>
-<table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id="pipeline_inbox">
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
+<table class="table table-striped sortable table-dense-information" id="pipeline_inbox">
   <thead>
     <tr>
-      <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-      <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-      <th id="priority_flag" class='label' style='text-align: center' width='5%'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
-      <th class='label' width='5%'><%= link_to "Item ID", "javascript:void(0);" %></th>
-      <th style="display:none" class='label' width='5%'><%= link_to "", "javascript:void(0);" %></th>
-      <th class='label' width='5%'>Request ID</th>
-      <th class='label' width='10%'><%= link_to "Name", "javascript:void(0);" %></th>
-      <th class='label' width='15%'><%= link_to "Request comments", "javascript:void(0);" %></th>
-      <th class='label' width='10%'><%= link_to "Asset", "javascript:void(0);" %></th>
-      <th class='label' width='15%'><%= link_to "Asset comments", "javascript:void(0);" %></th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th id="priority_flag"><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
+      <th><a>Submission</a></th>
+      <th>Request ID</th>
+      <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th><%= link_to "Request comments", "javascript:void(0);" %></th>
+      <th><%= link_to "Asset", "javascript:void(0);" %></th>
+      <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
       <% if @pipeline.multiplexed? %>
-        <th class='label'><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
+        <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
       <% end %>
       <% @information_types.each do |information_type| %>
-        <% next if information_type.hide_in_inbox %>
-        <th class='label' style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+        <th style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
       <% end %>
-      <th class='label' width='5%'><%= link_to "Concentration", "javascript:void(0);" %></th>
-      <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
+      <th><%= link_to "Concentration", "javascript:void(0);" %></th>
+      <th><%= link_to "Study", "javascript:void(0);" %></th>
     </tr>
   </thead>
   <tbody>
-   <% index = 0 %>
-    <% grouped_requests.each do |grouping, requests| %>
+    <% grouped_requests.each_with_index do |(grouping, requests), index| %>
         <tr>
           <% request = requests.first %>
-          <% request = request %>
-          <td class="request" width='2%'>
+          <td>
           <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
             <% if request.ready? %>
               <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request.submission_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
             <% else %>
               <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
             <% end %>
-            <% index += 1 %>
           </td>
-          <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
-          <td class='request' style='text-align: center' width='5%'>
+          <td><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
+          <td>
             <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
           </td>
-          <td class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
-          <td class="request" width='5%'>&nbsp;</td>
-          <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
-          <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
-          <td class='request' width='15%'>&nbsp;</td>
-          <td class='request' width='10%'>&nbsp;</td>
-          <td class='request' width='15%'>&nbsp;</td>
+          <td><%= link_to request.submission_id,submission_path(request.submission) %></td>
+          <td>&nbsp;</td>
+          <td><%= h(request.asset.display_name) %></td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
           <% if @pipeline.multiplexed? %>
-            <td class='request' style='text-align: left' width='10%'><%= request.asset.scanned_in_date %></td>
+            <td style='text-align: left'><%= request.asset.scanned_in_date %></td>
           <% end %>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
-            <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
+            <td><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
-          <td class='request' width='5%'><%= request.asset.concentration || "&nbsp;" -%></td>
-          <td class='request' width='5%'><%= request.submission.study_names %></td>
+          <td><%= request.asset.concentration -%></td>
+          <td><%= request.submission.study_names %></td>
         </tr>
 
       <tr class="nested" id="<%= request.submission_id %>_0" style="display:none">
          <td>&nbsp;</td>
          <td>&nbsp;</td>
-         <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
         <td>&nbsp;</td>
-        <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
-        <td class="request" colspan=12><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
+        <td colspan=12><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
       </tr>
         <%- requests.each_with_index do |request, indice| -%>
-          <% request_comments = request.comments -%>
+          <% request_comments_count = @requests_comment_count.fetch(request.id,0) -%>
           <% request_asset = request.asset -%>
-          <% request_asset_comments = request_asset.comments -%>
+          <% asset_comments_count = @assets_comment_count.fetch(request.asset_id,0)-%>
           <% progr = indice + 1 %>
         <tr class="nested" id="<%= request.submission_id %>_<%= progr.to_s %>" style="display:none">
-          <td class="request" width='2%'>&nbsp;</td>
+          <td width='2%'>&nbsp;</td>
           <td>
-	        <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>
+          <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>
             <% if request.ready? %>
-		    <%= check_box :request, request.id, :value => request.id %>
+              <%= check_box :request, request.id, :value => request.id %>
             <% else %>
-            <%= image_tag "error.png", 'title' => "The library creation request hasn't been completed still, so this request is not ready.", :size => '16x16' %>
+              <%= image_tag "error.png", 'title' => "The library creation request hasn't been completed still, so this request is not ready.", :size => '16x16' %>
             <% end %>
-		  </td>
-          <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
-          <td class='request' style='text-align: center' width='5%'>
+          </td>
+          <td style='text-align: center' width='5%'>
             <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'related_flag_image', 'data-submission-id' => request.submission_id %>
           </td>
-          <td class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
-          <td class='request' width='5%'><%= link_to request.id, request_path(request) %></td>
-          <td class='request' width='10%'><%= link_to(h(request_asset.display_name), asset_path(request.asset)) %></td>
-          <% unless request_comments.empty? -%>
-            <%= render :partial => "request_comments", :locals => { :request => request, :comments => request_comments } %>
+          <td><%= link_to request.submission_id,submission_path(request.submission_id) %></td>
+          <td><%= link_to request.id, request_path(request) %></td>
+          <td><%= link_to(h(request_asset.display_name), asset_path(request.asset)) %></td>
+          <%= render :partial => "request_comments", :locals => { :request => request, :comments_count => request_comments_count } %>
+          <td><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", asset_path(request.asset) %></td>
+          <% unless asset_comments_count.zero? -%>
+            <%= render :partial => "asset_comments", :locals => { :request => request, :comments_count => asset_comments_count } %>
           <% else -%>
-            <td class='request' width='15%'>&nbsp;</td>
-          <% end -%>
-          <td class='request' width='10%'><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", asset_path(request.asset) %></td>
-          <% unless request_asset_comments.empty? -%>
-            <%= render :partial => "asset_comments", :locals => { :request => request, :comments => request_asset_comments } %>
-          <% else -%>
-            <td class='request' width='15%'>&nbsp;</td>
+            <td>&nbsp;</td>
           <% end -%>
           <td>&nbsp;</td>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
-            <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
+            <td><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
-          <td class='request' width='5%'><%= request.asset.concentration || "&nbsp;" -%></td>
-          <td class='request' width='5%'><%= request.submission.study_names %></td>
+          <td><%= request.asset.concentration || "&nbsp;".html_safe -%></td>
+          <td><%= request.submission.study_names %></td>
         </tr>
         <% end -%>
     <% end %>

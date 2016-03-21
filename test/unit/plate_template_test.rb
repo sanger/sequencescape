@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class PlateTemplateTest < ActiveSupport::TestCase
@@ -9,7 +10,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
     [1,0,"1"].each_with_index do |i,index|
       context "with a control well set to #{i} - #{index}" do
         setup do
-          @template = Factory :plate_template
+          @template = create :plate_template
           @template.set_control_well(i)
         end
 
@@ -20,7 +21,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
     end
     context "with a control well set to 0" do
       setup do
-        @template = Factory :plate_template
+        @template = create :plate_template
         @template.set_control_well(0)
       end
 
@@ -31,7 +32,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
 
     context "with a control well set to 1" do
       setup do
-        @template = Factory :plate_template
+        @template = create :plate_template
         @template.set_control_well(1)
       end
 
@@ -42,7 +43,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
 
     context "with no empty wells" do
       setup do
-        @template = Factory :plate_template
+        @template = create :plate_template
         @old_wells = Well.count
         @old_asset_link = AssetLink.count
         @template.update_params!(:name=> "a", :value=>"2", :wells => {})
@@ -55,7 +56,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
 
     context "with 1 empty well" do
       setup do
-        @template = Factory :plate_template
+        @template = create :plate_template
         @old_wells = Well.count
         @template.update_params!(:name=> "a", :value=>"2", :wells => {"A1" => "123"})
       end
@@ -66,7 +67,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
 
     context "with 2 empty wells" do
       setup do
-        @template = Factory :plate_template
+        @template = create :plate_template
         @old_wells = Well.count
         @old_asset_link = AssetLink.count
         @template.update_params!(:name=> "a", :value=>"2", :wells => {"A1" => "123","B3"=>"345"})

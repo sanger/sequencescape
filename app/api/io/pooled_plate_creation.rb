@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013 Genome Research Ltd.
+#Copyright (C) 2013,2015 Genome Research Ltd.
+
 class ::Io::PooledPlateCreation < ::Core::Io::Base
   set_model_for_input(::PooledPlateCreation)
   set_json_root(:pooled_plate_creation)

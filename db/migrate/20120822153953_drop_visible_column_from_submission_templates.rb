@@ -3,8 +3,8 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class DropVisibleColumnFromSubmissionTemplates < ActiveRecord::Migration
   class SubmissionTemplate < ActiveRecord::Base
-    set_table_name('submission_templates')
-    named_scope :should_be_hidden, :conditions => 'superceded_by_id != -1'
+    self.table_name =('submission_templates')
+    scope :should_be_hidden, -> { where('superceded_by_id != -1') }
   end
 
   def self.up

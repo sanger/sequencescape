@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 def GivenSampleMetadata(attribute, regexp)
   Given(regexp) do |name,value|
     sample = Sample.find_by_name(name) or raise StandardError, "There appears to be no sample named '#{ name }'"
@@ -11,7 +12,7 @@ end
 
 
 When /^I attach a valid excel file$/ do
-  attach_file(:file, File.join(RAILS_ROOT, 'public', 'data', 'sample_information.xls'))
+  attach_file(:file, File.join(Rails.root, 'public', 'data', 'sample_information.xls'))
 end
 
 Then /^a "([^\"]*)" number of "([^\"]*)" should be created$/ do |num, records|
@@ -155,7 +156,7 @@ When /^I get the XML for the sample "([^\"]+)"$/ do |name|
 end
 
 Given /^I have a sample called "([^"]*)" with metadata$/ do |name|
-  sample = Factory :sample, :name => name
+  sample = FactoryGirl.create :sample, :name => name
 end
 
 Given /^the sample "([^"]*)" has a supplier name of "([^"]*)"$/ do |sample_name, supplier_name|
@@ -186,7 +187,7 @@ Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_na
 end
 
 Given /^I run the "([^\"]+)" cron script$/ do |script_name|
-  eval File.read("#{RAILS_ROOT}/lib/cron_scripts/#{script_name}")
+  eval File.read("#{Rails.root}/lib/cron_scripts/#{script_name}")
 end
 
 GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
@@ -198,13 +199,13 @@ When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action
 end
 
 Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, dest|
-  xml = (state_action == "sent") ? FakeAccessionService.instance.sent.last["SAMPLE"].readlines.to_s : FakeAccessionService.instance.last_received
-  assert Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).empty?, state_action == "should"
+  xml = (type_action == "sent") ? FakeAccessionService.instance.sent.last["SAMPLE"] : FakeAccessionService.instance.last_received
+  assert_equal (state_action == "should"), Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?, "XML was: #{xml}"
 end
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by_name(sample_name)
-  sample_manifest = Factory(:sample_manifest, :id => 1)
+  sample_manifest = FactoryGirl.create(:sample_manifest, :id => 1)
   sample.update_attributes!(:sample_manifest => sample_manifest)
 end
 

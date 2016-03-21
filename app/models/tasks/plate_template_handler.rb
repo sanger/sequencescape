@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+
 module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
     @robots = Robot.all
@@ -26,7 +27,7 @@ module Tasks::PlateTemplateHandler
       plate_size = PlateTemplate.find(params[:plate_template]["0"].to_i).size
     end
 
-    parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file],plate_size)
+    parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read,plate_size)
     @spreadsheet_layout = map_parsed_spreadsheet_to_plate(parsed_plate_details,@batch,plate_size)
 
     true
@@ -34,7 +35,7 @@ module Tasks::PlateTemplateHandler
 
   def parse_uploaded_spreadsheet_layout(layout_data,plate_size)
     (Hash.new { |h,k| h[k] = {} }).tap do |parsed_plates|
-      FasterCSV.parse(layout_data, :headers=>:first_row) do |row|
+      CSV.parse(layout_data, :headers=>:first_row) do |row|
         parse_spreadsheet_row(plate_size, row["Request ID"],row["Sample Name"],row["Plate"],row["Destination Well"]) do |plate_key, request_id, location|
           parsed_plates[plate_key][location.column_order] = [location,request_id]
         end
@@ -70,7 +71,7 @@ module Tasks::PlateTemplateHandler
   private :map_parsed_spreadsheet_to_plate
 
   def self.generate_spreadsheet(batch)
-    FasterCSV.generate(:row_sep => "\r\n") do |csv|
+    CSV.generate(:row_sep => "\r\n") do |csv|
       csv << ["Request ID","Sample Name","Plate","Destination Well"]
       batch.requests.each{ |r| csv << [r.id,r.asset.sample.name,"",""]}
     end

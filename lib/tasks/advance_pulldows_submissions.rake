@@ -14,7 +14,7 @@ namespace :benchmark do
     BarcodePrinterType.find(3).barcode_printers.create!(:name => 'd304bc')  # 384 well printer
 
     # Rubbish data we need
-    study       = Study.new(:name => 'Pulldown study', :state => 'active').tap { |t| t.save_without_validation }
+    study       = Study.new(:name => 'Pulldown study', :state => 'active').tap { |t| t.save(validate: false) }
     project     = Project.create!(:name => 'Pulldown project', :enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111' })
     user        = User.create!(:login => 'Pulldown user', :password => 'foobar', :swipecard_code => 'abcdef', :workflow_id => 1).tap do |u|
       u.roles.create!(:name => 'administrator')

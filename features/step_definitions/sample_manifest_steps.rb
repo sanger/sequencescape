@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!({:name => supplier_name })
 end
@@ -22,7 +23,7 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
       }
     )
     sample.name = "#{study.abbreviation}#{index+1}"
-    sample.save_without_validation
+    sample.save(validate: false)
   end
 end
 
@@ -127,7 +128,7 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
   pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map {|a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id]}
   table.hashes.each do |expected_data|
     lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT',''))
-    assert_equal 1, lt.aliquots.count
+    assert_equal 1, lt.aliquots.count, "Wrong number of aliquots"
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
     assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id), "tag_index: #{expected_data[:tag_index]} #{lt.aliquots.first.tag.try(:map_id)}"
@@ -184,6 +185,7 @@ end
 Then /^the last created sample manifest should be:$/ do |table|
   offset = 9
   Tempfile.open('testfile.xls') do |tempfile|
+    tempfile.binmode
     tempfile.write(SampleManifest.last.generated_document.current_data)
     tempfile.flush
     tempfile.open

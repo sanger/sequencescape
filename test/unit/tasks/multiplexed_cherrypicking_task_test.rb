@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
+
 require "test_helper"
 
 class DummyWorkflowController < WorkflowsController
@@ -19,10 +20,10 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   def self.shared
     context "with tag clashes" do
       setup do
-        tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+        tag_hash = Hash.new {|h,i| h[i] = create :tag }
         @tags = [1,2,3,4,5,5,6,6].map {|i| tag_hash[i] }
         @requests = (1..8).map do |i|
-          r = Factory :pooled_cherrypick_request
+          r = create :pooled_cherrypick_request
           r.asset.aliquots.first.update_attributes!(:tag => @tags[i-1] )
           r
         end
@@ -69,13 +70,13 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   context "AssignTubesToMultiplexedWellsHandler" do
     setup do
       @workflows_controller = DummyWorkflowController.new
-      @task                 = Factory :multiplexed_cherrypicking_task
+      @task                 = create :multiplexed_cherrypicking_task
     end
 
     context "#do_assign_requests_to_multiplexed_wells_task with existing plate" do
       setup do
 
-          @plate = Factory :plate
+          @plate = create :plate
 
           @well_array = ["A1","B1","C1","D1","E1","F1","G1","G1"]
 
@@ -90,11 +91,11 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
         setup do
 
-          tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+          tag_hash = Hash.new {|h,i| h[i] = create :tag }
           @tags = [1,2,3,4,5,6,7,8].map {|i| tag_hash[i] }
 
           @requests = (1..8).map do |i|
-            r = Factory :pooled_cherrypick_request
+            r = create :pooled_cherrypick_request
             r.asset.aliquots.first.update_attributes!(:tag => @tags[i-1] )
             r
           end
@@ -114,7 +115,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
     context "#do_assign_requests_to_multiplexed_wells_task with new plate" do
       setup do
         PlateBarcode.stubs(:create).returns(MockBc.new('12345'))
-        @purpose = Factory :plate_purpose
+        @purpose = create :plate_purpose
         @purpose_id = @purpose.id.to_s
         @well_array = ["A1","B1","C1","D1","E1","F1","G1","G1"]
 
@@ -125,9 +126,9 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
       context "with no tag clashes" do
         setup do
 
-          @tags = 8.times.map { Factory :tag }
+          @tags = 8.times.map { create :tag }
           @requests = (1..8).map do |i|
-            r = Factory :pooled_cherrypick_request
+            r = create :pooled_cherrypick_request
             r.asset.aliquots.first.update_attributes!(:tag => @tags[i] )
             r
           end
@@ -158,10 +159,10 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
       context "with identical samples" do
         setup do
 
-          @tag = Factory :tag
-          @sample = Factory :sample
+          @tag = create :tag
+          @sample = create :sample
           @requests = (1..8).map do |i|
-            r = Factory :pooled_cherrypick_request
+            r = create :pooled_cherrypick_request
             r.asset.aliquots.first.update_attributes!(:tag => @tag, :sample => @sample )
             r
           end

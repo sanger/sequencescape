@@ -1,11 +1,12 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
+
 <% add :menu, "New/Edit Plate Templates" => plate_templates_path -%>
 
-<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
-  <h2>Step 1: Layout wells on plates</h2>
-  <fieldset>
+<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+  <%= panel(:info,title:"Step 1: Layout wells on plates") do %>
+  <fieldset class="col-md-5">
     <legend>Automatic</legend>
     <table cellspacing='0' cellpadding='0'>
       <tr>
@@ -21,12 +22,14 @@
         <td><%= select("plate_template", "0", @plate_templates.collect {|p| [ (p.control_well? ? p.name+" - control well" : p.name), p.id ] })  %></td>
       </tr>
     </table>
-    <p>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in SequenceScape.  Wells can be rearranged in the next step.</p>
+    <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in SequenceScape.  Wells can be rearranged in the next step.</p>
   </fieldset>
 
-  <h3>OR</h3>
+  <div class="col-md-2">
+  <h3 class="center-block">OR</h3>
+  </div>
 
-  <fieldset>
+  <fieldset class="col-md-5">
     <legend>Manual</legend>
     <table cellspacing='0' cellpadding='0'>
       <tr>
@@ -38,9 +41,10 @@
         <td><%= file_field_tag "file", :size => 50 %></td>
       </tr>
     </table>
-    <p><%= link_to "Download the file", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
+    <p class='help-block'><%= link_to "Download the file", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
   </fieldset>
-
+<% end %>
+  <%= panel(:info,title:"Step 2: Pick robot and plate types") do %>
   <h2>Step 2</h2>
   <fieldset>
     <legend>Cherrypicking robot</legend>
@@ -55,11 +59,12 @@
       </tr>
     </table>
   </fieldset>
+  <% end %>
 
-  <h2>Step 3</h2>
+  <%= panel(:info,title:"Step 3: Set volumes and concentrations") do %>
 
   <%= render :partial => 'cherrypicking_volume_parameters' %>
-  <br />
+  <% end %>
 
   <%= render :partial => "next_stage_submit" %>
 <% end %>

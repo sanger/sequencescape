@@ -1,12 +1,14 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+
 class PicoSetResultsController < ApplicationController
   before_filter :login_required, :except => [:create]
 
   # TODO This should be an update method not create
   # TODO Refactor. Create an object for pico_set_result
   def create
+
     pico_set_result = params[:pico_set_result]
 
     if pico_set_result

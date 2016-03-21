@@ -1,8 +1,9 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Given /^the system has a plate with a barcode of "([^\"]*)"$/ do |encoded_barcode|
-  Factory(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
+  FactoryGirl.create(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
 end
 
 Given /^exactly (\d+) labels? should have been printed/ do |expected_number|
@@ -17,9 +18,9 @@ Given /^the study "([^\"]+)" has a plate with barcode "([^\"]+)"$/ do |study_nam
   study, user = Study.find_by_name(study_name), User.find_by_login('user')
   prefix, number, check = Barcode.split_human_barcode(barcode)
 
-  asset_group = Factory(:asset_group, :name => 'plates', :user => user, :study => study)
-  plate = Factory(:plate, :barcode => number)
-  Factory(:asset_group_asset, :asset_id => plate.id, :asset_group_id => asset_group.id)
+  asset_group = FactoryGirl.create(:asset_group, :name => 'plates', :user => user, :study => study)
+  plate = FactoryGirl.create(:plate, :barcode => number)
+  FactoryGirl.create(:asset_group_asset, :asset_id => plate.id, :asset_group_id => asset_group.id)
 end
 
 Given /^the plate with barcode "([^\"]+)" has events:$/ do |barcode, events_table|
@@ -39,7 +40,7 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, nu
   plate = Plate.find_by_barcode(plate_barcode)
   well_data = []
   1.upto(number_of_wells.to_i) do |i|
-    Well.create!(:plate => plate, :map_id => i, :sample => Factory(:sample))
+    Well.create!(:plate => plate, :map_id => i, :sample => FactoryGirl.create(:sample))
   end
 end
 
@@ -91,7 +92,7 @@ end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
-  well  = Factory(:empty_well).tap { |well| well.aliquots.create!(:sample => Factory(:sample, :name => 'Sample1')) }
+  well  = FactoryGirl.create(:empty_well).tap { |well| well.aliquots.create!(:sample => FactoryGirl.create(:sample, :name => 'Sample1')) }
   plate.add_and_save_well(well, 0, 0)
 end
 
@@ -124,12 +125,16 @@ Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name
 end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
-  Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
+  # Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
+  FactoryGirl.create(:plate,
+    :barcode => Barcode.number_to_human("#{machine_barcode}"),
+    :plate_purpose => Purpose.find_by_name(plate_purpose_name)
+    )
 end
 
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
-  @stock_plate = Factory(:plate,
+  @stock_plate = FactoryGirl.create(:plate,
     :name => "A_TEST_STOCK_PLATE",
     :barcode => Barcode.number_to_human("#{machine_barcode}"),
     :plate_purpose => PlatePurpose.find_by_name("Stock Plate")
@@ -204,20 +209,20 @@ end
 
 Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
   plate.wells.each do |well|
-    well.aliquots.create!(:sample => Factory(:sample))
+    well.aliquots.create!(:sample => FactoryGirl.create(:sample))
   end
 end
 
 Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number,plate|
   plate.wells.in_column_major_order[0,number.to_i].each do |well|
-    well.aliquots.create!(:sample => Factory(:sample))
+    well.aliquots.create!(:sample => FactoryGirl.create(:sample))
   end
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by_barcode(plate_barcode)
   1.upto(number_of_wells.to_i) do |i|
-    Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => Factory(:sample))
+    Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => FactoryGirl.create(:sample))
   end
 end
 

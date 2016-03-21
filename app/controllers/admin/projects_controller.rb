@@ -1,8 +1,17 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 class Admin::ProjectsController < ApplicationController
+
   before_filter :admin_login_required
+
+  BY_SCOPES = {
+    "not approved" => :unapproved,
+    "unallocated division" => :with_unallocated_budget_division,
+    "unallocated manager" => :with_unallocated_manager
+  }
+  BY_SCOPES.default = :scoped
 
   def index
     @projects = Project.all(:order => "name ASC")
@@ -19,41 +28,30 @@ class Admin::ProjectsController < ApplicationController
    render :partial => "manage_single_project"
   end
 
-  def editor
+  def edit
     @request_types = RequestType.all(:order => "name ASC")
     if params[:id] != "0"
       @project = Project.find(params[:id])
-      render :partial => "editor", :locals => { :project => @project }
+      render :partial => "edit", :locals => { :project => @project }
     else
       render :nothing => true
     end
   end
 
   def filter
-    unless params[:filter].nil?
-      if params[:filter][:by] == "not approved"
-        filter_conditions = {:approved => false}
-      end
-    end
 
-    if params[:filter][:by] == "not approved" || params[:filter][:by] == "all"
-      @projects = Project.find(:all, :conditions => filter_conditions, :order => :name ).select { |p| p.name.include? params[:q] }
-    end
+    filters = params[:filter] || {}
 
-    unless params[:filter].nil?
-      if params[:filter][:by] == "unallocated division"
-        @projects = Project.with_unallocated_budget_division.all(:conditions => [ 'name LIKE ?', "%#{params[:q]}%" ])
-      elsif params[:filter][:by] == "unallocated manager"
-        @projects = Project.all.select { |p| p.name.include?(params[:q]) && !(p.roles.map { |r| r.name }.include?('manager')) }
-      end
-    end
+    by_scope = BY_SCOPES[filters[:by]]
 
-    case params[:filter][:status]
-    when "open"
-      @projects = @projects.select { |p| p.active? }
-    when "closed"
-      @projects = @projects.reject { |p| p.active? }
-    end
+    base_scope =  Project.send(by_scope).in_state(filters[:status]).alphabetical
+
+    # arel_table is used to generate the more complex like query
+    projects = Project.arel_table
+    scope = filters[:q].present? ? base_scope.where(projects[:name].matches("%#{filters[:q]}%")) : base_scope
+
+    @projects = scope
+
     render :partial => "filtered_projects"
   end
 

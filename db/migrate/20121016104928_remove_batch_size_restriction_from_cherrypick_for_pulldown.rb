@@ -3,7 +3,7 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class RemoveBatchSizeRestrictionFromCherrypickForPulldown < ActiveRecord::Migration
   class Pipeline < ActiveRecord::Base
-    set_table_name('pipelines')
+    self.table_name =('pipelines')
   end
 
   def self.modify(size)

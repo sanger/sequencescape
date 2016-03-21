@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 module SearchBehaviour
 
   MINIMUM_QUERY_LENGTH = 3
@@ -37,6 +38,6 @@ private
 
   def query_invalid?
     return false if params[:q].length >= MINIMUM_QUERY_LENGTH
-    action_flash[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
+    flash.now[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
   end
 end

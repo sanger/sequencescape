@@ -1,13 +1,14 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013 Genome Research Ltd.
+#Copyright (C) 2013,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class AssetShapeTest < ActiveSupport::TestCase
   context 'standard plates of' do
 
     setup do
-      @shape = Map::AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>2,:description_strategy=>'Map::Coordinate')
+      @shape = AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>2,:description_strategy=>'Map::Coordinate')
     end
 
   context "96 wells " do
@@ -52,61 +53,12 @@ class AssetShapeTest < ActiveSupport::TestCase
     end
   end
 
-  # context "Invalid plate_size" do
-  #   {0=>nil, 1=>nil, -1=>nil, 95=> nil, 97=>nil, 383 => nil, 385=> nil}.each do |plate_size, result|
-  #     should "return nil for #{plate_size}" do
-  #       assert_equal result, @shape.horizontal_to_vertical(1,plate_size)
-  #     end
-  #   end
-  # end
-
-  # context "#next_map_position" do
-  #   [["A1","A2",96],["A12","B1",96],["G9","G10",96],["H11","H12",96],["A1","A2",384],["A24","B1",384],["P23","P24",384]].each do |current_map, expected_output, plate_size|
-  #     should "return the correct next map position of #{current_map} to #{expected_output} for plate size #{plate_size}" do
-  #       returned_map = Map.next_map_position(Map.find_by_description_and_asset_size(current_map, plate_size).id)
-  #       assert_equal expected_output, returned_map.description
-  #     end
-  #   end
-
-  #   [["H12",nil,96],["P24",nil,384]].each do |current_map, expected_output, plate_size|
-  #     should "return nil for end of plate for #{current_map}" do
-  #       returned_map = Map.next_map_position(Map.find_by_description_and_asset_size(current_map, plate_size).id)
-  #       assert_equal expected_output, returned_map
-  #     end
-  #   end
-  # end
-
-  # context '#find_for_cell_location' do
-  #   should 'remove leading zero from cell location' do
-  #     assert_equal Map.find_by_description_and_asset_size('A1', 96), Map.find_for_cell_location('A01', 96)
-  #   end
-
-  #   should 'not remove any non-leading zeroes' do
-  #     assert_equal Map.find_by_description_and_asset_size('A10', 96), Map.find_for_cell_location('A10', 96)
-  #   end
-  # end
-
-  # context "The despcription for rows/colums" do
-
-  #   should 'return the expected wells for 96 well plates' do
-  #     assert_equal(['G1','G2','G3','G4','G5','G6','G7','G8','G9','G10','G11','G12'],Map::Coordinate.descriptions_for_row('G',96))
-  #     assert_equal(['A5','B5','C5','D5','E5','F5','G5','H5'],Map::Coordinate.descriptions_for_column(5,96))
-  #   end
-
-  #   should 'return the expected wells for 384 well plates' do
-
-  #     assert_equal(['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10','G11','G12',
-  #                   'G13','G14','G15','G16','G17','G18','G19','G20','G21','G22','G23','G24'], Map::Coordinate.descriptions_for_row('G',384))
-  #     assert_equal(['A5','B5','C5','D5','E5','F5','G5','H5',
-  #                   'I5','J5','K5','L5','M5','N5','O5','P5'], Map::Coordinate.descriptions_for_column(5,384))
-  #   end
-
   end
 
   context "Fluidigm plates of 96 wells" do
 
     setup do
-      @shape = Map::AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>8,:description_strategy=>'Map::Sequential')
+      @shape = AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>8,:description_strategy=>'Map::Sequential')
     end
 
     context "conversion between horizontal and back" do
@@ -139,7 +91,7 @@ class AssetShapeTest < ActiveSupport::TestCase
   context "Fluidigm plates of 192 wells" do
 
     setup do
-      @shape = Map::AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>4,:description_strategy=>'Map::Sequential')
+      @shape = AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>4,:description_strategy=>'Map::Sequential')
     end
 
     context "conversion between horizontal and back" do

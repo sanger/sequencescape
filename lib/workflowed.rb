@@ -5,7 +5,7 @@ module Workflowed
   def self.included(base)
     base.class_eval do
       belongs_to :workflow, :class_name => "Submission::Workflow"
-      named_scope :for_workflow, lambda {|workflow| {:conditions=>{:workflow_id=>workflow} } }
+      scope :for_workflow, ->(workflow) { {:conditions=>{:workflow_id=>workflow} } }
     end
   end
 end

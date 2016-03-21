@@ -1,6 +1,13 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
+require 'lib/eventful_record'
+require 'lib/external_properties'
+
+require 'lib/eventful_record'
+require 'lib/external_properties'
+
 class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
@@ -34,8 +41,7 @@ class Asset < ActiveRecord::Base
     self.class::SAMPLE_PARTIAL
   end
 
-  cattr_reader :per_page
-  @@per_page = 500
+  self.per_page = 500
   self.inheritance_column = "sti_type"
   #acts_as_paranoid
 #  validates_uniqueness_of :name
@@ -50,14 +56,14 @@ class Asset < ActiveRecord::Base
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
-  named_scope :include_requests_as_target, :include => :requests_as_target
-  named_scope :include_requests_as_source, :include => :requests_as_target
+  scope :include_requests_as_target, -> { includes(:requests_as_target) }
+  scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
   #Orders
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
 
-  named_scope :requests_as_source_is_a?, lambda { |t| { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *Class.subclasses_of(t) ].map(&:name) } } } }
+ scope :requests_as_source_is_a?, ->(t) { { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *t.descendants ].map(&:name) } } } }
 
   extend ContainerAssociation::Extension
 
@@ -68,16 +74,28 @@ class Asset < ActiveRecord::Base
 
   belongs_to :map
   belongs_to :barcode_prefix
-  named_scope :sorted , :order => "map_id ASC"
-  named_scope :position_name, lambda { |*args| { :joins => :map, :conditions => ["description = ? AND asset_size = ?", args[0], args[1]] }}
-  named_scope :get_by_type, lambda {|*args| {:conditions => { :sti_type => args[0]} } }
-  named_scope :for_summary, {:include=>[:map,:barcode_prefix]}
+  scope :sorted , order("map_id ASC")
 
-  named_scope :of_type, lambda { |*args| { :conditions => { :sti_type => args.map { |t| [t, Class.subclasses_of(t)] }.flatten.map(&:name) } } }
+  scope :position_name, ->(*args) {
+    joins(:map).where(["description = ? AND asset_size = ?", args[0], args[1]])
+  }
+  scope :get_by_type, ->(*args) { {:conditions => { :sti_type => args[0]} } }
+  scope :for_summary, -> { includes([:map,:barcode_prefix]) }
 
-  named_scope :recent_first, :order => 'id DESC'
+ scope :of_type, ->(*args) { { :conditions => { :sti_type => args.map { |t| [t, *t.descendants] }.flatten.map(&:name) } } }
+
+  scope :recent_first, -> { order('id DESC') }
+
   def studies
     []
+  end
+
+  def barcode_and_created_at_hash
+    return {} if barcode.blank?
+    {
+      :barcode    => generate_machine_barcode,
+      :created_at => created_at
+    }
   end
 
   def study_ids
@@ -89,7 +107,7 @@ class Asset < ActiveRecord::Base
     (orders.map(&:study)+studies).compact.uniq
   end
   # Named scope for search by query string behaviour
-  named_scope :for_search_query, lambda { |query,with_includes|
+ scope :for_search_query, ->(query,with_includes) {
 
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
     arguments = {:name => "%#{query}%"}
@@ -115,7 +133,7 @@ class Asset < ActiveRecord::Base
     }.tap {|cond| cond.merge!(:include => :requests, :order => 'requests.pipeline_id ASC') if with_includes }
   }
 
-  named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
+ scope :with_name, ->(*names) { { :conditions => { :name => names.flatten } } }
 
   extend EventfulRecord
   has_many_events do
@@ -299,69 +317,6 @@ class Asset < ActiveRecord::Base
     self.set_external_release(self.qc_state)
   end
 
-  def move_asset_group(study_from, asset_group)
-    return
-  end
-
-  def move_study_sample(study_from, study_to, current_user)
-    return
-  end
-
-  def move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-    unless asset_visited.include?(self.id)
-      asset_visited << self.id
-      self.children.each do |child|
-        unless asset_visited.include?(child.id)
-          child.move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-        end
-      end
-
-      self.parents.each do |parent|
-        unless asset_visited.include?(parent.id)
-          parent.move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-        end
-      end
-
-      self.move_asset_requests(study_from, study_to)
-      self.move_asset_group(study_from, asset_group)   # only subclass sampleTube
-      self.move_study_sample(study_from, study_to, current_user) # only subclass sampleTube
-    end
-  end
-
-
-  def move_asset_requests(study_from, study_to)
-    requests = self.requests.for_study(study_from)
-    # apparently requests here are read only
-    requests = Request.find(:all, requests.map(&:id))
-    requests.each do |request|
-      request.initial_study_id = study_to.id
-      request.save!
-
-      #redundant with code in sample move ? (Study#take_sample)
-      (request.asset.try(:aliquots) ||[]).each do |aliquot|
-        next if aliquot.study != study_from
-        aliquot.update_attributes!(:study => study_to) if aliquot
-      end
-    end
-    #puts self.id
-  end
-
-  def move_to_asset_group(study_from, study_to, asset_group, new_assets_name, current_user)
-    move_result = true
-    begin
-      ActiveRecord::Base.transaction do
-        asset_visited = []
-        move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-      end
-      rescue StandardError => exception
-        msg = exception.record.class.name + " id: " + exception.record.id.to_s + ": " + exception.message
-        self.errors.add("Move:", msg)
-        move_result = false
-    end
-
-    return move_result
-  end
-
   def has_been_through_qc?
     not self.qc_state.blank?
   end
@@ -431,7 +386,7 @@ class Asset < ActiveRecord::Base
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
   # to their appropriate query conditions (as though they operated on their own) and then we join
   # them together with 'OR' to get the overall conditions.
-  named_scope :with_machine_barcode, lambda { |*barcodes|
+ scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       case source_barcode.to_s
       when /^\d{13}$/ #An EAN13 barcode
@@ -464,7 +419,7 @@ class Asset < ActiveRecord::Base
   }
 
 
-  named_scope :source_assets_from_machine_barcode, lambda { |destination_barcode|
+ scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
       source_asset_ids = destination_asset.parents.map(&:id)
@@ -510,14 +465,15 @@ class Asset < ActiveRecord::Base
     self.requests.sort_by{ |r| r.id }.select{ |request| request.request_type == request_type }.map{ |filtered_request| filtered_request.state }
   end
 
-  def transfer(volume)
-    volume = [volume.to_f, self.volume || 0].min
-    raise VolumeError, "not enough volume left" if volume <=0
+  def transfer(max_transfer_volume)
+
+    transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
+    raise VolumeError, "not enough volume left" if transfer_volume <=0
 
     self.class.create!(:name => self.name) do |new_asset|
-      new_asset.aliquots = self.aliquots.map(&:clone)
-      new_asset.volume   = volume
-      update_attributes!(:volume => self.volume - volume)  # Update ourselves
+      new_asset.aliquots = self.aliquots.map(&:dup)
+      new_asset.volume   = transfer_volume
+      update_attributes!(:volume => self.volume - transfer_volume)  # Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end
@@ -554,6 +510,11 @@ class Asset < ActiveRecord::Base
 
   # See Aliquot::Receptacle for handling of assets with contents
   def tag_count
+    nil
+  end
+
+  # We only support wells for the time being
+  def latest_stock_metric(product,*args)
     nil
   end
 

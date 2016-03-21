@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 ##
 # Extended validators are used to provide extra validation
 # of submission. They are associated with request types
@@ -11,9 +12,10 @@
 
 class ExtendedValidator < ActiveRecord::Base
 
+
   class RequestTypeExtendedValidator < ActiveRecord::Base
 
-    set_table_name('request_types_extended_validators')
+    self.table_name=('request_types_extended_validators')
 
     belongs_to :extended_validator
     belongs_to :request_type
@@ -22,9 +24,7 @@ class ExtendedValidator < ActiveRecord::Base
 
   end
 
-  def after_initialize
-    import_behaviour
-  end
+  after_initialize :import_behaviour
 
   def import_behaviour
     return if behaviour.nil?
@@ -40,7 +40,7 @@ class ExtendedValidator < ActiveRecord::Base
   validates_presence_of :behaviour
   serialize :options
 
-  named_scope :for_submission, lambda {|submission|
+  scope :for_submission, ->(submission) {
     {
       :joins => 'INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id',
       :conditions => {:request_types_extended_validators => { :request_type_id => submission.request_types }}

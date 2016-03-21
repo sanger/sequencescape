@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 require "test_helper"
 require 'samples_controller'
 
@@ -19,12 +20,12 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
     context "management UI" do
       setup do
-        @user     = Factory :admin
-        @project  = Factory :project, :approved => false
-        role = Factory :owner_role, :authorizable => @project
+        @user     =FactoryGirl.create :admin, :email => "project.owner@example.com"
+        @project  =FactoryGirl.create :project, :approved => false
+        role =FactoryGirl.create :owner_role, :authorizable => @project
         role.users << @user
-        @request_type = Factory :request_type
-        @other_request_type = Factory :request_type
+        @request_type =FactoryGirl.create :request_type
+        @other_request_type =FactoryGirl.create :request_type
         @controller.stubs(:current_user).returns(@user)
         @controller.stubs(:logged_in?).returns(@user)
         @emails = ActionMailer::Base.deliveries
@@ -40,27 +41,30 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
           assert_equal [], @emails
         end
 
-        should_redirect_to("admin projects") { "/admin/projects/#{@project.id}" }
+        should redirect_to("admin projects") { "/admin/projects/#{@project.id}" }
       end
 
 
       context "#managed_update (with getting approved)" do
         setup do
+          @event_count =  Event.count
           get :managed_update, :id => @project.id, :project => { :approved => true, :name => @project.name }
         end
 
-        should_redirect_to("admin project") { "/admin/projects/#{@project.id}" }
-        should_set_the_flash_to "Your project has been updated"
+        should redirect_to("admin project") { "/admin/projects/#{@project.id}" }
+        should set_the_flash.to("Your project has been updated")
 
-        should_change("Event.count", :by => 1) { Event.count }
 
-        should "send an email" do
-          assert_sent_email do |email|
-            email.subject   =~ /Project/ && email.subject =~ /[TEST]/ && email.bcc.include?(@project.owner.email)
-            email.bcc.size  == 2
-            email.body      =~ /Project approved by/
-          end
+        should "change Event.count by 1" do
+          assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
         end
+
+        should have_sent_email.
+          with_subject(/[TEST].*Project/).
+          bcc("project.owner@example.com").
+          with_body(/Project approved by/)
+          # email.bcc.size  == 2
+
       end
     end
 

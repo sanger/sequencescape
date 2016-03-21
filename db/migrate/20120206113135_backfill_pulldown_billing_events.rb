@@ -7,7 +7,7 @@ class BackfillPulldownBillingEvents < ActiveRecord::Migration
   def self.bill_for(target, request)
     BillingEvent.send(:"bill_#{target}_for", request).map do |billing_event|
       billing_event.entry_date = BACKFILL_ENTRY_DATE
-      billing_event.save(false)
+      billing_event.save(:validate => false)
     end
   rescue BillingException::DuplicateCharge => exception
     say "Appears that #{request.id} has already been billed"

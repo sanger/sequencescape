@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Given /^I have a released cherrypicking batch$/ do
   step(%Q{I have a released cherrypicking batch with 96 samples})
 end
@@ -57,8 +58,8 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
   step(%Q{I check "Select DN1S for batch"})
   step(%Q{I check "Select DN10I for batch"})
   step(%Q{I check "Select DN5W for batch"})
-  step(%Q{I select "Create Batch" from "action_on_requests"})
-  step(%Q{I press "Submit"})
+  step(%Q{I select "Create Batch" from the first "action_on_requests"})
+  step(%Q{I press the first "Submit"})
 
   # must use @javascript
   step(%Q{a plate barcode webservice is available and returns "99999"})
