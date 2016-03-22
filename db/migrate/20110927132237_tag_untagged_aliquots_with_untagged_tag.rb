@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class TagUntaggedAliquotsWithUntaggedTag < ActiveRecord::Migration
   class Aliquot < ActiveRecord::Base
-    set_table_name('aliquots')
+    self.table_name =('aliquots')
 
     def self.tag_untagged(details)
       conditions = details[:from].nil? ? 'tag_id IS NULL' : [ 'tag_id=?', details[:from] ]

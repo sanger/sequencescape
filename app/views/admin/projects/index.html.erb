@@ -1,18 +1,21 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
+
 <%- add :title, "Sequencing projects can be edited, approved and managed from here." %>
 <%- add :menu, "View all projects" => url_for(:controller => "admin/projects", :action => "index")  %>
 
 <% if @projects %>
-  <h1>Manage Projects</h1>
-  <%= form_remote_tag(:url => { :action => :filter }, :html => { :id => "filter_form"}, :id => "filter_form", :update => "projects", :loading => "show_update_loader();", :complete => "hide_update_loader();") %>
+  <%= page_title 'Projects', 'Manage' %>
+
+  <%= form_tag(filter_admin_projects_path, :remote => true, :id => "filter_form", :class=>'remote-form observed', :data => { :update => "#projects",  :throbber => '#update_loader'} ) %>
 
     <div class='callout_filter'>
       <table width='100%'>
         <tr>
           <td>
-            Show <%= select :filter, :status, [ "open", "closed", "all" ] -%> projects that are <%= select :filter, :by, [ "not approved", "unallocated division", "unallocated manager", "all" ], {}, :onchange => "swap_filter();" -%>
+            <% state_selection = Project.states.map {|state| [state.to_s.humanize, state.to_s]} + [['All',nil]] %>
+            Show <%= select :filter, :status, state_selection -%> projects that are <%= select :filter, :by, [ "not approved", "unallocated division", "unallocated manager", "all" ], {}, :onchange => "swap_filter();" -%>
           </td>
           <td style='text-align: right;'>
             <%= image_tag "ajax-loader.gif", :size => "10x10", :id => "update_loader", :style => "display: none;"%>
@@ -20,9 +23,9 @@
           </td>
         </tr>
       </table>
-      <%= observe_form(:filter_form, :url => { :action => :filter }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :projects) %>
     </div>
   </form>
+
   <div id='projects'>
     <%= render :partial => "filtered_projects" %>
   </div>

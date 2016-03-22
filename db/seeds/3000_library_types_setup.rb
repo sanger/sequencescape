@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+#Copyright (C) 2014,2015,2016 Genome Research Ltd.
+
 module SetupLibraryTypes
   def self.existing_associations_for(request_type)
     {
@@ -115,6 +116,17 @@ libs_ribozero.each do |lib|
     LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=> lib, :is_default => false)
   end
 end
+
+# PCR Free Hiseq X10 RequestTypeValidator
+lt = LibraryType.find_or_create_by_name!("HiSeqX PCR free")
+rt_pf = RequestType.find_by_key("htp_pcr_free_lib")
+rt_v = RequestType::Validator.create!(
+  :request_type   => rt_pf,
+  :request_option => 'library_type',
+  :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt_pf.id)
+)
+
+
 
 ['a', 'b'].each do |pipeline|
   rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_x_paired_end_sequencing")

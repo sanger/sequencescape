@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
-  Factory(style.gsub(/ /, '_'), :name => name)
+  FactoryGirl.create(style.gsub(/ /, '_'), :name => name)
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
-  Factory(:tag2_layout_template, :name => name)
+  FactoryGirl.create(:tag2_layout_template, :name => name)
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -143,7 +144,7 @@ def pool_by_strategy(source, destination, pooling_strategy)
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
     wells_for_source.zip(wells_for_destination).each do |w|
       RequestType.transfer.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id)
-      Factory :request_without_submission, :asset => w.first, :target_asset => w.last, :submission_id => submission_id
+      FactoryGirl.create :request_without_submission, :asset => w.first, :target_asset => w.last, :submission_id => submission_id
     end
   end
 end

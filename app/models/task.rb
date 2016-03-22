@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 class Task < ActiveRecord::Base
   belongs_to :workflow, :class_name => "LabInterface::Workflow", :foreign_key => :pipeline_workflow_id
   has_many :families
@@ -38,7 +39,7 @@ class Task < ActiveRecord::Base
   # END descriptors
 
   # BEGIN subclass_to_attribute, could be move into a mixin
-  has_many :subclass_attributes, :as =>  :attributable, :dependent => :destroy
+  has_many :subclass_attributes, :as =>  :attributable, :dependent => :destroy, :autosave => true
   def get_subclass_attribute_value(name, default=nil)
     name_s = name.to_s
     self.subclass_attributes.each do |desc|
@@ -111,10 +112,6 @@ class Task < ActiveRecord::Base
     define_method("#{name}=") do |value|
       set_subclass_attribute_value(name, value, kind)
     end
-  end
-
-  def after_save
-    subclass_attributes.each { |a| a.save }
   end
 
   # END of subclass_to_attiribuet

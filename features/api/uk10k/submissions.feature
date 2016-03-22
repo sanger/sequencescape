@@ -118,12 +118,12 @@ And I have a "full" authorised user with the key "cucumber"
       }
       """
     Then the HTTP response should be "422 Unprocessable Entity"
+    # Previously this was: {"content":{"orders.assets": [ "can't be blank" ]}} which was nicer.
+    # However Rails 3 makes this tricker, by validating the order the moment it is added to submission
     And the JSON should be:
       """
       {
-        "content": {
-          "orders.assets": [ "can't be blank" ]
-        }
+        "content": "Failed to replace orders because one or more of the new records could not be saved."
       }
       """
 

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
@@ -24,8 +25,8 @@ class SampleManifest < ActiveRecord::Base
   has_uploaded_document :uploaded, {:differentiator => "uploaded"}
   has_uploaded_document :generated, {:differentiator => "generated"}
 
-  class_inheritable_accessor :spreadsheet_offset
-  class_inheritable_accessor :spreadsheet_header_row
+  class_attribute :spreadsheet_offset
+  class_attribute :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
 
@@ -62,16 +63,16 @@ class SampleManifest < ActiveRecord::Base
   end
 
   #TODO[xxx] Consider index to make it faster
-  named_scope :pending_manifests, {
-   :order      => 'sample_manifests.id DESC',
-   :joins      => 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"',
-   :conditions => 'documents.id IS NULL'
- }
-  named_scope :completed_manifests, {
-   :order      => 'sample_manifests.updated_at DESC',
-   :joins      => 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"',
-   :conditions => 'documents.id IS NOT NULL'
- }
+  scope :pending_manifests,
+   order( 'sample_manifests.id DESC').
+   joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+   where( 'documents.id IS NULL')
+
+  scope :completed_manifests,
+   order( 'sample_manifests.updated_at DESC').
+   joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+   where( 'documents.id IS NOT NULL')
+
 
   def generate
     @manifest_errors = []

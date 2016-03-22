@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 module StudyReport::StudyDetails
 
   # This will pull out all well ids from stock plates in the study
@@ -73,7 +74,7 @@ module StudyReport::StudyDetails
                    asset_progress_data[:measured_volume],
                    asset_progress_data[:quantity],
                    asset_progress_data[:sequenom_count],
-                   asset_progress_data[:sequenom_gender],
+                   (asset_progress_data[:sequenom_gender]||[]).join(''),
                    asset_progress_data[:pico],
                    asset_progress_data[:gel],
                    asset_progress_data[:qc_status],

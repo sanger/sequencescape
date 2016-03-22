@@ -1,12 +1,11 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2015,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 module ModelExtensions::Plate
   module NamedScopeHelpers
     def include_plate_named_scope(plate_association)
-      named_scope :"include_#{plate_association}", {
-        :include => { plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES }
-      }
+      scope :"include_#{plate_association}", -> { includes(plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES) }
     end
   end
 
@@ -22,8 +21,8 @@ module ModelExtensions::Plate
 
   def self.included(base)
     base.class_eval do
-      named_scope :include_plate_purpose, :include => :plate_purpose
-      named_scope :include_plate_metadata, :include => :plate_metadata
+      scope :include_plate_purpose, -> { includes(:plate_purpose) }
+      scope :include_plate_metadata, -> { includes(:plate_metadata) }
       delegate :pool_id_for_well, :to => :plate_purpose, :allow_nil => true
     end
   end

@@ -24,8 +24,6 @@ Feature: Resetting batches and their requests across the various pipelines
       | pipeline                          | workflow            | link       |
       | Illumina-C Library preparation    | Next-gen sequencing | Tag Groups |
       | Illumina-B MX Library Preparation | Next-gen sequencing | Tag Groups |
-#     | Pulldown library preparation | Next-gen sequencing |    # Unused prototype?
-#     | MX Library creation          | Next-gen sequencing |    # Unused
 
     @wip
     Scenarios: Sequencing pipelines
@@ -34,13 +32,9 @@ Feature: Resetting batches and their requests across the various pipelines
       | Cluster formation PE                     | Next-gen sequencing | Specify Dilution Volume |
       | Cluster formation PE (no controls)       | Next-gen sequencing | Specify Dilution Volume |
       | HiSeq Cluster formation PE (no controls) | Next-gen sequencing | Specify Dilution Volume |
-#     | Cluster formation SE HiSeq               | Next-gen sequencing |
-#     | Cluster formation SE HiSeq (no controls) | Next-gen sequencing |
 
     Scenarios: Genotyping pipelines
       | pipeline               | workflow              | link                  |
       | DNA QC                 | Microarray genotyping | QC result             |
       | Cherrypick             | Microarray genotyping | Select Plate Template |
       | Genotyping             | Microarray genotyping | Generate Manifests    |
-
-#     | Manual Quality Control | Microarray genotyping |  # Batch

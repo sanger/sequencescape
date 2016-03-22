@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class RequestType < ActiveRecord::Base
 
   include RequestType::Validation
@@ -8,7 +9,7 @@ class RequestType < ActiveRecord::Base
   class DeprecatedError < RuntimeError; end
 
   class RequestTypePlatePurpose < ActiveRecord::Base
-    set_table_name('request_type_plate_purposes')
+    self.table_name =('request_type_plate_purposes')
 
     belongs_to :request_type
     validates_presence_of :request_type
@@ -19,7 +20,7 @@ class RequestType < ActiveRecord::Base
 
   include Workflowed
   include Uuid::Uuidable
-  include Named
+  include SharedBehaviour::Named
 
   has_many :requests, :inverse_of => :request_type
   has_many :pipelines_request_types, :inverse_of => :request_type
@@ -42,8 +43,8 @@ class RequestType < ActiveRecord::Base
   belongs_to :product_line
 
   # Couple of named scopes for finding billable types
-  named_scope :billable, { :conditions => { :billable => true } }
-  named_scope :non_billable, { :conditions => { :billable => false } }
+ scope :billable, -> { where( :billable => true ) }
+ scope :non_billable, -> { where( :billable => false ) }
 
   # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
@@ -72,15 +73,13 @@ class RequestType < ActiveRecord::Base
 
   delegate :accessioning_required?, :to => :request_class
 
-  named_scope :applicable_for_asset, lambda { |asset|
-    {
-      :conditions => [
+ scope :applicable_for_asset, ->(asset) {
+    where([
         'asset_type = ?
          AND request_class_name != "ControlRequest"
          AND deprecated IS FALSE',
          asset.asset_type_for_request_types.name
-      ]
-    }
+      ])
   }
 
   # Helper method for generating a request constructor, like 'create!'

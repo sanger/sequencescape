@@ -1,17 +1,18 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.%>
-<table width="100%" cellpadding="2" cellspacing="0" class="sortable" id="pipeline_inbox">
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
+<table class="sortable table table-striped" id="pipeline_inbox">
   <thead>
     <tr>
-      <th class='label'>&nbsp;</th>
-      <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
+      <th>&nbsp;</th>
+      <th id="priority_flag"><a><%= image_tag("icon_0_flag.png", :size=>"16x16") %></a></th>
 
       <% @inbox_presenter.each_field_header do |field_name| %>
-        <th class='label'><%= link_to field_name, 'javascript:void(0);' %></th>
+        <th><a><%= field_name %></a></th>
       <% end %>
 
-      <th class='label'></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -27,8 +28,8 @@
           <td class="request center" width='5%'>
             <%= label_tag(line.request_group_id, "Select #{ line.parent.sanger_human_barcode } for batch", :style => 'display:none') %>
             <%= label_tag(line.request_group_id, "Include request #{line.index+1}", :style => 'display:none') %>
-            <%= check_box(:request_group, line.group_id, :id => line.request_group_id, :class => 'grouped_checkbox', :'data-count' => line.requests.size) %>
-            <%= hidden_field_tag("#{line.request_group_id}_size", "",  :value => line.requests.size)  %>
+            <%= check_box(:request_group, line.group_id, :id => line.request_group_id, :class => 'grouped_checkbox', :'data-count' => line.wells) %>
+            <%= hidden_field_tag("#{line.request_group_id}_size", "",  :value => line.wells)  %>
           </td>
           <td  style='text-align: center'>
             <!-- TODO: Restore priority toggle for grouped submissions -->
@@ -47,13 +48,13 @@
       <% line.parentless? do %>
         <tr>
           <!-- Shared Fields -->
-          <td style="background:red;">&nbsp;</td>
-          <td style="background:red;">&nbsp;</td>
+          <td class="bg-danger">&nbsp;</td>
+          <td class="bg-danger">&nbsp;</td>
           <!-- Custom Fields -->
           <td class="request center" width='5%' colspan="3" style="background:red;font-weight:bold;">Empty parent ID set</td>
-          <td style="background:red;"><%= line.wells %></td>
+          <td class="bg-danger"><%= line.wells %></td>
           <% (@inbox_presenter.field_count-2).times do %>
-            <td style="background:red;">&nbsp;</td>
+            <td class="bg-danger">&nbsp;</td>
           <% end %>
         </tr>
       <% end -%>

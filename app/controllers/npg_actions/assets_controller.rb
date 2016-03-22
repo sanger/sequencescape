@@ -1,12 +1,12 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 class NpgActions::AssetsController < ApplicationController
   before_filter :login_required, :except => [ :pass, :fail ]
   before_filter :find_asset, :only => [ :pass, :fail ]
-  rescue_from(ActiveRecord::RecordNotFound, :with => :rescue_error)
-
   before_filter :find_request, :only => [ :pass, :fail ]
+
   rescue_from(ActiveRecord::RecordNotFound, :with => :rescue_error)
 
   before_filter :npg_action_invalid?, :only => [ :pass, :fail ]
@@ -56,12 +56,11 @@ class NpgActions::AssetsController < ApplicationController
 private
 
   def find_asset
-    logger.warn "Npg Action: Find_Asset"
-    @asset = Asset.find_by_id(params[:id]) or raise ActiveRecord::RecordNotFound, "Could not find asset #{params[:id]}"
+    @asset ||= Asset.find(params[:asset_id])
   end
 
   def find_request
-    @asset = Asset.find_by_id(params[:id])
+    @asset ||= Asset.find(params[:asset_id])
     if ((@asset.has_many_requests?) || (@asset.source_request.nil?))
       raise ActiveRecord::RecordNotFound, "Unable to find a request for Lane: #{params[:id]}"
     end
@@ -72,8 +71,8 @@ private
   end
 
   def npg_action_invalid?
-   asset   = Asset.find_by_id(params[:id])
-   request = asset.source_request
+   @asset  ||= Asset.find(params[:asset_id])
+   request = @asset.source_request
    npg_events = Event.npg_events(request.id)
    raise NPGActionInvalid, "NPG user run this action. Please, contact USG" if npg_events.size > 0
   end

@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <%- add :title, "Items for Workflow" %>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_workflow_path(@study, @workflow) -%>
 
@@ -21,10 +22,10 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
   <table width='100%'>
     <thead>
       <tr>
-        <th class='label'></th>
-        <th class='label'>Name</th>
-        <th class='label'>Type</th>
-        <th class='label'>Barcode</th>
+        <th></th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Barcode</th>
        </tr>
     </thead>
     <tbody>

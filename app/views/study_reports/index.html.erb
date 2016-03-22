@@ -1,15 +1,16 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
 <h1>Study Reports</h1>
 
-<% semantic_form_for(:study_report, :url => study_reports_path ) do |form| %>
-  <% form.inputs :name => "New report for" do %>
+<%= semantic_form_for(:study_report, :url => study_reports_path ) do |form| %>
+  <%= form.inputs :name => "New report for" do %>
     <%= form.input :study, :as => :select, :collection => @studies %>
-    <%= form.commit_button %>
+    <%= form.action(:submit) %>
   <% end %>
 <% end %>
 
-<%= will_paginate @study_reports %>
+<%= pagination @study_reports %>
 <%= render :partial => 'shared/study_reports', :locals => { :study_reports => @study_reports} %>
-<%= will_paginate @study_reports %>
+<%= pagination @study_reports %>

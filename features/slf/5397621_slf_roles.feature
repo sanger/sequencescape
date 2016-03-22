@@ -57,7 +57,7 @@ Feature: Set roles for SLF functionality
   Scenario Outline: View SLF homepage with invalid role
     Given I am an "<role>" user logged in as "john"
     And I am on the sample logistics homepage
-    Then I should not see "Sample Logistics"
+    Then I should not see "Sample Management"
     Examples:
     | role        |
     | follower    |
@@ -71,8 +71,8 @@ Feature: Set roles for SLF functionality
   Scenario Outline: View SLF homepage with valid role
     Given I am an "<role>" user logged in as "john"
     And I am on the sample logistics homepage
-    Then I should see "Sample Logistics"
-    When I follow "SLF Lab view"
+    Then I should see "Sample Management"
+    When I follow "Sample Management Lab View"
     Then I should see "Print plate barcodes"
     Examples:
     | role          |
@@ -84,7 +84,7 @@ Feature: Set roles for SLF functionality
   Scenario: View SLF homepage as slf gel user
     Given I am an "slf_gel" user logged in as "john"
     And I am on the sample logistics homepage
-    Then I should see "Sample Logistics"
+    Then I should see "Sample Management"
     And I should see "Gel"
     And I should not see "Sample Registration"
     And I should not see "Suppliers"

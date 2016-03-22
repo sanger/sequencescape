@@ -1,7 +1,8 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
-<% add :title, "Batches by pipeline" -%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
+<% add :about, "Batches created by or assigned to you. Or find batches by pipeline using the links below." -%>
 
 <% Pipeline.all.each do |pipeline| -%>
   <% add :menu, "#{pipeline.name}" => url_for(:controller => :pipelines, :action => :batches, :id => pipeline.id) %>
@@ -9,14 +10,8 @@
 
 <% add :back_menu, "Back to all pipelines" => pipelines_path -%>
 
-<h1>BATCHES</h1>
+<%= page_title 'Batches', 'Index' %>
+
 <div class="content">
-  <div class="info">
-  <% if @user -%>
-    Batches created by or assigned to you.
-  <% else -%>
-    All batches. Log in to see batches created by or assigned to you.
-  <% end -%>
-  </div>
   <%= render :partial => "shared/batches", :locals => {:batches => @batches, :showing_all => true, :in_progress => true, :batch_state => 'assigned'} %>
 </div>

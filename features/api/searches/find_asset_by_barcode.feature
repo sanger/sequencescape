@@ -39,15 +39,15 @@ And I have a "full" authorised user with the key "cucumber"
       """
     Examples:
       | asset_type             | model_name  | barcode       | barcode_2     |
-      | control plate          | plate       | 1220000123724 | 1220000999701 |
-      | dilution plate         | plate       | 1220000123724 | 1220000999701 |
-      | gel dilution plate     | plate       | 1930000123708 | 1930000999686 |
-      | pico assay a plate     | plate       | 4330000123802 | 4330000999780 |
-      | pico assay b plate     | plate       | 4340000123849 | 4340000999826 |
-      | pico assay plate       | plate       | 4330000123802 | 4330000999780 |
-      | pico dilution plate    | plate       | 4360000123694 | 4360000999671 |
-      | plate                  | plate       | 1220000123724 | 1220000999701 |
-      | working dilution plate | plate       | 6250000123818 | 6250000999796 |
+      # | control plate          | plate       | 1220000123724 | 1220000999701 |
+      # | dilution plate         | plate       | 1220000123724 | 1220000999701 |
+      # | gel dilution plate     | plate       | 1930000123708 | 1930000999686 |
+      # | pico assay a plate     | plate       | 4330000123802 | 4330000999780 |
+      # | pico assay b plate     | plate       | 4340000123849 | 4340000999826 |
+      # | pico assay plate       | plate       | 4330000123802 | 4330000999780 |
+      # | pico dilution plate    | plate       | 4360000123694 | 4360000999671 |
+      # | plate                  | plate       | 1220000123724 | 1220000999701 |
+      # | working dilution plate | plate       | 6250000123818 | 6250000999796 |
       | sample tube            | sample_tube | 3980012344750 | 3980012345764 |
 
 

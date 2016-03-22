@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 class CherrypickTask < Task
   EMPTY_WELL          = [0,"Empty",""]
   TEMPLATE_EMPTY_WELL = [0,'---','']
@@ -37,7 +38,7 @@ class CherrypickTask < Task
     end
 
     def initialize(batch, template, asset_shape=nil, partial = nil)
-      @wells, @size, @batch, @shape = [], template.size, batch, asset_shape||Map::AssetShape.default
+      @wells, @size, @batch, @shape = [], template.size, batch, asset_shape||AssetShape.default
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
     end
@@ -216,17 +217,16 @@ class CherrypickTask < Task
   end
 
   def build_plate_wells_from_requests(requests)
-    Request.all(
-      :select => 'requests.id AS id, plates.barcode AS barcode, maps.description AS description',
-      :joins => [
+    Request.select(['requests.id AS id', 'plates.barcode AS barcode', 'maps.description AS description']).
+      joins([
         'INNER JOIN assets wells ON requests.asset_id=wells.id',
         'INNER JOIN container_associations ON container_associations.content_id=wells.id',
         'INNER JOIN assets plates ON plates.id=container_associations.container_id',
         'INNER JOIN maps ON wells.map_id=maps.id'
-      ],
-      :order => 'plates.barcode ASC, maps.column_order ASC',
-      :conditions => { :requests => { :id => requests.map(&:id) } }
-    ).map do |request|
+      ]).
+      order('plates.barcode ASC, maps.column_order ASC').
+      where(:requests => { :id => requests }).
+      all.map do |request|
       [request.id, request.barcode, request.description]
     end
   end
@@ -237,7 +237,7 @@ class CherrypickTask < Task
     #Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
     workflow.pipeline.control_request_type.create_control!(
       :asset => well,
-      :target_asset => Well.create!(:aliquots => well.aliquots.map(&:clone))
+      :target_asset => Well.create!(:aliquots => well.aliquots.map(&:dup))
     )
   end
   private :generate_control_request

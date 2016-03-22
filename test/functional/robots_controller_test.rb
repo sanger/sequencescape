@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class RobotsControllerTest < ActionController::TestCase
@@ -8,9 +9,9 @@ class RobotsControllerTest < ActionController::TestCase
 
   context "Robots" do
     setup do
-      @user = Factory :user
+      @user =FactoryGirl.create :user
       @controller.stubs(:current_user).returns(@user)
-      @robot  = Factory :robot
+      @robot  =FactoryGirl.create :robot
     end
     should_require_login
 
@@ -18,16 +19,16 @@ class RobotsControllerTest < ActionController::TestCase
       setup do
         get :index
       end
-      should_respond_with :success
-      should_not_set_the_flash
+      should respond_with :success
+      should_not set_the_flash
     end
 
     context "#new" do
       setup do
         get :new
       end
-      should_respond_with :success
-      should_not_set_the_flash
+      should respond_with :success
+      should_not set_the_flash
     end
 
     context "#create" do
@@ -37,25 +38,25 @@ class RobotsControllerTest < ActionController::TestCase
       end
       should "increase number of robots" do
         assert_equal @count+1, Robot.count
-        assert_redirected_to robot_path(assigns(:robot))
+        assert_redirected_to admin_robot_path(assigns(:robot))
       end
-      should_set_the_flash_to "Robot was successfully created."
+      should set_the_flash.to( "Robot was successfully created.")
     end
 
     context "#show" do
       setup do
         get :show, :id => @robot.id
       end
-      should_respond_with :success
-      should_not_set_the_flash
+      should respond_with :success
+      should_not set_the_flash
     end
 
     context "#edit" do
       setup do
         get :edit, :id => @robot.id
       end
-      should_respond_with :success
-      should_not_set_the_flash
+      should respond_with :success
+      should_not set_the_flash
     end
 
     context "#update" do
@@ -65,9 +66,9 @@ class RobotsControllerTest < ActionController::TestCase
 
       should "update name" do
         assert_equal "tecan", Robot.find(@robot.id).name
-        assert_redirected_to robot_path(assigns(:robot))
+        assert_redirected_to admin_robot_path(assigns(:robot))
       end
-      should_set_the_flash_to "Robot was successfully updated."
+      should set_the_flash.to( "Robot was successfully updated.")
     end
 
     context "#destroy" do
@@ -77,9 +78,9 @@ class RobotsControllerTest < ActionController::TestCase
       end
       should "delete robot" do
         assert_equal @count-1, Robot.count
-        assert_redirected_to robots_path
+        assert_redirected_to admin_robots_path
       end
-      should_set_the_flash_to ="Robot removed successfully"
+      should set_the_flash.to("Robot removed successfully")
     end
 
   end

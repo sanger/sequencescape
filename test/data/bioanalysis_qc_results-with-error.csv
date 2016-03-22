@@ -5,155 +5,155 @@ Date Created,09 October 2014 11:18:00
 Date Last Modified,09 October 2014 12:08:46
 Version Created,B.02.08.SI648
 Version Last Modified,B.02.08.SI648
- 
+
 Assay Name,XTen Chip 1
 Assay Path,C:\Program Files (x86)\Agilent\2100 bioanalyzer\2100 expert\assays\dsDNA
 Assay Title,DNA 1000
 Assay Version,2.3
- 
+
 Number of Samples Run,12
- 
+
 Sample Name,A1
- 
+
 ak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 536,25.65,72.5,,"1,611.3",94.38,145.4,27.9,100.0,"1,740.1"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,B1
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 4,0.00,0.0,,4.4,33.20,23.5,1.8,0.0,13.4
 541,18.06,50.5,,"1,135.6",94.64,105.5,27.1,100.0,"1,229.7"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,C1
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 519,27.44,80.2,,"1,814.1",93.49,167.6,28.0,100.0,"1,994.6"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,D1
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 521,26.69,77.6,,"1,832.2",93.62,167.5,28.1,100.0,"2,031.2"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,E1
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 514,27.06,79.8,,"1,492.0",93.25,138.0,28.1,100.0,"1,678.3"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,F1
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 531,17.60,50.2,,"1,141.0",94.10,110.4,26.9,100.0,"1,284.1"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,G1
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 528,27.24,78.2,,"1,419.9",93.94,138.4,27.1,100.0,"1,617.2"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,H1
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 541,15.67,43.9,,904.1,94.59,93.3,26.2,100.0,"1,027.9"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,A2
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 516,22.59,66.4,,"1,302.7",93.36,127.8,27.3,100.0,"1,507.7"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,B2
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 515,26.26,77.2,,"1,429.3",93.32,141.5,27.8,100.0,"1,673.7"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,C2
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 537,10.65,30.0,,548.4,94.43,57.7,25.7,100.0,631.4
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,
- 
+
 Sample Name,D2
- 
+
 Peak Table
-Size [bp],Conc. [ng/µl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
+Size [bp],Conc. [ng/Âµl],Molarity [nmol/l],Observations,Area,Aligned Migration Time [s],Peak Height,Peak Width,% of Total,Time corrected area
 525,25.38,73.2,,"1,358.1",93.83,134.1,27.2,100.0,"1,568.3"
- 
+
 Region Table
-Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/µl],Color,Molarity [nmol/l]
- 
+Name,From [s],To [s],Area,% of Total,Average Size [bp],Size distribution in CV [%],Conc. [ng/Âµl],Color,Molarity [nmol/l]
+
 Overall Results:
 Number of peaks found:,1,

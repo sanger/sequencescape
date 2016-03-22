@@ -1,13 +1,13 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.
+#Copyright (C) 2012,2015 Genome Research Ltd.
+
 require "test_helper"
 require 'users_controller'
 
-class PlateOwnerTest < ActionController::TestCase
+class OwnerTest < ActionController::TestCase
   context "Plates" do
     setup do
-
       @barcode_printer = mock("printer abc")
       @barcode_printer.stubs(:id).returns(1)
       @barcode_printer.stubs(:name).returns("abc")
@@ -19,7 +19,7 @@ class PlateOwnerTest < ActionController::TestCase
       @barcode_printer.stubs(:each).returns(@barcode_printer )
       @barcode_printer.stubs(:blank?).returns(true)
 
-      @user = User.create!(:login=>'test')
+      @user = create :user
       @parent_plate = PlatePurpose.find_by_name('WGS stock DNA').create!(:barcode=>'12345')
 
       @pc_event = PlateCreation.create(
@@ -36,7 +36,7 @@ class PlateOwnerTest < ActionController::TestCase
     end
 
     should 'be updated when stuff happens' do
-      @user2 = User.create!(:login=>'testb')
+      @user2 = create :user
       @tf_event = Transfer::BetweenPlates.create!(:source=>@parent_plate, :destination=>@child_plate, :user=>@user2, :transfers=>{'A1'=>'A1'})
       assert_equal @child_plate.owner, @user2
       assert_equal @child_plate.plate_owner.eventable, @tf_event

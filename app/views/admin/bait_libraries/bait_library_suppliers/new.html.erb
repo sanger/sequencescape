@@ -1,9 +1,10 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.%>
-<h1>New Bait Library Supplier</h1>
+#Copyright (C) 2012,2015 Genome Research Ltd.%>
 
-<% form_for(@bait_library_supplier) do |f| %>
+<%= page_title 'Bait Library Supplier', 'New' %>
+
+<%= form_for([:admin,@bait_library_supplier]) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "edit_form", :locals => {:f => f } %>
@@ -12,4 +13,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', bait_libraries_path %>
+<%= link_to 'Back', admin_bait_libraries_path %>

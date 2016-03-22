@@ -5,7 +5,12 @@ module ViewsSchema
 
   def self.each_view
     all_views.each do |name|
-      definition = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}").first["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /,'')
+      query = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}")
+      if query.respond_to?(:fetch_hash)
+        query.fetch_hash["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /,'')
+      else
+        definition = query.first["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /,'')
+      end
       yield(name,definition)
     end
   rescue ActiveRecord::StatementInvalid => exception
@@ -34,7 +39,10 @@ module ViewsSchema
       SELECT TABLE_NAME AS name
       FROM INFORMATION_SCHEMA.VIEWS
       WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.connection.current_database}';}
-    ).map {|v| v['name']}
+    ).map do |v|
+      # Behaviour depends on ruby version, so we need to work out what we have
+      v.is_a?(Hash) ? v['name'] : v.first
+    end.flatten
   end
 
   def self.create_view(name,definition)

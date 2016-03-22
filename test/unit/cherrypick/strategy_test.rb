@@ -1,11 +1,12 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+
 require 'test_helper'
 
 class Cherrypick::StrategyTest < ActiveSupport::TestCase
   def request(submission_id, barcode = 1)
-    OpenStruct.new(:submission_id => submission_id, :barcode => barcode)
+    OpenStruct.new(:submission_id => submission_id, :barcode => barcode,:representation=>"request_#{submission_id}")
   end
   private :request
 
@@ -18,9 +19,9 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
       end
     end
 
-    context '#representation' do
-      should 'be the same as the cherrypick empty well representation' do
-        assert(CherrypickTask::EMPTY_WELL, @target.representation)
+    context '#present?' do
+      should 'should be false' do
+        assert_equal(false, @target.present?)
       end
     end
   end
@@ -72,7 +73,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
 
         should 'return empty plates for no requests' do
           pick_list = @strategy.send(:_pick, [], OpenStruct.new)
-          assert([], pick_list)
+          assert_equal([], pick_list)
         end
 
         should 'raise an error if there is no pick for an empty plate' do
@@ -88,7 +89,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           @filter.expects(:call).with([ [request] ], anything).returns([ [request] ]).once
 
           pick_list = @strategy.send(:_pick, [request], OpenStruct.new(:max_beds => 1))
-          assert([[request]], pick_list)
+          assert_equal([['request_1']], pick_list)
         end
 
         should 'return two plates if the robot beds is too small' do
@@ -101,7 +102,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           @filter.expects(:call).with([ [requests.last] ], anything).returns([ [requests.last] ]).twice
 
           pick_list = @strategy.send(:_pick, requests, OpenStruct.new(:max_beds => 1))
-          assert([[requests.first],[requests.last]], pick_list)
+          assert_equal([['request_1'],['request_2']], pick_list)
         end
       end
     end

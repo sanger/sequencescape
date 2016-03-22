@@ -9,11 +9,11 @@ Feature: Cherrypicking for Pulldown pipeline
     Given I have a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission with 2 plates
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN222J for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     Then I should see "All plates in a submission must be selected"
     When I check "Select DN222J for batch"
     And I check "Select DN333P for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     Then I should see "This batch belongs to pipeline: Cherrypicking for Pulldown"
 
   Scenario: Dont allow more than 96 wells in a batch
@@ -30,7 +30,7 @@ Feature: Cherrypicking for Pulldown pipeline
     Then I should see "There are 3 requests available."
     When I check "Select DN1234567T for batch"
     And I check "Select DN222J for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     Then I should see "Maximum batch size is 2"
     Then I should see "This pipelines has a limit of 2 requests in a batch"
     Then I should see "There are 3 requests available."
@@ -51,7 +51,7 @@ Feature: Cherrypicking for Pulldown pipeline
    Given I am on the show page for pipeline "Cherrypicking for Pulldown"
    When I check "Select DN1234567T for batch"
    And I check "Select DN222J for batch"
-   And I press "Submit"
+   And I press the first "Submit"
    Then I should see "This batch belongs to pipeline: Cherrypicking for Pulldown"
    And I should see "Cherrypick Group By Submission"
    Given a plate barcode webservice is available and returns "99999"

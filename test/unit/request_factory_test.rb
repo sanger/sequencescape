@@ -1,16 +1,17 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 require "test_helper"
 
-class RequestFactoryTest < ActiveSupport::TestCase
-  context "RequestFactory" do
+class RequestcreateTest < ActiveSupport::TestCase
+  context "Requestcreate" do
     context '.copy_request' do
       setup do
-        @project = Factory(:project)
+        @project = create(:project)
         @project.project_metadata.update_attributes!(:budget_division => BudgetDivision.create!(:name => 'Test'))
-        @order = Factory(:order, :project => @project)
-        @request = Factory(:request, :request_type => Factory(:request_type), :project => @project, :asset => Factory(:sample_tube), :target_asset => Factory(:well))
+        @order = create(:order, :project => @project)
+        @request = create(:request, :request_type => create(:request_type), :project => @project, :asset => create(:sample_tube), :target_asset => create(:well))
       end
 
       context 'without quotas' do
@@ -46,8 +47,8 @@ class RequestFactoryTest < ActiveSupport::TestCase
 
   context '.create_assets_requests' do
     setup do
-      @study  = Factory(:study)
-      @assets = [ Factory(:sample_tube), Factory(:sample_tube) ]
+      @study  = create(:study)
+      @assets = [ create(:sample_tube), create(:sample_tube) ]
 
       RequestFactory.create_assets_requests(@assets, @study)
     end

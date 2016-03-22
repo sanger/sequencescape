@@ -8,10 +8,9 @@ module LabWhereClient
   LabwhereException = Class.new(StandardError)
 
   class LabWhere
-    include Singleton
 
     def base_url
-      configatron.labwhere_api
+      configatron.fetch(:labwhere_api)
     end
 
     def path_to(instance, target)
@@ -70,7 +69,7 @@ module LabWhereClient
       end
 
       def create(params)
-        attrs = LabWhere.instance.post(self, nil, creation_params(params))
+        attrs = LabWhere.new.post(self, nil, creation_params(params))
         new(attrs) unless attrs.nil?
       end
     end
@@ -82,7 +81,7 @@ module LabWhereClient
   module EndpointUpdateActions
     module ClassMethods
       def update(target, params)
-        attrs = LabWhere.instance.put(self, target, params)
+        attrs = LabWhere.new.put(self, target, params)
         new(attrs) unless attrs.nil?
       end
     end
@@ -99,7 +98,7 @@ module LabWhereClient
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
-      attrs = LabWhere.instance.get(self, barcode)
+      attrs = LabWhere.new.get(self, barcode)
       new(attrs) unless attrs.nil?
     end
 

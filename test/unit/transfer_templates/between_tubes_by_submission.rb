@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
+
 require "test_helper"
 
 class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
@@ -8,19 +9,19 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
   context "A transfer between tubes by submission" do
 
     setup do
-      @user    = Factory :user
+      @user    = create :user
 
-      @tube_a  = Factory :new_stock_multiplexed_library_tube
-      @plate_transfer_a = Factory :transfer_from_plate_to_tube, :destination => @tube_a
+      @tube_a  = create :new_stock_multiplexed_library_tube
+      @plate_transfer_a = create :transfer_from_plate_to_tube, :destination => @tube_a
       @plate_a = @plate_transfer_a.source
-      @submission = Factory :submission_without_order
+      @submission = create :submission_without_order
 
-      @final_tube = Factory :multiplexed_library_tube
+      @final_tube = create :multiplexed_library_tube
 
       @tube_a.purpose.child_relationships.create!(:child => @final_tube.purpose, :transfer_request_type => RequestType.transfer)
 
       @plate_a.wells.each do |well|
-        Factory :library_completion, :asset => well, :target_asset => @final_tube, :submission => @submission
+        create :library_completion, :asset => well, :target_asset => @final_tube, :submission => @submission
         Well::Link.create( :type => 'stock', :source_well => well, :target_well=> well)
       end
     end
@@ -40,13 +41,13 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
 
       setup do
 
-        @tube_b  = Factory :new_stock_multiplexed_library_tube
-        @plate_transfer_b = Factory :transfer_from_plate_to_tube, :destination => @tube_b
+        @tube_b  = create :new_stock_multiplexed_library_tube
+        @plate_transfer_b = create :transfer_from_plate_to_tube, :destination => @tube_b
         @plate_b = @plate_transfer_b.source
         @tube_b.purpose.child_relationships.create!(:child => @final_tube.purpose, :transfer_request_type => RequestType.transfer)
 
         @plate_b.wells.each do |well|
-          Factory :library_completion, :asset => well, :target_asset => @final_tube, :submission => @submission
+          create :library_completion, :asset => well, :target_asset => @final_tube, :submission => @submission
           Well::Link.create( :type => 'stock', :source_well => well, :target_well=> well)
         end
       end

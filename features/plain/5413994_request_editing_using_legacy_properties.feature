@@ -16,7 +16,7 @@ Feature: Editing a request as an administrator
     And I fill in "Fragment size required (to)" with "22222222"
     And I fill in "Read length" with "76"
     And I fill in "Gigabases expected" with "1"
-    And I press "Save changes"
+    And I press "Save Request"
     Then I should see "Request details have been updated"
     And I should see the following request information:
       | Still charge on fail:          | Not specified |

@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% group = group.blank? ? 'general' : group %>
 <th class="property_group_<%= group %>" id="property_<%= field_name %>">
   <div class="collapse_property_group_<%= group %>" style="display:none;">
@@ -8,12 +9,12 @@
   </div>
   <div class="cell_property_group_<%= group %>">
     <%# TODO[xxx]: support field being required somehow %>
-    <span class="property_edit_info"><%= sections.edit_info %></span><br/>
+    <span class="property_edit_info"><%= raw(sections.edit_info) %></span><br/>
     <span class="label"><%= sections.label %></span><br/>
     <span>
       <%= link_to_function(image_tag("hide.png"), "toggleGroupVisibility('#{group}')", :title=> "Hide column") %>
       <% unless sections.help.blank? %>
-        <% tooltip do %><%= sections.help %><% end %>
+        <% tooltip do %><%= raw(sections.help) %><% end %>
       <% end %>
     </span>
   </div>

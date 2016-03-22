@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
 <table id="plate" width="100%">
   <tr>
     <% plate.plate_header.each do |header| %>
@@ -9,13 +10,13 @@
   </tr>
   <% plate.plate_rows.each do |row| %>
     <tr>
-	  <td id='border' width='2%'><%= row %></td>
+    <td id='border' width='2%'><%= row %></td>
       <% plate.plate_columns.each do |column| -%>
         <td>
           <div id="boxNormal">
-            <% well = plate.find_well_by_rowcol(row[0]-?A,column-1) %>
-			<% if well %>
-			  <% if well.sample%>
+            <% well = plate.find_well_by_rowcol(row[0].getbyte(0) -'A'.getbyte(0),column-1) %>
+      <% if well %>
+        <% if well.sample%>
                 <%= link_to well.sample.name, sample_path(well.sample) %><br/>
               <% end %>
               <%= link_to "#{row}#{column}", asset_path(well) %><br/>

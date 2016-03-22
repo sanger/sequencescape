@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class PreCapGroupsTest < ActiveSupport::TestCase
@@ -8,7 +9,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
   def with_pools(*pools)
     pools.each_with_index do |well_locs,index|
       @plate.wells.located_at(well_locs).each do |well|
-        Factory(:pulldown_isc_request, {
+       FactoryGirl.create(:pulldown_isc_request, {
           :asset => well,
           :pre_capture_pool => @pools[index],
           :submission_id => index+1
@@ -19,9 +20,9 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
   context "A plate" do
     setup do
-      @plate = Factory :pooling_plate
+      @plate =FactoryGirl.create :pooling_plate
       @pools = (0..3).map do |i|
-        pool = Factory :pre_capture_pool
+        pool =FactoryGirl.create :pre_capture_pool
         pool.uuid_object.update_attributes!(:external_id=>"00000000-0000-0000-0000-00000000000#{i}")
         pool
       end
@@ -63,11 +64,11 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       context 'when transfers are created' do
 
         setup do
-          @target_plate = Factory :initial_downstream_plate
+          @target_plate =FactoryGirl.create :initial_downstream_plate
           @transfer = Transfer::BetweenPlates.create!(
             :source=>@plate,
             :destination=>@target_plate,
-            :user => Factory(:user),
+            :user =>FactoryGirl.create(:user),
             :transfers => {'A1'=>['A1','B1'],'B1'=>['A1'],'C1'=>['A1'],'D1'=>['B1','C1'],'E1'=>['C1'],'F1'=>['C1']}
           )
         end

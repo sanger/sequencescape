@@ -1,14 +1,15 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <% add :title, "Create a custom text" -%>
 
-<h1>CREATE CUSTOM TEXT</h1>
+<%= page_title "Custom Text", "Create" %>
 
 <p>To add a new custom text, complete the form below. Required fields are marked with <%= required_marker %>.</p>
 
 <div id="property_definition">
-  <% form_for :custom_text, :url => custom_texts_path do |form| -%>
+  <%= form_for :custom_text, :url => admin_custom_texts_path do |form| -%>
     <%= render :partial => "edit_custom_text", :locals => { :read_only => false, :form => form, :custom_text => @custom_text } -%>
   <% end -%>
 </div>

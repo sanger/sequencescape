@@ -1,15 +1,16 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <table class="checktext_field" width = "40%">
 </td>
   <tr>
   <td>
-  <% form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
+  <%= form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
     <%= form.text_field_without_property_field_wrapper(field_name)  %>
   <% end %>
   <td>
-    <% form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
+    <%= form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
       <!-- to add separator if need -->
     &nbsp;
   <% end %>
@@ -17,7 +18,7 @@
 </td>
   <td>
     <!-- Hack. we prefix with check , so we can use the #{field} attribute as it is without colliding with the real field -->
-    <% form.fields_for("check", form.object) do |check_form| %>
+    <%= form.fields_for("check", form.object) do |check_form| %>
   <%= check_form.select_without_property_field_wrapper("#{field_name}?", [["N/A", false], ["value", true]]) %>
 <% end %>
 </td>

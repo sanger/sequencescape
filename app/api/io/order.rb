@@ -1,13 +1,14 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2014 Genome Research Ltd.
+#Copyright (C) 2011,2014,2015 Genome Research Ltd.
+
 class ::Io::Order < ::Core::Io::Base
   REQUEST_OPTIONS_FIELDS = Hash[{
     :read_length                 => 'read_length',
     :library_type                => 'library_type',
     :fragment_size_required_from => 'fragment_size_required.from',
     :fragment_size_required_to   => 'fragment_size_required.to'
-  }.map { |k,v| [ k, "request_options.#{v}"] }]
+  }.map { |k,v| [ "request_options.#{k}".to_sym, "request_options.#{v}"] }]
 
   def self.json_field_for(attribute)
     REQUEST_OPTIONS_FIELDS[attribute.to_sym] || super

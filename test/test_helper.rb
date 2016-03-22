@@ -1,17 +1,28 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-#TODO: for rails 3 replace with rails/test_help
-require "test_help"
-require 'test_benchmark'
+
+require 'minitest/autorun'
+require 'shoulda'
+require 'rails/test_help'
 require 'factory_girl'
 
+begin
+  require 'pry'
+rescue LoadError => exception
+end
+
 require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
- Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
-   require factory_filename
- end
+Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
+ require factory_filename
+end
+
+Dir.glob(File.expand_path(File.join(Rails.root, %w{test shoulda_macros *.rb}))) do |macro_filename|
+  require macro_filename
+end
 
 require "#{Rails.root}/test/unit/task_test_base"
 
@@ -19,6 +30,7 @@ class ActiveSupport::TestCase
   extend Sanger::Testing::Controller::Macros
   extend Sanger::Testing::View::Macros
   extend Sanger::Testing::Model::Macros
+  include FactoryGirl::Syntax::Methods
 
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the
@@ -56,7 +68,12 @@ class ActiveSupport::TestCase
 
   # Used by Quiet Backtrace pluging to reduce testing noise
   #self.backtrace_silencers << :rails_vendor
-  #self.backtrace_filters   << :rails_root
+  #self.backtrace_filters   << :Rails.root
   # Add more helper methods to be used by all tests here...
 end
+
+class ActionController::TestCase
+  include FactoryGirl::Syntax::Methods
+end
+
 

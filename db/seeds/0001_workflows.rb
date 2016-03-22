@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 require 'control_request_type_creation'
 
 Pipeline.send(:include, ControlRequestTypeCreation)
@@ -1134,7 +1135,7 @@ end
 
       LabInterface::Workflow.find_by_name('Cherrypick').tasks.each do |task|
         # next if task.name == 'Set Location'
-        new_task = task.clone
+        new_task = task.dup
         new_task.workflow = liw
         new_task.save!
       end
@@ -1154,21 +1155,6 @@ end
       ) do |pipeline|
         pipeline.add_control_request_type
       end
-
-      SubmissionTemplate.create!(
-        :name => 'Illumina-C - Cherrypick Internally',
-        :submission_class_name => 'LinearSubmission',
-        :submission_parameters => {
-          :info_differential=>Submission::Workflow.find_by_key("short_read_sequencing").id,
-          :request_options=>{
-            :initial_state=>{
-              cprt.id=>:pending
-              }
-            },
-            :asset_input_methods=>["select an asset group", "enter a list of sample names found on plates"],
-            :workflow_id=>Submission::Workflow.find_by_key("short_read_sequencing").id,
-            :request_type_ids_list=>[[cprt.id]]}
-        )
 
 
 ## Fluidigm Stuff
@@ -1268,24 +1254,6 @@ tosta = RequestType.find_by_key('pick_to_sta').id
 tosta2 = RequestType.find_by_key('pick_to_sta2').id
 ptst = RequestType.find_by_key('pick_to_snp_type').id
 tofluidigm = RequestType.find_by_key('pick_to_fluidigm').id
-
-SubmissionTemplate.create!(
-  :name => 'Cherrypick for Fluidigm',
-  :submission_class_name => 'LinearSubmission',
-  :submission_parameters => {
-    :request_options=>{
-      :initial_state=>{
-        tosta =>:pending,
-        tosta2 =>:pending,
-        ptst => :pending,
-        tofluidigm =>:pending
-        }
-      },
-    :request_type_ids_list=>[[tosta],[tosta2],[ptst],[tofluidigm]],
-    :workflow_id => Submission::Workflow.find_by_name('Microarray genotyping').id,
-    :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id
-  }
-)
 
 
 v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|

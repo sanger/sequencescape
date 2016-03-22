@@ -35,7 +35,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given I am on the show page for pipeline "Cherrypick"
     When I check "Select DN222J for batch"
     And I check "Select DN333P for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     When I follow "Select Plate Template"
     And I fill in the following:
       | Minimum Volume    | 10   |
@@ -189,7 +189,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given plate "1234567" has measured volume results
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     When I follow "Cherrypick Group By Submission"
     And I choose "Pick by ng/µl"
     And I select "WGS stock DNA" from "Plate Purpose"

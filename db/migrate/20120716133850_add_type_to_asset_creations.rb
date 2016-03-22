@@ -3,7 +3,7 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class AddTypeToAssetCreations < ActiveRecord::Migration
   class AssetCreation < ActiveRecord::Base
-    set_table_name('asset_creations')
+    self.table_name =('asset_creations')
   end
 
   def self.up

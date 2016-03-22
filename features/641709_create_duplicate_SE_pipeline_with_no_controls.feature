@@ -11,6 +11,6 @@ Feature: Create a new pipeline called Cluster Formation SE (no controls)
 
     Then I should be on the "Cluster formation SE (no controls)" pipeline page
       When I select eight requests
-      And I select "Create Batch" from "Action to perform"
-      And I press "Submit"
+      And I select "Create Batch" from the first "Action to perform"
+      And I press the first "Submit"
       Then I should see "Specify Dilution Volume"

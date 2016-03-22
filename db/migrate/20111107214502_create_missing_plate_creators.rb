@@ -4,13 +4,13 @@
 class CreateMissingPlateCreators < ActiveRecord::Migration
   class PlateCreator < ActiveRecord::Base
     class Relationship < ActiveRecord::Base
-      set_table_name('plate_creator_purposes')
+      self.table_name =('plate_creator_purposes')
 
       belongs_to :plate_purpose, :class_name => 'CreateMissingPlateCreators::PlatePurpose'
       belongs_to :plate_creator, :class_name => 'CreateMissingPlateCreators::PlateCreator'
     end
 
-    set_table_name('plate_creators')
+    self.table_name =('plate_creators')
 
     has_many :plate_creator_purposes, :class_name => 'CreateMissingPlateCreators::PlateCreator::Relationship', :dependent => :destroy, :foreign_key => :plate_creator_id
     has_many :plate_purposes, :through => :plate_creator_purposes
@@ -19,7 +19,7 @@ class CreateMissingPlateCreators < ActiveRecord::Migration
   end
 
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
+    self.table_name =('plate_purposes')
     self.inheritance_column = :_type_disabled
   end
 

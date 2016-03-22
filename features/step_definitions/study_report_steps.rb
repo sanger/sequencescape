@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Then /^I should see qc reports table:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
@@ -8,27 +9,27 @@ end
 Given /^there is (\d+) pending report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   1.upto(num_reports.to_i) do
-    Factory :pending_study_report, :study => study, :user => @current_user
+    FactoryGirl.create :pending_study_report, :study => study, :user => @current_user
   end
 end
 
 Given /^there is (\d+) completed report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   1.upto(num_reports.to_i) do
-    Factory :completed_study_report, :study => study, :user => @current_user
+    FactoryGirl.create :completed_study_report, :study => study, :user => @current_user
   end
 end
 
 Then /^I should see the report for "([^"]*)":$/ do |study_name, expected_results_table|
   study = Study.find_by_name(study_name)
-  expected_results_table.diff!(FasterCSV.parse(page.source))
+  expected_results_table.diff!(CSV.parse(page.source))
 end
 
 
 Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_results_table|
   study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   report = study.study_reports.last or raise StandardError, "Study #{study_name.inspect} has no study reports"
-  expected_results_table.diff!(FasterCSV.parse(report.report.file.read))
+  expected_results_table.diff!(CSV.parse(report.report.file.read))
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
@@ -80,7 +81,7 @@ Then /^each sample name and sanger ID exists in study "([^"]*)"$/ do |study_name
   study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   report = study.study_reports.last or raise StandardError, "Study #{study_name.inspect} has no study reports"
 
-  FasterCSV.parse(report.report.file.read).each_with_index do |row, index|
+  CSV.parse(report.report.file.read).each_with_index do |row, index|
     next if row[1].empty? || index == 0
     assert_not_nil study.samples.find_by_sanger_sample_id(row[3])
   end

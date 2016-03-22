@@ -19,8 +19,8 @@ options = {
   :log_output => true
 }
 
-if ENV.has_key?('RAILS_ENV')
-  options[:app_name] = "#{ENV['RAILS_ENV']}-qc_evaluations-mini_poller"
+if ENV.has_key?('Rails.env')
+  options[:app_name] = "#{ENV['Rails.env']}-qc_evaluations-mini_poller"
 else
   options[:app_name] = "development-qc_evaluations-mini_poller"
 end

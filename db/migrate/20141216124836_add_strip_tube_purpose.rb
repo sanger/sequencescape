@@ -13,7 +13,7 @@ class AddStripTubePurpose < ActiveRecord::Migration
         :barcode_printer_type =>  BarcodePrinterType.find_by_name("96 Well Plate"),
         :cherrypick_direction => 'column',
         :size => 8,
-        :asset_shape => Map::AssetShape.find_by_name('StripTubeColumn'),
+        :asset_shape => AssetShape.find_by_name('StripTubeColumn'),
         :barcode_for_tecan => 'ean13_barcode'
       )
     end

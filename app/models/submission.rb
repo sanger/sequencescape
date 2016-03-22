@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class Submission < ActiveRecord::Base
   include Uuid::Uuidable
   extend  Submission::StateMachine
@@ -9,9 +10,6 @@ class Submission < ActiveRecord::Base
   #TODO[mb14] check if really needed. We use them in project_test
   include Request::Statistics::DeprecatedMethods
   include Submission::Priorities
-
-
-  include DelayedJobEx
 
   belongs_to :user
   validates_presence_of :user
@@ -38,21 +36,22 @@ class Submission < ActiveRecord::Base
     end
   end
 
-  cattr_reader :per_page
-  @@per_page = 500
-  named_scope :including_associations_for_json, {
-    :include => [
+
+  self.per_page = 500
+  scope :including_associations_for_json, -> { includes([
       :uuid_object,
       {:orders => [
          {:project => :uuid_object},
          {:assets => :uuid_object },
          {:study => :uuid_object },
          :user]}
-  ]}
+  ])}
 
-  named_scope :building, :conditions => { :state => "building" }
-  named_scope :pending, :conditions => { :state => "pending" }
-  named_scope :ready, :conditions => { :state => "ready" }
+  scope :building, -> { where( :state => "building" ) }
+  scope :pending,  -> { where( :state => "pending" ) }
+  scope :ready,    -> { where( :state => "ready" ) }
+
+  scope :latest_first, -> { order('id DESC') }
 
   before_destroy :building?, :empty_of_orders?
 

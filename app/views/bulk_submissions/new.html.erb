@@ -1,17 +1,18 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.%>
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.%>
+
 <h2>Create a bulk submission:</h2>
 
 <p class="info">Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors, <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
 
-<% semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
-    <% form.inputs do %>
+<%= semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
+    <%= form.inputs do %>
       <%= form.input :spreadsheet, :as => :file, :label => 'Spreadsheet' %>
 
     <% end %>
-    <% form.buttons do %>
-      <%= form.commit_button %>
+    <%= form.button do %>
+      <%= form.action(:submit) %>
 
     <% end %>
     <div id="being_created" style="display: none;">
@@ -56,13 +57,13 @@
 <p>The important thing is that a single submission can be described on one row, where you list the asset IDs or asset names, or across multiple rows, which you must currently do for the plate/well combinations.  If your submission spans multiple rows then the 'asset group name' is used to group them together, so must be identical for each row that forms a submission.  In this latter case the submission details must be duplicated on each line.</p>
 
 <script>
-(function(undefined) {
-  document.observe('dom:loaded', function() {
-    $('new_bulk_submission').observe('submit', function() {
-      Element.hide('bulk_submission_submit');
-      Element.show('being_created');
-      Element.show('loading');
+(function($, undefined) {
+  $(document).on('dom:loaded', function() {
+    $('#new_bulk_submission').on('submit', function() {
+      $('#bulk_submission_submit').hide();
+      $('#being_created').show();
+      $('#loading').show();
     });
   });
-})();
+})(jQuery);
 </script>

@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% add :title, I18n.t("studies.about") -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 
@@ -9,7 +10,7 @@
 <p>Select the type of reference assembly to upload, or select from one of our preset default sequences.</p>
 <p>Not specifying a reference sequence can delay analysis.</p>
 
-<% form_for :study, :url => assembly_study_path(@study), :html => {:method => 'put', :multipart => true } do |form| %>
+<%= form_for :study, :url => assembly_study_path(@study), :html => {:method => 'put', :multipart => true } do |form| %>
   <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
       <td width="35%" class="item">Reference assembly type: <%= required_marker %></span></td>
@@ -43,11 +44,10 @@
 
 <script type="text/javascript">
   function select_reference() {
-    kind = $('assembly_kind').value;
-    new Ajax.Updater(
-      'assembly', '/projects/choice/' + kind, {
-        asynchronous:true, evalScripts:true,
-        onComplete: function() { $('submit').style.display = 'block'; }
+    kind = $('#assembly_kind').val();
+    $.ajax('/projects/choice/' + kind, {
+        success: function(data) {$('#assembly').html(data);},
+        complete: function() { $('#submit').style.display = 'block'; }
     });
   }
 </script>

@@ -89,7 +89,7 @@ Feature: Manage a list of faculty sponsors
   Scenario Outline: Only admins can manage faculty sponsors
     Given I am a "<role>" user logged in as "user"
       And I am on the faculty sponsor homepage
-    Then I should see "Please use your UNIX username and password to login"
+    Then I should see "Please use your Sanger username and password to login"
     Examples:
       | role          |
       | follower      |

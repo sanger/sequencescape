@@ -4,11 +4,11 @@
 class MetadataMigration < ActiveRecord::Migration
   class Property < ActiveRecord::Base
     class Definition < ActiveRecord::Base
-      set_table_name('property_definitions')
+      self.table_name =('property_definitions')
       has_many :properties, :class_name => 'MetadataMigration::Property', :foreign_key => :property_definition_id, :dependent => :destroy
 
-      named_scope :for_class, lambda { |c| { :conditions => { :relates_to => c } } }
-      named_scope :for_keys, lambda { |keys| { :conditions => { :key => keys } } }
+     scope :for_class, ->(c) { { :conditions => { :relates_to => c } } }
+     scope :for_keys, ->(keys) { { :conditions => { :key => keys } } }
 
       # It's more efficient to delete all of the properties and then delete the definition.
       def self.delete_for(relates_to, keys)
@@ -18,7 +18,7 @@ class MetadataMigration < ActiveRecord::Migration
       end
     end
 
-    set_table_name('properties')
+    self.table_name =('properties')
     belongs_to :definition, :class_name => 'MetadataMigration::Property::Definition', :foreign_key => :property_definition_id
   end
 

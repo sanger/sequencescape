@@ -28,7 +28,7 @@ module ImportPulledData
       if object.respond_to? :save_after_unmarshalling
         object.save_after_unmarshalling
       else
-        object.save_without_validation
+        object.save(validate: false)
       end
     end
   end

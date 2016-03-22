@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # This module can be included into ActiveRecord::Base classes to get the ability to specify the attributes
 # that are present.  You can think of this as metadata being stored about the column in the table: it's
 # default value, whether it's required, if it has a set of values that are acceptable, or if it's numeric.
@@ -9,7 +10,7 @@
 #   attribute(:foo, :required => true)
 #   attribute(:bar, :default => 'Something', :in => [ 'Something', 'Other thing' ])
 #   attribute(:numeric, :integer => true)
-#   attribute(:dependent, :required => true, :if => lambda { |r| r.foo == 'Yep' })
+#   attribute(:dependent, :required => true, :if => ->(r) { r.foo == 'Yep' })
 #
 # Attribute information can be retrieved from the class through 'attributes', and each one of the attributes
 # you define can be converted to a FieldInfo instance using 'to_field_info'.
@@ -18,10 +19,19 @@ module Attributable
     base.extend(ClassMethods)
     base.class_eval do
       # NOTE: Do not use 'attributes' because that's an ActiveRecord internal name
-      class_inheritable_reader :attribute_details
-      write_inheritable_attribute(:attribute_details, [])
-      class_inheritable_reader :association_details
-      write_inheritable_attribute(:association_details, [])
+      class_attribute :attribute_details, :instance_writer => false
+      self.attribute_details =  []
+      class_attribute :association_details, :instance_writer => false
+      self.association_details =  []
+    end
+  end
+
+
+  class CustomValidator < ActiveModel::EachValidator
+    def validate_each(record, attribute, value)
+      valid = record.validator_for(attribute).valid_options.include?(value)
+      record.errors.add(attribute,"is not a valid option") unless valid
+      valid
     end
   end
 
@@ -60,22 +70,23 @@ module Attributable
   end
 
   module ClassMethods
+
     def attribute(name, options = {}, override_previous = false)
       attribute = Attribute.new(self, name, options)
       attribute.configure(self)
 
       if override_previous
-        attribute_details.delete_if { |a| a.name == name }
-        attribute_details.push(attribute)
-      elsif attribute_details.detect { |a| a.name == name }.nil?
-        attribute_details.push(attribute)
+        self.attribute_details = self.attribute_details.reject { |a| a.name == name }
+        self.attribute_details += [attribute]
+      elsif self.attribute_details.detect { |a| a.name == name }.nil?
+        self.attribute_details += [attribute]
       end
     end
 
     def association(name, instance_method, options = {})
       association = Association.new(self, name, instance_method, options)
       association.configure(self)
-      association_details.push(association)
+      self.association_details += [association]
     end
 
     def defaults
@@ -250,6 +261,10 @@ module Attributable
       @options[:with_method]
     end
 
+    def minimum
+      @options[:minimum]||0
+    end
+
     def selection_values
       @options[:in]
     end
@@ -269,33 +284,33 @@ module Attributable
 
       model.with_options(conditions) do |object|
         # false.blank? == true, so we exclude booleans here, they handle themselves further down.
-        object.validates_presence_of(name) if self.required? && ! self.boolean?
+        object.validates_presence_of(name) if self.required? && !self.boolean?
         object.with_options(:allow_nil => self.optional?, :allow_blank => allow_blank) do |required|
           required.validates_inclusion_of(name, :in => [true, false]) if self.boolean?
           required.validates_numericality_of(name, :only_integer => true) if self.numeric?
           required.validates_numericality_of(name, :greater_than => 0) if self.float?
           required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.fixed_selection?
           required.validates_format_of(name, :with => self.valid_format) if self.valid_format?
-          required.validate do |record|
-            valid = record.validator_for(name).valid_options.to_a.include?(record.send(name))
-            record.errors.add(name,"is not in the list") unless valid
-            valid
-          end if self.validator?
+          required.validates name, :custom => true if self.validator?
           required.validate(self.validate_method) if self.method?
         end
       end
 
       unless save_blank_value
-        model.before_validation do |record|
-          value = record.send(name)
-          record.send("#{name}=", nil) if value and value.blank?
-        end
+        model.class_eval(%Q{
+          before_validation do |record|
+            value = record.#{name}
+            record.#{name}= nil if value and value.blank?
+          end
+        })
       end
 
       unless (condition = conditions[:if]).nil?
-        model.before_validation do |record|
-          record[name] = nil unless record.send(condition)
-        end
+        model.class_eval(%Q{
+          before_validation do |record|
+            record.#{name}= nil unless record.#{condition}
+          end
+        })
       end
     end
 
@@ -324,6 +339,7 @@ module Attributable
     def kind
       return FieldInfo::SELECTION if self.selection?
       return FieldInfo::BOOLEAN if self.boolean?
+      return FieldInfo::NUMERIC if self.numeric? || self.float?
       FieldInfo::TEXT
     end
 
@@ -342,9 +358,12 @@ module Attributable
         :display_name  => display_name,
         :key           => assignable_attribute_name,
         :default_value => find_default(object,metadata),
-        :kind          => kind
+        :kind          => kind,
+        :required      => required?
       }
       options.update(:selection => selection_options(metadata)) if self.selection?
+      options.update(:step => 1, :min => self.minimum) if self.numeric?
+      options.update(:step => 0.1, :min => 0) if self.float?
       FieldInfo.new(options)
     end
   end

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
+
 # This module can be included where the submission has a linear behaviour, with no branching.
 module Submission::LinearRequestGraph
   # TODO: When Item dies this code will not need to hand it around so much!
@@ -12,7 +13,7 @@ module Submission::LinearRequestGraph
     ActiveRecord::Base.transaction do
       create_request_chain!(
         build_request_type_multiplier_pairs,
-        assets.map { |asset| [ asset, create_item_for!(asset) ] },
+        assets.map { |asset| [ asset, [asset.latest_stock_metric(product)], create_item_for!(asset) ] },
         multiplexing_assets,
         &block
       )
@@ -56,7 +57,7 @@ module Submission::LinearRequestGraph
   # Creates the next step in the request graph, taking the first request type specified and building
   # enough requests for the source requests.  It will recursively call itself if there are more requests
   # that need creating.
-  def create_request_chain!(request_type_and_multiplier_pairs, source_asset_item_pairs, multiplexing_assets, &block)
+  def create_request_chain!(request_type_and_multiplier_pairs, source_asset_qc_metric_and_item, multiplexing_assets, &block)
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
     request_type, multiplier = request_type_and_multiplier_pairs.shift
 
@@ -67,14 +68,14 @@ module Submission::LinearRequestGraph
         if request_type.for_multiplexing?
           multiplexing_assets || MockedArray.new(create_target_asset_for!(request_type))
         else
-          source_asset_item_pairs.map { |source_asset, _| create_target_asset_for!(request_type, source_asset) }
+          source_asset_qc_metric_and_item.map { |source_asset, _| create_target_asset_for!(request_type, source_asset) }
         end
       yield(target_assets) if block_given? and request_type.for_multiplexing?
 
       # Now we can iterate over the source assets and target assets building the requests between them.
       # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
       # are transferred into the destination if the request does not do this in some manner itself.
-      source_asset_item_pairs.each_with_index do |(source_asset, item), index|
+      source_asset_qc_metric_and_item.each_with_index do |(source_asset, qc_metrics, item), index|
         target_asset = target_assets[index]
 
         create_request_of_type!(
@@ -85,7 +86,10 @@ module Submission::LinearRequestGraph
           # given that the request graph describes this relationship.
           AssetLink.create_edge!(source_asset, target_asset) if source_asset.present? and target_asset.present?
 
-          comments.each do |comment|
+          request.qc_metrics = qc_metrics.compact.uniq
+          request.update_responsibilities!
+
+          comments.split("\n").each do |comment|
             request.comments.create!(:user => user, :description => comment)
           end if comments.present?
         end
@@ -98,14 +102,15 @@ module Submission::LinearRequestGraph
 
       target_assets_items =  if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
         if multiplexing_assets.nil?
-          target_assets.uniq.map { |asset| [ asset, nil ] }
+          criteria = source_asset_qc_metric_and_item.map {|sci| sci[1] }.flatten.uniq
+          target_assets.uniq.map { |asset| [ asset, criteria, nil ] }
         else
           associate_built_requests(target_assets.uniq.compact); []
         end
       else
         target_assets.each_with_index.map do |asset,index|
-          source_asset = request_type.no_target_asset? ? source_asset_item_pairs[index].first : asset
-          [ source_asset, source_asset_item_pairs[index].last ]
+          source_asset = request_type.no_target_asset? ? source_asset_qc_metric_and_item[index].first : asset
+          [ source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last ]
         end
       end
 
@@ -118,7 +123,7 @@ module Submission::LinearRequestGraph
     assets.map(&:requests).flatten.each do |request|
       request.update_attributes!(:initial_study => nil) if request.initial_study != study
       request.update_attributes!(:initial_project => nil) if request.initial_project != project
-      comments.each do |comment|
+      comments.split("\n").each do |comment|
         request.comments.create!(:user => user, :description => comment)
       end if comments.present?
     end

@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% add :menu, "All Tag Groups" => tag_groups_path(@asset) %>
 
 <p>
@@ -11,7 +12,7 @@
 <%= render :partial => "shared/tags_list", :locals => { :tag_group => @tag_group, :tags => @tag_group.tags } %>
 
 
-<script type="text/javascript">$$('table tbody > tr:nth-child(even)').invoke('addClassName', 'roweven');</script>
+<script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
 <% if current_user.administrator? %>
   <%= link_to 'Edit', edit_tag_group_path(@tag_group) %> |
 <% end %>

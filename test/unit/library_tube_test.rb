@@ -1,18 +1,19 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class LibraryTubeTest < ActiveSupport::TestCase
   context "A Library tube" do
     setup do
-      @library_tube = Factory :library_tube
+      @library_tube = create :library_tube
     end
 
     context "#has_stock_asset?" do
       setup do
-        @library_tube_with_stock_tube = Factory :library_tube
-        @stock_library_tube = Factory :stock_library_tube
+        @library_tube_with_stock_tube = create :library_tube
+        @stock_library_tube = create :stock_library_tube
         @stock_library_tube.children << @library_tube_with_stock_tube
       end
 

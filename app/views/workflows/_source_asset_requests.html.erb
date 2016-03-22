@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.%>
+#Copyright (C) 2015,2016 Genome Research Ltd.%>
+
 <%# TODO: Rename the classes here to be less asset-type specific %>
 <ul class="tube_source tube_receiver interface_group" id='tube_source'>
   <h3>Unsorted <%= type.capitalize %></h3>
@@ -13,5 +14,5 @@
 <% end %>
 </ul>
 <% requests.each do |request| %>
-  <input type='hidden' class='tube_location' id='locations_for_<%= request.id %>' name='request_locations[<%= request.id %>]' autocomplete="off" value=''>
+  <input type='hidden' class='tube_location' id='locations_for_<%= request.id %>' name='request_locations[<%= request.id %>]' autocomplete="off" value='' required='required'>
 <% end %>

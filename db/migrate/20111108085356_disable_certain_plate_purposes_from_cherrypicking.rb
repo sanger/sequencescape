@@ -4,12 +4,12 @@
 class DisableCertainPlatePurposesFromCherrypicking < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
     class Relationship < ActiveRecord::Base
-      set_table_name('plate_purpose_relationships')
+      self.table_name =('plate_purpose_relationships')
       belongs_to :parent, :class_name => 'DisableCertainPlatePurposesFromCherrypicking::PlatePurpose'
       belongs_to :child, :class_name => 'DisableCertainPlatePurposesFromCherrypicking::PlatePurpose'
     end
 
-    set_table_name('plate_purposes')
+    self.table_name =('plate_purposes')
 
     has_many :child_relationships, :class_name => 'DisableCertainPlatePurposesFromCherrypicking::PlatePurpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
     has_many :child_plate_purposes, :through => :child_relationships, :source => :child

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
+
 ActiveRecord::Base.transaction do
 
 
@@ -140,22 +141,7 @@ ActiveRecord::Base.transaction do
       submission.info_differential = workflow.id
       submission.workflow          = workflow
       submission.request_options   = defaults
-
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
-      st.save!
-
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
-
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
-      st.save!
     end
   end
 
@@ -174,21 +160,8 @@ ActiveRecord::Base.transaction do
       submission.workflow          = workflow
       submission.request_options   = defaults
 
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
-      st.save!
-
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
-      st.save!
     end
   end
   IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose,request|
@@ -210,29 +183,6 @@ re_request = RequestType.create!(
     rt.acceptable_plate_purposes << PlatePurpose.find_by_name!('Lib PCR-XP')
      RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
   end
-  [
-    'illumina_a_hiseq_paired_end_sequencing',
-    'illumina_a_single_ended_hi_seq_sequencing',
-    'illumina_a_hiseq_2500_paired_end_sequencing',
-    'illumina_a_hiseq_2500_single_end_sequencing',
-    'illumina_a_miseq_sequencing',
-    'illumina_a_hiseq_v4_paired_end_sequencing',
-    'illumina_a_hiseq_x_paired_end_sequencing'
-  ].each do |sequencing_key|
-      sequencing_request = RequestType.find_by_key!(sequencing_key)
-      SubmissionTemplate.create!(
-          :name => "ISC Repool - #{sequencing_request.name.gsub('Illumina-A ','')}",
-          :submission_class_name => 'LinearSubmission',
-          :submission_parameters => {
-            :request_type_ids_list => [[re_request.id],[sequencing_request.id]],
-            :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
-            :order_role_id => Order::OrderRole.find_or_create_by_role('ReISC').id,
-            :request_options => {'pre_capture_plex_level'=>8}
-          },
-          :product_line => ProductLine.find_by_name('Illumina-A')
-        )
-    end
-
 
   RequestType.create!(
     :name => "Illumina-HTP Library Creation",
@@ -252,6 +202,33 @@ re_request = RequestType.create!(
           :pooling_behaviour => 'PlateRow',
           :pooling_options   => {:pool_count=>8}
         )
+      rt.acceptable_plate_purposes << PlatePurpose.find_by_name!("PF Cherrypicked")
+      RequestType::Validator.create!(
+        :request_type   => rt,
+        :request_option => 'library_type',
+        :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt.id)
+      )
+      rt.library_types << LibraryType.find_or_create_by_name!("HiSeqX PCR free")
+    end
+
+  RequestType.create!(
+    :name => 'HTP PCR Free Library',
+    :key => 'htp_pcr_free_lib',
+    :asset_type => 'Well',
+    :deprecated         => false,
+    :initial_state      => "pending",
+    :for_multiplexing   => true,
+    :morphology         => 0,
+    :multiples_allowed  => false,
+    :no_target_asset    => false,
+    :order              => 1,
+    :pooling_method     => RequestType::PoolingMethod.find_by_pooling_behaviour!("PlateRow"),
+    :request_purpose    => RequestPurpose.find_by_key!("standard"),
+    :request_class_name => "IlluminaHtp::Requests::StdLibraryRequest",
+    :workflow           => Submission::Workflow.find_by_key!('short_read_sequencing'),
+    :product_line       => ProductLine.find_by_name!('Illumina-HTP')
+    ) do |rt|
+      rt.acceptable_plate_purposes << PlatePurpose.find_by_name!("PF Cherrypicked")
     end
 
     RequestType.create!(
@@ -277,7 +254,7 @@ re_request = RequestType.create!(
         :barcode_printer_type =>  BarcodePrinterType.find_by_name("96 Well Plate"),
         :cherrypick_direction => 'column',
         :size => 8,
-        :asset_shape => Map::AssetShape.find_by_name('StripTubeColumn'),
+        :asset_shape => AssetShape.find_by_name('StripTubeColumn'),
         :barcode_for_tecan => 'ean13_barcode'
       )
 end

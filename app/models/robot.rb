@@ -1,20 +1,21 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 class Robot < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::Robot
-
-  validates_presence_of :name,:location
+  validates_presence_of :name
+  validates_presence_of :location
   has_many :robot_properties
   has_one :max_plates_property, :class_name => 'RobotProperty', :conditions => { :key => 'max_plates' }
 
-  named_scope :with_machine_barcode, lambda { |barcode|
+ scope :with_machine_barcode, ->(barcode) {
     barcode_number = Barcode.number_to_human(barcode)
     { :conditions => [ 'barcode=? AND ?', barcode_number, Barcode.prefix_from_barcode(barcode)==prefix ] }
   }
 
-  named_scope :include_properties, { :include => :robot_properties }
+  scope :include_properties, -> { includes(:robot_properties) }
 
   def minimum_volume
     configatron.tecan_minimum_volume

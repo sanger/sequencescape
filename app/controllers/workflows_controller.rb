@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class WorkflowsController < ApplicationController
   before_filter :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
@@ -134,10 +135,10 @@ class WorkflowsController < ApplicationController
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
   def stage
-
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
+
 
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task
@@ -146,7 +147,6 @@ class WorkflowsController < ApplicationController
 
         eager_loading = @task.included_for_do_task
         @batch ||= Batch.find(params[:batch_id], :include => eager_loading )
-
         unless @batch.editable?
           flash[:error] = "You cannot make changes to a completed batch."
           redirect_to :back

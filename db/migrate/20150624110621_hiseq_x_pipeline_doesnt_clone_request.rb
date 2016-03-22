@@ -1,10 +1,11 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 class HiseqXPipelineDoesntCloneRequest < ActiveRecord::Migration
 
   class Pipeline < ActiveRecord::Base
-    set_table_name('pipelines')
+    self.table_name=('pipelines')
   end
 
   def self.up

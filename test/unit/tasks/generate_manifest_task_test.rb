@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+# encoding: utf-8
+
 require "test_helper"
 
 class DummyTaskGroup
@@ -16,8 +18,8 @@ class GenerateManifestTaskTest < ActiveSupport::TestCase
     context '#generate_manifest_task' do
       context 'when obtaining a new manifest' do
         should 'filter incorrect characters' do
-          @batch                = Factory :batch, :id => 1
-          @study                = Factory :study, :name => [
+          @batch                = create :batch, :id => 1
+          @study                = create :study, :name => [
           "Study name with any content:’'[](){}⟨⟩:,،、‒–—―…......!.‐-?‘’“”'';/⁄· &*@•^†",
           "‡°″¡¿#№÷×ºª%‰+−=‱¶′″‴§~_|‖‗¦©℗®℠™¤₳฿₵¢₡₢$₫₯₠€ƒ₣₲₴₭₺ℳ₥₦₧₱₰£៛₽₹₨₪৳₸₮₩¥⁂❧☞‽⸮◊※",
           "⁀and no more"].join('')

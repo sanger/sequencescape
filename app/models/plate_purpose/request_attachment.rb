@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2014,2015 Genome Research Ltd.
+
 module PlatePurpose::RequestAttachment
 
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
@@ -48,9 +49,9 @@ module PlatePurpose::RequestAttachment
 
   def self.included(base)
     base.class_eval do
-      class_inheritable_reader :connect_on
-      class_inheritable_reader :connect_downstream
-      class_inheritable_reader :connected_class
+      class_attribute :connect_on
+      class_attribute :connect_downstream
+      class_attribute :connected_class
     end
   end
 

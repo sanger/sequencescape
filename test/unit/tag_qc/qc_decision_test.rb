@@ -1,27 +1,28 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class QcDecisionTest < ActiveSupport::TestCase
   context "A Qc Decision" do
 
 
-    should_belong_to :user
-    should_belong_to :lot
+    should belong_to :user
+    should belong_to :lot
 
-    should_have_many :qcables
+    should have_many :qcables
 
-    should_validate_presence_of :user
+    should validate_presence_of :user
 
     context "#qc_decision" do
       setup do
-        @lot = Factory :lot
-        @user = Factory :user
+        @lot = create :lot
+        @user = create :user
         @user.roles.create!(:name=>'qa_manager')
-        @user_b = Factory :user
-        @qcable_a = Factory :qcable, :lot => @lot, :state => 'pending'
-        @qcable_b = Factory :qcable, :lot => @lot, :state => 'pending'
+        @user_b = create :user
+        @qcable_a = create :qcable, :lot => @lot, :state => 'pending'
+        @qcable_b = create :qcable, :lot => @lot, :state => 'pending'
       end
 
       context "with valid data" do

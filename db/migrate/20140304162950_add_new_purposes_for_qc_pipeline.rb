@@ -23,8 +23,8 @@ class AddNewPurposesForQcPipeline < ActiveRecord::Migration
 
   def self.purpose_order
     [
-      {:class=>PlatePurpose,    :name=>'Tag PCR', :barcode_printer_type => plate, :size => 96, :asset_shape => Map::AssetShape.find_by_name('Standard')},
-      {:class=>PlatePurpose,    :name=>'Tag PCR-XP', :barcode_printer_type => plate, :size => 96, :asset_shape => Map::AssetShape.find_by_name('Standard')},
+      {:class=>PlatePurpose,    :name=>'Tag PCR', :barcode_printer_type => plate, :size => 96, :asset_shape => AssetShape.find_by_name('Standard')},
+      {:class=>PlatePurpose,    :name=>'Tag PCR-XP', :barcode_printer_type => plate, :size => 96, :asset_shape => AssetShape.find_by_name('Standard')},
       {:class=>Tube::StockMx,   :name=>'Tag Stock-MX', :target_type=>'StockMultiplexedLibraryTube', :barcode_printer_type => tube},
       {:class=>Tube::StandardMx,:name=>'Tag MX', :target_type=>'MultiplexedLibraryTube', :barcode_printer_type => tube},
     ]

@@ -1,10 +1,12 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
 class PlateBarcode < ActiveResource::Base
   self.site = configatron.plate_barcode_service
+  self.format = ActiveResource::Formats::XmlFormat
 
- if RAILS_ENV == 'development'
+  if Rails.env == 'development'
    def self.create
      if @barcode.nil?
        @barcode = Asset.first(
@@ -17,6 +19,6 @@ class PlateBarcode < ActiveResource::Base
 
      OpenStruct.new(:barcode => (@barcode += 1))
    end
- end
+  end
 
 end

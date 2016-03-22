@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+
 class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = {
     :destination => [
@@ -22,7 +23,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   }
 
   class WellToTube < ActiveRecord::Base
-    set_table_name('well_to_tube_transfers')
+    self.table_name =('well_to_tube_transfers')
 
     belongs_to :transfer, :class_name => 'Transfer::BetweenPlateAndTubes'
     validates_presence_of :transfer
@@ -32,14 +33,14 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
     validates_presence_of :source
 
-    named_scope :include_destination, :include => Transfer::BetweenPlateAndTubes::DESTINATION_INCLUDES
+    scope :include_destination, -> { includes(Transfer::BetweenPlateAndTubes::DESTINATION_INCLUDES) }
   end
 
   include Transfer::ControlledDestinations
 
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, :class_name => 'Transfer::BetweenPlateAndTubes::WellToTube', :foreign_key => :transfer_id
-  named_scope :include_transfers, :include => { :well_to_tubes => DESTINATION_INCLUDES }
+  scope :include_transfers, -> { includes( :well_to_tubes => DESTINATION_INCLUDES ) }
 
   def transfers
     Hash[well_to_tubes.include_destination.map { |t| [t.source, tube_to_hash(t.destination)] }]

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 class Accessionable::Policy < Accessionable::Base
 
   attr_reader :policy_url, :dac_accession_number, :title
@@ -49,7 +50,7 @@ class Accessionable::Policy < Accessionable::Base
     service.policy_visibility(@study) == AccessionService::Protect
   end
 
-  def object_id
+  def accessionable_id
     @study.id
   end
 end

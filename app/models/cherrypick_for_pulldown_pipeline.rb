@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 class CherrypickForPulldownPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 
@@ -25,7 +26,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
   end
 
   def all_requests_from_submissions_selected?(request_ids)
-    requests = Request.find(request_ids, :include => [:submission])
+    requests = Request.where(:id=>request_ids).includes(:submission).all
     expected_requests = all_request_from_submissions_filtered_by_request_type(submissions_from_requests(requests),requests.first.request_type)
     return true if requests.size == expected_requests.size
 

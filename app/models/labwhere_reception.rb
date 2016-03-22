@@ -1,9 +1,14 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 
 # A simple class to handle the behaviour from the labwhere reception controller
 class LabwhereReception
+  # The following two modules include methods used by a number of rails
+  # helpers, such that we can use them in eg. form_for
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
 
   attr_reader :errors, :asset_barcodes, :user_code, :location_barcode, :location_id
 
@@ -20,6 +25,7 @@ class LabwhereReception
   end
 
   def id; nil; end
+  def persisted?; false; end
   def new_record?; true; end
 
   # save attempts to perform the actions, and returns true if it was successful

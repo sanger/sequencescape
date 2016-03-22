@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 class SequenomQcPlatesController < ApplicationController
   def new
     @barcode_printers  = BarcodePrinterType.find_by_name("384 Well Plate").barcode_printers
@@ -53,7 +54,7 @@ class SequenomQcPlatesController < ApplicationController
     respond_to do |format|
       if bad_plate
         # Something's gone wrong, render the errors on the first plate that failed
-        flash[:error] = bad_plate.errors.on_base || "Failed to create Sequenom QC Plate"
+        flash[:error] = bad_plate.errors.full_messages || "Failed to create Sequenom QC Plate"
         format.html { render :new }
       else
         # Everything's tickity boo so...

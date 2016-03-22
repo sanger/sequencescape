@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class Transfer < ActiveRecord::Base
   module Associations
     def self.included(base)
@@ -12,10 +13,10 @@ class Transfer < ActiveRecord::Base
         has_many :transfers_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id, :order => 'id ASC'
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
-        named_scope :with_no_outgoing_transfers, {
-          :select     => "DISTINCT #{base.quoted_table_name}.*",
-          :joins      => "LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`",
-          :conditions => 'outgoing_transfers.source_id IS NULL'
+        scope :with_no_outgoing_transfers, -> {
+          select("DISTINCT #{base.quoted_table_name}.*").
+          joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`").
+          where('outgoing_transfers.source_id IS NULL')
         }
       end
     end
@@ -51,7 +52,7 @@ class Transfer < ActiveRecord::Base
     module PlateState
       def self.included(base)
         base.class_eval do
-          named_scope :in_state, lambda { |states|
+         scope :in_state, ->(states) {
             states = Array(states).map(&:to_s)
 
             # If all of the states are present there is no point in actually adding this set of conditions because we're
@@ -63,7 +64,7 @@ class Transfer < ActiveRecord::Base
               query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
                 "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
                 "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
-                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
+                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
 
               # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
@@ -87,7 +88,7 @@ class Transfer < ActiveRecord::Base
     module TubeState
       def self.included(base)
         base.class_eval do
-          named_scope :in_state, lambda { |states|
+         scope :in_state, ->(states) {
             states = Array(states).map(&:to_s)
 
             # If all of the states are present there is no point in actually adding this set of conditions because we're
@@ -95,7 +96,7 @@ class Transfer < ActiveRecord::Base
             if states.sort != ALL_STATES.sort
 
               query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
-                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
+                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
 
               query_conditions = 'transfer_requests_as_target.state IN (?)'
@@ -105,7 +106,7 @@ class Transfer < ActiveRecord::Base
               { }
             end
           }
-          named_scope :without_finished_tubes, lambda { |purpose|
+         scope :without_finished_tubes, ->(purpose) {
             {:conditions => ["NOT (plate_purpose_id IN (?) AND state = 'passed')", purpose.map(&:id) ]}
           }
         end
@@ -119,7 +120,7 @@ class Transfer < ActiveRecord::Base
     def self.included(base)
       base.class_eval do
         serialize :transfers
-        validates_presence_of :transfers, :allow_blank => false
+        validates :transfers, :presence => true, :allow_blank => false
       end
     end
   end
@@ -168,7 +169,7 @@ class Transfer < ActiveRecord::Base
   # You can only transfer from one plate to another once, anything else is an error.
   belongs_to :source, :class_name => 'Plate'
   validates_presence_of :source
-  named_scope :include_source, :include => { :source => ModelExtensions::Plate::PLATE_INCLUDES }
+  scope :include_source, -> { includes( :source => ModelExtensions::Plate::PLATE_INCLUDES ) }
 
   # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.

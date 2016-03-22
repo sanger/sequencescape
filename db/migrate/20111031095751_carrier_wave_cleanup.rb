@@ -4,7 +4,7 @@
 class CarrierWaveCleanup < ActiveRecord::Migration
   def self.up
     # Delete old file columns
-    remove_column :study_reports, :report_file 
+    remove_column :study_reports, :report_file
     remove_column :sample_manifests, :uploaded_file
     remove_column :sample_manifests, :generated_file
     remove_column :plate_volumes, :uploaded_file

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 module Core::Service::ErrorHandling
   def self.registered(app)
     app.instance_eval do
@@ -9,7 +10,11 @@ module Core::Service::ErrorHandling
       # We need hierarchical exception handling, so we rewrite the @errors Hash with our own implementation
       @errors = HierarchicalExceptionMap.new(@errors)
 
-      error([ ::IllegalOperation, ::Core::Service::Error, ActiveRecord::ActiveRecordError ]) do
+      error([
+        ::IllegalOperation,
+        ::Core::Service::Error,
+        ActiveRecord::ActiveRecordError
+      ]) do
         buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
 
@@ -96,9 +101,15 @@ class ActiveRecord::RecordInvalid
   end
 
   def errors_grouped_by_attribute
-    Hash[record.errors.to_a.group_by(&:first).map { |k,v| [ yield(k), v.map(&:last).uniq ] }]
+    Hash[record.errors.map { |k,v| [ yield(k), [v].flatten.uniq ] }]
   end
   private :errors_grouped_by_attribute
+end
+
+class ActiveRecord::RecordNotSaved
+  def api_error(response)
+    response.content_error(422, message)
+  end
 end
 
 class IllegalOperation < RuntimeError

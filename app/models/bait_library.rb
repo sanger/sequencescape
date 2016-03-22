@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+
 class BaitLibrary < ActiveRecord::Base
   module Associations
     def self.included(base)
@@ -11,13 +12,13 @@ class BaitLibrary < ActiveRecord::Base
   end
 
   class Supplier < ActiveRecord::Base
-    set_table_name('bait_library_suppliers')
+    self.table_name =('bait_library_suppliers')
 
     # The names of suppliers needs to be unique
     validates_presence_of :name
     validates_uniqueness_of :name
 
-    named_scope :visible, :conditions => { :visible => true }
+    scope :visible, -> { where(:visible => true) }
 
     # They supply many bait libraries
     has_many :bait_libraries, :foreign_key => :bait_library_supplier_id
@@ -52,7 +53,7 @@ class BaitLibrary < ActiveRecord::Base
   # All bait libraries have a bait library type
   belongs_to :bait_library_type
 
-  named_scope :visible, :conditions => { :visible => true }
+  scope :visible, -> { where(:visible => true) }
 
   def hide
     self.visible = false

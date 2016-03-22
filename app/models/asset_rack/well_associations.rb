@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 module AssetRack::WellAssociations
 
   class WellProxy
@@ -39,9 +40,9 @@ module AssetRack::WellAssociations
     # Refactor if things change in future
     def column_wells_for(locations)
       Hash.new {|hash,column| hash[column] = Array.new }. tap do |column_wells|
-        locations.each do |location|
+        Array.wrap(locations).each do |location|
           row, column = /^([A-Z])([0-9]+)$/.match(location).captures
-          column_wells[column.to_i-1] << row[0]-65
+          column_wells[column.to_i-1] << row.getbyte(0)-65
         end
       end
     end
@@ -51,14 +52,14 @@ module AssetRack::WellAssociations
   module AssetRackAssociation
     def self.included(base)
       base.class_eval do
-        named_scope :for_asset_rack, lambda{ |rack| {:select=>'assets.*',:joins=>:container_association,:conditions=>{:container_associations=>{:container_id=>rack.strip_tubes }} }}
+        scope :for_asset_rack, lambda{ |rack| {:select=>'assets.*',:joins=>:container_association,:conditions=>{:container_associations=>{:container_id=>rack.strip_tubes }} }}
 
         ##
         # Quite specialised scope. Takes array of:
         # [strip_id,strip_colum,row_offset]
         # Strip column is used to provide a quick conversion back to the standard map description
         # This is a performance optimization
-        named_scope :for_strip_tubes_row, lambda{|strips_wells|
+        scope :for_strip_tubes_row, lambda{|strips_wells|
 
           query = 'false'
           conds = [query]

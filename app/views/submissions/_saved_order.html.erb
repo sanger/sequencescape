@@ -1,12 +1,10 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.%>
+#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
+<%= panel('success',title:"Order added to submission at: #{order.created_at.to_formatted_s(:day_full_with_time)}") do %>
   <%- form ||= nil %>
   <span class="completed badge">✔</span>
-  <h2>
-    Order added to submission at: <%=h order.created_at.to_formatted_s(:day_full_with_time) %>
-  </h2>
-
 
   <h4>
     Study:
@@ -71,11 +69,11 @@
 
   </div>
 
-    <% form_tag(order_path(order.id), :method => :put, :class => "comments-box") do -%>
-      <%= text_area_tag :comments, nil, :placeholder => "Write a new comment here" %>
-      <%= submit_tag "&#10010; Add new comment",
+    <%= form_tag(order_path(order.id), :method => :put, :class => "comments-box") do -%>
+      <%= text_area_tag :comments, nil, :placeholder => "Write a new comment here", :class=>"form-control", :id=>'comments-input' %>
+      <%= submit_tag raw("&#10010; Add new comment"),
       :id       => "add-comment",
-      :class    => "button add-comment" %>
+      :class    => "btn btn-default add-comment" %>
     <% end %>
 
 
@@ -87,7 +85,7 @@
       %>
 
       <%= submit_tag '♻  Delete Order',
-        :class => 'delete-order button'
+        :class => 'delete-order btn btn-danger'
       %>
 
     </div>
@@ -96,3 +94,4 @@
 <script type="text/javascript">
   SCAPE.submission.id = <%= presenter.submission.id %>;
 </script>
+<% end %>

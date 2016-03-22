@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
 <% add :title, "Change Decision by request." -%>
 <% add :menu, "Back to request" => request_path(@request) -%>
 
@@ -8,7 +9,7 @@
 
 <% if @request.finished? %>
 <div id="study">
-  <% form_for(:change_decision, :url => change_decision_request_path(@change_decision.request), :html => {:method => :put}) do |form| -%>
+  <%= form_for(:change_decision, :url => change_decision_request_path(@change_decision.request), :html => {:method => :put}) do |form| -%>
   <%= error_messages_for :change_decision %>
     <ul class="options">
       <li class="options_group"><h2><%= label_tag(:request_state_name, 'Request State') %></h2>
@@ -45,21 +46,21 @@
 </div>
 
 <script type="text/javascript">
-(function(undefined) {
- document.observe('dom:loaded', function() {
-   $$('input[type=checkbox]').each(function(checkbox) {
-     if (checkbox.readAttribute('data-field')!== null) {
-       var field = $(checkbox.readAttribute('data-field'));
+(function($, undefined) {
+ $(document).on('dom:loaded', function() {
+   $('input[type=checkbox]').each(function(checkbox) {
+     if (checkbox.attr('data-field')!== null) {
+       var field = $(checkbox.attr('data-field'));
        field.disabled = !checkbox.checked;
 
-       checkbox.observe('click', function() {
+       $(checkbox).on('click', function() {
          field.disabled = !checkbox.checked;
          if (!checkbox.checked)  {field[0].selected = true;}
        });
      }
    });
  });
-})();
+})(jQuery);
 </script>
 
 <% else %>

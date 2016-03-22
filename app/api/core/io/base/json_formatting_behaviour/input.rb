@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 module ::Core::Io::Base::JsonFormattingBehaviour::Input
   class ReadOnlyAttribute < ::Core::Service::Error
     def initialize(attribute)
@@ -15,13 +16,13 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
   def self.extended(base)
     base.class_eval do
-      class_inheritable_reader :model_for_input
+      class_attribute :model_for_input, :instance_writer => false
       extend AssociationHandling
     end
   end
 
   def set_model_for_input(model)
-    write_inheritable_attribute(:model_for_input, model)
+    self.model_for_input =  model
   end
 
   def generate_json_to_object_mapping(json_to_attribute)
@@ -75,7 +76,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       end
 
       if model.nil?
-        code << "    section[#{leaf.inspect}] = value"
+        code << "    section[#{leaf.inspect}] = value #nil"
       elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
         code << "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
       elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]

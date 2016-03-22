@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+
 require "test_helper"
 
 class WellTest < ActiveSupport::TestCase
   context "A well" do
     setup do
-      @well = Factory :well
+      @well = create :well
     end
 
     context "with gender_markers results" do
@@ -129,7 +130,7 @@ class WellTest < ActiveSupport::TestCase
 
     context "with a plate" do
       setup do
-        @plate = Factory :plate
+        @plate = create :plate
         @plate.add_and_save_well @well
       end
       should "have a parent plate" do
@@ -173,8 +174,8 @@ class WellTest < ActiveSupport::TestCase
     ].each do |target_ng ,  measured_concentration , measured_volume , stock_to_pick , buffer_added|
     context "cherrypick by nano grams" do
       setup do
-        @source_well = Factory :well
-        @target_well = Factory :well
+        @source_well = create :well
+        @target_well = create :well
         minimum_volume = 10
         maximum_volume = 50
         robot_minimum_picking_volume = 1.0
@@ -193,8 +194,8 @@ class WellTest < ActiveSupport::TestCase
   context "when while cherrypicking by nanograms " do
     context "and we want to get less volume than the minimum" do
         setup do
-          @source_well = Factory :well
-          @target_well = Factory :well
+          @source_well = create :well
+          @target_well = create :well
 
           @measured_concentration = 100
           @measured_volume = 50
@@ -295,6 +296,30 @@ class WellTest < ActiveSupport::TestCase
         end
       end
 
+    end
+    context 'proceed test' do
+      setup do
+        @our_product_criteria = create :product_criteria
+        @other_criteria = create :product_criteria
+
+        @old_report = create :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.day, :report_identifier => "A#{Time.now}"
+        @current_report = create :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.hour, :report_identifier => "B#{Time.now}"
+        @unrelated_report = create :qc_report, :product_criteria => @other_criteria, :created_at => Time.now, :report_identifier => "C#{Time.now}"
+
+        @stock_well = create :well
+
+        @well.stock_wells.attach!([@stock_well])
+        @well.reload
+
+        create :qc_metric, :asset => @stock_well, :qc_report => @old_report, :qc_decision => 'passed', :proceed => true
+        create :qc_metric, :asset => @stock_well, :qc_report => @unrelated_report, :qc_decision => 'passed', :proceed => true
+
+        @expected_metric = create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
+      end
+
+      should 'report appropriate metrics' do
+        assert_equal @expected_metric, @well.latest_stock_metric(@our_product_criteria.product)
+      end
     end
   end
 end

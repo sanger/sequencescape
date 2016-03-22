@@ -1,19 +1,20 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
   context "A User" do
 if false
-    should_have_many :items
-    should_have_many :requests
-    should_have_many :comments
+    should have_many :items
+    should have_many :requests
+    should have_many :comments
     should_have_and_belong_to_many :roles
 
     context "authenticate" do
       setup do
-          @user = Factory :admin, :login => 'xyz987', :api_key => 'my_key', :crypted_password => '1'
+          @user = create :admin, :login => 'xyz987', :api_key => 'my_key', :crypted_password => '1'
           @ldap = mock("LDAP")
           @ldap.stubs(:bind).returns(true)
           Net::LDAP.stubs(:new).returns(@ldap)
@@ -31,7 +32,7 @@ if false
 
     context "is an administrator" do
       setup do
-        @user = Factory :admin
+        @user = create :admin
       end
 
       should "be able to access admin functions" do
@@ -47,15 +48,15 @@ if false
       end
 
       # should "have access to privileged functions (when not owner)" do
-      #   @owner = Factory :user
-      #   @sample = Factory :sample, :user => @owner
+      #   @owner = create :user
+      #   @sample = create :sample, :user => @owner
       #   assert @user.privileged?(@sample)
       # end
     end
 
     context "is a manager" do
       setup do
-        @user = Factory :manager
+        @user = create :manager
       end
 
       should "not be able to access admin functions" do
@@ -75,15 +76,15 @@ if false
       end
 
       # should "have access to privileged functions (when not owner)" do
-      #   @owner = Factory :user
-      #   @sample = Factory :sample, :user => @owner
+      #   @owner = create :user
+      #   @sample = create :sample, :user => @owner
       #   assert @user.privileged?(@sample)
       # end
     end
 
     context "is an owner" do
       setup do
-        @user = Factory :owner
+        @user = create :owner
       end
 
       should "not be able to access admin functions" do
@@ -99,13 +100,13 @@ if false
       end
 
       # should "not have access to privileged functions when not owner" do
-      #   @owner = Factory :user
-      #   @sample = Factory :sample, :user => @owner
+      #   @owner = create :user
+      #   @sample = create :sample, :user => @owner
       #   assert ! @user.privileged?(@sample)
       # end
 
       # should "have access to privileged functions when owner" do
-      #   @sample = Factory :sample, :user => @user
+      #   @sample = create :sample, :user => @user
       #   assert @user.privileged?(@sample)
       # end
     end
@@ -113,9 +114,9 @@ if false
 
     context "admins and emails" do
       setup do
-        admin = Factory :role, :name => "administrator"
-        user1 = Factory :user, :login => "bla"
-        user2 = Factory :user, :login => "wow"
+        admin = create :role, :name => "administrator"
+        user1 = create :user, :login => "bla"
+        user2 = create :user, :login => "wow"
         user2.roles << admin
         user1.roles << admin
       end
@@ -131,7 +132,7 @@ if false
     context "#name" do
       context "when profile is complete" do
         setup do
-          @user = Factory :user, :first_name => "Alan", :last_name => "Brown"
+          @user = create :user, :first_name => "Alan", :last_name => "Brown"
           assert @user.valid?
         end
         should "return full name" do
@@ -140,7 +141,7 @@ if false
       end
       context "when profile is incomplete" do
         setup do
-          @user = Factory :user, :login => "abc123", :first_name => "Alan", :last_name => nil
+          @user = create :user, :login => "abc123", :first_name => "Alan", :last_name => nil
           assert @user.valid?
         end
         should "return login" do
@@ -151,7 +152,7 @@ if false
 
     context "#new_api_key" do
       setup do
-         @user = Factory :user, :first_name => "Alan", :last_name => "Brown"
+         @user = create :user, :first_name => "Alan", :last_name => "Brown"
          @old_api_key = @user.api_key
          @user.new_api_key
          @user.save
@@ -163,7 +164,7 @@ if false
     end
     context "#profile_complete? with no api_key" do
       setup do
-        @user = Factory :user, :first_name => "Alan", :last_name => "Brown", :email => "ab1",:api_key => nil
+        @user = create :user, :first_name => "Alan", :last_name => "Brown", :email => "ab1",:api_key => nil
         @old_api_key = @user.api_key
         @profile_complete = @user.profile_complete?
       end
@@ -175,7 +176,7 @@ if false
     end
     context "#profile_complete? with preexisting api_key" do
       setup do
-        @user = Factory :user, :first_name => "Alan", :last_name => "Brown", :email => "ab1",:api_key => 'da57c7a7e600b-2736f3329f3d99cdb2e52d4f184f39f1'
+        @user = create :user, :first_name => "Alan", :last_name => "Brown", :email => "ab1",:api_key => 'da57c7a7e600b-2736f3329f3d99cdb2e52d4f184f39f1'
         @old_api_key = @user.api_key
         @profile_complete = @user.profile_complete?
       end
@@ -192,14 +193,14 @@ if false
       end
 
       should 'not override the user choice' do
-        workflow = Factory(:submission_workflow)
+        workflow = create(:submission_workflow)
         assert_equal(workflow, User.create!(:login => 'foo', :workflow => workflow).workflow, 'workflow differs from what was requested')
       end
     end
 
     context "without a swipecard_code" do
       setup do
-        @user = Factory :user
+        @user = create :user
       end
 
       should "not have a swipecard code" do

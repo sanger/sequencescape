@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class AssetsControllerTest < ActionController::TestCase
@@ -14,10 +15,11 @@ class AssetsControllerTest < ActionController::TestCase
 
   context "#create a new asset with JSON input" do
     setup do
-      @user = Factory :user
+      @asset_count =  Asset.count
+      @user =FactoryGirl.create :user
       @user.is_administrator
       @controller.stubs(:current_user).returns(@user)
-      @barcode  = Factory.next :barcode
+      @barcode  = FactoryGirl.generate :barcode
 
       @json_data = json_new_asset(@barcode)
 
@@ -25,30 +27,36 @@ class AssetsControllerTest < ActionController::TestCase
       post :create, ActiveSupport::JSON.decode(@json_data)
     end
 
-    should_set_the_flash_to  /Asset was successfully created/
-    should_change("Asset.count", :by => 1) { Asset.count }
+    should set_the_flash.to(  /Asset was successfully created/)
+
+     should "change Asset.count by 1" do
+       assert_equal 1,  Asset.count  - @asset_count, "Expected Asset.count to change by 1"
+    end
   end
 
   context "create request with JSON input" do
     setup do
-      @asset = Factory(:sample_tube)
+      @submission_count =  Submission.count
+      @asset =FactoryGirl.create(:sample_tube)
       @sample = @asset.primary_aliquot.sample
 
-      @user = Factory :user
+      @user =FactoryGirl.create :user
       @user.is_administrator
       @controller.stubs(:current_user).returns(@user)
 
-      @study = Factory :study
-      @project = Factory :project, :enforce_quotas => true
-      @request_type = Factory :request_type
-      @workflow = Factory :submission_workflow
+      @study =FactoryGirl.create :study
+      @project =FactoryGirl.create :project, :enforce_quotas => true
+      @request_type =FactoryGirl.create :request_type
+      @workflow =FactoryGirl.create :submission_workflow
       @json_data = valid_json_create_request(@asset,@request_type,@study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
       post :create_request, ActiveSupport::JSON.decode(@json_data)
     end
 
-    should_change("Submission.count", :by => 1) { Submission.count }
+    should "change Submission.count by 1" do
+      assert_equal 1,  Submission.count  - @submission_count, "Expected Submission.count to change by 1"
+    end
     should "set a priority" do
       assert_equal(3,Submission.last.priority)
     end

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+
 module Submission::AccessionBehaviour
   def self.included(base)
     base.class_eval do
@@ -26,7 +27,7 @@ module Submission::AccessionBehaviour
     elsif not study.accession_number?
       errors.add(:study,"#{study.name} and all samples must have accession numbers")
     elsif not all_samples_have_accession_numbers?
-      errors.add_to_base("Samples #{unaccessioned_samples} are missing accession numbers")
+      errors.add(:base,"Samples #{unaccessioned_samples} are missing accession numbers")
     end
   end
 

@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
+
 <% add :title, "Batch" -%>
 <% add :menu, "Edit batch" => edit_batch_path(@batch) -%>
 <% add :back_menu, "Back to batch" => batch_path(@batch) -%>
@@ -11,7 +12,7 @@
   Failing a request will result in an email being generated and sent to the project's PM.  This request will not be returned to the inbox. <br/>
   Batches will automatically be failed when all requests in them have been failed, cancelled or removed.
 </div>
-<% form_tag(:controller => :batches, :action => :fail_items, :id => @batch.id ) do -%>
+<%= form_tag(:controller => :batches, :action => :fail_items, :id => @batch.id ) do -%>
 
 <%= render :partial => "batch_fail", :locals => { :requests => @batch.ordered_requests, :edit => false } %>
 

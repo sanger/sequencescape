@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.
 class UuidMigration < ActiveRecord::Migration
-  class_inheritable_accessor :model_to_migrate
+  class_attribute :model_to_migrate
 
   def self.up
     Uuid.transaction do

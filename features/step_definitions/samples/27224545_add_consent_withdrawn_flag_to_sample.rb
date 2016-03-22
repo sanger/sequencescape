@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2015 Genome Research Ltd.
+
 Given /^the patient has withdrawn consent for "([^"]*)"$/ do |sample|
   Sample.find_by_name(sample).withdraw_consent
 end
@@ -72,13 +73,13 @@ Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "(
   asset_group = AssetGroup.find_by_name(asset_group)
   requests = []
   asset_group.assets.each do |asset|
-    target_asset = Factory.build :sample_tube, :sample => asset.sample, :name => "#{asset.name}_target"
+    target_asset = FactoryGirl.build :sample_tube, :sample => asset.sample, :name => "#{asset.name}_target"
     request = pipeline.request_types.last.create!(
       :asset => asset,
       :target_asset => target_asset,
       :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 76 }
     )
-    #request = Factory.build :request, :asset => asset, :target_asset => target_asset, :request_type => pipeline.request_type, :pipeline => pipeline
+    #request = FactoryGilr.build :request, :asset => asset, :target_asset => target_asset, :request_type => pipeline.request_type, :pipeline => pipeline
     request.save
     requests << request
   end

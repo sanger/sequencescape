@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+
 require 'test_helper'
 
 class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
@@ -18,10 +19,10 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
     context '#cherrypick_wells_grouped_by_submission' do
       setup do
         @requests = Map.where_plate_size(96).in_column_major_order.slice(0, 3).map do |position|
-          Factory(
+          create(
             :well_request,
-            :asset         => Factory(:empty_well, :map => position),
-            :target_asset  => Factory(:empty_well),
+            :asset         => create(:empty_well, :map => position),
+            :target_asset  => create(:empty_well),
             :state         => 'started',
             :submission_id => 1
           ).tap do |request|

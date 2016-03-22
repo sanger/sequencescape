@@ -3,11 +3,11 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class CleanupMultipleUntaggedAliquots < ActiveRecord::Migration
   class Aliquot < ActiveRecord::Base
-    set_table_name('aliquots')
+    self.table_name =('aliquots')
   end
 
   class Receptacle < ActiveRecord::Base
-    set_table_name('assets')
+    self.table_name =('assets')
 
     has_many :aliquots, :class_name => 'CleanupMultipleUntaggedAliquots::Aliquot', :foreign_key => :receptacle_id
 

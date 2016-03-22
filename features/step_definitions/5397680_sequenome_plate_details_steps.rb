@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 Given /^I have created a sequenom plate$/ do
   input_plate_names = {
     1 => "1220125054743",
@@ -36,7 +37,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
     :barcode       => Barcode.number_to_human("#{plate_barcode}"),
     :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name)
   )
-  sample = Factory :sample, :name => "#{plate_barcode}_x"
+  sample = FactoryGirl.create :sample, :name => "#{plate_barcode}_x"
 
   1.upto(number_of_wells.to_i) do |i|
     new_plate.wells.create!(:map_id => i).aliquots.create!(:sample => sample)

@@ -1,8 +1,9 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 class Api::BaseController < ApplicationController
-  class_inheritable_accessor :model_class
+  class_attribute :model_class
   before_filter { |controller| Uuid.translate_uuids_to_ids_in_params(controller.params) }
   around_filter :wrap_in_transaction, :only => [ :create, :update, :destroy ]
 

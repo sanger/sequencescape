@@ -1,45 +1,46 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class LotTest < ActiveSupport::TestCase
   context "A Lot" do
 
 
-    should_validate_presence_of :lot_number
+    should validate_presence_of :lot_number
 
-    should_have_many :qcables
-    should_belong_to :user
-    should_belong_to :lot_type
-    should_validate_presence_of :user
-    should_validate_presence_of :received_at
-    should_belong_to :template
+    should have_many :qcables
+    should belong_to :user
+    should belong_to :lot_type
+    should validate_presence_of :user
+    should validate_presence_of :received_at
+    should belong_to :template
 
     context "when validating" do
       setup do
-        Factory :lot
+        create :lot
       end
 
-      should_validate_uniqueness_of :lot_number
+      should validate_uniqueness_of :lot_number
     end
 
 
     context "#lot" do
       setup do
-        PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => (Factory.next :barcode)))
-        @lot = Factory :lot
+        PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => (FactoryGirl.generate :barcode)))
+        @lot = create :lot
         @mock_asset = Asset.new
         @mock_asset.stubs(:save!).returns(true)
         @mock_purpose = mock('Purpose')
 
         @mock_purpose.stubs('create!').returns(@mock_asset)
         @lot.stubs(:target_purpose).returns(@mock_purpose)
-        @user = Factory :user
+        @user = create :user
       end
 
       should "validate the template type" do
-        @lot.template = Factory :tag_layout_template, :name => 'lot_test'
+        @lot.template = create :tag_layout_template, :name => 'lot_test'
         assert !@lot.valid?, 'Lot should be invalid'
       end
 

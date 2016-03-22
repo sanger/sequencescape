@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+
 class Api::AliquotIO < Api::Base
   module Extensions
     module ClassMethods
@@ -13,7 +14,7 @@ class Api::AliquotIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [
+        scope :including_associations_for_json, -> { includes([
             :uuid_object,
             { :sample => :uuid_object} ,
             { :study => :uuid_object },
@@ -21,8 +22,7 @@ class Api::AliquotIO < Api::Base
             { :tag => :uuid_object },
             { :library => :uuid_object },
             { :receptacle => :uuid_object }
-          ]
-        }
+          ])}
       end
     end
   end

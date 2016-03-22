@@ -1,15 +1,18 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.%>
+
 <%# NOTE[xxx]: Kind of a hack because we need 'request[request_metadata_attributes][X]' -%>
-<% fields_for(:request, request) do |form| %>
-  <% form.fields_for(:request_metadata, request.request_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+<%= fields_for(:request, request) do |form| %>
+  <%= form.fields_for(:request_metadata, request.request_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
     <%- request.request_metadata.field_infos.each do |field_info| %>
-      <!-- todo unify with how submission use fiel info-->
+      <!-- todo unify with how submission use field info-->
       <%- if field_info.selection %>
         <%= metadata_fields.select(field_info.key, field_info.selection) %>
-      <%- elsif field_info.kind == 'Boolean' %>
+      <%- elsif field_info.kind == FieldInfo::BOOLEAN %>
         <%= metadata_fields.check_box(field_info.key) %>
+      <%- elsif field_info.kind == FieldInfo::NUMERIC %>
+        <%= metadata_fields.number_field(field_info.key,field_info.parameters) %>
       <%- else %>
         <%= metadata_fields.text_field(field_info.key) %>
       <%- end %>

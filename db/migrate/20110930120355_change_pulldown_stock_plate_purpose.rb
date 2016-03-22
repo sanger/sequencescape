@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class ChangePulldownStockPlatePurpose < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
+    self.table_name =('plate_purposes')
 
     def self.change_implementation(to)
       PlatePurpose.update_all(

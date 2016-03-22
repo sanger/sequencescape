@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 require "test_helper"
 require 'samples_controller'
 
@@ -19,9 +20,9 @@ class Admin::StudiesControllerTest < ActionController::TestCase
 
     context "management UI" do
       setup do
-        @user     = Factory :admin
-        @study  = Factory :study
-        @request_type = Factory :request_type
+        @user     =FactoryGirl.create :admin
+        @study  =FactoryGirl.create :study
+        @request_type =FactoryGirl.create :request_type
         @controller.stubs(:current_user).returns(@user)
         @controller.stubs(:logged_in?).returns(@user)
         @emails = ActionMailer::Base.deliveries
@@ -37,7 +38,7 @@ class Admin::StudiesControllerTest < ActionController::TestCase
           assert_equal [], @emails
         end
 
-        should_redirect_to("admin studies path") { "/admin/studies/#{@study.id}" }
+        should redirect_to("admin studies path") { "/admin/studies/#{@study.id}" }
       end
 
     end

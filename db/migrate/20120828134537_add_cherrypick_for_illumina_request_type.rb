@@ -6,7 +6,7 @@ class AddCherrypickForIlluminaRequestType < ActiveRecord::Migration
     def up
       ActiveRecord::Base.transaction do
         # Find the 'Illumina-A cherry pick for pulldown' request type
-        new_request_type = old_request_type.clone
+        new_request_type = old_request_type.dup
 
         new_request_type.tap do |new_request_type|
           # Duplicate request_type

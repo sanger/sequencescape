@@ -312,7 +312,7 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State  |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
     When I follow "Errors for manifest for Test study"
-    Then I should see "Dna source is not included in the list"
+    Then I should see "DNA source is not included in the list"
 
   @cell_line
   Scenario: Upload a manifest with invalid cell line

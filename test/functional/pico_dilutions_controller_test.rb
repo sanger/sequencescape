@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class PicoDilutionsControllerTest < ActionController::TestCase
@@ -14,9 +15,9 @@ class PicoDilutionsControllerTest < ActionController::TestCase
 
     context "with assay plates " do
       setup do
-        @pico_dilution_plate = Factory :pico_dilution_plate, :barcode => "2222"
-        @assay_plate_a = Factory :pico_assay_a_plate, :barcode => "9999"
-        @assay_plate_b = Factory :pico_assay_b_plate, :barcode => "8888"
+        @pico_dilution_plate = FactoryGirl.create :pico_dilution_plate, :barcode => "2222"
+        @assay_plate_a = FactoryGirl.create :pico_assay_a_plate, :barcode => "9999"
+        @assay_plate_b = FactoryGirl.create :pico_assay_b_plate, :barcode => "8888"
         AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_a)
         AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_b)
       end
@@ -31,8 +32,8 @@ class PicoDilutionsControllerTest < ActionController::TestCase
           setup do
             get :index
           end
-          should_respond_with :success
-          should_respond_with_content_type :json
+          should respond_with :success
+          should respond_with_content_type :json
 
           should "find the pico dilution plate" do
             assert @response.body.include?(@pico_dilution_plate.ean13_barcode)
@@ -40,14 +41,13 @@ class PicoDilutionsControllerTest < ActionController::TestCase
             assert @response.body.include?(@assay_plate_b.ean13_barcode)
             assert_equal 1, JSON.parse(@response.body).count
           end
-
         end
         context "page passed in" do
           setup do
             get :index, :page => 3
           end
-          should_respond_with :success
-          should_respond_with_content_type :json
+          should respond_with :success
+          should respond_with_content_type :json
         end
       end
     end
@@ -62,14 +62,14 @@ class PicoDilutionsControllerTest < ActionController::TestCase
 
     context "with assay plates " do
       setup do
-        @working_dilution_plate_a = Factory :working_dilution_plate, :barcode => "2222"
-        @working_dilution_plate_b = Factory :working_dilution_plate, :barcode => "2223"
-        @assay_plate_a = Factory :pico_assay_a_plate, :barcode => "9999"
-        @assay_plate_b = Factory :pico_assay_b_plate, :barcode => "8888"
-        @assay_plate_c = Factory :pico_assay_a_plate, :barcode => "5555"
-        @assay_plate_d = Factory :pico_assay_a_plate, :barcode => "5555"
-        @sequenom_plate_a = Factory :sequenom_qc_plate , :barcode => "7777", :name=>'a'
-        @sequenom_plate_b = Factory :sequenom_qc_plate , :barcode => "6666", :name=>'b'
+        @working_dilution_plate_a = create :working_dilution_plate, :barcode => "2222"
+        @working_dilution_plate_b = create :working_dilution_plate, :barcode => "2223"
+        @assay_plate_a = create :pico_assay_a_plate, :barcode => "9999"
+        @assay_plate_b = create :pico_assay_b_plate, :barcode => "8888"
+        @assay_plate_c = create :pico_assay_a_plate, :barcode => "5555"
+        @assay_plate_d = create :pico_assay_a_plate, :barcode => "5555"
+        @sequenom_plate_a = create :sequenom_qc_plate , :barcode => "7777", :name=>'a'
+        @sequenom_plate_b = create :sequenom_qc_plate , :barcode => "6666", :name=>'b'
 
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_a)
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_b)

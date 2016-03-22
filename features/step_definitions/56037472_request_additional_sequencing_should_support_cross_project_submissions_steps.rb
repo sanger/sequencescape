@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013 Genome Research Ltd.
+#Copyright (C) 2013,2015 Genome Research Ltd.
+
 Given /^I have a multiplexed library tube called "(.*?)"$/ do |name|
   Purpose.find_by_name('Standard MX').create!(:name=>name,:qc_state=>'pending')
 end
@@ -16,7 +17,7 @@ end
 Then /^the multiplexed library tube "(.*?)" contains "(.*?)"$/ do |tube_name, library_tube_name|
   library_tube = LibraryTube.find_by_name(library_tube_name)
   library_tube.aliquots.each do |aliquot|
-    new_aliquot = aliquot.clone
+    new_aliquot = aliquot.dup
     new_aliquot.library = library_tube
     MultiplexedLibraryTube.find_by_name(tube_name).aliquots << new_aliquot
     new_aliquot.save!

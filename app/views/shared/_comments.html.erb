@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <% if commentable.comments.count >0 %>
 <table width="100%" cellpadding="5" cellspacing="5">
   <col align=left width=80% />
@@ -8,7 +9,7 @@
     <% commentable.comments.each do |comment| %>
       <tr>
       <td class="comment"> <%= comment.description %></td>
-      <td class="commentable"> added <%= h(comment.created_at.to_formatted_s(:short)) %> on <%= link_to "#{commentable.class.name} #{commentable.id}", "#{configatron.studies_url}/#{resource}/#{commentable.id}/comments" %></td>
+      <td class="commentable"> added <%= h(comment.created_at.to_formatted_s(:short)) %> on <%= link_to "#{commentable.class.name} #{commentable.id}", "/#{resource}/#{commentable.id}/comments" %></td>
     </tr>
     <% end %>
   </tbody>

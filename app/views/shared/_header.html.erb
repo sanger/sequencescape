@@ -1,0 +1,70 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015 Genome Research Ltd.%>
+
+<div class="header small">
+  <ul class="list-inline">
+  <li><span id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></span></li>
+  <% if logged_in? -%>
+  <li>
+    <%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %> ·
+  </li>
+  <li>
+    <%= I18n.t('global_links.workflow') %>
+    <% unless current_user.workflow.nil? -%>
+    <%= link_to current_user.workflow_name, edit_profile_path(current_user) %> ·
+    <% else -%>
+    <strong><%= link_to I18n.t('global_links.workflow_not_set'), edit_profile_path(current_user) %></strong> ·
+    <% end -%>
+  </li>
+  <li>
+    <%= link_to I18n.t('global_links.logout'), logout_path -%>
+  </li>
+  <% end -%>
+  </ul>
+</div>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+
+    <!-- navbar-header remains visible even at low resolutions. It groups the logo with a toggle button which appears if the menu collapses -->
+    <div class="navbar-header">
+      <div id="logo_container" class="navbar-brand">
+        <div id="sequencescape_logo">
+          <%= link_to image_tag("sequencescape.gif"), '/' %>
+        </div>
+        <% if Rails.env == 'production' %>
+          <div id="app_name"><%= link_to I18n.t('application.name').upcase, '/' %></div>
+        <% else %>
+          <div id="app_name"><%= link_to Rails.env.humanize, '/' %></div>
+        <% end %>
+      </div>
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      <span class="sr-only">Toggle navigation</span>
+      <!-- These spans for the bars of the hamburger (menu) navigation -->
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      </button>
+    </div>
+    <!-- The main body of the navbar. Collapses at low resolutions -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+      <%= render :partial => 'shared/tab', :collection => @tabs.items %>
+    </ul>
+    <%= form_tag searches_path, :method => :get, :class => "navbar-form navbar-right", :role => "search" do %>
+      <div class="form-group">
+      <%= search_field_tag :q, "", :size => 20, :type => "search", :placeholder => "name, id, barcode", :id => 'layout_search', :class=>"form-control" %>
+      <%= select_tag :type, options_for_select(search_options,""), :id => 'layout_search_options', :class=>"form-control" %>
+      </div>
+    <% end %>
+  </div><!-- /.navbar-collapse -->
+
+  </div>
+</nav>
+
+<%- unless custom_text("app_info_box", 1).blank? -%>
+  <div id="app-info-box" class="well well-sm">
+    <span><%= custom_text("app_info_box", 1) %></span>
+  </div>
+<%- end -%>
