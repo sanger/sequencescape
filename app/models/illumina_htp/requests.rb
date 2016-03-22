@@ -94,7 +94,7 @@ module IlluminaHtp::Requests
       aasm_initial_state :pending
 
       aasm_event :start                 do transitions :to => :started, :from => [:pending] end
-      aasm_event :pass                  do transitions :to => :passed, :from => [:pending, :fx_transfer, :failed] end
+      aasm_event :pass                  do transitions :to => :passed, :from => [:pending, :started, :fx_transfer, :failed] end
       aasm_event :fail                  do transitions :to => :failed, :from => [:pending, :started, :passed] end
       aasm_event :cancel                do transitions :to => :cancelled, :from => [:started, :passed] end
       aasm_event :cancel_before_started do transitions :to => :cancelled, :from => [:pending] end
@@ -119,7 +119,7 @@ module IlluminaHtp::Requests
 
       aasm_event :start_fx do transitions :to => :started_fx,  :from => [:pending]                                    end
       aasm_event :start_mj do transitions :to => :started_mj,  :from => [:started_fx]                                 end
-      aasm_event :pass     do transitions :to => :passed,      :from => [:pending, :started_mj, :failed]              end
+      aasm_event :pass     do transitions :to => :passed,      :from => [:pending, :started_fx,:started_mj, :failed]  end
       aasm_event :fail     do transitions :to => :failed,      :from => [:pending, :started_fx, :started_mj, :passed] end
       aasm_event :cancel   do transitions :to => :cancelled,   :from => [:started_fx, :started_mj, :passed]           end
     end
