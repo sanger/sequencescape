@@ -45,6 +45,7 @@
     <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
       <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES) %>
       <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
+      <input class='btn btn-default validate_organism' type='button' value='Lookup'/>
       <%= group.text_field(:sample_taxon_id,    'data-organism' => 'taxon_id') %>
     <% end %>
 
