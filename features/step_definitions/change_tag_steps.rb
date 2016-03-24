@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/ do |create_mx_tube, table|
   number_of_tubes = table.rows.size
   step(%Q{I have a tag group called "My tag group" with #{number_of_tubes} tags})
