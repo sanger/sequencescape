@@ -85,3 +85,16 @@
   </table>
   <br />
 </div>
+<script type="text/javascript">
+(function() {
+  function batchListPostParametersFromSortable(node) {
+    return $(node).sortable('toArray').map(function(s) {return s.replace(/request_/,'requests_list[]=');}).join('&');
+  }
+  $( "#requests_list" ).sortable({
+    update: function(event, elem) {
+      $.post('/batches/sort?batch_id=' + <%= @batch.id %>, batchListPostParametersFromSortable(event.target));
+    }
+  });
+  $( "#requests_list" ).disableSelection();
+}());
+</script>
