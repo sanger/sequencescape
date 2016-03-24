@@ -3,7 +3,6 @@
 #Copyright (C) 2007-2011,2011,2012,2013,2015 Genome Research Ltd.
 class ::Endpoints::Plates < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
@@ -29,9 +28,23 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
       end
     end
 
+    action(:update) do |request, response|
+      if (request.json.has_key?("substract_volume"))
+        ActiveRecord::Base.transaction do
+          request.target.wells.each do |w|
+            w.substract_volume(request.json["substract_volume"])
+          end
+        end
+        response.status(200)
+      end
+      request.target
+    end
+
     has_many(:transfers_as_source,       :json => 'source_transfers', :to => 'source_transfers')
     has_many(:transfers_to_tubes,        :json => 'transfers_to_tubes', :to => 'transfers_to_tubes')
     has_many(:transfers_as_destination,   :json => 'creation_transfers', :to => 'creation_transfers')
+
+
   end
 
 end

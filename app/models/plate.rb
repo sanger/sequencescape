@@ -2,6 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Plate < Asset
+
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include LocationAssociation::Locatable

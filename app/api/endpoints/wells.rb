@@ -3,10 +3,10 @@
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 class ::Endpoints::Wells < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
     belongs_to :plate, :json => 'plate'
+
   end
 end
