@@ -34,11 +34,6 @@ class Well < Aliquot::Receptacle
 
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
-  def is_in_fluidigm?
-    sta_plate_purpose_name = "#{configatron.sta_plate_purpose_name}"
-    !self.target_wells.detect{|w| w.events.detect {|e| e.family == PlatesHelper::event_family_for_pick(sta_plate_purpose_name)}.nil?}
-  end
-
   scope :include_stock_wells, -> { includes(:stock_wells => :requests_as_source) }
   scope :include_map,         -> { includes(:map) }
 
@@ -261,11 +256,8 @@ class Well < Aliquot::Receptacle
   end
   private :buffer_required?
 
-  def find_child_plate
-    self.children.reverse_each do |child_asset|
-      return child_asset if child_asset.is_a?(Well)
-    end
-    nil
+  def find_latest_child_well
+    children.order('assets.id DESC').where_is_a?(Well).first
   end
 
   validate(:on => :save) do |record|

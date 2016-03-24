@@ -29,3 +29,4 @@ table.table-dense-information tbody {
 .formtastic label.ft-label { width: 25%; }
 
 .formtastic .boolean label.ft-label { width: auto; }
+.formtastic input.btn { padding: 6px 12px; }

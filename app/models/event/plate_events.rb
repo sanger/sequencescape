@@ -19,11 +19,27 @@ module Event::PlateEvents
     event_date('create_for_sequenom')
   end
 
-  def event_date(key)
-    event = self.events.find_by_family(key)
-    return event.content if event
-
-    nil
+  def fluidigm_stamp_date
+    event_key = PlatesHelper::event_family_for_pick(configatron.fetch(:sta_plate_purpose_name))
+    event_date(event_key)
   end
+
+  def event_date(key)
+    if events.loaded?
+      event_from_object(key)
+    else
+      event_from_database(key)
+    end
+  end
+
+  def event_from_database(key)
+    events.where(family:key).pluck(:content).last
+  end
+  private :event_from_database
+
+  def event_from_object(key)
+    events.reverse.detect {|e| e.family == key }.try(:content)
+  end
+  private :event_from_object
 
 end
