@@ -186,9 +186,9 @@ class Well < Aliquot::Receptacle
   end
 
   def substract_volume(substraction)
-    raise StandardError, 'No current volume is available to substract' if get_current_volume.nil?
-    raise StandardError, "You tried to decrease the volume of #{plate.sanger_human_barcode}:#{map.description} with #{substraction}, which is over its current level (#{get_current_volume})" if (substraction > get_current_volume)
-    set_current_volume(get_current_volume - substraction)
+    value_substraction = substraction.nil? ? 0 : substraction
+    value_current_volume = get_current_volume.nil? ? 0 : get_current_volume
+    set_current_volume([0, value_current_volume - value_substraction].max)
   end
   alias_method(:set_volume, :set_current_volume)
   delegate_to_well_attribute(:initial_volume)
