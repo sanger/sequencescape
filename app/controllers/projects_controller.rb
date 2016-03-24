@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    if current_user.present?
+    if current_user != :false
       @workflow = current_user.workflow
       # TODO[xxx]: filtered the project based on user workflow
     end
