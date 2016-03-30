@@ -1,16 +1,18 @@
 #!/bin/bash -l
 function delayed_job_start() {
-  echo 'Starting...'
-  if [ ! -f tmp/pids/delayed_job.${1}.stop ]
-  then
-    touch tmp/pids/delayed_job.${1}.stop
-    bundle exec rails runner 'Delayed::Worker.new.start' & > /dev/null
-    echo $! > tmp/pids/delayed_job.${1}.pid
-    echo "Running!"
-  else
-    echo "Worker already running with pid:"
-    echo `cat tmp/pids/delayed_job.${1}.pid`
+
+  if [ -f tmp/pids/delayed_job.${1}.pid ] && ps -p `tmp/pids/delayed_job.${1}.pid` >> /dev/null ; then
+    echo 'Existing job appears to be running'
+    exit 1
   fi
+
+  echo 'Starting...'
+
+  bundle exec rails runner 'Delayed::Worker.new.start' & > /dev/null
+  echo $! > tmp/pids/delayed_job.${1}.pid
+  echo "Running!"
+  exit 0
+
 }
 
 function check_stopped() {
@@ -18,7 +20,6 @@ function check_stopped() {
     echo '.'
   else
     echo 'Delayed Job stopped'
-    if [ -f tmp/pids/delayed_job.${1}.stop ]; then rm tmp/pids/delayed_job.${1}.stop; fi
     exit 0
   fi
 }
@@ -32,7 +33,6 @@ function delayed_job_stop() {
   done
   echo 'Delayed Job failed to die, killing it...'
   kill -9 `cat tmp/pids/delayed_job.${1}.pid`
-  if [ -f tmp/pids/delayed_job.${1}.stop ]; then rm tmp/pids/delayed_job.${1}.stop; fi
 }
 
 function delayed_job_restart() {

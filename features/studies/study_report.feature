@@ -99,10 +99,10 @@ Feature: create a report on the current state of a study going through QC
     Given each well in "Study B" has a child well on a plate
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-    | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well | Qc Status |
-    | 1234567 | Pulldown        | 44444              | A1   | A1              | passed    |
-    | 1234567 | Pulldown        | 44444              | A2   | A2              | passed    |
-    | 1234567 | Pulldown        | 44444              | A3   | A3              | passed    |
+    | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well |
+    | 1234567 | Pulldown        | 44444              | A1   | A1              |
+    | 1234567 | Pulldown        | 44444              | A2   | A2              |
+    | 1234567 | Pulldown        | 44444              | A3   | A3              |
 
 
   Scenario: The wells have child wells and sample tubes (reversed)
@@ -112,10 +112,10 @@ Feature: create a report on the current state of a study going through QC
     Given each well in "Study B" has a child sample tube
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-     | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well | Qc Status |
-     | 1234567 | Pulldown        | 44444              | A1   | A1              | passed    |
-     | 1234567 | Pulldown        | 44444              | A2   | A2              | passed    |
-     | 1234567 | Pulldown        | 44444              | A3   | A3              | passed    |
+     | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well |
+     | 1234567 | Pulldown        | 44444              | A1   | A1              |
+     | 1234567 | Pulldown        | 44444              | A2   | A2              |
+     | 1234567 | Pulldown        | 44444              | A3   | A3              |
 
 
   Scenario: The wells have child sample tubes
