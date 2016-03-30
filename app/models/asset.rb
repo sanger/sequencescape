@@ -59,6 +59,9 @@ class Asset < ActiveRecord::Base
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
+  scope :where_is_a?,     ->(clazz) { where( sti_type: [ clazz, *clazz.descendants ].map(&:name) ) }
+  scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
+
   #Orders
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
@@ -461,8 +464,7 @@ class Asset < ActiveRecord::Base
   end
 
   def requests_status(request_type)
-   # get the most recent request (ignore previous runs)
-    self.requests.sort_by{ |r| r.id }.select{ |request| request.request_type == request_type }.map{ |filtered_request| filtered_request.state }
+    requests.order('id ASC').where(request_type:request_type).pluck(:state)
   end
 
   def transfer(max_transfer_volume)
