@@ -133,10 +133,10 @@ Feature: create a report on the current state of a study going through QC
     Given each well in "Study B" has a DNA QC request
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-      | Study   | Plate   | Well |  Qc Status |
-      | Study B | 1234567 | A1   |  passed    |
-      | Study B | 1234567 | A2   |  passed    |
-      | Study B | 1234567 | A3   |  passed    |
+      | Study   | Plate   | Well |
+      | Study B | 1234567 | A1   |
+      | Study B | 1234567 | A2   |
+      | Study B | 1234567 | A3   |
 
   @manifest
   Scenario: Samples have been created by have no manifest uploaded
