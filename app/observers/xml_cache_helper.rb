@@ -66,7 +66,7 @@ module XmlCacheHelper
   def clear_cache(id)
     expire_page(url_for(
       :controller => caching_for_controller, :action => 'show', :id => id, :format => :xml,
-      :only_path => true, :skip_relative_url_root => true
+      :only_path => true
     ))
   rescue Errno::ENOENT => exception
     Rails.logger.warn { "Cannot clear cached XML file as it does not exist (#{exception.message})" }
