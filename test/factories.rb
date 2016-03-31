@@ -431,6 +431,10 @@ FactoryGirl.define do
 
   factory  :sample  do
     name            {|a| FactoryGirl.generate :sample_name }
+
+    factory :sample_with_well do
+      wells { [ FactoryGirl.create(:well_with_sample_and_plate)]}
+    end
   end
 
   factory  :sample_submission  do
@@ -675,7 +679,7 @@ FactoryGirl.define do
     count     1
 
     factory :sample_manifest_with_samples do
-      samples { FactoryGirl.create_list(:sample, 5)}
+      samples { FactoryGirl.create_list(:sample_with_well, 5)}
     end
   end
 

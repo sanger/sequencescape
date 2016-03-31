@@ -1,7 +1,7 @@
 
 require 'test_helper.rb'
 
-class SampleManifestExcelDownloadTest < ActiveSupport::TestCase
+class DownloadTest < ActiveSupport::TestCase
 
   attr_reader :download, :spreadsheet, :sample_manifest
 
@@ -38,6 +38,27 @@ class SampleManifestExcelDownloadTest < ActiveSupport::TestCase
     download.columns.each_with_index do |column, i|
       assert_equal column.heading, spreadsheet.sheet(0).cell(9,i+1)
     end
+  end
+
+  test "should have a type" do
+    assert_equal sample_manifest.asset_type, download.type
+  end
+
+  test "should add all of the samples" do
+    assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(0).last_row
+  end
+
+  test "should add the attributes for each sample" do
+    sample = sample_manifest.samples.first
+    assert_equal sample.wells.first.plate.sanger_human_barcode, spreadsheet.sheet(0).cell(10,1)
+    assert_equal sample.wells.first.map.description, spreadsheet.sheet(0).cell(10,2)
+    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(10,3)
+
+    sample = sample_manifest.samples.last
+    assert_equal sample.wells.first.plate.sanger_human_barcode, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,1)
+    assert_equal sample.wells.first.map.description, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,2)
+    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,3)
+
   end
 
   def teardown
