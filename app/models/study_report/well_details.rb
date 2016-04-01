@@ -6,7 +6,11 @@ module StudyReport::WellDetails
   def self.included(base)
     base.class_eval do
       scope :for_study_report, -> { includes([
-        :map, :well_attribute, :events, :target_wells, { :plate => [:plate_purpose,:events], :primary_aliquot => { :sample => [:sample_metadata,{:sample_manifest=>:supplier}] } }
+        :map,
+        :well_attribute,
+        :events,
+        { :plate => [:plate_purpose,:events], :primary_aliquot => { :sample => [:sample_metadata,{:sample_manifest=>:supplier},:external_properties] } },
+        { :latest_child_well => [:map, {:plate => [:plate_purpose,:plate_metadata]}]}
       ])}
     end
   end
@@ -46,9 +50,9 @@ module StudyReport::WellDetails
       latest_plate = latest_child_well.plate
       if latest_plate && latest_plate.plate_purpose
         qc_data[:genotyping_plate_purpose] = latest_plate.plate_purpose.name
-        qc_data[:genotyping_infinium_barcode] = latest_plate.plate_metadata.infinium_barcode
+        qc_data[:genotyping_infinium_barcode] = latest_plate.infinium_barcode
         qc_data[:genotyping_barcode] = latest_plate.barcode if latest_plate.barcode
-        qc_data[:genotyping_well] = latest_child_well.try(:map).try(:description) if latest_plate.barcode
+        qc_data[:genotyping_well] = latest_child_well.map_description if latest_plate.barcode
       end
     end
 

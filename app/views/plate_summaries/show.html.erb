@@ -1,0 +1,68 @@
+<%= page_title("plate summary", @plate.sanger_human_barcode) %>
+
+<div class="col-md-6">
+<div class="panel panel-default">
+<div class="panel-heading"><h3 class="panel-title">Summary</h3></div>
+     <table class='table table-summary'>
+       <tr>
+         <th>Submissions</th>
+         <td>
+            <% @plate.submissions.each do |submission|%>
+              <%= link_to submission.name, submission_path(submission) %> 
+            <% end %>
+         </td>
+       </tr>
+       <tr>
+         <th>Plate link</th>
+         <td><%= link_to "Plate page", asset_path(@plate) %></td>
+       </tr>
+       <tr>
+         <th>Sequencing batches</th>
+         <td><ul><% @sequencing_batches.each do |batch| %>
+                <li>
+                  <%= link_to "Batch #{batch.id}", batch_path(batch) %>
+                  (<%= link_to "Show in NPG", "#{configatron.run_data_by_batch_id_url}#{batch.id}" %>)
+                </li>
+                <% end %>
+              </ul>
+          </td>
+       </tr>
+     </table>
+   </div>
+ </div>
+
+ <table class="sortable table table-striped" id="plate-content-summary">
+   <thead>
+     <tr>
+       <th>Well</th>
+       <th>Sample</th>
+       <th>Study</th>
+       <th>Project</th>
+     </tr>
+   </thead>
+   <tbody>
+      <% @plate.wells.include_aliquots.each do |well| %>
+        <tr>
+          <td><%= link_to well.map_description, asset_path(well) %></td>
+          <td><% well.aliquots.each do |aliquot| %>
+                <%= link_to aliquot.sample.name, sample_path(aliquot.sample) %>
+              <% end %>
+          </td>
+          <td><% well.aliquots.each do |aliquot| %>
+                <%= link_to aliquot.study.name, study_path(aliquot.study) %>
+              <% end %>
+          </td>
+           <td><% well.aliquots.each do |aliquot| %>
+                <%= link_to aliquot.project.name, project_path(aliquot.project) %>
+              <% end %>
+          </td>
+        </tr>
+      <% end %>
+   </tbody>
+ </table>
+
+ <% @plate.descendant_plates.each do |descendant| %>
+    <%= render partial: "descendant", locals: {descendant: descendant} %>
+ <% end %>
+
+
