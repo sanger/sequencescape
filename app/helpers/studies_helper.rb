@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+
 module StudiesHelper
   def status_link_title
     if @study.inactive? || @study.pending?
@@ -45,17 +46,9 @@ public
     asset.closed? ? "closed" : "open"
   end
 
-  def bootstrapify_study_state(state)
-    {
-      'pending' => 'warning',
-      'active'  => 'success',
-      'inactive' => 'danger'
-    }[state.downcase]||'default'
-  end
-
   def study_link(study,options)
     link_text = content_tag(:strong,study.name) << ' ' <<
-    content_tag(:span,study.state,:class=>"batch-state label label-#{bootstrapify_study_state(study.state)}")
+    content_tag(:span,study.state,:class=>"study-state label label-#{bootstrapify_study_state(study.state)}")
     link_to(link_text, study_path(study), options)
   end
 

@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.%>
+
 <%= page_title "New request", "#{@asset.label} - #{@asset.display_name}" %>
 
 <%= form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
@@ -116,11 +117,11 @@
       handler();
 
       checkStudyHandler = function() {
-        var cross_study = $('#cross_study_request')[0].checked;
+        var cross_study = ($('#cross_study_request')[0] !== undefined) && $('#cross_study_request')[0].checked;
         $('#study_id').attr('disabled',cross_study);
       }
       checkProjectHandler = function() {
-        var cross_project = $('#cross_project_request')[0].checked;
+        var cross_project = ($('#cross_project_request')[0] !== undefined) && $('#cross_project_request')[0].checked;
         $('#project_id').attr('disabled',cross_project);
       }
       $('#cross_study_request').change(checkStudyHandler);

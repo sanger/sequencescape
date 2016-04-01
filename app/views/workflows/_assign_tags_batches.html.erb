@@ -1,16 +1,17 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
+
 <%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
 
   <div class="info">
     <% if @requests.empty? -%>
       <div id="empty_filter">
-        No items found. <%= link_to "Create the first one", :action => "new" %>
+        This batch is empty.
       </div>
     <% else -%>
     <p id="increment-tags-info"><label for="increment-tags">When you change a tag, the subsequent tags will be incremented according to your selection. Uncheck this if you wish manually assign all tags.</label><input type="checkbox" checked id="increment-tags" /></p>
-      <table id="tag-assignment" class="request-grid tablesorter"
+      <table id="tag-assignment" class="table sortable table-striped"
          data-fulfill-everything-automatically-with-tags="<%= @batch.pipeline.allow_tag_collision_on_tagging_task?.to_s %>"
          data-disable-checks="<%= @batch.pipeline.allow_tag_collision_on_tagging_task?.to_s %>" >
         <thead>
@@ -20,12 +21,6 @@
             <th>Request</th>
             <th>Source</th>
             <th>Target</th>
-            <% if @batch.multiplexed? %>
-              <th>Sample name</th>
-              <th>Tag #</th>
-            <% end %>
-            <th>State</th>
-
             <th>Tag</th>
           </tr>
         </thead>
@@ -37,22 +32,19 @@
               <td><%= request.asset.primary_aliquot.sample.name %></td>
               <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>
-                <td class="request-asset-name"><%= link_to "#{request.asset.id} #{request.asset.display_name}", asset_url(request.asset), :target => "_blank" %>
+                <td class="request-asset-name"><%= link_to request.asset.sanger_human_barcode, asset_url(request.asset), :target => "_blank" %>
                 </td>
-                <td class="request-asset-name"><%= link_to("#{request.target_asset.id} #{request.target_asset.display_name}", asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
+                <td class="request-asset-name"><%= link_to(request.target_asset.sanger_human_barcode, asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
                 </td>
               <% else %>
                 <td class="request-asset-name">&nbsp;</td>
                 <td class="request-asset-name">&nbsp;</td>
               <% end %>
-              <% if @batch.multiplexed? -%>
-                <td><%= request.sample_name('-') -%></td>
-                <td><%= request.tag_number.blank? ? '-' : request.tag_number %></td>
-              <% end %>
-              <td><%= request.state.humanize %></td>
               <td>
                 <% if request.tag_number.blank? %>
                   <%= select "tag", request.id, tag_options, {:selected =>tag_options[index%tag_options.size]}, {:class => "tagchoice"} %>
+                <% else %>
+                  <%= request.tag_number %>
                 <% end %>
               </td>
 

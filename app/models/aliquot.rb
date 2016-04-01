@@ -1,12 +1,15 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
+
+  TagClash = Class.new(ActiveRecord::RecordInvalid)
 
   class Receptacle < Asset
     include Transfer::State
@@ -176,9 +179,9 @@ class Aliquot < ActiveRecord::Base
   belongs_to :tag2, :class_name => 'Tag'
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
 
-  # Might need to remove these if we get a performance hit
-  validates_uniqueness_of :tag_id,       :scope => [:receptacle_id, :tag2_id]
-  validates_uniqueness_of :tag2_id, :scope => [:receptacle_id, :tag_id]
+  # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
+  # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
+  # would result in sample dropouts. (presumably because << triggers save not save!)
 
   def untagged?
     self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG

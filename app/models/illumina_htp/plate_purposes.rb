@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [
@@ -60,7 +61,7 @@ module IlluminaHtp::PlatePurposes
     [ 'PF MiSeq Stock','PF MiSeq QCR'],
     [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
-    [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
+    [ 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
     [ 'Lib PCR-XP','ISC lib pool' ],
     [ 'Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
     [ 'Lib PCRR-XP','ISC lib pool' ],
@@ -115,8 +116,8 @@ module IlluminaHtp::PlatePurposes
     'PF Lib'                 => PlatePurpose,
     'PF Lib XP'              => PlatePurpose,
     'PF Lib XP2'             => IlluminaHtp::LibraryCompleteOnQcPurpose,
-    'PF EM Pool'             => IlluminaHtp::PooledPlatePurpose,
-    'PF Lib Norm'            => PlatePurpose,
+    'PF EM Pool'             => PlatePurpose,
+    'PF Lib Norm'            => IlluminaHtp::PooledPlatePurpose,
     'PF MiSeq Stock'         => IlluminaHtp::StockTubePurpose,
     'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
     'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
@@ -126,7 +127,7 @@ module IlluminaHtp::PlatePurposes
     'Shear'               => IlluminaHtp::CovarisPlatePurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
-    'Lib PCR'             => IlluminaHtp::LibPcrPlatePurpose,
+    'Lib PCR'             => PlatePurpose,
     'Lib PCRR'            => PlatePurpose,
     'Lib PCR-XP'          => IlluminaHtp::TransferablePlatePurpose,
     'Lib PCRR-XP'         => IlluminaHtp::TransferablePlatePurpose,

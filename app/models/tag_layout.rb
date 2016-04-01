@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+
 # Lays out the tags in the specified tag group in a particular pattern.
 #
 # In pulldown they use only one set of tags and put them into wells in a particular pattern: by columns, or

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+
 class MultiplexedLibraryTube < Tube
   include ModelExtensions::MultiplexedLibraryTube
   include Api::MultiplexedLibraryTubeIO::Extensions
@@ -8,7 +9,7 @@ class MultiplexedLibraryTube < Tube
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
-    requests_as_target.where_is_a?(TransferRequest).all
+    requests_as_target.where_is_a?(TransferRequest)
   end
 
   # You can do sequencing with this asset type, even though the request types suggest otherwise!

@@ -6,14 +6,14 @@ require 'factory_girl'
 FactoryGirl.define do
 
   factory  :comment  do
-    description
+    description 'It is okay I guess'
   end
 
   factory :aliquot do
-    sample  {|s| s.association(:sample) }
-    study   {|s| s.association(:study) }
-    project {|p| p.association(:project) }
-    tag     {|t| t.association(:tag) }
+    sample
+    study
+    project
+    tag
     tag2    {|t| t.association(:tag) }
   end
 
@@ -668,11 +668,15 @@ FactoryGirl.define do
     name  "Test supplier"
   end
 
-  factory  :sample_manifest  do
+  factory :sample_manifest do
     study     {|wa| wa.association(:study)}
     supplier  {|wa| wa.association(:supplier)}
     asset_type "plate"
     count     1
+
+    factory :sample_manifest_with_samples do
+      samples { FactoryGirl.create_list(:sample, 5)}
+    end
   end
 
   factory  :db_file  do

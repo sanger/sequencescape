@@ -1,15 +1,18 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 class ProductCriteria::Basic
 
-  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity]
+  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :measured_volume, :initial_volume, :molarity, :sequenom_count]
   SUPPORTED_SAMPLE = [:sanger_sample_id]
   SUPPORTED_SAMPLE_METADATA = [:gender, :sample_ebi_accession_number, :supplier_name]
-  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender]
+  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender, :well_location, :plate_barcode]
 
   PASSSED_STATE = 'passed'
   FAILED_STATE = 'failed'
+
+  UnknownSpecification = Class.new(StandardError)
 
   attr_reader :passed, :params, :comment, :values
   alias_method :passed?, :passed
@@ -17,11 +20,12 @@ class ProductCriteria::Basic
   Comparison = Struct.new(:method,:message)
 
   METHOD_ALIAS = {
-    :greater_than => Comparison.new(:>,  '%s too low' ),
-    :less_than    => Comparison.new(:<,  '%s too high'),
-    :at_least     => Comparison.new(:>=, '%s too low' ),
-    :at_most      => Comparison.new(:<=, '%s too high'),
-    :equals       => Comparison.new(:==, '%s not suitable')
+    :greater_than => Comparison.new(:>,    '%s too low' ),
+    :less_than    => Comparison.new(:<,    '%s too high'),
+    :at_least     => Comparison.new(:>=,   '%s too low' ),
+    :at_most      => Comparison.new(:<=,   '%s too high'),
+    :equals       => Comparison.new(:==,   '%s not suitable'),
+    :not_equal    => Comparison.new(:'!=', '%s not suitable')
   }
 
   GENDER_MARKER_MAPS = {
@@ -49,8 +53,8 @@ class ProductCriteria::Basic
   end
 
   def total_micrograms
-    return nil if measured_volume.nil? || concentration.nil?
-    (measured_volume * concentration) / 1000.0
+    return nil if current_volume.nil? || concentration.nil?
+    (current_volume * concentration) / 1000.0
   end
 
   def conflicting_gender_markers
@@ -59,6 +63,14 @@ class ProductCriteria::Basic
 
   def metrics
     values.merge({:comment => @comment.join(';')})
+  end
+
+  def well_location
+    @well_or_metric.map_description
+  end
+
+  def plate_barcode
+    @well_or_metric.plate.try(:sanger_human_barcode) || "Unknown"
   end
 
   SUPPORTED_SAMPLE.each do |attribute|
@@ -78,7 +90,7 @@ class ProductCriteria::Basic
   # Return the sample gender, returns nil if it can't be determined
   # ie. mixed input, or not male/female
   def sample_gender
-    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender.downcase.strip }.uniq
+    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
     return nil if markers.count > 1
     GENDER_MARKER_MAPS[markers.first]
   end
@@ -94,7 +106,7 @@ class ProductCriteria::Basic
   end
 
   def sample
-    @well_or_metric.sample
+    @well_or_metric.samples.first
   end
 
   def conflicting_marker?(marker)
@@ -111,6 +123,7 @@ class ProductCriteria::Basic
   def invalid(attribute,message)
     @passed = false
     @comment << message % attribute.to_s.humanize
+    @comment.uniq!
   end
 
   def assess!
@@ -118,7 +131,12 @@ class ProductCriteria::Basic
     params.each do |attribute,comparisons|
       value = fetch_attribute(attribute)
       values[attribute] = value
-      invalid(attribute,'%s has not been recorded') && next if value.nil? && comparisons.present?
+
+      if value.blank? && comparisons.present?
+        invalid(attribute,'%s has not been recorded')
+        next
+      end
+
       comparisons.each do |comparison,target|
         value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison))
       end
@@ -140,11 +158,18 @@ class ProductCriteria::Basic
   end
 
   def method_for(comparison)
-    METHOD_ALIAS[comparison].method || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+    comparison_for(comparison).method
   end
 
   def message_for(comparison)
-    METHOD_ALIAS[comparison].message || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+    comparison_for(comparison).message
   end
+
+  private
+
+  def comparison_for(comparison)
+    METHOD_ALIAS.fetch(comparison)||raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+  end
+
 
 end
