@@ -5,7 +5,7 @@ module SampleManifestExcel
       "SANGER PLATE ID","WELL","SANGER SAMPLE ID","SUPPLIER SAMPLE NAME","COHORT","VOLUME (ul)",
       "CONC (ng/ul)","GENDER","DNA SOURCE","GC CONTENT","PUBLIC NAME",
       "TAXON ID","COMMON NAME","SAMPLE DESCRIPTION","STRAIN",
-      "SAMPLE VISIBILITY","SAMPLE TYPE","PHENOTYPE (required for EGA)"
+      "SAMPLE VISIBILITY","SAMPLE TYPE","DONOR ID (required for EGA)", "PHENOTYPE (required for EGA)"
     ]
 
     attr_reader :sample_manifest, :worksheet, :columns, :type
@@ -34,7 +34,7 @@ module SampleManifestExcel
     end
 
     def add_row(values = [])
-      worksheet.add_row values
+      worksheet.add_row values, types: [:string]*values.length
     end
 
     def add_rows(n)
@@ -56,7 +56,7 @@ module SampleManifestExcel
       add_rows(2)
       add_row columns.headings
       sample_manifest.samples.each do |sample|
-        add_row [sample.wells.first.plate.sanger_human_barcode, sample.wells.first.map.description, sample.sanger_sample_id]
+        add_row([sample.wells.first.plate.sanger_human_barcode, sample.wells.first.map.description, sample.sanger_sample_id] + [""]*14 + [sample.sanger_sample_id])
       end
     end
 

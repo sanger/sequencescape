@@ -53,11 +53,14 @@ class DownloadTest < ActiveSupport::TestCase
     assert_equal sample.wells.first.plate.sanger_human_barcode, spreadsheet.sheet(0).cell(10,1)
     assert_equal sample.wells.first.map.description, spreadsheet.sheet(0).cell(10,2)
     assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(10,3)
+    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(10,18)
+
 
     sample = sample_manifest.samples.last
     assert_equal sample.wells.first.plate.sanger_human_barcode, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,1)
     assert_equal sample.wells.first.map.description, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,2)
     assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,3)
+    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,18)
 
   end
 

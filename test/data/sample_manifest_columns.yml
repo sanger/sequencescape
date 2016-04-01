@@ -1,0 +1,34 @@
+sanger_plate_id:
+  heading: SANGER PLATE ID
+well:
+  heading: WELL
+sanger_sample_id:
+  heading: SANGER SAMPLE ID
+supplier_sample_name:
+  heading: SUPPLIER SAMPLE NAME
+cohort:
+  heading: COHORT
+volume:
+  heading: VOLUME (ul)
+  type: :integer
+gender:
+  heading: GENDER
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    showDropDown: true
+    allowBlank: false
+    prompt: "Please enter gender"
+    showInputMessage: true
+    promptTitle: "Gender"
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "gender"
+    error: "Please enter gender"
+public_name:
+  heading: PUBLIC NAME
+taxon_id:
+  heading: TAXON ID
+donor_id:
+  heading: DONOR ID (required for EGA)
+invalid_column:

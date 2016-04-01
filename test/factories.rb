@@ -433,6 +433,7 @@ FactoryGirl.define do
     name            {|a| FactoryGirl.generate :sample_name }
 
     factory :sample_with_well do
+      sequence(:sanger_sample_id) {|n| n.to_s }
       wells { [ FactoryGirl.create(:well_with_sample_and_plate)]}
     end
   end
