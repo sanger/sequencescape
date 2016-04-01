@@ -259,8 +259,9 @@ class Well < Aliquot::Receptacle
   end
   private :buffer_required?
 
+  # If we eager load, things fair badly, and we end up returning all children.
   def find_latest_child_well
-    latest_child_well.first
+    latest_child_well.select {|c| c.is_a?(Well) }.sort_by(&:id).last
   end
 
   validate(:on => :save) do |record|
