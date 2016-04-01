@@ -34,6 +34,9 @@ class Well < Aliquot::Receptacle
 
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
+  # hams_many due to eager loading requirement and can't have a has one through a has_many
+  has_many :latest_child_well, :class_name => 'Well', :through => :links_as_parent, :limit => 1, :source => :descendant, :order => 'asset_links.descendant_id DESC'
+
   scope :include_stock_wells, -> { includes(:stock_wells => :requests_as_source) }
   scope :include_map,         -> { includes(:map) }
 
@@ -257,7 +260,7 @@ class Well < Aliquot::Receptacle
   private :buffer_required?
 
   def find_latest_child_well
-    children.order('assets.id DESC').where_is_a?(Well).first
+    latest_child_well.first
   end
 
   validate(:on => :save) do |record|
