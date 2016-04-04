@@ -522,4 +522,12 @@ class Asset < ActiveRecord::Base
 
   def contained_samples; []; end
 
+  def printable?
+    printable_target.present?
+  end
+
+  def printable_target
+    nil
+  end
+
 end
