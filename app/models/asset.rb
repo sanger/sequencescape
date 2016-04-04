@@ -538,4 +538,8 @@ class Asset < ActiveRecord::Base
 
   def contained_samples; []; end
 
+  def source_plate
+    nil
+  end
+
 end
