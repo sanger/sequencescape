@@ -44,6 +44,7 @@ class Aliquot < ActiveRecord::Base
 
     # Named scopes for the future
     scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
+    scope :for_summary, -> { includes(:map,:samples,:studies,:projects) }
     scope :include_creation_batches, -> { includes(:creation_batches)}
     scope :include_source_batches, -> { includes(:source_batches)}
 

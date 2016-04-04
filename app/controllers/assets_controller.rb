@@ -33,6 +33,7 @@ class AssetsController < ApplicationController
   end
 
   def show
+    @source_plate = @asset.source_plate
     respond_to do |format|
       format.html
       format.xml

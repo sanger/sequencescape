@@ -40,6 +40,10 @@ class Plate < Asset
     plate_purpose.cherrypick_completed(self)
   end
 
+  def source_plate
+    self.purpose.source_plate(self)
+  end
+
   SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
