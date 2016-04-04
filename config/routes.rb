@@ -38,6 +38,12 @@ Sequencescape::Application.routes.draw do
   match '/login' => 'sessions#login', :as => :login
   match '/logout' => 'sessions#logout', :as => :logout
 
+  resources :plate_summaries, only: [:index, :show] do
+    collection do
+      get :search
+    end
+  end
+
   resources :reference_genomes
   resources :barcode_printers
 
@@ -72,6 +78,8 @@ Sequencescape::Application.routes.draw do
     end
 
   end
+
+  resources :uuids, :only => [ :show ]
 
   match 'batches/released/clusters' => 'batches#released'
   match 'batches/released/:id' => 'batches#released'
@@ -588,6 +596,8 @@ Sequencescape::Application.routes.draw do
   end
 
   resources :labwhere_receptions, :only => [:index, :create]
+
+  resources :qc_files, only: [:show]
 
   match '/:controller(/:action(/:id))'
 
