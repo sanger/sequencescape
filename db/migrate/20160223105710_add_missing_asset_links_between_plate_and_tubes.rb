@@ -13,7 +13,7 @@ class AddMissingAssetLinksBetweenPlateAndTubes < ActiveRecord::Migration
       end
     end
     Transfer::BetweenTubesBySubmission.find_each do |transfer|
-      say "Between Tubes By Submission: #{transfer.source_id}-#{destination.id}"
+      say "Between Tubes By Submission: #{transfer.source_id}-#{transfer.destination.id}"
       AssetLink.create_edge!(transfer.source, transfer.destination)
     end
   end
