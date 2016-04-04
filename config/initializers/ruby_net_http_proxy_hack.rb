@@ -83,7 +83,6 @@ module Net
               buf << "Proxy-Authorization: Basic #{credential}\r\n"
             end
             buf << "\r\n"
-            puts buf
             @socket.write(buf)
             HTTPResponse.read_new(@socket).value
           end
