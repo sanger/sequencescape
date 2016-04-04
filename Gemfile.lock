@@ -59,8 +59,7 @@ GEM
       arel (~> 6.0)
     activerecord-jdbc-adapter (1.3.19)
       activerecord (>= 2.2)
-    activerecord-oracle_enhanced-adapter (1.2.3)
-      activerecord (>= 2.0.0)
+    activerecord-oracle_enhanced-adapter (1.4.3)
     activeresource (4.0.0)
       activemodel (~> 4.0)
       activesupport (~> 4.0)
@@ -139,7 +138,7 @@ GEM
       activerecord (>= 3.0, < 5)
       delayed_job (>= 3.0, < 5)
     diff-lcs (1.2.5)
-    domain_name (0.5.25)
+    domain_name (0.5.20160310)
       unf (>= 0.0.5, < 1.0.0)
     dynamic_form (1.1.4)
     erubis (2.7.0)
@@ -183,7 +182,7 @@ GEM
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     jrjackson (0.3.7)
-    jruby-openssl (0.9.12-java)
+    jruby-openssl (0.9.16-java)
     json (1.8.3)
     json (1.8.3-java)
     launchy (2.4.3)
@@ -336,7 +335,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf (0.1.4-java)
-    unf_ext (0.0.7.1)
+    unf_ext (0.0.7.2)
     uniform_notifier (1.9.0)
     uuidtools (2.1.5)
     websocket-driver (0.6.3)
@@ -357,7 +356,7 @@ PLATFORMS
 DEPENDENCIES
   aasm
   activerecord-jdbc-adapter
-  activerecord-oracle_enhanced-adapter (= 1.2.3)
+  activerecord-oracle_enhanced-adapter (~> 1.4.0)
   activeresource
   acts-as-dag
   bootstrap-sass

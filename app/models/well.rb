@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class Well < Aliquot::Receptacle
   include Api::WellIO::Extensions
   include ModelExtensions::Well
@@ -34,10 +35,8 @@ class Well < Aliquot::Receptacle
 
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
-  def is_in_fluidigm?
-    sta_plate_purpose_name = "#{configatron.sta_plate_purpose_name}"
-    !self.target_wells.detect{|w| w.events.detect {|e| e.family == PlatesHelper::event_family_for_pick(sta_plate_purpose_name)}.nil?}
-  end
+  # hams_many due to eager loading requirement and can't have a has one through a has_many
+  has_many :latest_child_well, :class_name => 'Well', :through => :links_as_parent, :limit => 1, :source => :descendant, :order => 'asset_links.descendant_id DESC', :conditions => {:assets=>{:sti_type => 'Well'}}
 
   scope :include_stock_wells, -> { includes(:stock_wells => :requests_as_source) }
   scope :include_map,         -> { includes(:map) }
@@ -90,7 +89,7 @@ class Well < Aliquot::Receptacle
     plate
   end
 
-  delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
+  delegate :location, :location_id, :location_id=, :printable_target, :to => :container , :allow_nil => true
   self.per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
@@ -257,11 +256,9 @@ class Well < Aliquot::Receptacle
   end
   private :buffer_required?
 
-  def find_child_plate
-    self.children.reverse_each do |child_asset|
-      return child_asset if child_asset.is_a?(Well)
-    end
-    nil
+  # If we eager load, things fair badly, and we end up returning all children.
+  def find_latest_child_well
+    latest_child_well.sort_by(&:id).last
   end
 
   validate(:on => :save) do |record|

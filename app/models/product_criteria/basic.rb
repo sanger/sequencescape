@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 class ProductCriteria::Basic
 
-  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity, :sequenom_count]
+  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :measured_volume, :initial_volume, :molarity, :sequenom_count]
   SUPPORTED_SAMPLE = [:sanger_sample_id]
   SUPPORTED_SAMPLE_METADATA = [:gender, :sample_ebi_accession_number, :supplier_name]
   EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender, :well_location, :plate_barcode]
@@ -11,17 +12,20 @@ class ProductCriteria::Basic
   PASSSED_STATE = 'passed'
   FAILED_STATE = 'failed'
 
+  UnknownSpecification = Class.new(StandardError)
+
   attr_reader :passed, :params, :comment, :values
   alias_method :passed?, :passed
 
   Comparison = Struct.new(:method,:message)
 
   METHOD_ALIAS = {
-    :greater_than => Comparison.new(:>,  '%s too low' ),
-    :less_than    => Comparison.new(:<,  '%s too high'),
-    :at_least     => Comparison.new(:>=, '%s too low' ),
-    :at_most      => Comparison.new(:<=, '%s too high'),
-    :equals       => Comparison.new(:==, '%s not suitable')
+    :greater_than => Comparison.new(:>,    '%s too low' ),
+    :less_than    => Comparison.new(:<,    '%s too high'),
+    :at_least     => Comparison.new(:>=,   '%s too low' ),
+    :at_most      => Comparison.new(:<=,   '%s too high'),
+    :equals       => Comparison.new(:==,   '%s not suitable'),
+    :not_equal    => Comparison.new(:'!=', '%s not suitable')
   }
 
   GENDER_MARKER_MAPS = {
@@ -49,8 +53,8 @@ class ProductCriteria::Basic
   end
 
   def total_micrograms
-    return nil if measured_volume.nil? || concentration.nil?
-    (measured_volume * concentration) / 1000.0
+    return nil if current_volume.nil? || concentration.nil?
+    (current_volume * concentration) / 1000.0
   end
 
   def conflicting_gender_markers
@@ -154,11 +158,18 @@ class ProductCriteria::Basic
   end
 
   def method_for(comparison)
-    METHOD_ALIAS[comparison].method || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+    comparison_for(comparison).method
   end
 
   def message_for(comparison)
-    METHOD_ALIAS[comparison].message || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+    comparison_for(comparison).message
   end
+
+  private
+
+  def comparison_for(comparison)
+    METHOD_ALIAS.fetch(comparison)||raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+  end
+
 
 end

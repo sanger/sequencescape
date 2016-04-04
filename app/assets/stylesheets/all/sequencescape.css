@@ -908,11 +908,12 @@ background-color: #BBBBBB;
 }
 
 .new-plate select {
+  color: #333333;
   font-size: 9px;
   width: 73px;
 }
 .plate_import{
-    padding: 2px;
+  padding: 2px;
   margin: 2px;
   list-style-type: none;
 }
