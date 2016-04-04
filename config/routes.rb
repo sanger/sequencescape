@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 Sequencescape::Application.routes.draw do
-  root to:'studies#index'
+  root to:'home#show'
   resource :home, :only => [:show]
 
   mount Api::RootService.new => '/api/1'
