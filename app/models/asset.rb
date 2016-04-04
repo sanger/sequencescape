@@ -43,8 +43,6 @@ class Asset < ActiveRecord::Base
 
   self.per_page = 500
   self.inheritance_column = "sti_type"
-  #acts_as_paranoid
-#  validates_uniqueness_of :name
 
   has_many :asset_group_assets, :dependent => :destroy
   has_many :asset_groups, :through => :asset_group_assets
@@ -423,8 +421,6 @@ class Asset < ActiveRecord::Base
   }
 
 
-
-
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
@@ -451,7 +447,6 @@ class Asset < ActiveRecord::Base
       find_by_barcode(source_barcode)
     end
   end
-
 
   def self.find_from_machine_barcode(source_barcode)
     with_machine_barcode(source_barcode).first
@@ -539,6 +534,14 @@ class Asset < ActiveRecord::Base
   def contained_samples; []; end
 
   def source_plate
+    nil
+  end
+
+  def printable?
+    printable_target.present?
+  end
+
+  def printable_target
     nil
   end
 
