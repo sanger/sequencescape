@@ -68,6 +68,9 @@ class Barcode
       sanger_human_barcode
     end
 
+    def printable_target
+      self
+    end
 
   end
 

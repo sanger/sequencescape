@@ -35,7 +35,7 @@ class Well < Aliquot::Receptacle
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
   # hams_many due to eager loading requirement and can't have a has one through a has_many
-  has_many :latest_child_well, :class_name => 'Well', :through => :links_as_parent, :limit => 1, :source => :descendant, :order => 'asset_links.descendant_id DESC'
+  has_many :latest_child_well, :class_name => 'Well', :through => :links_as_parent, :limit => 1, :source => :descendant, :order => 'asset_links.descendant_id DESC', :conditions => {:assets=>{:sti_type => 'Well'}}
 
   scope :include_stock_wells, -> { includes(:stock_wells => :requests_as_source) }
   scope :include_map,         -> { includes(:map) }
@@ -92,7 +92,7 @@ class Well < Aliquot::Receptacle
     plate
   end
 
-  delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
+  delegate :location, :location_id, :location_id=, :printable_target, :to => :container , :allow_nil => true
   self.per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
@@ -261,7 +261,7 @@ class Well < Aliquot::Receptacle
 
   # If we eager load, things fair badly, and we end up returning all children.
   def find_latest_child_well
-    latest_child_well.select {|c| c.is_a?(Well) }.sort_by(&:id).last
+    latest_child_well.sort_by(&:id).last
   end
 
   validate(:on => :save) do |record|
