@@ -1,27 +1,21 @@
 class AddMissingAssetLinksBetweenPlateAndTubes < ActiveRecord::Migration
   def up
-    ActiveRecord::Base.transaction do |variable|
-      Transfer::FromPlateToTubeBySubmission.find_each do |transfer|
-        next if transfer.source.nil?
-        transfer.destinations.each do |destination|
-          next if destination.nil? || destination.parents.include?(transfer.source)
-          AssetLink.create_edge!(transfer.source, destination)
-        end
-      end
-      Transfer::FromPlateToTubeByMultiplex.find_each do |transfer|
-        next if transfer.source.nil?
-        transfer.destinations.each do |destination|
-          next if destination.nil? || destination.parents.include?(transfer.source)
-          AssetLink.create_edge!(transfer.source, destination)
-        end
-      end
-      Transfer::BetweenTubesBySubmission.find_each do |transfer|
-        next if transfer.source.nil?
-        next if transfer.destination.nil? || transfer.destination.parents.include?(transfer.source)
-        AssetLink.create_edge!(transfer.source, transfer.destination)
+    Transfer::FromPlateToTubeBySubmission.find_each do |transfer|
+      transfer.destinations.each do |destination|
+        say "From Plate To Tube By Submission: #{transfer.source_id}-#{destination.id}"
+        AssetLink.create_edge!(transfer.source, destination)
       end
     end
-
+    Transfer::FromPlateToTubeByMultiplex.find_each do |transfer|
+      transfer.destinations.each do |destination|
+        say "From Plate To Tube By Multiplex: #{transfer.source_id}-#{destination.id}"
+        AssetLink.create_edge!(transfer.source, destination)
+      end
+    end
+    Transfer::BetweenTubesBySubmission.find_each do |transfer|
+      say "Between Tubes By Submission: #{transfer.source_id}-#{destination.id}"
+      AssetLink.create_edge!(transfer.source, transfer.destination)
+    end
   end
 
   def down
