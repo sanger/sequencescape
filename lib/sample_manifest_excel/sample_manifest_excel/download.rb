@@ -1,19 +1,12 @@
 module SampleManifestExcel
   class Download
 
-    STANDARD_HEADINGS = [
-      "SANGER PLATE ID","WELL","SANGER SAMPLE ID","SUPPLIER SAMPLE NAME","COHORT","VOLUME (ul)",
-      "CONC (ng/ul)","GENDER","DNA SOURCE","GC CONTENT","PUBLIC NAME",
-      "TAXON ID","COMMON NAME","SAMPLE DESCRIPTION","STRAIN",
-      "SAMPLE VISIBILITY","SAMPLE TYPE","DONOR ID (required for EGA)", "PHENOTYPE (required for EGA)"
-    ]
-
     attr_reader :sample_manifest, :worksheet, :columns, :type
 
-    def initialize(sample_manifest)
+    def initialize(sample_manifest, column_list)
       @sample_manifest = sample_manifest
       @type = sample_manifest.asset_type
-      @columns = create_columns
+      @columns = column_list
       create_worksheet
     end
 
@@ -58,10 +51,6 @@ module SampleManifestExcel
       sample_manifest.samples.each do |sample|
         add_row([sample.wells.first.plate.sanger_human_barcode, sample.wells.first.map.description, sample.sanger_sample_id] + [""]*14 + [sample.sanger_sample_id])
       end
-    end
-
-    def create_columns
-      SampleManifestExcel::ColumnList.new(STANDARD_HEADINGS)
     end
 
   end

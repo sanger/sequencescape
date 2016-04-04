@@ -3,11 +3,12 @@ require 'test_helper.rb'
 
 class DownloadTest < ActiveSupport::TestCase
 
-  attr_reader :download, :spreadsheet, :sample_manifest
+  attr_reader :download, :spreadsheet, :sample_manifest, :column_list
 
   def setup
     @sample_manifest = create(:sample_manifest_with_samples)
-    @download = SampleManifestExcel::Download.new(sample_manifest)
+    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_columns.yml"))))
+    @download = SampleManifestExcel::Download.new(sample_manifest, column_list)
     download.save('test.xlsx')
     @spreadsheet = Roo::Spreadsheet.open('test.xlsx')
   end
@@ -35,8 +36,8 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should add standard headings to worksheet" do
-    download.columns.each_with_index do |column, i|
-      assert_equal column.heading, spreadsheet.sheet(0).cell(9,i+1)
+    download.columns.headings.each_with_index do |heading, i|
+      assert_equal heading, spreadsheet.sheet(0).cell(9,i+1)
     end
   end
 
@@ -65,7 +66,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   def teardown
-    File.delete('test.xlsx')
+    File.delete('test.xlsx') if File.exists?('test.xlsx')
   end
   
 end

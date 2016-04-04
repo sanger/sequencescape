@@ -53,6 +53,10 @@ class ColumnTest < ActiveSupport::TestCase
     should "have a value" do
       assert_equal "a value", column.value
     end
+
+    should "#set_position should set correct position to a column" do
+      assert_equal 1, column.set_position(1).position
+    end
   end
 
   context "with attribute" do

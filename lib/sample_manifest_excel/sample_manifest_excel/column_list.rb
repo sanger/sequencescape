@@ -5,8 +5,9 @@ module SampleManifestExcel
 
     attr_reader :columns 
 
-    def initialize(columns)
-      @columns = create_columns(columns)
+    def initialize(columns = {})
+      create_columns(columns)
+      yield self if block_given?
     end
 
     def each(&block)
@@ -14,17 +15,43 @@ module SampleManifestExcel
     end
 
     def headings
-      columns.collect(&:heading)
+      columns.values.collect(&:heading)
+    end
+
+    def find_by(key)
+      columns[key]
+    end
+
+    def extract(names)
+      ColumnList.new do |column_list|
+        names.each do |name|
+          column_list.add find_by(name)
+        end
+      end
+    end
+
+    def add(column)
+      return unless column.valid?
+      columns[column.name] = column.set_position(next_position)
+    end
+
+    def add_with_dup(column)
+      add(column.dup)
+    end
+
+    def next_position
+      columns.count+1
+    end
+
+    def columns
+      @columns ||= {}
     end
 
   private
 
     def create_columns(columns)
-      [].tap do |c|
-        columns.each do |k, v|
-          column = SampleManifestExcel::Column.new((v || {}).merge(name: k))
-          c << column if column.valid?
-        end
+      columns.each do |k,v|
+        add SampleManifestExcel::Column.new((v || {}).merge(name: k))
       end
     end
   end

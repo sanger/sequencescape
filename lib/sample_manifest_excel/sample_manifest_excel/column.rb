@@ -37,6 +37,11 @@ module SampleManifestExcel
     def attribute_value(object)
       attribute.values.first.call(object)
     end
+
+    def set_position(position)
+      self.position = position
+      self
+    end
    
   end
 
