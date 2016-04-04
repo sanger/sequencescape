@@ -92,7 +92,7 @@ class Well < Aliquot::Receptacle
     plate
   end
 
-  delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
+  delegate :location, :location_id, :location_id=, :printable_target, :to => :container , :allow_nil => true
   self.per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
