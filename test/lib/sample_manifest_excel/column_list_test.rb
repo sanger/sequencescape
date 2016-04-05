@@ -5,7 +5,7 @@ class ColumnListTest < ActiveSupport::TestCase
   attr_reader :column_list, :column_headings, :yaml, :valid_columns
 
   def setup
-    @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_columns.yml")))
+    @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
     @column_list = SampleManifestExcel::ColumnList.new(yaml)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
   end

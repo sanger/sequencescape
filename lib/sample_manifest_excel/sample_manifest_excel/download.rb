@@ -7,6 +7,7 @@ module SampleManifestExcel
       @sample_manifest = sample_manifest
       @type = sample_manifest.asset_type
       @columns = column_list
+      add_attributes
       create_worksheet
     end
 
@@ -51,6 +52,12 @@ module SampleManifestExcel
       sample_manifest.samples.each do |sample|
         add_row([sample.wells.first.plate.sanger_human_barcode, sample.wells.first.map.description, sample.sanger_sample_id] + [""]*14 + [sample.sanger_sample_id])
       end
+    end
+
+    def add_attributes
+      columns.find_by("sanger_plate_id").attribute = Proc.new { |sample| sample.wells.first.plate.sanger_human_barcode }
+      columns.find_by("well").attribute = Proc.new { |sample| sample.wells.first.map.description }
+      columns.find_by("donor_id").attribute = Proc.new { |sample| sample.sanger_sample_id }
     end
 
   end

@@ -7,7 +7,7 @@ class DownloadTest < ActiveSupport::TestCase
 
   def setup
     @sample_manifest = create(:sample_manifest_with_samples)
-    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_columns.yml"))))
+    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
     @download = SampleManifestExcel::Download.new(sample_manifest, column_list)
     download.save('test.xlsx')
     @spreadsheet = Roo::Spreadsheet.open('test.xlsx')
@@ -47,6 +47,12 @@ class DownloadTest < ActiveSupport::TestCase
 
   test "should add all of the samples" do
     assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(0).last_row
+  end
+
+  test "should add the attributes to the column list" do
+    assert download.columns.find_by("sanger_plate_id").attribute?
+    assert download.columns.find_by("well").attribute?
+    assert download.columns.find_by("donor_id").attribute?
   end
 
   test "should add the attributes for each sample" do
