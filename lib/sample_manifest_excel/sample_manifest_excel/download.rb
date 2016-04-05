@@ -1,7 +1,7 @@
 module SampleManifestExcel
   class Download
 
-    attr_reader :sample_manifest, :worksheet, :columns, :type
+    attr_reader :sample_manifest, :worksheet, :columns, :type, :last_row
 
     def initialize(sample_manifest, column_list)
       @sample_manifest = sample_manifest
@@ -39,6 +39,16 @@ module SampleManifestExcel
       @columns ||= []
     end
 
+    def first_row
+      10
+    end
+
+    def last_row
+      @last_row ||= sample_manifest.samples.count + first_row
+    end
+
+    
+
   private
 
     def create_worksheet
@@ -52,7 +62,6 @@ module SampleManifestExcel
       sample_manifest.samples.each do |sample|
         row = create_row(sample)
         add_row row.first, row.last
-        # add_row([sample.wells.first.plate.sanger_human_barcode, sample.wells.first.map.description, sample.sanger_sample_id] + [""]*14 + [sample.sanger_sample_id])
       end
     end
 

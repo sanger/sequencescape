@@ -30,6 +30,10 @@ module SampleManifestExcel
       end
     end
 
+    def with_attributes
+      columns.values.select { |column| column.attribute? }
+    end
+
     def add(column)
       return unless column.valid?
       columns[column.name] = column.set_position(next_position)

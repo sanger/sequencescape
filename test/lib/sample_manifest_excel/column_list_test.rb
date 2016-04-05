@@ -53,4 +53,14 @@ class ColumnListTest < ActiveSupport::TestCase
     refute_equal column, column_list_new.find_by(:plate_id)
   end
 
+  test "#with_attributes should return a list of columns which have attributes" do
+    column_list = SampleManifestExcel::ColumnList.new
+    column_1 = SampleManifestExcel::Column.new(name: :column_1, heading: "Column 1")
+    column_2 = SampleManifestExcel::Column.new(name: :column_2, heading: "Column 1", attribute: {attribute_column: true})
+    column_list.add column_1
+    column_list.add column_2
+    assert_equal 1, column_list.with_attributes.count
+    assert_equal column_2, column_list.with_attributes.first
+  end
+
 end

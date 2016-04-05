@@ -56,20 +56,23 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should add the attributes for each sample" do
-    sample = sample_manifest.samples.first
-    assert_equal sample.wells.first.plate.sanger_human_barcode, spreadsheet.sheet(0).cell(10,1)
-    assert_equal sample.wells.first.map.description, spreadsheet.sheet(0).cell(10,2)
-    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(10,3)
-    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(10,18)
-
-
-    sample = sample_manifest.samples.last
-    assert_equal sample.wells.first.plate.sanger_human_barcode, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,1)
-    assert_equal sample.wells.first.map.description, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,2)
-    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,3)
-    assert_equal sample.sanger_sample_id, spreadsheet.sheet(0).cell(9+sample_manifest.samples.count,18)
-
+    [sample_manifest.samples.first, sample_manifest.samples.last].each do |sample|
+      download.columns.with_attributes.each do |column|
+        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.position)
+      end
+    end
   end
+
+  test "should not change cell value if data is invalid" do
+    value = download.worksheet['D10'].value
+    download.worksheet['D10'].value="Abcdefghijklmnopqrstuvwxyz"
+    assert_equal value, download.worksheet['D10'].value
+    
+    value = download.worksheet["D#{sample_manifest.samples.count+10}"].value
+    download.worksheet["D#{sample_manifest.samples.count+10}"].value="Abcdefghijklmnopqrstuvwxyz"
+    assert_equal value, download.worksheet["D#{sample_manifest.samples.count+10}"].value
+  end
+
 
   def teardown
     File.delete('test.xlsx') if File.exists?('test.xlsx')
