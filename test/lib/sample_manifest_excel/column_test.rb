@@ -25,7 +25,7 @@ class ColumnTest < ActiveSupport::TestCase
   context "basic" do
 
     setup do
-      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, value: "a value")
+      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name)
     end
 
     should "not be valid without a name" do
@@ -51,7 +51,13 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "have a value" do
+      assert_equal "", column.value
+      column.value = "a value"
       assert_equal "a value", column.value
+    end
+
+    should "have an actual value" do
+      assert_equal "", column.actual_value(TestAttribute.new("My Attribute", "My Value"))
     end
 
     should "#set_position should set correct position to a column" do
@@ -74,8 +80,11 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "retrieve the value" do
-      test_attribute = TestAttribute.new("My Attribute", "My Value")
-      assert_equal "My Value", column.attribute_value(test_attribute)
+      assert_equal "My Value", column.attribute_value(TestAttribute.new("My Attribute", "My Value"))
+    end
+
+    should "retrieve the actual value" do
+      assert_equal "My Value", column.actual_value(TestAttribute.new("My Attribute", "My Value"))
     end
   end
 

@@ -27,8 +27,8 @@ module SampleManifestExcel
       @worksheet = workbook.add_worksheet(name: name)
     end
 
-    def add_row(values = [])
-      worksheet.add_row values, types: [:string]*values.length
+    def add_row(values = [], types = nil)
+      worksheet.add_row values, types: types || [:string]*values.length
     end
 
     def add_rows(n)
@@ -50,14 +50,26 @@ module SampleManifestExcel
       add_rows(2)
       add_row columns.headings
       sample_manifest.samples.each do |sample|
-        add_row([sample.wells.first.plate.sanger_human_barcode, sample.wells.first.map.description, sample.sanger_sample_id] + [""]*14 + [sample.sanger_sample_id])
+        row = create_row(sample)
+        add_row row.first, row.last
+        # add_row([sample.wells.first.plate.sanger_human_barcode, sample.wells.first.map.description, sample.sanger_sample_id] + [""]*14 + [sample.sanger_sample_id])
       end
     end
 
     def add_attributes
-      columns.find_by("sanger_plate_id").attribute = Proc.new { |sample| sample.wells.first.plate.sanger_human_barcode }
-      columns.find_by("well").attribute = Proc.new { |sample| sample.wells.first.map.description }
-      columns.find_by("donor_id").attribute = Proc.new { |sample| sample.sanger_sample_id }
+      columns.find_by("sanger_plate_id").attribute = {sanger_human_barcode: Proc.new { |sample| sample.wells.first.plate.sanger_human_barcode }}
+      columns.find_by("well").attribute = {well: Proc.new { |sample| sample.wells.first.map.description }}
+      columns.find_by("sanger_sample_id").attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
+      columns.find_by("donor_id").attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
+    end
+
+    def create_row(sample)
+      values, types = [], []
+      columns.each do |k, column|
+        values << column.actual_value(sample)
+        types << column.type
+      end
+      [values, types]
     end
 
   end

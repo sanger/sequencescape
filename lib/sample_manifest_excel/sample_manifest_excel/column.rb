@@ -30,6 +30,14 @@ module SampleManifestExcel
       validation.present?
     end
 
+    def value
+      @value ||= ""
+    end
+
+    def actual_value(object)
+      attribute? ? attribute_value(object) : value
+    end
+
     def validation=(validation)
       @validation = Axlsx::DataValidation.new(validation)
     end
