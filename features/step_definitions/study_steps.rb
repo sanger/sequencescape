@@ -391,7 +391,7 @@ end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
   step(%Q{I am on the homepage})
-  step(%Q{I follow "Create study"})
+  step(%Q{I follow "Create Study"})
   step(%Q{I fill in "Study name" with "#{study_name}"})
   step(%Q{I select "Not suitable for alignment" from "Reference genome"})
   step(%Q{I fill in "Study description" with "some description"})
