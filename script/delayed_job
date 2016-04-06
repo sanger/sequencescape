@@ -45,14 +45,12 @@ function delayed_job_restart() {
 
 # The lockfile prevents two scripts concerning the same process from running at the same time.
 lockfile="tmp/$2.lock"
-echo $lockfile
 
 if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null;
 then
    trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT
 
-   # delayed_job_${3} $2
-   sleep 5
+   delayed_job_${3} $2
    rm -f "$lockfile"
    trap - INT TERM EXIT
 else
