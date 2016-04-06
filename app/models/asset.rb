@@ -43,8 +43,6 @@ class Asset < ActiveRecord::Base
 
   self.per_page = 500
   self.inheritance_column = "sti_type"
-  #acts_as_paranoid
-#  validates_uniqueness_of :name
 
   has_many :asset_group_assets, :dependent => :destroy
   has_many :asset_groups, :through => :asset_group_assets
@@ -521,5 +519,13 @@ class Asset < ActiveRecord::Base
   end
 
   def contained_samples; []; end
+
+  def printable?
+    printable_target.present?
+  end
+
+  def printable_target
+    nil
+  end
 
 end
