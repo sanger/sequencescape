@@ -1,4 +1,4 @@
 objectspace.enabled=false
 compile.invokedynamic=true
-reify.classes=true
-reify.variables=true
+reify.classes=false
+reify.variables=false
