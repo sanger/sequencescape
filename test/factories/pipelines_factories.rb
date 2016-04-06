@@ -29,6 +29,26 @@ FactoryGirl.define do
     resource            nil
     sti_type            "Plate"
     barcode             {|a| FactoryGirl.generate :barcode_number }
+
+    factory :source_plate do
+      plate_purpose {|pp| pp.association(:source_plate_purpose)}
+    end
+
+    factory :child_plate do
+
+      transient do
+        parent { create(:source_plate)}
+      end
+
+      plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
+
+     
+
+      after(:build) do |child_plate, evaluator|
+        child_plate.parents << evaluator.parent
+        child_plate.purpose.source_purpose = evaluator.parent.purpose
+      end
+    end
   end
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
@@ -196,6 +216,18 @@ previous_pipeline_id  nil
     end
   end
 
+  factory :library_completion, :class => IlluminaHtp::Requests::LibraryCompletion do |request|
+    request_type { |target| RequestType.find_by_name('Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
+    asset        { |target| target.association(:well_with_sample_and_plate) }
+    target_asset { |target| target.association(:empty_well) }
+    request_purpose
+    after(:build) do |request|
+      request.request_metadata.fragment_size_required_from = 300
+      request.request_metadata.fragment_size_required_to   = 500
+    end
+  end
+
+
   factory :pulldown_library_creation_pipeline do |p|
     name                  {|a| FactoryGirl.generate :pipeline_name }
     automated             false
@@ -210,6 +242,8 @@ previous_pipeline_id  nil
       pipeline.build_workflow(:name => pipeline.name, :locale => 'Internal')
     end
   end
+
+
 
   factory :task do |t|
     name                  "New task"
@@ -379,6 +413,13 @@ previous_pipeline_id  nil
 
   factory :plate_purpose do |plate_purpose|
     name    {|a| FactoryGirl.generate :purpose_name }
+
+    factory :source_plate_purpose do |source_plate_purpose|
+
+      after(:build) do |source_plate_purpose, evaluator|
+        source_plate_purpose.source_purpose = source_plate_purpose
+      end
+    end
   end
 
   factory :purpose do |purpose|
