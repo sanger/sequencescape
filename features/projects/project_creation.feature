@@ -11,7 +11,7 @@ Feature: Creating projects
 
     Examples:
       |start_page   |link          |
-      |homepage     |Create project|
+      |homepage     |Create Project|
       |projects page|New Project   |
 
   Scenario: The required fields are required
