@@ -63,16 +63,13 @@ class DownloadTest < ActiveSupport::TestCase
     end
   end
 
-  test "should not change cell value if data is invalid" do
-    value = download.worksheet['D10'].value
-    download.worksheet['D10'].value="Abcdefghijklmnopqrstuvwxyz"
-    assert_equal value, download.worksheet['D10'].value
-    
-    value = download.worksheet["D#{sample_manifest.samples.count+10}"].value
-    download.worksheet["D#{sample_manifest.samples.count+10}"].value="Abcdefghijklmnopqrstuvwxyz"
-    assert_equal value, download.worksheet["D#{sample_manifest.samples.count+10}"].value
+  test "should add the data validations" do
+    assert_equal column_list.with_validations.count, download.worksheet.send(:data_validations).count
+    column = column_list.with_validations.first
+    assert_equal "#{column.position_alpha}#{download.first_row}:#{column.position_alpha}#{download.last_row}", download.worksheet.send(:data_validations).first.sqref
+    column = column_list.with_validations.last
+    assert_equal "#{column.position_alpha}#{download.first_row}:#{column.position_alpha}#{download.last_row}", download.worksheet.send(:data_validations).last.sqref
   end
-
 
   def teardown
     File.delete('test.xlsx') if File.exists?('test.xlsx')

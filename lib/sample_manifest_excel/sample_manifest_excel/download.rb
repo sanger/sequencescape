@@ -47,8 +47,6 @@ module SampleManifestExcel
       @last_row ||= sample_manifest.samples.count + first_row
     end
 
-    
-
   private
 
     def create_worksheet
@@ -62,6 +60,13 @@ module SampleManifestExcel
       sample_manifest.samples.each do |sample|
         row = create_row(sample)
         add_row row.first, row.last
+      end
+      add_validations
+    end
+
+    def add_validations
+      columns.with_validations.each do |column|
+        worksheet.add_data_validation("#{column.position_alpha}#{first_row}:#{column.position_alpha}#{last_row}", column.validation)
       end
     end
 

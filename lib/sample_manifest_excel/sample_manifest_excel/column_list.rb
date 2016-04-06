@@ -34,6 +34,10 @@ module SampleManifestExcel
       columns.values.select { |column| column.attribute? }
     end
 
+    def with_validations
+      columns.values.select { |column| column.validation? }
+    end
+
     def add(column)
       return unless column.valid?
       columns[column.name] = column.set_position(next_position)

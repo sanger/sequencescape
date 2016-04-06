@@ -63,6 +63,16 @@ class ColumnTest < ActiveSupport::TestCase
     should "#set_position should set correct position to a column" do
       assert_equal 1, column.set_position(1).position
     end
+
+    should "#position_alpha should return position as letters of alphabet" do
+      refute column.position_alpha
+      assert_equal "A", column.set_position(1).position_alpha
+      assert_equal "Z", column.set_position(26).position_alpha
+      assert_equal "AA", column.set_position(27).position_alpha
+      assert_equal "AZ", column.set_position(52).position_alpha
+      assert_equal "BA", column.set_position(53).position_alpha
+      assert_equal "ZZ", column.set_position(702).position_alpha
+    end
   end
 
   context "with attribute" do
@@ -102,16 +112,9 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "have some validation" do
-      assert_instance_of Axlsx::DataValidation, column.validation
-      assert_equal validation[:type], column.validation.type
-      assert_equal validation[:operator], column.validation.operator
-      assert_equal validation[:formula1], column.validation.formula1
-      assert_equal validation[:showErrorMessage], column.validation.showErrorMessage
-      assert_equal validation[:errorStyle], column.validation.errorStyle
-      assert_equal validation[:errorTitle], column.validation.errorTitle
-      assert_equal validation[:error], column.validation.error
-      refute column.validation.prompt
+      assert_equal validation, column.validation
     end
+
   end
 
 end

@@ -63,4 +63,8 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal column_2, column_list.with_attributes.first
   end
 
+  test "#with_validations should return a list of columns which have validations" do
+    assert_equal 1, column_list.with_validations.count
+  end
+
 end

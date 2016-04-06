@@ -18,6 +18,16 @@ module SampleManifestExcel
       @position ||= 0
     end
 
+    # turn position into characters for excel
+    # examples:
+    # - if position is 0 return nil
+    # - if position is less than 26 return single character e.g. 1 = "A", 26 = "Z"
+    # - if position is greater than 26 return two characters e.g. 27 = "AA"
+    def position_alpha
+      return if position == 0
+      (position-1)<26 ? ((position-1)%26+65).chr : ((position-1)/26+64).chr + ((position-1)%26+65).chr
+    end
+
     def type
       @type ||= :string
     end
@@ -38,16 +48,17 @@ module SampleManifestExcel
       attribute? ? attribute_value(object) : value
     end
 
-    def validation=(validation)
-      @validation = Axlsx::DataValidation.new(validation)
-    end
-
     def attribute_value(object)
       attribute.values.first.call(object)
     end
 
     def set_position(position)
       self.position = position
+      self
+    end
+
+    def set_validation(validation)
+      self.validation = validation
       self
     end
    
