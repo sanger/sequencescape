@@ -446,9 +446,9 @@ class Sample < ActiveRecord::Base
   end
 
   def sample_reference_genome
-    reference_genome = self.sample_metadata.reference_genome
-    reference_genome = self.primary_study.try(:study_metadata).try(:reference_genome) if ( reference_genome.nil? ) || reference_genome.name.blank?
-    reference_genome
+    return sample_metadata.reference_genome unless sample_metadata.reference_genome.try(:name).blank?
+    return study_reference_genome unless study_reference_genome.try(:name).blank?
+    nil
   end
 
   def affiliated_with?(object)
