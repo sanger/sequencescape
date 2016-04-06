@@ -61,7 +61,7 @@ Feature: Manage a list of faculty sponsors
       And I fill in "Name" with "John Doe"
       And I press "Create"
     Given I am on the homepage
-    When I follow "Create study"
+    When I follow "Create Study"
       And I fill in "Study name" with "Study name"
       And I select "Not suitable for alignment" from "Reference genome"
       And I fill in "Study description" with "some description"

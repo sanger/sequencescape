@@ -40,8 +40,8 @@ Feature: Add interface to update reference genomes
     Given a reference genome table
     Then I should see "Studies"
     When I follow "Studies"
-    Then I should see "Create study"
-    When I follow "Create study"
+    Then I should see "Create Study"
+    When I follow "Create Study"
     And I fill in "study_name" with "Cucumber1"
     Then I should see the required select field "Reference genome" with the option "Mus_musculus (NCBIm37)"
 
