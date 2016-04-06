@@ -50,7 +50,7 @@ class Uuid < ActiveRecord::Base
     # relied on to actually be present, nor can it be relied on to be output into any JSON in the API.
     #++
     def uuid
-      (self.uuid_object || self.create_uuid_object).uuid
+      (uuid_object || create_uuid_object).uuid
     end
 
     # The behaviour of the ar-extensions gem means that the after_create callbacks aren't being executed
