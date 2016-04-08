@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class AmqpObserver < ActiveRecord::Observer
   # Observe not only the records but their metadata too, otherwise we may miss changes.
   observe(
@@ -67,6 +68,9 @@ class AmqpObserver < ActiveRecord::Observer
     # Converts metadata entries to their owner records, if necessary
     def determine_record_to_broadcast(record, &block)
       case
+      when record.nil? then nil # Do nothing if we have no record.
+        # This occurs with roles with no authorizable, but may also happen in cases where we have
+        # orphaned records.
       when record.is_a?(WellAttribute)  then yield(record.well,  nil)
       when record.is_a?(Metadata::Base) then yield(record.owner, nil)
       when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)

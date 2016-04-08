@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -50,9 +51,8 @@ class Plate < Asset
   validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
-  def transfer_requests
-    wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
-  end
+  has_many :transfer_requests, :through => :wells, :source => :transfer_requests_as_target
+
 
   # About 10x faster than going through the wells
   def submission_ids
@@ -145,6 +145,22 @@ class Plate < Asset
     def create(options)
       plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
       Comment.create(options.merge(:commentable=>plate))
+    end
+
+    # By default rails treats sizes for grouped queries different to sizes
+    # for ungrouped queries. Unfortunately plates could end up performing either.
+    # Grouped return a hash, for which we want the length
+    # otherwise we get an integer
+    # We need to urgently revisit this, as this solution is horrible.
+    def size(*args)
+      s = super
+      return s.length if s.respond_to?(:length)
+      s
+    end
+    def count(*args)
+      s = super
+      return s.length if s.respond_to?(:length)
+      s
     end
 
   end
@@ -264,15 +280,6 @@ WHERE c.container_id=?
 
   before_create :set_plate_name_and_size
 
- # scope :qc_started_plates, -> {
- #    {
- #      :select => "distinct assets.*",
- #      :order => 'assets.id DESC',
- #      :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.find_by_name('Stock Plate') ],
- #      :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id" ,
- #      :include => [:events, :asset_audits]
- #    }
- #  }
   scope :qc_started_plates, -> {
     select('DISTINCT assets.*').
     joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
@@ -306,10 +313,38 @@ WHERE c.container_id=?
     }
   }
 
+  scope :output_by_batch, ->(batch) {
+
+      joins({
+        :container_associations => {
+          :content => {
+            :requests_as_target => :batch
+          }
+        }
+      }).
+      where(['batches.id = ?',batch.id])
+
+  }
+
   scope :with_wells, ->(wells) {
       select('DISTINCT assets.*').
       joins(:container_associations).
       where(:container_associations=>{:content_id=> wells.map(&:id) })
+  }
+
+  scope :with_wells_and_requests, ->() {
+    includes({
+      :wells => [
+        :uuid_object, :map,
+        {
+          :requests_as_target => [
+            {:initial_study=>:uuid_object},
+            {:initial_project=>:uuid_object},
+            {:asset=>{:aliquots=>:sample}}
+          ]
+        }
+      ]
+    })
   }
 
   def wells_sorted_by_map_id

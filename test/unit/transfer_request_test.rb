@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
+
 require 'test_helper'
 
 class TransferRequestTest < ActiveSupport::TestCase
@@ -44,5 +45,24 @@ class TransferRequestTest < ActiveSupport::TestCase
       assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(:asset => asset, :target_asset => asset) }
     end
 
+    context "with a tag clash" do
+      setup do
+        tag = create :tag
+        tag2 = create :tag
+        @aliquot_1 = create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well)
+        @aliquot_2 = create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well)
+
+        @target_asset = create :well
+      end
+
+      should 'raise an exception' do
+        @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_1.receptacle.reload, :target_asset =>  @target_asset)
+        assert_raise Aliquot::TagClash do
+          @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_2.receptacle.reload, :target_asset =>  @target_asset)
+        end
+      end
+    end
+
   end
+
 end

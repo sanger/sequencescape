@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
 <h2>Input requests</h2>
 <%= render :partial => "batch_statuses" %>
 <%= render :partial => 'pipeline_limit' %>
@@ -26,7 +27,6 @@
           <th><%= link_to "Asset", "javascript:void(0);" %></th>
           <th><%= link_to "Tag", "javascript:void(0);" %></th>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
             <th style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
           <% end %>
           <th width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
@@ -56,7 +56,6 @@
             <td class='request'><!-- Asset -->&nbsp;</td>
             <td class='request'><!-- Tag -->&nbsp;</td>
             <% @information_types.each do |information_type| %>
-              <% next if information_type.hide_in_inbox %>
               <td class='request'><%= h(request.request_metadata[information_type.key]) %></td>
             <% end %>
             <td class='request'><%= request.submission.study_names %></td>
@@ -69,9 +68,9 @@
             <td class="request" colspan=3><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
           </tr>
           <%- requests.each_with_index do |request, indice| -%>
-            <% request_comments = request.comments -%>
+
             <% request_asset = request.asset -%>
-            <% request_asset_comments = request_asset.comments -%>
+
             <% request_tag = request_asset.aliquots.map {|a| a.tag.present? ? "#{a.tag.tag_group.name}:#{a.tag.map_id}" : "Untagged" }.join(',') -%>
             <% progr = indice + 1 %>
             <tr class="nested request<%= indice %>" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
@@ -97,7 +96,6 @@
                 <%= request_tag %>
               </td>
               <% @information_types.each do |information_type| %>
-                <% next if information_type.hide_in_inbox %>
                 <td class='request'><%= h(request.request_metadata[information_type.key]) %></td>
               <% end %>
               <td class='request'><%= request.submission.study_names %></td>

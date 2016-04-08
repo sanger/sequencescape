@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.%>
+
 <div class="info">
   <table class="sortable table table-stripped">
     <thead>
@@ -10,7 +11,7 @@
         <% elsif stage %>
           <th class="nosort" width="7%"><%= link_to_function 'Select', "select_all()" -%> | <%= link_to_function 'Deselect', "deselect_all()" -%></th>
         <% end -%>
-        <th>Poition</th>
+        <th>Position</th>
         <th>Sample</th>
         <th>Request</th>
         <th>Source</th>
@@ -84,3 +85,18 @@
   </table>
   <br />
 </div>
+<% if edit %>
+  <script type="text/javascript">
+    (function() {
+      function batchListPostParametersFromSortable(node) {
+        return $(node).sortable('toArray').map(function(s) {return s.replace(/request_/,'requests_list[]=');}).join('&');
+      }
+      $( "#requests_list" ).sortable({
+        update: function(event, elem) {
+          $.post('/batches/sort?batch_id=' + <%= @batch.id %>, batchListPostParametersFromSortable(event.target));
+        }
+      });
+      $( "#requests_list" ).disableSelection();
+    }());
+  </script>
+<% end %>

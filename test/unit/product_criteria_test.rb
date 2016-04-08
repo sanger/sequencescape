@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 
 require "test_helper"
 
@@ -13,7 +14,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     setup do
       @product_a = create :product
-      @criteria_a = create :product_criteria, :product => @product_a
+      @criteria_a = create :product_criteria, :product => @product_a, :configuration => {:total_micrograms=>{:greater_than=>50}}
     end
 
 
@@ -65,7 +66,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'validate wells with the provided criteria' do
-      well_attribute = create :well_attribute, :concentration => 800, :measured_volume => 100
+      well_attribute = create :well_attribute, :concentration => 800, :current_volume => 100
       well = create :well, :well_attribute => well_attribute
       assesment = @criteria_a.assess(well)
       assert assesment.is_a?(ProductCriteria::Basic)
@@ -75,7 +76,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     should 'be able to take metrics' do
       well = {
         :concentration => 800,
-        :measured_volume => 100,
+        :current_volume => 100,
         :total_micrograms => 90
       }
       assesment = @criteria_a.assess(well)

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
 class ProjectsController < ApplicationController
   before_filter :login_required
   before_filter :set_variables_for_project, :only => [:show, :edit, :update, :destroy, :studies]
@@ -17,7 +18,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    if current_user.present?
+    if current_user != :false
       @workflow = current_user.workflow
       # TODO[xxx]: filtered the project based on user workflow
     end

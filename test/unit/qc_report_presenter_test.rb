@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 require "test_helper"
 require "timecop"
 
@@ -16,9 +17,9 @@ Report Identifier,wtccc_demo_product_20150101000000
 Generated on,"Thu, 01 Jan 2015 00:00:00 +0000"
 Contents,All samples
 
-Asset ID,Total micrograms,Comment,Qc Decision,Proceed
-%s,10,X,passed,
-%s,10,X,failed,
+Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
+%s,10,EG,X,passed,
+%s,10,EG,X,failed,
 }
 
   context "A QcReportPresenter" do
@@ -34,7 +35,7 @@ Asset ID,Total micrograms,Comment,Qc Decision,Proceed
       end
       @asset_ids = []
       2.times do |i|
-        m = create :qc_metric, :qc_report => @report, :qc_decision => STATE_ARRAY[i], :metrics =>{:total_micrograms=>10,:comment=>'X'}
+        m = create :qc_metric, :qc_report => @report, :qc_decision => STATE_ARRAY[i], :metrics =>{:total_micrograms=>10,:comment=>'X',:sanger_sample_id=>'EG'}
         @asset_ids << m.asset_id
       end
     end

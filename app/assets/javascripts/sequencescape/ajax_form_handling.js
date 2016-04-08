@@ -1,6 +1,7 @@
-//This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+//This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 //Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2015 Genome Research Ltd.
+//Copyright (C) 2015,2016 Genome Research Ltd.
+
 
 ( function($, undefined){
   "use strict";
@@ -30,17 +31,18 @@
       var target;
       target = this.dataset.success ||  this.dataset.update;
       $(target).html(data);
-      attachEvents();
+      $(document.body).trigger("ajaxDomUpdate");
     }).bind('ajax:error', function(xhr, data, status) {
       var target;
       target = this.dataset.failure ||  this.dataset.update;
       $(target).html(data);
-      attachEvents();
+      $(document.body).trigger("ajaxDomUpdate");
     });
 
     $('.observed').bind('keyup',throttledUpdate).bind('change',throttledUpdate)
   };
 
   $(document).ready( attachEvents );
+  $(document).on('ajaxDomUpdate', attachEvents );
 
 })(jQuery);

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 
 # SubmissionPools are designed to view submissions in the context of a particular asset
 class SubmissionPool < ActiveRecord::Base
@@ -10,9 +11,9 @@ class SubmissionPool < ActiveRecord::Base
       def self.included(base)
         base.class_eval do
 
-          # Rails 4 takes scopes as second argument, we can probablu also tidy up and remove the counter_sql
+          # Rails 4 takes scopes as second argument, we can probably also tidy up and remove the counter_sql
           # as it is the :group by seems to throw rails, and distinct will throw off out count.
-          has_many :submission_pools, :through => :active_requests,
+          has_many :submission_pools, :through => :well_requests_as_target,
             :select => 'submissions.*, requests.id AS outer_request_id',
             :group => 'submissions.id', :uniq => true do
 
@@ -24,13 +25,22 @@ class SubmissionPool < ActiveRecord::Base
                 return s if s.is_a?(Numeric)
                 s.length
               end
+
+              def size(*args)
+                # Horrid hack due to the behaviour of count with a group_by
+                # We can't use uniq alone, as the outer_request_id makes
+                # the vairous rows unique.
+                s = super
+                return s if s.is_a?(Numeric)
+                s.length
+              end
           end
 
-          has_many :active_requests, :conditions => {
-            :state => Request::Statemachine::ACTIVE,
-            :request_purpose_id => RequestPurpose.standard
-          },
-          :through => :wells, :source => :requests
+          has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
+
+          def submission_pools
+            SubmissionPool.for_plate(self)
+          end
 
         end
       end
@@ -65,7 +75,27 @@ class SubmissionPool < ActiveRecord::Base
       Request::Statemachine::ACTIVE
     ]).
     group('submission_id')
-  }
+  } do
+
+      def count(*args)
+        # Horrid hack due to the behaviour of count with a group_by
+        # We can't use uniq alone, as the outer_request_id makes
+        # the vairous rows unique.
+        s = super
+        return s if s.is_a?(Numeric)
+        s.length
+      end
+
+      def size(*args)
+        # Horrid hack due to the behaviour of count with a group_by
+        # We can't use uniq alone, as the outer_request_id makes
+        # the vairous rows unique.
+        s = super
+        return s if s.is_a?(Numeric)
+        s.length
+      end
+
+  end
 
   def plates_in_submission
     outer_request.submission_plate_count

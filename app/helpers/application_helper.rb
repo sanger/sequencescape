@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 module ApplicationHelper
 
   # Should return either the custom text or a blank string
@@ -76,21 +77,7 @@ module ApplicationHelper
   end
 
   def display_status(status)
-    case status
-      when "passed"
-        formatted_status = "<span style='color:green;font-weight:bold;'>Passed</span>"
-      when "failed"
-        formatted_status = "<span style='color:red;font-weight:bold;'>Failed</span>"
-      when "started"
-        formatted_status = "<span style='color:blue;font-weight:bold;'>Started</span>"
-      when "pending"
-        formatted_status = "<span style='font-weight:bold;'>Pending</span>"
-      when "completed"
-        formatted_status = "<span style='color:green;font-weight:bold;'>Completed</span>"
-      else
-        formatted_status = "<span style='font-weight:bold;'>#{status.humanize}</span>"
-    end
-    return formatted_status
+    content_tag(:span,status,:class=>"request-state label label-#{bootstrapify_request_state(status)}")
   end
 
   def dynamic_link_to(summary_item)

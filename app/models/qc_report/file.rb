@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 class QcReport::File
 
   ACCEPTED_MIMETYPE = 'text/csv'
@@ -116,7 +117,7 @@ class QcReport::File
   # as it should be a bit faster to capture the most common problems (ie. uploading an xls)
   # The FasterCSV read-mes even indicate that its pretty poor at handling invalid CSVs.
   def is_a_csv?
-    File.extname(filename) == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
+    File.extname(filename).gsub('.','') == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
   end
 
   def is_a_report?
