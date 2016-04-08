@@ -24,6 +24,14 @@ class Plate < Asset
     plate_purpose.state_of(self)
   end
 
+  def update_volume(volume_change)
+    ActiveRecord::Base.transaction do
+      wells.each do |w|
+        w.update_volume(volume_change)
+      end
+    end
+  end
+
   def occupied_well_count
     wells.with_contents.count
   end

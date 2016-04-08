@@ -218,6 +218,15 @@ Given /^I have a plate "([^"]*)" with the following wells:$/ do |plate_barcode, 
   end
 end
 
+Then /^I should have a plate "([^"]*)" with the following wells volumes:$/ do |plate_barcode, well_details|
+  well_details.hashes.each do |well_detail|
+    assert_equal Plate.find_from_machine_barcode(plate_barcode).wells.select do |w|
+      w.map.location == well_detail[:well_location]
+    end.first.get_current_volume, well_detail[:current_volume]
+  end
+end
+
+
 Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_name|
     project = FactoryGirl.create :project
     study = FactoryGirl.create :study

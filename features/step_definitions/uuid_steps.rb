@@ -135,6 +135,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'plate conversion',
   'tube creation',
   'state change',
+  'volume update',
 
   'aliquot',
   'qcable',
