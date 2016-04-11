@@ -56,6 +56,12 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal "a value", column.value
     end
 
+    should "have protection" do
+      refute column.protection?
+      column.protection = true
+      assert column.protection?
+    end
+
     should "have an actual value" do
       assert_equal "", column.actual_value(TestAttribute.new("My Attribute", "My Value"))
     end
@@ -72,6 +78,13 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal "AZ", column.set_position(52).position_alpha
       assert_equal "BA", column.set_position(53).position_alpha
       assert_equal "ZZ", column.set_position(702).position_alpha
+    end
+
+    should "#add_range should set position to the first cell, last cell and range" do
+      column.set_position(1).add_range(10, 15)
+      assert_equal "A10", column.first_cell
+      assert_equal "A15", column.last_cell
+      assert_equal "A10:A15", column.range
     end
   end
 

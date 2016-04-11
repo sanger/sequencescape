@@ -1,5 +1,6 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
+  protection: true
 well:
   heading: WELL
 sanger_sample_id:
@@ -15,7 +16,7 @@ gender:
   heading: GENDER
   validation:
     type: :list
-    formula1: "$A$1:$A$2"
+    formula1: "Male, Female, Mixed, Hermaphrodite, Unknown, Not Applicable"
     showDropDown: true
     allowBlank: false
     prompt: "Please enter gender"

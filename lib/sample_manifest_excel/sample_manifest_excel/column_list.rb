@@ -38,6 +38,10 @@ module SampleManifestExcel
       columns.values.select { |column| column.validation? }
     end
 
+    def with_protections
+      columns.values.select { |column| column.protection? }
+    end
+
     def add(column)
       return unless column.valid?
       columns[column.name] = column.set_position(next_position)
@@ -53,6 +57,11 @@ module SampleManifestExcel
 
     def columns
       @columns ||= {}
+    end
+
+    def add_ranges(first_row, last_row)
+      each {|k, column| column.add_range(first_row, last_row)}
+      self
     end
 
   private

@@ -4,7 +4,8 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :position, :type, :attribute, :validation, :value
+    attr_accessor :name, :heading, :position, :type, :attribute, :validation, :value, :protection
+    attr_reader :first_cell, :last_cell, :range
 
     validates_presence_of :name, :heading
 
@@ -40,6 +41,10 @@ module SampleManifestExcel
       validation.present?
     end
 
+    def protection?
+      protection
+    end
+
     def value
       @value ||= ""
     end
@@ -60,6 +65,12 @@ module SampleManifestExcel
     def set_validation(validation)
       self.validation = validation
       self
+    end
+
+    def add_range(first_row, last_row)
+      @first_cell = "#{position_alpha}#{first_row}"
+      @last_cell = "#{position_alpha}#{last_row}"
+      @range = "#{first_cell}:#{last_cell}"
     end
    
   end

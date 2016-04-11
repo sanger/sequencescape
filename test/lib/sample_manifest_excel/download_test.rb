@@ -66,9 +66,14 @@ class DownloadTest < ActiveSupport::TestCase
   test "should add the data validations" do
     assert_equal column_list.with_validations.count, download.worksheet.send(:data_validations).count
     column = column_list.with_validations.first
-    assert_equal "#{column.position_alpha}#{download.first_row}:#{column.position_alpha}#{download.last_row}", download.worksheet.send(:data_validations).first.sqref
+    assert_equal column.range, download.worksheet.send(:data_validations).first.sqref
     column = column_list.with_validations.last
-    assert_equal "#{column.position_alpha}#{download.first_row}:#{column.position_alpha}#{download.last_row}", download.worksheet.send(:data_validations).last.sqref
+    assert_equal column.range, download.worksheet.send(:data_validations).last.sqref
+    assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by("gender").validation["formula1"]}
+  end
+
+  test "should have a protection style" do
+    assert_operator download.protection, :>, 0
   end
 
   def teardown

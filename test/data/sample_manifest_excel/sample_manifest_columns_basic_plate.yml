@@ -1,9 +1,12 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
+  protection: true
 well:
   heading: WELL
+  protection: true
 sanger_sample_id:
   heading: SANGER SAMPLE ID
+  protection: true
 supplier_sample_name:
   heading: SUPPLIER SAMPLE NAME
   validation:
@@ -64,7 +67,7 @@ gender:
   heading: GENDER
   validation:
     type: :list
-    formula1: "$A$1:$A$2"
+    formula1: "Male, Female, Mixed, Hermaphrodite, Unknown, Not Applicable"
     allowBlank: false
     showDropDown: true
     showInputMessage: true    
@@ -318,6 +321,7 @@ sample_accession_number:
   heading: SAMPLE ACCESSION NUMBER (optional)
 donor_id:
   heading: DONOR ID (required for EGA)
+  protection: true
 phenotype:
   heading: PHENOTYPE (required for EGA)
  
