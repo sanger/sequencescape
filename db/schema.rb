@@ -1814,7 +1814,7 @@ ActiveRecord::Schema.define(:version => 20160408100901) do
   create_table "volume_updates", :force => true do |t|
     t.integer  "target_id"
     t.integer  "user_id"
-    t.string   "volume_change"
+    t.float    "volume_change"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
