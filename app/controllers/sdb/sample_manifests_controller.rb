@@ -6,6 +6,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   before_filter :set_sample_manifest_id, :only => [:show, :generated]
   before_filter :validate_type,    :only => [:new, :create]
 
+  LIMIT_ERROR_LENGTH = 10000
+
   # Upload the manifest and store it for later processing
   def upload
     if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank? )
@@ -18,7 +20,14 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       flash[:error] = "Cannot find details about the sample manifest"
       return
     end
-    @sample_manifest.update_attributes(params[:sample_manifest])
+    last_errors = @sample_manifest.last_errors||[]
+
+    # Too many errors can prevent a valid job from being created, as they overflow the handler column
+    # in the delayed job table
+    while last_errors.join.length > LIMIT_ERROR_LENGTH
+      last_errors.pop
+    end
+    @sample_manifest.update_attributes(params[:sample_manifest].merge(:last_errors=>last_errors))
     @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
     flash[:notice] = "Manifest being processed"
   rescue CSV::MalformedCSVError
