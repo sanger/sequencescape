@@ -9,8 +9,7 @@
 class VolumeUpdate < ActiveRecord::Base
   include Uuid::Uuidable
 
-  belongs_to :user
-  validates_presence_of :user
+  validates_presence_of :created_by
 
   # This is the target asset for which to update the state
   #belongs_to :target, :class_name => 'Asset'

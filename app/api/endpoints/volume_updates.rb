@@ -9,6 +9,5 @@ class ::Endpoints::VolumeUpdates < ::Core::Endpoint::Base
 
   instance do
     belongs_to(:target, :json => "target")
-    belongs_to(:user, :json => "user")
   end
 end

@@ -3,7 +3,7 @@ class AddVolumeUpdateTable < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       create_table :volume_updates do |t|
         t.integer :target_id
-        t.integer :user_id
+        t.string :created_by
         t.float :volume_change
         t.timestamps null:false
       end

@@ -8,7 +8,7 @@ class ::Io::VolumeUpdate < ::Core::Io::Base
   # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
 
   define_attribute_and_json_mapping(%Q{
-                              user <=> user
+                       created_by <=> created_by
                     volume_change <=> volume_change
   })
 end
