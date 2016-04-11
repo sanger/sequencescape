@@ -34,7 +34,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "volume_update": {
-          "user": "99999999-8888-7777-6666-555555555555",
+          "created_by": "user_test",
           "volume_change": "24.3"
         }
       }
@@ -45,7 +45,7 @@ And I have a "full" authorised user with the key "cucumber"
       {
         "volume_update":{
           "target":{ "uuid":"11111111-2222-3333-4444-000000000003" },
-          "user":{   "uuid":"99999999-8888-7777-6666-555555555555" },
+          "created_by": "user_test",
           "actions":{
             "read":"http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
           },
@@ -68,7 +68,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "volume_update": {
-          "user": "99999999-8888-7777-6666-555555555555",
+          "created_by": "user_test",
           "volume_change": "-7.1"
         }
       }
@@ -79,7 +79,7 @@ And I have a "full" authorised user with the key "cucumber"
       {
         "volume_update":{
           "target":{ "uuid":"11111111-2222-3333-4444-000000000003" },
-          "user":{   "uuid":"99999999-8888-7777-6666-555555555555" },
+          "created_by": "user_test",
           "actions":{
             "read":"http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
           },
