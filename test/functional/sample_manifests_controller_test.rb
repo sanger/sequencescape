@@ -31,6 +31,13 @@ class SampleManifestsControllerTest < ActionController::TestCase
 
     end
 
+    context '#new' do
+      should "be a success" do
+        get :new, type: "plate"
+        assert_response :success
+      end
+    end
+
   end
   
 end
