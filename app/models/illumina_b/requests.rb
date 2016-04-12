@@ -12,9 +12,6 @@ module IlluminaB::Requests
     include TransferRequest::InitialTransfer
   end
 
-  class CovarisToSheared < IlluminaHtp::Requests::CovarisToSheared
-  end
-
   class PrePcrToPcr < IlluminaHtp::Requests::PrePcrToPcr
   end
 
