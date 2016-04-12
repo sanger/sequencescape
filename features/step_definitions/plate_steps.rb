@@ -249,5 +249,25 @@ Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |b
 end
 
 
+Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid, well_details|
+  #plate = FactoryGirl.create :plate, :barcode => plate_barcode
+  plate = Uuid.find_by_external_id(uuid).resource
+  well_details.hashes.each do |well_detail|
+    well = Well.create!(:map => Map.find_by_description_and_asset_size(well_detail[:well_location],96), :plate => plate)
+    well.well_attribute.update_attributes!(:concentration => well_detail[:measured_concentration], :measured_volume => well_detail[:measured_volume])
+  end
+end
+
+
+Then /^I should have a plate with uuid "([^"]*)" with the following wells volumes:$/ do |uuid, well_details|
+  well_details.hashes.each do |well_detail|
+    plate = Uuid.find_by_external_id(uuid).resource
+    vol1 = plate.wells.select do |w|
+      w.map.description == well_detail[:well_location]
+    end.first.get_current_volume
+    assert_equal well_detail[:current_volume].to_f, vol1
+  end
+end
+
 
 

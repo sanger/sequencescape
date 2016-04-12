@@ -1,6 +1,3 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 # encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
@@ -14,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160304100345) do
+ActiveRecord::Schema.define(:version => 20160408100901) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1813,6 +1810,14 @@ ActiveRecord::Schema.define(:version => 20160304100345) do
 
   add_index "uuids", ["external_id"], :name => "index_uuids_on_external_id"
   add_index "uuids", ["resource_type", "resource_id"], :name => "index_uuids_on_resource_type_and_resource_id"
+
+  create_table "volume_updates", :force => true do |t|
+    t.integer  "target_id"
+    t.string   "created_by"
+    t.float    "volume_change"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "well_attributes", :force => true do |t|
     t.integer  "well_id"

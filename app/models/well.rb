@@ -177,15 +177,11 @@ class Well < Aliquot::Receptacle
 
   delegate_to_well_attribute(:current_volume)
   alias_method(:get_volume, :get_current_volume)
-  def set_current_volume(current_volume)
-    well_attribute.update_attributes!(:current_volume => current_volume.to_f)
-    set_initial_volume(current_volume.to_f) if get_initial_volume.nil?
-  end
+  writer_for_well_attribute_as_float(:current_volume)
 
-  def substract_volume(substraction)
-    value_substraction = substraction.nil? ? 0 : substraction
+  def update_volume(volume_change)
     value_current_volume = get_current_volume.nil? ? 0 : get_current_volume
-    set_current_volume([0, value_current_volume - value_substraction].max)
+    set_current_volume([0, value_current_volume + volume_change].max)
   end
   alias_method(:set_volume, :set_current_volume)
   delegate_to_well_attribute(:initial_volume)
