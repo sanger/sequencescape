@@ -11,8 +11,5 @@ class ::Io::Well < ::Core::Io::Base
                               state   => state
                     map.description   => location
                            aliquots   => aliquots
-      well_attribute.current_volume   => current_volume
-      well_attribute.initial_volume   => initial_volume
-      well_attribute.measured_volume  => measured_volume
   })
 end
