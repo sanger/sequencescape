@@ -93,8 +93,6 @@ module IlluminaHtp::PlatePurposes
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Post Shear',      'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
     [ 'Post Shear XP',   'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
-    [ 'AL Libs',         'Lib PCR',             'IlluminaHtp::Requests::PrePcrToPcr'           ],
-    [ 'AL Libs',         'Lib PCRR',            'IlluminaHtp::Requests::PrePcrToPcr'           ],
     [ 'Lib PCR',         'Lib PCR-XP',          'IlluminaHtp::Requests::PcrToPcrXp'            ],
     [ 'Lib PCRR',        'Lib PCRR-XP',         'IlluminaHtp::Requests::PcrToPcrXp'            ],
     [ 'Lib PCR-XP',      'Lib Pool',            'IlluminaHtp::Requests::PcrXpToPool'           ],

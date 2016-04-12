@@ -43,8 +43,6 @@ module IlluminaB::PlatePurposes
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
     [ 'ILB_STD_INPUT',   'ILB_STD_COVARIS','IlluminaB::Requests::InputToCovaris'   ],
-    [ 'ILB_STD_PREPCR',  'ILB_STD_PCR',    'IlluminaB::Requests::PrePcrToPcr'      ],
-    [ 'ILB_STD_PREPCR',  'ILB_STD_PCRR',   'IlluminaB::Requests::PrePcrToPcr'      ],
     [ 'ILB_STD_PCR',     'ILB_STD_PCRXP',  'IlluminaB::Requests::PcrToPcrXp'       ],
     [ 'ILB_STD_PCRR',    'ILB_STD_PCRRXP', 'IlluminaB::Requests::PcrToPcrXp'       ],
     [ 'ILB_STD_PCRXP',   'ILB_STD_STOCK',  'IlluminaB::Requests::PcrXpToStock'     ],
@@ -56,7 +54,7 @@ module IlluminaB::PlatePurposes
     'ILB_STD_COVARIS' => IlluminaB::CovarisPlatePurpose,
     'ILB_STD_SH'      => PlatePurpose,
     'ILB_STD_PREPCR'  => PlatePurpose,
-    'ILB_STD_PCR'     => IlluminaB::PcrPlatePurpose,
+    'ILB_STD_PCR'     => PlatePurpose,
     'ILB_STD_PCRXP'   => IlluminaB::FinalPlatePurpose,
     'ILB_STD_PCRR'    => PlatePurpose,
     'ILB_STD_PCRRXP'  => IlluminaB::FinalPlatePurpose,
@@ -76,7 +74,7 @@ end
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
 
-['covaris_plate','final_plate','initial_stock_tube','mx_tube','pcr_plate','post_shear_qc_plate','stock_plate','stock_tube'].each do |type|
+['covaris_plate','final_plate','initial_stock_tube','mx_tube','post_shear_qc_plate','stock_plate','stock_tube'].each do |type|
   require "#{Rails.root.to_s}/app/models/illumina_b/#{type}_purpose"
 end
 

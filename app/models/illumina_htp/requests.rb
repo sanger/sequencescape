@@ -84,27 +84,6 @@ module IlluminaHtp::Requests
     end
   end
 
-  class PrePcrToPcr < TransferRequest
-    # This is a legacy state machine.
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
-
-      aasm_state :pending
-      aasm_state :started_fx
-      aasm_state :started_mj
-      aasm_state :passed
-      aasm_state :failed
-      aasm_state :cancelled
-
-      aasm_event :start_fx do transitions :to => :started_fx,  :from => [:pending]                                    end
-      aasm_event :start_mj do transitions :to => :started_mj,  :from => [:started_fx]                                 end
-      aasm_event :pass     do transitions :to => :passed,      :from => [:pending, :started_fx,:started_mj, :failed]  end
-      aasm_event :fail     do transitions :to => :failed,      :from => [:pending, :started_fx, :started_mj, :passed] end
-      aasm_event :cancel   do transitions :to => :cancelled,   :from => [:started_fx, :started_mj, :passed]           end
-    end
-  end
-
   class PcrXpToPoolPippin < TransferRequest
     include InitialDownstream
     redefine_state_machine do
