@@ -20,14 +20,20 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       flash[:error] = "Cannot find details about the sample manifest"
       return
     end
-    last_errors = @sample_manifest.last_errors||[]
 
-    # Too many errors can prevent a valid job from being created, as they overflow the handler column
-    # in the delayed job table
-    while last_errors.join.length > LIMIT_ERROR_LENGTH
-      last_errors.pop
+    unless @sample_manifest.last_errors.blank?
+
+      last_errors = @sample_manifest.last_errors
+      # Too many errors can prevent a valid job from being created, as they overflow the handler column
+      # in the delayed job table
+      while last_errors.join.length > LIMIT_ERROR_LENGTH
+        last_errors.pop
+      end
+
+      @sample_manifest.update_attributes(:last_errors=>last_errors)
+
     end
-    @sample_manifest.update_attributes(params[:sample_manifest].merge(:last_errors=>last_errors))
+    @sample_manifest.update_attributes(params[:sample_manifest])
     @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
     flash[:notice] = "Manifest being processed"
   rescue CSV::MalformedCSVError
