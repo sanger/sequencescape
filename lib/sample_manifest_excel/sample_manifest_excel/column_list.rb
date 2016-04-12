@@ -38,8 +38,8 @@ module SampleManifestExcel
       columns.values.select { |column| column.validation? }
     end
 
-    def with_protections
-      columns.values.select { |column| column.protection? }
+    def without_protections
+      columns.values.select { |column| !column.protection? }
     end
 
     def add(column)
@@ -61,6 +61,11 @@ module SampleManifestExcel
 
     def add_ranges(first_row, last_row)
       each {|k, column| column.add_range(first_row, last_row)}
+      self
+    end
+
+    def unlock(num)
+      without_protections.each {|column| column.unlock(num)}
       self
     end
 

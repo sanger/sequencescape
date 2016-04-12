@@ -72,8 +72,20 @@ class DownloadTest < ActiveSupport::TestCase
     assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by("gender").validation["formula1"]}
   end
 
-  test "should have a protection style" do
-    assert_operator download.protection, :>, 0
+  test "should have a unlock style" do
+    assert_operator download.unlock, :>, 0
+  end
+
+  test "should unlock cells when required" do
+    download.columns.without_protections.each do |column|
+      [column.first_cell, column.last_cell].each do |cell|
+        assert_equal download.unlock, download.worksheet[cell].style
+      end
+    end 
+  end
+
+  test "worksheet should be protected with password" do
+    assert download.worksheet.sheet_protection.password
   end
 
   def teardown

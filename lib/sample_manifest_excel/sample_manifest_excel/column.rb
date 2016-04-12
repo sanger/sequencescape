@@ -4,7 +4,7 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :position, :type, :attribute, :validation, :value, :protection
+    attr_accessor :name, :heading, :position, :type, :attribute, :validation, :value, :protection, :unlock_num
     attr_reader :first_cell, :last_cell, :range
 
     validates_presence_of :name, :heading
@@ -64,6 +64,11 @@ module SampleManifestExcel
 
     def set_validation(validation)
       self.validation = validation
+      self
+    end
+
+    def unlock(num)
+      self.unlock_num = num
       self
     end
 

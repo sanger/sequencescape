@@ -6,9 +6,10 @@ module SampleManifestExcel
     def initialize(sample_manifest, column_list)
       @sample_manifest = sample_manifest
       @type = sample_manifest.asset_type
-      @columns = column_list.add_ranges(first_row, last_row)
+      @columns = column_list.add_ranges(first_row, last_row).unlock(unlock)
       add_attributes
       create_worksheet
+      protect_worksheet
     end
 
     def save(filename)
@@ -44,11 +45,15 @@ module SampleManifestExcel
     end
 
     def last_row
-      @last_row ||= sample_manifest.samples.count + first_row
+      @last_row ||= sample_manifest.samples.count + first_row - 1
     end
 
-    def protection
-      @protection ||= workbook.styles.add_style locked: true
+    def unlock
+      @unlock ||= workbook.styles.add_style locked: false
+    end
+
+    def protect_worksheet
+      worksheet.sheet_protection.password = '1111'
     end
 
   private
@@ -83,7 +88,7 @@ module SampleManifestExcel
     def create_row(sample)
       worksheet.add_row do |row|
         columns.each do |k, column|
-          row.add_cell column.actual_value(sample), type: column.type
+          row.add_cell column.actual_value(sample), type: column.type, style: column.unlock_num
         end
       end
     end
