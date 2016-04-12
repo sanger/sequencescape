@@ -16,7 +16,6 @@ class AssetLink < ActiveRecord::Base
     TRANSACTION_COUNT = 10
     def perform
       links.each_slice(TRANSACTION_COUNT) do |link_group|
-        puts "From #{link_group.first} to #{link_group.last}"
         ActiveRecord::Base.transaction do
           link_group.each do |parent,child|
             # Create edge can accept either a model (which it converts to an endpoint) or
