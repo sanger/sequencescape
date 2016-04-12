@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2015,2016 Genome Research Ltd.%>
+
 <h2>Results for: <span style="background-color: #FFFF66"> <%= @query %> </span></h2>
 <% unless @batches.blank? %>
   <h3 id="batches">Batches</h3>
@@ -8,9 +9,9 @@
     <table width="100%" cellspacing="0" cellpadding="4">
       <thead>
         <tr>
-          <th class="label" width="20%">Batch ID</th>
-          <th class="label">Pipeline</th>
-          <th class="label">Batch Status</th>
+          <th width="20%">Batch ID</th>
+          <th>Pipeline</th>
+          <th>Batch Status</th>
         </tr>
       </thead>
       <tbody>

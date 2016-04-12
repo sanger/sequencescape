@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
 Given /^each well in "([^"]*)" has a DNA QC request$/ do |study_name|
   study = Study.find_by_name(study_name)
   request_type = RequestType.find_by_key('dna_qc')

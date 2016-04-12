@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class Studies::WorkflowsController < ApplicationController
   before_filter :discover_study, :discover_workflow
 
@@ -64,7 +65,9 @@ class Studies::WorkflowsController < ApplicationController
         sample_ids      = @page_elements.map(&:id)
         render :partial => "sample_progress"
       when "Assets progress"
-        @page_elements= @study.assets_through_aliquots.paginate(page_params)
+        @asset_type = Aliquot::Receptacle.descendants.detect {|cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
+        @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
+        @page_elements= @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
 
         @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)

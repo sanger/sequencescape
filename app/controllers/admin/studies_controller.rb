@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+
 class Admin::StudiesController < ApplicationController
   before_filter :admin_login_required
 
@@ -24,6 +25,7 @@ class Admin::StudiesController < ApplicationController
     @request_types = RequestType.all(:order => "name ASC")
     if params[:id] != "0"
       @study = Study.find(params[:id])
+	  flash.now[:warning] = @study.warnings if @study.warnings.present?
       render :partial => "edit", :locals => { :study => @study }
     else
       render :nothing => true

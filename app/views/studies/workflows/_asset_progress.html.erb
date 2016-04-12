@@ -1,9 +1,17 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
+<%= form_tag show_summary_study_workflow_path(@study,@workflow), :method => :get, :remote=>true, :class=>'remote-form observed', :data => {:update => "#everything", :throbber => '#loading' } do %>
+  <%= label_tag(:asset_type,'Filter by') %>
+  <%= select_tag(:asset_type,options_for_select(asset_types_for_select,@asset_type), :class=>'form-control') %>
+<% end %>
+
+<span class="filter_options">Currently showing <strong><%= @asset_type_name %></strong></span>
+
 <%= pagination @page_elements %>
 <% submissions = @submissions %>
-<table id="summary" width="100%" class="sortable">
+<table id="summary" class="sortable table table-striped">
   <thead>
     <tr>
       <th>Name</th>
@@ -11,13 +19,11 @@
       <th>Sample</th>
       <th>Closed?</th>
       <% @request_types.each do |request_type| %>
-        <th class='label'><center><%= request_type.name %></center></th>
+        <th><center><%= request_type.name %></center></th>
       <% end %>
       <th>Latest update</th>
       <th>Update date</th>
       <th>Updates</th>
-      <th></th>
-      <th></th>
     </tr>
   </thead>
   <tbody>

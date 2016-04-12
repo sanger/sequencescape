@@ -1,0 +1,45 @@
+{
+  "folders":
+  [
+    {
+      // Note: Name is intentionally left out of this folder config to
+      // support the use of multiple directories for the same project
+      // If name is added, it becomes trickier to tell which version you are
+      // editing.
+      "path": ".",
+      "folder_exclude_patterns": [
+        ".bundle",
+        "pids",
+        "work"
+      ],
+      "file_exclude_patterns":[
+        ".swp",
+        "sequencescape.sublime-workspace"
+      ],
+      "binary_file_patterns": [
+        "*.jpg",
+        "*.jpeg",
+        "*.png",
+        "*.gif",
+        "*.ttf",
+        "*.tga",
+        "*.dds",
+        "*.ico",
+        "*.eot",
+        "*.pdf",
+        "*.swf",
+        "*.jar",
+        "*.zip",
+        "*.xls"
+      ]
+    }
+  ],
+  // These settings will be applied to anyone working
+  // on the project. They are intended to set up the accepted
+  // conventions.
+  "settings": {
+    "tab_size": 2,
+    "translate_tabs_to_spaces": true,
+    "trim_trailing_white_space_on_save": true
+  }
+}

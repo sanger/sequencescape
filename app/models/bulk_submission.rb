@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class ActiveRecord::Base
   class << self
     def find_by_id_or_name!(id, name)
@@ -356,7 +357,7 @@ class BulkSubmission
     well_locations = well_list.map(&:strip)
     wells = plate.wells.located_at(well_locations)
     raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
-    attributes[:assets] = wells
+    wells
   end
 
   def find_tubes_for!(details)

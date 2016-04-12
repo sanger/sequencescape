@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.
+
 require "test_helper"
 
 class ApiRoutingTest < ActionController::TestCase
@@ -9,8 +10,9 @@ class ApiRoutingTest < ActionController::TestCase
       matcher = route(method, path).to(options)
 
       should matcher.description do
+        exception_class = defined?(Test::Unit::AssertionFailedError) ? Test::Unit::AssertionFailedError : MiniTest::Assertion
         # Not only can we not be allowed the method, we also might not even have the route!
-        assert_raises(ActionController::MethodNotAllowed,MiniTest::Assertion) do
+        assert_raises(ActionController::MethodNotAllowed,exception_class) do
           assert_accepts matcher.in_context(self), self
         end
       end

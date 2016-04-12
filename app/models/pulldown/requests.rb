@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 module Pulldown::Requests
   module BaitLibraryRequest
     def self.included(base)
@@ -84,7 +85,6 @@ module Pulldown::Requests
       aasm_state :cancelled
 
       aasm_event :start       do transitions :to => :started,        :from => [:pending]                                      end
-      aasm_event :nx_progress do transitions :to => :nx_in_progress, :from => [:pending, :started]                            end
       aasm_event :pass        do transitions :to => :passed,         :from => [:nx_in_progress, :failed, :started, :pending]  end
       aasm_event :cancel      do transitions :to => :cancelled,      :from => [:started, :passed]                             end
     end

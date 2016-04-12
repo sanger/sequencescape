@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 require 'timeout'
 require "tecan_file_generation"
 require 'aasm'
@@ -27,7 +28,7 @@ class Batch < ActiveRecord::Base
   end
 
   def cluster_formation_requests_must_be_over_minimum
-    if (!pipeline.min_size.nil?) && (@requests.size < pipeline.min_size)
+    if (!pipeline.min_size.nil?) && (requests.size < pipeline.min_size)
       errors.add :base, "You must create batches of at least " + pipeline.min_size.to_s+" requests in the pipeline " + pipeline.name
     end
   end
@@ -214,6 +215,10 @@ class Batch < ActiveRecord::Base
   def output_plates
     holder_ids = Request.get_target_holder_asset_id_map(request_ids).values
     Plate.find(holder_ids, :group => :barcode)
+  end
+
+  def first_output_plate
+    Plate.output_by_batch(self).with_wells_and_requests.first
   end
 
   ## WARNING! This method is used in the sanger barcode gem. Do not remove it without

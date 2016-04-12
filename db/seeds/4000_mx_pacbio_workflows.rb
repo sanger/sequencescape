@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
+
 
 next_gen_sequencing = Submission::Workflow.find_by_key!('short_read_sequencing')
 PacBioSamplePrepPipeline.create!(:name => 'PacBio Tagged Library Prep') do |pipeline|

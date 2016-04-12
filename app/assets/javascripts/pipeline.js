@@ -1,11 +1,14 @@
+//This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2015,2016 Genome Research Ltd.
 //This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 //Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
+//Copyright (C) 2007-2011,2013 Genome Research Ltd.
 function select_requests_by_group(elementId,size,value) {
   for (var i = 1; i < size+1; i++) {
 	$('#' + elementId + '_' + i + ' input[type=checkbox]')[0].checked = value;
 
-	element = $(elementId + '_' + i);
+	element = $('#'+elementId + '_' + i);
 	if (value) {
 	  element.show();
 	} else {
@@ -16,9 +19,7 @@ function select_requests_by_group(elementId,size,value) {
 
 function showElement(elementId, size) {
   for (var i = 0; i < size+1; i++) {
-	element = $(elementId + '_' + i);
-      //console.debug(element);
-      //console.debug(element.cells[0])
+  element = document.getElementById(elementId + '_' + i);
       if (element && element.style)
       {
         if (element.style.display == '')

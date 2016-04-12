@@ -1,5 +1,4 @@
-compat.version=1.9
-cext.enabled=false
 objectspace.enabled=false
 compile.invokedynamic=true
-thread.pooling=true
+reify.classes=false
+reify.variables=false

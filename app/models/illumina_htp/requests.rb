@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+
 module IlluminaHtp::Requests
 
   class StdLibraryRequest < Request::LibraryCreation
@@ -93,7 +94,7 @@ module IlluminaHtp::Requests
       aasm_initial_state :pending
 
       aasm_event :start                 do transitions :to => :started, :from => [:pending] end
-      aasm_event :pass                  do transitions :to => :passed, :from => [:fx_transfer, :failed] end
+      aasm_event :pass                  do transitions :to => :passed, :from => [:pending, :started, :fx_transfer, :failed] end
       aasm_event :fail                  do transitions :to => :failed, :from => [:pending, :started, :passed] end
       aasm_event :cancel                do transitions :to => :cancelled, :from => [:started, :passed] end
       aasm_event :cancel_before_started do transitions :to => :cancelled, :from => [:pending] end
@@ -118,7 +119,7 @@ module IlluminaHtp::Requests
 
       aasm_event :start_fx do transitions :to => :started_fx,  :from => [:pending]                                    end
       aasm_event :start_mj do transitions :to => :started_mj,  :from => [:started_fx]                                 end
-      aasm_event :pass     do transitions :to => :passed,      :from => [:pending, :started_mj, :failed]              end
+      aasm_event :pass     do transitions :to => :passed,      :from => [:pending, :started_fx,:started_mj, :failed]  end
       aasm_event :fail     do transitions :to => :failed,      :from => [:pending, :started_fx, :started_mj, :passed] end
       aasm_event :cancel   do transitions :to => :cancelled,   :from => [:started_fx, :started_mj, :passed]           end
     end
@@ -153,11 +154,11 @@ module IlluminaHtp::Requests
       aasm_state :failed
       aasm_state :cancelled
 
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
+      aasm_event :start  do transitions :to => :started,     :from => [:pending]                        end
+      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed]     end
+      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                         end
+      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed]     end
+      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc_complete] end
     end
   end
 

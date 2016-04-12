@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 Sequencescape::Application.routes.draw do
   root to:'studies#index'
   resource :home, :only => [:show]
@@ -58,8 +59,8 @@ Sequencescape::Application.routes.draw do
   resources :items
 
   resources :batches do
-    resources :requests
-    resources :comments
+    resources :requests, :controller => "batches/requests"
+    resources :comments, :controller => "batches/comments"
 
     member do
       get :print_labels
@@ -215,7 +216,7 @@ Sequencescape::Application.routes.draw do
   match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
 
   resources :requests do
-    resources :comments
+    resources :comments, :controller => "requests/comments"
 
     member do
       get :history
@@ -397,11 +398,8 @@ Sequencescape::Application.routes.draw do
   match 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
   match 'assets/receive_barcode' => 'assets#receive_barcode'
   match 'assets/import_from_snp' => 'assets#import_from_snp'
-  match 'assets/combine' => 'assets#combine'
-  match 'assets/get_plate_layout' => 'assets#get_plate_layout'
-  match 'assets/create_plate_layout' => 'assets#create_plate_layout'
-  match 'assets/make_plate_from_rack' => 'assets#make_plate_from_rack'
   match 'assets/find_by_barcode' => 'assets#find_by_barcode'
+
   match 'lab_view' => 'assets#lab_view', :as => :lab_view
 
   resources :families

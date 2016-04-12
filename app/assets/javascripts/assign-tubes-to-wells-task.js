@@ -1,6 +1,7 @@
-//This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+//This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 //Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2015 Genome Research Ltd.
+//Copyright (C) 2015,2016 Genome Research Ltd.
+
 
 (function ($, undefined) {
   $(document).ready(function() {
@@ -39,7 +40,7 @@
     reportError = function(error) { $('#error_messages').show(100).text(error) };
     doNothing = function(){};
 
-    attach = function(tube,target) { document.getElementById('locations_for_'+tube.dataset.requestId).value=target.dataset.wellLocation };
+    attach = function(tube,target) { document.getElementById('locations_for_'+tube.dataset.requestId).value=target.dataset.wellLocation||'' };
     detach = function(tube) { document.getElementById('locations_for_'+tube.dataset.requestId).value='' };
 
     // moveTo bypasses the receive and remove checks.
@@ -84,6 +85,9 @@
       receive: function( event,ui ) {
         if (clashChecker($(this).children('.library_tube'),ui.item,reportError)) {
           $(ui.sender).sortable('cancel');
+          console.log(ui);
+          console.log(this);
+          attach(ui.item.get(0),ui.sender.context);
         } else {
           attach(ui.item.get(0),this)
         }

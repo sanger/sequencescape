@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 
 require 'aasm'
 
@@ -161,12 +162,14 @@ class Study < ActiveRecord::Base
   scope :alphabetical, ->() { order('name ASC') }
   scope :for_listing, ->()  { select('name, id') }
 
-  def each_well_for_qc_report(exclude_existing,product_criteria)
+  def each_well_for_qc_report_in_batches(exclude_existing,product_criteria)
     base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate'])).
       for_study_through_aliquot(self).
-      without_blank_samples
+      without_blank_samples.
+      includes(:well_attribute, samples: :sample_metadata ).
+      readonly(true)
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
-    scope.find_each {|a| yield a }
+    scope.find_in_batches {|wells| yield wells }
   end
 
   YES = 'Yes'
@@ -607,9 +610,11 @@ class Study < ActiveRecord::Base
 
   def accession_service
     if data_release_strategy == "open"
-      return EraAccessionService.new
+      EraAccessionService.new
     elsif data_release_strategy == "managed"
-      return EgaAccessionService.new
+      EgaAccessionService.new
+    else
+      NoAccessionService.new(self)
     end
   end
 
