@@ -62,28 +62,6 @@ module IlluminaHtp::Requests
     include TransferRequest::InitialTransfer
   end
 
-  class PostShearToAlLibs < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :fx_transfer
-      aasm_state :failed,     :enter => :on_failed
-      aasm_state :passed
-      aasm_state :cancelled,  :enter => :on_cancelled
-      aasm_initial_state :pending
-
-      aasm_event :start                 do transitions :to => :started, :from => [:pending] end
-      aasm_event :pass                  do transitions :to => :passed, :from => [:pending, :started, :fx_transfer, :failed] end
-      aasm_event :fail                  do transitions :to => :failed, :from => [:pending, :started, :passed] end
-      aasm_event :cancel                do transitions :to => :cancelled, :from => [:started, :passed] end
-      aasm_event :cancel_before_started do transitions :to => :cancelled, :from => [:pending] end
-      aasm_event :detach                do transitions :to => :pending, :from => [:pending] end
-      aasm_event :fx_transfer           do transitions :to => :fx_transfer, :from => [:started] end
-
-    end
-  end
-
   class PcrXpToPoolPippin < TransferRequest
     include InitialDownstream
     redefine_state_machine do
