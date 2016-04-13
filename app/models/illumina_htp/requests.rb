@@ -101,43 +101,7 @@ module IlluminaHtp::Requests
     end
   end
 
-  class QcCompletableTransfer < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
-
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :qc_complete
-      aasm_state :failed
-      aasm_state :cancelled
-
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                        end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed]     end
-      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                         end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed]     end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc_complete] end
-    end
-  end
-
-  # We still subclass here both for backwards compatibility, and to make future state machine changes easier
-  class PcrXpToStock < QcCompletableTransfer
-  end
-
-  class LibPoolSsToLibPoolSsXp < QcCompletableTransfer
-  end
-
-  class LibPoolToLibPoolNorm < QcCompletableTransfer
-  end
-
-  class PcrToPcrXp < QcCompletableTransfer
-  end
-
-  class PcrXpToLibNorm < QcCompletableTransfer
-  end
-
-  class PcrXpToPool < PcrXpToStock
+  class PcrXpToPool < TransferRequest
     include InitialDownstream
   end
 

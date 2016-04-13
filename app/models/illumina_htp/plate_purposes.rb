@@ -93,16 +93,10 @@ module IlluminaHtp::PlatePurposes
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Post Shear',      'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
     [ 'Post Shear XP',   'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
-    [ 'Lib PCR',         'Lib PCR-XP',          'IlluminaHtp::Requests::PcrToPcrXp'            ],
-    [ 'Lib PCRR',        'Lib PCRR-XP',         'IlluminaHtp::Requests::PcrToPcrXp'            ],
     [ 'Lib PCR-XP',      'Lib Pool',            'IlluminaHtp::Requests::PcrXpToPool'           ],
     [ 'Lib PCRR-XP',     'Lib Pool',            'IlluminaHtp::Requests::PcrXpToPool'           ],
-    [ 'Lib Pool SS',     'Lib Pool SS-XP',      'IlluminaHtp::Requests::LibPoolSsToLibPoolSsXp'],
     [ 'Lib PCR-XP',      'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ],
-    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ],
-    [ 'Lib Pool',        'Lib Pool Norm',       'IlluminaHtp::Requests::LibPoolToLibPoolNorm'  ],
-    [ 'Lib Pool SS-XP',  'Lib Pool SS-XP-Norm', 'IlluminaHtp::Requests::LibPoolToLibPoolNorm'  ],
-    [ 'Lib PCR-XP',      'Lib Norm',            'IlluminaHtp::Requests::PcrXpToLibNorm'        ]
+    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ]
   ]
 
   PLATE_PURPOSE_TYPE = {

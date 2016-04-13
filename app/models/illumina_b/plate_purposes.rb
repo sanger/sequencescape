@@ -42,11 +42,7 @@ module IlluminaB::PlatePurposes
   OUTPUT_PLATE_PURPOSES = []
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'ILB_STD_INPUT',   'ILB_STD_COVARIS','IlluminaB::Requests::InputToCovaris'   ],
-    [ 'ILB_STD_PCR',     'ILB_STD_PCRXP',  'IlluminaB::Requests::PcrToPcrXp'       ],
-    [ 'ILB_STD_PCRR',    'ILB_STD_PCRRXP', 'IlluminaB::Requests::PcrToPcrXp'       ],
-    [ 'ILB_STD_PCRXP',   'ILB_STD_STOCK',  'IlluminaB::Requests::PcrXpToStock'     ],
-    [ 'ILB_STD_PCRRXP',  'ILB_STD_STOCK',  'IlluminaB::Requests::PcrXpToStock'     ]
+    [ 'ILB_STD_INPUT',   'ILB_STD_COVARIS','IlluminaB::Requests::InputToCovaris'   ]
   ]
 
   PLATE_PURPOSE_TYPE = {

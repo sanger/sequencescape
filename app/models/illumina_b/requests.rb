@@ -12,9 +12,4 @@ module IlluminaB::Requests
     include TransferRequest::InitialTransfer
   end
 
-  class PcrToPcrXp < IlluminaHtp::Requests::PcrToPcrXp
-  end
-
-  class PcrXpToStock < IlluminaHtp::Requests::PcrXpToStock
-  end
 end

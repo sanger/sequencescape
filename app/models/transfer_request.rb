@@ -32,7 +32,7 @@ class TransferRequest < SystemRequest
 
     aasm_state :pending
     aasm_state :started
-    aasm_state :failed,	    :enter => :on_failed
+    aasm_state :failed,     :enter => :on_failed
     aasm_state :passed
     aasm_state :qc_complete
     aasm_state :cancelled,  :enter => :on_cancelled
@@ -79,7 +79,7 @@ class TransferRequest < SystemRequest
   private :perform_transfer_of_contents
 
   def on_failed
-    self.target_asset.remove_downstream_aliquots
+    target_asset.remove_downstream_aliquots if target_asset
   end
   private :on_failed
 
