@@ -52,22 +52,8 @@ module IlluminaHtp::Requests
     include FailUpstream
   end
 
-  module InitialDownstream
-    def outer_request
-      asset.requests.detect {|request| request.library_creation? && request.submission_id == self.submission_id }
-    end
-  end
-
   class CherrypickedToShear < TransferRequest
     include TransferRequest::InitialTransfer
-  end
-
-  class PcrXpToPoolPippin < TransferRequest
-    include InitialDownstream
-  end
-
-  class PcrXpToPool < TransferRequest
-    include InitialDownstream
   end
 
 end

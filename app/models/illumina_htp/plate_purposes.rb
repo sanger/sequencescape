@@ -91,10 +91,10 @@ module IlluminaHtp::PlatePurposes
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
     [ 'PF Cherrypicked', 'PF Shear',            'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
-    [ 'Lib PCR-XP',      'Lib Pool',            'IlluminaHtp::Requests::PcrXpToPool'           ],
-    [ 'Lib PCRR-XP',     'Lib Pool',            'IlluminaHtp::Requests::PcrXpToPool'           ],
-    [ 'Lib PCR-XP',      'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ],
-    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ]
+    [ 'Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'           ],
+    [ 'Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'           ],
+    [ 'Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ],
+    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ]
   ]
 
   PLATE_PURPOSE_TYPE = {

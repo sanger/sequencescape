@@ -71,9 +71,8 @@ module Pulldown::Requests
     include TransferRequest::InitialTransfer
   end
 
-  class PcrXpToIscLibPool < TransferRequest
+  class PcrXpToIscLibPool < TransferRequest::InitialDownstream
     # This is a legacy state machine
-    include IlluminaHtp::Requests::InitialDownstream
     redefine_state_machine do
       aasm_column :state
       aasm_initial_state :pending
