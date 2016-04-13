@@ -10,6 +10,7 @@ module SampleManifestExcel
       add_attributes
       create_worksheet
       protect_worksheet
+      freeze_panes
     end
 
     def save(filename)
@@ -54,6 +55,19 @@ module SampleManifestExcel
 
     def protect_worksheet
       worksheet.sheet_protection.password = '1111'
+    end
+
+    def freeze_panes
+      worksheet.sheet_view.pane do |pane|
+        pane.state = :frozen
+        pane.y_split = first_row-1
+        pane.x_split = freeze_after_column.position
+        pane.active_pane = :bottom_right
+      end
+    end
+
+    def freeze_after_column(name = 'sanger_sample_id')
+      columns.find_by(name)
     end
 
   private

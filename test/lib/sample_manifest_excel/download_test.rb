@@ -88,6 +88,12 @@ class DownloadTest < ActiveSupport::TestCase
     assert download.worksheet.sheet_protection.password
   end
 
+  test "panes should be frozen correctly" do
+    assert_equal download.freeze_after_column.position, download.worksheet.sheet_view.pane.x_split
+    assert_equal download.first_row-1, download.worksheet.sheet_view.pane.y_split
+    assert_equal "frozen", download.worksheet.sheet_view.pane.state
+  end
+
   def teardown
     File.delete('test.xlsx') if File.exists?('test.xlsx')
   end
