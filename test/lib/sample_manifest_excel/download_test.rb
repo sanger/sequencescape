@@ -77,7 +77,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should unlock cells when required" do
-    download.columns.without_protections.each do |column|
+    download.columns.with_unlocked.each do |column|
       [column.first_cell, column.last_cell].each do |cell|
         assert_equal download.unlock, download.worksheet[cell].style
       end
@@ -85,6 +85,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "worksheet should be protected with password" do
+    assert download.password
     assert download.worksheet.sheet_protection.password
   end
 

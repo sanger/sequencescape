@@ -56,10 +56,10 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal "a value", column.value
     end
 
-    should "have protection" do
-      refute column.protection?
-      column.protection = true
-      assert column.protection?
+    should "locked or unlocked" do
+      refute column.unlocked?
+      column.unlocked = 999
+      assert column.unlocked?
     end
 
     should "have an actual value" do
@@ -68,10 +68,6 @@ class ColumnTest < ActiveSupport::TestCase
 
     should "#set_position should set correct position to a column" do
       assert_equal 1, column.set_position(1).position
-    end
-
-    should "#unlock should set correct unlock_num to a column" do
-      assert_equal 3, column.unlock(3).unlock_num
     end
 
     should "#position_alpha should return position as letters of alphabet" do

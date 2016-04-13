@@ -4,19 +4,15 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :position, :type, :attribute, :validation, :value, :protection, :unlock_num
+    attr_accessor :name, :heading, :position, :type, :attribute, :validation, :value, :unlocked
     attr_reader :first_cell, :last_cell, :range
 
     validates_presence_of :name, :heading
 
     def initialize(attributes = {})
-      attributes.each do |name, value|
+      default_attributes.merge(attributes).each do |name, value|
         send("#{name}=", value)
       end
-    end
-
-    def position
-      @position ||= 0
     end
 
     # turn position into characters for excel
@@ -29,10 +25,6 @@ module SampleManifestExcel
       (position-1)<26 ? ((position-1)%26+65).chr : ((position-1)/26+64).chr + ((position-1)%26+65).chr
     end
 
-    def type
-      @type ||= :string
-    end
-
     def attribute?
       attribute.present?
     end
@@ -41,12 +33,8 @@ module SampleManifestExcel
       validation.present?
     end
 
-    def protection?
-      protection
-    end
-
-    def value
-      @value ||= ""
+    def unlocked?
+      unlocked
     end
 
     def actual_value(object)
@@ -67,15 +55,16 @@ module SampleManifestExcel
       self
     end
 
-    def unlock(num)
-      self.unlock_num = num
-      self
-    end
-
     def add_range(first_row, last_row)
       @first_cell = "#{position_alpha}#{first_row}"
       @last_cell = "#{position_alpha}#{last_row}"
       @range = "#{first_cell}:#{last_cell}"
+    end
+
+  private
+
+    def default_attributes
+      {position: 0, type: :string, value: ""}
     end
    
   end

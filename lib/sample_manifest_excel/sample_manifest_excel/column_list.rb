@@ -38,8 +38,8 @@ module SampleManifestExcel
       columns.values.select { |column| column.validation? }
     end
 
-    def without_protections
-      columns.values.select { |column| !column.protection? }
+    def with_unlocked
+      columns.values.select { |column| column.unlocked? }
     end
 
     def add(column)
@@ -64,8 +64,8 @@ module SampleManifestExcel
       self
     end
 
-    def unlock(num)
-      without_protections.each {|column| column.unlock(num)}
+    def unlock(n)
+      with_unlocked.each {|column| column.unlocked = n}
       self
     end
 

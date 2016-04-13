@@ -17,6 +17,10 @@ module SampleManifestExcel
       xls.serialize(filename)
     end
 
+    def password
+      @password ||= SecureRandom.base64
+    end
+
     def xls
       @xls ||= Axlsx::Package.new
     end
@@ -54,7 +58,7 @@ module SampleManifestExcel
     end
 
     def protect_worksheet
-      worksheet.sheet_protection.password = '1111'
+      worksheet.sheet_protection.password = password
     end
 
     def freeze_panes
@@ -102,7 +106,7 @@ module SampleManifestExcel
     def create_row(sample)
       worksheet.add_row do |row|
         columns.each do |k, column|
-          row.add_cell column.actual_value(sample), type: column.type, style: column.unlock_num
+          row.add_cell column.actual_value(sample), type: column.type, style: column.unlocked
         end
       end
     end
