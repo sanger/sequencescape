@@ -53,7 +53,7 @@ module IlluminaHtp::Requests
   end
 
   class CherrypickedToShear < TransferRequest
-    include TransferRequest::InitialTransfer
+    include TransferRequest::InitialTransfer::Behaviour
   end
 
 end

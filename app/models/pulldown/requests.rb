@@ -68,7 +68,7 @@ module Pulldown::Requests
   end
 
   class StockToCovaris < TransferRequest
-    include TransferRequest::InitialTransfer
+    include TransferRequest::InitialTransfer::Behaviour
   end
 
   class PcrXpToIscLibPool < TransferRequest::InitialDownstream

@@ -9,7 +9,7 @@ module IlluminaB::Requests
   end
 
   class InputToCovaris < TransferRequest
-    include TransferRequest::InitialTransfer
+    include TransferRequest::InitialTransfer::Behaviour
   end
 
 end

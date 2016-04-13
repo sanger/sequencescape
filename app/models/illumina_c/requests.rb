@@ -24,11 +24,11 @@ module IlluminaC::Requests
   end
 
   class InitialTransfer < TransferRequest
-    include TransferRequest::InitialTransfer
+    include TransferRequest::InitialTransfer::Behaviour
   end
 
   class StockToAlLibsTagged < TransferRequest
-    include TransferRequest::InitialTransfer
+    include TransferRequest::InitialTransfer::Behaviour
   end
 
 
