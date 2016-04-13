@@ -64,19 +64,6 @@ module IlluminaHtp::Requests
 
   class PcrXpToPoolPippin < TransferRequest
     include InitialDownstream
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
-
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :cancelled
-
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
-    end
   end
 
   class PcrXpToPool < TransferRequest
