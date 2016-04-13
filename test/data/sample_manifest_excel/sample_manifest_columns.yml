@@ -3,8 +3,10 @@ sanger_plate_id:
   protection: true
 well:
   heading: WELL
+  protection: true
 sanger_sample_id:
   heading: SANGER SAMPLE ID
+  protection: true
 supplier_sample_name:
   heading: SUPPLIER SAMPLE NAME
 cohort:

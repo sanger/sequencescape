@@ -1,0 +1,437 @@
+sanger_plate_id:
+  heading: SANGER PLATE ID
+  protection: true
+well:
+  heading: WELL
+  protection: true
+sanger_tube_id:
+  heading: SANGER TUBE ID
+  protection: true
+sanger_sample_id:
+  heading: SANGER SAMPLE ID
+  protection: true
+tag_group:
+  heading: TAG GROUP 
+  validation:
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Tag set name"    
+    prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set." 
+tag_index:
+  heading: TAG INDEX
+  validation:
+    type: :whole
+    operator: :greaterThanOrEqual
+    formula1: "1"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Tag index"    
+    prompt: "The index of the tag within the tag set."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Tag index"
+    error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."  
+tag2_group: 
+  heading: TAG2 GROUP (Fill in for dual Index Only)
+  validation:
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Tag set name"    
+    prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+tag2_index:
+  heading: TAG2 INDEX (Fill in for dual Index Only)
+  validation:
+    type: :whole
+    operator: :greaterThanOrEqual
+    formula1: "1"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Tag index"    
+    prompt: "The index of the tag within the tag set."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Tag index"
+    error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."   
+library_type: 
+  heading: LIBRARY TYPE
+  validation:
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Library type"    
+    prompt: "Provide a library type from the approved list"
+insert_size_from: 
+  heading: INSERT SIZE FROM
+  validation:
+    type: :whole
+    operator: :greaterThanOrEqual
+    formula1: "1"
+    allowBlank: true
+    showInputMessage: true   
+    promptTitle: "Insert size from"    
+    prompt: "The minimum insert size in the library"
+insert_size_to:
+  heading: INSERT SIZE TO
+  validation:
+    type: :whole
+    operator: :greaterThanOrEqual
+    formula1: "1"
+    allowBlank: true
+    showInputMessage: true   
+    promptTitle: "Insert size to"    
+    prompt: "Maximum insert size in the library"
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Insert size to"
+    error: "Insert size to must be a whole number, greater or equal to the insert size from"  
+supplier_sample_name:
+  heading: SUPPLIER SAMPLE NAME
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "20"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Supplier Sample Name"    
+    prompt: "Please enter a sample name up to a maximum of 20 characters in length. Only include characters A-Z, 0-9 and underscores."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Supplier Sample Name"
+    error: "Name must be a maximum of 20 characters in length."
+cohort:
+  heading: COHORT
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "7"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Cohort"    
+    prompt: "Please refer to the list of current cohorts to enter, or add a new abbreviation up to a maximum of 7 uppercase letters."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Cohort"
+    error: "7 uppercase characters, maximum"
+volume:
+  heading: VOLUME (ul)
+  validation:
+    type: :decimal
+    operator: :greaterThanOrEqual
+    formula1: "0"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: ""    
+    prompt: ""
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Volume"
+    error: "This value must be numeric."
+conc:
+  heading: CONC. (ng/ul)
+  validation:
+    type: :decimal
+    operator: :greaterThanOrEqual
+    formula1: "0"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: ""    
+    prompt: ""
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Concentration"
+    error: "This value must be numeric."
+gender:
+  heading: GENDER
+  validation:
+    type: :list
+    formula1: "Male, Female, Mixed, Hermaphrodite, Unknown, Not Applicable"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true    
+    promptTitle: "Gender"    
+    prompt: "Please enter gender"
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "gender"
+    error: "Please enter gender"
+country_of_origin:
+  heading: COUNTRY OF ORIGIN
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "30"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Country Of Origin"    
+    prompt: "Please refer to the list of current countries to enter, or add a new description up to a maximum of 30 uppercase letters."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Country Of Origin"
+    error: "30 uppercase characters, maximum"
+geographical_region:
+  heading: GEOGRAPHICAL REGION
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "30"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Region"    
+    prompt: "Please refer to the list of current regions to enter, or add a new description up to a maximum of 30 uppercase letters."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Region"
+    error: "30 uppercase characters, maximum"
+ethnicity:
+  heading: ETHNICITY
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "30"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Ethnicity"    
+    prompt: "Please refer to the list of current ethnicities to enter, or add a new description up to a maximum of 30 uppercase letters."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Ethnicity"
+    error: "30 uppercase characters, maximum"
+dna_source:
+  heading: DNA SOURCE
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true    
+    promptTitle: "DNA Source"    
+    prompt: "Please enter a Source from the Provided List."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "DNA Source"
+    error: "You must enter a Source from the list provided."
+date_of_sample_collection:
+  heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "5"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Sample Collection Date"    
+    prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Sample Collection Date"
+    error: "This must be either a combination of month and year, or a whole year, with no spaces."
+date_of_dna_extraction:
+  heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "5"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Sample Collection Date"    
+    prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Sample Collection Date"
+    error: "This must be either a combination of month and year, or a whole year, with no spaces."
+is_sample_a_control?:
+  heading: IS SAMPLE A CONTROL?
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true    
+    promptTitle: "Is the Sample a Control?"    
+    prompt: "Please Enter Y or N."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Is the Sample a Control?"
+    error: "You must enter either Y or N."
+is_re_submitted_sample?:
+  heading: IS RE-SUBMITTED SAMPLE?
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true    
+    promptTitle: "Is the Sample being Resubmitted?"    
+    prompt: "Please Enter Y or N."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Is the Sample being Resubmitted?"
+    error: "You must enter either Y or N."
+dna_extraction_method:
+  heading: DNA EXTRACTION METHOD
+  validation:
+    type: :whole
+    operator: :greaterThanOrEqual
+    formula1: "0"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "DNA Extraction Method"    
+    prompt: "Please Enter The Number of the DNA Extraction Method from the provided list."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "DNA Extraction Method"
+    error: "This value must be numeric. Please select from the provided list."
+sample_purified?:
+  heading: SAMPLE PURIFIED?
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true    
+    promptTitle: "Has the Sample Been Purified?"    
+    prompt: "Please Enter Y or N."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Has the Sample Been Purified?"
+    error: "You must enter either Y or N."
+purification_method:
+  heading: PURIFICATION METHOD
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true    
+    promptTitle: "Purification Method"    
+    prompt: "Please enter a Method from the Provided List."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Purification Method"
+    error: "You must enter a Method from the list provided."
+concentration_determined_by:
+  heading: CONCENTRATION DETERMINED BY
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true 
+    promptTitle: "Concentration Determined By"    
+    prompt: "Please enter a Method from the Provided List."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Concentration Determined By"
+    error: "You must enter a Method from the list provided."
+dna_storage_conditions:
+  heading: DNA STORAGE CONDITIONS
+  validation:
+    type: :list
+    formula1: "$A$1:$A$2"
+    allowBlank: true
+    showDropDown: false
+    showInputMessage: true    
+    promptTitle: "DNA Storage Conditions"    
+    prompt: "Please enter a Temperature from the Provided List."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "DNA Storage Conditions"
+    error: "You must enter a Temperature from the list provided, in the correct format e.g.+4C."
+mother:
+  heading: MOTHER (optional)
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "15"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Mother - Supplier Sample Name"    
+    prompt: "Please enter an existing supplier sample name that relates to the mother of this individual."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Mother - Supplier Sample Name"
+    error: "Name must be a miaximum of 15 characters in length."
+father:
+  heading: FATHER (optional)
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "15"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Father - Supplier Sample Name"    
+    prompt: "Please enter an existing supplier sample name that relates to the father of this individual."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Father - Supplier Sample Name"
+    error: "Name must be a miaximum of 15 characters in length."
+sibling:
+  heading: SIBLING (optional)
+  validation:
+    type: :textLength
+    operator: :lessThanOrEqual
+    formula1: "15"
+    allowBlank: true
+    showInputMessage: true    
+    promptTitle: "Sibling - Supplier Sample Name"    
+    prompt: "Please enter an existing supplier sample name that relates to the sibling of this individual."
+    showErrorMessage: true
+    errorStyle: :stop
+    errorTitle: "Sibling - Supplier Sample Name"
+    error: "Name must be a miaximum of 15 characters in length."
+gc_content:
+  heading: GC CONTENT
+public_name:
+  heading: PUBLIC NAME
+taxon_id:
+  heading: TAXON ID
+common_name:
+  heading: COMMON NAME
+sample_description:
+  heading: SAMPLE DESCRIPTION
+strain:
+  heading: STRAIN
+sample_visibility:
+  heading: SAMPLE VISIBILITY
+sample_type:
+  heading: SAMPLE TYPE
+sample_accession_number:
+  heading: SAMPLE ACCESSION NUMBER (optional)
+donor_id:
+  heading: DONOR ID (required for EGA)
+phenotype:
+  heading: PHENOTYPE (required for EGA)
+genotype:
+  heading: GENOTYPE
+age:
+  heading: AGE (with units) 
+developmental_stage: 
+  heading: Developmental stage 
+cell_type: 
+  heading: Cell Type 
+disease_state: 
+  heading: Disease State 
+compound: 
+  heading: Compound 
+dose: 
+  heading: Dose 
+immunoprecipitate: 
+  heading: Immunoprecipitate 
+growth_condition: 
+  heading: Growth condition 
+rnai: 
+  heading: RNAi 
+rnai_2:
+  heading: RNAi 
+organism_part:  
+  heading: Organism part  
+time_point: 
+  heading: Time Point 
+treatment: 
+  heading: Treatment 
+subject: 
+  heading: Subject 
+disease: 
+  heading: Disease 
+donor_id_2:
+  heading: DONOR ID (required for cancer samples)
+
+ 

@@ -67,8 +67,8 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 1, column_list.with_validations.count
   end
 
-  test "#with_protections should return a list of columns which have protection" do
-    assert_equal 1, column_list.with_protections.count
+  test "#without_protections should return a list of columns which do not have protection" do
+    assert_equal 7, column_list.without_protections.count
   end
 
   test "#add_ranges should add first cell, last cell positions and range to columns" do
@@ -76,5 +76,13 @@ class ColumnListTest < ActiveSupport::TestCase
     column = column_list.columns.values.first
     assert_equal "#{column.position_alpha}10:#{column.position_alpha}15", column.range
     assert column_list.all? {|k, column| column.range.present?}
+  end
+
+  test "#unlock should assign the right unlock_num to columns" do
+    column_list.unlock(3)
+    columns = column_list.without_protections
+    assert columns.all? {|column| column.unlock_num == 3}
+    column = column_list.find_by("well")
+    refute column.unlock_num
   end
 end

@@ -70,6 +70,10 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal 1, column.set_position(1).position
     end
 
+    should "#unlock should set correct unlock_num to a column" do
+      assert_equal 3, column.unlock(3).unlock_num
+    end
+
     should "#position_alpha should return position as letters of alphabet" do
       refute column.position_alpha
       assert_equal "A", column.set_position(1).position_alpha
