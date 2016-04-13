@@ -45,7 +45,7 @@ class TransferRequest < SystemRequest
     aasm_event :cancel_before_started do transitions :to => :cancelled, :from => [:pending]           end
     aasm_event :detach  do transitions :to => :pending, :from => [:pending]                           end
 
-    # Not all transfer quests will make this transition, but this way we push the
+    # Not all transfer requests will make this transition, but this way we push the
     # decision back up to the pipeline
     aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                       end
   end

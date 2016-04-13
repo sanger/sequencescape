@@ -99,7 +99,7 @@ module IlluminaHtp::PlatePurposes
 
   PLATE_PURPOSE_TYPE = {
     'PF Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
-    'PF Shear'               => IlluminaHtp::CovarisPlatePurpose,
+    'PF Shear'               => PlatePurpose::InitialPurpose,
     'PF Post Shear'          => PlatePurpose,
     'PF Post Shear XP'       => PlatePurpose,
     'PF Lib'                 => PlatePurpose,
@@ -113,7 +113,7 @@ module IlluminaHtp::PlatePurposes
 
 
     'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
-    'Shear'               => IlluminaHtp::CovarisPlatePurpose,
+    'Shear'               => PlatePurpose::InitialPurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
     'Lib PCR'             => PlatePurpose,

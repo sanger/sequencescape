@@ -46,15 +46,15 @@ module IlluminaB::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'ILB_STD_INPUT'   => IlluminaB::StockPlatePurpose,
-    'ILB_STD_COVARIS' => IlluminaB::CovarisPlatePurpose,
+    'ILB_STD_INPUT'   => IlluminaHtp::StockPlatePurpose,
+    'ILB_STD_COVARIS' => PlatePurpose::InitialPurpose,
     'ILB_STD_SH'      => PlatePurpose,
     'ILB_STD_PREPCR'  => PlatePurpose,
     'ILB_STD_PCR'     => PlatePurpose,
-    'ILB_STD_PCRXP'   => IlluminaB::FinalPlatePurpose,
+    'ILB_STD_PCRXP'   => IlluminaHtp::FinalPlatePurpose,
     'ILB_STD_PCRR'    => PlatePurpose,
-    'ILB_STD_PCRRXP'  => IlluminaB::FinalPlatePurpose,
-    'ILB_STD_STOCK'   => IlluminaB::StockTubePurpose,
+    'ILB_STD_PCRRXP'  => IlluminaHtp::FinalPlatePurpose,
+    'ILB_STD_STOCK'   => IlluminaHtp::StockTubePurpose,
     'ILB_STD_MX'      => IlluminaB::MxTubePurpose
   }
 
@@ -69,8 +69,6 @@ end
 
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
+require "#{Rails.root.to_s}/app/models/illumina_b/mx_tube_purpose"
 
-['covaris_plate','final_plate','initial_stock_tube','mx_tube','post_shear_qc_plate','stock_plate','stock_tube'].each do |type|
-  require "#{Rails.root.to_s}/app/models/illumina_b/#{type}_purpose"
-end
 
