@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015 Genome Research Ltd.
+#Copyright (C) 2013,2015,2016 Genome Research Ltd.
 
 
 module IlluminaC::PlatePurposes
@@ -52,7 +52,7 @@ module IlluminaC::PlatePurposes
   PLATE_PURPOSE_TYPE = {
     'ILC QC Pool'        => IlluminaC::QcPoolPurpose,
     'ILC Stock'          => IlluminaC::StockPurpose,
-    'ILC AL Libs'        => IlluminaC::AlLibsPurpose,
+    'ILC AL Libs'        => PlatePurpose::InitialPurpose,
     'ILC Lib PCR'        => IlluminaC::LibPcrPurpose,
     'ILC Lib PCR-XP'     => IlluminaC::LibPcrXpPurpose,
     'ILC AL Libs Tagged' => IlluminaC::AlLibsTaggedPurpose,
@@ -89,6 +89,6 @@ end
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
 
-['al_libs','al_libs_tagged','lib_pcr','lib_pcr_xp','mx_tube','qc_pool','stock'].each do |type|
+['al_libs_tagged','lib_pcr','lib_pcr_xp','mx_tube','qc_pool','stock'].each do |type|
   require "#{Rails.root.to_s}/app/models/illumina_c/#{type}_purpose"
 end
