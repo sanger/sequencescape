@@ -30,6 +30,13 @@ RequestType.create!(
   :request_purpose => int
 )
 RequestType.create!(
+  :name => 'Initial Transfer', :key => 'initial_transfer', :order => 1,
+  :asset_type => 'Asset',  :multiples_allowed => false,
+  :request_class_name => 'TransferRequest',  :morphology => RequestType::CONVERGENT,
+  :for_multiplexing => 0, :billable => 0,
+  :request_purpose => int
+)
+RequestType.create!(
   :asset_type=>"LibraryTube",
   :billable=>false,
   :deprecated=>false,

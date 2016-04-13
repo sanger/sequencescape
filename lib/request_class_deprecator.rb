@@ -14,6 +14,8 @@ module RequestClassDeprecator
   def deprecate_class(request_class_name,options={})
 
     state_changes = options.fetch(:state_change,{})
+    new_request_type = options.fetch(:new_type,transfer_request)
+    new_class_name = new_request_type.request_class_name
 
     ActiveRecord::Base.transaction do
       RequestType.where(request_class_name:request_class_name).each do |rt|
@@ -29,9 +31,9 @@ module RequestClassDeprecator
         end
 
         say "Updating requests:"
-        mig = rt_requests.update_all(sti_type:'TransferRequest',request_type_id:transfer_request.id)
+        mig = rt_requests.update_all(sti_type:new_class_name,request_type_id:new_request_type.id)
         say "Updated: #{mig}", true
-        PlatePurpose::Relationship.where(transfer_request_type_id:rt.id).update_all(transfer_request_type_id:rt.id)
+        PlatePurpose::Relationship.where(transfer_request_type_id:rt.id).update_all(transfer_request_type_id:new_request_type.id)
       end
     end
   end

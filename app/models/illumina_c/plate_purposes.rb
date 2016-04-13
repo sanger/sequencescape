@@ -44,8 +44,8 @@ module IlluminaC::PlatePurposes
   OUTPUT_PLATE_PURPOSES = []
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'ILC Stock',   'ILC AL Libs',        'IlluminaC::Requests::InitialTransfer' ],
-    [ 'ILC Stock',   'ILC AL Libs Tagged', 'IlluminaC::Requests::StockToAlLibsTagged' ]
+    [ 'ILC Stock',   'ILC AL Libs',        :initial ],
+    [ 'ILC Stock',   'ILC AL Libs Tagged', :initial ]
   ]
 
   PLATE_PURPOSE_TYPE = {

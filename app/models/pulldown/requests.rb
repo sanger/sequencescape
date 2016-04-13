@@ -67,10 +67,6 @@ module Pulldown::Requests
     include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
   end
 
-  class StockToCovaris < TransferRequest
-    include TransferRequest::InitialTransfer::Behaviour
-  end
-
   class PcrXpToIscLibPool < TransferRequest::InitialDownstream
     # This is a legacy state machine
     redefine_state_machine do

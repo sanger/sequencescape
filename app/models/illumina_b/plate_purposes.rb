@@ -42,7 +42,7 @@ module IlluminaB::PlatePurposes
   OUTPUT_PLATE_PURPOSES = []
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'ILB_STD_INPUT',   'ILB_STD_COVARIS','IlluminaB::Requests::InputToCovaris'   ]
+    [ 'ILB_STD_INPUT',  :initial ]
   ]
 
   PLATE_PURPOSE_TYPE = {

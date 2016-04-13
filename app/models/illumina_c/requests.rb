@@ -23,15 +23,6 @@ module IlluminaC::Requests
     fragment_size_details(:no_default, :no_default)
   end
 
-  class InitialTransfer < TransferRequest
-    include TransferRequest::InitialTransfer::Behaviour
-  end
-
-  class StockToAlLibsTagged < TransferRequest
-    include TransferRequest::InitialTransfer::Behaviour
-  end
-
-
   module Helpers
 
     def create_request_types

@@ -8,8 +8,4 @@ module IlluminaB::Requests
     fragment_size_details(:no_default, :no_default)
   end
 
-  class InputToCovaris < TransferRequest
-    include TransferRequest::InitialTransfer::Behaviour
-  end
-
 end

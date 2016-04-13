@@ -52,8 +52,4 @@ module IlluminaHtp::Requests
     include FailUpstream
   end
 
-  class CherrypickedToShear < TransferRequest
-    include TransferRequest::InitialTransfer::Behaviour
-  end
-
 end
