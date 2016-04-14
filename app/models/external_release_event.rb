@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class ExternalReleaseEvent < Event
   after_create :physically_send_email, :if => :send_email
@@ -22,7 +22,7 @@ class ExternalReleaseEvent < Event
 
   def physically_send_email
     study = Asset.find(self.eventful_id).studies.map do |study|
-      EventfulMailer.deliver_confirm_external_release_event(study.mailing_list_of_managers.reject(&:blank?), self.eventful, self.message, self.content, "No Milestone")
+      EventfulMailer.confirm_external_release_event(study.mailing_list_of_managers.reject(&:blank?), self.eventful, self.message, self.content, "No Milestone").deliver
     end
   end
 end
