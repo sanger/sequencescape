@@ -1,17 +1,14 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
-  protection: true
 well:
   heading: WELL
-  protection: true
 sanger_tube_id:
   heading: SANGER TUBE ID
-  protection: true
 sanger_sample_id:
   heading: SANGER SAMPLE ID
-  protection: true
 tag_group:
   heading: TAG GROUP 
+  unlocked: true
   validation:
     allowBlank: true
     showInputMessage: true    
@@ -19,6 +16,7 @@ tag_group:
     prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set." 
 tag_index:
   heading: TAG INDEX
+  unlocked: true
   validation:
     type: :whole
     operator: :greaterThanOrEqual
@@ -33,6 +31,7 @@ tag_index:
     error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."  
 tag2_group: 
   heading: TAG2 GROUP (Fill in for dual Index Only)
+  unlocked: true
   validation:
     allowBlank: true
     showInputMessage: true    
@@ -40,6 +39,7 @@ tag2_group:
     prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
 tag2_index:
   heading: TAG2 INDEX (Fill in for dual Index Only)
+  unlocked: true
   validation:
     type: :whole
     operator: :greaterThanOrEqual
@@ -54,6 +54,7 @@ tag2_index:
     error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."   
 library_type: 
   heading: LIBRARY TYPE
+  unlocked: true
   validation:
     allowBlank: true
     showInputMessage: true    
@@ -61,6 +62,7 @@ library_type:
     prompt: "Provide a library type from the approved list"
 insert_size_from: 
   heading: INSERT SIZE FROM
+  unlocked: true
   validation:
     type: :whole
     operator: :greaterThanOrEqual
@@ -71,6 +73,7 @@ insert_size_from:
     prompt: "The minimum insert size in the library"
 insert_size_to:
   heading: INSERT SIZE TO
+  unlocked: true
   validation:
     type: :whole
     operator: :greaterThanOrEqual
@@ -85,6 +88,7 @@ insert_size_to:
     error: "Insert size to must be a whole number, greater or equal to the insert size from"  
 supplier_sample_name:
   heading: SUPPLIER SAMPLE NAME
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -99,6 +103,7 @@ supplier_sample_name:
     error: "Name must be a maximum of 20 characters in length."
 cohort:
   heading: COHORT
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -113,6 +118,7 @@ cohort:
     error: "7 uppercase characters, maximum"
 volume:
   heading: VOLUME (ul)
+  unlocked: true
   validation:
     type: :decimal
     operator: :greaterThanOrEqual
@@ -127,6 +133,7 @@ volume:
     error: "This value must be numeric."
 conc:
   heading: CONC. (ng/ul)
+  unlocked: true
   validation:
     type: :decimal
     operator: :greaterThanOrEqual
@@ -141,6 +148,7 @@ conc:
     error: "This value must be numeric."
 gender:
   heading: GENDER
+  unlocked: true
   validation:
     type: :list
     formula1: "Male, Female, Mixed, Hermaphrodite, Unknown, Not Applicable"
@@ -155,6 +163,7 @@ gender:
     error: "Please enter gender"
 country_of_origin:
   heading: COUNTRY OF ORIGIN
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -169,6 +178,7 @@ country_of_origin:
     error: "30 uppercase characters, maximum"
 geographical_region:
   heading: GEOGRAPHICAL REGION
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -183,6 +193,7 @@ geographical_region:
     error: "30 uppercase characters, maximum"
 ethnicity:
   heading: ETHNICITY
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -197,6 +208,7 @@ ethnicity:
     error: "30 uppercase characters, maximum"
 dna_source:
   heading: DNA SOURCE
+  unlocked: true
   validation:
     type: :list
     formula1: "$A$1:$A$2"
@@ -211,6 +223,7 @@ dna_source:
     error: "You must enter a Source from the list provided."
 date_of_sample_collection:
   heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -225,6 +238,7 @@ date_of_sample_collection:
     error: "This must be either a combination of month and year, or a whole year, with no spaces."
 date_of_dna_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -239,6 +253,7 @@ date_of_dna_extraction:
     error: "This must be either a combination of month and year, or a whole year, with no spaces."
 is_sample_a_control?:
   heading: IS SAMPLE A CONTROL?
+  unlocked: true
   validation:
     type: :list
     formula1: "$A$1:$A$2"
@@ -253,6 +268,7 @@ is_sample_a_control?:
     error: "You must enter either Y or N."
 is_re_submitted_sample?:
   heading: IS RE-SUBMITTED SAMPLE?
+  unlocked: true
   validation:
     type: :list
     formula1: "$A$1:$A$2"
@@ -267,6 +283,7 @@ is_re_submitted_sample?:
     error: "You must enter either Y or N."
 dna_extraction_method:
   heading: DNA EXTRACTION METHOD
+  unlocked: true
   validation:
     type: :whole
     operator: :greaterThanOrEqual
@@ -281,6 +298,7 @@ dna_extraction_method:
     error: "This value must be numeric. Please select from the provided list."
 sample_purified?:
   heading: SAMPLE PURIFIED?
+  unlocked: true
   validation:
     type: :list
     formula1: "$A$1:$A$2"
@@ -295,6 +313,7 @@ sample_purified?:
     error: "You must enter either Y or N."
 purification_method:
   heading: PURIFICATION METHOD
+  unlocked: true
   validation:
     type: :list
     formula1: "$A$1:$A$2"
@@ -309,6 +328,7 @@ purification_method:
     error: "You must enter a Method from the list provided."
 concentration_determined_by:
   heading: CONCENTRATION DETERMINED BY
+  unlocked: true
   validation:
     type: :list
     formula1: "$A$1:$A$2"
@@ -323,6 +343,7 @@ concentration_determined_by:
     error: "You must enter a Method from the list provided."
 dna_storage_conditions:
   heading: DNA STORAGE CONDITIONS
+  unlocked: true
   validation:
     type: :list
     formula1: "$A$1:$A$2"
@@ -337,6 +358,7 @@ dna_storage_conditions:
     error: "You must enter a Temperature from the list provided, in the correct format e.g.+4C."
 mother:
   heading: MOTHER (optional)
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -351,6 +373,7 @@ mother:
     error: "Name must be a miaximum of 15 characters in length."
 father:
   heading: FATHER (optional)
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -365,6 +388,7 @@ father:
     error: "Name must be a miaximum of 15 characters in length."
 sibling:
   heading: SIBLING (optional)
+  unlocked: true
   validation:
     type: :textLength
     operator: :lessThanOrEqual
@@ -379,59 +403,87 @@ sibling:
     error: "Name must be a miaximum of 15 characters in length."
 gc_content:
   heading: GC CONTENT
+  unlocked: true
 public_name:
   heading: PUBLIC NAME
+  unlocked: true
 taxon_id:
   heading: TAXON ID
+  unlocked: true
 common_name:
   heading: COMMON NAME
+  unlocked: true
 sample_description:
   heading: SAMPLE DESCRIPTION
+  unlocked: true
 strain:
   heading: STRAIN
+  unlocked: true
 sample_visibility:
   heading: SAMPLE VISIBILITY
+  unlocked: true
 sample_type:
   heading: SAMPLE TYPE
+  unlocked: true
 sample_accession_number:
   heading: SAMPLE ACCESSION NUMBER (optional)
+  unlocked: true
 donor_id:
   heading: DONOR ID (required for EGA)
+  unlocked: true
 phenotype:
   heading: PHENOTYPE (required for EGA)
+  unlocked: true
 genotype:
   heading: GENOTYPE
+  unlocked: true
 age:
   heading: AGE (with units) 
+  unlocked: true
 developmental_stage: 
   heading: Developmental stage 
+  unlocked: true
 cell_type: 
   heading: Cell Type 
+  unlocked: true
 disease_state: 
   heading: Disease State 
+  unlocked: true
 compound: 
   heading: Compound 
+  unlocked: true
 dose: 
   heading: Dose 
+  unlocked: true
 immunoprecipitate: 
   heading: Immunoprecipitate 
+  unlocked: true
 growth_condition: 
   heading: Growth condition 
+  unlocked: true
 rnai: 
   heading: RNAi 
+  unlocked: true
 rnai_2:
   heading: RNAi 
+  unlocked: true
 organism_part:  
-  heading: Organism part  
+  heading: Organism part 
+  unlocked: true 
 time_point: 
   heading: Time Point 
+  unlocked: true
 treatment: 
   heading: Treatment 
+  unlocked: true
 subject: 
   heading: Subject 
+  unlocked: true
 disease: 
   heading: Disease 
+  unlocked: true
 donor_id_2:
   heading: DONOR ID (required for cancer samples)
+  unlocked: true
 
  
