@@ -72,14 +72,10 @@ class DownloadTest < ActiveSupport::TestCase
     assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by("gender").validation["formula1"]}
   end
 
-  test "should have a unlock style" do
-    assert_operator download.unlock, :>, 0
-  end
-
   test "should unlock cells when required" do
     download.columns.with_unlocked.each do |column|
       [column.first_cell, column.last_cell].each do |cell|
-        assert_equal download.unlock, download.worksheet[cell].style
+        assert_equal download.styles[:unlock].reference, download.worksheet[cell].style
       end
     end 
   end
@@ -90,9 +86,18 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "panes should be frozen correctly" do
-    assert_equal download.freeze_after_column.position, download.worksheet.sheet_view.pane.x_split
+    assert_equal download.freeze_after_column('sanger_sample_id').position, download.worksheet.sheet_view.pane.x_split
     assert_equal download.first_row-1, download.worksheet.sheet_view.pane.y_split
     assert_equal "frozen", download.worksheet.sheet_view.pane.state
+  end
+
+  test "should add conditional formatting to unlocked columns" do
+    assert_equal column_list.with_unlocked.count, download.worksheet.send(:conditional_formattings).count
+    column = column_list.with_unlocked.first
+    assert_equal column.range, download.worksheet.send(:conditional_formattings).first.sqref
+    column = column_list.with_unlocked.last
+    assert_equal column.range, download.worksheet.send(:conditional_formattings).last.sqref
+    assert download.worksheet.send(:conditional_formattings).all? {|cf| cf.rules.first.formula.first == 'FALSE'}
   end
 
   def teardown

@@ -1,12 +1,15 @@
 module SampleManifestExcel
   class Download
 
-    attr_reader :sample_manifest, :worksheet, :columns, :type, :last_row
+    STYLES = {unlock: {locked: false}, empty_cell: {bg_color: '82CAFA', type: :dxf}}
+
+    attr_reader :sample_manifest, :worksheet, :columns, :type, :styles
 
     def initialize(sample_manifest, column_list)
       @sample_manifest = sample_manifest
       @type = sample_manifest.asset_type
-      @columns = column_list.add_ranges(first_row, last_row).unlock(unlock)
+      @styles = create_styles
+      @columns = column_list.add_ranges(first_row, last_row).unlock(styles[:unlock].reference)
       add_attributes
       create_worksheet
       protect_worksheet
@@ -53,25 +56,25 @@ module SampleManifestExcel
       @last_row ||= sample_manifest.samples.count + first_row - 1
     end
 
-    def unlock
-      @unlock ||= workbook.styles.add_style locked: false
-    end
-
     def protect_worksheet
       worksheet.sheet_protection.password = password
     end
 
-    def freeze_panes
+    def freeze_panes(name = 'sanger_sample_id')
       worksheet.sheet_view.pane do |pane|
         pane.state = :frozen
         pane.y_split = first_row-1
-        pane.x_split = freeze_after_column.position
+        pane.x_split = freeze_after_column(name).position
         pane.active_pane = :bottom_right
       end
     end
 
-    def freeze_after_column(name = 'sanger_sample_id')
+    def freeze_after_column(name)
       columns.find_by(name)
+    end
+
+    def conditional_formatting_rules
+      @conditional_formatting_rules ||= {dxfId: styles[:empty_cell].reference, priority: 1, operator: :equal, formula: 'FALSE', type: :cellIs}
     end
 
   private
@@ -88,11 +91,18 @@ module SampleManifestExcel
         create_row(sample)
       end
       add_validations
+      add_condititional_formatting
     end
 
     def add_validations
       columns.with_validations.each do |column|
         worksheet.add_data_validation(column.range, column.validation)
+      end
+    end
+
+    def add_condititional_formatting
+      columns.with_unlocked.each do |column|
+        worksheet.add_conditional_formatting column.range, conditional_formatting_rules
       end
     end
 
@@ -107,6 +117,14 @@ module SampleManifestExcel
       worksheet.add_row do |row|
         columns.each do |k, column|
           row.add_cell column.actual_value(sample), type: column.type, style: column.unlocked
+        end
+      end
+    end
+
+    def create_styles
+      {}.tap do |s| 
+        STYLES.each do |name, options|
+          s[name] = SampleManifestExcel::Style.new workbook, options
         end
       end
     end
