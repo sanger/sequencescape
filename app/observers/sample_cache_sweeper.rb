@@ -4,7 +4,7 @@
 
 class SampleCacheSweeper < ActiveRecord::Observer
   include XmlCacheHelper
-  observe Sample, Sample::Metadata, StudySample, Study, ReferenceGenome, Aliquot, Aliquot::Receptacle
+  observe Sample, Sample::Metadata, StudySample, ReferenceGenome, Aliquot, Aliquot::Receptacle
   set_caching_for_controller 'samples'
   set_caching_for_model 'samples'
 
@@ -18,7 +18,6 @@ class SampleCacheSweeper < ActiveRecord::Observer
   def through(record, &block)
     model, conditions = case
       when record.is_a?(StudySample)         then [ 'study',      query_conditions_for(record)          ]
-      when record.is_a?(Study)               then [ 'study',      "study_samples.study_id=#{record.id}" ]
       when record.is_a?(Aliquot)             then [ 'receptacle', query_conditions_for(record)          ]
       when record.is_a?(Aliquot::Receptacle) then [ 'receptacle', "aliquots.receptacle_id=#{record.id}" ]
     end
