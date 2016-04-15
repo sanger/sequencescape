@@ -100,6 +100,10 @@ class DownloadTest < ActiveSupport::TestCase
     assert download.worksheet.send(:conditional_formattings).all? {|cf| cf.rules.first.formula.first == 'FALSE'}
   end
 
+  test "should create a validation ranges worksheet" do
+    assert_equal "Ranges", spreadsheet.sheets.last
+  end
+
   def teardown
     File.delete('test.xlsx') if File.exists?('test.xlsx')
   end
