@@ -22,9 +22,9 @@ class ColumnListTest < ActiveSupport::TestCase
     assert column_list.find_by(yaml.keys.first)
   end
 
-  test "each column should have a position" do
+  test "each column should have a number" do
     valid_columns.each_with_index do |column, i|
-      assert_equal i+1,column_list.find_by(column).position
+      assert_equal i+1,column_list.find_by(column).number
     end
   end
 
@@ -34,7 +34,7 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal names.length, column_list_new.count
     names.each_with_index do |name, i|
       assert column_list_new.find_by(name)
-      assert_equal i+1, column_list_new.find_by(name).position 
+      assert_equal i+1, column_list_new.find_by(name).number
     end
   end
 
@@ -43,7 +43,7 @@ class ColumnListTest < ActiveSupport::TestCase
     column = SampleManifestExcel::Column.new(name: :plate_id, heading: "Plate ID")
     column_list_new.add(column)
     assert_equal 1, column_list_new.columns.count
-    assert_equal 1, column_list_new.find_by(:plate_id).position
+    assert_equal 1, column_list_new.find_by(:plate_id).number
   end
 
   test "#add_with_dup should add dupped column" do
@@ -71,10 +71,10 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 7, column_list.with_unlocked.count
   end
 
-  test "#add_ranges should add first cell, last cell positions and range to columns" do
+  test "#add_ranges should add positions and range to columns" do
     column_list.add_ranges(10, 15)
     column = column_list.columns.values.first
-    assert_equal "#{column.position_alpha}10:#{column.position_alpha}15", column.range
+    assert_equal SampleManifestExcel::Position.new(first_column: column.number, first_row: 10, last_row: 15).range, column.range
     assert column_list.all? {|k, column| column.range.present?}
   end
 

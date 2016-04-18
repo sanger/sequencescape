@@ -5,7 +5,7 @@ class RangeListTest < ActiveSupport::TestCase
   attr_reader :ranges, :range_list
 
   def setup
-    @ranges = {yes_no: ['yes', 'no'], gender: ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'], concentration_determined_by: ['PicoGreen', 'Nanodrop', 'Spectrophotometer', 'Other']}
+    @ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges_short.yml")))
     @range_list = SampleManifestExcel::RangeList.new(ranges)
   end
 
@@ -15,12 +15,6 @@ class RangeListTest < ActiveSupport::TestCase
 
   test "#find_by returns correct range" do
     assert range_list.find_by(ranges.keys.first)
-  end
-
-  test "each range should have a position" do
-    ranges.each_with_index do |(range, v), i|
-      assert_equal i+1,range_list.find_by(range).position
-    end
   end
 
 end

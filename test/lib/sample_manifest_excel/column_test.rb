@@ -38,10 +38,10 @@ class ColumnTest < ActiveSupport::TestCase
       refute column.valid?
     end
 
-    should "have a position" do
-      assert_equal 0, column.position
-      column.position = 10
-      assert_equal 10, column.position
+    should "have a number" do
+      assert_equal 0, column.number
+      column.number = 10
+      assert_equal 10, column.number
     end
 
     should "have a type" do
@@ -66,25 +66,15 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal "", column.actual_value(TestAttribute.new("My Attribute", "My Value"))
     end
 
-    should "#set_position should set correct position to a column" do
-      assert_equal 1, column.set_position(1).position
+    should "#set_number should set correct number to a column" do
+      assert_equal 1, column.set_number(1).number
     end
 
-    should "#position_alpha should return position as letters of alphabet" do
-      refute column.position_alpha
-      assert_equal "A", column.set_position(1).position_alpha
-      assert_equal "Z", column.set_position(26).position_alpha
-      assert_equal "AA", column.set_position(27).position_alpha
-      assert_equal "AZ", column.set_position(52).position_alpha
-      assert_equal "BA", column.set_position(53).position_alpha
-      assert_equal "ZZ", column.set_position(702).position_alpha
-    end
-
-    should "#add_range should set position to the first cell, last cell and range" do
-      column.set_position(1).add_range(10, 15)
-      assert_equal "A10", column.first_cell
-      assert_equal "A15", column.last_cell
-      assert_equal "A10:A15", column.range
+    should "#add_range should create position and set range" do
+      column.set_number(1).add_range(10, 15)
+      assert_equal SampleManifestExcel::Position.new(first_column: 1, first_row: 10, last_row: 15).range, column.range
+      column.set_number(125).add_range(27, 150)
+      assert_equal SampleManifestExcel::Position.new(first_column: 125, first_row: 27, last_row: 150).range, column.range
     end
   end
 

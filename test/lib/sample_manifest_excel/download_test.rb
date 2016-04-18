@@ -58,7 +58,7 @@ class DownloadTest < ActiveSupport::TestCase
   test "should add the attributes for each sample" do
     [sample_manifest.samples.first, sample_manifest.samples.last].each do |sample|
       download.columns.with_attributes.each do |column|
-        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.position)
+        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.number)
       end
     end
   end
@@ -74,9 +74,8 @@ class DownloadTest < ActiveSupport::TestCase
 
   test "should unlock cells when required" do
     download.columns.with_unlocked.each do |column|
-      [column.first_cell, column.last_cell].each do |cell|
-        assert_equal download.styles[:unlock].reference, download.worksheet[cell].style
-      end
+      assert_equal download.styles[:unlock].reference, download.worksheet[column.range].first.style
+      assert_equal download.styles[:unlock].reference, download.worksheet[column.range].last.style
     end 
   end
 
@@ -86,7 +85,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "panes should be frozen correctly" do
-    assert_equal download.freeze_after_column('sanger_sample_id').position, download.worksheet.sheet_view.pane.x_split
+    assert_equal download.freeze_after_column('sanger_sample_id').number, download.worksheet.sheet_view.pane.x_split
     assert_equal download.first_row-1, download.worksheet.sheet_view.pane.y_split
     assert_equal "frozen", download.worksheet.sheet_view.pane.state
   end
@@ -98,10 +97,6 @@ class DownloadTest < ActiveSupport::TestCase
     column = column_list.with_unlocked.last
     assert_equal column.range, download.worksheet.send(:conditional_formattings).last.sqref
     assert download.worksheet.send(:conditional_formattings).all? {|cf| cf.rules.first.formula.first == 'FALSE'}
-  end
-
-  test "should create a validation ranges worksheet" do
-    assert_equal "Ranges", spreadsheet.sheets.last
   end
 
   def teardown

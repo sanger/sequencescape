@@ -4,12 +4,12 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    include Position
-
-    attr_accessor :name, :heading, :position, :type, :attribute, :validation, :value, :unlocked
-    attr_reader :first_cell, :last_cell, :range
+    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked
+    attr_reader :position
 
     validates_presence_of :name, :heading
+
+    delegate :range, to: :position
 
     def initialize(attributes = {})
       default_attributes.merge(attributes).each do |name, value|
@@ -42,21 +42,19 @@ module SampleManifestExcel
       self
     end
 
-    def position_alpha
-      return if position == 0
-      to_alpha(position)
+    def add_range(first_row, last_row)
+      @position = Position.new(first_column: number, first_row: first_row, last_row: last_row)
     end
 
-    def add_range(first_row, last_row)
-      @first_cell = "#{position_alpha}#{first_row}"
-      @last_cell = "#{position_alpha}#{last_row}"
-      @range = "#{first_cell}:#{last_cell}"
+    def set_number(number)
+      self.number = number
+      self
     end
 
   private
 
     def default_attributes
-      {position: 0, type: :string, value: ""}
+      {number: 0, type: :string, value: ""}
     end
    
   end

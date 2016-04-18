@@ -44,14 +44,14 @@ module SampleManifestExcel
 
     def add(column)
       return unless column.valid?
-      columns[column.name] = column.set_position(next_position)
+      columns[column.name] = column.set_number(next_number)
     end
 
     def add_with_dup(column)
       add(column.dup)
     end
 
-    def next_position
+    def next_number
       columns.count+1
     end
 

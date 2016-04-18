@@ -2,7 +2,6 @@ module SampleManifestExcel
   class Download
 
     STYLES = {unlock: {locked: false}, empty_cell: {bg_color: '82CAFA', type: :dxf}}
-    RANGES = {gender: ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'], dna_source: ['Blood', 'Cell Line',  'Saliva', 'Whole Genome Amplified', 'FFPE', 'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue'], yes_no:  ['Yes', 'No'],  purification_method: ['Glassmilk/Qiagen', 'Ultrapure', 'Column/Qiagen', 'Microdialyser/Spectrum', 'Ethanol', 'Other'], concentration_determined_by: ['PicoGreen', 'Nanodrop',  'Spectrophotometer', 'Other'], dna_storage_conditions: ['+4C', '-20C', '-80C']}
 
     attr_reader :sample_manifest, :worksheet, :columns, :type, :styles
 
@@ -15,7 +14,6 @@ module SampleManifestExcel
       create_worksheet
       protect_worksheet
       freeze_panes
-      create_validation_ranges_worksheet
     end
 
     def save(filename)
@@ -70,7 +68,7 @@ module SampleManifestExcel
       worksheet.sheet_view.pane do |pane|
         pane.state = :frozen
         pane.y_split = first_row-1
-        pane.x_split = freeze_after_column(name).position
+        pane.x_split = freeze_after_column(name).number
         pane.active_pane = :bottom_right
       end
     end
@@ -98,10 +96,6 @@ module SampleManifestExcel
       end
       add_validations
       add_condititional_formatting
-    end
-
-    def create_validation_ranges_worksheet
-      add_validation_ranges_worksheet("Ranges")
     end
 
     def add_validations

@@ -1,0 +1,21 @@
+yes_no: 
+  options:
+    - 'yes'
+    - 'no'
+  row: 1
+gender:
+  options:
+    - Male
+    - Female
+    - Mixed
+    - Hermaphrodite
+    - Unknown
+    - Not Applicable
+  row: 2
+concentration_determined_by: 
+  options:
+    - PicoGreen
+    - Nanodrop
+    - Spectrophotometer
+    - Other
+  row: 3
