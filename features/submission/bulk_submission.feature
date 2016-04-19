@@ -21,6 +21,27 @@ Feature: Bulk Submission
     When I go to the create bulk submissions page
     Then I should see "Create a bulk submission"
 
+  @this
+  Scenario: Link samples to the corresponding study when using bulk_submission (User story ss448)
+    When I have a study 'StudyA'
+    And I have a study 'StudyB'
+    And I have a sample 'SampleTest'
+    And the sample 'Sampletest' belongs to study 'StudyA'
+
+    And I have a plate 'AssetTest' that has a well in location 'A1' that contains the sample 'SampleTest'
+    And the plate 'AssetTest' has a barcode '111111'
+
+    Then the sample 'Sampletest' should belong to study 'StudyA'
+    And the sample 'Sampletest' should not belong to study 'StudyB'
+
+    When I upload a file with a plate 'AssetTest' with a well in location 'A1' that contains the sample 'SampleTest' for study 'StudyB'
+
+    Then I should see "Bulk submission successfully made"
+
+    Then the sample 'Sampletest' should belong to study 'StudyA'
+    And the sample 'Sampletest' should belong to study 'StudyB'
+
+
   Scenario: Uploading a valid file with 1 submission but a deprecated template
     # When I upload a file with valid data for 1 submissions but deprecated template
     When I upload a file with deprecated data for 1 submissions
@@ -48,6 +69,7 @@ Feature: Bulk Submission
     When I upload a file with valid data for 2 submissions
     Then I should see "Your submissions:"
      And there should be an order with the gigabases expected set to "1.35"
+
 
   @this
   Scenario: Uploading a valid file with 2 submissions
