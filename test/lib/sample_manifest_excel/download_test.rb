@@ -66,16 +66,16 @@ class DownloadTest < ActiveSupport::TestCase
   test "should add the data validations" do
     assert_equal column_list.with_validations.count, download.worksheet.send(:data_validations).count
     column = column_list.with_validations.first
-    assert_equal column.range, download.worksheet.send(:data_validations).first.sqref
+    assert_equal column.reference, download.worksheet.send(:data_validations).first.sqref
     column = column_list.with_validations.last
-    assert_equal column.range, download.worksheet.send(:data_validations).last.sqref
+    assert_equal column.reference, download.worksheet.send(:data_validations).last.sqref
     assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by("gender").validation["formula1"]}
   end
 
   test "should unlock cells when required" do
     download.columns.with_unlocked.each do |column|
-      assert_equal download.styles[:unlock].reference, download.worksheet[column.range].first.style
-      assert_equal download.styles[:unlock].reference, download.worksheet[column.range].last.style
+      assert_equal download.styles[:unlock].reference, download.worksheet[column.reference].first.style
+      assert_equal download.styles[:unlock].reference, download.worksheet[column.reference].last.style
     end 
   end
 
@@ -93,9 +93,9 @@ class DownloadTest < ActiveSupport::TestCase
   test "should add conditional formatting to unlocked columns" do
     assert_equal column_list.with_unlocked.count, download.worksheet.send(:conditional_formattings).count
     column = column_list.with_unlocked.first
-    assert_equal column.range, download.worksheet.send(:conditional_formattings).first.sqref
+    assert_equal column.reference, download.worksheet.send(:conditional_formattings).first.sqref
     column = column_list.with_unlocked.last
-    assert_equal column.range, download.worksheet.send(:conditional_formattings).last.sqref
+    assert_equal column.reference, download.worksheet.send(:conditional_formattings).last.sqref
     assert download.worksheet.send(:conditional_formattings).all? {|cf| cf.rules.first.formula.first == 'FALSE'}
   end
 

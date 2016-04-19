@@ -59,8 +59,8 @@ module SampleManifestExcel
       @columns ||= {}
     end
 
-    def add_ranges(first_row, last_row)
-      each {|k, column| column.add_range(first_row, last_row)}
+    def add_references(first_row, last_row)
+      each {|k, column| column.add_reference(first_row, last_row)}
       self
     end
 

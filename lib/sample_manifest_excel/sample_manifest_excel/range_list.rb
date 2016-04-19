@@ -20,8 +20,8 @@ module SampleManifestExcel
     private
 
     def create(ranges)
-      ranges.each do |name, value|
-      	ranges[name] = SampleManifestExcel::Range.new(value["options"], value["row"])
+      ranges.each_with_index do |(name, options), i|
+      	ranges[name] = SampleManifestExcel::Range.new(options, i+1)
       end
     end
   end

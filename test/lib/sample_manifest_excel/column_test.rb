@@ -70,11 +70,11 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal 1, column.set_number(1).number
     end
 
-    should "#add_range should create position and set range" do
-      column.set_number(1).add_range(10, 15)
-      assert_equal SampleManifestExcel::Position.new(first_column: 1, first_row: 10, last_row: 15).range, column.range
-      column.set_number(125).add_range(27, 150)
-      assert_equal SampleManifestExcel::Position.new(first_column: 125, first_row: 27, last_row: 150).range, column.range
+    should "#add_reference should create position and set reference" do
+      column.set_number(1).add_reference(10, 15)
+      assert_equal SampleManifestExcel::Position.new(first_column: 1, first_row: 10, last_row: 15).reference, column.reference
+      column.set_number(125).add_reference(27, 150)
+      assert_equal SampleManifestExcel::Position.new(first_column: 125, first_row: 27, last_row: 150).reference, column.reference
     end
   end
 

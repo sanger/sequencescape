@@ -9,7 +9,7 @@ module SampleManifestExcel
       @sample_manifest = sample_manifest
       @type = sample_manifest.asset_type
       @styles = create_styles
-      @columns = column_list.add_ranges(first_row, last_row).unlock(styles[:unlock].reference)
+      @columns = column_list.add_references(first_row, last_row).unlock(styles[:unlock].reference)
       add_attributes
       create_worksheet
       protect_worksheet
@@ -100,13 +100,13 @@ module SampleManifestExcel
 
     def add_validations
       columns.with_validations.each do |column|
-        worksheet.add_data_validation(column.range, column.validation)
+        worksheet.add_data_validation(column.reference, column.validation)
       end
     end
 
     def add_condititional_formatting
       columns.with_unlocked.each do |column|
-        worksheet.add_conditional_formatting column.range, conditional_formatting_rules
+        worksheet.add_conditional_formatting column.reference, conditional_formatting_rules
       end
     end
 

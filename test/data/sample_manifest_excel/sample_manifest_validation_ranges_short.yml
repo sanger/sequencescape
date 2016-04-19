@@ -1,21 +1,22 @@
-yes_no: 
-  options:
-    - 'yes'
-    - 'no'
-  row: 1
-gender:
-  options:
-    - Male
-    - Female
-    - Mixed
-    - Hermaphrodite
-    - Unknown
-    - Not Applicable
-  row: 2
-concentration_determined_by: 
-  options:
-    - PicoGreen
-    - Nanodrop
-    - Spectrophotometer
-    - Other
-  row: 3
+gender: 
+  - Male 
+  - Female
+  - Mixed
+  - Hermaphrodite
+  - Unknown
+  - Not Applicable
+dna_source: 
+  - Blood
+  - Cell Line
+  - Saliva
+  - Whole Genome Amplified
+  - FFPE
+  - Amniocentesis Uncultured
+  - Amniocentesis Cultured
+  - CVS Uncultured
+  - CVS Cultured
+  - Fetal Blood
+  - Tissue
+yes_no:  
+  - Yes
+  - No

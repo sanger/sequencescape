@@ -72,10 +72,10 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "#add_ranges should add positions and range to columns" do
-    column_list.add_ranges(10, 15)
+    column_list.add_references(10, 15)
     column = column_list.columns.values.first
-    assert_equal SampleManifestExcel::Position.new(first_column: column.number, first_row: 10, last_row: 15).range, column.range
-    assert column_list.all? {|k, column| column.range.present?}
+    assert_equal SampleManifestExcel::Position.new(first_column: column.number, first_row: 10, last_row: 15).reference, column.reference
+    assert column_list.all? {|k, column| column.reference.present?}
   end
 
   test "#unlock should assign the right unlock to columns" do

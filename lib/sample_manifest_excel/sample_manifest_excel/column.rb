@@ -9,7 +9,7 @@ module SampleManifestExcel
 
     validates_presence_of :name, :heading
 
-    delegate :range, to: :position
+    delegate :reference, to: :position
 
     def initialize(attributes = {})
       default_attributes.merge(attributes).each do |name, value|
@@ -42,7 +42,7 @@ module SampleManifestExcel
       self
     end
 
-    def add_range(first_row, last_row)
+    def add_reference(first_row, last_row)
       @position = Position.new(first_column: number, first_row: first_row, last_row: last_row)
     end
 

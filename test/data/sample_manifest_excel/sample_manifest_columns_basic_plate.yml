@@ -209,11 +209,11 @@ dna_extraction_method:
     allowBlank: false
     showInputMessage: true    
     promptTitle: "DNA Extraction Method"    
-    prompt: "Please Enter The Number of the DNA Extraction Method from the provided list."
+    prompt: "Please Enter The Number of the DNA Extraction Method."
     showErrorMessage: true
     errorStyle: :stop
     errorTitle: "DNA Extraction Method"
-    error: "This value must be numeric. Please select from the provided list."
+    error: "This value must be numeric."
 sample_purified?:
   heading: SAMPLE PURIFIED?
   unlocked: true
