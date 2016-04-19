@@ -18,7 +18,6 @@ class BulkSubmissionsController < ApplicationController
   def create
     begin
       @bulk_submission = BulkSubmission.new(:spreadsheet => params.fetch(:bulk_submission, {})[:spreadsheet])
-
       if @bulk_submission.valid?
         flash[:notice]  = "File was processed successfully"
         sub_ids,@sub_details = @bulk_submission.completed_submissions

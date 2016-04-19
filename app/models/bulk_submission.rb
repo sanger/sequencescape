@@ -248,6 +248,11 @@ class BulkSubmission
     end
   end
 
+  def add_study_to_assets(assets, study)
+      samples_of_found_assets = assets.map(&:aliquots).flatten.map(&:sample).flatten.uniq
+      samples_of_found_assets.each{|sample| sample.studies << study unless sample.studies.include?(study)}
+  end
+
   # Returns an order for the given details
   def prepare_order(details)
     begin
@@ -278,7 +283,6 @@ class BulkSubmission
       attributes[:request_options][:multiplier]                     = {}
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
-
 
       attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
       attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
@@ -313,14 +317,13 @@ class BulkSubmission
 
       end
 
-
       if attributes[:asset_group].nil?
-        assets_not_in_study = found_assets.select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
-        raise StandardError, "Assets not in study #{study.name.inspect} for #{details['rows']}: #{assets_not_in_study.map(&:display_name).inspect}" unless assets_not_in_study.empty?
         attributes[:assets] = found_assets
       else
         raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name" if found_assets.present? && found_assets != attributes[:asset_group].assets
       end
+      add_study_to_assets(found_assets, study)
+
 
       # Create the order.  Ensure that the number of lanes is correctly set.
       sub_template      = find_template(details['template name'])
