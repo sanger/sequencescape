@@ -67,21 +67,4 @@ module Pulldown::Requests
     include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
   end
 
-  class PcrXpToIscLibPool < TransferRequest::InitialDownstream
-    # This is a legacy state machine
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
-
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :nx_in_progress
-      aasm_state :passed
-      aasm_state :cancelled
-
-      aasm_event :start       do transitions :to => :started,        :from => [:pending]                                      end
-      aasm_event :pass        do transitions :to => :passed,         :from => [:nx_in_progress, :failed, :started, :pending]  end
-      aasm_event :cancel      do transitions :to => :cancelled,      :from => [:started, :passed]                             end
-    end
-  end
 end

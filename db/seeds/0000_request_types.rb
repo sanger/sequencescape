@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015,2016 Genome Research Ltd.
 
 
 std = RequestPurpose.create!(:key=>'standard')
@@ -32,7 +32,7 @@ RequestType.create!(
 RequestType.create!(
   :name => 'Initial Transfer', :key => 'initial_transfer', :order => 1,
   :asset_type => 'Asset',  :multiples_allowed => false,
-  :request_class_name => 'TransferRequest',  :morphology => RequestType::CONVERGENT,
+  :request_class_name => 'TransferRequest::InitialTransfer',  :morphology => RequestType::CONVERGENT,
   :for_multiplexing => 0, :billable => 0,
   :request_purpose => int
 )
