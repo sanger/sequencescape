@@ -33,7 +33,7 @@ module SampleManifestExcel
     end
 
     def _create_reference(first_column, first_row, last_column, last_row)
-      "#{to_alpha(first_column)}#{first_row}:#{to_alpha(last_column)}#{last_row}"
+      "$#{to_alpha(first_column)}$#{first_row}:$#{to_alpha(last_column)}$#{last_row}"
     end
 
   end

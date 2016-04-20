@@ -42,6 +42,10 @@ module SampleManifestExcel
       columns.values.select { |column| column.unlocked? }
     end
 
+    def without_formula1
+      with_validations.select {|column| column.range_required?}
+    end
+
     def add(column)
       return unless column.valid?
       columns[column.name] = column.set_number(next_number)
@@ -66,6 +70,14 @@ module SampleManifestExcel
 
     def unlock(n)
       with_unlocked.each {|column| column.unlocked = n}
+      self
+    end
+
+    def set_formula1(ranges)
+      without_formula1.each do |column|
+        range = ranges.find_by(column.validation.range_name)
+        column.validation.set_formula1(range)
+      end
       self
     end
 

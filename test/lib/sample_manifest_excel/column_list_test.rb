@@ -2,12 +2,13 @@ require 'test_helper'
 
 class ColumnListTest < ActiveSupport::TestCase
 
-  attr_reader :column_list, :column_headings, :yaml, :valid_columns
+  attr_reader :column_list, :column_headings, :yaml, :valid_columns, :ranges
 
   def setup
     @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
     @column_list = SampleManifestExcel::ColumnList.new(yaml)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
+    @ranges = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges_short.yml"))))
   end
 
   test "should create a list of columns" do
@@ -15,7 +16,7 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "#headings should return headings" do
-    assert_equal yaml.values.compact.collect { |column| column["heading"] }, column_list.headings
+    assert_equal yaml.values.compact.collect { |column| column[:heading] }, column_list.headings
   end
 
   test "#find_by returns correct column" do
@@ -64,8 +65,12 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "#with_validations should return a list of columns which have validations" do
-    assert_equal 1, column_list.with_validations.count
+    assert_equal 2, column_list.with_validations.count
   end
+
+  test "#without_formula1 should return a list of columns with validations but without correct formula1" do
+    assert_equal 1, column_list.without_formula1.count
+  end  
 
   test "#with_unlocked should return a list of columns which are unlocked" do
     assert_equal 7, column_list.with_unlocked.count
@@ -84,5 +89,13 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal unlocked, column_list.with_unlocked.count
     assert_equal 3, column_list.with_unlocked.first.unlocked
     assert_equal 3, column_list.with_unlocked.last.unlocked
+  end
+
+  test "#set_formula1 should set the right formula1 to validations" do
+    worksheet = build :worksheet
+    ranges.set_absolute_references(worksheet)
+    column_list.set_formula1(ranges)
+    column = column_list.find_by(:gender)
+    assert_equal ranges.find_by(:gender).absolute_reference, column.validation.options[:formula1]
   end
 end

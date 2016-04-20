@@ -1,11 +1,11 @@
-gender: 
+:gender: 
   - Male 
   - Female
   - Mixed
   - Hermaphrodite
   - Unknown
   - Not Applicable
-dna_source: 
+:dna_source: 
   - Blood
   - Cell Line
   - Saliva
@@ -17,6 +17,6 @@ dna_source:
   - CVS Cultured
   - Fetal Blood
   - Tissue
-yes_no:  
-  - Yes
-  - No
+:yes_no:  
+  - 'Yes'
+  - 'No'

@@ -3,12 +3,13 @@ require 'test_helper.rb'
 
 class DownloadTest < ActiveSupport::TestCase
 
-  attr_reader :download, :spreadsheet, :sample_manifest, :column_list
+  attr_reader :download, :spreadsheet, :sample_manifest, :column_list, :range_list
 
   def setup
     @sample_manifest = create(:sample_manifest_with_samples)
     @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
-    @download = SampleManifestExcel::Download.new(sample_manifest, column_list)
+    @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
+    @download = SampleManifestExcel::Download.new(sample_manifest, column_list, range_list)
     download.save('test.xlsx')
     @spreadsheet = Roo::Spreadsheet.open('test.xlsx')
   end
@@ -18,26 +19,26 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should create a worksheet" do
-    assert_equal "DNA Collections Form", spreadsheet.sheets.first
+    assert_equal "DNA Collections Form", spreadsheet.sheets.last
   end
 
   test "should add the title to the first worksheet" do
-    assert_equal "DNA Collections Form", spreadsheet.sheet(0).cell(1,1)
+    assert_equal "DNA Collections Form", spreadsheet.sheet(1).cell(1,1)
   end
 
   test "should add study to the worksheet" do
-    assert_equal "Study:", spreadsheet.sheet(0).cell(5,1)
-    assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(0).cell(5,2)
+    assert_equal "Study:", spreadsheet.sheet(1).cell(5,1)
+    assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(1).cell(5,2)
   end
 
   test "should add supplier to worksheet" do
-    assert_equal "Supplier:", spreadsheet.sheet(0).cell(6,1)
-    assert_equal sample_manifest.supplier.name, spreadsheet.sheet(0).cell(6,2)
+    assert_equal "Supplier:", spreadsheet.sheet(1).cell(6,1)
+    assert_equal sample_manifest.supplier.name, spreadsheet.sheet(1).cell(6,2)
   end
 
   test "should add standard headings to worksheet" do
     download.columns.headings.each_with_index do |heading, i|
-      assert_equal heading, spreadsheet.sheet(0).cell(9,i+1)
+      assert_equal heading, spreadsheet.sheet(1).cell(9,i+1)
     end
   end
 
@@ -46,19 +47,19 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should add all of the samples" do
-    assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(0).last_row
+    assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(1).last_row
   end
 
   test "should add the attributes to the column list" do
-    assert download.columns.find_by("sanger_plate_id").attribute?
-    assert download.columns.find_by("well").attribute?
-    assert download.columns.find_by("donor_id").attribute?
+    assert download.columns.find_by(:sanger_plate_id).attribute?
+    assert download.columns.find_by(:well).attribute?
+    assert download.columns.find_by(:donor_id).attribute?
   end
 
   test "should add the attributes for each sample" do
     [sample_manifest.samples.first, sample_manifest.samples.last].each do |sample|
       download.columns.with_attributes.each do |column|
-        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.number)
+        assert_equal column.attribute_value(sample), spreadsheet.sheet(1).cell(sample_manifest.samples.index(sample)+10, column.number)
       end
     end
   end
@@ -69,7 +70,7 @@ class DownloadTest < ActiveSupport::TestCase
     assert_equal column.reference, download.worksheet.send(:data_validations).first.sqref
     column = column_list.with_validations.last
     assert_equal column.reference, download.worksheet.send(:data_validations).last.sqref
-    assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by("gender").validation["formula1"]}
+    assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by(:gender).validation.options[:formula1]}
   end
 
   test "should unlock cells when required" do
@@ -82,10 +83,11 @@ class DownloadTest < ActiveSupport::TestCase
   test "worksheet should be protected with password" do
     assert download.password
     assert download.worksheet.sheet_protection.password
+    assert download.ranges_worksheet.axlsx_worksheet.sheet_protection.password
   end
 
   test "panes should be frozen correctly" do
-    assert_equal download.freeze_after_column('sanger_sample_id').number, download.worksheet.sheet_view.pane.x_split
+    assert_equal download.freeze_after_column(:sanger_sample_id).number, download.worksheet.sheet_view.pane.x_split
     assert_equal download.first_row-1, download.worksheet.sheet_view.pane.y_split
     assert_equal "frozen", download.worksheet.sheet_view.pane.state
   end
@@ -97,6 +99,16 @@ class DownloadTest < ActiveSupport::TestCase
     column = column_list.with_unlocked.last
     assert_equal column.reference, download.worksheet.send(:conditional_formattings).last.sqref
     assert download.worksheet.send(:conditional_formattings).all? {|cf| cf.rules.first.formula.first == 'FALSE'}
+  end
+
+  test "should have a validation ranges worksheet" do
+    assert_equal "Ranges", spreadsheet.sheets.first
+    assert spreadsheet.sheet(0)
+  end
+
+  test "should set right formula 1" do
+    range = range_list.find_by(:gender)
+    assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == range.absolute_reference}
   end
 
   def teardown

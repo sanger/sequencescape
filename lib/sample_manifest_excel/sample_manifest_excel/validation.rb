@@ -2,17 +2,21 @@ module SampleManifestExcel
 
   class Validation
 
-    attr_reader :options, :range_name
+    attr_accessor :options, :range_name
 
-    def initialize(options, range_name)
-      @options = options
-      @range_name = range_name
+    def initialize(attributes = {})
+      attributes.each do |name, value|
+        send("#{name}=", value)
+      end
     end
 
     def set_formula1(range)
       options[:formula1] = range.absolute_reference
     end
 
+    def range_required?
+      range_name.presence
+    end
   end
 
 end

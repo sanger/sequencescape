@@ -3,13 +3,16 @@ module SampleManifestExcel
 
     STYLES = {unlock: {locked: false}, empty_cell: {bg_color: '82CAFA', type: :dxf}}
 
-    attr_reader :sample_manifest, :worksheet, :columns, :type, :styles
+    attr_reader :sample_manifest, :worksheet, :columns, :type, :styles, :ranges, :ranges_worksheet
 
-    def initialize(sample_manifest, column_list)
+    def initialize(sample_manifest, column_list, range_list)
+
       @sample_manifest = sample_manifest
       @type = sample_manifest.asset_type
       @styles = create_styles
-      @columns = column_list.add_references(first_row, last_row).unlock(styles[:unlock].reference)
+      @ranges = range_list
+      create_validation_ranges_worksheet_and_update_absolute_references_in_ranges
+      @columns = column_list.set_formula1(ranges).add_references(first_row, last_row).unlock(styles[:unlock].reference)  
       add_attributes
       create_worksheet
       protect_worksheet
@@ -64,7 +67,7 @@ module SampleManifestExcel
       worksheet.sheet_protection.password = password
     end
 
-    def freeze_panes(name = 'sanger_sample_id')
+    def freeze_panes(name = :sanger_sample_id)
       worksheet.sheet_view.pane do |pane|
         pane.state = :frozen
         pane.y_split = first_row-1
@@ -98,9 +101,17 @@ module SampleManifestExcel
       add_condititional_formatting
     end
 
+    def create_validation_ranges_worksheet_and_update_absolute_references_in_ranges
+      workbook.add_worksheet(name: "Ranges", state: :hidden) do |sheet|
+        @ranges_worksheet = SampleManifestExcel::ValidationRangeWorksheet.new(ranges, sheet)
+        sheet.sheet_protection.password = password
+        ranges.set_absolute_references(sheet)
+      end
+    end
+
     def add_validations
       columns.with_validations.each do |column|
-        worksheet.add_data_validation(column.reference, column.validation)
+        worksheet.add_data_validation(column.reference, column.validation.options)
       end
     end
 
@@ -111,10 +122,10 @@ module SampleManifestExcel
     end
 
     def add_attributes
-      columns.find_by("sanger_plate_id").attribute = {sanger_human_barcode: Proc.new { |sample| sample.wells.first.plate.sanger_human_barcode }}
-      columns.find_by("well").attribute = {well: Proc.new { |sample| sample.wells.first.map.description }}
-      columns.find_by("sanger_sample_id").attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
-      columns.find_by("donor_id").attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
+      columns.find_by(:sanger_plate_id).attribute = {sanger_human_barcode: Proc.new { |sample| sample.wells.first.plate.sanger_human_barcode }}
+      columns.find_by(:well).attribute = {well: Proc.new { |sample| sample.wells.first.map.description }}
+      columns.find_by(:sanger_sample_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
+      columns.find_by(:donor_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
     end
 
     def create_row(sample)

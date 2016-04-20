@@ -51,7 +51,7 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "have a value" do
-      assert_equal "", column.value
+      refute column.value
       column.value = "a value"
       assert_equal "a value", column.value
     end
@@ -63,7 +63,7 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "have an actual value" do
-      assert_equal "", column.actual_value(TestAttribute.new("My Attribute", "My Value"))
+      refute column.actual_value(TestAttribute.new("My Attribute", "My Value"))
     end
 
     should "#set_number should set correct number to a column" do
@@ -106,7 +106,7 @@ class ColumnTest < ActiveSupport::TestCase
     attr_reader :validation
 
     setup do
-      @validation = {type: :textLength, operator: :lessThanOrEqual, formula1: "20", showErrorMessage: true, errorStyle: :stop, errorTitle: "Supplier Sample Name", error: "Name must be a maximum of 20 characters in length", allowBlank: false}
+      @validation = {options: {type: :textLength, operator: :lessThanOrEqual, formula1: "20", showErrorMessage: true, errorStyle: :stop, errorTitle: "Supplier Sample Name", error: "Name must be a maximum of 20 characters in length", allowBlank: false}, range_name: :some_name}
       @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, validation: validation)
     end
 
@@ -115,8 +115,12 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "have some validation" do
-      assert_equal validation, column.validation
+      assert_instance_of SampleManifestExcel::Validation, column.validation
     end
+
+    should "know if range is required for validation" do
+      assert column.range_required?
+    end 
 
   end
 

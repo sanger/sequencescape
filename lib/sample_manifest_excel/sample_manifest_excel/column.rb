@@ -11,9 +11,12 @@ module SampleManifestExcel
 
     delegate :reference, to: :position
 
+    delegate :range_required?, to: :validation
+
     def initialize(attributes = {})
       default_attributes.merge(attributes).each do |name, value|
-        send("#{name}=", value)
+        send("#{name}=", value) unless name == :validation
+        send("#{name}=", Validation.new(value)) if name == :validation 
       end
     end
 
@@ -54,7 +57,7 @@ module SampleManifestExcel
   private
 
     def default_attributes
-      {number: 0, type: :string, value: ""}
+      {number: 0, type: :string}
     end
    
   end

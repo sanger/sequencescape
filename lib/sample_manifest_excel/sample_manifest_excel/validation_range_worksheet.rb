@@ -2,7 +2,7 @@ module SampleManifestExcel
 
   class ValidationRangeWorksheet
 
-  	attr_reader :axlsx_worksheet, :rangeList, :password
+  	attr_reader :axlsx_worksheet, :rangeList
   	
   	def initialize(rangeList, axlsx_worksheet)
   	  @axlsx_worksheet = axlsx_worksheet
