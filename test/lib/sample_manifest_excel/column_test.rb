@@ -25,7 +25,7 @@ class ColumnTest < ActiveSupport::TestCase
   context "basic" do
 
     setup do
-      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name)
+      @column = build :column
     end
 
     should "not be valid without a name" do

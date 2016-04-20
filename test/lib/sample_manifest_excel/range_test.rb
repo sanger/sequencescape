@@ -5,7 +5,7 @@ class RangeTest < ActiveSupport::TestCase
   attr_reader :range
 
   def setup
-    @range = SampleManifestExcel::Range.new(['option1', 'option2', 'option3'], 1)
+    @range = build :range
   end
 
   test "should have options" do
@@ -24,6 +24,11 @@ class RangeTest < ActiveSupport::TestCase
     worksheet = Axlsx::Package.new.workbook.add_worksheet name: 'New worksheet'
     range.set_absolute_reference(worksheet)
     assert_equal "#{worksheet.name}!#{range.reference}", range.absolute_reference
+  end
+
+  test "should not be valid without row" do
+    range = SampleManifestExcel::Range.new([1,2,3], nil)
+    refute range.valid?
   end
 
 end
