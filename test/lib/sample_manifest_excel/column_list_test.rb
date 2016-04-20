@@ -71,7 +71,7 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 7, column_list.with_unlocked.count
   end
 
-  test "#add_ranges should add positions and range to columns" do
+  test "#add_references should add positions and references to columns" do
     column_list.add_references(10, 15)
     column = column_list.columns.values.first
     assert_equal SampleManifestExcel::Position.new(first_column: column.number, first_row: 10, last_row: 15).reference, column.reference

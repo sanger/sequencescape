@@ -17,4 +17,12 @@ class RangeListTest < ActiveSupport::TestCase
     assert range_list.find_by(ranges.keys.first)
   end
 
+  test "#set_absolute_references should set absolute references to ranges" do
+    worksheet = build :worksheet
+    range_list.set_absolute_references(worksheet)
+    range = range_list.ranges.values.first
+    assert_equal "#{worksheet.name}!#{range.reference}", range.absolute_reference
+    assert range_list.all? {|k, range| range.absolute_reference.present?}
+  end
+
 end

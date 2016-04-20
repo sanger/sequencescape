@@ -18,7 +18,7 @@ class ValidationTest < ActiveSupport::TestCase
   end
 
   test "#set_formula1 should set range for fromula1" do
-    worksheet = Axlsx::Package.new.workbook.add_worksheet name: 'New worksheet'
+    worksheet = build :worksheet
     range.set_absolute_reference(worksheet)
     validation.set_formula1(range)
     assert_equal range.absolute_reference, validation.options[:formula1]
