@@ -50,6 +50,12 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal :number, column.type
     end
 
+    should "have a style" do
+      refute column.style
+      column.style = 50
+      assert_equal 50, column.style
+    end
+
     should "have a value" do
       refute column.value
       column.value = "a value"

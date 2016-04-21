@@ -19,26 +19,26 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should create a worksheet" do
-    assert_equal "DNA Collections Form", spreadsheet.sheets.last
+    assert_equal "DNA Collections Form", spreadsheet.sheets.first
   end
 
   test "should add the title to the first worksheet" do
-    assert_equal "DNA Collections Form", spreadsheet.sheet(1).cell(1,1)
+    assert_equal "DNA Collections Form", spreadsheet.sheet(0).cell(1,1)
   end
 
   test "should add study to the worksheet" do
-    assert_equal "Study:", spreadsheet.sheet(1).cell(5,1)
-    assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(1).cell(5,2)
+    assert_equal "Study:", spreadsheet.sheet(0).cell(5,1)
+    assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(0).cell(5,2)
   end
 
   test "should add supplier to worksheet" do
-    assert_equal "Supplier:", spreadsheet.sheet(1).cell(6,1)
-    assert_equal sample_manifest.supplier.name, spreadsheet.sheet(1).cell(6,2)
+    assert_equal "Supplier:", spreadsheet.sheet(0).cell(6,1)
+    assert_equal sample_manifest.supplier.name, spreadsheet.sheet(0).cell(6,2)
   end
 
   test "should add standard headings to worksheet" do
     download.columns.headings.each_with_index do |heading, i|
-      assert_equal heading, spreadsheet.sheet(1).cell(9,i+1)
+      assert_equal heading, spreadsheet.sheet(0).cell(9,i+1)
     end
   end
 
@@ -47,7 +47,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should add all of the samples" do
-    assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(1).last_row
+    assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(0).last_row
   end
 
   test "should add the attributes to the column list" do
@@ -59,7 +59,7 @@ class DownloadTest < ActiveSupport::TestCase
   test "should add the attributes for each sample" do
     [sample_manifest.samples.first, sample_manifest.samples.last].each do |sample|
       download.columns.with_attributes.each do |column|
-        assert_equal column.attribute_value(sample), spreadsheet.sheet(1).cell(sample_manifest.samples.index(sample)+10, column.number)
+        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.number)
       end
     end
   end
@@ -86,6 +86,11 @@ class DownloadTest < ActiveSupport::TestCase
     assert download.ranges_worksheet.axlsx_worksheet.sheet_protection.password
   end
 
+  test "worksheet should be protected but columns and rows format can be changed" do
+    refute download.worksheet.sheet_protection.format_columns
+    refute download.worksheet.sheet_protection.format_rows
+  end
+
   test "panes should be frozen correctly" do
     assert_equal download.freeze_after_column(:sanger_sample_id).number, download.worksheet.sheet_view.pane.x_split
     assert_equal download.first_row-1, download.worksheet.sheet_view.pane.y_split
@@ -102,8 +107,8 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should have a validation ranges worksheet" do
-    assert_equal "Ranges", spreadsheet.sheets.first
-    assert spreadsheet.sheet(0)
+    assert_equal "Ranges", spreadsheet.sheets.last
+    assert spreadsheet.sheet(1)
   end
 
   test "should set right formula 1" do

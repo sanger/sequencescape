@@ -1,16 +1,16 @@
 module SampleManifestExcel
   class Download
 
-    STYLES = {unlock: {locked: false}, empty_cell: {bg_color: '82CAFA', type: :dxf}}
+    STYLES = {unlock: {locked: false, border: { style: :thin, color: "00" }}, empty_cell: {bg_color: '82CAFA', type: :dxf}, wrap_text: {alignment: {horizontal: :center, vertical: :center, wrap_text: true}, border: { style: :thin, color: "00", edges: [:left, :right, :top, :bottom] }}, borders_only: {border: { style: :thin, color: "00" }}}
 
     attr_reader :sample_manifest, :worksheet, :columns, :type, :styles, :ranges, :ranges_worksheet
 
     def initialize(sample_manifest, column_list, range_list)
-
       @sample_manifest = sample_manifest
       @type = sample_manifest.asset_type
       @styles = create_styles
       @ranges = range_list
+      add_worksheet("DNA Collections Form")
       create_validation_ranges_worksheet_and_update_absolute_references_in_ranges
       @columns = column_list.set_formula1(ranges).add_references(first_row, last_row).unlock(styles[:unlock].reference)  
       add_attributes
@@ -43,8 +43,8 @@ module SampleManifestExcel
       @validation_ranges_worksheet = workbook.add_worksheet(name: name)
     end
 
-    def add_row(values = [], types = nil)
-      worksheet.add_row values, types: types || [:string]*values.length
+    def add_row(values = [], style = nil, types = nil)
+      worksheet.add_row values, types: types || [:string]*values.length, style: style
     end
 
     def add_rows(n)
@@ -64,6 +64,8 @@ module SampleManifestExcel
     end
 
     def protect_worksheet
+      worksheet.sheet_protection.format_columns = false
+      worksheet.sheet_protection.format_rows = false
       worksheet.sheet_protection.password = password
     end
 
@@ -87,13 +89,13 @@ module SampleManifestExcel
   private
 
     def create_worksheet
-      add_worksheet("DNA Collections Form")
+      # add_worksheet("DNA Collections Form")
       add_row ["DNA Collections Form"]
       add_rows(3)
       add_row ["Study:", sample_manifest.study.abbreviation]
       add_row ["Supplier:", sample_manifest.supplier.name]
       add_rows(2)
-      add_row columns.headings
+      add_row columns.headings, styles[:wrap_text].reference
       sample_manifest.samples.each do |sample|
         create_row(sample)
       end
