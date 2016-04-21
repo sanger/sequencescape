@@ -12,7 +12,7 @@ module StudyReport::StudyDetails
     handle_wells(
       "INNER JOIN requests ON requests.asset_id=assets.id",
       "requests.initial_study_id",
-      PlatePurpose.where(name:['Stock Plate','Stock RNA Plate']).pluck(:id),
+      PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES ).pluck(:id),
       &block
     )
 
