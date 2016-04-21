@@ -71,6 +71,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     When I follow "View all manifests"
+    Then print any manifest errors for debugging
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors | State   | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Pending | john       |
