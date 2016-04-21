@@ -36,6 +36,11 @@ class DownloadTest < ActiveSupport::TestCase
     assert_equal sample_manifest.supplier.name, spreadsheet.sheet(0).cell(6,2)
   end
 
+  test "should add number of plates to worksheet" do
+    assert_equal "No. Plates Sent:", spreadsheet.sheet(0).cell(7,1)
+    assert_equal sample_manifest.count.to_s, spreadsheet.sheet(0).cell(7,2)
+  end
+
   test "should add standard headings to worksheet" do
     download.columns.headings.each_with_index do |heading, i|
       assert_equal heading, spreadsheet.sheet(0).cell(9,i+1)

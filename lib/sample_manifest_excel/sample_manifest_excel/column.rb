@@ -4,7 +4,7 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :style
+    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked
     attr_reader :position
 
     validates_presence_of :name, :heading

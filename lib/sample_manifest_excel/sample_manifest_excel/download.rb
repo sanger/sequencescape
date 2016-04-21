@@ -89,12 +89,12 @@ module SampleManifestExcel
   private
 
     def create_worksheet
-      # add_worksheet("DNA Collections Form")
       add_row ["DNA Collections Form"]
       add_rows(3)
       add_row ["Study:", sample_manifest.study.abbreviation]
       add_row ["Supplier:", sample_manifest.supplier.name]
-      add_rows(2)
+      add_row ["No. Plates Sent:", sample_manifest.count]
+      add_rows(1)
       add_row columns.headings, styles[:wrap_text].reference
       sample_manifest.samples.each do |sample|
         create_row(sample)
