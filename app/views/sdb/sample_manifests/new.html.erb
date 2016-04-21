@@ -5,13 +5,13 @@
 
 <%= page_title 'Sample Manifest', 'Create' %>
 
-<%= semantic_form_for(@sample_manifest) do |form| %>
+<%= semantic_form_for(@sample_manifest, html: {novalidate: false}) do |form| %>
   <%= form.inputs :name => "Manifest Type" do %>
-    <%= form.input :template,  :as => :select, :collection => @templates %>
+    <%= form.input :template, required: true, :as => :select, :prompt => 'Select a template', :collection => @templates, input_html: { class: 'form-control'} %>
   <% end %>
   <%= form.inputs :name => "Manifest For" do %>
-    <%= form.input :study,  as: :select, collection: options_from_collection_for_select(@studies, :id, :name, @study_id), input_html: { class: 'form-control select2'} %>
-    <%= form.input :supplier,  as: :select, collection: @suppliers, input_html: { class: 'form-control select2'} %>
+    <%= form.input :study,  as: :select, prompt: 'Select a study', collection: options_from_collection_for_select(@studies, :id, :name, @study_id), required: true, input_html: { class: 'form-control select2'} %>
+    <%= form.input :supplier,  as: :select, prompt: 'Select a supplier', collection: @suppliers, required: true, input_html: { class: 'form-control select2'} %>
   <% end %>
 
   <%= form.inputs :name => "Barcodes" do %>
