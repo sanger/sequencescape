@@ -281,6 +281,7 @@ plate_purposes = <<-EOS
   id: 84
   type: PlatePurpose
   target_type: Plate
+  can_be_considered_a_stock_plate: true
 EOS
 
 AssetShape.create!(
