@@ -11,7 +11,7 @@ module SampleManifestExcel
 
     delegate :reference, to: :position
 
-    delegate :range_required?, to: :validation
+    delegate :range_name, to: :validation
 
     def initialize(attributes = {})
       default_attributes.merge(attributes).each do |name, value|
@@ -43,6 +43,10 @@ module SampleManifestExcel
     def set_validation(validation)
       self.validation = validation
       self
+    end
+
+    def set_formula1(range)
+      validation.set_formula1(range)
     end
 
     def add_reference(first_row, last_row)

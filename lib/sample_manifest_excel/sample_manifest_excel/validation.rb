@@ -11,6 +11,7 @@ module SampleManifestExcel
     end
 
     def set_formula1(range)
+      return unless range_required?
       options[:formula1] = range.absolute_reference
     end
 

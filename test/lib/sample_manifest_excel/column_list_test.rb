@@ -68,10 +68,6 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 2, column_list.with_validations.count
   end
 
-  test "#without_formula1 should return a list of columns with validations but without correct formula1" do
-    assert_equal 1, column_list.without_formula1.count
-  end  
-
   test "#with_unlocked should return a list of columns which are unlocked" do
     assert_equal 7, column_list.with_unlocked.count
   end

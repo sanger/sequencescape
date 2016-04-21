@@ -118,9 +118,13 @@ class ColumnTest < ActiveSupport::TestCase
       assert_instance_of SampleManifestExcel::Validation, column.validation
     end
 
-    should "know if range is required for validation" do
-      assert column.range_required?
-    end 
+    should "#set_formula1 for validation" do
+      range = build :range
+      worksheet = build :worksheet
+      range.set_absolute_reference(worksheet)
+      column.set_formula1(range)
+      assert range.absolute_reference, column.validation.options[:formula1]
+    end
 
   end
 

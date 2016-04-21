@@ -22,6 +22,8 @@ class ValidationTest < ActiveSupport::TestCase
     range.set_absolute_reference(worksheet)
     validation.set_formula1(range)
     assert_equal range.absolute_reference, validation.options[:formula1]
+    validation_without_range = SampleManifestExcel::Validation.new({options: {option1: 'value1', option2: 'value2', type: :list, formula1: 'smth'}})
+    refute validation_without_range.set_formula1(range)
   end 
 
   test "should know if range is required" do
