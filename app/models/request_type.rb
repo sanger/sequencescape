@@ -129,6 +129,11 @@ class RequestType < ActiveRecord::Base
     find_by_key("transfer") or raise "Cannot find transfer request type"
   end
 
+  def self.initial_transfer
+    find_by_key("initial_transfer") or raise "Cannot find initial request type"
+  end
+
+
   def extract_metadata_from_hash(request_options)
     # WARNING: we need a copy of the options (we delete stuff from attributes)
     return {} unless request_options
