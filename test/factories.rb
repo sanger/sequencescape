@@ -10,10 +10,10 @@ FactoryGirl.define do
   end
 
   factory :aliquot do
-    sample  {|s| s.association(:sample) }
-    study   {|s| s.association(:study) }
-    project {|p| p.association(:project) }
-    tag     {|t| t.association(:tag) }
+    sample
+    study
+    project
+    tag
     tag2    {|t| t.association(:tag) }
   end
 

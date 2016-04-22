@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
@@ -66,7 +67,14 @@ class TransferRequest < SystemRequest
   after_create(:perform_transfer_of_contents)
 
   def perform_transfer_of_contents
-    target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
+    begin
+      target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
+    rescue ActiveRecord::RecordNotUnique => exception
+      # We'll specifically handle tag clashes here so that we can produce more informative messages
+      raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/ === exception.message
+      errors.add(:asset,"contains aliquots which can't be transferred due to tag clash")
+      raise Aliquot::TagClash, self
+    end
   end
   private :perform_transfer_of_contents
 

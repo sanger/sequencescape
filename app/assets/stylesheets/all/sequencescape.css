@@ -936,11 +936,12 @@ background-color: #BBBBBB;
 }
 
 .new-plate select {
+  color: #333333;
   font-size: 9px;
   width: 73px;
 }
 .plate_import{
-    padding: 2px;
+  padding: 2px;
   margin: 2px;
   list-style-type: none;
 }
@@ -1289,9 +1290,15 @@ background-color: orange;
   -webkit-border-radius: 3px;
   border: 1px solid #C0C0C0;
   background:#F4F4F4;
-  background-image: -moz-linear-gradient(top,#F2F2F2,#fff, #F2F2F2);
-  behavior: url(/stylesheets/PIE.htc);
+  padding: 1em;
 }
+
+#default-values fieldset legend{
+  width: auto;
+  margin-bottom: 0;
+  border: 0;
+}
+
 
 div.characterisation {
   clear:both;
@@ -1318,6 +1325,13 @@ div.characterisation fieldset{
   border-radius: 3px;
   border: 1px solid #C0C0C0;
   behavior: url(/stylesheets/PIE.htc);
+}
+
+div.characterisation dl dt, div.characterisation dl dd {
+  display: inline-block;
+}
+div.characterisation dl dt:after {
+ content: ":";
 }
 
 #activity-logging {

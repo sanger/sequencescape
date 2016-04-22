@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+
 module Accessionable
   class Sample < Base
     attr_reader :common_name, :taxon_id, :links, :tags
@@ -11,9 +12,6 @@ module Accessionable
       sampname = sample.sample_metadata.sample_public_name
       @name = sampname.blank? ? sample.name : sampname
       @name = @name.gsub(/[^a-z\d]/i,'_') unless @name.blank?
-
-      #@__filename = "#{ submission_id }-#{ sample.id }.sample.xml"
-      #@__alias    = "#{ submission_id }-#{ sample.id }"
 
       @common_name = sample.sample_metadata.sample_common_name
       @taxon_id    = sample.sample_metadata.sample_taxon_id
@@ -43,7 +41,7 @@ module Accessionable
      @sample.id
     end
 
-    def alias_attribute
+    def alias
       @sample.uuid
     end
 
@@ -54,7 +52,7 @@ module Accessionable
     def sample_element_attributes
       # In case the accession number is defined, we won't send the alias
       {
-        :alias => alias_attribute,
+        :alias => self.alias,
         :accession => accession_number
       }.tap do |obj|
         obj.delete(:alias) unless self.accession_number.blank?

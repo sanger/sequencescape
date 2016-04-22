@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
 <table class="table table-striped sortable table-dense-information" id="pipeline_inbox">
   <thead>
     <tr>
@@ -17,7 +18,6 @@
         <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
       <% end %>
       <% @information_types.each do |information_type| %>
-        <% next if information_type.hide_in_inbox %>
         <th style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
       <% end %>
       <th><%= link_to "Concentration", "javascript:void(0);" %></th>
@@ -50,10 +50,9 @@
             <td style='text-align: left'><%= request.asset.scanned_in_date %></td>
           <% end %>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
             <td><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
-          <td><%= request.asset.concentration || "&nbsp;" -%></td>
+          <td><%= request.asset.concentration -%></td>
           <td><%= request.submission.study_names %></td>
         </tr>
 
@@ -93,7 +92,6 @@
           <% end -%>
           <td>&nbsp;</td>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
             <td><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
           <td><%= request.asset.concentration || "&nbsp;".html_safe -%></td>
