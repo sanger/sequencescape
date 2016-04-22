@@ -17,7 +17,7 @@ Sequencescape::Application.configure do
   config.whiny_nils = true
 
   config.serve_static_assets = true
-  config.threadsafe!
+  config.threadsafe! unless $rails_rake_task
   config.consider_all_requests_local = true
 
   # Show full error reports and disable caching
