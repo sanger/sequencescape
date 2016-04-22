@@ -23,4 +23,10 @@ class PositionTest < ActiveSupport::TestCase
     assert_equal "$B$3:$B$8", SampleManifestExcel::Position.new(first_column: 2, first_row: 3, last_row: 8).reference
     assert_equal "$BA$4:$BA$150", SampleManifestExcel::Position.new(first_column: 53, first_row: 4, last_row: 150).reference
   end
+
+  test "should create the right first cell relative reference" do
+    assert_equal "A1", SampleManifestExcel::Position.new(first_column: 1, first_row: 1, last_row: 15).first_cell_relative_reference
+    assert_equal "B3", SampleManifestExcel::Position.new(first_column: 2, first_row: 3, last_row: 8).first_cell_relative_reference
+    assert_equal "BA4", SampleManifestExcel::Position.new(first_column: 53, first_row: 4, last_row: 150).first_cell_relative_reference
+  end
 end

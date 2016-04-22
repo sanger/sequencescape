@@ -3,13 +3,14 @@ module SampleManifestExcel
   class Position
 
     attr_accessor :first_column, :last_column, :first_row, :last_row
-    attr_reader :reference
+    attr_reader :reference, :first_cell_relative_reference
 
     def initialize(attributes={})
       attributes.each do |name, value|
         send("#{name}=", value)
       end
       @reference = create_reference
+      @first_cell_relative_reference = create_first_cell_relative_reference
     end
 
     private
@@ -30,6 +31,10 @@ module SampleManifestExcel
       else
         _create_reference(first_column, first_row, first_column, last_row)
       end
+    end
+
+    def create_first_cell_relative_reference
+      "#{to_alpha(first_column)}#{first_row}"
     end
 
     def _create_reference(first_column, first_row, last_column, last_row)

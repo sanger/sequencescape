@@ -128,4 +128,18 @@ class ColumnTest < ActiveSupport::TestCase
 
   end
 
+  context "with conditional formatting" do
+    attr_reader :conditional_formatting
+
+    setup do
+      @conditional_formatting = [{type: 'type1', operator: 'operator1', formula: "smth"},{type: 'type1', operator: 'operator2', formula: "smth2"}]
+      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, conditional_formatting: conditional_formatting)
+    end
+
+    should "have a conditional_formatting" do
+      assert column.conditional_formatting
+    end
+
+  end
+
 end

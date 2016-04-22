@@ -4,7 +4,7 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked
+    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formatting
     attr_reader :position
 
     validates_presence_of :name, :heading
@@ -15,9 +15,12 @@ module SampleManifestExcel
 
     def initialize(attributes = {})
       default_attributes.merge(attributes).each do |name, value|
-        send("#{name}=", value) unless name == :validation
-        send("#{name}=", Validation.new(value)) if name == :validation 
+        send("#{name}=", value)
       end
+    end
+
+    def validation=(validation)
+      @validation = Validation.new(validation)
     end
 
     def attribute?
