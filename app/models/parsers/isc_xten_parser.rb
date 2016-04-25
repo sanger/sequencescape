@@ -1,8 +1,7 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
-
-class Parsers::ISCXTenParser
+class Parsers::IscXtenParser
   class InvalidFile < StandardError; end
 
   def headers
@@ -49,7 +48,7 @@ class Parsers::ISCXTenParser
   end
 
   def self.is_isc_xten_file?(content)
-    parser = Parsers::ISCXTenParser.new(content)
+    parser = Parsers::IscXtenParser.new(content)
     [:row, :col, :content, :raw_data, :concentration].each_with_index.map do |sym, pos|
       parser.get_column_for_header(sym) == pos
     end.all?

@@ -10,7 +10,6 @@ FactoryGirl.define do
     purpose  { |_| create :asset_rack_purpose }
     name     { FactoryGirl.generate :asset_rack_name }
     size 12
-    ancestors { [create(:plate,:plate_purpose => PlatePurpose.find_by_name('Cherrypicked') )] }
   end
 
   factory :full_asset_rack, :parent => :asset_rack do
@@ -22,7 +21,7 @@ FactoryGirl.define do
   factory :fuller_asset_rack, :parent => :asset_rack do
     after(:create) do |rack|
       2.times do |column_index|
-        rack.strip_tubes << create(:strip_tube,:map=>Map.find(:first,:conditions=>{:asset_size=>96,:asset_shape_id=>AssetShape.default,:row_order=>column_index}))
+        rack.strip_tubes << create(:strip_tube,:map=>Map.find_by(:asset_size=>96,:asset_shape_id=>AssetShape.default,:row_order=>column_index))
       end
     end
   end

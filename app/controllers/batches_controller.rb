@@ -13,16 +13,16 @@ class BatchesController < ApplicationController
   before_filter :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
-    if logged_in?
+    if params[:request_id]
+
+      @batches = [Request.find(params[:request_id]).batch].compact
+    elsif logged_in?
       @user = current_user
       assigned_batches = Batch.where(assignee_id: @user.id)
       @batches = (@user.batches + assigned_batches).sort_by {|batch| batch.id}.reverse
     else
       # not reachable !!! if not login redirect to login
-      @batches = Batch.find(:all)
-    end
-    if params[:request_id]
-      @batches = [Request.find(params[:request_id]).batch].compact
+      @batches = Batch.all
     end
     respond_to do |format|
       format.html
@@ -138,7 +138,7 @@ class BatchesController < ApplicationController
   end
 
   def pipeline
-    @batches = Batch.all(:conditions => {:pipeline_id => params[:id]}, :order => "id DESC", :include => [:requests, :user, :pipeline])
+    @batches = Batch.where(:pipeline_id => params[:id]).order("id DESC").includes([:requests, :user, :pipeline])
   end
 
   # Used by Quality Control Pipeline view or remote sources to add a Batch ID to QC queue
@@ -266,7 +266,7 @@ class BatchesController < ApplicationController
       conditions_query = ["qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)", params["qc_state"], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
     end
 
-    @batches = Batch.find(:all, :conditions => conditions_query, :include => [:user], :order => "created_at ASC")
+    @batches = Batch.where(conditions_query).includes(:user).order("created_at ASC")
   end
 
   def fail_items

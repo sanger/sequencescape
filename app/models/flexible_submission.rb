@@ -20,7 +20,7 @@ class FlexibleSubmission < Order
 
   def request_type_multiplier(&block)
     return nil if request_types.blank?
-    mxr = RequestType.find(:all,:conditions=>{:id=>request_types,:for_multiplexing=>true}).each do |mx_request|
+    mxr = RequestType.where(:id=>request_types,:for_multiplexing=>true).each do |mx_request|
       yield(request_types[request_types.index(mx_request.id)+1].to_s.to_sym)
     end
     yield(request_types.first.to_s.to_sym) if mxr.empty?

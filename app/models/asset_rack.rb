@@ -44,15 +44,15 @@ class AssetRack < Asset
   end
 
   def ancestor_of_purpose(purpose)
-    self.ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>purpose})
+    self.ancestors.order('created_at DESC').where(:plate_purpose_id=>purpose).first
   end
 
   def ancestors_of_purpose(purpose)
-    self.ancestors.find(:all,:order => 'created_at DESC', :conditions => {:plate_purpose_id=>purpose})
+    self.ancestors.order('created_at DESC').where(:plate_purpose_id=>purpose)
   end
 
   def lookup_stock_plate
-    ancestor_of_purpose(PlatePurpose.find(:all,:conditions=>{:can_be_considered_a_stock_plate=>true}))
+    ancestor_of_purpose(PlatePurpose.where(:can_be_considered_a_stock_plate=>true))
   end
   private :lookup_stock_plate
 
@@ -72,14 +72,12 @@ class AssetRack < Asset
   end
 
   def priority
-    Submission.find(:first,
-      :select => 'MAX(submissions.priority) AS priority',
-      :joins => [
+    Submission.select('MAX(submissions.priority) AS priority').
+      joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ],
-      :conditions => ['caplp.container_id IN (?)', strip_tubes.map(&:id)]
-    ).try(:priority)||0
+      ]).
+      where(['caplp.container_id IN (?)', strip_tubes.map(&:id)]).first.try(:priority)||0
   end
 
   def self.create_with_barcode!(*args, &block)

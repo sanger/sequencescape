@@ -7,14 +7,31 @@ require "test_helper"
 class BroadcastEventTest < ActiveSupport::TestCase
 
 
-  TestSeed    = Struct.new(:uuid,:friendly_name,:subject_type,:single_relation,:many_relation,:dynamic_relation,:id,:data_method_a)
+  # TestSeed    = Struct.new(:uuid,:friendly_name,:subject_type,:single_relation,:many_relation,:dynamic_relation,:id,:data_method_a)
 
-  class TestSeed
-    def self.base_class; BroadcastEvent; end
-    def destroyed?; false; end
-    def new_record?; false; end
-    def self.primary_key; :id; end
-  end
+  # class TestSeed
+  #   extend ActiveModel::Naming
+  #   include ActiveModel::Conversion
+  #   # def self.base_class; BroadcastEvent; end
+  #   # def destroyed?; false; end
+  #   # def new_record?; false; end
+  #   def self.primary_key; :id; end
+  # end
+
+  # class TestSeed
+  #   include ActiveModel::Model
+  #   include ActiveModel::AttributeMethods
+  #   define_attribute_methods :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
+  #   attr_accessor :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
+  #   def self.primary_key; :id; end
+
+  #   def _read_attribute(attr_name)
+  #     binding.pry
+  #   end
+
+  # end
+
+
   TestSubject = Struct.new(:uuid,:friendly_name,:subject_type)
   DynamicSubject = Struct.new(:target,:data_method_b)
 
@@ -39,7 +56,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
     set_event_type 'example_event'
 
-    seed_class TestSeed
+    seed_class Asset
 
     # The seed itself can be a subject
     seed_subject :seed
@@ -84,7 +101,18 @@ class BroadcastEventTest < ActiveSupport::TestCase
         @value_a = 'value_a'
         @user = create :user, :email => 'example@example.com'
         @time = DateTime.parse("2012-03-11 10:22:42")
-        @seed = TestSeed.new('004','seed_subject','seed_type',@single,[@many_one,@many_two],@dynamic,1,@value_a)
+        # :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
+        @seed = create :asset
+
+        TestSeed.new(
+          uuid:'004',
+          friendly_name:'seed_subject',
+          subject_type:'seed_type',
+          single_relation:@single,
+          many_relation:[@many_one,@many_two],
+          dynamic_relation:@dynamic,
+          id:1,
+          data_method_a:@value_a)
         @event = ExampleEvent.new(:seed=>@seed,:user=>@user,:created_at=>@time)
       end
 

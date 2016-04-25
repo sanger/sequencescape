@@ -170,21 +170,18 @@ class Plate < Asset
   end
 
   def priority
-    Submission.find(:first,
-      :select => 'MAX(submissions.priority) AS priority',
-      :joins => [
+    Submission.select('MAX(submissions.priority) AS priority').
+      joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ],
-      :conditions => ['caplp.container_id = ?',self.id]
-    ).try(:priority)||Submission.find(:first,
-      :select => 'MAX(submissions.priority) AS priority',
-      :joins => [
+      ]).
+      where(['caplp.container_id = ?',self.id]).first.try(:priority) ||
+    Submission.select('MAX(submissions.priority) AS priority').
+      joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ],
-      :conditions => ['caplp.container_id = ?',self.id]
-    ).try(:priority)||0
+      ]).
+      where(['caplp.container_id = ?',self.id]).first.try(:priority) ||0
   end
 
   def study

@@ -44,8 +44,7 @@ class QcableTest < ActiveSupport::TestCase
 
     context "#qcable pre-pending" do
       setup do
-        @mock_purpose = mock('Purpose',:default_state=>'pending')
-        @mock_purpose.expects('create!').returns(Asset.new).once
+        @mock_purpose = build :purpose,:default_state=>'pending'
         @template     = FactoryGirl.build(:tag2_layout_template)
         @mock_lot     = create :tag2_lot
         @mock_lot.expects(:target_purpose).returns(@mock_purpose).twice

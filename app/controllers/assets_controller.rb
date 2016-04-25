@@ -94,7 +94,7 @@ class AssetsController < ApplicationController
         conditions = { :map_id => tag_param }
         oligo      = params[:tag_sequence]
         conditions[:oligo] = oligo.first.upcase if oligo.present? and oligo.first.present?
-        tag = Tag.first(:conditions => conditions) or raise StandardError, "Cannot find tag #{tag_param.inspect}"
+        tag = Tag.where(conditions).first or raise StandardError, "Cannot find tag #{tag_param.inspect}"
       end
 
       sti_type    = params[:asset].delete(:sti_type) or raise StandardError, "No asset type specified"
@@ -328,7 +328,7 @@ class AssetsController < ApplicationController
   def lookup
     if params[:asset] && params[:asset][:barcode]
       id = params[:asset][:barcode][3,7]
-      @assets = Asset.find(:all, :conditions => {:barcode => id}).paginate :per_page => 50, :page => params[:page]
+      @assets = Asset.where(barcode: id).paginate(:per_page => 50, :page => params[:page])
 
       if @assets.size == 1
         redirect_to @assets.first

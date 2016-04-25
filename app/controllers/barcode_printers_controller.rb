@@ -10,7 +10,7 @@ class BarcodePrintersController < ApplicationController
   before_filter :admin_login_required
 
   def index
-    @barcode_printers = BarcodePrinter.find(:all)
+    @barcode_printers = BarcodePrinter.all
 
     respond_to do |format|
       format.html

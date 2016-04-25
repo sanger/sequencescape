@@ -97,7 +97,7 @@ div.quota {
   background: rgba(0, 69, 120,0.5);
   color: #fff;
   text-shadow:-1px 1px 1px rgba(102, 106, 109,1);
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 #tabs ul {
@@ -115,7 +115,7 @@ div.quota {
   -moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
   box-shadow: 1px 1px 2px 0 #C3CEDA;
   border-bottom: 1px solid #bbb;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 #tab_content {
@@ -176,7 +176,7 @@ body #header {  /* Covers all environments not specifically identified (purples)
   background-image: linear-gradient(top, #603E7D 0%, #492255 100%);
   -pie-background: linear-gradient(#603E7D , #492255);
   color: #fff;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 body.production #header {  /* Specific for production environment (blues) */
   background: #3e87b3;
@@ -185,7 +185,7 @@ body.production #header {  /* Specific for production environment (blues) */
   background-image: linear-gradient(top, #006BAF 0%, #004578 100%);
   -pie-background: linear-gradient(#006BAF, #004578);
   color: #fff;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 body.production.failover #header {  /* Specific for production failover environment (blues) */
   background: #DF5D12;
@@ -194,7 +194,7 @@ body.production.failover #header {  /* Specific for production failover environm
   background-image: linear-gradient(top, #AF380C 0%, #712106 100%);
   -pie-background: linear-gradient(#AF380C, #712106);
   color: #fff;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 #header ul {
@@ -349,7 +349,7 @@ color: #E85C00;
   color: #222931;
   padding: 5px;
   font-size: 12px;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 .center {
 text-align: center;
@@ -370,7 +370,7 @@ border-radius: 3px;
 width: 200px;
 padding: 2px;
 margin: 2px;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 .flash {
@@ -390,7 +390,7 @@ margin: 2px;
   display: block;
   line-height: 16px;
   font-size: 12px;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 .helper {
@@ -408,7 +408,7 @@ padding-left: 12px;
   border: 1px solid #FC6;
   color: #A65200;
   margin-bottom: 15px;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
@@ -714,7 +714,7 @@ background-color: #FFBCC2;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 border-radius: 5px;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 div#available {
 border: 2px solid #2FB81B;
@@ -722,7 +722,7 @@ background-color: #C5FFCB;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 border-radius: 5px;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 table.bed_verification{
@@ -882,7 +882,7 @@ background-color: #BBBBBB;
   background: #003557;
   padding: 0px;
   color: #fff;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 .new-plate th {
@@ -904,7 +904,7 @@ background-color: #BBBBBB;
   -moz-border-radius: 7px;
   -webkit-border-radius: 7px;
   border-radius: 7px;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 .new-plate select {
@@ -1044,7 +1044,7 @@ ul#orders .errors li {
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
   font-family: 'MS Mincho', 'Lucida Sans Unicode', 'Symbol';
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 ul#orders li.completed span.completed {
@@ -1145,7 +1145,7 @@ ul#orders > li.buttons {
   -moz-transition:    all 0.5s ease-in-out 0s;
   -webkit-transition: all 0.5s ease-in-out 0s;
   transition:         all 0.5s ease-in-out 0s;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 .button:hover {
@@ -1164,7 +1164,7 @@ ul#orders > li.buttons {
   text-shadow:none;
   color: #ddd;
   opacity: 0.2;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 .button[disabled]:hover {
@@ -1284,7 +1284,7 @@ div.characterisation {
   background: #EBF4FF;
   background-image: -moz-linear-gradient(top,#DFE7EF,#F1F8FF, #DFE7EF);
   color: #3F3F3F;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 div.characterisation h2 {
@@ -1296,7 +1296,7 @@ div.characterisation fieldset{
   -webkit-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #C0C0C0;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 div.characterisation dl dt, div.characterisation dl dd {
@@ -1332,7 +1332,7 @@ tr.duplicate-error td {
   background: #e2e2e2;
   color: #000000;
   padding: 1em;
-  behavior: url(/stylesheets/PIE.htc);
+
 }
 
 ul.options {
