@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 class Uuid < ActiveRecord::Base
   module Uuidable
     def self.included(base)
@@ -49,7 +50,7 @@ class Uuid < ActiveRecord::Base
     # relied on to actually be present, nor can it be relied on to be output into any JSON in the API.
     #++
     def uuid
-      (self.uuid_object || self.create_uuid_object).uuid
+      (uuid_object || create_uuid_object).uuid
     end
 
     # The behaviour of the ar-extensions gem means that the after_create callbacks aren't being executed

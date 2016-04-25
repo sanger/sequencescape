@@ -1,0 +1,60 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015 Genome Research Ltd.
+
+class Api::Messages::PacBioRunIO < Api::Base
+
+
+  renders_model(::Batch)
+
+  map_attribute_to_json_attribute(:id,'pac_bio_run_id')
+  map_attribute_to_json_attribute(:uuid,'pac_bio_run_uuid')
+
+  map_attribute_to_json_attribute(:updated_at)
+
+  with_association(:first_output_plate) do
+    map_attribute_to_json_attribute(:sanger_human_barcode,'plate_barcode')
+    map_attribute_to_json_attribute(:uuid,'plate_uuid_lims')
+
+    with_nested_has_many_association(:wells) do
+
+      map_attribute_to_json_attribute(:map_description,'well_label')
+      map_attribute_to_json_attribute(:uuid,'well_uuid_lims')
+
+
+      with_nested_has_many_association(:requests_as_target, :as => 'samples') do
+
+        with_association(:initial_project) do
+          map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
+        end
+
+        with_association(:initial_study) do
+          map_attribute_to_json_attribute(:uuid,'study_uuid')
+        end
+
+        with_association(:asset) do
+          map_attribute_to_json_attribute(:external_identifier, 'pac_bio_library_tube_id_lims')
+          map_attribute_to_json_attribute(:uuid, 'pac_bio_library_tube_uuid')
+          map_attribute_to_json_attribute(:name, 'pac_bio_library_tube_name')
+          map_attribute_to_json_attribute(:id, 'pac_bio_library_tube_legacy_id')
+
+          with_association(:primary_aliquot) do
+            with_association(:sample) do
+              map_attribute_to_json_attribute(:uuid, 'sample_uuid')
+            end
+
+            with_association(:tag) do
+              map_attribute_to_json_attribute(:oligo, 'tag_sequence')
+              map_attribute_to_json_attribute(:tag_group_id, 'tag_set_id_lims')
+              map_attribute_to_json_attribute(:map_id, 'tag_identifier')
+
+              with_association(:tag_group) do
+                map_attribute_to_json_attribute(:name, 'tag_set_name')
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end

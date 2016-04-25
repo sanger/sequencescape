@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class Transfer < ActiveRecord::Base
   module Associations
     def self.included(base)
@@ -25,7 +26,7 @@ class Transfer < ActiveRecord::Base
     # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
     # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
     # are failed).
-    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'nx_in_progress', 'started_fx', 'started_mj', 'passed', 'failed', 'cancelled' ]
+    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'nx_in_progress', 'passed', 'failed', 'cancelled' ]
 
     def self.state_helper(names)
       Array(names).each do |name|

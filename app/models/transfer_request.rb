@@ -1,26 +1,10 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
-
-  module InitialTransfer
-    def perform_transfer_of_contents
-      target_asset.aliquots << asset.aliquots.map do |a|
-        aliquot = a.dup
-        aliquot.study_id = outer_request.initial_study_id
-        aliquot.project_id = outer_request.initial_project_id
-        aliquot
-      end unless asset.failed? or asset.cancelled?
-    end
-    private :perform_transfer_of_contents
-
-    def outer_request
-      asset.requests.detect{|r| r.library_creation? && r.submission_id == self.submission_id}
-    end
-  end
-
 
   redefine_state_machine do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
@@ -31,7 +15,7 @@ class TransferRequest < SystemRequest
 
     aasm_state :pending
     aasm_state :started
-    aasm_state :failed,	    :enter => :on_failed
+    aasm_state :failed,     :enter => :on_failed
     aasm_state :passed
     aasm_state :qc_complete
     aasm_state :cancelled,  :enter => :on_cancelled
@@ -44,7 +28,7 @@ class TransferRequest < SystemRequest
     aasm_event :cancel_before_started do transitions :to => :cancelled, :from => [:pending]           end
     aasm_event :detach  do transitions :to => :pending, :from => [:pending]                           end
 
-    # Not all transfer quests will make this transition, but this way we push the
+    # Not all transfer requests will make this transition, but this way we push the
     # decision back up to the pipeline
     aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                       end
   end
@@ -78,7 +62,7 @@ class TransferRequest < SystemRequest
   private :perform_transfer_of_contents
 
   def on_failed
-    self.target_asset.remove_downstream_aliquots
+    target_asset.remove_downstream_aliquots if target_asset
   end
   private :on_failed
 

@@ -89,7 +89,7 @@ group :warehouse do
   gem "ruby-oci8", :platforms => :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   #any newer version requires ruby-oci8 => 2.0.1
-  gem "activerecord-oracle_enhanced-adapter" , "1.2.3"
+  gem "activerecord-oracle_enhanced-adapter", '~> 1.4.0'
 
 end
 
@@ -114,6 +114,7 @@ group :test do
   gem "treetop", :require => false
   # gem 'parallel_tests', :require => false
   gem 'rgl', :require => false
+  gem 'simplecov', require: false
 end
 
 group :cucumber do
