@@ -6,6 +6,7 @@ class Supplier < ActiveRecord::Base
   include Uuid::Uuidable
   include ::Io::Supplier::ApiIoSupport
   include SampleManifest::Associations
+  include SharedBehaviour::Named
 
   has_many :studies, ->() { distinct }, :through => :sample_manifests
   validates_presence_of :name

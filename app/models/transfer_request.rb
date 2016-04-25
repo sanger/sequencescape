@@ -6,23 +6,7 @@
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
 
-  module InitialTransfer
-    def perform_transfer_of_contents
-      target_asset.aliquots << asset.aliquots.map do |a|
-        aliquot = a.dup
-        aliquot.study_id = outer_request.initial_study_id
-        aliquot.project_id = outer_request.initial_project_id
-        aliquot
-      end unless asset.failed? or asset.cancelled?
-    end
-    private :perform_transfer_of_contents
-
-    def outer_request
-      asset.requests.detect{|r| r.library_creation? && r.submission_id == self.submission_id}
-    end
-  end
-
-  redefine_aasm :column => :state do
+  redefine_state_machine do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
     state :pending, :initial => true
@@ -93,7 +77,7 @@ class TransferRequest < SystemRequest
   private :perform_transfer_of_contents
 
   def on_failed
-    self.target_asset.remove_downstream_aliquots
+    target_asset.remove_downstream_aliquots if target_asset
   end
   private :on_failed
 

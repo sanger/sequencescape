@@ -23,34 +23,6 @@ module IlluminaC::Requests
     fragment_size_details(:no_default, :no_default)
   end
 
-  class InitialTransfer < TransferRequest
-    include TransferRequest::InitialTransfer
-  end
-
-  class QcCompleteable < TransferRequest
-    redefine_aasm :column => :state do
-
-
-      state :pending, :initial => true
-      state :started
-      state :passed
-      state :qc_complete
-      state :failed
-      state :cancelled
-
-      event :start  do transitions :to => :started,     :from => [:pending]                    end
-      event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
-      event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
-    end
-  end
-
-  class StockToAlLibsTagged < QcCompleteable
-    include TransferRequest::InitialTransfer
-  end
-
-
   module Helpers
 
     def create_request_types

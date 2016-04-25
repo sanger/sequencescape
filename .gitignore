@@ -21,3 +21,4 @@ capybara*.html
 database_suffix
 tags
 *.sublime-workspace
+coverage
