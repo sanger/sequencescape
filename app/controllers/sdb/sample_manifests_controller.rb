@@ -58,8 +58,9 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def new
     @sample_manifest  = SampleManifest.new(:asset_type => params[:type])
-    @studies          = Study.all.sort{ |a,b,| a.name <=> b.name }
-    @suppliers        = Supplier.all.sort{ |a,b,| a.name <=> b.name }
+    @study_id         = params[:study_id] || ""
+    @studies          = Study.alphabetical
+    @suppliers        = Supplier.alphabetical
     @barcode_printers = @sample_manifest.applicable_barcode_printers
     @templates        = @sample_manifest.applicable_templates
   end
@@ -102,6 +103,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   # Show the manifest
   def show
+    @study_id = @sample_manifest.study_id
     @samples = @sample_manifest.samples.paginate(:page => params[:page])
   end
 
