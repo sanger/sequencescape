@@ -249,8 +249,9 @@ class BulkSubmission
   end
 
   def add_study_to_assets(assets, study)
-      samples_of_found_assets = assets.map(&:aliquots).flatten.map(&:sample).flatten.uniq
-      samples_of_found_assets.each{|sample| sample.studies << study unless sample.studies.include?(study)}
+    assets.map(&:samples).flatten.uniq.each do |sample|
+      sample.studies << study unless sample.studies.include?(study)
+    end
   end
 
   # Returns an order for the given details
@@ -358,7 +359,7 @@ class BulkSubmission
     plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}"
 
     well_locations = well_list.map(&:strip)
-    wells = plate.wells.located_at(well_locations)
+    wells = plate.wells.including_samples.located_at(well_locations)
     raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
     wells
   end

@@ -112,6 +112,7 @@ class Aliquot < ActiveRecord::Base
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots
     has_many :samples, :through => :aliquots
+    scope :including_samples, -> { includes(:samples) }
 
     # Contained samples also works on eg. plate
     alias_attribute :contained_samples, :samples
