@@ -61,7 +61,7 @@ class SampleManifest < ActiveRecord::Base
   before_save :truncate_errors
 
   def truncate_errors
-    if self.last_errors.join.length > LIMIT_ERROR_LENGTH
+    if self.last_errors && self.last_errors.join.length > LIMIT_ERROR_LENGTH
 
       full_last_errors = self.last_errors
 
