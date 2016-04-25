@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
@@ -39,6 +40,7 @@ class Aliquot < ActiveRecord::Base
 
     # Named scopes for the future
     scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
+    scope :include_aliquots_for_api, -> { includes( :aliquots => [ {:sample=>[:uuid_object,:study_reference_genome,{:sample_metadata=>:reference_genome}]}, { :tag => :tag_group }, :bait_library ] ) }
 
     # This is a lambda as otherwise the scope selects Aliquot::Receptacles
     scope :with_aliquots, -> { joins(:aliquots) }

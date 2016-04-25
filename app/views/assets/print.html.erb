@@ -1,12 +1,18 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.%>
+
 <% add :title, "Print barcode for this asset." -%>
 <% add :menu, "View studies" => studies_path -%>
 <% @asset.studies.uniq.each do |study| %>
 	<% add :menu, "Back to #{study.name}" => study_url(study) %>
 <% end %>
 
-<%= page_title "Print Labels", "#{@asset.label} #{@asset.id} (#{@asset.sanger_human_barcode})" %>
 
-<%= render :partial => 'print_form', :locals => { :asset => @asset } %>
+<%= page_title "Print Labels", "#{@printable.label} #{@printable.id} (#{@printable.sanger_human_barcode})" %>
+<%= alert(:warning) do %>
+<strong>Caution!</strong>
+<p>The <%= @asset.label %> <%= @asset.display_name %> is not barcoded directly. This page is for printing barcodes for <%= @printable.label %> <%= @printable.sanger_human_barcode %> instead.</p>
+<% end %>
+<%= render :partial => 'print_form', :locals => { :asset => @printable } %>
+

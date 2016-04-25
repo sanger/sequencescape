@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
 <% unless @information_types.find_by_key("read_length").nil? %>
   <%= label_tag 'filter', 'Filter by '+@information_types.find_by_key("read_length").name %>
   <input type="text" value="" id="filter-for-pipeline_inbox" rel="pipeline_inbox">
@@ -27,7 +28,6 @@
         <th><%= link_to "Submitted at (Y-M-D)", "javascript:void(0);" %></th>
         <th><%= link_to "Number of tags", "javascript:void(0);" %></th>
         <% @information_types.each do |information_type| %>
-          <% next if information_type.hide_in_inbox %>
           <th><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
         <% end %>
         <th><%= link_to "Study", "javascript:void(0);" %></th>
@@ -89,7 +89,6 @@
           <% end %>
           <td><%= request.asset.tag_count %></td>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
             <td  title='<%="#{information_type.key}"%>'>
               <%= h(request.request_metadata[information_type.key]) %>
             </td>

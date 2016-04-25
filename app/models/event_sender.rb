@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 class EventSender
 
   # format message expected output
@@ -40,7 +41,7 @@ class EventSender
   end
 
   def self.send_pick_event(well_id, purpose_name, message, options = nil)
-    hash = { :eventful_id => well_id, :eventful_type => 'Asset', :family => PlatesHelper::event_family_for_pick(purpose_name), :message => message }
+    hash = { :eventful_id => well_id, :eventful_type => 'Asset', :family => PlatesHelper::event_family_for_pick(purpose_name), :message => message, :content => Date.today.to_s }
     self.publishing_to_queue(hash.merge(options || {}))
   end
 

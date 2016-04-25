@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 
 class AssetsController < ApplicationController
   include BarcodePrintersController::Print
@@ -209,6 +210,16 @@ class AssetsController < ApplicationController
       end
       format.html { redirect_to(asset_url(@asset)) }
       format.xml  { head :ok }
+    end
+  end
+
+  def print
+    if @asset.printable?
+      @printable = @asset.printable_target
+      @direct_printing = (@asset.printable_target == @asset)
+    else
+      flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
+      redirect_to asset_path(@asset)
     end
   end
 
