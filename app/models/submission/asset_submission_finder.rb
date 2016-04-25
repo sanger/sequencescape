@@ -35,7 +35,7 @@ module Submission::AssetSubmissionFinder
     details['barcode'].map do |barcode|
       match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"
       prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-      plate  = Tube.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]).including_samples or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
+      plate  = Tube.including_samples.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
     end
   end
 end

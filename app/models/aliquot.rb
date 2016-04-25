@@ -49,6 +49,9 @@ class Aliquot < ActiveRecord::Base
     scope :with_sample_id, ->(id)     { { :conditions => { :aliquots => { :sample_id => Array(id)     } }, :joins => :aliquots } }
     scope :with_sample,    ->(sample) { { :conditions => { :aliquots => { :sample_id => Array(sample) } }, :joins => :aliquots } }
 
+    # Scope for caching the samples of the receptacle
+    scope :including_samples, -> { includes(:samples) }
+
     # TODO: Remove these at some point in the future as they're kind of wrong!
     has_one :sample, :through => :primary_aliquot
     deprecate :sample
@@ -112,7 +115,6 @@ class Aliquot < ActiveRecord::Base
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots
     has_many :samples, :through => :aliquots
-    scope :including_samples, -> { includes(:samples) }
 
     # Contained samples also works on eg. plate
     alias_attribute :contained_samples, :samples
