@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+
 require "rexml/document"
 
 class StudiesController < ApplicationController
@@ -66,7 +70,7 @@ class StudiesController < ApplicationController
       format.json { render :json => @study, :status => :created, :location => @study }
     end
   rescue ActiveRecord::RecordInvalid => exception
-    action_flash[:error] = "Problems creating your new study"
+    flash.now[:error] = "Problems creating your new study"
     respond_to do |format|
       format.html { render :action => "new" }
       format.xml  { render :xml  => @study.errors, :status => :unprocessable_entity }
@@ -76,16 +80,13 @@ class StudiesController < ApplicationController
 
   def show
     @study = Study.find(params[:id])
-
-
+    flash.keep
     respond_to do |format|
       format.html do
         if current_user.workflow.nil?
           flash[:notice] = "Your profile is incomplete. Please select a workflow."
           redirect_to edit_profile_path(current_user)
         else
-          flash.keep
-          flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
           redirect_to study_workflow_path(@study, current_user.workflow)
         end
       end
@@ -96,8 +97,7 @@ class StudiesController < ApplicationController
 
   def edit
     @study = Study.find(params[:id])
-    flash.keep
-    flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
+    flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users   = User.all
     redirect_if_not_owner_or_admin
   end
@@ -117,14 +117,12 @@ class StudiesController < ApplicationController
       end
 
       flash[:notice] = "Your study has been updated"
-      flash.keep
-      flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
 
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => exception
-    logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
-    flash[:error] = "Failed to update attributes for study!"
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+    flash.now[:error] = "Failed to update attributes for study!"
     render :action => "edit", :id => @study.id
   end
 
@@ -173,7 +171,7 @@ class StudiesController < ApplicationController
     @study    = Study.find(params[:id])
     @relation_names = StudyRelationType::names
     @studies = current_user.interesting_studies
-    @studies.delete(@study)
+    @studies.reject {|s| s == @study }
 
     #TODO create a proper ReversedStudyRelation
     @relations = @study.study_relations.map { |r| [r.related_study, r.name ] } +
@@ -196,11 +194,11 @@ class StudiesController < ApplicationController
         return
       rescue ActiveRecord::RecordInvalid, RuntimeError => ex
         status = 403
-        action_flash[:error] = ex.to_s
+        flash.now[:error] = ex.to_s
       end
 
     else
-      action_flash[:error] = "A problem occurred while relating the study"
+      flash.now[:error] = "A problem occurred while relating the study"
       status = 500
     end
     @study.reload
@@ -290,7 +288,7 @@ class StudiesController < ApplicationController
      flash[:error] = 'Please fill in the required fields'
      render(:action => :edit)
    rescue AccessionService::NumberNotRequired => exception
-     flash[:warning] = 'An accession number is not required for this study'
+     flash[:warning] = exception.message || 'An accession number is not required for this study'
      redirect_to(study_path(@study))
    rescue AccessionService::NumberNotGenerated => exception
      flash[:warning] = 'No accession number was generated'
@@ -447,9 +445,9 @@ class StudiesController < ApplicationController
     when "managed & active"            then Study.managed_by(current_user).is_active
     when "managed & inactive"          then Study.managed_by(current_user).is_inactive
     when "pending"                     then Study.is_pending
-    when "pending ethical approval"    then Study.all_awaiting_ethical_approval
-    when "contaminated with human dna" then Study.all_contaminated_with_human_dna
-    when "remove x and autosomes"      then Study.all_with_remove_x_and_autosomes
+    when "pending ethical approval"    then Study.awaiting_ethical_approval
+    when "contaminated with human dna" then Study.contaminated_with_human_dna
+    when "remove x and autosomes"      then Study.with_remove_x_and_autosomes
     when "active"                      then Study.is_active
     when "inactive"                    then Study.is_inactive
     when "collaborations"              then Study.collaborated_with(current_user)
@@ -464,7 +462,7 @@ class StudiesController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+      Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
       flash[:error] = "Failed to update attributes for study!"
       render :action => "edit", :id => @study.id
     end

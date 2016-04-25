@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class ManifestGeneratorTest < ActiveSupport::TestCase
@@ -24,7 +28,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "#create_header" do
       setup do
-        @study = Factory :study
+        @study = create :study
         @expected_header = [["Institute Name:","WTSI","","","","","","","","","","","","","","","",""],
          ["Date:", "2010-5-7"],
          ["Comments:", "#{@study.abbreviation}"],
@@ -42,7 +46,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "well_concentration" do
       setup do
-        @well = Factory :well
+        @well = create :well
       end
       context "with set concentration" do
         setup do
@@ -70,7 +74,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "well_volume" do
       setup do
-        @well = Factory :well
+        @well = create :well
       end
       context "with set volume" do
         setup do
@@ -94,8 +98,8 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "#well_sample_species" do
       setup do
-        @well = Factory :well
-        @sample = Factory :sample
+        @well = create :well
+        @sample = create :sample
       end
       context "with no sample" do
         should "throw an exeption" do
@@ -127,8 +131,8 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "#well_sample_is_control" do
       setup do
-        @well = Factory :well
-        @sample = Factory :sample
+        @well = create :well
+        @sample = create :sample
       end
       context "with no sample" do
         should "throw an exeption" do
@@ -163,8 +167,8 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "#well_sample_gender" do
       setup do
-        @well = Factory :well
-        @sample = Factory :sample
+        @well = create :well
+        @sample = create :sample
       end
       context "with no sample" do
         should "throw an exeption" do
@@ -206,8 +210,8 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       ['mother','father'].each do |parent|
         context "for #{parent}" do
           setup do
-            @well = Factory :well
-            @sample = Factory :sample
+            @well = create :well
+            @sample = create :sample
           end
           context "with no sample" do
             should "throw an exeption" do
@@ -245,7 +249,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       [["A1","A01"],["C2","C02"],["H12","H12"],["G9","G09"]].each do |input_map,expected_map|
         context "for #{input_map}" do
           setup do
-            @well = Factory :well, :map => Map.find_by_description_and_asset_size(input_map,96)
+            @well = create :well, :map => Map.find_by_description_and_asset_size(input_map,96)
             @description = ManifestGenerator.well_map_description(@well)
           end
           should "return expected description of #{expected_map}" do
@@ -258,8 +262,8 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "#generate_manifest_row" do
       setup do
-        @well = Factory :well
-        @sample = Factory :sample
+        @well = create :well
+        @sample = create :sample
         @plate_barcode = "141865"
         @plate_label = "AAA"
       end
@@ -326,23 +330,23 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
     context "Single Plate and Single Study" do
       setup do
-        @user = Factory :user
+        @user = create :user
 
-        @sample1 = Factory(:sample, :name => "Sample1", :sanger_sample_id => "STUDY_1_1", :sample_metadata_attributes => { :sample_common_name => 'Species 1' })
-        @sample2 = Factory :sample, :name => "Sample2", :sanger_sample_id => "STUDY_1_1"
-        @sample3 = Factory :sample, :name => "Sample3", :sanger_sample_id => "STUDY_1_1"
+        @sample1 = create(:sample, :name => "Sample1", :sanger_sample_id => "STUDY_1_1", :sample_metadata_attributes => { :sample_common_name => 'Species 1' })
+        @sample2 = create :sample, :name => "Sample2", :sanger_sample_id => "STUDY_1_1"
+        @sample3 = create :sample, :name => "Sample3", :sanger_sample_id => "STUDY_1_1"
 
-        @study1 = Factory :study, :user => @user
+        @study1 = create :study, :user => @user
         @study1.samples << @sample1
         @study1.samples << @sample2
 
         @study1.study_metadata.study_name_abbreviation = 'STUDY'
 
-        @plate1 = Factory(:plate, :barcode => 11111, :size => 96, :name => "Plate 1", :plate_metadata_attributes => { :infinium_barcode => '12345' })
+        @plate1 = create(:plate, :barcode => 11111, :size => 96, :name => "Plate 1", :plate_metadata_attributes => { :infinium_barcode => '12345' })
 
-        @well1 = Factory(:well).tap { |well| well.aliquots.create!(:sample => @sample1) }
-        @well2 = Factory(:well).tap { |well| well.aliquots.create!(:sample => @sample2) }
-        @well3 = Factory(:well).tap { |well| well.aliquots.create!(:sample => @sample3) }
+        @well1 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample1) }
+        @well2 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample2) }
+        @well3 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample3) }
 
         [@well1,@well2,@well3].each do |well|
           well.set_requested_volume(15)
@@ -354,7 +358,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         @plate1.add_and_save_well(@well2, 0, 1)
         @plate1.add_and_save_well(@well3, 1, 0)
 
-        @pipeline = Factory(:pipeline)
+        @pipeline = create(:pipeline)
         @batch = @pipeline.batches.create!
         @batch.requests = [
           @pipeline.request_types.last.create!(:study => @study1, :asset => @well),
@@ -377,14 +381,14 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
       context "Several Plates and Single Study" do
         setup do
-          @plate2 = Factory(:plate, :barcode => 22222, :size => 96, :name => "Plate 2", :plate_metadata_attributes => { :infinium_barcode => '987654' })
+          @plate2 = create(:plate, :barcode => 22222, :size => 96, :name => "Plate 2", :plate_metadata_attributes => { :infinium_barcode => '987654' })
 
-          @sample4 = Factory :sample, :name => "Sample4", :sanger_sample_id => "STUDY_1_4"
+          @sample4 = create :sample, :name => "Sample4", :sanger_sample_id => "STUDY_1_4"
           @study1.samples << @sample4
 
-          @well4 = Factory(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
-          @well5 = Factory(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
-          @well6 = Factory(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
+          @well4 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
+          @well5 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
+          @well6 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
 
           [@well4,@well5,@well6].each do |well|
             well.set_requested_volume(15)

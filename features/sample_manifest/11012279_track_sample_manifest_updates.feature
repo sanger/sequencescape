@@ -33,7 +33,7 @@ Feature: Track when a sample and its plate has been updated by a manifest
 
     Given I am on the sample db homepage
     When I follow "View all manifests"
-      And I fill in "File to upload" with "test/data/test_blank_wells.csv"
+      And I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
       And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
 
@@ -52,7 +52,7 @@ Feature: Track when a sample and its plate has been updated by a manifest
     Given I am an "External" user logged in as "jane"
     Given I am on the sample db homepage
     When I follow "View all manifests"
-      And I fill in "File to upload" with "test/data/test_blank_wells_with_no_blanks.csv"
+      And I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
       And I check "Override previously uploaded samples"
       And I press "Upload manifest"
     Given 1 pending delayed jobs are processed

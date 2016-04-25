@@ -1,10 +1,17 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
+
+require 'aasm'
+
 class Request < ActiveRecord::Base
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
 
   include Api::RequestIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
 
   include Uuid::Uuidable
   include AASM
@@ -25,19 +32,28 @@ class Request < ActiveRecord::Base
     DelegateValidation::AlwaysValidValidator
   end
 
+  scope :for_pipeline, ->(pipeline) {
+
+      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ).
+      where([ 'prt.pipeline_id=?', pipeline.id]).
+      readonly(false)
+
+  }
+
   def validator_for(request_option)
     request_type.request_type_validators.find_by_request_option!(request_option.to_s)
   end
 
-    named_scope :for_pipeline, lambda { |pipeline|
-      {
-        :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
-        :conditions => [ 'prt.pipeline_id=?', pipeline.id],
-        :readonly => false
-      }
+ 	scope :for_pipeline, ->(pipeline) {
+    {
+      :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
+      :conditions => [ 'prt.pipeline_id=?', pipeline.id],
+      :readonly => false
     }
+  }
 
-  named_scope :for_pooling_of, lambda { |plate|
+  scope :for_pooling_of, ->(plate) {
+    submission_ids = plate.all_submission_ids
     joins =
       if plate.stock_plate?
         [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
@@ -52,18 +68,17 @@ class Request < ActiveRecord::Base
       :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN submissions ON requests.submission_id=submissions.id',
-        'INNER JOIN uuids ON uuids.resource_id=submissions.id AND uuids.resource_type="Submission"'
+        'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
       ],
-      :group => 'submissions.id',
+      :group => 'requests.submission_id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
-        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND requests.submission_id IN (?)',
+        [TransferRequest,*TransferRequest.descendants].map(&:name), plate.id, submission_ids
       ]
     }
   }
 
-    named_scope :for_pre_cap_grouping_of, lambda { |plate|
+   scope :for_pre_cap_grouping_of, ->(plate) {
     joins =
       if plate.stock_plate?
         [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
@@ -73,40 +88,69 @@ class Request < ActiveRecord::Base
           'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
         ]
       end
-    {
-      :select => 'min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, requests.*',
-      :joins => joins + [
+
+      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, requests.*').
+      joins(joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
         'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
         'INNER JOIN uuids ON uuids.resource_id=pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
-      ],
-      :group => 'pre_capture_pool_pooled_requests.pre_capture_pool_id',
-      :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
-        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
-      ]
-    }
+        ]
+      ).
+      group('pre_capture_pool_pooled_requests.pre_capture_pool_id').
+      where([
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND requests.state="pending"',
+        [TransferRequest,*TransferRequest.descendants].map(&:name), plate.id
+      ])
+
+  }
+
+  scope :for_event_notification_by_order, ->(order) {
+      where([
+        'requests.sti_type NOT IN (?) AND requests.state = "passed" AND requests.order_id=?',
+        [TransferRequest,*TransferRequest.descendants].map(&:name), order.id
+      ])
+  }
+
+
+  scope :including_samples_from_target, ->() { includes({ :target_asset => {:aliquots  => :sample } }) }
+  scope :including_samples_from_source, ->() { includes({ :asset => {:aliquots  => :sample } }) }
+
+  scope :for_order_including_submission_based_requests, ->(order) {
+    # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
+    # as a common element for any order in the submission)
+    where(['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id, order.submission.id])
+
   }
 
   belongs_to :pipeline
   belongs_to :item
 
   has_many :failures, :as => :failable
-  has_many :billing_events
 
   belongs_to :request_type, :inverse_of => :requests
   delegate :billable?, :to => :request_type, :allow_nil => true
   belongs_to :workflow, :class_name => "Submission::Workflow"
 
-  named_scope :for_billing, :include => [ :initial_project, :request_type, { :target_asset => :aliquots } ]
+  scope :for_billing, -> { includes([ :initial_project, :request_type, { :target_asset => :aliquots }]) }
 
   belongs_to :user
+  belongs_to :request_purpose
+  validates_presence_of :request_purpose
 
-  belongs_to :submission
-  belongs_to :order
+  belongs_to :submission, :inverse_of => :requests
+  belongs_to :submission_pool, :foreign_key => :submission_id
 
-  named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
+  belongs_to :order, :inverse_of => :requests
+
+  has_many :submission_siblings, :through => :submission, :source => :requests, :class_name => 'Request', :conditions => {:request_type_id => '#{request_type_id}'}
+
+  scope :with_request_type_id, ->(id) { { :conditions => { :request_type_id => id } } }
+
+  scope :for_pacbio_sample_sheet, -> { includes([{:target_asset=>:map},:request_metadata]) }
+
+  has_many :qc_metric_requests
+  has_many :qc_metrics, :through => :qc_metric_requests
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
@@ -122,6 +166,18 @@ class Request < ActiveRecord::Base
     self.initial_project_id = project_id
   end
 
+
+  def submission_plate_count
+    submission.requests.find(:all,
+      :conditions=>{:request_type_id=>request_type_id},
+      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
+      :group=>'spca.container_id'
+    ).count
+  end
+
+  def update_responsibilities!
+    # Do nothing
+  end
 
 
   def project=(project)
@@ -149,65 +205,62 @@ class Request < ActiveRecord::Base
     []
   end
 
-  #  validates_presence_of :study, :request_type#TODO, :submission
 
-  named_scope :between, lambda { |source,target| { :conditions => { :asset_id => source.id, :target_asset_id => target.id } } }
-  named_scope :into_by_id, lambda { |target_ids| { :conditions => { :target_asset_id => target_ids } } }
+ scope :between, ->(source,target) { where(:asset_id => source.id, :target_asset_id => target.id) }
+ scope :into_by_id, ->(target_ids) { where(:target_asset_id => target_ids ) }
 
-  # TODO: Really need to be consistent in who our named scopes behave
-  named_scope :request_type, lambda { |request_type|
-    id =
-      case
-      when request_type.nil? then nil   # TODO: Are the pipelines with nil request_type_id really nil?
-      when request_type.is_a?(Fixnum), request_type.is_a?(String) then request_type
-      when request_type.is_a?(Array) then request_type
-      else request_type.id
-      end
-    {:conditions => { :request_type_id => id} }
+ scope :request_type, ->(request_type) {
+    where(:request_type_id => request_type)
   }
 
-  named_scope :where_is_a?,     lambda { |clazz| { :conditions => [ 'sti_type IN (?)',     [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
-  named_scope :where_is_not_a?, lambda { |clazz| { :conditions => [ 'sti_type NOT IN (?)', [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
-  named_scope :where_has_a_submission, { :conditions => 'submission_id IS NOT NULL' }
+  scope :where_is_a?,     ->(clazz) { where( sti_type: [ clazz, *clazz.descendants ].map(&:name) ) }
+  scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
+  scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
-  named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
+ scope :full_inbox, -> { where(:state => ["pending","hold"]) }
 
-  named_scope :with_asset, :conditions =>  'asset_id is not null'
-  named_scope :with_target, :conditions =>  'target_asset_id is not null and (target_asset_id <> asset_id)'
-  named_scope :join_asset, :joins => [ :asset ]
+  scope :with_asset,  -> { where('asset_id is not null')}
+  scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)')}
+  scope :join_asset,  -> { joins(:asset)}
+  scope :with_asset_location, -> { includes(:asset => :map) }
+
+  scope :siblings_of, ->(request) { { :conditions => ['asset_id = ? AND NOT id = ?', request.asset_id, request.id ] } }
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
-  named_scope :located, lambda {|location_id| { :joins => :location_association, :conditions =>  ['location_associations.location_id = ?', location_id ], :readonly => false } }
+  scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id ]).readonly(false) }
 
   #Use container location
-  named_scope :holder_located, lambda { |location_id|
-    {
-      :joins => ["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"],
-      :conditions => ['location_associations.location_id = ?', location_id ],
-      :readonly => false
-    }
+  scope :holder_located, ->(location_id) {
+    joins(["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"]).
+    where(['location_associations.location_id = ?', location_id ]).
+    readonly(false)
   }
-  named_scope :holder_not_control, lambda {
-    {
-      :joins => ["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"],
-      :conditions => ['hncc.sti_type != ?', 'ControlPlate' ],
-      :readonly => false
-    }
+
+  scope :holder_not_control, -> {
+    joins(["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"]).
+    where(['hncc.sti_type != ?', 'ControlPlate' ]).
+    readonly(false)
   }
-  named_scope :without_asset, :conditions =>  'asset_id is null'
-  named_scope :without_target, :conditions =>  'target_asset_id is null'
-  named_scope :ordered, :order => ["id ASC"]
-  named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
-  named_scope :hold, :conditions => {:state => "hold"}
+  scope :without_asset, -> { where('asset_id is null') }
+  scope :without_target, -> { where('target_asset_id is null') }
+  scope :excluding_states, ->(states) {
+    where([states.map{|s| '(state != ?)' }.join(" OR "), states].flatten)
+  }
+  scope :ordered, -> { order("id ASC") }
+  scope :full_inbox, -> { where(:state => ["pending","hold"]) }
+  scope :hold, -> { where(:state => "hold") }
 
-  named_scope :loaded_for_inbox_display, :include => [{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}]
-  named_scope :ordered_for_ungrouped_inbox, :order => 'id DESC'
-  named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
+  scope :loaded_for_inbox_display, -> { includes([{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}])}
+  scope :loaded_for_grouped_inbox_display, -> { includes([ {:submission => :orders}, :asset , :target_asset, :request_type ])}
 
-  named_scope :group_conditions, lambda { |conditions, variables| {
-    :conditions => [ conditions.join(' OR '), *variables ]
-  } }
+  scope :ordered_for_ungrouped_inbox, -> { order('id DESC') }
+  scope :ordered_for_submission_grouped_inbox, -> { order('submission_id DESC, id ASC') }
+
+  scope :group_conditions, ->(conditions, variables) {
+    where([ conditions.join(' OR '), *variables ])
+  }
+
   def self.group_requests(finder_method, options = {})
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
 
@@ -219,34 +272,20 @@ class Request < ActiveRecord::Base
     ))
   end
 
-  named_scope :for_submission_id, lambda { |id| { :conditions => { :submission_id => id } } }
-  named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
-  named_scope :for_study_ids, lambda { |ids|
-    {
-      :joins =>  'INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id',
-      :group => "requests.id",
-      :conditions =>['al.study_id IN (?)',ids]
-    }
-  } do
-    #fix a bug in rail, the group clause if removed
-    #therefor we need to the DISTINCT parameter
-    def count
-      super('requests.id',:distinct =>true)
-    end
-  end
-  named_scope :for_study_id, lambda { |id|
-    {
-      :joins =>  'INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id',
-      :group => "requests.id",
-      :conditions =>['al.study_id = ?',id]
-    }
-  } do
-    #fix a bug in rail, the group clause if removed
-    #therefor we need to the DISTINCT parameter
-    def count
-      super('requests.id',:distinct =>true)
-    end
-  end
+  scope :for_submission_id, ->(id) { { :conditions => { :submission_id => id } } }
+  scope :for_asset_id, ->(id) { { :conditions => { :asset_id => id } } }
+  scope :for_study_ids, ->(ids) {
+       select('DISTINCT requests.*').
+       joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
+       where(['al.study_id IN (?)',ids])
+   }
+
+  scope :for_study_id, ->(id) { for_study_ids(id) }
+
+  scope :for_group_by, ->(attributes) {
+    group(attributes).
+    select('requests.*, MAX(priority) AS max_priority, hl.container_id AS container_id, count(DISTINCT requests.id) AS request_count')
+  }
 
   def self.for_study(study)
     Request.for_study_id(study.id)
@@ -255,7 +294,7 @@ class Request < ActiveRecord::Base
     for_study_ids(studies.map(&:id))
   end
 
-  named_scope :for_initial_study_id, lambda { |id| { :conditions  => {:initial_study_id => id } }
+ scope :for_initial_study_id, ->(id) { { :conditions  => {:initial_study_id => id } }
 }
 
 
@@ -263,18 +302,22 @@ class Request < ActiveRecord::Base
 
   delegate :study, :study_id, :to => :asset, :allow_nil => true
 
-  named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
-  named_scope :for_request_types, lambda { |types| { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
+ scope :for_workflow, ->(workflow) { { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
+ scope :for_request_types, ->(types) { { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
 
-  named_scope :for_search_query, lambda { |query,with_includes|
-    { :conditions => [ 'id=?', query ] }
+ scope :for_search_query, ->(query,with_includes) {
+    where([ 'id=?', query ])
   }
 
-  named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
-  named_scope :for_studies, lambda { |*studies| { :conditions => { :initial_study_id => studies.map(&:id) } } }
+  scope :find_all_target_asset, ->(target_asset_id) {
+    where(['target_asset_id = ?', "#{target_asset_id}" ])
+  }
+  scope :for_studies, ->(*studies) {
+    where(:initial_study_id => studies.map(&:id))
+  }
 
-  named_scope :with_assets_for_starting_requests, :include => [:request_metadata,{:asset=>:aliquots,:target_asset=>:aliquots}]
-  named_scope :not_failed, :conditions => ['state != ?', 'failed']
+  scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{:asset=>:aliquots,:target_asset=>:aliquots}]) }
+  scope :not_failed, -> { where(['state != ?', 'failed']) }
 
   #------
   #TODO: use eager loading association
@@ -381,8 +424,8 @@ class Request < ActiveRecord::Base
     self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
   end
 
-  def add_comment(comment, current_user)
-    self.comments.create({:description => comment, :user_id => current_user.id})
+  def add_comment(comment, user)
+    self.comments.create({:description => comment, :user => user})
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
@@ -436,7 +479,7 @@ class Request < ActiveRecord::Base
   end
 
   def customer_accepts_responsibility!
-    self.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+    # Do nothing
   end
 
   extend Metadata
@@ -451,6 +494,19 @@ class Request < ActiveRecord::Base
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)
     # Does not need anything here
+  end
+
+  def submission_siblings
+    submission.requests.with_request_type_id(request_type_id)
+  end
+
+  # The date at which the submission was made. In most cases this will be similar to the request's created_at
+  # timestamp. We go via submission to ensure that copied requests bear the original timestamp.
+  def submitted_at
+    # Hopefully we shouldn't get any requests that don't have a submission. But validation is turned off, so
+    # we should assume it it possible.
+    return '' if submission.nil?
+    submission.created_at.strftime('%Y-%m-%d')
   end
 
   def role
@@ -468,4 +524,10 @@ class Request < ActiveRecord::Base
   def target_purpose
     nil
   end
+
+  def library_creation?
+    false
+  end
+
+  def manifest_processed!; end
 end

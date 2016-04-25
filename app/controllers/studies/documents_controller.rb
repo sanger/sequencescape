@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 class Studies::DocumentsController < ApplicationController
   before_filter :get_study_id
 
@@ -18,13 +22,13 @@ class Studies::DocumentsController < ApplicationController
     begin
       if @document.save
         flash[:notice] = "Document was saved okay"
-        redirect_to url_for(:controller => "admin/studies", :action => "show", :id => @study.id)
+        redirect_to [:admin, @study], :status => 303
       else
         render :action => "new"
       end
     rescue ActiveRecord::StatementInvalid
       flash[:error] = "Something bad happened. Perhaps karma has caught up with you?"
-      redirect_to url_for(:controller => "admin/studies", :action => "show", :id => @study.id)
+      redirect_to [:admin, @study], :status => 303
     end
   end
 
@@ -37,10 +41,10 @@ class Studies::DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     if @document.destroy
       flash[:notice] = "Document was successfully deleted"
-      redirect_to url_for(:controller => "admin/studies", :action => "show", :id => @study.id)
+      redirect_to [:admin, @study], :status => 303
     else
       flash[:error] = "Document cannot be destroyed"
-      redirect_to url_for(:controller => "admin/studies", :action => "show", :id => @study.id)
+      redirect_to [:admin, @study], :status => 303
     end
   end
 

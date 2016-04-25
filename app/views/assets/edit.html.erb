@@ -1,15 +1,19 @@
-<h1>Editing asset</h1>
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
+
+<%= page_title('Asset',"Edit #{@asset.display_name}") %>
 <table>
-<% form_for(:asset, :url => { :action => "update", :id => @asset.id }, :html => { :method => :put }) do |f| %>
+<%= form_for(@asset,url: asset_path(@asset),as:'asset') do |f| %>
   <tr><td><%= f.error_messages %></td></tr>
   <% if @current_user.administrator? %>
       <tr><td>Name: <%= f.text_field :name %></td></tr>
   <% else %>
       <tr><td>Name: <%= h(@asset.display_name) %></td></tr>
   <% end %>
-  
+
   <% if (@current_user.is_lab_manager?) && (@asset.respond_to? :plate_purpose) %>
-    <tr><td>Purpose: <%= select_tag ("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.id)) %></td></tr>
+    <tr><td>Purpose: <%= select_tag("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.try(:id))) %></td></tr>
   <% end %>
 
   <% if @asset.location %>
@@ -34,15 +38,16 @@
 </table>
 
 <script type="text/javascript">
-(function(undefined) {
- document.observe('dom:loaded', function() {
+(function($, undefined) {
+  $(document).on('dom:loaded', function() {
 
-   $$('input[type=checkbox]').each(function(checkbox) {
-     var field = $(checkbox.readAttribute('data-field'));
+   $('input[type=checkbox]').each(function(checkbox) {
+     var field = $(checkbox.attr('data-field'));
      field.disabled = true;
 
-     checkbox.observe('click', function() {
+     checkbox.on('click', function() {
       asset_qc_state = $('qc_state_value').value
+      // TODO : REMOVE EVAL()
       external_release = eval($('external_release_value').value)
       checkbox_status = this.checked
 
@@ -59,5 +64,5 @@
      });
    });
  });
-})();
+})(jQuery);
 </script>

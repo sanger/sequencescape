@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+
 # The following module is included where we have deprecated behaviours that rely on sample or request.
 module Aliquot::DeprecatedBehaviours
   module Request
@@ -5,13 +9,7 @@ module Aliquot::DeprecatedBehaviours
       base.class_eval do
         #Shouldn't be used . Here for compatibility with the previous code
         #having request having one sample
-        has_many :samples, :finder_sql => %q{
-          SELECT DISTINCT samples.*
-          FROM samples
-          JOIN aliquots ON aliquots.sample_id=samples.id
-          JOIN requests ON requests.asset_id=aliquots.receptacle_id
-          WHERE requests.id=#{id}
-        }
+        has_many :samples, :through => :asset
         deprecate :samples,  :sample_ids
       end
     end
@@ -25,6 +23,7 @@ module Aliquot::DeprecatedBehaviours
     # I don't think that they are used anywhere else apart
     # from the batch xml and can therefore probably be removed.
     # ---
+    # Nope, they are used all over the place.
     def tag
       self.target_asset.primary_aliquot.try(:tag)
     end

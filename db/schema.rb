@@ -1,22 +1,35 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
-# then regenerate this schema definition.
+# encoding: UTF-8
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your database schema. If you need
-# to create the application database on another system, you should be using db:schema:load, not running
-# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141112121621) do
+ActiveRecord::Schema.define(:version => 20160413110717) do
+
+  create_table "aliquot_indices", :force => true do |t|
+    t.integer  "aliquot_id",    :null => false
+    t.integer  "lane_id",       :null => false
+    t.integer  "aliquot_index", :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "aliquot_indices", ["aliquot_id"], :name => "index_aliquot_indices_on_aliquot_id", :unique => true
+  add_index "aliquot_indices", ["lane_id", "aliquot_index"], :name => "index_aliquot_indices_on_lane_id_and_aliquot_index", :unique => true
 
   create_table "aliquots", :force => true do |t|
-    t.integer  "receptacle_id",    :null => false
+    t.integer  "receptacle_id",                    :null => false
     t.integer  "study_id"
     t.integer  "project_id"
     t.integer  "library_id"
-    t.integer  "sample_id",        :null => false
+    t.integer  "sample_id",                        :null => false
     t.integer  "tag_id"
     t.string   "library_type"
     t.integer  "insert_size_from"
@@ -24,9 +37,10 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
+    t.integer  "tag2_id",          :default => -1, :null => false
   end
 
-  add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
+  add_index "aliquots", ["receptacle_id", "tag_id", "tag2_id"], :name => "aliquot_tags_and_tag2s_are_unique_within_receptacle", :unique => true
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
   add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
   add_index "aliquots", ["tag_id"], :name => "tag_id_idx"
@@ -291,6 +305,16 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
   add_index "billing_events", ["kind"], :name => "index_billing_events_on_kind"
   add_index "billing_events", ["reference"], :name => "index_billing_events_on_reference"
 
+  create_table "broadcast_events", :force => true do |t|
+    t.string   "sti_type"
+    t.string   "seed_type"
+    t.integer  "seed_id"
+    t.integer  "user_id"
+    t.text     "properties"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "budget_divisions", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -369,6 +393,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "queue"
   end
 
   create_table "depricated_attempts", :force => true do |t|
@@ -427,6 +452,13 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
 
   add_index "documents_shadow", ["documentable_id", "documentable_type"], :name => "index_documents_on_documentable_id_and_documentable_type"
 
+  create_table "equipment", :force => true do |t|
+    t.string "name"
+    t.string "equipment_type"
+    t.string "prefix",         :limit => 2,  :null => false
+    t.string "ean13_barcode",  :limit => 13
+  end
+
   create_table "events", :force => true do |t|
     t.integer  "eventful_id"
     t.string   "eventful_type",  :limit => 50
@@ -447,6 +479,13 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
   add_index "events", ["eventful_id"], :name => "index_events_on_eventful_id"
   add_index "events", ["eventful_type"], :name => "index_events_on_eventful_type"
   add_index "events", ["family"], :name => "index_events_on_family"
+
+  create_table "extended_validators", :force => true do |t|
+    t.string   "behaviour",  :null => false
+    t.text     "options"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "external_properties", :force => true do |t|
     t.integer  "propertied_id"
@@ -634,6 +673,25 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
+  create_table "messenger_creators", :force => true do |t|
+    t.string   "template",   :null => false
+    t.string   "root",       :null => false
+    t.integer  "purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "messenger_creators", ["purpose_id"], :name => "fk_messenger_creators_to_plate_purposes"
+
+  create_table "messengers", :force => true do |t|
+    t.integer  "target_id"
+    t.string   "target_type"
+    t.string   "root",        :null => false
+    t.string   "template",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "order_roles", :force => true do |t|
     t.string   "role"
     t.datetime "created_at"
@@ -660,6 +718,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.integer  "submission_id"
     t.integer  "pre_cap_group"
     t.integer  "order_role_id"
+    t.integer  "product_id"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -740,6 +799,13 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.datetime "updated_at"
   end
 
+  create_table "plate_creator_parent_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
   create_table "plate_creator_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
     t.integer  "plate_purpose_id", :null => false
@@ -752,6 +818,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.integer  "plate_purpose_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "valid_options"
   end
 
   add_index "plate_creators", ["name"], :name => "index_plate_creators_on_name", :unique => true
@@ -762,6 +829,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "fluidigm_barcode", :limit => 10
+    t.decimal  "dilution_factor",                :precision => 5, :scale => 2, :default => 1.0
   end
 
   add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true
@@ -801,6 +869,8 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.integer  "size",                                          :default => 96
     t.integer  "asset_shape_id",                                :default => 1,               :null => false
     t.string   "barcode_for_tecan",                             :default => "ean13_barcode", :null => false
+    t.integer  "source_purpose_id"
+    t.integer  "lifespan"
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
@@ -818,6 +888,11 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
 
   add_index "plate_volumes", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
 
+  create_table "pooling_methods", :force => true do |t|
+    t.string "pooling_behaviour", :limit => 50, :null => false
+    t.text   "pooling_options"
+  end
+
   create_table "pre_capture_pool_pooled_requests", :force => true do |t|
     t.integer "pre_capture_pool_id", :null => false
     t.integer "request_id",          :null => false
@@ -830,8 +905,46 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.datetime "updated_at"
   end
 
+  create_table "product_catalogues", :force => true do |t|
+    t.string   "name",                                             :null => false
+    t.string   "selection_behaviour", :default => "SingleProduct", :null => false
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+  end
+
+  create_table "product_criteria", :force => true do |t|
+    t.integer  "product_id",                         :null => false
+    t.string   "stage",                              :null => false
+    t.string   "behaviour",     :default => "Basic", :null => false
+    t.text     "configuration"
+    t.datetime "deprecated_at"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.integer  "version"
+  end
+
+  add_index "product_criteria", ["product_id", "stage", "version"], :name => "index_product_criteria_on_product_id_and_stage_and_version", :unique => true
+
   create_table "product_lines", :force => true do |t|
     t.string "name", :null => false
+  end
+
+  create_table "product_product_catalogues", :force => true do |t|
+    t.integer  "product_id",           :null => false
+    t.integer  "product_catalogue_id", :null => false
+    t.string   "selection_criterion"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
+
+  add_index "product_product_catalogues", ["product_catalogue_id"], :name => "fk_product_product_catalogues_to_product_catalogues"
+  add_index "product_product_catalogues", ["product_id"], :name => "fk_product_product_catalogues_to_products"
+
+  create_table "products", :force => true do |t|
+    t.string   "name",          :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.datetime "deprecated_at"
   end
 
   create_table "project_managers", :force => true do |t|
@@ -895,6 +1008,43 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "qc_metric_requests", :force => true do |t|
+    t.integer  "qc_metric_id", :null => false
+    t.integer  "request_id",   :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "qc_metric_requests", ["qc_metric_id"], :name => "fk_qc_metric_requests_to_qc_metrics"
+  add_index "qc_metric_requests", ["request_id"], :name => "fk_qc_metric_requests_to_requests"
+
+  create_table "qc_metrics", :force => true do |t|
+    t.integer  "qc_report_id", :null => false
+    t.integer  "asset_id",     :null => false
+    t.text     "metrics"
+    t.string   "qc_decision",  :null => false
+    t.boolean  "proceed"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "qc_metrics", ["asset_id"], :name => "fk_qc_metrics_to_assets"
+  add_index "qc_metrics", ["qc_report_id"], :name => "fk_qc_metrics_to_qc_reports"
+
+  create_table "qc_reports", :force => true do |t|
+    t.string   "report_identifier",   :null => false
+    t.integer  "study_id",            :null => false
+    t.integer  "product_criteria_id", :null => false
+    t.boolean  "exclude_existing",    :null => false
+    t.string   "state"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "qc_reports", ["product_criteria_id"], :name => "fk_qc_reports_to_product_criteria"
+  add_index "qc_reports", ["report_identifier"], :name => "index_qc_reports_on_report_identifier", :unique => true
+  add_index "qc_reports", ["study_id"], :name => "fk_qc_reports_to_studies"
 
   create_table "qcable_creators", :force => true do |t|
     t.integer  "lot_id",     :null => false
@@ -991,6 +1141,12 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
+  create_table "request_purposes", :force => true do |t|
+    t.string   "key",        :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "request_quotas_bkp", :force => true do |t|
     t.integer "request_id", :null => false
     t.integer "quota_id",   :null => false
@@ -1034,7 +1190,19 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.boolean  "deprecated",                        :default => false, :null => false
     t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
+    t.integer  "pooling_method_id"
+    t.integer  "request_purpose_id"
   end
+
+  create_table "request_types_extended_validators", :force => true do |t|
+    t.integer  "request_type_id",       :null => false
+    t.integer  "extended_validator_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "request_types_extended_validators", ["extended_validator_id"], :name => "fk_request_types_extended_validators_to_extended_validators"
+  add_index "request_types_extended_validators", ["request_type_id"], :name => "fk_request_types_extended_validators_to_request_types"
 
   create_table "requests", :force => true do |t|
     t.integer  "initial_study_id"
@@ -1055,6 +1223,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.integer  "priority",                         :default => 0
     t.string   "sti_type"
     t.integer  "order_id"
+    t.integer  "request_purpose_id"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
@@ -1062,6 +1231,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
   add_index "requests", ["initial_study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
   add_index "requests", ["initial_study_id"], :name => "index_request_on_project_id"
   add_index "requests", ["item_id"], :name => "index_request_on_item_id"
+  add_index "requests", ["request_type_id", "state"], :name => "request_type_id_state_index"
   add_index "requests", ["state", "request_type_id", "initial_study_id"], :name => "request_project_index"
   add_index "requests", ["submission_id"], :name => "index_requests_on_submission_id"
   add_index "requests", ["target_asset_id"], :name => "index_requests_on_target_asset_id"
@@ -1082,6 +1252,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
+    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
@@ -1338,9 +1509,11 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.string   "dac_policy_title"
     t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
     t.string   "data_access_group"
+    t.string   "prelim_id"
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"
+  add_index "study_metadata", ["prelim_id"], :name => "index_study_metadata_on_prelim_id"
   add_index "study_metadata", ["study_id"], :name => "index_study_metadata_on_study_id"
 
   create_table "study_relation_types", :force => true do |t|
@@ -1416,9 +1589,11 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.integer  "product_line_id"
     t.integer  "superceded_by_id",      :default => -1, :null => false
     t.datetime "superceded_at"
+    t.integer  "product_catalogue_id"
   end
 
   add_index "submission_templates", ["name", "superceded_by_id"], :name => "name_and_superceded_by_unique_idx", :unique => true
+  add_index "submission_templates", ["product_catalogue_id"], :name => "fk_submission_templates_to_product_catalogues"
 
   create_table "submission_workflows", :force => true do |t|
     t.string   "key",        :limit => 50
@@ -1468,7 +1643,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.string   "contact_name"
     t.string   "phone_number"
     t.string   "fax"
-    t.string   "url"
+    t.string   "supplier_url"
     t.string   "abbreviation"
   end
 
@@ -1476,6 +1651,32 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
   add_index "suppliers", ["created_at"], :name => "index_suppliers_on_created_at"
   add_index "suppliers", ["name"], :name => "index_suppliers_on_name"
   add_index "suppliers", ["updated_at"], :name => "index_suppliers_on_updated_at"
+
+  create_table "tag2_layout_template_submissions", :force => true do |t|
+    t.integer  "submission_id",           :null => false
+    t.integer  "tag2_layout_template_id", :null => false
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+  end
+
+  add_index "tag2_layout_template_submissions", ["submission_id", "tag2_layout_template_id"], :name => "tag2_layouts_used_once_per_submission", :unique => true
+  add_index "tag2_layout_template_submissions", ["tag2_layout_template_id"], :name => "fk_tag2_layout_template_submissions_to_tag2_layout_templates"
+
+  create_table "tag2_layout_templates", :force => true do |t|
+    t.string   "name",       :null => false
+    t.integer  "tag_id",     :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "tag2_layouts", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "plate_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "source_id"
+  end
 
   create_table "tag_groups", :force => true do |t|
     t.string   "name"
@@ -1504,6 +1705,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.datetime "updated_at"
     t.string   "substitutions",       :limit => 1525
     t.string   "walking_algorithm",                   :default => "TagLayout::WalkWellsByPools"
+    t.integer  "initial_tag",                         :default => 0,                             :null => false
   end
 
   create_table "tags", :force => true do |t|
@@ -1562,7 +1764,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.integer  "source_id"
     t.integer  "destination_id"
     t.string   "destination_type"
-    t.string   "transfers",        :limit => 1024
+    t.text     "transfers"
     t.integer  "bulk_transfer_id"
   end
 
@@ -1626,6 +1828,7 @@ ActiveRecord::Schema.define(:version => 20141112121621) do
     t.string   "gender"
     t.float    "measured_volume"
     t.float    "initial_volume"
+    t.float    "molarity"
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"

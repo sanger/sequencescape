@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2015,2016 Genome Research Ltd.
+
 require 'test_helper'
 
 class BaitLibraryTypeTest < ActiveSupport::TestCase
@@ -5,10 +9,10 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
   context 'When a bait library exists' do
 
     setup do
-      @bait_library = Factory :bait_library
+      @bait_library = create :bait_library
     end
 
-    should "bait library types exist" do
+    should "Bait Library Types exist" do
       assert BaitLibraryType.count > 0
     end
 
@@ -21,27 +25,27 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
   context 'A request with a bait library' do
 
     setup do
-      @sample = Factory :sample
+      @sample = create :sample
 
-      @pulldown_request_type = Factory :request_type, :name => "Bait Pulldown", :target_asset_type => nil
-      @sequencing_request_type = Factory :request_type, :name => "Single ended sequencing2"
-      @submission  = Factory::submission(:request_types => [@pulldown_request_type, @sequencing_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
-      @item = Factory :item, :submission => @submission
+      @pulldown_request_type = create :request_type, :name => "Bait Pulldown", :target_asset_type => nil
+      @sequencing_request_type = create :request_type, :name => "Single ended sequencing2"
+      @submission  = FactoryHelp::submission(:request_types => [@pulldown_request_type, @sequencing_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
+      @item = create :item, :submission => @submission
 
-      @genotype_pipeline = Factory :pipeline, :name =>"Cluster formation SE2", :request_types => [@sequencing_request_type]
-      @pulldown_pipeline = Factory :pipeline, :name => "Bait Pulldown", :request_types => [@pulldown_request_type], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
+      @genotype_pipeline = create :pipeline, :name =>"Cluster formation SE2", :request_types => [@sequencing_request_type]
+      @pulldown_pipeline = create :pipeline, :name => "Bait Pulldown", :request_types => [@pulldown_request_type], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
-      @request1 = Factory(
+      @request1 = create(
         :request_without_assets,
         :item         => @item,
-        :asset        => Factory(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) },
+        :asset        => create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) },
         :target_asset => nil,
         :submission   => @submission,
         :request_type => @pulldown_request_type,
         :pipeline     => @pulldown_pipeline
       )
 
-      #@request1.request_metadata.bait_library = Factory(:bait_library)
+      #@request1.request_metadata.bait_library = create(:bait_library)
     end
 
     should 'have a bait library type' do

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+
 class Api::StudyIO < Api::Base
   module Extensions
     module ClassMethods
@@ -10,14 +14,12 @@ class Api::StudyIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, {
-          :include => [
-            :uuid_object, {
-              :study_metadata => [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type],
-              :roles => :users
-            }
-          ]
-        }
+        scope :including_associations_for_json, -> { includes([
+          :uuid_object, {
+            :study_metadata => [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type],
+            :roles => :users
+          }
+        ])}
       end
     end
 
@@ -57,6 +59,7 @@ class Api::StudyIO < Api::Base
     with_association(:reference_genome, :lookup_by => :name) do
       map_attribute_to_json_attribute(:name, 'reference_genome')
     end
+    map_attribute_to_json_attribute(:prelim_id, 'prelim_id')
     map_attribute_to_json_attribute(:study_ebi_accession_number, 'accession_number')
     map_attribute_to_json_attribute(:study_description         , 'description')
     map_attribute_to_json_attribute(:study_abstract            , 'abstract')
@@ -89,6 +92,8 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:data_access_group)
 
     map_attribute_to_json_attribute(:bam, 'alignments_in_bam')
+    map_attribute_to_json_attribute(:prelim_id)
+    map_attribute_to_json_attribute(:hmdmc_approval_number,'hmdmc_number')
   end
 
   self.related_resources = [ :samples, :projects ]

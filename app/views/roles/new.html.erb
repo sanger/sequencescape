@@ -1,5 +1,9 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <h1>New role</h1>
-<% form_for(@role) do |f| %>
+<%= form_for(@role, :url=>admin_roles_path) do |f| %>
   <%= f.error_messages %>
   <p>
      <label for='role_form'>Role Name:</label> <%= f.text_field :name %>
@@ -9,4 +13,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', roles_path %>
+<%= link_to 'Back', admin_roles_path %>

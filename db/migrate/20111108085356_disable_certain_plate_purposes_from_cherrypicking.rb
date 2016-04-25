@@ -1,12 +1,15 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011 Genome Research Ltd.
 class DisableCertainPlatePurposesFromCherrypicking < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
     class Relationship < ActiveRecord::Base
-      set_table_name('plate_purpose_relationships')
+      self.table_name =('plate_purpose_relationships')
       belongs_to :parent, :class_name => 'DisableCertainPlatePurposesFromCherrypicking::PlatePurpose'
       belongs_to :child, :class_name => 'DisableCertainPlatePurposesFromCherrypicking::PlatePurpose'
     end
 
-    set_table_name('plate_purposes')
+    self.table_name =('plate_purposes')
 
     has_many :child_relationships, :class_name => 'DisableCertainPlatePurposesFromCherrypicking::PlatePurpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
     has_many :child_plate_purposes, :through => :child_relationships, :source => :child

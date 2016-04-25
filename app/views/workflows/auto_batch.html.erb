@@ -1,3 +1,7 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <% add :title, "Process samples through a new run of this automated pipeline." %>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@workflow.pipeline.id) %>
 
@@ -28,9 +32,9 @@
 <table width="100%" cellspacing="0" cellpadding="4">
   <thead>
     <tr>
-      <th class="label">Library</th>
+      <th>Library</th>
       <% task.descriptors.sort_by {|d| d.name }.each do |descriptor| %>
-        <th class="label"><%= descriptor.name %></th>
+        <th><%= descriptor.name %></th>
       <% end %>
     </tr>
   </thead>

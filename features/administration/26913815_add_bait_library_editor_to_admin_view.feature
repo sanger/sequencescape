@@ -10,7 +10,7 @@ Feature: Manage a list of bait libraries
     Then I should see "Bait library management"
     When I follow "Bait library management"
     Then I should be on the bait library management page
-      And I should see "Listing All Bait Libraries"
+      And I should see "Bait Libraries Index"
       And I should see "New Bait Library"
       And the bait library index page should look like:
         | Name                | Supplier | Target Species | Bait Library Type | Edit | Delete |
@@ -22,13 +22,13 @@ Feature: Manage a list of bait libraries
   Scenario: Non-administrators should not see the bait library editor
     Given I am logged in as "user"
       And I go to the bait library management page
-    Then I should not see "Listing All Bait Libraries"
+    Then I should not see "Bait Libraries Index"
 
   Scenario: Administrators should be able to edit bait libraries
     Given I am a "administrator" user logged in as "admin"
       And I go to the bait library management page
       And I follow "Edit Human all exon 50MB"
-    Then I should see "Editing Bait Library"
+    Then I should see "Bait Library Edit"
     When I fill in "Name" with "Dragon all exon"
       And I select "Agilent" from "Supplier"
       And I fill in "Target species" with "Dracos"
@@ -47,7 +47,7 @@ Feature: Manage a list of bait libraries
     Given I am a "administrator" user logged in as "admin"
       And I go to the bait library management page
       And I follow "New Bait Library"
-    Then I should see "New Bait Library"
+    Then I should see "Bait Library New"
     When I fill in "Name" with "Centaur all exon"
       And I select "Agilent" from "Supplier"
       And I fill in "Target species" with "Centaur(Greek)"
@@ -87,8 +87,8 @@ Feature: Manage a list of bait libraries
   Scenario: Administrators should be able to view library types and suppliers
     Given I am an "administrator" user logged in as "admin"
       And I am on the bait library management page
-    Then  I should see "Listing All Bait Library Types"
-      And I should see "Listing All Bait Library Suppliers"
+    Then  I should see "Bait Library Types Index"
+      And I should see "Bait Library Suppliers Index"
       And the bait library supplier index should look like:
         | Name    | Edit | Delete |
         | Agilent | Edit | Delete |
@@ -102,14 +102,14 @@ Feature: Manage a list of bait libraries
     Given I am an "administrator" user logged in as "admin"
       And I am on the bait library management page
       And I follow "Edit Agilent"
-    Then I should see "Editing Bait Library Supplier"
+    Then I should see "Bait Library Supplier Edit"
     When I fill in "Name" with "Other Supplier"
       And I press "Update"
     Then I should see "Supplier was successfully updated."
       And I should see "Other Supplier"
       And I should not see "Agilent"
     When I follow "New Bait Library Supplier"
-    Then I should see "New Bait Library Supplier"
+    Then I should see "Bait Library Supplier New"
     When I fill in "Name" with "New Supplier"
       And I press "Create"
     Then I should see "Supplier was successfully created."
@@ -122,14 +122,14 @@ Feature: Manage a list of bait libraries
     Given I am an "administrator" user logged in as "admin"
       And I am on the bait library management page
       And I follow "Edit Standard"
-    Then I should see "Editing Bait Library Type"
+    Then I should see "Bait Library Type Edit"
     When I fill in "Name" with "Normal"
       And I press "Update"
     Then I should see "Bait Library Type was successfully updated."
       And I should see "Normal"
       And I should not see "Standard"
     When I follow "New Bait Library Type"
-    Then I should see "New Bait Library Type"
+    Then I should see "Bait Library Type New"
     When I fill in "Name" with "Rare"
       And I press "Create"
     Then I should see "Bait Library Type was successfully created."
@@ -161,7 +161,7 @@ Feature: Manage a list of bait libraries
       And I should not see "Gone Bankrupt Inc."
       And I should see "Custom - Customer"
 
-  Scenario: I should not be able to delete in use bait library types etc.
+  Scenario: I should not be able to delete in use Bait Library Types etc.
     Given I am an "administrator" user logged in as "admin"
       And I have a bait library called "Dragon all exon"
       And the last bait library has type "Active Type"
@@ -182,8 +182,8 @@ Feature: Manage a list of bait libraries
       And I am on the Submissions Inbox page
     When I follow "new Submission"
      And I select "Pulldown ISC - Single ended sequencing" from "submission_template_id"
-     Then I should see "Human all exon 50MB"
-     And I should not see "Delete This"
+     Then I should see the select field "Bait library" with the option "Human all exon 50MB"
+     And I should see the select field "Bait library" without the option "Delete This"
 
   @api @json @pulldown @submission @single-sign-on @new-api @barcode-service @pulldown_api
   Scenario: Invalid submission bait libraries are checked at creation

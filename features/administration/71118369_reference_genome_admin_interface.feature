@@ -43,7 +43,7 @@ Feature: Add interface to update reference genomes
     Then I should see "Create study"
     When I follow "Create study"
     And I fill in "study_name" with "Cucumber1"
-    Then I should see "Mus_musculus (NCBIm37)"
+    Then I should see the required select field "Reference genome" with the option "Mus_musculus (NCBIm37)"
 
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I fill in "Study description" with "parp parp"

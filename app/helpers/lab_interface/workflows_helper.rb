@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 module LabInterface::WorkflowsHelper
 
   # Returns descriptor from params, if it's not there try the @study.
@@ -25,6 +29,19 @@ module LabInterface::WorkflowsHelper
 
   def not_so_shorten(string)
     truncate string, 15, "..."
+  end
+
+  def tag_index_for(request)
+    batch_tag_index[request.asset_id]
+  end
+
+  def batch_tag_index
+    @tag_hash ||= Hash[Tag.find(:all,
+      :joins=>'INNER JOIN aliquots ON aliquots.tag_id = tags.id',
+      :select=>'tags.map_id, aliquots.receptacle_id AS receptacle_id',
+      :conditions=>['aliquots.receptacle_id IN (?)',@batch.requests.map(&:asset_id).uniq]).map do |tag|
+      [tag.receptacle_id,tag.map_id]
+    end].tap {|th| th.default = '-' }
   end
 
   def qc_select_box(request, status, html_options={})

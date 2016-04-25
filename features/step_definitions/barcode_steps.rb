@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Then /^I should see barcode "([^"]*)"$/ do |machine_barcode|
   barcode = Barcode.barcode_to_human(machine_barcode)
   step %Q{I should see "#{barcode}"}
@@ -15,6 +19,10 @@ Given /^the plate barcode printing service will error$/ do
   FakeBarcodeService.instance.push_printing_error
 end
 
+
+Given /^the plate barcode service is available with barcodes "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
+  (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
+end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
   (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
@@ -41,6 +49,10 @@ Transform /^the plate with ID (\d+)$/ do |id|
   Plate.find(id)
 end
 
+Transform /^the asset rack with ID (\d+)$/ do |id|
+  AssetRack.find(id)
+end
+
 Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
   asset.update_attributes!(:barcode => Barcode.number_to_human(barcode.to_i))
 end
@@ -53,6 +65,14 @@ end
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   SampleTube.find(:all,:order=>'id ASC').each do |asset|
+    asset.update_attributes!(:barcode=>counter)
+    counter += 1
+  end
+end
+
+Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
+  counter = initial.to_i
+  LibraryTube.find(:all,:order=>'id ASC').each do |asset|
     asset.update_attributes!(:barcode=>counter)
     counter += 1
   end

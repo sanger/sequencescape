@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013,2015 Genome Research Ltd.
+
 Given /^the plate with ID (\d+) has attatched QC data with a UUID of "(.*?)"$/ do |id, uuid|
   filename = File.expand_path(File.join(Rails.root, %w{test data example_file.txt}))
   File.open(filename) do |file|
@@ -9,7 +13,7 @@ end
 Then /^the content should be the Qc Data$/ do
   filename = File.expand_path(File.join(Rails.root, %w{test data example_file.txt}))
   File.open(filename) do |file|
-     assert_equal(file.read, page.body)
+     assert_equal(file.read, page.source)
   end
   assert_equal("attachment; filename=\"example_file.txt\"", page.driver.response_headers["Content-Disposition"])
 end

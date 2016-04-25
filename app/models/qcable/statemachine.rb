@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 module Qcable::Statemachine
 
   module ClassMethods
@@ -20,20 +24,17 @@ module Qcable::Statemachine
 
       ## State machine
       aasm_column :state
+
       aasm_state :created
       aasm_state :pending,        :enter => :on_stamp
       aasm_state :failed,         :enter => :on_failed
       aasm_state :passed,         :enter => :on_passed
-      aasm_state :available,     :enter => :on_released
+      aasm_state :available,      :enter => :on_released
       aasm_state :destroyed,      :enter => :on_destroyed
       aasm_state :qc_in_progress, :enter => :on_qc
       aasm_state :exhausted,      :enter => :on_used
 
-      aasm_initial_state :created
-
-      aasm_event :hold do
-        transitions :to => :hold, :from => [ :pending ]
-      end
+      aasm_initial_state Proc.new {|qcable| qcable.default_state }
 
       # State Machine events
       aasm_event :do_stamp do
@@ -65,10 +66,10 @@ module Qcable::Statemachine
       end
 
       # new version of combinable named_scope
-      named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
+     scope :for_state, ->(state) { { :conditions => { :state => state } } }
 
-      named_scope :available, :conditions => {:state => :available}
-      named_scope :unavailable, :conditions => {:state => [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]}
+     scope :available,   -> { where(:state => :available) }
+     scope :unavailable, -> { where(:state => [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]) }
 
     end
   end
@@ -80,6 +81,12 @@ module Qcable::Statemachine
   #++
   def on_stamp
     lot.template.stamp_to(asset)
+  end
+
+  def default_state
+    # We validate the presence of lot, however initial state gets called BEFORE we reach validation
+    return :created if lot.nil?
+    asset_purpose.default_state.to_sym || :created
   end
 
   def on_failed; end

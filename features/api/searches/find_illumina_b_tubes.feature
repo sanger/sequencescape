@@ -1,4 +1,4 @@
-@api @json @asset @search @single-sign-on @new-api @barcode_search @barcode-service
+@api @json @asset @search @single-sign-on @new-api @barcode_search @barcode-service @ci_fail
 Feature: Searching for assets by barcode
   Background:
     Given all of this is happening at exactly "12-Jun-2012 23:00:00+01:00"
@@ -6,7 +6,7 @@ Feature: Searching for assets by barcode
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
     Given the UUID for the search "Find Illumina-B tubes" is "00000000-1111-2222-3333-444444444444"
 
@@ -69,13 +69,13 @@ And I have a "full" authorised user with the key "cucumber"
           {"size":2,
            "searches":
             [
-              {"name":"stock tube current",
-              "purpose":{"name":"ILB_STD_STOCK"},
-              "uuid":"00000000-1111-2222-3333-000000000001",
-              "state":"started"},
               {"name":"stock tube passed",
               "purpose":{"name":"ILB_STD_MX"},
               "uuid":"00000000-1111-2222-3333-000000000004",
+              "state":"started"},
+              {"name":"stock tube current",
+              "purpose":{"name":"ILB_STD_STOCK"},
+              "uuid":"00000000-1111-2222-3333-000000000001",
               "state":"started"}
               ]
            }

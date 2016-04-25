@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013 Genome Research Ltd.
 class AddTaskDescriptors < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
@@ -6,7 +9,7 @@ class AddTaskDescriptors < ActiveRecord::Migration
           old_task = Task.find(:first, :conditions=>{:name=>task.name, :pipeline_workflow_id => old_workflow.id})
           old_task.descriptors.each do |descriptor|
             next if filtered_desriptors(task).include?(descriptor.name)
-            new_descriptor = descriptor.clone
+            new_descriptor = descriptor.dup
             new_descriptor.task = task
             new_descriptor.save!
           end

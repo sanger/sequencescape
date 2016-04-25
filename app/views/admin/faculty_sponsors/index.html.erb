@@ -1,3 +1,7 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <h1>Listing All Faculty Sponsors</h1>
 <table id="faculty_sponsor_list" width="100%" class="sortable" cellpadding="3" cellspacing="0">
   <thead>
@@ -11,10 +15,10 @@
   <tbody>
   <% for faculty_sponsor in @faculty_sponsors %>
     <tr>
-      <td><%= link_to faculty_sponsor.name, faculty_sponsor_path(faculty_sponsor), :title => "View #{faculty_sponsor.name}" %></td>
+      <td><%= link_to faculty_sponsor.name, admin_faculty_sponsor_path(faculty_sponsor), :title => "View #{faculty_sponsor.name}" %></td>
       <td><%= faculty_sponsor.count_studies %></td>
-      <td><%= link_to 'Edit', edit_faculty_sponsor_path(faculty_sponsor), :title => "Edit #{faculty_sponsor.name}" %></td>
-      <td><%= link_to 'Delete', faculty_sponsor, :title => "Delete #{faculty_sponsor.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%= link_to 'Edit', edit_admin_faculty_sponsor_path(faculty_sponsor), :title => "Edit #{faculty_sponsor.name}" %></td>
+      <td><%= link_to 'Delete', [:admin,faculty_sponsor], :title => "Delete #{faculty_sponsor.name}", :confirm => 'Are you sure?', :method => :delete %></td>
     </tr>
   <% end %>
   </tbody>
@@ -22,4 +26,4 @@
 
 <br />
 
-<%= link_to 'New Faculty Sponsor', new_faculty_sponsor_path %>
+<%= link_to 'New Faculty Sponsor', new_admin_faculty_sponsor_path %>

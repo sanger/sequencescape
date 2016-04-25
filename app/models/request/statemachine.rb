@@ -1,10 +1,16 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
+require 'aasm'
+
 module Request::Statemachine
   COMPLETED_STATE = [ 'passed', 'failed' ]
   OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
-  QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
-  QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
+  ACTIVE = QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
+  INACTIVE = QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
   module ClassMethods
     def redefine_state_machine(&block)
@@ -30,17 +36,16 @@ module Request::Statemachine
   def self.included(base)
     base.class_eval do
       extend ClassMethods
-      include Request::BillingStrategy
 
       ## State machine
       aasm_column :state
       aasm_state :pending
-      aasm_state :started,   :enter => :on_started
-      aasm_state :failed,    :enter => :on_failed
-      aasm_state :passed,    :enter => :on_passed
-      aasm_state :cancelled, :enter => :on_cancelled
-      aasm_state :blocked,   :enter => :on_blocked
-      aasm_state :hold,      :enter => :on_hold
+      aasm_state :started,   :after_enter => :on_started
+      aasm_state :failed,    :after_enter => :on_failed
+      aasm_state :passed,    :after_enter => :on_passed
+      aasm_state :cancelled, :after_enter => :on_cancelled
+      aasm_state :blocked,   :after_enter => :on_blocked
+      aasm_state :hold,      :after_enter => :on_hold
       aasm_initial_state :pending
 
       aasm_event :hold do
@@ -53,16 +58,19 @@ module Request::Statemachine
       end
 
       aasm_event :pass do
-        transitions :to => :passed, :from => [:started], :on_transition => :charge_to_project
+        transitions :to => :passed, :from => [:started]
       end
 
       aasm_event :fail do
-        transitions :to => :failed, :from => [:started], :on_transition => :charge_internally
+        transitions :to => :failed, :from => [:started]
       end
 
-      aasm_event :change_decision do
-        transitions :to => :failed, :from => [:passed],  :on_transition => :refund_project
-        transitions :to => :passed, :from => [:failed], :on_transition => :charge_to_project
+      aasm_event :retrospective_pass do
+        transitions :to => :passed, :from => [:failed]
+      end
+
+      aasm_event :retrospective_fail do
+        transitions :to => :failed, :from => [:passed]
       end
 
       aasm_event :block do
@@ -98,25 +106,34 @@ module Request::Statemachine
       end
 
       aasm_event :cancel_before_started do
-        transitions :to => :cancelled, :from => [:pending]
+        transitions :to => :cancelled, :from => [:pending, :hold]
       end
 
-      # new version of combinable named_scope
-      named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
+      aasm_event :submission_cancelled do
+        transitions :to => :cancelled, :from => [:pending,:cancelled]
+      end
 
-      named_scope :completed, :conditions => {:state => COMPLETED_STATE}
-      named_scope :passed, :conditions => {:state => "passed"}
-      named_scope :failed, :conditions => {:state => "failed"}
-      named_scope :pipeline_pending, :conditions => {:state => "pending"} #  we don't want the blocked one here
-      named_scope :pending, :conditions => {:state => ["pending", "blocked"]} # block is a kind of substate of pending
+      aasm_event :fail_from_upstream do
+        transitions :to => :cancelled, :from => [:pending]
+        transitions :to => :failed,    :from => [:started]
+        transitions :to => :failed,    :from => [:passed]
+      end
 
-      named_scope :started, :conditions => {:state => "started"}
-      named_scope :cancelled, :conditions => {:state => "cancelled"}
-      named_scope :aborted, :conditions => {:state => "aborted"}
+     scope :for_state, ->(state) { where(:state => state) }
 
-      named_scope :open, :conditions => {:state => OPENED_STATE}
-      named_scope :closed, :conditions => {:state => ["passed", "failed", "cancelled", "aborted"]}
-      named_scope :hold, :conditions => {:state => "hold"}
+     scope :completed,        -> { where(:state => COMPLETED_STATE) }
+     scope :passed,           -> { where(:state => "passed") }
+     scope :failed,           -> { where(:state => "failed") }
+     scope :pipeline_pending, -> { where(:state => "pending") } #  we don't want the blocked one here }
+     scope :pending,          -> { where(:state => ["pending", "blocked"]) } # block is a kind of substate of pending }
+
+     scope :started,          -> { where(:state => "started") }
+     scope :cancelled,        -> { where(:state => "cancelled") }
+     scope :aborted,          -> { where(:state => "aborted") }
+
+     scope :opened,           -> { where(:state => OPENED_STATE) }
+     scope :closed,           -> { where(:state => ["passed", "failed", "cancelled", "aborted"]) }
+     scope :hold,             -> { where(:state => "hold") }
     end
   end
 
@@ -129,13 +146,25 @@ module Request::Statemachine
   # On starting a request the aliquots are copied from the source asset to the target
   # and updated with the project and study information from the request itself.
   def on_started
+    transfer_aliquots
+  end
+
+  def transfer_aliquots
     target_asset.aliquots << asset.aliquots.map do |aliquot|
-      aliquot.clone.tap do |clone|
+      aliquot.dup.tap do |clone|
         clone.study_id   = initial_study_id   || aliquot.study_id
         clone.project_id = initial_project_id || aliquot.project_id
       end
     end
   end
+
+  def change_decision!
+    Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
+    return retrospective_fail! if passed?
+    return retrospective_pass! if failed?
+    raise StandardError, "Can only use change decision on passed or failed requests"
+  end
+  deprecate :change_decision!
 
   def on_failed
 
@@ -157,6 +186,14 @@ module Request::Statemachine
 
   end
 
+  def failed_upstream!
+    fail_from_upstream! unless failed?
+  end
+
+  def failed_downstream!
+    # Do nothing by default
+  end
+
   def finished?
     self.passed? || self.failed?
   end
@@ -171,6 +208,10 @@ module Request::Statemachine
 
   def open?
     ["pending", "started"].include?(self.state)
+  end
+
+  def cancellable?
+    ["pending", "cancelled"].include?(self.state)
   end
 
   def transition_to(target_state)

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
+
 Given /^no order templates exist$/ do
   SubmissionTemplate.destroy_all
 end
@@ -28,11 +32,11 @@ Given /^I have an order created with the following details based on the template
 end
 
 Given /^an order template with UUID "([^"]+)" exists$/ do |uuid_value|
-  set_uuid_for(Factory(:order_template), uuid_value)
+  set_uuid_for(FactoryGirl.create(:submission_template), uuid_value)
 end
 
 Given /^an order template called "([^\"]+)" with UUID "([^"]+)"$/ do |name, uuid_value|
-  set_uuid_for(Factory(:order_template, :name => name), uuid_value)
+  set_uuid_for(FactoryGirl.create(:submission_template, :name => name), uuid_value)
 end
 
 Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name,uuid_value|

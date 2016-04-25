@@ -1,10 +1,14 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+require 'lib/event_factory'
 class ProjectsController < ApplicationController
   before_filter :login_required
   before_filter :set_variables_for_project, :only => [:show, :edit, :update, :destroy, :studies]
  #TODO: before_filter :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
-    @projects = Project.all(:order => 'name ASC').paginate(:page => params[:page])
+    @projects = Project.alphabetical.page(params[:page])
 
     respond_to do |format|
       format.html
@@ -60,7 +64,7 @@ class ProjectsController < ApplicationController
       format.json { render :json => @project, :status => :created, :location => @project }
     end
   rescue ActiveRecord::RecordInvalid => exception
-    action_flash[:error] = "Problems creating your new project"
+    flash.now[:error] = "Problems creating your new project"
     respond_to do |format|
       format.html {
         render :action => "new"

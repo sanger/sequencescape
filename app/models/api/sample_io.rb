@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 class Api::SampleIO < Api::Base
   module Extensions
     module ClassMethods
@@ -10,7 +14,7 @@ class Api::SampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [:uuid_object, { :sample_metadata => :reference_genome }, { :studies => [ :study_metadata, :uuid_object ] } ] }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { :sample_metadata => :reference_genome }, { :studies => [ :study_metadata, :uuid_object ] } ])}
         alias_method(:json_root, :url_name)
       end
     end
@@ -67,8 +71,7 @@ class Api::SampleIO < Api::Base
 
   extra_json_attributes do |object, json_attributes|
     if json_attributes['reference_genome'].blank?
-      metadata = object.try(:studies).try(:first).try(:study_metadata)
-      json_attributes["reference_genome"] = metadata.reference_genome.name unless metadata.nil?
+      json_attributes['reference_genome'] = nil
     end
   end
 

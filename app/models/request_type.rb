@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class RequestType < ActiveRecord::Base
 
   include RequestType::Validation
@@ -5,7 +9,7 @@ class RequestType < ActiveRecord::Base
   class DeprecatedError < RuntimeError; end
 
   class RequestTypePlatePurpose < ActiveRecord::Base
-    set_table_name('request_type_plate_purposes')
+    self.table_name =('request_type_plate_purposes')
 
     belongs_to :request_type
     validates_presence_of :request_type
@@ -16,7 +20,7 @@ class RequestType < ActiveRecord::Base
 
   include Workflowed
   include Uuid::Uuidable
-  include Named
+  include SharedBehaviour::Named
 
   has_many :requests, :inverse_of => :request_type
   has_many :pipelines_request_types, :inverse_of => :request_type
@@ -24,6 +28,10 @@ class RequestType < ActiveRecord::Base
   has_many :library_types_request_types, :inverse_of=> :request_type
   has_many :library_types, :through => :library_types_request_types
   has_many :request_type_validators, :class_name => 'RequestType::Validator'
+
+  belongs_to :pooling_method, :class_name => 'RequestType::PoolingMethod'
+  has_many :request_type_extended_validators, :class_name => 'ExtendedValidator::RequestTypeExtendedValidator'
+  has_many :extended_validators, :through => :request_type_extended_validators, :dependent => :destroy
 
   def default_library_type
     library_types.find(:first,:conditions=>{:library_types_request_types=>{:is_default=>true}})
@@ -35,13 +43,19 @@ class RequestType < ActiveRecord::Base
   belongs_to :product_line
 
   # Couple of named scopes for finding billable types
-  named_scope :billable, { :conditions => { :billable => true } }
-  named_scope :non_billable, { :conditions => { :billable => false } }
+ scope :billable, -> { where( :billable => true ) }
+ scope :non_billable, -> { where( :billable => false ) }
 
   # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
   has_many :plate_purposes, :class_name => 'RequestType::RequestTypePlatePurpose'
   has_many :acceptable_plate_purposes, :through => :plate_purposes, :source => :plate_purpose
+
+  # While a request type describes what a request is, a request purpose describes why it is being done.
+  # ie. standrad, qc, internal
+  # The value on request type acts as a default for requests
+  belongs_to :request_purpose
+  validates_presence_of :request_purpose
 
   MORPHOLOGIES  = [
     LINEAR = 0,   # one-to-one
@@ -59,15 +73,13 @@ class RequestType < ActiveRecord::Base
 
   delegate :accessioning_required?, :to => :request_class
 
-  named_scope :applicable_for_asset, lambda { |asset|
-    {
-      :conditions => [
+ scope :applicable_for_asset, ->(asset) {
+    where([
         'asset_type = ?
          AND request_class_name != "ControlRequest"
          AND deprecated IS FALSE',
          asset.asset_type_for_request_types.name
-      ]
-    }
+      ])
   }
 
   # Helper method for generating a request constructor, like 'create!'
@@ -82,6 +94,7 @@ class RequestType < ActiveRecord::Base
         attributes ||= {}
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self
+          request.request_purpose ||= self.request_purpose
           yield(request) if block_given?
         end.tap do |request|
           requests << request
@@ -116,6 +129,11 @@ class RequestType < ActiveRecord::Base
     find_by_key("transfer") or raise "Cannot find transfer request type"
   end
 
+  def self.initial_transfer
+    find_by_key("initial_transfer") or raise "Cannot find initial request type"
+  end
+
+
   def extract_metadata_from_hash(request_options)
     # WARNING: we need a copy of the options (we delete stuff from attributes)
     return {} unless request_options
@@ -143,4 +161,8 @@ class RequestType < ActiveRecord::Base
     else                               target_asset_type.constantize.create!(&block)
     end
   end
+
+  delegate :pool_count,             :to => :pooling_method
+  delegate :pool_index_for_asset,   :to => :pooling_method
+  delegate :pool_index_for_request, :to => :pooling_method
 end

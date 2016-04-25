@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 module Tasks::CherrypickHandler
   def self.included(base)
     base.class_eval do
@@ -48,7 +52,7 @@ module Tasks::CherrypickHandler
     end
 
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
-    action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
+    flash.now[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     if @spreadsheet_layout
@@ -66,7 +70,8 @@ module Tasks::CherrypickHandler
   end
 
   def setup_input_params_for_pass_through
-    @robot = Robot.find((params[:robot])["0"].to_i)
+    @robot_id = params[:robot_id]
+    @robot = Robot.find(@robot_id)
     @plate_type = params[:plate_type]
     @volume_required= params[:volume_required]
     @micro_litre_volume_required= params[:micro_litre_volume_required]
@@ -117,7 +122,15 @@ module Tasks::CherrypickHandler
       wells = Hash[Well.find(@batch.requests.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
       request_and_well = Hash[@batch.requests.all(:include => :request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
       used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
-      plates.each do |id, plate_params|
+
+      # If we overflow the plate we create a new one, even if we subsequently clear the fields.
+      plates_with_samples = plates.reject {|pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
+
+      if fluidigm_plate.present? && plates_with_samples.count > 1
+        raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
+      end
+
+      plates_with_samples.each do |id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
         # be needing to create a new one.
         plate = partial_plate
@@ -135,7 +148,7 @@ module Tasks::CherrypickHandler
             request, well = case
               when request_id.blank?           then next
               when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
-              else request_and_well[request_id.to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
+              else request_and_well[request_id.gsub('well_','').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
             end
 
             # NOTE: Performance enhancement here

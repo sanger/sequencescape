@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_ids$/ do |study_name|
   study = Study.find_by_name(study_name)
   plate = PlatePurpose.stock_plate_purpose.create!(true, :barcode => "1234567", :location => Location.find_by_name("Sample logistics freezer"))
@@ -7,7 +11,7 @@ Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_
 end
 
 Given /^I have an empty submission$/ do
-  Factory(:submission_without_order)
+  FactoryGirl.create(:submission_without_order)
 end
 
 Given /^all submissions have been built$/ do
@@ -41,7 +45,7 @@ Then /^the submission with UUID "([^"]+)" should have (\d+) "([^"]+)" requests?$
 end
 
 Given /^the request type "([^\"]+)" exists$/ do |name|
-  Factory(:request_type, :name => name)
+  FactoryGirl.create(:request_type, :name => name)
 end
 
 Then /^the (library tube) "([^\"]+)" should have (\d+) "([^\"]+)" requests$/ do |asset_model, asset_name, count, request_type_name|
@@ -53,9 +57,9 @@ end
 def submission_in_state(state, attributes = {})
   study    = Study.first or raise StandardError, "There are no studies!"
   workflow = Submission::Workflow.first or raise StandardError, "There are no workflows!"
-  submission = Factory::submission({ :asset_group_name => 'Faked to prevent empty asset errors' }.merge(attributes).merge(:study => study, :workflow => workflow))
+  submission = FactoryHelp::submission({ :asset_group_name => 'Faked to prevent empty asset errors' }.merge(attributes).merge(:study => study, :workflow => workflow))
   submission.state = state
-  submission.save(false)
+  submission.save(:validate => false)
 end
 
 Given /^I have a submission in the "([^\"]+)" state$/ do |state|
@@ -72,14 +76,14 @@ end
 SENSIBLE_DEFAULTS_STANDARD = {
   'Fragment size required (from)' => 100,
   'Fragment size required (to)'   => 200,
-  'Library type'                  => lambda { |step, field| step.select('Standard', :from => field) },
+  'Library type'                  => ->(step, field) { step.select('Standard', :from => field) },
   'Read length'                   => 76
 }
 SENSIBLE_DEFAULTS_FOR_SEQUENCING = {
-  'Read length'                   => lambda { |step, field| step.select('76', :from => field) }
+  'Read length'                   => ->(step, field) { step.select('76', :from => field) }
 }
 SENSIBLE_DEFAULTS_HISEQ = SENSIBLE_DEFAULTS_FOR_SEQUENCING.merge(
-  'Read length' => lambda { |step, field| step.select('100', :from => field) }
+  'Read length' => ->(step, field) { step.select('100', :from => field) }
 )
 SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   # Non-HiSeq defaults
@@ -192,4 +196,8 @@ end
 
 Then /^the last submission should have a priority of (\d+)$/ do |priority|
   Submission.last.update_attributes!(:priority=>priority)
+end
+
+Given /^all the requests in the last submission are cancelled$/ do
+  Submission.last.requests.each {|r| r.update_attributes!(:state=>'cancelled') }
 end

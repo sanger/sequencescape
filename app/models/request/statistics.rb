@@ -1,32 +1,37 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+
 module Request::Statistics
   module DeprecatedMethods
     # TODO - Move these to named scope on Request
     def total_requests(request_type)
-      self.requests.request_type(request_type).count
+      self.requests.request_type(request_type).count(:id, :distinct=>true)
     end
 
     def completed_requests(request_type)
-      self.requests.request_type(request_type).completed.count
+      self.requests.request_type(request_type).completed.count(:id, :distinct=>true)
     end
 
     def passed_requests(request_type)
-      self.requests.request_type(request_type).passed.count
+      self.requests.request_type(request_type).passed.count(:id, :distinct=>true)
     end
 
     def failed_requests(request_type)
-      self.requests.request_type(request_type).failed.count
+      self.requests.request_type(request_type).failed.count(:id, :distinct=>true)
     end
 
     def pending_requests(request_type)
-      self.requests.request_type(request_type).pending.count
+      self.requests.request_type(request_type).pending.count(:id, :distinct=>true)
     end
 
     def started_requests(request_type)
-      self.requests.request_type(request_type).started.count
+      self.requests.request_type(request_type).started.count(:id, :distinct=>true)
     end
 
     def cancelled_requests(request_type)
-      self.requests.request_type(request_type).cancelled.count
+      # distinct.count(:id) in rails_4
+      self.requests.request_type(request_type).cancelled.count(:id, :distinct=>true)
     end
     def total_requests_report
       Hash[
@@ -34,7 +39,7 @@ module Request::Statistics
           :all,
           :select=>'request_type_id,count(requests.id) AS total',
           :group=>'request_type_id'
-          ).map {|rt| [rt.request_type.id,rt.total] }
+          ).map {|rt| [rt.request_type_id,rt.total] }
       ]
     end
   end
@@ -92,7 +97,7 @@ module Request::Statistics
   # Returns a hash that maps from the RequestType to the information about the number of requests in various
   # states.  This is effectively summary data that can be displayed in a tabular format for the user.
   def progress_statistics
-    counters  = self.all(:select => 'request_type_id, state, count(distinct requests.id) as total', :group => 'request_type_id, state')
+    counters  = self.all(:select => 'request_type_id, state, count(distinct requests.id) as total', :group => 'request_type_id, state', :include=>:request_type)
     tabulated = Hash.new { |h,k| h[k] = Counter.new }
     tabulated.tap do
       counters.each do |request_type_state_count|
@@ -102,7 +107,7 @@ module Request::Statistics
   end
 
   def asset_statistics(options = {})
-    counters = self.all(options.merge(:select => 'asset_id,request_type_id,state, count(*) as total', :group => 'asset_id, request_type_id, state'))
+    counters = self.all(options.merge(:select => 'asset_id,request_type_id,state, count(*) as total', :group => 'asset_id, request_type_id, state', :include=>:request_type))
     tabulated = Hash.new { |h,k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |asset_request_type_state_count|
@@ -112,7 +117,7 @@ module Request::Statistics
   end
 
   def sample_statistics(options = {})
-    counters = self.join_asset.all(options.merge(:select => 'sample_id,request_type_id,state,count(*) as total', :group => 'sample_id, request_type_id, state'))
+    counters = self.join_asset.all(options.merge(:select => 'sample_id,request_type_id,state,count(*) as total', :group => 'sample_id, request_type_id, state', :include=>:request_type))
     tabulated = Hash.new { |h,k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |sample_request_type_state_count|

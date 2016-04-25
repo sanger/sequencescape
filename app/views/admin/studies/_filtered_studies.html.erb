@@ -1,22 +1,16 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% unless @studies.empty? %>
   <div id='study_list'>
-    <% form_remote_tag(:url => { :action => :editor }, :html => { :id => "study_form"}, :update => "study_editor", :loading => "show_update_loader();", :complete => "hide_update_loader();") do %>
-      <table width="100%" cellspacing="0" cellpadding="0">
-        <tr>
-          <td>
-            <%= select_tag :id, "<option value='0'>Select a study</option>" + options_from_collection_for_select(@studies.sort_by {|p| p.name }, :id, :name)  %>
-          </td>
-          <td class='right'>
-            <%= pluralize @studies.size, "study" %>
-          </td>
-        </tr>
-      </table>
+    <%= form_tag(edit_admin_studies_path, :remote => true, :id => "study_form", :class=>'remote-form observed', :data => {:update => "#study_editor", :throbber => '#update_loader' }) do %>
+      <p>Found <%= pluralize @studies.size, "study" %></p>
+      <%= select_tag :id, options_from_collection_for_select(@studies, :id, :name), :prompt=>'Select a study...'  %>
     <% end %>
 
-      <%= observe_form(:study_form, :url => { :action => :editor }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :study_editor) %>
-
     <div id='study_editor'>
-      <%= render :partial => "editor", :locals => { :study => @studies.first } -%>
+      <!-- Editor goes here -->
     </div>
   </div>
 <% else %>

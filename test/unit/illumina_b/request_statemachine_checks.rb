@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2015,2016 Genome Research Ltd.
+
 module IlluminaB::RequestStatemachineChecks
   class StatemachineHelper
     def initialize(owner, target, &block)
@@ -11,7 +15,7 @@ module IlluminaB::RequestStatemachineChecks
       @owner.instance_eval do
         context "##{name}" do
           setup do
-            @request = target.new
+            @request = target.new(:request_purpose=>create(:request_purpose),:target_asset=>create(:well))
             @request.stubs(:perform_transfer_of_contents).returns(true)
           end
 

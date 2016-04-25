@@ -1,45 +1,42 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
+
 <% add :title, "Your user profile." -%>
-<% add :menu, "<strong>Edit profile</strong>" => edit_profile_path(@user) -%>
+<% add :menu, "Edit profile" => edit_profile_path(@user) -%>
 <% add :menu, "View Projects" => projects_profile_path(@user) -%>
 <% add :menu, "Qc Reports" => study_reports_profile_path(@user) -%>
-<% add :admin_option, "Administer users" => users_path -%>
+<% add :admin_option, "Administer users" => admin_users_path -%>
 
-<h1><% unless @user.name.empty? %><%= @user.name %><% end %> : <%=h @user.login %></h1>
+<%= page_title @user.name, @user.login %>
 
 <% if @user.profile_complete? %>
-<div class='callout'>
-  Your profile is up to date and complete.
-</div>
+  <%= alert(:success) do %>
+    Your profile is up to date and complete.
+  <% end %>
 <% else %>
-<div class='callout_alert'>
-  Your profile not complete!
-</div>
+  <%= alert(:warning) do %>
+    Your profile not complete!
+  <% end %>
 <% end %>
 
-<div class="info">
-  <table width='100%'>
-    <tr>
-      <td class="item" width="40%">First name:</td>
-      <td><strong><%=h @user.first_name.blank? ? "Unknown" : @user.first_name %></strong></td>
-    </tr>
-    <tr>
-      <td class="item" width="40%">Last name:</td>
-      <td><strong><%=h @user.last_name.blank? ? "Unknown" : @user.last_name %></strong></td>
-    </tr>
-    <tr>
-      <td class="item" width="40%">Preferred email:</td>
-      <td><strong><%=h @user.email.blank? ? "Unknown" : @user.email %></strong></td>
-    </tr>
-    <tr>
-      <td class="item" width="40%">Workflow:</td>
-      <td><strong><%=h @user.workflow_name %></strong></td>
-    </tr>
-  </table>
-</div>
+<%= summary do
+ [
+  ['First name', @user.first_name.blank? ? "Unknown" : @user.first_name ],
+  ['Last name',  @user.last_name.blank? ? "Unknown" : @user.last_name ],
+  ['Preferred email', @user.email.blank? ? "Unknown" : @user.email ],
+  ['Workflow', @user.workflow_name ]
+ ]
+end %>
 
 <% logged_in_user? do -%>
-<div class='callout'>
-  <h2>Your API key is:</h2>
-  <code><%= @user.api_key %></code>
-  <p>You can use your API key to access your studies, samples and requests programmatically.</p>
+<div class="col-md-6">
+  <%= panel(:info, title:'API access') do %>
+    <dl>
+      <dt>API Key</dt>
+      <dd><code><%= @user.api_key %></code></dd>
+    </dl>
+    <p>You can use your API key to access your studies, samples and requests programmatically.</p>
+  <% end %>
+</div>
 <% end %>

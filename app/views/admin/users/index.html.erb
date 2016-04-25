@@ -1,8 +1,12 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% add :title, "Administrators can customise Sequencescape from here, including data management and reporting tools." -%>
 
 <h1>User management</h1>
 
-<% form_remote_tag(:url => filter_users_url, :html => { :id => "filter_form" }, :update => "users", :loading => "show_update_loader();", :complete => "hide_update_loader();") do %>
+<%= form_tag(filter_admin_users_url, :remote => true, :data => { :update => "#users", :throbber => '#update_loader' }, :id=>'filter_form', :class=>'remote-form observed') do %>
 <div class="callout_filter">
   <table width="100%">
     <tr>
@@ -12,8 +16,6 @@
       </td>
     </tr>
   </table>
-  <%= observe_form(:filter_form, :url => { :action => :filter }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :users) %>
-</div>
 <% end %>
 <div id='users'>
   <%= render :partial => 'users', :locals => { :users => @users } %>

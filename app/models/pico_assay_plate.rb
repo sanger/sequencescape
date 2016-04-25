@@ -1,8 +1,12 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 class PicoAssayPlate < Plate
   self.prefix = "PA"
 
   class WellDetail
-    attr_accessor :map, :concentration, :parent_plate
+    attr_accessor :map, :parent_plate
 
     def initialize(details, parent_plate)
       @map = details[:map]
@@ -16,6 +20,10 @@ class PicoAssayPlate < Plate
 
     def target_well
       @target_well ||= parent_plate.stock_plate.wells.find_by_map_id(target_map.id)
+    end
+
+    def concentration
+      @concentration > 0 ? @concentration : 0.0
     end
 
     # TODO this method needs to go, to be replace by direct calls
@@ -50,7 +58,7 @@ class PicoAssayPlate < Plate
 
     ActiveRecord::Base.transaction do
       event = stock_plate.events.create_pico!(state)
-      # Adds a failure reason if it is available. 
+      # Adds a failure reason if it is available.
       event.update_attributes(:descriptor_key => failure_reason) unless failure_reason.nil?
       well_details.each { |details| WellDetail.new(details[:well], self).grade_as!(state) }
     end

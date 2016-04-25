@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 class ContainerAssociation < ActiveRecord::Base
   #We don't define the class, so will get an error if being used directly
   # in fact , the class need to be definend otherwise, eager loading through doesn't work
@@ -32,20 +36,16 @@ class ContainerAssociation < ActiveRecord::Base
         class_eval(%Q{
           def import(records)
             ActiveRecord::Base.transaction do
-
               records.map(&:save!)
-
-              sub_query = #{class_name}.send(:construct_finder_sql, :select => 'id', :order => 'id DESC')
-              records   = #{class_name}.connection.select_all(%Q{SELECT id FROM (\#{sub_query}) AS a LIMIT \#{records.size}})
               attach(records)
-              post_import(records.map { |r| [proxy_owner.id, r['id']] })
+              post_import(records.map { |r| [proxy_association.owner.id, r['id']] })
             end
           end
         }, __FILE__, line)
 
         def attach(records)
           ActiveRecord::Base.transaction do
-            records.each { |r| ContainerAssociation.create!(:container_id => proxy_owner.id, :content_id => r['id']) }
+            records.each { |r| ContainerAssociation.create!(:container_id => proxy_association.owner.id, :content_id => r.id) }
           end
         end
 
@@ -56,7 +56,7 @@ class ContainerAssociation < ActiveRecord::Base
         end
 
         def connect(content)
-          ContainerAssociation.create!(:container => proxy_owner, :content => content)
+          ContainerAssociation.create!(:container => proxy_association.owner, :content => content)
           post_connect(content)
         end
         private :connect
@@ -64,7 +64,13 @@ class ContainerAssociation < ActiveRecord::Base
         class_eval(&block) if block_given?
       end
 
-      named_scope :"include_#{content_name}", :include => :contents  do
+	  self.class_eval do
+        def maps
+          Map.where_plate_size(size).where_plate_shape(asset_shape)
+        end
+      end
+
+      scope :"include_#{content_name}",  -> { includes(:contents) }  do
         def to_include
           [:contents]
         end

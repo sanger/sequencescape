@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 class Uuid < ActiveRecord::Base
   module Uuidable
     def self.included(base)
@@ -9,24 +13,24 @@ class Uuid < ActiveRecord::Base
         # Ensure that the resource has a UUID and that it's always created when the instance is created.
         # It seems better not to do this but the performance of the API is directly affected by having to
         # create these instances when they do not exist.
-        has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy
+        has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy, :inverse_of => :resource
         after_create :ensure_uuid_created
 
         # Some named scopes ...
-        named_scope :include_uuid, { :include => :uuid_object }
+        scope :include_uuid, -> { includes(:uuid_object ) }
       end
     end
 
     # In the test environment we need to have a slightly different behaviour, as we can predefine
     # the UUID for a record to make things predictable.  In production new records always have new
     # UUIDs.
-    if ['test', 'cucumber'].include?(RAILS_ENV)
+    if ['test', 'cucumber'].include?(Rails.env)
       def ensure_uuid_created
-        self.uuid_object = Uuid.create!(:resource => self) if self.uuid_object(true).nil?
+        self.create_uuid_object!(:resource => self) unless self.uuid_object(true).present?
       end
     else
       def ensure_uuid_created
-        self.uuid_object = Uuid.create!(:resource => self)
+        self.create_uuid_object!(:resource => self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
       end
     end
     private :ensure_uuid_created
@@ -46,7 +50,7 @@ class Uuid < ActiveRecord::Base
     # relied on to actually be present, nor can it be relied on to be output into any JSON in the API.
     #++
     def uuid
-      (self.uuid_object || self.create_uuid_object).uuid
+      (uuid_object || create_uuid_object).uuid
     end
 
     # The behaviour of the ar-extensions gem means that the after_create callbacks aren't being executed
@@ -86,18 +90,18 @@ class Uuid < ActiveRecord::Base
 
   # It is more efficient to check the individual parts of the resource association than it is to check the
   # association itself as the latter causes the record to be reloaded
-  belongs_to :resource, :polymorphic => true
+  belongs_to :resource, :polymorphic => true, :inverse_of => :uuid_object
 
   # TODO[xxx]: remove this and use resource everywhere!
   def object
     self.resource
   end
 
-  named_scope :with_resource_type, lambda { |type| { :conditions => { :resource_type => type.to_s } } }
+  scope :with_resource_type, ->(type) { where(:resource_type => type.to_s ) }
 
-  named_scope :include_resource, :include => :resource
-  named_scope :with_external_id, lambda { |external_id| { :conditions => { :external_id => external_id } } }
-  named_scope :with_resource_by_type_and_id, lambda { |t,id| { :conditions => { :resource_type => t, :resource_id => id } } }
+  scope :include_resource, -> { includes(:resource) }
+  scope :with_external_id, ->(external_id) { where(:external_id => external_id) }
+  scope :with_resource_by_type_and_id, ->(t,id) { where(:resource_type => t, :resource_id => id ) }
 
   before_validation do |record|
     record.external_id = Uuid.generate_uuid if record.new_record? and record.external_id.blank?

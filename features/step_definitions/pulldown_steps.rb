@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Transform /^submitted to "([^\"]+)"$/ do |name|
   SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
 end
@@ -47,9 +51,9 @@ end
 
 def create_submission_of_assets(template, assets, request_options = {})
   template.create_and_build_submission!(
-    :user            => Factory(:user),
-    :study           => Factory(:study),
-    :project         => Factory(:project),
+    :user            => FactoryGirl.create(:user),
+    :study           => FactoryGirl.create(:study),
+    :project         => FactoryGirl.create(:project),
     :assets          => assets,
     :request_options => request_options
   )
@@ -65,6 +69,16 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
     plate.wells.select(&range.method(:include?)),
     request_options
   )
+end
+
+Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
+
+
+  submission = FactoryGirl.create :submission
+  plate.wells.select(&range.method(:include?)).each do |well|
+    FactoryGirl.create :transfer_request, :submission => submission, :target_asset => well
+  end
+
 end
 
 Given /^"([^\"]+)" of (the plate .+) have been failed$/ do |range, plate|
@@ -100,7 +114,7 @@ def work_pipeline_for(submissions, name, template=nil)
   source_plate = source_plates.first
   source_plate.wells.each do |w|
     next if w.aliquots.empty?
-    Factory(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
+    FactoryGirl.create(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
     w.requests_as_source.first.start!                           # Ensure request is considered started
   end
 
@@ -108,7 +122,7 @@ def work_pipeline_for(submissions, name, template=nil)
 
   final_plate_type.create!.tap do |final_plate|
     AssetLink.create!(:ancestor => source_plate, :descendant => final_plate)
-    template.create!(:source => source_plate, :destination => final_plate, :user => Factory(:user))
+    template.create!(:source => source_plate, :destination => final_plate, :user => FactoryGirl.create(:user))
   end
 end
 
@@ -148,6 +162,10 @@ Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
   Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
 end
 
+Transform /^the asset rack "([^\"]+)"$/ do |name|
+  AssetRack.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+end
+
 Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
   Uuid.lookup_single_uuid(uuid).resource
 end
@@ -184,29 +202,6 @@ Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
   Plate.find(id).wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
 end
 
-Then /^all of the pulldown library creation requests to (the multiplexed library tube .+) should be billed to their project$/ do |tube|
-  requests = tube.requests_as_target.where_is_a?(Pulldown::Requests::LibraryCreation).all
-  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
-  assert(requests.all? { |r| not r.billing_events.charged_to_project.empty? }, "There are requests that have not billed the project")
-end
-
-Then /^all of the pulldown library creation requests to (the multiplexed library tube .+) should not have billing$/ do |tube|
-  requests = tube.requests_as_target.where_is_a?(Pulldown::Requests::LibraryCreation).all
-  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
-  assert(requests.all? { |r| r.billing_events.empty? }, "There are requests that have billing events")
-end
-
-Then /^all of the illumina-b library creation requests to (the multiplexed library tube .+) should be billed to their project$/ do |tube|
-  requests = tube.requests_as_target.where_is_a?(IlluminaB::Requests::StdLibraryRequest).all
-  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
-  assert(requests.all? { |r| not r.billing_events.charged_to_project.empty? }, "There are requests that have not billed the project")
-end
-
-Then /^all of the illumina-b library creation requests to (the multiplexed library tube .+) should not have billing$/ do |tube|
-  requests = tube.requests_as_target.where_is_a?(IlluminaB::Requests::StdLibraryRequest).all
-  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
-  assert(requests.all? { |r| r.billing_events.empty? }, "There are requests that have billing events")
-end
 
 Given /^all requests are in the last submission$/ do
   submission = Submission.last or raise StandardError, "There are no submissions!"
@@ -214,16 +209,17 @@ Given /^all requests are in the last submission$/ do
 end
 
 Given /^(the plate .+) will pool into 1 tube$/ do |plate|
-  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [Factory(:empty_well)] }
+  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [FactoryGirl.create(:empty_well)] }
   stock_well  = stock_plate.wells.first
-  submission  = Submission.create!(:user => Factory(:user))
+  submission  = Submission.create!(:user => FactoryGirl.create(:user))
 
   AssetLink.create!(:ancestor => stock_plate, :descendant => plate)
 
-  plate.wells.in_column_major_order.each do |well|
+  plate.wells.in_column_major_order.readonly(false).each do |well|
     RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
     well.stock_wells.attach!([stock_well])
-    LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
+    FactoryGirl.create :library_creation_request, :asset=> stock_well, :target_asset => well, :submission => submission
+    # LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
   end
 end
 

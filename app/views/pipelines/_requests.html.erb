@@ -1,10 +1,13 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+
 <% unless @information_types.find_by_key("read_length").nil? %>
   <%= label_tag 'filter', 'Filter by '+@information_types.find_by_key("read_length").name %>
   <input type="text" value="" id="filter-for-pipeline_inbox" rel="pipeline_inbox">
 <% end %>
-  <table width="100%" cellpadding="2" cellspacing="0" class="tablesorter" id="pipeline_inbox">
+  <table class="sortable table table-striped table-dense-information" id="pipeline_inbox">
     <thead>
-    <div class='label'>
       <tr>
         <th class='{sorter: false}'>&nbsp;</th>
         <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
@@ -19,21 +22,21 @@
         <th><%= link_to "Asset type", "javascript:void(0);" %></th>
         <th><%= link_to "Asset ID", "javascript:void(0);" %></th>
         <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
+        <th><%= link_to "Num. Samples", "javascript:void(0);" %></th>
         <th><%= link_to "Conc", "javascript:void(0);" %></th>
         <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
+        <th><%= link_to "Submitted at (Y-M-D)", "javascript:void(0);" %></th>
+        <th><%= link_to "Number of tags", "javascript:void(0);" %></th>
         <% @information_types.each do |information_type| %>
-          <% next if information_type.hide_in_inbox %>
           <th><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
         <% end %>
         <th><%= link_to "Study", "javascript:void(0);" %></th>
       </tr>
-     </div>
     </thead>
     <tbody>
-    <div class='request'>
       <%- requests.each do |request| -%>
-        <% request_comments = request.comments -%>
-        <% request_asset_comments = request.asset.comments -%>
+        <% request_comments_count = @requests_comment_count.fetch(request.id,0) -%>
+        <% asset_comments_count = @assets_comment_count.fetch(request.asset_id,0)-%>
         <tr>
           <td class="request center">
             <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
@@ -54,7 +57,7 @@
           <td>
             <%= request.request_type.product_line.try(:name) %>
           </td>
-          <td class="request">
+          <td>
             <%= link_to request.submission_id, submission_path(request.submission) %>
           </td>
           <td>
@@ -62,28 +65,30 @@
           </td>
           <td><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
 
-          <% unless request_comments.empty? -%>
-            <%= render :partial => "request_comments", :locals => { :request => request, :comments => request_comments } %>
+          <% unless request_comments_count.zero? -%>
+            <%= render :partial => "request_comments", :locals => { :request => request, :comments_count => request_comments_count } %>
           <% else -%>
             <td>&nbsp;</td>
           <% end -%>
           <% if request.asset %>
             <td><%=  request.asset.sti_type %></td>
             <td><%=  link_to "#{request.asset.barcode}", asset_path(request.asset) %></td>
-            <% unless request_asset_comments.empty? -%>
-              <%= render :partial => "asset_comments", :locals => { :request => request, :comments => request_asset_comments } %>
+            <% unless asset_comments_count.zero? -%>
+              <%= render :partial => "asset_comments", :locals => { :request => request, :comments_count => asset_comments_count } %>
             <% else -%>
               <td>&nbsp;</td>
             <% end -%>
-            <td><%=  request.asset.concentration %></td>
+            <td><%= request.asset.samples.count %></td>
+            <td><%= request.asset.concentration %></td>
             <td><%= request.asset.scanned_in_date %></td>
+            <td><%= request.submitted_at %></td>
           <% else %>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           <% end %>
+          <td><%= request.asset.tag_count %></td>
           <% @information_types.each do |information_type| %>
-            <% next if information_type.hide_in_inbox %>
             <td  title='<%="#{information_type.key}"%>'>
               <%= h(request.request_metadata[information_type.key]) %>
             </td>
@@ -91,47 +96,8 @@
           <td width=100px><%= truncate(request.try(:submission).try(:study_names), :separator => ' ') %></td>
         </tr>
       <%- end -%>
-      </div>
     </tbody>
   </table>
-<script type="text/javascript" id="js">
-(function($) {
-  $.tablesorter.addWidget({
-    id: 'jFilter',
-    format: function(element) {
-      var __jFilter = this;
 
-      $('#filter-for-'+$(element).attr('id')).bind('keyup',function(ev){
-        __jFilter.jFilterRun(element,$('#filter-for-'+$(element).attr('id')).val());
-      });
-    },
-    jFilterRun: function(table, s){
-      $('tbody tr:hidden', table).show();
-      $('tbody tr',$(table)).each(function(n,r){
-        var content = false;
-        $('td',$(r)).each(function(i,f){
-          if (($(f).html() || $(f).text()).toLowerCase().indexOf(s.toLowerCase()) >= 0)
-            if (f.title=='read_length')
-              content = true;
-        });
-        if (content) $(r).show(); else $(r).hide();
-      });
-    }
-  });
-
-  $(document).ready(function() {
-    $("#pipeline_inbox").tablesorter({
-      sortList: [[1,1], [2,0]],
-      widgets: ['zebra', 'jFilter'],
-
-      textExtraction: function(node) {
-        // If the node has an IMG element underneath it then its 'alt' attribute is used, otherwise it's the innerHTML of the node.
-        var imgNode = $('img', node);
-        return (imgNode.size() > 0 ? imgNode.attr('alt') : $(node).text());
-      }
-    });
-  });
-})(jQuery);
-</script>
 
 <%= javascript_include_tag 'pipeline.js' %>

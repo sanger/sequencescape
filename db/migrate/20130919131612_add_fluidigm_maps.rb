@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013 Genome Research Ltd.
 class AddFluidigmMaps < ActiveRecord::Migration
 
   require 'lib/fluidigm_helper'
@@ -17,6 +20,6 @@ class AddFluidigmMaps < ActiveRecord::Migration
   end
 
   def self.configurations
-    FluidigmHelper.map_configuration_for(6,16,Map::AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,Map::AssetShape.find_by_name('Fluidigm192').id)
+    FluidigmHelper.map_configuration_for(6,16,AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,AssetShape.find_by_name('Fluidigm192').id)
   end
 end

@@ -9,7 +9,7 @@ Feature: Push samples through the PacBio pipeline with javascript
 
     Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
     Given the "1D Tube" barcode printer "xyz" exists
-    Given the "96 Well Plate" barcode printer "xyz" exists
+    Given the "96 Well Plate" barcode printer "abc" exists
     And the plate barcode webservice returns "99998"
     And the plate barcode webservice returns "99999"
     Given the sample validation webservice returns "true"
@@ -29,7 +29,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given 1 pending delayed jobs are processed
     Given I am on the show page for pipeline "PacBio Library Prep"
     When I check "Select DN1234567T for batch"
-    When I press "Submit"
+    When I press the first "Submit"
     When I follow "DNA Template Prep Kit Box Barcode"
     Given Well "1234567":"A1" has a PacBioLibraryTube "333"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
@@ -40,25 +40,14 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I set PacBioLibraryTube "3980000333858" to be in freezer "PacBio sequencing freezer"
     Given I am on the show page for pipeline "PacBio Sequencing"
     When I check "Select Request Group 0"
-    And I press "Submit"
+    And I press the first "Submit"
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
     When I select "30" from "Movie length for 333"
     And I press "Next step"
-    And I press "Next step"
     Then I should see "Layout tubes on a plate"
-    And the plate layout should look like:
-      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
+    When I drag the library tube to well "A1"
     And I press "Next step"
     Then I should see "Validate Sample Sheet"
     And I should see "Download Sample Sheet"

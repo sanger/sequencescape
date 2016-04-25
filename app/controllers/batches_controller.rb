@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class BatchesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
@@ -77,28 +81,36 @@ class BatchesController < ApplicationController
     end
   end
 
+  def cancel_requests(requests)
+    ActiveRecord::Base.transaction do
+      requests.map(&:cancel_before_started!)
+    end
+
+    respond_to do |format|
+      flash[:notice] = 'Requests canceled'
+      format.html { redirect_to :controller => :pipelines, :action => :show, :id => @pipeline.id }
+      format.xml  { head :ok }
+    end
+  end
+
   def create
     ActiveRecord::Base.transaction do
-    Batch.benchmark "BENCH Batch:WorkflowController:create", Logger::INFO, false do
-    @pipeline = Pipeline.find(params[:id])
+      @pipeline = Pipeline.find(params[:id])
 
-    unless @pipeline.valid_number_of_checked_request_groups?(params)
-      return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
-    end
+      unless @pipeline.valid_number_of_checked_request_groups?(params)
+        return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
+      end
 
-    requests = Batch.benchmark "BENCH Batch:WorkflowController:create - finding requests", Logger::INFO, false do
-      @pipeline.extract_requests_from_input_params(params)
-    end
+      requests = @pipeline.extract_requests_from_input_params(params)
 
-    return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
-    return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
+      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
+      return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
 
-    return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
+      return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
+      return cancel_requests(requests) if params[:action_on_requests] == "cancel_requests"
 
-    @batch = @pipeline.batches.create!(:requests => requests, :user => current_user)
-    # we exclude the rendering bit from the usefull code
-    # the global time is anyway already in the Rails log
-    end # of benchmak
+      @batch = @pipeline.batches.create!(:requests => requests, :user => current_user)
+
     end # of transaction
 
     respond_to do |format|
@@ -137,7 +149,6 @@ class BatchesController < ApplicationController
         @batch.lab_events.create(:description => "Submitted to QC", :message => "Batch #{@batch.id} was submitted to QC queue", :user_id => @current_user.id)
         respond_to do |format|
           message = "Batch #{@batch.id} was submitted to QC queue"
-          logger.debug message
           format.html do
             flash[:info] = message
             redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
@@ -147,7 +158,6 @@ class BatchesController < ApplicationController
       else
         respond_to do |format|
           message = "Batch #{@batch.id} was not submitted to QC queue!"
-          logger.debug message
           format.html do
             flash[:warning] = message
             redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
@@ -192,11 +202,9 @@ class BatchesController < ApplicationController
         target = br.request.target_asset
         if qc_state == "fail"
           target.set_qc_state("failed")
-          logger.debug "SENDING FAIL FOR ASSET #{br.request_id}, BATCH #{@batch.id}"
           EventSender.send_fail_event(br.request_id, "", "Failed manual QC", @batch.id)
         elsif qc_state == "pass"
           target.set_qc_state("passed")
-          logger.debug "SENDING PASS FOR ASSET #{br.request_id}, BATCH #{@batch.id}"
           EventSender.send_pass_event(br.request_id, "", "Passed manual QC", @batch.id)
         end
         target.save
@@ -219,20 +227,12 @@ class BatchesController < ApplicationController
   end
 
   def released
-    if params[:id]
-      @pipeline = Pipeline.find(params[:id])
+    @pipeline = Pipeline.find(params[:id])
 
-      @batches = @pipeline.batches.released.all(:order => "id DESC", :include => [:user ])
-      respond_to do |format|
-        format.html
-        format.xml { render :layout => false }
-      end
-    else
-      @all_batches = Batch.all
-      @batches = @all_batches.select { |batch| batch.externally_released? }
-      respond_to do |format|
-        format.xml { render :layout => false }
-      end
+    @batches = @pipeline.batches.released.all(:order => "id DESC", :include => [:user ])
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
     end
   end
 
@@ -375,16 +375,16 @@ class BatchesController < ApplicationController
     @output_barcodes = []
 
     @output_assets = @batch.plate_group_barcodes || []
-    @output_assets.each do |assets|
-      assets.each do |parent, children|
-        unless parent.nil?
-          plate_barcode = parent.barcode
-          unless plate_barcode.blank?
-            @output_barcodes << plate_barcode
-          end
+
+    @output_assets.each do |parent, children|
+      unless parent.nil?
+        plate_barcode = parent.barcode
+        unless plate_barcode.blank?
+          @output_barcodes << plate_barcode
         end
       end
     end
+
     if @output_barcodes.blank?
       flash[:error] = "Output plates do not have barcodes to print"
       redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
@@ -455,7 +455,7 @@ class BatchesController < ApplicationController
         BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
       rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue SOAP::FaultError
+      rescue Savon::Error
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
       else
         flash[:notice] = "Your labels have been printed to #{params[:printer]}."
@@ -482,7 +482,7 @@ class BatchesController < ApplicationController
         BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
       rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue SOAP::FaultError
+      rescue Savon::Error
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
       else
         flash[:notice] = "Your labels have been printed to #{params[:printer]}."
@@ -535,7 +535,7 @@ class BatchesController < ApplicationController
           BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
         rescue PrintBarcode::BarcodeException
           flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-        rescue SOAP::FaultError
+        rescue Savon::Error
           flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
         else
           flash[:notice] = "Your labels have been printed to #{params[:printer]}."
@@ -743,11 +743,11 @@ class BatchesController < ApplicationController
     batch_id = LabEvent.find_by_barcode(params[:id])
     if batch_id == 0
       @batch_error = "Batch id not found."
-      render :action => "batch_error"
+      render :action => "batch_error", :format => :xml
       return
     else
       @batch = Batch.find(batch_id)
-      render :action => "show"
+      render :action => "show", :format => :xml
     end
   end
 

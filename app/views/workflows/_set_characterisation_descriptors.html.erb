@@ -1,23 +1,28 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2014,2015,2016 Genome Research Ltd.%>
+
 <%= javascript_include_tag "characterisation.js"  %>
-<form id="default-values" action="#">
+<form id="default-values" action="#" class="form-horizontal">
   <fieldset>
     <legend>Default Characterisation Values</legend>
-    <table>
-      <% @task.descriptors.each_with_index do |descriptor, index| -%>
-      <%= "<tr>" if (index + 1).odd?  %>
-        <th><%= label :"default-value-for-#{u(descriptor.name)}", descriptor.name %>:</th>
-        <td>
-          <%= text_field :"default-value-for-#{u(descriptor.name)}", u(descriptor.name), :class => "default-value", :'data-default-for' => descriptor.name.gsub(/\s/,'_'), :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
-        </td>
-      <%= "</tr>" if (index + 1).even? %>
+    <div class="row">
+      <% @task.descriptors.each do |descriptor| -%>
+        <div class="form-group col-md-6">
+          <%= label :"default-value-for-#{u(descriptor.name)}", descriptor.name, :class =>'col-sm-4' %>
+          <div class='col-sm-8'>
+          <%= text_field :"default-value-for-#{u(descriptor.name)}", u(descriptor.name), :class => "default-value form-control", :'data-default-for' => descriptor.name.gsub(/\s/,'_'), :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
+          </div>
+        </div>
     <% end %>
-    </table>
-    <%= submit_tag "Copy to all samples", :id => "copy-defaults" %>
-    <%= submit_tag "Clear all data", :id => "clear-desrciptors" %>
+    </div>
+    <%= submit_tag "Copy to all samples", :id => "copy-defaults", :class=>'btn btn-success' %>
+    <%= submit_tag "Clear all data", :id => "clear-desrciptors", :class=>'btn btn-danger'  %>
   </fieldset>
+  <a href="#stage_button">Jump to bottom</a>
 </form>
 
-<% form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
 
 <h2><%= pluralize(@batch.requests.count, @batch.requests.first.asset.sti_type.underscore.humanize) %> in total</h2>
 
@@ -25,26 +30,26 @@
     <h3>Batch item #<%= request.position %></h3>
     <div class="characterisation">
     <h2>Sample: <%= request.sample_name -%></h2>
-        <table>
-          <tr> <th>Request:</th> <td><%= link_to request.id, request_url(request) %></td>
-          <th>Source:</th>  <td><%= link_to request.asset.sti_type.underscore.humanize + "\s" + request.asset.barcode, asset_url(request.asset) %></td> </tr>
-          <tr> <th>Target:</th>  <td><%= link_to request.target_asset.sti_type.underscore.humanize + "\s" +  request.target_asset.barcode, asset_url(request.target_asset) %></td>
-          <th>Comments:</th><td><%= link_to_comments(request) %></td> </tr>
-        </table>
+        <dl>
+          <dt>Request</dt> <dd><%= link_to request.id, request_url(request) %></dd>
+          <dt>Source</dt>  <dd><%= link_to request.asset.sti_type.underscore.humanize + "\s" + request.asset.barcode, asset_url(request.asset) %></dd>
+          <dt>Target</dt>  <dd><%= link_to request.target_asset.sti_type.underscore.humanize + "\s" +  request.target_asset.barcode, asset_url(request.target_asset) %></dd>
+          <dt>Comments</dt><dd><%= link_to_comments(request) %></dd>
+        </dl>
 
         <fieldset>
           <legend>Characterisation Values</legend>
-          <table>
+          <div class="row">
           <% @task.descriptors.each_with_index do |descriptor, index| -%>
-            <%= "<tr>" if (index + 1).odd?  %>
-              <th><%= label "requests[#{request.id}][descriptors]".to_sym, descriptor.name %>:</th>
-              <td>
-                <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), :class => "descriptor-value", :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
+            <div class="form-group col-md-6">
+              <%= label "requests[#{request.id}][descriptors]".to_sym, descriptor.name, :class =>'col-sm-4' %>
+              <div class='col-sm-8'>
+                <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), :class => "descriptor-value form-control", :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
                 <%= hidden_field "requests[#{request.id}][fields]", index + 1, :value => descriptor.name %>
-              </td>
-            <%= "</tr>" if (index + 1).even?  %>
+              </div>
+            </div>
           <% end %>
-          </table>
+          </div>
         </fieldset>
     </div>
   <% end %>

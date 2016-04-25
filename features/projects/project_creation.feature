@@ -17,16 +17,22 @@ Feature: Creating projects
   Scenario: The required fields are required
     Given I am on the project creation page
     Then I should see the following required fields:
-      |field|type|
-      |Name|text|
-      |Project cost code|text|
+      |field                     |type  |
+      |Name                      |text  |
+      |Project cost code         |text  |
+
+    # The fields below were tested as required
+    # prior to the rails 3 upgrade. However the
+    # test merely looked for ANY required field
+    And I should see the following fields:
+      |field                     |type  |
       |Sequencing Project Manager|select|
       |Sequencing budget division|select|
 
     When I press "Create"
     Then I should be on the projects page
     And I should see "Name can't be blank"
-    And I should see "Project cost code can't be blank"
+    And I should see "cost code can't be blank"
     # The rest of the fields are selections so can't be set to anything else!
 
   Scenario: Error messages do not show up on subsequent pages
@@ -45,6 +51,7 @@ Feature: Creating projects
     Given I am on the project creation page
     And I fill in "Name" with "Testing project creation"
     And I fill in "Project cost code" with "Cost code 101"
+    And I select "Internal" from "Project funding model"
     And I press "Create"
 
     Then I should be on the show page for project "Testing project creation"
@@ -56,6 +63,7 @@ Feature: Creating projects
     Given I am on the project creation page
     And I fill in "Name" with "Testing project creation"
     And I fill in "Project cost code" with "Cost code 101"
+    And I select "Internal" from "Project funding model"
     And I press "Create"
 
     Then I should be on the show page for project "Testing project creation"

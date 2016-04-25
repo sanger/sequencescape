@@ -11,7 +11,6 @@ Feature: Creating Spiked phiX
     When I select "Library Tube" from "Type"
     And I fill in "Parent Asset" with "Stock of phiX"
     And I fill in "Name" with "indexed phiX"
-    And  I fill in "Tag" with "168"
     And I fill in "Concentration" with "17"
     And I fill in "Volume" with "100"
     And I fill in "vol." with "100"
@@ -50,13 +49,14 @@ Feature: Creating Spiked phiX
     Then the "volume" of the parent asset of the asset called "hbs" should be "40.0"
 
 
-    #Scenario: A member of the cluseter formation team will create a number of aliquots from the spiked Hybridization buffer
+    #Scenario: A member of the cluster formation team will create a number of aliquots from the spiked Hybridization buffer
     Given I am on the asset creation page
     When I select "Hybridization Buffer Spiked" from "Type"
     And I fill in "Name" with "Aliquot"
     And I fill in "Parent Asset" with "hbs"
     And I fill in "vol." with "24"
     And I fill in "Count" with "5"
+
     When I press "Create"
     Then I should see "print"
     And I should see "Aliquot #1"
@@ -91,9 +91,8 @@ Feature: Creating Spiked phiX
     And I check "sample 7 checkbox"
     And I check "sample 8 checkbox"
     And I press "Next step"
-
-    When I follow "Lane"
-    Then I should see "Spiked Buffer"
+    When I follow "Lane" within ".row0"
+    Then I should see "Spiked Buffer: Aliquot #1"
 
   # TODO: use factories for controls and batch
   @npg @xml
@@ -102,7 +101,6 @@ Feature: Creating Spiked phiX
     Given I am on the asset creation page
     When I select "Library Tube" from "Type"
     And I fill in "Name" with "indexed phiX"
-    And  I fill in "Tag" with "168"
     And I fill in "Concentration" with "17"
     And I fill in "Volume" with "100"
     And I fill in "Parent Asset" with "Stock of phiX"
@@ -159,7 +157,7 @@ Feature: Creating Spiked phiX
     And I press "Next step"
 
     When I get the XML for the last batch
-    Then ignoring "library|\bid|tag_id|sample_id|consent_withdrawn" the XML response should be:
+    Then ignoring "library|\bid|tag_id|sample_id|consent_withdrawn|tag_group_id" the XML response should be:
   """
 <?xml version="1.0" encoding="UTF-8"?>
 <batch>
@@ -175,7 +173,7 @@ Feature: Creating Spiked phiX
         <control name="indexed phiX" id="781"/>
         <sample project_id="" study_id="" sample_id="5">
           <tag tag_id="19">
-            <index>168</index>
+            <index>888</index>
             <expected_sequence>ACAACGCAAT</expected_sequence>
             <tag_group_id>6</tag_group_id>
           </tag>

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 require 'tasks_controller'
 
@@ -8,11 +12,11 @@ class TasksControllerTest < ActionController::TestCase
       @controller = TasksController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user       = Factory :admin
+      @user       =FactoryGirl.create :admin
       @controller.stubs(:current_user).returns(@user)
-      @pipeline = Factory :pipeline, :name => "Normal pipeline"
+      @pipeline =FactoryGirl.create :pipeline, :name => "Normal pipeline"
       @workflow = @pipeline.workflow
-      @task = Factory :task, :workflow => @workflow, :name => "A new task name"
+      @task =FactoryGirl.create :task, :workflow => @workflow, :name => "A new task name"
     end
     should_require_login
 
@@ -21,7 +25,7 @@ class TasksControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_render_template :index
+      should render_template :index
     end
 
     context "#show" do
@@ -29,7 +33,7 @@ class TasksControllerTest < ActionController::TestCase
         get :show, :id => @task.id
       end
 
-      should_render_template :show
+      should render_template :show
     end
 
     context "#new" do

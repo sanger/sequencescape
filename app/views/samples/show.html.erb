@@ -1,3 +1,7 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
+
 <% add :title, "This page details a registered sample." -%>
 <% add :menu, (pluralize @sample.comments.size, "comment") => sample_comments_path(@sample) -%>
 <% add :menu, 'Event history' => history_sample_path(@sample) -%>
@@ -47,6 +51,10 @@
       <td class="item">Sanger Sample ID:</td>
       <td><strong><%=h @sample.sanger_sample_id.to_s %></strong></td>
     </tr>
+    <tr>
+      <td class="item">Supplier Sample Name:</td>
+      <td><strong><%=h @sample.sample_metadata.supplier_name %></strong></td>
+    </tr>
     <% if @sample.sample_manifest %>
     <tr>
       <td class="item">Manifest:</td>
@@ -73,7 +81,7 @@
     This sample is associated with <%= pluralize @sample.studies.size, "study" %>.
   </div>
 
-  <% form_for :sample, :url => url_for({:controller => "samples", :id => @sample.id, :action => :add_to_study}), :html => {:method => :put} do |form| -%>
+  <%= form_for :sample, :url => url_for({:controller => "samples", :id => @sample.id, :action => :add_to_study}), :html => {:method => :put} do |form| -%>
   <table width='100%'>
     <thead>
       <tr>

@@ -15,7 +15,10 @@ en:
     month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
     # Used in date_select and datime_select.
-    order: [ :year, :month, :day ]
+    order:
+    - :year
+    - :month
+    - :day
 
   time:
     formats:
@@ -63,8 +66,9 @@ en:
       pipelines: "Pipelines"
       batches: "Batches"
       reception: "Reception"
+      labwhere_reception: "Labwhere Reception"
       labsearch: "Lab search"
-      labview:  "Lab view"
+      labview:  "Lab View"
 
   errors:
     occured: "Something has gone wrong!"
@@ -76,11 +80,6 @@ en:
       valid: Valid bed layout for destination plate %{plate_barcode}
 
   projects:
-    billing_events:
-      created: "You have successfully created a billing event with the reference %{ref}"
-      not_created: "There was a problem creating the billing event"
-      no_charge_refund_attempt: "You can not create a refund for something that has not been charged!"
-      duplicate_refund_attempt: "You can not create a second refund for a charge!"
     status:
       not_approved: "This project has not been approved yet."
     workflows:
@@ -89,11 +88,6 @@ en:
 
   studies:
     about: "Studies bundle together samples and quotas and enable you to make requests for work."
-    billing_events:
-      created: "You have successfully created a billing event with the reference %{ref}"
-      not_created: "There was a problem creating the billing event"
-      no_charge_refund_attempt: "You can not create a refund for something that has not been charged!"
-      duplicate_refund_attempt: "You can not create a second refund for a charge!"
     status:
       not_approved: "This study has not been approved yet."
       not_active: "This study has not been activated yet."
@@ -136,14 +130,8 @@ en:
     comments:
       no_comments: "There are no comments yet"
 
-  billing_events:
-    exceptions:
-      uncharged_refund: "No matching charge - Unable to refund!!"
-      over_refund: "The refund you are issuing is for a quantity more than the remain refunds which is %{refunds}"
-      duplicate_refund: "Refund already been issued - Unable to refund!!"
-
   samples:
-    name_format: "Sample name can only contain letters, numbers, _ or -"
+    name_format: "can only contain letters, numbers, _ or -"
 
   asset_audit:
     key_format: "Key can only contain letters, numbers or _"
@@ -175,3 +163,35 @@ en:
 
   cherrypick:
     picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."
+
+  accession_service:
+    not_required:
+      not_applicable_study: "This study has its data release policy set to not applicable, which prevents accessioning. If you wish to accession the study, first select an appropriate release policy."
+      not_applicable_study_for_sample: "The primary study of this sample (%{study_id}) has its data release policy set to not applicable, which prevents accessioning. Either remove the sample from this study, or enable accessioning on the primary study."
+      not_applicable_study_for_dac: "This study has its data release policy set to not applicable, it does not require a DAC accession."
+
+  activerecord:
+    attributes:
+      sample_metadata: &sample_metadata
+        concentration: "Concentration"
+        dna_source: "DNA source"
+        volume: "Volume"
+      "samples/sample_metadata":
+        <<: *sample_metadata
+      study_metadata:
+        faculty_sponsor_id: "Faculty sponsor"
+        study_description: "Study description"
+  qc_reports:
+    state_descriptions:
+      default: "No description has been provided for this state."
+      queued: "Your report has been queued for processing. There are currently %{queue_count} items in the queue."
+      requeued: "Your report was processed but experienced a problem. It has been re-queued for processing, your you will probably need to contact support."
+      generating: "The report has reached the front of the queue and is being generated."
+      awaiting_proceed: "The report can be delivered to the customer and is currently awaiting their proceed decision."
+      complete: "Proceed decisions have been made."
+    pending_report: "Please wait, the report will be available once it is generated."
+    fixed_content: This section is for information only and cannot be changed
+    instruction: Please place a Y in the proceed column for any samples you wish to proceed; use a N for samples you don't want to proceed.
+    exclude_existing:
+      yes: New samples
+      no: All samples

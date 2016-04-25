@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+
 class AssetCreation < ActiveRecord::Base
   include Uuid::Uuidable
   include Asset::Ownership::ChangesOwner
@@ -14,7 +18,7 @@ class AssetCreation < ActiveRecord::Base
   private :parent_nil?
 
   belongs_to :child_purpose, :class_name => 'Purpose'
-  validates_presence_of :child_purpose, :unless => :multiple_purposes
+  validates :child_purpose, :presence => true, :unless => :multiple_purposes
   validates_each(:child_purpose, :unless => :parent_nil?, :allow_blank => true) do |record, attr, child_purpose|
     record.errors.add(:child_purpose, 'is not a valid child type') unless record.parent.purpose.child_purposes.include?(child_purpose)
   end
@@ -27,8 +31,16 @@ class AssetCreation < ActiveRecord::Base
   end
   private :process_children
 
+  def create_ancestor_asset!(asset, child)
+    AssetLink.create_edge!(asset, child)
+  end
+
+  def can_create_ancestor_plate?(asset, child)
+    (asset.kind_of? Well) && (!child.nil?) && (!child.ancestors.include?(asset))
+  end
+
   def connect_parent_and_children
-    children.each { |child| AssetLink.create_edge!(parent, child) }
+    children.each {|child| create_ancestor_asset!(parent, child)}
   end
   private :connect_parent_and_children
 

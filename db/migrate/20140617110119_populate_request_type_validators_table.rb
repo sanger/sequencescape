@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 class PopulateRequestTypeValidatorsTable < ActiveRecord::Migration
 
   def self.up
@@ -41,8 +44,8 @@ class PopulateRequestTypeValidatorsTable < ActiveRecord::Migration
       'illumina_a_hiseq_v4_paired_end_sequencing',
       'illumina_b_hiseq_v4_paired_end_sequencing',
       'illumina_c_hiseq_v4_paired_end_sequencing',
-      'illumina_a_hiseq_xten_paired_end_sequencing',
-      'illumina_b_hiseq_xten_paired_end_sequencing'
+      'illumina_a_hiseq_x_paired_end_sequencing',
+      'illumina_b_hiseq_x_paired_end_sequencing'
     ].include?(request_type.key)
     # By Key
     {

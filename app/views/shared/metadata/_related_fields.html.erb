@@ -1,16 +1,18 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <script language="javascript">
-  document.observe('dom:loaded', function() {
+  jQuery(function() {
     (function(undefined) {
       var hide = function(elements) {
         elements.each(function(index) {
-          // TODO[xxx]: Ideally want to disable any input/select/textarea fields to prevent them being sent back
-          $(this).hide();
+          $(this).hide().find('input').attr('disabled','disabled');;
         });
       };
       var show = function(elements) {
         elements.each(function(index) {
-          // TODO[xxx]: Enable the input/select/textarea fields
-          $(this).show();
+          $(this).show().find('input').attr('disabled',null);;
         });
       };
 
@@ -20,8 +22,10 @@
       };
 
       observe = function(id) {
-        var selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); }
-        element = $('<%= root %>_' + id) || $('<%= root %>_' + id + '_id');
+        var selectRelatedFor, element;
+
+        selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); };
+        element = document.getElementById('<%= root %>_' + id) || document.getElementById('<%= root %>_' + id + '_id');
 
         // Hide all of the DIVs and then show the current value.  We assume that the first identified element
         // is the one we're supposed to be using and that, if there are multiple fields, then they have the
@@ -39,15 +43,15 @@
       };
 
     <% related.each do |field| %>
-      observe(<%= field.inspect %>);
+      observe("<%= field.to_s %>");
     <% end %>
     })();
   });
 
   (function($, undefined) {
-<% changing_fields.reverse.each do |field, options| %>
-    attach_option_updater(<%= field.to_s.inspect %>, <%= options[:when].to_s.inspect %>, {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',') %>});
-<% end %>
+  <% changing_fields.reverse.each do |field, options| %>
+      attach_option_updater("<%= field.to_s %>", "<%= options[:when].to_s %>", {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',').html_safe %>});
+  <% end %>
 
     function attach_option_updater(target, source, values) {
       $('#<%= root %>_' + source).change(function() {

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2014,2015,2016 Genome Research Ltd.
+
 module ::Core::Io::Json
   class Stream
     def initialize(buffer)
@@ -19,7 +23,9 @@ module ::Core::Io::Json
     end
 
     def attribute(attribute, value, options = {})
-      named(attribute) { encode(value, options) }
+      named(attribute) do
+        encode(value, options)
+      end
     end
 
     def block(attribute, &block)
@@ -29,15 +35,16 @@ module ::Core::Io::Json
     def encode(object, options = {})
       case
       when object.nil?              then unencoded('null')
-      when Symbol     === object    then string_encode(object)
-      when TrueClass  === object    then unencoded('true')
-      when FalseClass === object    then unencoded('false')
-      when String     === object    then string_encode(object)
-      when Fixnum     === object    then unencoded(object.to_s)
-      when Float      === object    then unencoded(object.to_s)
-      when Date       === object    then string_encode(object.to_s)
-      when Time       === object    then string_encode(object.to_s)
-      when Hash       === object    then hash_encode(object, options)
+      when Symbol                        === object    then string_encode(object)
+      when TrueClass                     === object    then unencoded('true')
+      when FalseClass                    === object    then unencoded('false')
+      when String                        === object    then string_encode(object)
+      when Fixnum                        === object    then unencoded(object.to_s)
+      when Float                         === object    then unencoded(object.to_s)
+      when Date                          === object    then string_encode(object)
+      when ActiveSupport::TimeWithZone   === object    then string_encode(object.to_s)
+      when Time                          === object    then string_encode(object.to_s(:compatible))
+      when Hash                          === object    then hash_encode(object, options)
       when object.respond_to?(:zip) then array_encode(object) { |o| encode(o, options) }
       else object_encode(object, options)
       end
@@ -76,7 +83,10 @@ module ::Core::Io::Json
 
     def array_encode(array, &block)
       unencoded('[')
-      array.zip([',']*(array.size-1)).each do |value, separator|
+      # Use length rather than size, as otherwise we perform
+      # a count query. Not only is this unnecessary, but seems
+      # to generate inaccurate numbers in some cases.
+      array.zip([',']*(array.length-1)).each do |value, separator|
         yield(value)
         unencoded(separator) unless separator.nil?
       end unless array.empty?

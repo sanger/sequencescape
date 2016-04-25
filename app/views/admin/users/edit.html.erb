@@ -1,68 +1,72 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
+
 <%- add :title, "Update your user profile." %>
-<%- add :menu, "Back to all users" => users_path %>
+<%- add :menu, "Back to all users" => admin_users_path %>
 
-<h1>Edit profile: <% unless @user.name.empty? %><%=h @user.name %><% else %><%=h @user.login %><% end %></h1>
+<%= page_title "Edit profile", @user.name %>
+<%= panel :default do %>
+<%= form_for :user, :url => admin_user_path(@user), :html => {:method => :put, :class=>'horizontal-form'} do |f| %>
+  <%= bs_column do %>
+    <%= panel :info, title:"User Details" do %>
+      <%= form_group do %>
+        <label for="user_first_name">First name</label>
+        <%= f.text_field :first_name, :class=>'form-control' %>
+      <% end %>
+      <%= form_group do %>
+        <label for="user_last_name">Last name</label>
+        <%= f.text_field :last_name, :class=>'form-control' %>
+      <% end %>
+      <%= form_group do %>
+        <label for="user_email">Email</label>
+        <%= f.text_field :email, :class=>'form-control' %>
+      <% end %>
+    <% end %>
+  <% end %>
 
-<% form_for :user, :url => user_path(@user), :html => {:method => :put} do |f| %>
-  <h3>User Details</h3>
-  <table width="100%" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="item" width="20%"><label for="user_first_name">First name</label>:</td>
-        <td><%= f.text_field :first_name %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="user_last_name">Last name</label>:</td>
-        <td><%= f.text_field :last_name %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="user_email">Email</label>:</td>
-        <td><%= f.text_field :email %></td>
-      </tr>
-      <tr>
-        <td colspan="2"><h3>Roles</h3></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_administrator">Administrator</label>?</td>
-        <td><%= check_box_tag "role[administrator]", "checked", @user.has_role?("administrator") %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_manager">Manager</label>?</td>
-        <td><%= check_box_tag "role[manager]", "checked", @user.has_role?("manager") %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_internal">Internal</label>?</td>
-        <td><%= check_box_tag "role[internal]", "checked", @user.has_role?("internal") %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_lab">Lab</label>?</td>
-        <td><%= check_box_tag "role[lab]", "checked", @user.has_role?("lab") %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_lab_manager">Lab manager</label>?</td>
-        <td><%= check_box_tag "role[lab_manager]", "checked", @user.has_role?("lab_manager") %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_owner">Owner</label>?</td>
-        <td><%= check_box_tag "role[owner]", "checked", @user.has_role?("owner") %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_slf_manager">SLF lab manager</label>?</td>
-        <td><%= check_box_tag "role[slf_manager]", "checked", @user.has_role?("slf_manager") %></td>
-      </tr>
-      <tr>
-        <td class="item" width="20%"><label for="role_slf_gel">SLF Gels</label>?</td>
-        <td><%= check_box_tag "role[slf_gel]", "checked", @user.has_role?("slf_gel") %></td>
-      </tr>
-    </tbody>
-  </table>
-  <br/>
-  <div style="text-align:center">
-    <%= submit_tag "Update" %> or <%= link_to 'cancel', "javascript:history.back();" %>
-  </div>
+  <%= bs_column do %>
+    <%= panel :info, title:"Roles" do %>
+      <%= form_group do %>
+        <label for="role_administrator">Administrator</label>?
+        <%= check_box_tag "role[administrator]", "checked", @user.has_role?("administrator") %>
+      <% end %>
+      <%= form_group do %>
+        <label for="role_manager">Manager</label>?
+        <%= check_box_tag "role[manager]", "checked", @user.has_role?("manager") %>
+      <% end %>
+      <%= form_group do %>
+        <label for="role_internal">Internal</label>?
+        <%= check_box_tag "role[internal]", "checked", @user.has_role?("internal") %>
+      <% end %>
+      <%= form_group do %>
+        <label for="role_lab">Lab</label>?
+        <%= check_box_tag "role[lab]", "checked", @user.has_role?("lab") %>
+      <% end %>
+      <%= form_group do %>
+        <label for="role_lab_manager">Lab manager</label>?
+        <%= check_box_tag "role[lab_manager]", "checked", @user.has_role?("lab_manager") %>
+      <% end %>
+      <%= form_group do %>
+        <label for="role_owner">Owner</label>?
+        <%= check_box_tag "role[owner]", "checked", @user.has_role?("owner") %>
+      <% end %>
+      <%= form_group do %>
+        <label for="role_slf_manager">SLF lab manager</label>?
+        <%= check_box_tag "role[slf_manager]", "checked", @user.has_role?("slf_manager") %>
+      <% end %>
+      <%= form_group do %>
+        <label for="role_slf_gel">SLF Gels</label>?</td>
+        <%= check_box_tag "role[slf_gel]", "checked", @user.has_role?("slf_gel") %>
+       <% end %>
+    <% end %>
+  <% end %>
+
+  <%= submit_tag "Update", :class =>'btn btn-success' %> or <%= link_to 'cancel', "javascript:history.back();" %>
+<% end %>
 <% end %>
 <hr>
-<h3><% unless @user.name.empty? %><%=h @user.name %><% else %><%=h @user.login %><% end %>'s roles (<%= link_to "Add new role", edit_user_path(@user, :anchor => "add_new_role")-%>)</h3>
+<h3><% unless @user.name.empty? %><%=h @user.name %><% else %><%=h @user.login %><% end %>'s roles (<%= link_to "Add new role", edit_admin_user_path(@user, :anchor => "add_new_role")-%>)</h3>
 <div class="help">You edit these roles independently of any changes above.</div>
 <div id="role_list">
   <% if @users_roles.empty? %>
@@ -75,6 +79,10 @@
 <hr>
 <div style="text-align:center">
   <h3 id="add_new_role">Add new roles</h3>
-  <%= render :partial => "add_role", :locals => {:authorizable_type => @studies} %>
-  <%= render :partial => "add_role", :locals => {:authorizable_type => @projects} %>
+  <%= bs_column(6,'lg') do %>
+    <%= render :partial => "add_role", :locals => {:authorizable_type => @studies} %>
+  <% end %>
+  <%= bs_column(6,'lg') do %>
+    <%= render :partial => "add_role", :locals => {:authorizable_type => @projects} %>
+  <% end %>
 </div>

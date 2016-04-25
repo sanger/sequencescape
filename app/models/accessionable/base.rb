@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 class Accessionable::Base
   InvalidData = Class.new(AccessionService::AccessionServiceError)
   attr_reader :accession_number, :name, :date, :date_short
@@ -28,7 +32,7 @@ class Accessionable::Base
   end
 
   def alias
-    "#{name.gsub(/[^a-z\d]/i, '_')}-sc-#{object_id}"
+    "#{name.gsub(/[^a-z\d]/i, '_')}-sc-#{accessionable_id}"
   end
 
   def file_name
@@ -52,7 +56,7 @@ class Accessionable::Base
   def update_array_express_accession_number!(accession_number)
   end
 
-  def object_id
+  def accessionable_id
     raise NotImplementError, "abstract method"
   end
 
@@ -75,14 +79,14 @@ class Accessionable::Base
 
   class Tag
     attr_reader :value
-    def initialize(label_scope, name, value)
+    def initialize(label_scope, name, value, downcase = false)
       @name = name
-      @value = value
+      @value = downcase && value ? value.downcase : value
       @scope = label_scope
     end
 
     def label
-      I18n.t("#{@scope}.#{ @name }.label")
+      I18n.t("#{@scope}.#{ @name }.label").gsub(' ','_').downcase
     end
 
     def build(xml)

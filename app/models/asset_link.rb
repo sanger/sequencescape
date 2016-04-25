@@ -1,12 +1,32 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
+
 class AssetLink < ActiveRecord::Base
   include Api::AssetLinkIO::Extensions
+
+  acts_as_dag_links :node_class_name => 'Asset'
 
   # Enables the bulk creation of the asset links defined by the pairs passed as edges.
   # Basically we should be moving away from these and this enables us to ignore them.
   class BuilderJob < Struct.new(:links)
+
+    # For memory resons we need to limit transaction size to 10 links at a time
+    TRANSACTION_COUNT = 10
     def perform
-      ActiveRecord::Base.transaction do
-        links.map { |parent,child| AssetLink.create!(:ancestor_id => parent, :descendant_id => child) }
+      links.each_slice(TRANSACTION_COUNT) do |link_group|
+        ActiveRecord::Base.transaction do
+          link_group.each do |parent,child|
+            # Create edge can accept either a model (which it converts to an endpoint) or
+            # an endpoint itself. Using the endpoints directly we avoid the unnecessary
+            # database calls, but more importantly avoid the need to instantiate a load of
+            # active record objects.
+            parent_endpoint = Dag::Standard::EndPoint.new(parent)
+            child_endpoint  = Dag::Standard::EndPoint.new(child)
+            AssetLink.create_edge(parent_endpoint,child_endpoint)
+          end
+        end
       end
     end
 
@@ -23,9 +43,8 @@ class AssetLink < ActiveRecord::Base
     end
   end
 
-  cattr_reader :per_page
-  @@per_page = 500
-  acts_as_dag_links :node_class_name => 'Asset'
+
+  self.per_page = 500
   include Uuid::Uuidable
 
   def destroy!
@@ -43,15 +62,20 @@ class AssetLink < ActiveRecord::Base
 
     module ClassMethods
       def has_one_as_child(name, options = {})
-        has_one(name, options.merge(:through => :links_as_child, :source => :ancestor))
+        # has_one(name, options.merge(:through => :links_as_child, :source => :ancestor))
 
         line = __LINE__ + 1
         class_eval(%Q{
+
+          def #{name}
+            ancestors.find(:first,#{options.inspect})
+          end
+
           def #{name}=(value)
             raise RuntimeError, 'Value for #{name} must be saved' if value.new_record?
             old_value = self.#{name}
             parents.delete(old_value) if old_value.present?
-            AssetLink.create_edge(value, self)
+            AssetLink.create_edge!(value, self)
           end
 
           def has_#{name}?

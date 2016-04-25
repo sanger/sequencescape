@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 Given /^I have five requests for "([^\"]*)"$/ do |pipeline_name|
   pipeline = Pipeline.find_by_name(pipeline_name)
   5.times do | index_i |
@@ -9,5 +13,5 @@ Given /^I have five requests for "([^\"]*)"$/ do |pipeline_name|
 end
 
 Then /^the table of requests should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#pipeline_inbox tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
 end

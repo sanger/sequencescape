@@ -1,9 +1,13 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*)" and "([^"]*)"$/ do |submission_template_name, number_of_tubes, study_name, project_name|
-  project = Factory :project, :name => project_name
-  study = Factory :study, :name => study_name
+  project = FactoryGirl.create :project, :name => project_name
+  study = FactoryGirl.create :study, :name => study_name
   sample_tubes = []
   1.upto(number_of_tubes.to_i) do |i|
-    sample_tubes << Factory(:sample_tube, :name => "Sample Tube #{i}", :location => Location.find_by_name('Library creation freezer'), :barcode => "#{i}")
+    sample_tubes << FactoryGirl.create(:sample_tube, :name => "Sample Tube #{i}", :location => Location.find_by_name('Library creation freezer'), :barcode => "#{i}")
   end
 
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)

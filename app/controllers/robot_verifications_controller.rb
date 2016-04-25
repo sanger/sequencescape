@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 class RobotVerificationsController < ApplicationController
   before_filter :new_robot_verification
 
@@ -23,7 +27,7 @@ class RobotVerificationsController < ApplicationController
       @batch = Batch.find(params[:batch_id])
       @destination_plate_id = Plate.with_machine_barcode(params[:destination_plate_barcodes].first.first).first.barcode
     else
-      flash[:error] = "Error: Check everything again"
+      flash[:error] = "Error: #{@robot_verification.errors.join('; ')}"
       redirect_to :action => :index
     end
   end

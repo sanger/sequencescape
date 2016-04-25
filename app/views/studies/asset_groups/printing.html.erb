@@ -1,3 +1,7 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <%- add :menu, "Back to Study" => study_path(@study)  %>
 
 <h1>Asset groups for <%= @study.name %></h1>
@@ -8,9 +12,9 @@
   <table>
     <thead>
       <tr>
-        <td class='label'>Name</td>
-        <td class='label'>Number of assets in group</td>
-        <td class='label'></td>
+        <td>Name</td>
+        <td>Number of assets in group</td>
+        <td></td>
       </tr>
     </thead>
     <tbody>

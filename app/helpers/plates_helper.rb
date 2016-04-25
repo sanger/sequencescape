@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013,2015 Genome Research Ltd.
+
 module PlatesHelper
 
   class AliquotError < StandardError; end
@@ -21,7 +25,7 @@ module PlatesHelper
   end
 
   def padded_well_name_with_index(plate)
-    ('A'...(?A+(plate.size/12)).chr).each_with_index do |row,ri|
+    ('A'...(?A.getbyte(0)+(plate.size/12)).chr).each_with_index do |row,ri|
       (1..12).each_with_index do |col,ci|
         padded_name = "%s%02d" % [row, col]
         index = ci+(ri*12)
@@ -40,5 +44,8 @@ module PlatesHelper
     end
   end
 
+  def self.event_family_for_pick(plate_purpose_name)
+    "picked_well_to_#{plate_purpose_name.gsub(/ /,"_").downcase}_plate"
+  end
 
 end

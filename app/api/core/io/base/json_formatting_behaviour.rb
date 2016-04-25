@@ -1,11 +1,15 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 module Core::Io::Base::JsonFormattingBehaviour
   def self.extended(base)
     base.class_eval do
       extend ::Core::Io::Base::JsonFormattingBehaviour::Input
       extend ::Core::Io::Base::JsonFormattingBehaviour::Output
 
-      class_inheritable_reader :attribute_to_json_field
-      write_inheritable_attribute(:attribute_to_json_field, {})
+      class_attribute :attribute_to_json_field, :instance_writer => false
+      self.attribute_to_json_field =  {}
       delegate :json_field_for, :to => 'self.class'
     end
   end

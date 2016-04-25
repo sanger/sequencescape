@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2015 Genome Research Ltd.
+
 
 Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
   purpose = Tube::Purpose.find_by_name(tube_purpose)
@@ -8,13 +12,16 @@ Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
 end
 
 Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)" from "([^"]*)"$/ do |tube_name, state, request_type, source_name|
+  submission = Submission.last || FactoryGirl.create(:submission)
   tube = Tube.find_by_name(tube_name)
   source = Asset.find_by_name(source_name)
   source = source.wells.first if source.is_a?(Plate)
   RequestType.find_by_name(request_type).create!(
     {:state => state,
     :asset => source,
-    :target_asset => tube}.merge(request_defaults(request_type))
+    :target_asset => tube,
+    :submission => submission
+    }.merge(request_defaults(request_type))
   )
 end
 

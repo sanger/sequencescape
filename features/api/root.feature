@@ -14,7 +14,6 @@ And I have a "full" authorised user with the key "cucumber"
   Scenario: Retrieving the root entry point when unauthorised
     When I GET the API path "/"
     Then the HTTP response should be "200 OK"
-    Then show me the HTTP response body
     And the JSON should be:
       """
       {
@@ -161,6 +160,11 @@ And I have a "full" authorised user with the key "cucumber"
             "create": "http://www.example.com/api/1/submissions"
           }
         },
+       "submission_pools": {
+          "actions": {
+            "read": "http://www.example.com/api/1/submission_pools"
+          }
+        },
         "orders": {
           "actions": {
             "read": "http://www.example.com/api/1/orders"
@@ -211,15 +215,30 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/transfer_templates"
           }
         },
+        "tag_groups": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag_groups"
+          }
+        },
 
         "tag_layouts": {
           "actions": {
             "read": "http://www.example.com/api/1/tag_layouts"
           }
         },
+        "tag2_layouts": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag2_layouts"
+          }
+        },
         "tag_layout_templates": {
           "actions": {
             "read": "http://www.example.com/api/1/tag_layout_templates"
+          }
+        },
+        "tag2_layout_templates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag2_layout_templates"
           }
         },
         "plate_creations": {
@@ -256,6 +275,11 @@ And I have a "full" authorised user with the key "cucumber"
         "bulk_transfers": {
           "actions": {
             "read": "http://www.example.com/api/1/bulk_transfers"
+          }
+        },
+        "comments": {
+          "actions": {
+          "read": "http://www.example.com/api/1/comments"
           }
         },
         "pooled_plate_creations": {
@@ -477,6 +501,11 @@ And I have a "full" authorised user with the key "cucumber"
             "create": "http://www.example.com/api/1/submissions"
           }
         },
+        "submission_pools": {
+          "actions": {
+            "read": "http://www.example.com/api/1/submission_pools"
+          }
+        },
         "orders": {
           "actions": {
             "read": "http://www.example.com/api/1/orders"
@@ -519,12 +548,30 @@ And I have a "full" authorised user with the key "cucumber"
 
         "tag_layouts": {
           "actions": {
-            "read": "http://www.example.com/api/1/tag_layouts"
+            "read": "http://www.example.com/api/1/tag_layouts",
+            "create": "http://www.example.com/api/1/tag_layouts"
+          }
+        },
+        "tag2_layouts": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag2_layouts",
+            "create": "http://www.example.com/api/1/tag2_layouts"
+          }
+        },
+
+        "tag_groups": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag_groups"
           }
         },
         "tag_layout_templates": {
           "actions": {
             "read": "http://www.example.com/api/1/tag_layout_templates"
+          }
+        },
+        "tag2_layout_templates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag2_layout_templates"
           }
         },
         "plate_creations": {
@@ -567,6 +614,11 @@ And I have a "full" authorised user with the key "cucumber"
           "actions": {
             "read": "http://www.example.com/api/1/bulk_transfers",
             "create": "http://www.example.com/api/1/bulk_transfers"
+          }
+        },
+        "comments": {
+          "actions": {
+          "read": "http://www.example.com/api/1/comments"
           }
         },
         "pooled_plate_creations": {

@@ -1,3 +1,7 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% add :title, I18n.t("studies.about") -%>
 <% add :back_menu,I18n.t("navigation.menu.back_to_asset") => asset_path(@asset) -%>
 
@@ -10,6 +14,6 @@
 
 <div>
   <p>Type your comment:</p>
-  <%= form_remote_tag(:url => asset_comments_path(@asset), :update => "asset_annotations_#{@asset.id}") %>
+  <%= form_tag(:url => asset_comments_path(@asset), :remote => true, :update => "asset_annotations_#{@asset.id}") %>
   <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
 </div>

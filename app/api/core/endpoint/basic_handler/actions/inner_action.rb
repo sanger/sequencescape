@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 module Core::Endpoint::BasicHandler::Actions::InnerAction
   def initialize(name, options, &block)
     raise StandardError, "Cannot declare inner action #{name.inspect} without a block" unless block_given?
@@ -9,7 +13,9 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
 
   def separate(_, actions)
     actions[@options[:to].to_s] = lambda do |object, options, stream|
-      actions(object, options.merge(:target => object)).map(&stream.method(:attribute))
+      actions(object, options.merge(:target => object)).map do |action,url|
+        stream.attribute(action,url)
+      end
     end
   end
 

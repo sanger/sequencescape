@@ -1,3 +1,10 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
+
+require 'carrierwave'
+
 class Document < ActiveRecord::Base
   extend DbFile::Uploader
 
@@ -20,7 +27,7 @@ class Document < ActiveRecord::Base
         end
 
         def #{field}=(file)
-          create_#{field}_document(:uploaded_data => file, :documentable_extended => #{differentiator}) unless file.blank?
+          create_#{field}_document(:uploaded_data => file, :documentable_extended => '#{differentiator}') unless file.blank?
         end
       }, __FILE__, line)
     end
@@ -44,9 +51,9 @@ class Document < ActiveRecord::Base
 
   # Save Size/content_type Metadata
   def update_document_attributes
-    if uploaded_data.present? 
+    if uploaded_data.present?
       self.content_type = uploaded_data.file.content_type
-      self.size    = uploaded_data.file.size        
+      self.size    = uploaded_data.file.size
     end
   end
   private :update_document_attributes

@@ -1,13 +1,18 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
+
 class AssetsController < ApplicationController
   include BarcodePrintersController::Print
-   before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets, :complete_move_to_2D]
+   before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
   def index
     @assets_without_requests = []
     @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.all(:order => 'name ASC').paginate(:page => params[:page])
+      @assets = @study.assets_through_aliquots.order('name ASC').paginate(:page => params[:page])
     end
 
     respond_to do |format|
@@ -37,7 +42,10 @@ class AssetsController < ApplicationController
 
   def new
     @asset = Asset.new
-    @asset_types = { "Sample Tube" =>'SampleTube', "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
+    @asset_types = { "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
+    @phix_tag = TagGroup.find_by_name(configatron.phix_tag.tag_group_name).tags.select do |t|
+      t.map_id == configatron.phix_tag.tag_map_id
+    end.first
 
     respond_to do |format|
       format.html
@@ -64,6 +72,7 @@ class AssetsController < ApplicationController
   end
 
   def create
+
     count = first_param(:count)
     count = count.present? ? count.to_i : 1
     saved = true
@@ -72,7 +81,7 @@ class AssetsController < ApplicationController
       # Find the parent asset up front
       parent, parent_param = nil, first_param(:parent_asset)
       if parent_param.present?
-        parent = Asset.find_by_id(parent_param) || Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param)
+        parent = Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param) || Asset.find_by_id(parent_param)
         raise StandardError, "Cannot find the parent asset #{parent_param.inspect}" if parent.nil?
       end
 
@@ -81,8 +90,7 @@ class AssetsController < ApplicationController
       if tag_param.present?
         conditions = { :map_id => tag_param }
         oligo      = params[:tag_sequence]
-        conditions[:oligo] = oligo.first.upcase! if oligo.present? and oligo.first.present?
-
+        conditions[:oligo] = oligo.first.upcase if oligo.present? and oligo.first.present?
         tag = Tag.first(:conditions => conditions) or raise StandardError, "Cannot find tag #{tag_param.inspect}"
       end
 
@@ -94,11 +102,11 @@ class AssetsController < ApplicationController
           asset = asset_class.new(params[:asset]) do |asset|
             asset.name += " ##{n}" if count !=1
           end
-
           # from asset
           if parent.present?
             parent_volume, parent_used = params[:parent_volume], parent
             if parent_volume.present? and parent_volume.first.present?
+
               extract = parent_used.transfer(parent_volume.first)
 
               if asset.volume
@@ -113,9 +121,8 @@ class AssetsController < ApplicationController
                 asset, parent_used = extract, nil
               end
             end
-
             # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains empty.
-            asset.aliquots = parent_used.aliquots.map(&:clone) unless parent_used.nil?
+            asset.aliquots = parent_used.aliquots.map(&:dup) unless parent_used.nil?
             asset.add_parent(parent_used)
           else
             # All new assets are assumed to have a phiX sample in them as that's the only asset that
@@ -125,11 +132,9 @@ class AssetsController < ApplicationController
             aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
             asset.aliquots.create!(aliquot_attributes)
           end
-
           tag.tag!(asset) if tag.present?
           asset.update_attributes!(:barcode => AssetBarcode.new_barcode) if asset.barcode.nil?
           asset.comments.create!(:user => current_user, :description => "asset has been created by #{current_user.login}")
-
           asset
         end
       end # transaction
@@ -208,6 +213,16 @@ class AssetsController < ApplicationController
     end
   end
 
+  def print
+    if @asset.printable?
+      @printable = @asset.printable_target
+      @direct_printing = (@asset.printable_target == @asset)
+    else
+      flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
+      redirect_to asset_path(@asset)
+    end
+  end
+
   def print_labels
     print_asset_labels(new_asset_url, new_asset_url)
   end
@@ -234,6 +249,8 @@ class AssetsController < ApplicationController
 
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
+    @study = @asset.studies.first
+    @project = @asset.projects.first || @asset.studies.first && @asset.studies.first.projects.first
   end
 
   def create_request
@@ -307,19 +324,13 @@ class AssetsController < ApplicationController
 
   def lookup
     if params[:asset] && params[:asset][:barcode]
-      id = params[:asset][:barcode][3,7].to_i
+      id = params[:asset][:barcode][3,7]
       @assets = Asset.find(:all, :conditions => {:barcode => id}).paginate :per_page => 50, :page => params[:page]
 
       if @assets.size == 1
-        @asset = @assets.first
-        respond_to do |format|
-          format.html { render :action => "show" }
-          format.xml  { render :xml => @assets.to_xml }
-        end
+        redirect_to @assets.first
       elsif @assets.size == 0
-        if params[:asset] && params[:asset][:barcode]
-          flash[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
-        end
+        flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
         respond_to do |format|
           format.html { render :action => "lookup" }
           format.xml  { render :xml => @assets.to_xml }
@@ -333,66 +344,8 @@ class AssetsController < ApplicationController
     end
   end
 
-  def filtered_move
-    @asset = Asset.find(params[:id])
-    if @asset.resource
-      @studies = []
-      @studies_from = []
-      flash[:error] = "This Asset is Control Lane."
-    else
-      @studies = Study.all
-      @studies.each do |study|
-        study.name = study.name + " (" + study.id.to_s + ")"
-      end
-      @studies_from = @asset.studies
-      @studies_from.each do |study|
-        study.name = study.name + " (" + study.id.to_s + ")"
-      end
-    end
-  end
-
-  def select_asset_name_for_move
-    @asset = Asset.find(params[:asset_id])
-    study = Study.find_by_id(params[:study_id_to])
-    @assets = []
-    unless study.nil?
-      @assets = study.asset_groups
-    end
-    render :layout => false
-  end
-
   def reset_values_for_move
     render :layout => false
-  end
-
-  def move_single(params)
-    @asset          = Asset.find(params[:id])
-    @study_from     = Study.find(params[:study_id_from])
-    @study_to       = Study.find(params[:study_id_to])
-    @asset_group    = AssetGroup.find_by_id(params[:asset_group_id])
-    if @asset_group.nil?
-      @asset_group    = AssetGroup.find_or_create_asset_group(params[:new_assets_name], @study_to)
-    end
-
-    result = @asset.move_to_asset_group(@study_from, @study_to, @asset_group, params[:new_assets_name], current_user)
-    return result
-  end
-
-  def move
-    @asset = Asset.find(params[:id])
-    unless check_valid_values(params)
-      redirect_to :action => :filtered_move, :id => params[:id]
-      return
-    end
-
-    result = move_single(params)
-    if result
-      flash[:notice] = "Assets has been moved"
-      redirect_to asset_path(@asset)
-    else
-      flash[:error] = @asset.errors.full_messages.join("<br />")
-      redirect_to :action => "filtered_move", :id => @asset.id
-    end
   end
 
   def find_by_barcode

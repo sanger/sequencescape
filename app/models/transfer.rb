@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class Transfer < ActiveRecord::Base
   module Associations
     def self.included(base)
@@ -9,10 +13,10 @@ class Transfer < ActiveRecord::Base
         has_many :transfers_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id, :order => 'id ASC'
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
-        named_scope :with_no_outgoing_transfers, {
-          :select     => "DISTINCT #{base.quoted_table_name}.*",
-          :joins      => "LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`",
-          :conditions => 'outgoing_transfers.source_id IS NULL'
+        scope :with_no_outgoing_transfers, -> {
+          select("DISTINCT #{base.quoted_table_name}.*").
+          joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`").
+          where('outgoing_transfers.source_id IS NULL')
         }
       end
     end
@@ -22,7 +26,7 @@ class Transfer < ActiveRecord::Base
     # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
     # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
     # are failed).
-    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'nx_in_progress', 'started_fx', 'started_mj', 'passed', 'failed', 'cancelled' ]
+    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'nx_in_progress', 'passed', 'failed', 'cancelled' ]
 
     def self.state_helper(names)
       Array(names).each do |name|
@@ -48,7 +52,7 @@ class Transfer < ActiveRecord::Base
     module PlateState
       def self.included(base)
         base.class_eval do
-          named_scope :in_state, lambda { |states|
+         scope :in_state, ->(states) {
             states = Array(states).map(&:to_s)
 
             # If all of the states are present there is no point in actually adding this set of conditions because we're
@@ -60,7 +64,7 @@ class Transfer < ActiveRecord::Base
               query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
                 "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
                 "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
-                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
+                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
 
               # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
@@ -84,7 +88,7 @@ class Transfer < ActiveRecord::Base
     module TubeState
       def self.included(base)
         base.class_eval do
-          named_scope :in_state, lambda { |states|
+         scope :in_state, ->(states) {
             states = Array(states).map(&:to_s)
 
             # If all of the states are present there is no point in actually adding this set of conditions because we're
@@ -92,7 +96,7 @@ class Transfer < ActiveRecord::Base
             if states.sort != ALL_STATES.sort
 
               query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
-                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
+                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
 
               query_conditions = 'transfer_requests_as_target.state IN (?)'
@@ -102,7 +106,7 @@ class Transfer < ActiveRecord::Base
               { }
             end
           }
-          named_scope :without_finished_tubes, lambda { |purpose|
+         scope :without_finished_tubes, ->(purpose) {
             {:conditions => ["NOT (plate_purpose_id IN (?) AND state = 'passed')", purpose.map(&:id) ]}
           }
         end
@@ -116,7 +120,7 @@ class Transfer < ActiveRecord::Base
     def self.included(base)
       base.class_eval do
         serialize :transfers
-        validates_presence_of :transfers, :allow_blank => false
+        validates :transfers, :presence => true, :allow_blank => false
       end
     end
   end
@@ -137,8 +141,6 @@ class Transfer < ActiveRecord::Base
   module ControlledDestinations
     def self.included(base)
       base.class_eval do
-        include Transfer::WellHelpers
-
         # Ensure that the transfers are recorded so we can see what happened.
         serialize :transfers
         validates_unassigned :transfers
@@ -155,20 +157,6 @@ class Transfer < ActiveRecord::Base
     private :each_transfer
   end
 
-  module WellHelpers
-    # To calculate the depth we keep walking the requests_as_target until we reach a plate that can be
-    # considered a stock plate.
-    def calculate_stock_well_depth_for(well)
-      depth = -1    # Because we do not include the first well in our calculations!
-      until well.plate.stock_plate?
-        well   = well.requests_as_target.first.try(:asset) or raise StandardError, "Walked off the end of the graph!"
-        depth += 1
-      end
-      depth
-    end
-    private :calculate_stock_well_depth_for
-  end
-
   include Uuid::Uuidable
 
   self.inheritance_column   = "sti_type"
@@ -181,18 +169,19 @@ class Transfer < ActiveRecord::Base
   # You can only transfer from one plate to another once, anything else is an error.
   belongs_to :source, :class_name => 'Plate'
   validates_presence_of :source
-  named_scope :include_source, :include => { :source => ModelExtensions::Plate::PLATE_INCLUDES }
+  scope :include_source, -> { includes( :source => ModelExtensions::Plate::PLATE_INCLUDES ) }
 
   # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.
   before_create :create_transfer_requests
   def create_transfer_requests
-    # TODO: This is probably actually a submission, which means we'll need project & study too
-    each_transfer do |source, destination|
+    # Note: submission is optional. Unlike methods, blocks don't support default argument
+    # values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
+    each_transfer do |source, destination, submission|
       request_type_between(source, destination).create!(
         :asset         => source,
         :target_asset  => destination,
-        :submission_id => source.pool_id
+        :submission_id => submission||source.pool_id
       )
     end
   end

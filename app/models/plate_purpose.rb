@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class PlatePurpose < Purpose
   module Associations
     def self.included(base)
@@ -5,15 +9,15 @@ class PlatePurpose < Purpose
         # TODO: change to purpose_id
         belongs_to :plate_purpose, :foreign_key => :plate_purpose_id
         belongs_to :purpose, :foreign_key => :plate_purpose_id
-        named_scope :with_plate_purpose, lambda { |*purposes|
+       scope :with_plate_purpose, ->(*purposes) {
           { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
         }
       end
     end
 
     # Delegate the change of state to our plate purpose.
-    def transition_to(state, contents = nil, customer_accepts_responsibility=false)
-      purpose.transition_to(self, state, contents,customer_accepts_responsibility)
+    def transition_to(state, user, contents = nil, customer_accepts_responsibility=false)
+      purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
     end
 
     # Delegate the transfer request type determination to our plate purpose
@@ -23,14 +27,21 @@ class PlatePurpose < Purpose
   end
 
   include Relationship::Associations
-  
-  named_scope :compatible_with_purpose, lambda {|purpose| { :conditions => ["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type], :order=>"name ASC" } }  
 
-  named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
-  named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
-  named_scope :cherrypickable_default_type, :conditions => { :cherrypickable_target => true, :cherrypickable_source => true }
-  named_scope :for_submissions, { :conditions => 'can_be_considered_a_stock_plate = true OR name = "Working Dilution"', :order=>'can_be_considered_a_stock_plate DESC'}
-  named_scope :considered_stock_plate, { :conditions => { :can_be_considered_a_stock_plate => true } }
+ # We declare the scopes as lambdas as Rails 3.2 seems to fail to include the various subclasses otherwise
+  scope :compatible_with_purpose, ->(purpose) {
+    purpose.nil? ?
+      where('FALSE') :
+      where(["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type]).
+        order("name ASC")
+  }
+
+ scope :cherrypickable_as_target, -> { where( :cherrypickable_target => true ) }
+ scope :cherrypickable_as_source, -> { where( :cherrypickable_source => true ) }
+ scope :cherrypickable_default_type, -> { where( :cherrypickable_target => true, :cherrypickable_source => true ) }
+ scope :for_submissions, -> { where('can_be_considered_a_stock_plate = true OR name = "Working Dilution"').
+    order('can_be_considered_a_stock_plate DESC') }
+ scope :considered_stock_plate, -> { where( :can_be_considered_a_stock_plate => true ) }
 
   serialize :cherrypick_filters
   validates_presence_of(:cherrypick_filters, :if => :cherrypickable_target?)
@@ -38,11 +49,17 @@ class PlatePurpose < Purpose
     r[:cherrypick_filters] ||= [ 'Cherrypick::Strategy::Filter::ShortenPlexesToFit' ]
   end
 
-  belongs_to :asset_shape, :class_name => 'Map::AssetShape'
+  belongs_to :asset_shape, :class_name => 'AssetShape'
 
   def source_plate(plate)
-    plate.stock_plate
+    source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
   end
+  alias_method :library_source_plate, :source_plate
+
+  def source_plates(plate)
+    source_purpose_id.present? ? plate.ancestors_of_purpose(source_purpose_id) : [plate.stock_plate]
+  end
+  alias_method :library_source_plates, :source_plates
 
   def cherrypick_strategy
     Cherrypick::Strategy.new(self)
@@ -50,6 +67,10 @@ class PlatePurpose < Purpose
 
   def cherrypick_dimension
     cherrypick_direction == 'column' ? plate_height : plate_width
+  end
+
+  def cherrypick_completed(plate)
+    messenger_creators.each {|creator| creator.create!(plate) }
   end
 
   def plate_height
@@ -72,13 +93,14 @@ class PlatePurpose < Purpose
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-  def transition_to(plate, state, contents = nil, customer_accepts_responsibility=false)
+  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility=false)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
     transition_state_requests(wells, state)
     fail_stock_well_requests(wells,customer_accepts_responsibility) if state == 'failed'
   end
+
 
   module Overrideable
     def transition_state_requests(wells, state)
@@ -126,11 +148,11 @@ class PlatePurpose < Purpose
   private :fail_stock_well_requests
 
   def pool_wells(wells)
-    _pool_wells(wells).all(
-      :joins    => 'LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id',
-      :select   => 'DISTINCT assets.*, pool_uuids.resource_id AS pool_id, pool_uuids.external_id AS pool_uuid',
-      :readonly => false
-    ).tap do |wells_with_pool|
+    _pool_wells(wells).
+      joins('LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id').
+      select('pool_uuids.external_id AS pool_uuid').
+      readonly(false).
+      tap do |wells_with_pool|
       raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
     end
   end
@@ -141,8 +163,8 @@ class PlatePurpose < Purpose
   private :_pool_wells
 
   include Api::PlatePurposeIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
 
   # TODO: change to purpose_id
   has_many :plates, :foreign_key => :plate_purpose_id
@@ -174,7 +196,9 @@ class PlatePurpose < Purpose
 
     attributes[:size]     ||= size
     attributes[:location] ||= default_location
-    plates.create_with_barcode!(attributes, &block).tap do |plate|
+    attributes[:purpose] = self
+
+    target_plate_type.constantize.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
     end
   end
@@ -194,4 +218,7 @@ class PlatePurpose < Purpose
   def source_wells_for(stock_wells)
     stock_wells
   end
+
+  def supports_multiple_submissions?; false; end
+
 end

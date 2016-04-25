@@ -1,25 +1,29 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
+
 <h2>Plate <%= index+1 %></h2>
 <%= hidden_field_tag 'rows', plate_rows %>
 <%= hidden_field_tag 'columns', plate_cols %>
 <%= hidden_field_tag 'plate_size', plate_cols*plate_rows %>
 <% unless @plate.nil?-%><%= hidden_field_tag 'plate_barcode', @plate.barcode %><% end -%>
 
-<table id="plate_<%=index+1-%>" class="plate" width="100%">
+<table id="plate_<%=index+1-%>" class="plate destination_plate" width="100%">
   <thead>
     <% (plate_cols+1).times do |i| %>
-    <th><%= i %></th>
+    <th scope='col'><%= i %></th>
     <% end %>
   </thead>
   <% plate_rows.times do |row| %>
     <tr id="plate[<%= index %>][<%= row %>]">
-      <td class='border' width='2%'><%= (65+row).chr %></td>
+      <th class='border' width='2%' scope='row'><%= (65+row).chr %></td>
       <% plate_cols.times do |col| %>
         <% current_well = plate[col*plate_rows + row]  %>
 
         <% if current_well[0] == 0 -%>
           <td class="empty"><%= current_well[1] %></td>
         <% else -%>
-          <td id="<%= current_well[0] %>" class="<%= plate_class[current_well[1]] %>" ><%= current_well[1] %><br /><%= current_well[2] %></td>
+          <td id="well_<%= current_well[0] %>" class="<%= plate_class[current_well[1]] %>" ><%= current_well[1] %><br /><%= current_well[2] %></td>
         <% end -%>
       <% end %>
     </tr>

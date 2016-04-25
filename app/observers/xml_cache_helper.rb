@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2015,2016 Genome Research Ltd.
+
 module XmlCacheHelper
   # Include this module into the controller and use cache_xml_response to cache the XML response
   # appropriately for a cache sweeper that includes the XmlCacheHelper module.
@@ -32,7 +36,8 @@ module XmlCacheHelper
       #
       # This is the best way of doing this, hence we simply implement an observer here and then
       # include & delegate everything we need to interact with the cache.
-      include ActionController::UrlWriter
+      include Rails.application.routes.url_helpers
+
       delegate :expire_page, :perform_caching, :to => 'ActionController::Base'
       alias_method(:perform_caching?, :perform_caching)
       private :expire_page, :perform_caching, :perform_caching?
@@ -59,12 +64,19 @@ module XmlCacheHelper
   private :handle
 
   def clear_cache(id)
-    expire_page(url_for(
-      :controller => caching_for_controller, :action => 'show', :id => id, :format => :xml,
-      :only_path => true, :skip_relative_url_root => true
-    ))
-  rescue Errno::ENOENT => exception
-    Rails.logger.warn { "Cannot clear cached XML file as it does not exist (#{exception.message})" }
+    i = 0
+    begin
+      expire_page(url_for(
+        :controller => caching_for_controller, :action => 'show', :id => id, :format => :xml,
+        :only_path => true
+      ))
+    rescue Errno::ENOENT => exception
+      Rails.logger.warn { "Cannot clear cached XML file as it does not exist (#{exception.message})" }
+    rescue Errno::EACCES => exception
+      i += 1
+      retry unless i > 2
+      Rails.logger.warn { "Cannot clear cached XML file as it is inaccessible" }
+    end
   end
   private :clear_cache
 

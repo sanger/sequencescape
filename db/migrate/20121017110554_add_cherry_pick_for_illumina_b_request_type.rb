@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012 Genome Research Ltd.
 class AddCherryPickForIlluminaBRequestType < ActiveRecord::Migration
   class << self
     def up
@@ -24,7 +27,7 @@ class AddCherryPickForIlluminaBRequestType < ActiveRecord::Migration
 
     # Add a new request_type
     def new_request_type
-      @new_request_type ||= old_request_type.clone.tap do |new_request_type|
+      @new_request_type ||= old_request_type.dup.tap do |new_request_type|
         # Duplicate request_type
         new_request_type.name = 'Cherrypick for Illumina-B'
         new_request_type.key  = 'cherrypick_for_illumina_b'

@@ -1,10 +1,13 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012 Genome Research Ltd.
 class BuildStockWellLinksForAllPulldownPlates < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
-    set_inheritance_column(nil)
+    self.table_name =('plate_purposes')
+    self.inheritance_column =
 
     class Relationship < ActiveRecord::Base
-      set_table_name('plate_purpose_relationships')
+      self.table_name =('plate_purpose_relationships')
       belongs_to :parent, :class_name => 'BuildStockWellLinksForAllPulldownPlates::PlatePurpose'
       belongs_to :child,  :class_name => 'BuildStockWellLinksForAllPulldownPlates::PlatePurpose'
     end
@@ -30,14 +33,14 @@ class BuildStockWellLinksForAllPulldownPlates < ActiveRecord::Migration
         say_with_time("#{purpose.name}(#{purpose.id}) at depth #{stock_well_depth}") do
           # Build a query that will find all wells that are on plates of this purpose, and mapped to their stock wells.
           joins = (1..stock_well_depth).map do |index|
-            "INNER JOIN requests r#{index} ON r#{index-1}.asset_id=r#{index}.target_asset_id AND r#{index}.sti_type IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')})"
+            "INNER JOIN requests r#{index} ON r#{index-1}.asset_id=r#{index}.target_asset_id AND r#{index}.sti_type IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')})"
           end
 
           results = Request.connection.select_all(%Q{
             SELECT 'stock' AS type, r0.target_asset_id AS target_well_id,r#{stock_well_depth}.asset_id AS source_well_id
             FROM assets plates
             INNER JOIN container_associations ON container_associations.container_id=plates.id
-            INNER JOIN requests r0 ON r0.target_asset_id=container_associations.content_id AND r0.sti_type IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')})
+            INNER JOIN requests r0 ON r0.target_asset_id=container_associations.content_id AND r0.sti_type IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')})
             #{joins.join("\n")}
             WHERE plates.plate_purpose_id = #{purpose.id}
           }, "Query for stock wells of #{purpose.name.inspect}")

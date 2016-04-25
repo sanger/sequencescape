@@ -1,7 +1,0 @@
-<tr class="<%= cycle("rowodd", "roweven") %>">
-  <td><%= link_to requested.ident, "#{configatron.studies_url}/items/show_item/#{requested.ident}", :target => "_blank" %></td>
-  <td><%= link_to requested.name, "#{configatron.studies_url}/items/show_item/#{requested.ident}", :target => "_blank" %></td>
-  <td><%= link_to requested.batch.id, :controller => :batches, :action => :show, :id => requested.batch.id %></td>
-  <td><%= link_to requested.batch.pipeline.name, :controller => :pipelines, :action => :show, :id => requested.batch.pipeline.id %></td>
-  <td><%= requested.state.humanize %></td>
-</tr>

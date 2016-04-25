@@ -1,70 +1,11 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class Map < ActiveRecord::Base
 
-  class AssetShape < ActiveRecord::Base
-    set_table_name('asset_shapes')
-
-    def self.default_id
-      @default ||= Map::AssetShape.find_by_name('Standard').id
-    end
-
-    def self.default
-      Map::AssetShape.find_by_name('Standard')
-    end
-
-    def standard?
-      horizontal_ratio == 3 && vertical_ratio == 2
-    end
-
-    def multiplier(size)
-      ((size/(vertical_ratio*horizontal_ratio))**0.5).to_i
-    end
-    private :multiplier
-
-    def plate_height(size)
-      multiplier(size)*vertical_ratio
-    end
-
-    def plate_width(size)
-      multiplier(size)*horizontal_ratio
-    end
-
-    def horizontal_to_vertical(well_position,plate_size)
-      alternate_position(well_position, plate_size, :width, :height)
-    end
-
-    def vertical_to_horizontal(well_position,plate_size)
-      alternate_position(well_position, plate_size, :height, :width)
-    end
-
-    def interlaced_vertical_to_horizontal(well_position,plate_size)
-      alternate_position(interlace(well_position,plate_size), plate_size, :height, :width)
-    end
-
-    def vertical_to_interlaced_vertical(well_position,plate_size)
-      interlace(well_position,plate_size)
-    end
-
-    def interlace(i,size)
-      m,d = (i-1).divmod(size/2)
-      2*d+1+m
-    end
-    private :interlace
-
-    def alternate_position(well_position, size, *dimensions)
-      return nil unless Map.valid_well_position?(well_position)
-      divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
-      column, row = (well_position-1).divmod(divisor)
-      return nil unless (0...multiplier).include?(column)
-      return nil unless (0...divisor).include?(row)
-      alternate = (row * multiplier) + column + 1
-    end
-    private :alternate_position
-
-    def location_from_row_and_column(row, column, size=96)
-      description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size),size)
-    end
-
-  end
+  validates_presence_of :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape
+  validates_numericality_of :asset_size, :row_order, :column_order
 
   module Coordinate
 
@@ -77,7 +18,7 @@ class Map < ActiveRecord::Base
     )
 
     def self.location_from_row_and_column(row, column,_=nil,__=nil)
-      "#{(?A+row).chr}#{column}"
+      "#{(?A.getbyte(0)+row).chr}#{column}"
     end
 
     def self.description_to_horizontal_plate_position(well_description,plate_size)
@@ -146,6 +87,10 @@ class Map < ActiveRecord::Base
       alternate_position(well_position, plate_size, :length, :width)
     end
 
+    def self.location_from_index(index, size)
+      horizontal_plate_position_to_description(index-1,size)
+    end
+
   class << self
     # Given the well position described in terms of a direction (vertical or horizontal) this function
     # will map it to the alternate positional representation, i.e. a vertical position will be mapped
@@ -175,9 +120,14 @@ class Map < ActiveRecord::Base
       "S%0#{digit_count}d" % [(row)*width + column]
     end
 
+    def self.location_from_index(index, size)
+      digit_count = Math.log10(size+1).ceil
+      "S%0#{digit_count}d" % [index+1]
+    end
+
   end
 
-  named_scope :for_position_on_plate, lambda { |position,plate_size,asset_shape|
+ scope :for_position_on_plate, ->(position,plate_size,asset_shape) {
     {
       :conditions => {
         :row_order    => position - 1,
@@ -187,12 +137,12 @@ class Map < ActiveRecord::Base
     }
   }
 
-  named_scope :where_description, lambda { |*descriptions| { :conditions => { :description => descriptions.flatten } } }
-  named_scope :where_plate_size,  lambda { |size| { :conditions => { :asset_size => size } } }
-  named_scope :where_plate_shape,  lambda { |asset_shape| { :conditions => { :asset_shape_id => asset_shape } } }
-  named_scope :where_vertical_plate_position, lambda { |*positions| { :conditions => { :column_order => positions.map {|v| v-1} } } }
+  scope :where_description, ->(*descriptions) { where(:description => descriptions.flatten) }
+  scope :where_plate_size,  ->(size) { where(:asset_size => size) }
+  scope :where_plate_shape, ->(asset_shape) { where(:asset_shape_id => asset_shape)}
+  scope :where_vertical_plate_position, ->(*positions) { where(:column_order => positions.map {|v| v-1}) }
 
-  belongs_to :asset_shape, :class_name => 'Map::AssetShape'
+  belongs_to :asset_shape, :class_name => 'AssetShape'
   delegate :standard?, :to => :asset_shape
 
   def self.valid_plate_size?(plate_size)
@@ -220,6 +170,26 @@ class Map < ActiveRecord::Base
     self.column_order + 1
   end
 
+  def height
+    asset_shape.plate_height(asset_size)
+  end
+
+  def width
+    asset_shape.plate_width(asset_size)
+  end
+
+  ##
+  # Column of particular map location. Zero indexed integer
+  def column
+    self.row_order%width
+  end
+
+  ##
+  # Row of particular map location. Zero indexed integer
+  def row
+    self.column_order%height
+  end
+
   def horizontal_plate_position
     self.row_order + 1
   end
@@ -230,7 +200,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.location_from_row_and_column(row, column)
-    "#{(?A+row).chr}#{column}"
+    "#{('A'.getbyte(0)+row).chr}#{column}"
   end
 
   def self.next_map_position(current_map_id)
@@ -278,7 +248,7 @@ class Map < ActiveRecord::Base
     Map.find(:first,:conditions=>{
       :asset_size  => plate_size,
       :row_order   => snp_map_id.to_i+1,
-      :asset_shape => Map::AssetShape.default_id
+      :asset_shape => AssetShape.default_id
     }).id
   end
 
@@ -288,7 +258,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.split_well_description(well_description)
-    { :row=> well_description[0] - 65, :col=> well_description[1,well_description.size].to_i}
+    { :row=> well_description.getbyte(0) - 65, :col=> well_description[1,well_description.size].to_i}
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
@@ -302,10 +272,10 @@ class Map < ActiveRecord::Base
     map.description
   end
 
-  named_scope :in_row_major_order, { :order => 'row_order ASC' }
-  named_scope :in_reverse_row_major_order, { :order => 'row_order DESC' }
-  named_scope :in_column_major_order, { :order => 'column_order ASC' }
-  named_scope :in_reverse_column_major_order, { :order => 'column_order DESC' }
+   scope :in_row_major_order,            -> { order('row_order ASC' ) }
+   scope :in_reverse_row_major_order,    -> { order('row_order DESC' ) }
+   scope :in_column_major_order,         -> { order('column_order ASC' ) }
+   scope :in_reverse_column_major_order, -> { order('column_order DESC' ) }
 
   class << self
     # Caution! Only use for seeds. Not valid elsewhere
@@ -319,7 +289,7 @@ class Map < ActiveRecord::Base
 
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
     def walk_plate_in_column_major_order(size, asset_shape=nil, &block)
-      asset_shape ||= Map::AssetShape.default_id
+      asset_shape ||= AssetShape.default_id
       self.all(:conditions => { :asset_size => size, :asset_shape_id => asset_shape }, :order => 'column_order ASC').each do |position|
         yield(position, position.column_order)
       end
@@ -328,7 +298,7 @@ class Map < ActiveRecord::Base
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
     def walk_plate_in_row_major_order(size, asset_shape=nil, &block)
-      asset_shape ||= Map::AssetShape.default_id
+      asset_shape ||= AssetShape.default_id
       self.all(:conditions => { :asset_size => size, :asset_shape_id => asset_shape }, :order => 'row_order ASC').each do |position|
         yield(position, position.row_order)
       end

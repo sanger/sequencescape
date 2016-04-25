@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+
 module IlluminaC::Requests
 
   class LibraryRequest < Request::LibraryCreation
@@ -18,35 +22,6 @@ module IlluminaC::Requests
   class NoPcrLibraryRequest < LibraryRequest
     fragment_size_details(:no_default, :no_default)
   end
-
-  class InitialTransfer < TransferRequest
-    include TransferRequest::InitialTransfer
-  end
-
-  class QcCompleteable < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
-
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :qc_complete
-      aasm_state :failed
-      aasm_state :cancelled
-
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
-    end
-  end
-
-  class StockToAlLibsTagged < QcCompleteable
-    include TransferRequest::InitialTransfer
-  end
-
 
   module Helpers
 

@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011 Genome Research Ltd.
 module Validateable
 
   [:save, :save!, :update_attribute].each{|attr| define_method(attr){}}
@@ -12,14 +15,10 @@ module Validateable
     super
     base.send(:include, ActiveRecord::Validations)
     base.extend ClassMethods
-
-    base.send :include, ActiveSupport::Callbacks
-    base.define_callbacks *ActiveRecord::Validations::VALIDATIONS
-
   end
 
   def validate!
-    raise ActiveRecord::RecordInvalid, self unless valid?
+    raise(ActiveRecord::RecordInvalid, self) unless valid?
   end
 
   module ClassMethods
@@ -32,7 +31,7 @@ module Validateable
       end
       defaults << options[:default] if options[:default]
       defaults.flatten!
-      defaults << attribute_key_name.humanize
+      defaults << attribute_key_name.to_s.humanize
       options[:count] ||= 1
       I18n.translate(defaults.shift, options.merge(:default => defaults, :scope => [:activerecord, :attributes]))
     end

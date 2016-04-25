@@ -1,12 +1,15 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011 Genome Research Ltd.
 class MoveSamplesAndTagsForRootedLibraryTubes < ActiveRecord::Migration
   class AssetLink < ActiveRecord::Base
-    set_table_name('asset_links')
+    self.table_name =('asset_links')
 
     acts_as_dag_links :node_class_name => 'MoveSamplesAndTagsForRootedLibraryTubes::Asset'
   end
 
   class Aliquot < ActiveRecord::Base
-    set_table_name('aliquots')
+    self.table_name =('aliquots')
 
     # NOTE: validations are not here as they are DB constraints and we're not UI based
     belongs_to :receptacle, :class_name => 'MoveSamplesAndTagsForRootedLibraryTubes::Asset'
@@ -16,10 +19,10 @@ class MoveSamplesAndTagsForRootedLibraryTubes < ActiveRecord::Migration
 
   class Request < ActiveRecord::Base
     class Metadata < ActiveRecord::Base
-      set_table_name('request_metadata')
+      self.table_name =('request_metadata')
     end
 
-    set_table_name('requests')
+    self.table_name =('requests')
 
     # More sensible names for the assets
     belongs_to :source_asset, :class_name => 'MoveSamplesAndTagsForRootedLibraryTubes::Asset', :foreign_key => :asset_id
@@ -54,7 +57,7 @@ class MoveSamplesAndTagsForRootedLibraryTubes < ActiveRecord::Migration
       end
     end
 
-    set_table_name('assets')
+    self.table_name =('assets')
 
     has_many :requests_as_source, :class_name => 'MoveSamplesAndTagsForRootedLibraryTubes::Request', :foreign_key => :asset_id, :conditions => 'sti_type != "CreateAssetRequest"'
     has_many :requests_as_target, :class_name => 'MoveSamplesAndTagsForRootedLibraryTubes::Request', :foreign_key => :target_asset_id, :conditions => 'sti_type != "CreateAssetRequest"'
@@ -69,24 +72,24 @@ class MoveSamplesAndTagsForRootedLibraryTubes < ActiveRecord::Migration
       # Returns a list of Aliquot instances that can be attached to another asset.  It also ensures that
       # the aliquots on the asset are maintained correctly.
       def for_attachment
-        parent_aliquots = self.map(&:clone)
+        parent_aliquots = self.map(&:dup)
         if parent_aliquots.empty?
-          return [] if proxy_owner.sample_id.nil?   # This is an empty receptacle so no point going any further
+          return [] if proxy_association.owner.sample_id.nil?   # This is an empty receptacle so no point going any further
 
-          aliquot            = Aliquot.new(:sample_id => proxy_owner.sample_id)
-          aliquot.tag_id     = proxy_owner.tag_instance.tag_id if proxy_owner.tag_instance.present?
-          aliquot.library_id = proxy_owner.id if proxy_owner.is_library_tube?
+          aliquot            = Aliquot.new(:sample_id => proxy_association.owner.sample_id)
+          aliquot.tag_id     = proxy_association.owner.tag_instance.tag_id if proxy_association.owner.tag_instance.present?
+          aliquot.library_id = proxy_association.owner.id if proxy_association.owner.is_library_tube?
           parent_aliquots    = [ aliquot ]
 
-          self << aliquot.clone    # This is our own aliquot too
-        elsif parent_aliquots.size == 1 and proxy_owner.tag_instance.present?
-          if parent_aliquots.first.tag_id.present? and parent_aliquots.first.tag_id != proxy_owner.tag_instance.tag_id
-            raise StandardError, "Asset #{proxy_owner.id} has mismatching tags" 
+          self << aliquot.dup    # This is our own aliquot too
+        elsif parent_aliquots.size == 1 and proxy_association.owner.tag_instance.present?
+          if parent_aliquots.first.tag_id.present? and parent_aliquots.first.tag_id != proxy_association.owner.tag_instance.tag_id
+            raise StandardError, "Asset #{proxy_association.owner.id} has mismatching tags"
           end
 
           # Update the tag on our aliquot
-          parent_aliquots.first.tag_id = proxy_owner.tag_instance.tag_id
-          self.first.update_attributes!(:tag_id => proxy_owner.tag_instance.tag_id)
+          parent_aliquots.first.tag_id = proxy_association.owner.tag_instance.tag_id
+          self.first.update_attributes!(:tag_id => proxy_association.owner.tag_instance.tag_id)
         end
 
         parent_aliquots
@@ -96,7 +99,7 @@ class MoveSamplesAndTagsForRootedLibraryTubes < ActiveRecord::Migration
       def attach_missing_from(aliquots)
         return if aliquots.empty?
 
-        missing_aliquots = aliquots.map(&:clone)
+        missing_aliquots = aliquots.map(&:dup)
         self.each do |aliquot|
           missing_aliquots.delete_if do |parent_aliquot|
             (parent_aliquot.sample == aliquot.sample) and (parent_aliquot.tag == aliquot.tag)

@@ -1,0 +1,35 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
+
+
+<h3>Samples</h3>
+
+<div class="help">
+  This asset has <%= @asset.aliquots.count %> samples.
+  <a data-collapse-element-id="asset-samples-table" data-hidden="false" class="shown-button">Collapse</a>
+</div>
+
+ <table id="asset-samples-table" width="100%" cellspacing="0" cellpadding="0" class="sortable">
+  <colgroup>
+    <col class="npg_aliquot_index">
+  </colgroup>
+  <thead>
+    <tr>
+      <th><a>Sample Name</a></th>
+      <th><a>Sanger Sample Id</a></th>
+      <th><a>Tag</a></th>
+      <th><a>Tag2</a></th>
+    </tr>
+  </thead>
+  <tbody>
+ <% @asset.aliquots.include_summary.each_with_index do |aliquot,i| %>
+ <tr class="<%= i.odd? ? 'rowodd' : 'roweven' %>">
+   <td><strong><%= link_to(aliquot.sample.name, sample_url(aliquot.sample)) -%></strong></td>
+   <td><%= aliquot.sample.sanger_sample_id %></td>
+   <td><%= render :partial =>'shared/tag_info', :locals=> {:tag=> aliquot.tag } if aliquot.tag.present? %></td>
+   <td><%= render :partial =>'shared/tag_info', :locals=> {:tag=> aliquot.tag2 } if aliquot.tag2.present? %></td>
+ </tr>
+ <% end %>
+ </tbody>
+ </table>

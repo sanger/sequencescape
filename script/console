@@ -1,3 +1,2 @@
-#!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/../config/boot'
-require 'commands/console'
+#!/bin/bash
+echo "./script/console has been replaced by 'rails console'"

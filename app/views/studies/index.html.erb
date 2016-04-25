@@ -1,16 +1,26 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
+
 <%- add :title, I18n.t("studies.about") %>
-<%- add :manager_option, "<strong>Create study</strong>" => new_study_path %>
-<%- add :manager_option, "<strong>Create project</strong>" => new_project_path %>
-<%- add :manager_option, "<strong>Start a Bulk Submission</strong>" => {:controller => "/bulk_submissions", :action => "new"} %>
-<%- add :manager_option, "<strong>Start a New Submission</strong>" => new_submission_path %>
-<%- add :manager_option, "<strong>Submissions Inbox</strong>" => submissions_path %>
-<h1>
-<% if params[:scope] %>
-  <%= @alternatives[params[:scope].to_i].capitalize  %> studies
-<% else %>
-  Studies
+<%- add :manager_option, "Create study" => new_study_path %>
+<%- add :manager_option, "Create project" => new_project_path %>
+<%- add :manager_option, "Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} %>
+<%- add :manager_option, "Start a New Submission" => new_submission_path %>
+<%- add :manager_option, "Submissions Inbox" => submissions_path %>
+<%= alert(:info) do %>
+  <strong>We've updated!</strong>
+  <p>You might notice things look a bit different round here. In addition to the spit-and-polish, we also have some extensive under-the-hood changes which should help us improve things more easily in future.</p>
+  <p>As part of these changes we are introducing a new home-page, which attempts to make it easier to get to the pages you need. Its still early days though, and won't be suitable for everyone yet, but if you want a sneak preview, you can find it here.</p>
+  <p><strong><%= link_to 'Check out the new home page', home_path %></strong></p>
 <% end %>
-</h1>
+
+<% if params[:scope] %>
+  <%= page_title 'Studies', @alternatives[params[:scope].to_i] %>
+<% else %>
+  <%= page_title "Studies", "By Group" %>
+<% end %>
+
 
 <% if @studies.empty? && params[:scope].nil?-%>
   <%= display_user_guide(I18n.t('studies.guidance.nothing_interesting'), new_study_path) %>

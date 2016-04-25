@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 def recursive_diff(h1, h2)
@@ -134,7 +138,7 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.new(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none').save(false)
+  ApiApplication.new(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none').save(:validate => false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
@@ -159,25 +163,25 @@ end
 
 Then /^show me the HTTP response body$/ do
   $stderr.puts('=' * 80)
-  $stderr.send(:pp, JSON.parse(page.body)) rescue $stderr.puts(page.body)
+  $stderr.send(:pp, JSON.parse(page.source)) rescue $stderr.puts(page.source)
   $stderr.puts('=' * 80)
 end
 
 Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   regexp = Regexp.new(key_list)
   begin
-    assert_json_equal(serialised_json, page.body) do |key|
+    assert_json_equal(serialised_json, page.source) do |key|
       key.to_s =~ regexp
     end
   rescue
-    puts page.body
+    puts page.source
     raise
   end
 end
 
 Then /^ignoring everything but "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   keys = key_list.split('|')
-  assert_json_equal(serialised_json, page.body) do |key|
+  assert_json_equal(serialised_json, page.source) do |key|
     not keys.include?(key.to_s)
   end
 end
@@ -207,20 +211,20 @@ end
 
 Then /^the JSON should match the following for the specified fields:$/ do |serialised_json|
   expected = decode_json(serialised_json, 'Expected')
-  received = decode_json(page.body, 'Received')
+  received = decode_json(page.source, 'Received')
   strip_extraneous_fields(expected, received)
-  assert_hash_equal(expected, received, 'JSON differs in the specified fields')
+  assert_hash_equal(expected, received, "JSON #{page.source} differs in the specified fields")
 end
 
 Then /^the JSON "([^\"]+)" should be exactly:$/ do |path, serialised_json|
   expected = decode_json(serialised_json, 'Expected')
-  received = decode_json(page.body, 'Received')
+  received = decode_json(page.source, 'Received')
   target   = path.split('.').inject(received) { |json,key| json[key] }
   assert_equal(expected, target, 'JSON differs in the specified key path')
 end
 
 Then /^the JSON "([^\"]+)" should not exist$/ do |path|
-  received = decode_json(page.body, 'Received')
+  received = decode_json(page.source, 'Received')
   steps    = path.split('.')
   leaf     = steps.pop
   target   = steps.inject(received) { |json,key| json.try(:[], key) }
@@ -232,7 +236,7 @@ end
 Then /^the JSON should be:$/ do |serialised_json|
   assert_hash_equal(
     decode_json(serialised_json, 'Expected'),
-    decode_json(page.body, 'Received'),
+    decode_json(page.source, 'Received'),
     'The JSON differs when decoded'
   )
 end
@@ -241,7 +245,7 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
   assert_equal(match[1].to_i, page.driver.status_code)
-  rescue Test::Unit::AssertionFailedError => e
+  rescue MiniTest::Assertion => e
     step %Q{show me the HTTP response body}
     raise e
   end
@@ -253,15 +257,15 @@ Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header,value|
 end
 
 Then /^the HTTP response body should be empty$/ do
-  assert(page.body.blank?, 'The response body is not blank')
+  assert(page.source.blank?, 'The response body is not blank')
 end
 
 Then /^the JSON should be an empty array$/ do
-  assert_hash_equal([], decode_json(page.body, 'Received'), 'The JSON is not an empty array')
+  assert_hash_equal([], decode_json(page.source, 'Received'), 'The JSON is not an empty array')
 end
 
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
-  json = decode_json(page.body, 'Received')
+  json = decode_json(page.source, 'Received')
   target = path.split('.').inject(json) { |s,p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
   case target
   when Array
@@ -311,14 +315,14 @@ end
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    Factory(:empty_sample_tube, :name => "#{name} sample tube #{index}", :id => (base_id.to_i + index - 1)).tap do |sample_tube|
+    FactoryGirl.create(:empty_sample_tube, :name => "#{name} sample tube #{index}", :id => (base_id.to_i + index - 1)).tap do |sample_tube|
       sample_tube.aliquots.create!(:sample => sample)
     end
   end
 end
 
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
-  project = Factory :project, :name => project_name, :approved => true, :state => "active"
+  project = FactoryGirl.create :project, :name => project_name, :approved => true, :state => "active"
   project.update_attributes!(:project_metadata_attributes => {
     :project_manager => ProjectManager.find_by_name('Unallocated'),
     :project_cost_code => "ABC",
@@ -333,7 +337,7 @@ end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
   project = Project.find_by_name(project_name)
-  user = Factory :user, :login => login_name,  :first_name => "John", :last_name => "Doe", :email => "#{login_name}@example.com"
+  user = FactoryGirl.create :user, :login => login_name,  :first_name => "John", :last_name => "Doe", :email => "#{login_name}@example.com"
   user.is_owner_of(project)
 end
 

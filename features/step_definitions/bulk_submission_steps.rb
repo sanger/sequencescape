@@ -1,10 +1,18 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+
 def upload_submission_spreadsheet(name)
-  attach_file("bulk_submission_spreadsheet", File.join(RAILS_ROOT,'features', 'submission', 'csv', "#{name}.csv"))
-  click_button "bulk_submission_submit"
+  attach_file("bulk_submission_spreadsheet", File.join(Rails.root,'features', 'submission', 'csv', "#{name}.csv"))
+  click_button "Create Bulk submission"
 end
 
 When /^I upload a file with (.*) data for (\d+) submissions$/ do |type,number|
   upload_submission_spreadsheet("#{number}_#{type}_rows")
+end
+
+When /^I upload a file with valid data for 1 tube submissions$/ do
+  upload_submission_spreadsheet("1_tube_submission")
 end
 
 When /^I upload a file with 2 valid SC submissions$/ do
@@ -20,7 +28,7 @@ When /^I upload an empty file$/ do
 end
 
 When /^I submit an empty form$/ do
-  click_button "bulk_submission_submit"
+  click_button "Create Bulk submission"
 end
 
 When /^I upload a file with an invalid header row$/ do
@@ -43,4 +51,12 @@ Then /^there should be an order with the gigabases expected set to "(.*?)"$/ do 
     Order.all.detect { |o| o.request_options['gigabases_expected'] == gigabase },
     "There is no order with the gigabases expected set to #{gigabase}"
   )
+end
+
+Then /^the last submission should contain two assets$/ do
+  assert_equal 2, Submission.last.orders.reduce(0) {|total,order| total + order.assets.count }
+end
+
+Then /^the last submission should contain the tube with barcode "(.*?)"$/ do |barcode|
+  assert Submission.last.orders.reduce([]) {|assets,order| assets.concat(order.assets) }.detect {|a| a.barcode == barcode}
 end

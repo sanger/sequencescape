@@ -1,99 +1,171 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 require "test_helper"
 
 class LinearSubmissionTest < ActiveSupport::TestCase
+
+  MX_ASSET_COUNT = 5
+  SX_ASSET_COUNT = 4
+
   context "LinearSubmission" do
+    should belong_to :study
+    should belong_to :user
+  end
+
+  context "A LinearSubmission" do
+
     setup do
-      @assets = (1..4).map { |i| Factory(:sample_tube, :name => "Asset#{ i }") } # NOTE: huh? why did this have ':id => 1'!?!!
-      @asset_group = Factory :asset_group, :name => "non MPX", :assets => @assets
+      @workflow = create :submission_workflow
 
-      @mpx_assets = (1..10).map { |i| Factory(:sample_tube, :name => "MX-asset#{ i }") }
-      @mpx_asset_group = Factory :asset_group, :name => "MPX", :assets => @mpx_assets
-      @workflow = Factory :submission_workflow
+      @study = build :study
+      @project = build :project
+      @user = build :user
     end
-
-    should_belong_to :study
-    should_belong_to :user
 
     context "build (Submission factory)" do
       setup do
-        @study = Factory :study
-        @project = Factory :project
-        @user = Factory :user
-
-        @request_type_1 = Factory :request_type, :name => "request type 1"
-        @library_creation_request_type = Factory :library_creation_request_type
-        @sequencing_request_type = Factory :sequencing_request_type
-
-        @purpose = Factory :plate_purpose, :name => "mock purpose", :type=>'Tube::StandardMx', :target_type => 'MultiplexedLibraryTube'
-
-        @request_type_ids = [@request_type_1.id, @library_creation_request_type.id, @sequencing_request_type.id]
-
+        @sequencing_request_type = create :sequencing_request_type
+        @purpose = create :plate_purpose, :name => "mock purpose", :type=>'Tube::StandardMx', :target_type => 'MultiplexedLibraryTube'
         @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
       end
 
       context 'multiplexed submission' do
-        setup do
-          @mpx_request_type = Factory :multiplexed_library_creation_request_type, {:target_purpose => @purpose}
-          @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
-          @mpx_submission = LinearSubmission.build!(
-            :study            => @study,
-            :project          => @project,
-            :workflow         => @workflow,
-            :user             => @user,
-            :assets           => @mpx_assets,
-            :request_types    => @mpx_request_type_ids,
-            :request_options  => @request_options
-          )
-          @mpx_submission.save!
-        end
 
-        should 'be a multiplexed submission' do
-          assert @mpx_submission.multiplexed?
-        end
+        context 'Customer decision propagation' do
 
-        should "not save a comment if one isn't supplied" do
-          assert @mpx_submission.comments.blank?
-        end
+          setup do
+            @mpx_request_type = create :well_request_type, {:target_purpose => @purpose, :for_multiplexing => true}
+            @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
+            @our_product_criteria = create :product_criteria
 
-        context "#process!" do
-          context 'single request' do
-            setup do
-              @mpx_submission.process!
-            end
+            @basic_options = {
+              :study            => @study,
+              :project          => @project,
+              :workflow         => @workflow,
+              :user             => @user,
+              :request_types    => @mpx_request_type_ids,
+              :request_options  => @request_options,
+              :product => @our_product_criteria.product
+            }
 
-            should_not_change("Comment.count") { Comment.count }
-            should_change("Request.count", :by => 11) { Request.count }
-            should_change("Item.count", :by => 10) { Item.count }
+            @current_report = create :qc_report, :product_criteria => @our_product_criteria
+            @stock_well = create :well
+            @request_well = create :well
+            @request_well.stock_wells.attach!([@stock_well])
+            @request_well.reload
+            @expected_metric = create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'manually_failed', :proceed => true
+
+            @mpx_submission = LinearSubmission.build!(@basic_options.merge(:assets=>[@request_well]))
+            @mpx_submission.save!
           end
 
-          context 'multiple requests' do
-            setup do
-              @sequencing_request_type_2 = Factory :sequencing_request_type
-              @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type_2.id, @sequencing_request_type.id]
+          should 'set an appropriate criteria and set responsibility' do
+            @mpx_submission.process!
+            @mpx_submission.requests.each do |request|
+              assert request.qc_metrics.include?(@expected_metric), "Metric not included in #{request.request_type.name}: #{request.qc_metrics.inspect}"
+              assert_equal true, request.request_metadata.customer_accepts_responsibility, "Customer doesn't accept responsibility"
+            end
+          end
 
-              @multiple_mpx_submission = LinearSubmission.build!(
-                :study            => @study,
-                :project          => @project,
-                :workflow         => @workflow,
-                :user             => @user,
-                :assets           => @mpx_assets,
-                :request_types    => @mpx_request_type_ids,
-                :request_options  => @request_options
-              )
+        end
 
-              @multiple_mpx_submission.process!
+        context 'basic behaviour' do
+          setup do
+            @mpx_assets = (1..MX_ASSET_COUNT).map { |i| create(:sample_tube, :name => "MX-asset#{ i }") }
+            @mpx_asset_group = create :asset_group, :name => "MPX", :assets => @mpx_assets
+
+            @mpx_request_type = create :multiplexed_library_creation_request_type, {:target_purpose => @purpose}
+            @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
+
+            @basic_options = {
+              :study            => @study,
+              :project          => @project,
+              :workflow         => @workflow,
+              :user             => @user,
+              :assets           => @mpx_assets,
+              :request_types    => @mpx_request_type_ids,
+              :request_options  => @request_options
+            }
+
+            @mpx_submission = LinearSubmission.build!(@basic_options)
+            @mpx_submission.save!
+          end
+
+          should 'be a multiplexed submission' do
+            assert @mpx_submission.multiplexed?
+          end
+
+          should "not save a comment if one isn't supplied" do
+            assert @mpx_submission.comments.blank?
+          end
+
+          context "#process!" do
+            context 'single request' do
+              setup do
+                @comment_count = Comment.count
+                @request_count = Request.count
+                @item_count    = Item.count
+                @mpx_submission.process!
+              end
+
+              # Ideally these would be separate asserts, but the setup phase is so slow
+              # that we'll wrap them together. If the setup phase can be improved we
+              # can split them out again
+              should 'create requests and items but not comments' do
+                assert_equal MX_ASSET_COUNT+1, Request.count - @request_count
+                assert_equal MX_ASSET_COUNT, Item.count - @item_count
+                assert_equal @comment_count, Comment.count
+              end
             end
 
-            should_not_change("Comment.count") { Comment.count }
-            should_change("Request.count", :by => 12) { Request.count }
-            should_change("Item.count", :by => 10) { Item.count }
+            context 'multiple requests after plexing' do
+              setup do
+                @sequencing_request_type_2 = create :sequencing_request_type
+                @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type_2.id, @sequencing_request_type.id]
+
+                @multiple_mpx_submission = LinearSubmission.build!(
+                  :study            => @study,
+                  :project          => @project,
+                  :workflow         => @workflow,
+                  :user             => @user,
+                  :assets           => @mpx_assets,
+                  :request_types    => @mpx_request_type_ids,
+                  :request_options  => @request_options
+                )
+
+                @comment_count = Comment.count
+                @request_count = Request.count
+                @item_count    = Item.count
+
+                @multiple_mpx_submission.process!
+              end
+
+              # Ideally these would be separate shoulds, but the setup phase is so slow
+              # that we'll wrap them together. If the setup phase can be improved we
+              # can split them out again
+              should 'create requests and items but not comments' do
+                assert_equal MX_ASSET_COUNT+2, Request.count - @request_count
+                assert_equal MX_ASSET_COUNT, Item.count - @item_count
+                assert_equal @comment_count, Comment.count
+              end
+
+            end
           end
         end
       end
 
-      context 'normal submission' do
+      context 'single-plex submission' do
         setup do
+          @assets = (1..SX_ASSET_COUNT).map { |i| create(:sample_tube, :name => "Asset#{ i }") }
+          @asset_group = create :asset_group, :name => "non MPX", :assets => @assets
+
+          @request_type_1 = create :request_type, :name => "request type 1"
+          @library_creation_request_type = create :library_creation_request_type
+          @request_type_ids = [@request_type_1.id, @library_creation_request_type.id, @sequencing_request_type.id]
+
           @submission = LinearSubmission.build!(
             :study            => @study,
             :project          => @project,
@@ -122,18 +194,28 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         context '#process!' do
           setup do
+            @request_count =  Request.count
             @submission.process!
           end
 
-          should_change("Request.count", :by => 12) { Request.count }
+         should "change Request.count by #{SX_ASSET_COUNT*3}" do
+           assert_equal SX_ASSET_COUNT*3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT*3}"
+        end
 
           context "#create_requests_for_items" do
             setup do
+              @request_count =  Request.count
+              @comment_count =  Comment.count
               @submission.create_requests
             end
 
-            should_change("Request.count", :by => 12) { Request.count }
-            should_change("Comment.count", :by => 12) { Comment.count }
+           should "change Request.count by #{SX_ASSET_COUNT*3}" do
+             assert_equal SX_ASSET_COUNT*3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT*3}"
+          end
+
+           should "change Comment.count by #{SX_ASSET_COUNT*3}" do
+             assert_equal SX_ASSET_COUNT*3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT*3}"
+          end
 
             should "assign submission ids to the requests" do
               assert_equal @submission, @submission.items.first.requests.first.submission
@@ -156,13 +238,11 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               subject { @request_to_check.request_metadata }
               should_default_everything_but(Request::Metadata, :fragment_size_required_to, :fragment_size_required_from)
 
-              should 'assign fragment_size_required_to' do
+              should 'assign fragment_size_required_to and assign fragment_size_required_from' do
                 assert_equal '200', subject.fragment_size_required_to
-              end
-
-              should 'assign fragment_size_required_from' do
                 assert_equal '150', subject.fragment_size_required_from
               end
+
             end
 
             context 'sequencing request type' do
@@ -182,91 +262,24 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       end
     end
 
-
-    context "#no quota_check" do
-      setup do
-        @study = Factory :study
-        @project = Factory :project
-        @workflow = Factory :submission_workflow
-        @user = Factory :user
-
-        @request_type_1 = Factory :request_type, :name => "request type 1"
-        @request_type_2 = Factory :library_creation_request_type, :name => "request type 2"
-        @request_type_3 = Factory :sequencing_request_type
-        @mpx_request_type = Factory :multiplexed_library_creation_request_type
-
-        @request_type_ids = [@request_type_1.id, @request_type_2.id]
-        @mpx_request_type_ids = [@mpx_request_type.id, @request_type_3.id]
-
-        @request_types = [@request_type_1, @request_type_2]
-
-        @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
-
-        @submission_params = {
-          :study            => @study,
-          :project          => @project,
-          :workflow         => @workflow,
-          :user             => @user,
-          :assets           => @assets,
-          :request_types    => @request_type_ids,
-          :request_options  => @request_options,
-          :comments         => 'This is a comment'
-        }
-        @mpx_submission_params = {
-          :study            => @study,
-          :project          => @project,
-          :workflow         => @workflow,
-          :user             => @user,
-          :assets           => @mpx_assets,
-          :request_types    => @mpx_request_type_ids,
-          :request_options  => @request_options
-        }
-      end
-
-      context "when quotas are being enforced" do
-        setup do
-          @project.update_attributes(:enforce_quotas => true)
-        end
-
-        should 'allow the normal submission to build' do
-          LinearSubmission.build!(@submission_params)
-        end
-
-        should 'allow the multiplexed submission to build' do
-          LinearSubmission.build!(@mpx_submission_params)
-        end
-      end
-
-      context 'when quotas are not being enforced' do
-        setup do
-          @project.update_attributes!(:enforce_quotas => false)
-        end
-
-        should 'allow the normal submission to build' do
-          LinearSubmission.build!(@submission_params)
-        end
-      end
-
-    end
-
     context "process with a multiplier for request type" do
       setup do
-        @study = Factory :study
-        @project = Factory :project
-        @workflow = Factory :submission_workflow
+        @study = create :study
+        @project = create :project
+        @workflow = create :submission_workflow
 
-        @user = Factory :user
+        @user = create :user
 
-        @project = Factory :project
+        @project = create :project
         @project.enforce_quotas = true
 
-        @asset_1 = Factory(:sample_tube)
-        @asset_2 = Factory(:sample_tube)
+        @asset_1 = create(:sample_tube)
+        @asset_2 = create(:sample_tube)
 
-        @mx_request_type = Factory :multiplexed_library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
-        @lib_request_type = Factory :library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
-        @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
-        @se_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "SE sequencing", :order => 2, :key => "se_sequencing"
+        @mx_request_type = create :multiplexed_library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
+        @lib_request_type = create :library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
+        @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
+        @se_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "SE sequencing", :order => 2, :key => "se_sequencing"
 
         @submission_with_multiplication_factor = LinearSubmission.build!(
           :study            => @study,
@@ -294,9 +307,13 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         context "for non multiplexed libraries and sequencing" do
           setup do
+            @request_count =  Request.count
             @submission_with_multiplication_factor.process!
           end
-          should_change("Request.count", :by => 12) { Request.count }
+
+           should "change Request.count by 12" do
+             assert_equal 12,  Request.count  - @request_count, "Expected Request.count to change by 12"
+          end
 
           should "create 2 library requests" do
             lib_requests = Request.find_all_by_submission_id_and_request_type_id(@submission_with_multiplication_factor, @lib_request_type.id)
@@ -318,4 +335,5 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       end
     end
   end
+
 end

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 class Item < ActiveRecord::Base
   include Uuid::Uuidable
   include EventfulRecord
@@ -18,17 +22,18 @@ class Item < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => [:workflow_id, :version], :on => :create, :message => "already in use (item)"
 
-  named_scope :for_search_query, lambda { |query,with_includes|
-    { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
+ scope :for_search_query, ->(query,with_includes) {
+    where([ 'name LIKE ? OR id=?', "%#{query}%", query ])
   }
 
-  def before_validation_on_create
-    # TODO - Extract code to a shared library
+  before_validation :set_version, :on => :create
+
+  def set_version
     things_with_same_name = self.class.all(:conditions => {:name => self.name, :workflow_id => self.workflow_id})
     if things_with_same_name.empty?
       self.increment(:version)
     else
-      self.write_attribute :version, (things_with_same_name.size + 1)
+      self.version = things_with_same_name.size + 1
     end
   end
 end

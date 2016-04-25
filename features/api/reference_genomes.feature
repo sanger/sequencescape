@@ -12,7 +12,7 @@ Feature: Access reference genomes through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
   @create
   Scenario: Creating a reference genome

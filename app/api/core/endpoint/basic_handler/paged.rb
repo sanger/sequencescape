@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 module Core::Endpoint::BasicHandler::Paged
   def self.page_accessor(action, will_paginate_method, default_value = nil)
     lambda do |object|
@@ -45,7 +49,7 @@ module Core::Endpoint::BasicHandler::Paged
       :per_page      => Core::Endpoint::BasicHandler::Paged.results_per_page,
       :total_entries => model.count
     ).tap do |results|
-      raise ActiveRecord::RecordNotFound, 'past the end of the results' if (results.total_pages == 0) and (page > 1)
+      raise ActiveRecord::RecordNotFound, 'past the end of the results' if  (page > 1) && (page > results.total_pages)
     end
   end
   private :page_of_results

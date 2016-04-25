@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class ReferenceGenome < ActiveRecord::Base
   extend Attributable::Association::Target
   include Api::ReferenceGenomeIO::Extensions
@@ -6,7 +10,7 @@ class ReferenceGenome < ActiveRecord::Base
   has_many :studies
   has_many :samples
   validates_uniqueness_of :name, :message => "of reference genome already present in database", :allow_blank => true
-  named_scope :sorted_by_name , :order => "name ASC"
+  scope :sorted_by_name , order("name ASC")
 
   module Associations
     def self.included(base)

@@ -1,10 +1,15 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
+
 require 'test_helper'
+require 'unit/illumina_b/request_statemachine_checks'
 
 class TransferRequestTest < ActiveSupport::TestCase
 
   def shared_setup
-    @source = LibraryTube.create!.tap { |tube| tube.aliquots.create!(:sample => Factory(:sample)) }
-    Factory(:tag).tag!(@source)
+    @source = LibraryTube.create!.tap { |tube| tube.aliquots.create!(:sample => create(:sample)) }
+    create(:tag).tag!(@source)
     @destination = LibraryTube.create!
   end
 
@@ -25,16 +30,6 @@ class TransferRequestTest < ActiveSupport::TestCase
   end
 
   context 'TransferRequest' do
-    context 'when starting the request directly' do
-
-      setup do
-        shared_setup
-        @transfer_request = TransferRequest.create!(:asset => @source, :target_asset => @destination)
-      end
-
-      shared_tests
-
-    end
 
     context 'when using the constuctor' do
       setup do
@@ -47,10 +42,39 @@ class TransferRequestTest < ActiveSupport::TestCase
     end
 
     should 'not permit transfers to the same asset' do
-      asset = Factory(:sample_tube)
-      assert_raises(ActiveRecord::RecordInvalid) { TransferRequest.create!(:asset => asset, :target_asset => asset) }
+      asset = create(:sample_tube)
       assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(:asset => asset, :target_asset => asset) }
     end
 
+    context "with a tag clash" do
+      setup do
+        tag = create :tag
+        tag2 = create :tag
+        @aliquot_1 = create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well)
+        @aliquot_2 = create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well)
+
+        @target_asset = create :well
+      end
+
+      should 'raise an exception' do
+        @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_1.receptacle.reload, :target_asset =>  @target_asset)
+        assert_raise Aliquot::TagClash do
+          @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_2.receptacle.reload, :target_asset =>  @target_asset)
+        end
+      end
+    end
+
   end
+
+  extend IlluminaB::RequestStatemachineChecks
+
+  state_machine(TransferRequest) do
+    check_event(:start!, :pending)
+    check_event(:pass!, :pending, :started, :failed)
+    check_event(:qc!, :passed)
+    check_event(:fail!, :pending, :started, :passed)
+    check_event(:cancel!, :started, :passed, :qc_complete)
+    check_event(:cancel_before_started!, :pending)
+  end
+
 end

@@ -1,14 +1,26 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
   include SampleManifest::TemplateBehaviour
   include SampleManifest::SampleTubeBehaviour
+  include SampleManifest::MultiplexedLibraryBehaviour
   include SampleManifest::CoreBehaviour
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
+  include SampleManifest::SharedTubeBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
+
+  # While the maximum length of the column is 65536 we place a shorter restriction
+  # to allow for:
+  # 1) Subsequent serialization by the delayed job
+  # 2) The addition of a 'too many errors' message
+  LIMIT_ERROR_LENGTH = 60000
 
   module Associations
     def self.included(base)
@@ -19,8 +31,8 @@ class SampleManifest < ActiveRecord::Base
   has_uploaded_document :uploaded, {:differentiator => "uploaded"}
   has_uploaded_document :generated, {:differentiator => "generated"}
 
-  class_inheritable_accessor :spreadsheet_offset
-  class_inheritable_accessor :spreadsheet_header_row
+  class_attribute :spreadsheet_offset
+  class_attribute :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
 
@@ -44,6 +56,33 @@ class SampleManifest < ActiveRecord::Base
 
   before_save :default_asset_type
 
+  # Too many errors overflow the text column when serialized. This can affect de-serialization
+  # and can even prevent manifest resubmission.
+  before_save :truncate_errors
+
+  def truncate_errors
+    if self.last_errors && self.last_errors.join.length > LIMIT_ERROR_LENGTH
+
+      full_last_errors = self.last_errors
+
+      removed_errors = 0
+
+      while full_last_errors.join.length > LIMIT_ERROR_LENGTH
+        full_last_errors.pop
+        removed_errors += 1
+      end
+
+      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown."
+
+      self.last_errors = full_last_errors
+
+    end
+  end
+
+  def only_first_label
+    false
+  end
+
   def default_asset_type
     self.asset_type = "plate" if self.asset_type.blank?
   end
@@ -53,16 +92,16 @@ class SampleManifest < ActiveRecord::Base
   end
 
   #TODO[xxx] Consider index to make it faster
-  named_scope :pending_manifests, {
-   :order      => 'sample_manifests.id DESC',
-   :joins      => 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"',
-   :conditions => 'documents.id IS NULL'
- }
-  named_scope :completed_manifests, {
-   :order      => 'sample_manifests.updated_at DESC',
-   :joins      => 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"',
-   :conditions => 'documents.id IS NOT NULL'
- }
+  scope :pending_manifests,
+   order( 'sample_manifests.id DESC').
+   joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+   where( 'documents.id IS NULL')
+
+  scope :completed_manifests,
+   order( 'sample_manifests.updated_at DESC').
+   joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+   where( 'documents.id IS NOT NULL')
+
 
   def generate
     @manifest_errors = []
@@ -74,10 +113,12 @@ class SampleManifest < ActiveRecord::Base
     return nil
   end
 
-  def print_labels(barcode_printer)
+  def print_labels(barcode_printer, options={})
+    return false if barcode_printer.nil?
     core_behaviour.print_labels do |printables, prefix, *args|
       unless printables.empty?
         printables.each { |printable| printable.study = self.study.abbreviation }
+        printables = [printables.first] if options[:only_first_label]==true
         barcode_printer.print_labels(printables, prefix, *args)
       end
     end

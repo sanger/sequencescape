@@ -4,11 +4,11 @@ Feature: Manage Plate Purposes
   Background:
     Given I am a "administrator" user logged in as "user"
     And I am on the plate purpose homepage
-
-  Scenario: Adding a new plate purpose
     Then I should see "Listing All Plate Purposes"
     And I should see "Stock Plate"
     When I follow "New Plate Purpose"
+
+  Scenario: Adding a new plate purpose
     And I fill in the field labeled "Name" with "A new plate purpose"
     And I press "Create"
     Then I should see "Plate Purpose was successfully created"
@@ -24,17 +24,11 @@ Feature: Manage Plate Purposes
     And I should not see "A new plate purpose"
 
   Scenario: Adding an invalid plate purpose name with a space at the end
-    Then I should see "Listing All Plate Purposes"
-    And I should see "Stock Plate"
-    When I follow "New Plate Purpose"
     And I fill in the field labeled "Name" with "ABC   "
     And I press "Create"
     Then I should see "Name is invalid"
 
   Scenario: Adding an invalid plate purpose name with a space at the beginning
-    Then I should see "Listing All Plate Purposes"
-    And I should see "Stock Plate"
-    When I follow "New Plate Purpose"
     And I fill in the field labeled "Name" with "   ABC"
     And I press "Create"
     Then I should see "Name is invalid"

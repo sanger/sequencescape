@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+
 class Studies::AssetGroupsController < ApplicationController
   include BarcodePrintersController::Print
   def index
@@ -124,7 +128,13 @@ class Studies::AssetGroupsController < ApplicationController
   def print
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
-    @assets = @asset_group ? @asset_group.assets : []
+
+    @assets = @asset_group ? @asset_group.assets.select {|asset| asset.is_a?(Barcode::Barcodeable)} : []
+
+    unbarcoded = @asset_group.assets.reject {|asset| asset.is_a?(Barcode::Barcodeable)}
+    @unbarcoded_types = unbarcoded.map {|ub| ub.sti_type.pluralize.humanize }.uniq.to_sentence
+    @unbarcoded_count = unbarcoded.length
+    @containers = unbarcoded.map {|ub| ub.container }.uniq.select {|container| container.is_a?(Barcode::Barcodeable) }
   end
 
   def print_labels

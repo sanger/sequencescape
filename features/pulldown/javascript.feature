@@ -35,7 +35,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given I am on the show page for pipeline "Cherrypick"
     When I check "Select DN222J for batch"
     And I check "Select DN333P for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     When I follow "Select Plate Template"
     And I fill in the following:
       | Minimum Volume    | 10   |
@@ -51,17 +51,17 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     A;1220000222748;;ABgene 0765;2;;10.0
     D;1220099999705;;ABgene 0800;1;;10.0
     W;
-    A;1220000222748;;ABgene 0765;10;;9.0
-    D;1220099999705;;ABgene 0800;2;;9.0
+    A;1220000222748;;ABgene 0765;10;;8.3
+    D;1220099999705;;ABgene 0800;2;;8.3
     W;
-    A;1220000222748;;ABgene 0765;18;;8.0
-    D;1220099999705;;ABgene 0800;3;;8.0
+    A;1220000222748;;ABgene 0765;18;;7.1
+    D;1220099999705;;ABgene 0800;3;;7.1
     W;
-    A;1220000222748;;ABgene 0765;26;;7.0
-    D;1220099999705;;ABgene 0800;4;;7.0
+    A;1220000222748;;ABgene 0765;26;;6.3
+    D;1220099999705;;ABgene 0800;4;;6.3
     W;
-    A;1220000222748;;ABgene 0765;34;;6.0
-    D;1220099999705;;ABgene 0800;5;;6.0
+    A;1220000222748;;ABgene 0765;34;;5.6
+    D;1220099999705;;ABgene 0800;5;;5.6
     W;
     A;1220000222748;;ABgene 0765;42;;5.0
     D;1220099999705;;ABgene 0800;6;;5.0
@@ -84,30 +84,30 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     A;1220000333802;;ABgene 0765;28;;20.0
     D;1220099999705;;ABgene 0800;12;;20.0
     W;
-    A;1220000333802;;ABgene 0765;35;;2.0
-    D;1220099999705;;ABgene 0800;13;;2.0
+    A;1220000333802;;ABgene 0765;35;;1.1
+    D;1220099999705;;ABgene 0800;13;;1.1
     W;
-    A;1220000333802;;ABgene 0765;43;;2.0
-    D;1220099999705;;ABgene 0800;14;;2.0
+    A;1220000333802;;ABgene 0765;43;;1.3
+    D;1220099999705;;ABgene 0800;14;;1.3
     W;
-    A;1220000333802;;ABgene 0765;51;;2.0
-    D;1220099999705;;ABgene 0800;15;;2.0
+    A;1220000333802;;ABgene 0765;51;;1.4
+    D;1220099999705;;ABgene 0800;15;;1.4
     W;
-    A;1220000333802;;ABgene 0765;59;;2.0
-    D;1220099999705;;ABgene 0800;16;;2.0
+    A;1220000333802;;ABgene 0765;59;;1.7
+    D;1220099999705;;ABgene 0800;16;;1.7
     W;
     C;
-    A;BUFF;;96-TROUGH;2;;1.0
-    D;1220099999705;;ABgene 0800;2;;1.0
+    A;BUFF;;96-TROUGH;2;;1.7
+    D;1220099999705;;ABgene 0800;2;;1.7
     W;
-    A;BUFF;;96-TROUGH;3;;2.0
-    D;1220099999705;;ABgene 0800;3;;2.0
+    A;BUFF;;96-TROUGH;3;;2.9
+    D;1220099999705;;ABgene 0800;3;;2.9
     W;
-    A;BUFF;;96-TROUGH;4;;3.0
-    D;1220099999705;;ABgene 0800;4;;3.0
+    A;BUFF;;96-TROUGH;4;;3.8
+    D;1220099999705;;ABgene 0800;4;;3.8
     W;
-    A;BUFF;;96-TROUGH;5;;4.0
-    D;1220099999705;;ABgene 0800;5;;4.0
+    A;BUFF;;96-TROUGH;5;;4.4
+    D;1220099999705;;ABgene 0800;5;;4.4
     W;
     A;BUFF;;96-TROUGH;6;;5.0
     D;1220099999705;;ABgene 0800;6;;5.0
@@ -115,17 +115,17 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     A;BUFF;;96-TROUGH;11;;9.0
     D;1220099999705;;ABgene 0800;11;;9.0
     W;
-    A;BUFF;;96-TROUGH;13;;8.0
-    D;1220099999705;;ABgene 0800;13;;8.0
+    A;BUFF;;96-TROUGH;13;;8.9
+    D;1220099999705;;ABgene 0800;13;;8.9
     W;
-    A;BUFF;;96-TROUGH;14;;8.0
-    D;1220099999705;;ABgene 0800;14;;8.0
+    A;BUFF;;96-TROUGH;14;;8.8
+    D;1220099999705;;ABgene 0800;14;;8.8
     W;
-    A;BUFF;;96-TROUGH;15;;8.0
-    D;1220099999705;;ABgene 0800;15;;8.0
+    A;BUFF;;96-TROUGH;15;;8.6
+    D;1220099999705;;ABgene 0800;15;;8.6
     W;
-    A;BUFF;;96-TROUGH;16;;8.0
-    D;1220099999705;;ABgene 0800;16;;8.0
+    A;BUFF;;96-TROUGH;16;;8.3
+    D;1220099999705;;ABgene 0800;16;;8.3
     W;
     C;
     C; SCRC1 = 1220000222748
@@ -189,7 +189,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given plate "1234567" has measured volume results
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     When I follow "Cherrypick Group By Submission"
     And I choose "Pick by ng/µl"
     And I select "WGS stock DNA" from "Plate Purpose"

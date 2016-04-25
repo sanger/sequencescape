@@ -1,9 +1,12 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011 Genome Research Ltd.
 module Commentable
   def self.included(base)
 
     base.class_eval do
       has_many :comments, :as => :commentable
-      named_scope :with_comments, :joins => :comments, :conditions => "commentable_type = '#{base.name}'" do
+      scope :with_comments, -> {  joins(:comments).where("commentable_type = '#{base.name}'") } do
         def group(ids)
           conditions = {}
           if ids

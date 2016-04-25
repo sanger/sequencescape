@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+
 class Transfer::BetweenTubesBySubmission < Transfer
   include TransfersToKnownDestination
 
@@ -5,8 +9,9 @@ class Transfer::BetweenTubesBySubmission < Transfer
 
   before_validation :ensure_destination_setup
   def ensure_destination_setup
+    submission_id = source.submission.id
     self.destination = source.stock_wells.flatten.first.requests_as_source.detect do |request|
-      request.target_tube
+      request.library_creation? && request.submission_id == submission_id && request.target_tube
     end.try(:target_tube)
   end
   private :ensure_destination_setup

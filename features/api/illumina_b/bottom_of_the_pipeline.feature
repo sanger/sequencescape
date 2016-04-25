@@ -259,4 +259,4 @@ And I have a "full" authorised user with the key "cucumber"
     Then the HTTP response should be "201 Created"
 
      And the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
-     And all of the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be billed to their project
+

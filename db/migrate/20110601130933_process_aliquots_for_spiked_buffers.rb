@@ -1,12 +1,15 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011 Genome Research Ltd.
 class ProcessAliquotsForSpikedBuffers < ActiveRecord::Migration
   class AssetLink < ActiveRecord::Base
-    set_table_name('asset_links')
+    self.table_name =('asset_links')
 
     acts_as_dag_links :node_class_name => 'ProcessAliquotsForSpikedBuffers::Asset'
   end
 
   class Aliquot < ActiveRecord::Base
-    set_table_name('aliquots')
+    self.table_name =('aliquots')
 
     # NOTE: validations are not here as they are DB constraints and we're not UI based
     belongs_to :receptacle, :class_name => 'ProcessAliquotsForSpikedBuffers::Asset'
@@ -15,14 +18,14 @@ class ProcessAliquotsForSpikedBuffers < ActiveRecord::Migration
   end
 
   class Asset < ActiveRecord::Base
-    set_table_name('assets')
+    self.table_name =('assets')
 
     belongs_to :sample
     has_dag_links :link_class_name => 'ProcessAliquotsForSpikedBuffers::AssetLink'
     has_one :tag_instance, :through => :links_as_child, :source => :ancestor, :conditions => { :sti_type => 'TagInstance' }
     has_many :aliquots, :foreign_key => :receptacle_id, :class_name => 'ProcessAliquotsForSpikedBuffers::Aliquot'
 
-    named_scope :spiked_buffer, :conditions => { :sti_type => 'SpikedBuffer' }
+   scope :spiked_buffer, -> { where( :sti_type => 'SpikedBuffer' ) }
 
     def is_spiked_buffer?
       self.sti_type == 'SpikedBuffer'

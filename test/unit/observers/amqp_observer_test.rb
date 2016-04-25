@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2014,2015 Genome Research Ltd.
+
 require 'test_helper'
 
 class AmqpObserverTest < ActiveSupport::TestCase
@@ -29,6 +33,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         object.stubs(:id).returns(123456789)
         object.stubs(:class).returns(object_class)
         object.expects(:to_json).returns('JSON')
+        object.stubs(:routing_key).returns(nil)
         object_class.stubs(:name).returns('ClassName')
 
         exchange = mock('Exchange for sending')

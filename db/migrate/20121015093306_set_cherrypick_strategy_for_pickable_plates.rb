@@ -1,8 +1,11 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012 Genome Research Ltd.
 class SetCherrypickStrategyForPickablePlates < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
-    set_inheritance_column(nil)
-    named_scope :cherrypick_target, { :conditions => { :cherrypickable_target => true } }
+    self.table_name =('plate_purposes')
+    self.inheritance_column =
+    scope :cherrypick_target, -> { where( :cherrypickable_target => true ) }
   end
 
   def self.up

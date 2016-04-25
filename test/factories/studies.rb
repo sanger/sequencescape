@@ -1,109 +1,114 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.
 ####################################################################################################################
 # Used in features/listing_by_type
 ####################################################################################################################
 # This user is used when setting up relations to the studies and as the login for the feature.  It isn't actually
 # required (as the login step does this) but it's here for clarity should that ever change.
-Factory.define(:listing_studies_user, :parent => :user) do |user|
-  user.login 'listing_studies_user'
-end
-
-# The fairly obvious ones ;)
-Factory.define(:study_for_study_list_pending, :parent => :study) do |study|
-  study.name  'Study: Pending'
-  study.state 'pending'
-end
-Factory.define(:study_for_study_list_active, :parent => :study) do |study|
-  study.name  'Study: Active'
-  study.state 'active'
-end
-Factory.define(:study_for_study_list_inactive, :parent => :study) do |study|
-  study.name  'Study: Inactive'
-  study.state 'inactive'
-end
-
-Factory.define(:managed_study, :parent => :study) do |study|
-  study.name 'Study: Manages'
-  study.state 'active'
-  study.after_create do |study|
-    study.study_metadata.update_attributes!(:data_release_strategy=> 'managed')
+FactoryGirl.define do
+  factory(:listing_studies_user, :parent => :user) do |user|
+    login 'listing_studies_user'
   end
-end
-# These require property definitions to be properly setup
-Factory.define(:study_metadata_for_study_list_pending_ethical_approval, :parent => :study_metadata) do |metadata|
-  metadata.contains_human_dna     'Yes'
-  metadata.contaminated_human_dna 'No'
-  metadata.commercially_available 'No'
-end
-Factory.define(:study_for_study_list_pending_ethical_approval, :parent => :study) do |study|
-  study.name               'Study: Pending ethical approval'
-  #study.ethically_approved false
-  study.after_create do |study|
-    study.study_metadata.update_attributes!(Factory.attributes_for(:study_metadata_for_study_list_pending_ethical_approval, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
-    study.save # Required to re-force before_validation event
+
+  # The fairly obvious ones ;)
+  factory(:study_for_study_list_pending, :parent => :study) do |study|
+    name  'Study: Pending'
+    state 'pending'
   end
-end
-
-Factory.define(:study_metadata_for_study_list_contaminated_with_human_dna, :parent => :study_metadata) do |metadata|
-  metadata.contaminated_human_dna 'Yes'
-end
-Factory.define(:study_for_study_list_contaminated_with_human_dna, :parent => :study) do |study|
-  study.name           'Study: Contaminated with human dna'
-  study.after_create do |study|
-    study.study_metadata.update_attributes!(Factory.attributes_for(:study_metadata_for_study_list_contaminated_with_human_dna, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
+  factory(:study_for_study_list_active, :parent => :study) do |study|
+    name  'Study: Active'
+    state 'active'
   end
-end
-
-Factory.define(:study_metadata_for_study_list_remove_x_and_autosomes, :parent => :study_metadata) do |metadata|
-  metadata.remove_x_and_autosomes 'Yes'
-end
-Factory.define(:study_for_study_list_remove_x_and_autosomes, :parent => :study) do |study|
-  study.name           'Study: Remove x and autosomes'
-  study.after_create do |study|
-    study.study_metadata.update_attributes!(Factory.attributes_for(:study_metadata_for_study_list_remove_x_and_autosomes, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
+  factory(:study_for_study_list_inactive, :parent => :study) do |study|
+    name  'Study: Inactive'
+    state 'inactive'
   end
-end
 
-# These have to build a user list
-Factory.define(:study_for_study_list_managed_active, :parent => :study) do |study|
-  study.name  'Study: Managed & active'
-  study.state 'active'
-
-  study.after_create do |study|
-    user = User.find_by_login('listing_studies_user') or Factory(:listing_studies_user)
-    user.has_role('manager', study)
+  factory(:managed_study, :parent => :study) do
+    name 'Study: Manages'
+    state 'active'
+    after(:create) do |study|
+      study.study_metadata.update_attributes!(:data_release_strategy=> 'managed')
+    end
   end
-end
-Factory.define(:study_for_study_list_managed_inactive, :parent => :study) do |study|
-  study.name  'Study: Managed & inactive'
-  study.state 'inactive'
-
-  study.after_create do |study|
-    user = User.find_by_login('listing_studies_user') or Factory(:listing_studies_user)
-    user.has_role('manager', study)
+  # These require property definitions to be properly setup
+  factory(:study_metadata_for_study_list_pending_ethical_approval, :parent => :study_metadata) do |metadata|
+    contains_human_dna     'Yes'
+    contaminated_human_dna 'No'
+    commercially_available 'No'
   end
-end
-Factory.define(:study_for_study_list_followed, :parent => :study) do |study|
-  study.name 'Study: Followed'
-
-  study.after_create do |study|
-    user = User.find_by_login('listing_studies_user') or Factory(:listing_studies_user)
-    user.has_role('follower', study)
+  factory(:study_for_study_list_pending_ethical_approval, :parent => :study) do |study|
+    name               'Study: Pending ethical approval'
+    ethically_approved false
+    after(:create) do |study|
+      study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_pending_ethical_approval, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
+      study.save # Required to re-force before_validation event
+    end
   end
-end
-Factory.define(:study_for_study_list_collaborations, :parent => :study) do |study|
-  study.name 'Study: Collaborations'
 
-  study.after_create do |study|
-    user = User.find_by_login('listing_studies_user') or Factory(:listing_studies_user)
-    user.has_role('collaborator', study)
+  factory(:study_metadata_for_study_list_contaminated_with_human_dna, :parent => :study_metadata) do |metadata|
+    contaminated_human_dna 'Yes'
   end
-end
-Factory.define(:study_for_study_list_interesting, :parent => :study) do |study|
-  study.name 'Study: Interesting'
+  factory(:study_for_study_list_contaminated_with_human_dna, :parent => :study) do |study|
+    name           'Study: Contaminated with human dna'
+    after(:create) do |study|
+      study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_contaminated_with_human_dna, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
+    end
+  end
 
-  # NOTE: Doesn't appear to matter what role the user has!
-  study.after_create do |study|
-    user = User.find_by_login('listing_studies_user') or Factory(:listing_studies_user)
-    user.has_role('follower', study)
+  factory(:study_metadata_for_study_list_remove_x_and_autosomes, :parent => :study_metadata) do |metadata|
+    remove_x_and_autosomes 'Yes'
+  end
+  factory(:study_for_study_list_remove_x_and_autosomes, :parent => :study) do |study|
+    name           'Study: Remove x and autosomes'
+    after(:create) do |study|
+      study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_remove_x_and_autosomes, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
+    end
+  end
+
+  # These have to build a user list
+  factory(:study_for_study_list_managed_active, :parent => :study) do |study|
+    name  'Study: Managed & active'
+    state 'active'
+
+    after(:create) do |study|
+      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user.has_role('manager', study)
+    end
+  end
+  factory(:study_for_study_list_managed_inactive, :parent => :study) do |study|
+    name  'Study: Managed & inactive'
+    state 'inactive'
+
+    after(:create) do |study|
+      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user.has_role('manager', study)
+    end
+  end
+  factory(:study_for_study_list_followed, :parent => :study) do |study|
+    name 'Study: Followed'
+
+    after(:create) do |study|
+      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user.has_role('follower', study)
+    end
+  end
+  factory(:study_for_study_list_collaborations, :parent => :study) do |study|
+    name 'Study: Collaborations'
+
+    after(:create) do |study|
+      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user.has_role('collaborator', study)
+    end
+  end
+  factory(:study_for_study_list_interesting, :parent => :study) do |study|
+    name 'Study: Interesting'
+
+    # NOTE: Doesn't appear to matter what role the user has!
+    after(:create) do |study|
+      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user.has_role('follower', study)
+    end
   end
 end

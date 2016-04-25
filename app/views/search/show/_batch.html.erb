@@ -1,5 +1,0 @@
-<tr class="<%= cycle("rowodd", "roweven") %>">
-  <td><%= link_to batch.id, :controller => :batches, :action => :show, :id => batch.id %></td>
-  <td><%= link_to batch.pipeline.name, :controller => :pipelines, :action => :show, :id => batch.pipeline.id %></td>
-  <td><%= batch.state.humanize %></td>
-</tr>

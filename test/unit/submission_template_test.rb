@@ -1,22 +1,31 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.
+
 require "test_helper"
 
 class SubmissionTemplateTest < ActiveSupport::TestCase
   context "A Order Template" do
+
+    should validate_presence_of :product_catalogue
+
     setup do
-      @template = SubmissionTemplate.new(:name => "default order", :submission_class_name => "Order")
+      @template = FactoryGirl.build :submission_template
+      @product = create(:product)
+      @template.product_catalogue.products <<  @product
     end
 
     should "be able to create a new order" do
       order = @template.new_order
       assert order
       assert order.is_a?(Order)
-
+      assert_equal @product, order.product
     end
   end
 
   context "A Order" do
     setup do
-      @workflow = Factory :submission_workflow,:key => 'microarray_genotyping'
+      @workflow = create :submission_workflow,:key => 'microarray_genotyping'
       @order = Order.new(:workflow => @workflow)
     end
     context "with a comment" do
@@ -47,34 +56,13 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         end
       end
     end
-    # context "with input_field_infos set with a selection" do
-    #   setup do
-    #     @field = FieldInfo.new(:kind => "Selection", :selection => ["a", "b"])
-    #     @order.set_input_field_infos([@field])
-    #   end
 
-    #   context "saved as template" do
-    #     setup do
-    #       template = SubmissionTemplate.new_from_submission("template 2", @order)
-    #       template.save!
-    #       template_id = template.id
-
-    #       @loaded_template = SubmissionTemplate.find(template_id)
-    #     end
-
-    #     should "load the parameters properly" do
-    #       order = @loaded_template.new_order
-    #       assert_equal 1, order.input_field_infos.size
-    #       assert_equal @field.selection, order.input_field_infos.first.selection
-    #     end
-    #   end
-    # end
     context "without input_field_infos" do
       setup do
 
-        @test_request_typ_b = Factory :library_creation_request_type
+        @test_request_typ_b = create :library_creation_request_type
         @test_request_typ_b
-        @test_request_type  = Factory :sequencing_request_type
+        @test_request_type  = create :sequencing_request_type
         @order.request_types = [@test_request_typ_b, @test_request_type]
         @order.request_type_ids_list = [[@test_request_typ_b.id],[@test_request_type.id]]
       end

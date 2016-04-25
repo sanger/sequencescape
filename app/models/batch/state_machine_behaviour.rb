@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+
 module Batch::StateMachineBehaviour
   def self.included(base)
     base.class_eval do
@@ -27,11 +31,11 @@ module Batch::StateMachineBehaviour
       end
 
       # Some named scopes needed for finding the batches in a particular state
-      named_scope :pending,   :conditions => {:state => "pending"}
-      named_scope :started,   :conditions => {:state => "started"}
-      named_scope :completed, :conditions => {:state => "completed"}
-      named_scope :released,  :conditions => {:state => "released"}
-      named_scope :failed,    :conditions => {:production_state => "fail"}
+      scope :pending,   -> { where(:state => "pending") }
+      scope :started,   -> { where(:state => "started") }
+      scope :completed, -> { where(:state => "completed") }
+      scope :released,  -> { where(:state => "released") }
+      scope :failed,    -> { where(:production_state => "fail") }
 
       # We override the behaviour of a couple of events because they require user details.
       alias_method_chain(:start!, :user)
@@ -49,6 +53,7 @@ module Batch::StateMachineBehaviour
   end
 
   def start_with_user!(user)
+    pipeline.on_start_batch(self,user)
     start_without_user!
   end
 

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015,2016 Genome Research Ltd.
+
 module SetupLibraryTypes
   def self.existing_associations_for(request_type)
     {
@@ -62,6 +66,7 @@ RequestType.find_each do |request_type|
       'illumina_a_hiseq_v4_paired_end_sequencing' => [75,125],
       'illumina_b_hiseq_v4_paired_end_sequencing' => [75,125],
       'illumina_c_hiseq_v4_paired_end_sequencing' => [75,125],
+      'illumina_c_hiseq_v4_single_end_sequencing' => [19,50],
       'illumina_a_hiseq_x_paired_end_sequencing' => [150],
       'illumina_b_hiseq_x_paired_end_sequencing' => [150]
       }[request_type.key]||{
@@ -81,6 +86,9 @@ end
   RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[125,75])
 end
 
+rt = RequestType.find_by_key("illumina_c_hiseq_v4_single_end_sequencing")
+RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[29, 50])
+
 
 ## New library types Illumina C
 library_types = LibraryType.create!([
@@ -95,6 +103,30 @@ library_types = LibraryType.create!([
     LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=>library_type,:is_default=>false)
   end
 end
+
+
+
+libs_ribozero = ["Ribozero RNA-seq (Bacterial)", "Ribozero RNA-seq (HMR)"].map do |name|
+  LibraryType.create!(:name=> name)
+end
+
+libs_ribozero.each do |lib|
+  [:illumina_c_pcr, :illumina_c_pcr_no_pool].each do |request_class_symbol|
+    request_type = RequestType.find_by_key(request_class_symbol.to_s)
+    LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=> lib, :is_default => false)
+  end
+end
+
+# PCR Free Hiseq X10 RequestTypeValidator
+lt = LibraryType.find_or_create_by_name!("HiSeqX PCR free")
+rt_pf = RequestType.find_by_key("htp_pcr_free_lib")
+rt_v = RequestType::Validator.create!(
+  :request_type   => rt_pf,
+  :request_option => 'library_type',
+  :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt_pf.id)
+)
+
+
 
 ['a', 'b'].each do |pipeline|
   rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_x_paired_end_sequencing")

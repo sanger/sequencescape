@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 class Tag < ActiveRecord::Base
   module Associations
     def untag!
@@ -6,8 +10,8 @@ class Tag < ActiveRecord::Base
   end
 
   include Api::TagIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
 
@@ -16,7 +20,7 @@ class Tag < ActiveRecord::Base
   has_many :assets, :as => :material
   has_many :requests, :through => :assets, :uniq => true
 
-  named_scope :sorted , :order => "map_id ASC"
+  scope :sorted , order("map_id ASC")
 
   def name
     "Tag #{map_id}"
@@ -33,5 +37,13 @@ class Tag < ActiveRecord::Base
     raise StandardError, "Cannot tag an empty asset"   if asset.aliquots.empty?
     raise StandardError, "Cannot tag multiple samples" if asset.aliquots.size > 1
     asset.aliquots.first.update_attributes!(:tag => self)
+  end
+
+  # Map id is converted to a string here for consistency with elsewhere in the api.
+  def summary
+    {
+      :tag_group => tag_group.name,
+      :tag_index => map_id.to_s
+    }
   end
 end

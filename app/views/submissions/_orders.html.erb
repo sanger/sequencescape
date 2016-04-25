@@ -1,46 +1,50 @@
-<script type="text/javascript">
-  (function(window, $, undefined){
-   "use strict";
-
-   // Check for the SCAPE object.  This is the only place in the global
-   // namespace we should be storing things.
-   if (window.SCAPE == undefined) window.SCAPE = {};
-
-   SCAPE.user_project_names =  <%= stringify_array(@presenter.user_valid_projects) %>;
-   })(window, jQuery);
-</script>
-
-<%= javascript_include_tag 'submissions' %>
-
-<ul id="orders">
-
-  <li id="order-template" class="pane active">
-  <span class="completed badge" >&#10004;</span>
-  <span class="invalid badge"   >&#10006;</span>
-  <% form_for :submission, @presenter do |f| -%>
-  <h2>Order Template</h2>
-    <%= f.grouped_collection_select :template_id,
-      @presenter.product_lines, :last, :first, :id, :name,
-      :prompt => "Please select a template..."
-    %>
-
-  <%= label("submission[priority]", 'Priority') %>
-  <%= select_tag(
-      "submission[priority]",
-      options_for_select(
-        Submission::Priorities.options
-      )
-    )%>
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
 
-    <div id="order-parameters" >
-      <%= render :partial => 'order_fields' if @presenter.submission.present? %>
-    </div>
-  </li>
+<%= javascript_include_tag('submissions') %>
+
+  <div> <!-- Horrible div start
+  This div ensures that the form tag closes at the end of the panel, but that
+  We're able to persist the scope of f into the remainder of the page. It is
+  a horrible hack, and should be removed ASAP. We can probably use fields-form,
+  but I need to fix the broken-broken stuff first.
+  -->
+  <%= form_for(:submission, :class=>'form-horizontal') do |f| -%>
+
+    <%= panel(:info,:title=>'Order Template',:id=>'order-template',:class=>'pane') do %>
+      <div class='form-group col-md-8'>
+         <%= f.grouped_collection_select :template_id,
+          @presenter.product_lines, :last, :first, :id, :name,
+          {:prompt => "Please select a template..."},
+          {:class=>'form-control select2'}
+        %>
+      </div>
+
+      <div class='form-group col-md-4 form-inline'>
+        <%= label("submission[priority]", 'Priority') %>
+        <%= select_tag(
+            "submission[priority]",
+            options_for_select(
+              Submission::Priorities.options
+            ),
+            {:class=>'form-control'}
+          )%>
+      </div>
+
+      <div id="order-parameters" >
+        <%= render :partial => 'order_fields' if @presenter.submission.present? %>
+      </div>
+
+    <% end %>
+    </div> <!-- Horrible div end -->
+
+  <ul id="orders">
 
     <%# Render completed Orders %>
     <% @presenter.orders.each_with_index do |order, index| -%>
-      <% f.fields_for :orders, order do |orders_fields| -%>
+      <%= f.fields_for :orders, order do |orders_fields| -%>
         <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
           <li class="pane order completed">
           <%= render :partial => 'saved_order', :locals => { :presenter => @presenter, :form => order_form, :order => order } %>
@@ -52,27 +56,27 @@
   <% end -%>
 
   <li id="order-controls" class="buttons">
-    <%= submit_tag "&#10010; Add Order",
+    <%= submit_tag raw("&#10010; Add Order"),
       :id       => "add-order",
-      :class    => "button",
+      :class    => "btn btn-primary",
       :disabled => @presenter.orders.empty?
     %>
   </li>
 
   <%# Render a single blank Order %>
   <li id="blank-order" class="pane order">
-    <% form_for :blank_order, @presenter do |f| -%>
+    <%= form_for :blank_order do |f| -%>
         <%= render :partial => 'order', :locals => { :form => f, :presenter => @presenter } %>
     <% end -%>
   </li>
 
 
   <li class="buttons">
-  <% form_for :submission, @presenter, :url => @presenter.url(self) , :html => { :id => 'build-form', :method => :put }   do |f| -%>
+  <%= form_for :submission, :url => @presenter.url(self) , :html => { :id => 'build-form', :method => :put }   do |f| -%>
 
-    <%= submit_tag "&#10034; Build Submission",
+    <%= submit_tag raw("&#10034; Build Submission"),
       :id       => "start-submission",
-      :class    => "final button",
+      :class    => "btn btn-success",
       :disabled => true
     %>
  <% end -%>

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.
+
 require "test_helper"
 require 'projects_controller'
 
@@ -20,7 +24,8 @@ class ProjectsControllerTest < ActionController::TestCase
       @controller = ProjectsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user = Factory :user
+      @user =FactoryGirl.create :user
+
       @user.has_role('owner')
       @controller.stubs(:logged_in?).returns(@user)
       @controller.stubs(:current_user).returns(@user)
@@ -31,18 +36,18 @@ class ProjectsControllerTest < ActionController::TestCase
         get :new
       end
 
-      should_respond_with :success
-      should_render_template :new
+      should respond_with :success
+      should render_template :new
 
 
     end
 
     context "#create" do
       setup do
-        @request_type_1 = Factory :request_type
+        @request_type_1 =FactoryGirl.create :request_type
       end
 
-      context "successfully create a new project" do
+      context "successfullyFactoryGirl.create a new project" do
         setup do
           @project_counter  = Project.count
           post :create, "project" => {
@@ -54,13 +59,16 @@ class ProjectsControllerTest < ActionController::TestCase
           }
         end
 
-        should_set_the_flash_to "Your project has been created"
-        should_redirect_to("last project page") { project_path(Project.last) }
-        should_change('Project.count', 1) { Project.count }
+        should set_the_flash.to( "Your project has been created")
+        should redirect_to("last project page") { project_path(Project.last) }
+        should "change Project.count by 1" do
+         assert_equal 1, Project.count - @project_counter
+        end
       end
 
       context "with invalid data" do
         setup do
+          @initial_project_count = Project.count
           post :create, "project" => {
             "name" => "hello 2",
             :project_metadata_attributes => {
@@ -70,16 +78,18 @@ class ProjectsControllerTest < ActionController::TestCase
           }
         end
 
-        should_render_template :new
-        should_not_change('Project.count') { Project.count }
-
-        should 'set a message for the error' do
-          assert_contains(@controller.action_flash.values, 'Problems creating your new project')
+        should render_template :new
+        should "not change Project.count" do
+          assert_equal @initial_project_count, Project.count
         end
+
+        should set_the_flash.now.to('Problems creating your new project')
+
       end
 
       context "create a new project using permission allowed (not required)" do
         setup do
+          @project_counter  = Project.count
           post :create, "project" => {
             "name" => "hello 3",
             :project_metadata_attributes => {
@@ -89,9 +99,11 @@ class ProjectsControllerTest < ActionController::TestCase
           }
         end
 
-        should_redirect_to("last project added page") { project_path(Project.last) }
-        should_set_the_flash_to "Your project has been created"
-        should_change('Project.count', 1) { Project.count }
+        should redirect_to("last project added page") { project_path(Project.last) }
+        should set_the_flash.to( "Your project has been created")
+        should "change Project.count by 1" do
+         assert_equal 1, Project.count - @project_counter
+        end
       end
 
     end
@@ -100,7 +112,7 @@ class ProjectsControllerTest < ActionController::TestCase
   context "POST '/create'" do
     context "with JSON data" do
       setup do
-        @user = Factory :user
+        @user =FactoryGirl.create :user
         @user.has_role('owner')
         @controller.stubs(:logged_in?).returns(@user)
         @controller.stubs(:current_user).returns(@user)
@@ -123,7 +135,7 @@ class ProjectsControllerTest < ActionController::TestCase
         post :create, ActiveSupport::JSON.decode(@json_data)
       end
 
-      should_set_the_flash_to "Your project has been created"
+      should set_the_flash.to( "Your project has been created")
     end
   end
 end

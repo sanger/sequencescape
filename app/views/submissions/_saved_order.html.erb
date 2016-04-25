@@ -1,18 +1,23 @@
-<%- form ||= nil %>
-  <span class="completed badge">✔</span>
-  <h2>
-    Order added to submission at: <%=h order.created_at.to_formatted_s(:day_full_with_time) %>
-  </h2>
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
+<%= panel('success',title:"Order added to submission at: #{order.created_at.to_formatted_s(:day_full_with_time)}") do %>
+  <%- form ||= nil %>
+  <span class="completed badge">✔</span>
 
   <h4>
     Study:
-    <%= link_to(order.study.name, order.study, :target => "_blank") %>
+    <% presenter.order_studies do |name,study| %>
+      <%= link_to(name, study, :target => "_blank") %>
+    <% end %>
   </h4>
 
   <h4>
     Project:
-    <%= link_to(order.project.name, order.project, :target => "_blank") %>
+    <% presenter.order_projects do |name,project| %>
+      <%= link_to(name, project, :target => "_blank") %>
+    <% end %>
   </h4>
 
   <% if order.asset_group.present? -%>
@@ -58,8 +63,19 @@
 
   <h4>Comments:</h4>
   <div class="sub-panel">
-    <%= "<p><i>#{order.comments}</i></p>" unless order.comments.nil? %>
+    <%= "<ul>#{order.comments}</ul>" unless order.comments.nil? %>
+  <div id="order-controls" class="buttons">
   </div>
+
+  </div>
+
+    <%= form_tag(order_path(order.id), :method => :put, :class => "comments-box") do -%>
+      <%= text_area_tag :comments, nil, :placeholder => "Write a new comment here", :class=>"form-control", :id=>'comments-input' %>
+      <%= submit_tag raw("&#10010; Add new comment"),
+      :id       => "add-comment",
+      :class    => "btn btn-default add-comment" %>
+    <% end %>
+
 
   <% if form.present? -%>
     <div class="save-buttons">
@@ -69,11 +85,13 @@
       %>
 
       <%= submit_tag '♻  Delete Order',
-        :class => 'delete-order button'
+        :class => 'delete-order btn btn-danger'
       %>
+
     </div>
   <% end -%>
 
 <script type="text/javascript">
   SCAPE.submission.id = <%= presenter.submission.id %>;
 </script>
+<% end %>

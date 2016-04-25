@@ -17,7 +17,7 @@ Feature: Interacting with samples through the API
     And the JSON should be:
       """
       {
-        "name": [ "can't be blank", "Sample name can only contain letters, numbers, _ or -" ]
+        "name": [ "can't be blank", "can only contain letters, numbers, _ or -" ]
       }
       """
 
@@ -27,7 +27,7 @@ Feature: Interacting with samples through the API
       {
         "sample": {
           "name": "testing_the_json_api"
-        }
+        }, "lims": "SQSCP"
       }
       """
     Then the HTTP response should be "201 Created"
@@ -39,7 +39,6 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "replicate": null,
-          "reference_genome": "",
           "organism": null,
           "sample_strain_att": null,
           "ethnicity": null,
@@ -68,7 +67,7 @@ Feature: Interacting with samples through the API
           "id": "1",
           "uuid": "00000000-1111-2222-3333-444444444444",
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444445/sample_tubes"
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -97,7 +96,6 @@ Feature: Interacting with samples through the API
             "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
             "replicate": null,
-            "reference_genome": "",
             "organism": null,
             "sample_strain_att": null,
             "ethnicity": null,
@@ -128,7 +126,7 @@ Feature: Interacting with samples through the API
             "new_name_format": true,
 
             "id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -152,7 +150,6 @@ Feature: Interacting with samples through the API
             "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
             "replicate": null,
-            "reference_genome": "",
             "organism": null,
             "sample_strain_att": null,
             "ethnicity": null,
@@ -180,7 +177,7 @@ Feature: Interacting with samples through the API
             "new_name_format": true,
 
             "id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -200,7 +197,6 @@ Feature: Interacting with samples through the API
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
           "replicate": null,
-          "reference_genome": "",
           "organism": null,
           "sample_strain_att": null,
           "ethnicity": null,
@@ -228,7 +224,7 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -248,7 +244,6 @@ Feature: Interacting with samples through the API
         "sample": {
           "uuid": "00000000-1111-2222-3333-444444444444",
           "name": "sample_testing_the_json_api",
-          "reference_genome": "Homo_sapiens (GRCh37_53)",
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
           "replicate": null,
@@ -282,7 +277,7 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -304,7 +299,6 @@ Feature: Interacting with samples through the API
         "sample": {
           "uuid": "UUID-1234567890",
           "name": "sample_testing_the_json_api",
-          "reference_genome": "Homo_sapiens (GRCh37_53)",
           "sample_tubes": "http://localhost:3000/0_5/samples/UUID-1234567890/sample_tubes",
 
           "replicate": null,
@@ -338,7 +332,7 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -352,14 +346,14 @@ Feature: Interacting with samples through the API
       {
         "sample": {
           "name": ""
-        }
+        }, "lims": "SQSCP"
       }
       """
     Then the HTTP response should be "422 Unprocessable Entity"
     And the JSON should be:
       """
       {
-        "name": ["can't be blank", "cannot be changed", "Sample name can only contain letters, numbers, _ or -"]
+        "name": ["can't be blank", "can only contain letters, numbers, _ or -", "cannot be changed"]
       }
       """
 
@@ -373,9 +367,31 @@ Feature: Interacting with samples through the API
       {
         "sample": {
           "reference_genome": "Staphylococcus_aureus (NCTC_8325)"
-        }
+        }, "lims": "SQSCP"
       }
       """
     Then the HTTP response should be "200 OK"
     And the HTTP response body should be empty
     And the reference genome for the sample "sample_testing_the_json_api" should be "Staphylococcus_aureus (NCTC_8325)"
+
+  Scenario: Attempting to change a sample name
+    Given a reference genome table
+    Given the sample named "sample_testing_the_json_api" exists
+    And the UUID for the sample "sample_testing_the_json_api" is "00000000-1111-2222-3333-444444444444"
+
+    When I PUT the following JSON to the API path "/samples/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "sample": {
+          "reference_genome": "Staphylococcus_aureus (NCTC_8325)",
+          "name": "valid_but_new_name"
+        }, "lims": "SQSCP"
+      }
+      """
+     Then the HTTP response should be "422 Unprocessable Entity"
+    And the JSON should be:
+      """
+      {
+        "name": ["cannot be changed"]
+      }
+      """

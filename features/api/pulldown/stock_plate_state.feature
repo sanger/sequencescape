@@ -85,3 +85,37 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
+
+  Scenario: When a plate has two active submissions then it is 'pending'
+    Given all wells on the plate "Testing the API" have unique samples
+    And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
+    And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
+
+    When I GET the API path "/00000000-1111-2222-3333-000000000001"
+    Then the HTTP response should be "200 OK"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "plate": {
+          "uuid": "00000000-1111-2222-3333-000000000001",
+          "state": "pending"
+        }
+      }
+      """
+
+  Scenario: When a plate has an active submission and a cancelled one then it is 'passed'
+    Given all wells on the plate "Testing the API" have unique samples
+      And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
+      And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
+      And all the requests in the last submission are cancelled
+    When I GET the API path "/00000000-1111-2222-3333-000000000001"
+    Then the HTTP response should be "200 OK"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "plate": {
+          "uuid": "00000000-1111-2222-3333-000000000001",
+          "state": "passed"
+        }
+      }
+      """

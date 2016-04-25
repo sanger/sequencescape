@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class SampleManifestTest < ActiveSupport::TestCase
@@ -7,31 +11,63 @@ class SampleManifestTest < ActiveSupport::TestCase
       barcode.stubs(:barcode).returns(23)
       PlateBarcode.stubs(:create).returns(barcode)
 
-      @study = Factory :study, :name => 'CARD1'
+      @study = create :study, :name => 'CARD1'
       @study.study_metadata.study_name_abbreviation  = 'CARD1'
       @study.save!
     end
 
     context 'creates the right assets' do
-      (1..2).each do |count|
+      [1,2].each do |count|
         context "#{count} plate(s)" do
           setup do
-            @manifest = Factory :sample_manifest, :study => @study, :count => count
+            @initial_samples  = Sample.count
+            @initial_plates   = Plate.count
+            @initial_wells    = Well.count
+            @initial_in_study = @study.samples.count
+
+            @manifest = create :sample_manifest, :study => @study, :count => count
             @manifest.generate
           end
 
-          should_change('Sample.count', :by => (count * 96)) { Sample.count }
-          should_change('Plate.count',  :by => (count * 1))  { Plate.count  }
-          should_change('Well.count',   :by => (count * 96)) { Well.count   }
+          should "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
+            assert_equal (count * 96), Sample.count - @initial_samples
+            assert_equal (count * 1 ), Plate.count - @initial_plates
+            assert_equal (count * 96), Well.count  - @initial_wells
+            assert_equal (count * 96), @study.samples.count - @initial_in_study
+          end
 
-          should_change("Study.samples.count", :by => (count * 96)) { @study.samples.count }
+        end
+      end
+    end
+
+    context 'for a library' do
+      [3,4].each do |count|
+        context "#{count} plate(s)" do
+          setup do
+            @initial_samples       = Sample.count
+            @initial_library_tubes = LibraryTube.count
+            @initial_mx_tubes      = MultiplexedLibraryTube.count
+            @initial_in_study      = @study.samples.count
+
+            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type=>'multiplexed_library'
+            @manifest.generate
+          end
+
+          should "create 1 tubes(s) and #{count} samples in the right study" do
+            assert_equal (count), Sample.count                 - @initial_samples
+            # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+            assert_equal (count), LibraryTube.count            - @initial_library_tubes
+            assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
+            assert_equal (count), @study.samples.count         - @initial_in_study
+          end
+
         end
       end
     end
 
     context 'converts to a spreadsheet' do
       setup do
-        @manifest = Factory :sample_manifest, :study => @study, :count => 1
+        @manifest = create :sample_manifest, :study => @study, :count => 1
         @manifest.generate
         SampleManifestTemplate.first.generate(@manifest)
 
@@ -53,12 +89,13 @@ class SampleManifestTest < ActiveSupport::TestCase
 
   context "update event" do
     setup do
-      @user = Factory :user
-      @well_with_sample_and_plate = Factory :well_with_sample_and_plate
+      @user = create :user
+      @well_with_sample_and_plate = create :well_with_sample_and_plate
+      @well_with_sample_and_plate.save
     end
     context "where a well has no plate" do
       setup do
-        @well_with_sample_and_without_plate = Factory :well_with_sample_and_without_plate
+        @well_with_sample_and_without_plate = create :well_with_sample_and_without_plate
       end
       should "not try to add an event to a plate" do
         assert_nothing_raised do
@@ -94,7 +131,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         end
       end)
 
-      @manifest = Factory(:sample_manifest, :count => 37, :asset_type => 'plate', :rapid_generation => true)
+      @manifest = create(:sample_manifest, :count => 37, :asset_type => 'plate', :rapid_generation => true)
       @manifest.generate
     end
 
@@ -104,10 +141,14 @@ class SampleManifestTest < ActiveSupport::TestCase
 
     context 'delayed jobs' do
       setup do
+        @well_count =  Sample.count
         Delayed::Job.first.invoke_job
       end
 
-      should_change('Well.count',   :by => 96) { Sample.count }
+
+      should "change Well.count by 96" do
+        assert_equal 96,  Sample.count  - @well_count, "Expected Well.count to change by 96"
+      end
     end
   end
 end

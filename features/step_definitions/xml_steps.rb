@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 def sort_arrays(xml_data)
   if xml_data.is_a?(Hash)
     Hash[xml_data.map { |k,v| [k, sort_arrays(v)] }]
@@ -17,17 +21,17 @@ end
 
 Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, serialized_xml|
   regexp = Regexp.new(key_regexp)
-  block  = lambda { |key| key.to_s =~ regexp }
+  block  = ->(key) { key.to_s =~ regexp }
   assert_hash_equal(
     sort_arrays(walk_hash_structure(Hash.from_xml(serialized_xml), &block)),
-    sort_arrays(walk_hash_structure(Hash.from_xml(page.body), &block)),
+    sort_arrays(walk_hash_structure(Hash.from_xml(page.source), &block)),
     'XML differs when decoded'
   )
 end
 
 
 Then /^the XML response should be:/ do |serialized_xml|
-  assert_xml_strings_equal(serialized_xml, page.body)
+  assert_xml_strings_equal(serialized_xml, page.source)
 end
 
 Then /^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/ do |attribute, xpath, value|

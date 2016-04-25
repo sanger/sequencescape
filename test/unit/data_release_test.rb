@@ -1,9 +1,13 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 require File.join(File.dirname(__FILE__), *%w[.. test_helper])
 
 class DataReleaseTest < ActiveSupport::TestCase
   context "A study" do
     setup do
-      @study = Factory :study
+      @study = create :study
     end
     context "#valid_data_release_properties?" do
       context "and data_release enforced" do

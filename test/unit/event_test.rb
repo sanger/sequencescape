@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class EventTest < ActiveSupport::TestCase
@@ -5,7 +9,7 @@ class EventTest < ActiveSupport::TestCase
     setup do
       Study.destroy_all
     end
-    should_belong_to :eventful
+    should belong_to :eventful
 
     should_have_instance_methods :eventful_id, :eventful_type
     should_have_instance_methods :message, :family
@@ -40,9 +44,9 @@ class EventTest < ActiveSupport::TestCase
 
     context "when related to a Request" do
       setup do
-        @item = Factory :item
-        @study = Factory :study
-        @request = Factory :request, :study => @study, :item => @item
+        @item = create :item
+        @study = create :study
+        @request = create :request, :study => @study, :item => @item
         @settings = { :eventful_id => @request.id,
                       :eventful_type => "Request",
                       :family => "QC Analysis",
@@ -68,9 +72,9 @@ class EventTest < ActiveSupport::TestCase
 
     context "#update_request" do
       setup do
-        @item = Factory :item
-        @study = Factory :study
-        @request = Factory :request, :study => @study, :item => @item, :state => "started"
+        @item = create :item
+        @study = create :study
+        @request = create :request, :study => @study, :item => @item, :state => "started"
         @settings = { :eventful_id => @request.id,
                       :eventful_type => "Request",
                       :identifier => "ID",
@@ -92,8 +96,6 @@ class EventTest < ActiveSupport::TestCase
         should "pass request" do
           assert @request.passed?
         end
-
-        should_change("BillingEvent.count", :by => 1) { BillingEvent.count }
 
 
         context "when passed twice" do
@@ -129,7 +131,6 @@ class EventTest < ActiveSupport::TestCase
             @request.reload
           end
 
-          should_change("BillingEvent.count", :by => 1) { BillingEvent.count }
 
           should "update request state" do
             assert @request.failed?
@@ -142,18 +143,18 @@ class EventTest < ActiveSupport::TestCase
 
     context "when created with a" do
       setup do
-        @library_creation_request_type = Factory :request_type, :name => "Library creation", :key => "library_creation"
-        @mx_library_creation_request_type = Factory :request_type, :name => "Multiplexed library creation", :key => "multiplexed_library_creation"
-        @pe_sequencing_request_type = Factory :request_type, :name => "Paired end sequencing", :key => "paired_end_sequencing"
-        @dna_qc_request_type = Factory :request_type, :name => "DNA QC", :key => "dna_qc"
+        @library_creation_request_type = create :request_type, :name => "Library creation", :key => "library_creation"
+        @mx_library_creation_request_type = create :request_type, :name => "Multiplexed library creation", :key => "multiplexed_library_creation"
+        @pe_sequencing_request_type = create :request_type, :name => "Paired end sequencing", :key => "paired_end_sequencing"
+        @dna_qc_request_type = create :request_type, :name => "DNA QC", :key => "dna_qc"
 
-        @control = Factory(:sample_tube, :resource => true)
+        @control = create(:sample_tube, :resource => true)
 
-        @library_creation_request = Factory :request, :request_type => @library_creation_request_type
-        @multiplexed_library_creation_request = Factory :request, :request_type => @mx_library_creation_request_type
-        @pe_sequencing_request = Factory :request, :request_type => @pe_sequencing_request_type
-        @dna_qc_request = Factory :request, :request_type => @dna_qc_request_type
-        @request_for_control =  Factory :request, :request_type => @pe_sequencing_request_type, :asset => @control, :state => "started"
+        @library_creation_request = create :request, :request_type => @library_creation_request_type
+        @multiplexed_library_creation_request = create :request, :request_type => @mx_library_creation_request_type
+        @pe_sequencing_request = create :request, :request_type => @pe_sequencing_request_type
+        @dna_qc_request = create :request, :request_type => @dna_qc_request_type
+        @request_for_control =  create :request, :request_type => @pe_sequencing_request_type, :asset => @control, :state => "started"
         @requests = [@library_creation_request, @multiplexed_library_creation_request, @pe_sequencing_request, @dna_qc_request]
       end
 
@@ -195,9 +196,6 @@ class EventTest < ActiveSupport::TestCase
           assert @dna_qc_request.passed?
           assert @request_for_control.passed?
         end
-
-        # must create billing events
-        should_change("BillingEvent.count", :by => 4) { BillingEvent.count }
       end
 
       # fail message
@@ -238,7 +236,6 @@ class EventTest < ActiveSupport::TestCase
           assert @request_for_control.failed?
         end
 
-        should_change("BillingEvent.count", :by => 4) { BillingEvent.count }
       end
 
       context "cancel message" do

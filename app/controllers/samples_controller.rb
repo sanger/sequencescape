@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class SamplesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
@@ -6,7 +10,7 @@ class SamplesController < ApplicationController
   before_filter :admin_login_required, :only => [ :administer, :destroy ]
 
   def index
-    @samples = Sample.paginate :page => params[:page], :order => 'created_at DESC'
+    @samples = Sample.order('created_at DESC').page(params[:page])
     respond_to do |format|
       format.html
       format.xml
@@ -148,7 +152,7 @@ class SamplesController < ApplicationController
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample))
   rescue AccessionService::NumberNotRequired => exception
-    flash[:warning] = 'An accession number is not required for this study'
+    flash[:warning] = exception.message || 'An accession number is not required for this study'
     redirect_to(sample_path(@sample))
   rescue AccessionService::NumberNotGenerated => exception
     flash[:warning] = 'No accession number was generated'

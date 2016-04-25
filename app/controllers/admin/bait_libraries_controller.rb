@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+
 class Admin::BaitLibrariesController < ApplicationController
   before_filter :admin_login_required
   before_filter :discover_bait_library, :only => [:edit, :update, :destroy]
@@ -21,7 +25,7 @@ class Admin::BaitLibrariesController < ApplicationController
     respond_to do |format|
       if @bait_library.save
         flash[:notice] = 'Bait Library was successfully created.'
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       else
         format.html { render :action => "new" }
       end
@@ -32,7 +36,7 @@ class Admin::BaitLibrariesController < ApplicationController
     respond_to do |format|
       if @bait_library.update_attributes(params[:bait_library])
         flash[:notice] = 'Bait Library was successfully updated.'
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       else
         format.html { render :action => "edit" }
       end
@@ -44,7 +48,7 @@ class Admin::BaitLibrariesController < ApplicationController
       if @bait_library.hide
         flash[:notice] = 'Bait Library was successfully deleted.'
       end
-      format.html { redirect_to(bait_libraries_path) }
+      format.html { redirect_to(admin_bait_libraries_path) }
     end
   end
 

@@ -1,7 +1,11 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 module Tasks::AssignTagsHandler
   def render_assign_tags_task(task, params)
     @tag_group = TagGroup.find(params[:tag_group])
-    @requests = @batch.ordered_requests
+    @requests = @batch.requests
     @tags = @tag_group.tags.sorted
     @rits = @batch.pipeline.request_information_types
   end

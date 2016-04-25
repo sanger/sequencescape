@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2015 Genome Research Ltd.
+
 Given /^that there is a "([^"]*)" pipeline$/ do |pipeline_name|
   @pipeline = Pipeline.find_by_name(pipeline_name)
 end
@@ -6,10 +10,10 @@ Given /^that there are (\d+) requests in that pipeline$/ do |number_requests|
   asset_type = pipeline_name_to_asset_type(@pipeline.name)
 
   number_requests.to_i.times do
-    request  = Factory(
+    request  = FactoryGirl.create(
       :request,
       :request_type => @pipeline.request_types.last,
-      :asset        => Factory(asset_type)
+      :asset        => FactoryGirl.create(asset_type)
     )
 
     request.asset.location = @pipeline.location

@@ -1,10 +1,14 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2014,2015 Genome Research Ltd.
+
 module Asset::Stock
   # Extending this module will allow an asset to have a stock asset and be able to
   # create it.
   module CanCreateStockAsset
     def self.extended(base)
       base.class_eval do
-        has_one_as_child(:stock_asset, :class_name => stock_asset_type.name)
+        has_one_as_child(:stock_asset, :conditions=> {:sti_type => stock_asset_type.name} )
 
         stock_asset_factory(:create_stock_asset!, :create!)
         stock_asset_factory(:new_stock_asset, :new)
@@ -26,7 +30,7 @@ module Asset::Stock
           self.class.stock_asset_type.#{ctor}(attributes.reverse_merge(
             :name     => "(s) \#{self.name}",
             :barcode  => AssetBarcode.new_barcode,
-            :aliquots => self.aliquots.map(&:clone),
+            :aliquots => self.aliquots.map(&:dup),
             :purpose  => self.class.stock_asset_purpose
           ), &block)
         end

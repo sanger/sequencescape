@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+
 class Api::LibraryTubeIO < Api::Base
   module Extensions
     module ClassMethods
@@ -10,16 +14,14 @@ class Api::LibraryTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, {
-          :include => [
+        scope :including_associations_for_json, -> { includes([
             :uuid_object,
             :barcode_prefix, {
               :source_request => [:uuid_object, :request_metadata],
               :primary_aliquot => { :sample => :uuid_object, :tag => [ :uuid_object, { :tag_group => :uuid_object } ] }
             },
             :scanned_into_lab_event
-          ]
-        }
+          ])}
 
         alias_method(:json_root, :url_name)
       end

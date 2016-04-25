@@ -1,6 +1,9 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011 Genome Research Ltd.
 class RemoveNotSpecifiedFromDataReleaseStudyTypes < ActiveRecord::Migration
   class DataReleaseStudyType < ActiveRecord::Base
-    set_table_name('data_release_study_types')
+    self.table_name =('data_release_study_types')
 
     def self.default
       self.first(:conditions => { :is_default => true })
@@ -8,7 +11,7 @@ class RemoveNotSpecifiedFromDataReleaseStudyTypes < ActiveRecord::Migration
   end
 
   class StudyMetadata < ActiveRecord::Base
-    set_table_name('study_metadata')
+    self.table_name =('study_metadata')
   end
 
   def self.up

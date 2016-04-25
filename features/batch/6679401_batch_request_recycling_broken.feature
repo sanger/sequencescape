@@ -1,4 +1,4 @@
-@cherrypicking
+@cherrypicking @javascript
 Feature: Recycling requests in the Cherrypicking pipeline
   Background:
     Given I am an "administrator" user logged in as "John Smith"
@@ -20,8 +20,8 @@ Feature: Recycling requests in the Cherrypicking pipeline
 
     Given I am on the "Cherrypick" pipeline page
     When I check "Include request 1"
-    And I select "Create Batch" from "Action to perform"
-    And I press "Submit"
+    And I select "Create Batch" from the first "Action to perform"
+    And I press the first "Submit"
     And I follow "Select Plate Template"
     And I press "Next"
 
@@ -30,7 +30,7 @@ Feature: Recycling requests in the Cherrypicking pipeline
   # be removed from the UI if they aren't using it to prevent them from doing it because the functionality
   # is not the same as moving things from the plate layout.
 
-  @javascript @barcode-service
+  @barcode-service
   Scenario Outline: Approving the plate layout
     Given a robot exists
     Given the plate template "My plate template" exists
@@ -42,18 +42,16 @@ Feature: Recycling requests in the Cherrypicking pipeline
     And I follow "Select Plate Template"
     And I select "My plate template" from "Plate Template"
     And I press "Next step"
-
     When I drag <number to remove> wells to the scratch pad
     When I press "Next step"
-
     # The requests in the Cherrypick inbox are grouped by their parent asset, the plate
     When I am on the "Cherrypick" pipeline page
     Then the inbox should contain 1 request
 
     # It's not until you choose to create a new batch that you find out how many wells there are!
     When I check "Include request 1"
-    And I select "Create Batch" from "Action to perform"
-    And I press "Submit"
+    And I select "Create Batch" from the first "Action to perform"
+    And I press the first "Submit"
     Then the batch input asset table should be:
       | Wells              |
       | <number to remove> |

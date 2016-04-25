@@ -1,3 +1,10 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
+
+require 'carrierwave'
+
 class PlateVolume < ActiveRecord::Base
   extend DbFile::Uploader
 
@@ -20,15 +27,15 @@ class PlateVolume < ActiveRecord::Base
 
     extract_well_volumes do |well_description, volume|
       map  = Map.find_for_cell_location(well_description,plate.size) or raise "Cannot find location for #{well_description.inspect} on plate size #{plate.size}"
-      well = location_to_well[map] or raise "Could not find well #{map.description} on plate #{plate.id} (barcode: #{plate.barcode})"
-      well.well_attribute.update_attributes!(:measured_volume => volume.to_f)
+      well = location_to_well[map]
+      well.well_attribute.update_attributes!(:measured_volume => volume.to_f) if well.present?
     end
   end
   private :update_well_volumes
 
   def extract_well_volumes
     return if self.uploaded.nil?
-    head, *tail = FasterCSV.parse(self.uploaded.file.read)
+    head, *tail = CSV.parse(self.uploaded.file.read)
     tail.each { |(barcode, location, volume)| yield(location, volume) }
   end
   private :extract_well_volumes
@@ -76,7 +83,7 @@ class PlateVolume < ActiveRecord::Base
 
     def find_for_filename(filename)
       self.find_by_uploaded_file_name(filename) or
-      lambda { |filename, file| PlateVolume.create!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file) }
+      ->(filename, file) { PlateVolume.create!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file) }
     end
 
   end

@@ -1,14 +1,18 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <%- add :title, "Delayed jobs" %>
 
 <h1>Delayed Jobs Queue</h1>
 <table width="100%" cellpadding="5" cellspacing="0" class="sortable">
   <thead>
     <tr>
-      <th class='label' width="5%"><%= link_to 'status', "javascript:void(0);" %></th>
-      <th class='label' width="5%"><%= link_to 'type', "javascript:void(0);" %></th>
-      <th class='label' width="5%"><%= link_to 'priority', "javascript:void(0);" %></th>
-      <th class='label' width="5%"><%= link_to 'attempts', "javascript:void(0);" %></th>
-      <th class='label' width="5%"><%= link_to 'Scheduled at', "javascript:void(0);" %></th>
+      <th width="5%"><%= link_to 'status', "javascript:void(0);" %></th>
+      <th width="5%"><%= link_to 'type', "javascript:void(0);" %></th>
+      <th width="5%"><%= link_to 'priority', "javascript:void(0);" %></th>
+      <th width="5%"><%= link_to 'attempts', "javascript:void(0);" %></th>
+      <th width="5%"><%= link_to 'Scheduled at', "javascript:void(0);" %></th>
     </tr>
     <tbody>
       <% @jobs.each do |job| %>

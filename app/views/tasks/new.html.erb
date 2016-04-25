@@ -1,7 +1,11 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <%= render_title 'New task' %>
 <%= render_help 'Create your new definition here.'%>
 
-<% form_for(:task, :url => tasks_path, :html => {:id => 'task_form'}) do |f| %>
+<%= form_for(:task, :url => tasks_path, :html => {:id => 'task_form'}) do |f| %>
 <div id='yield'>
   <div id='main-items'>
     <div id='template'>

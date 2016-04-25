@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+
 module SampleManifest::PlateBehaviour
   module ClassMethods
     def create_for_plate!(attributes, *args, &block)
@@ -8,6 +12,9 @@ module SampleManifest::PlateBehaviour
   end
 
   class Base
+
+    include SampleManifest::CoreBehaviour::NoSpecializedValidation
+
     def initialize(manifest)
       @manifest = manifest
     end
@@ -41,7 +48,7 @@ module SampleManifest::PlateBehaviour
       manifest_barcode, manifest_location = row['SANGER PLATE ID'], row['WELL']
       primary_barcode, primary_location   = sample.primary_receptacle.plate.sanger_human_barcode, sample.primary_receptacle.map.description
       return if primary_barcode == manifest_barcode and primary_location == manifest_location
-      yield("Well info for #{sample.sanger_sample_id} mismatch: expected #{primary_barcode} #{primary_location} but reported as #{manifest_barcode} #{manifest_location}")
+      yield("You can not move samples between wells or modify barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode} #{primary_location}' but the manifest is trying to put it in '#{manifest_barcode} #{manifest_location}'")
     end
   end
 
@@ -135,11 +142,13 @@ module SampleManifest::PlateBehaviour
   end
 
   def generate_wells_asynchronously(well_data_with_ids, plate_id)
-    # Ensure the order of the wells are maintained
-    maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [ map.id, map ] }]
-    well_data = well_data_with_ids.map { |map_id,sample_id| [ maps[map_id], sample_id ] }
+    ActiveRecord::Base.transaction do
+      # Ensure the order of the wells are maintained
+      maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [ map.id, map ] }]
+      well_data = well_data_with_ids.map { |map_id,sample_id| [ maps[map_id], sample_id ] }
 
-    generate_wells(well_data, Plate.find(plate_id))
+      generate_wells(well_data, Plate.find(plate_id))
+    end
   end
   handle_asynchronously :generate_wells_asynchronously
 

@@ -1,0 +1,70 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
+
+
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="item" width="40%">Asset name:</td>
+    <td width="60%"><strong><%=h(@asset.display_name) %></strong></td>
+  </tr>
+  <tr>
+    <td class="item">Asset ID:</td>
+    <td><strong><%=h @asset.id.to_s %></strong></td>
+  </tr>
+  <tr>
+    <td class="item">Created at:</td>
+    <td><strong><%=h @asset.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
+  </tr>
+  <tr>
+    <td class="item">Type:</td>
+    <td><strong><%=h @asset.label %></strong></td>
+  </tr>
+  <% if @asset.respond_to? :plate_purpose %>
+  <tr>
+    <td class="item">Purpose:</td>
+    <td><strong><%=h @asset.plate_purpose.try(:name)||'Unknown' %></strong></td>
+  </tr>
+  <% end %>
+  <% if @asset.is_a?(Lane) %>
+    <tr>
+    <td class="item">Data to be released externally?:</td>
+    <td><strong><%=h @asset.external_release_text %></strong></td>
+    </tr>
+    <tr>
+      <td class="item"><%= h(@asset.lane_metadata.attribute_details_for(:release_reason).to_field_info.display_name) %>:</td>
+      <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td class="item">Volume:</td>
+    <td><strong><%=h @asset.volume %></strong> &#181l</td>
+  </tr>
+  <tr>
+    <td class="item">Concentration:</td>
+    <td><strong><%=h @asset.concentration %></strong> nM</td>
+  </tr>
+<% if @asset.respond_to?(:sanger_human_barcode) %>
+  <tr>
+    <td class="item">Human barcode:</td>
+    <td><strong><%=h @asset.sanger_human_barcode %></strong></td>
+  </tr>
+<% end %>
+  <tr>
+    <td class="item">Scanned into lab?:</td>
+    <td><strong><%= @asset.location.nil? ? 'No' : @asset.location.name %></strong></td>
+  </tr>
+  <% if @asset.qc_state %>
+    <tr>
+      <td class="item">QC state:</td>
+      <td><strong><%= @asset.qc_state %></strong></td>
+    </tr>
+  <% end %>
+  <% if @asset.respond_to?(:storage_location) && !@asset.storage_location.empty? %>
+    <tr class="location-service-<%= @asset.storage_location_service %>">
+      <td class="item">Storage location</td>
+      <td><strong><%= @asset.storage_location %></strong></td>
+    </tr>
+  <% end %>
+</table>
+

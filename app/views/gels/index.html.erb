@@ -1,6 +1,10 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <h1>Gel scoring</h1>
 
-<% form_tag(lookup_gels_url, :method => :post) do %>
+<%= form_tag(lookup_gels_url, :method => :post) do %>
   <%= label_tag :barcode, "Find gel plate:" %>
   <%= text_field_tag :barcode %>
   <br /><br />
@@ -8,7 +12,7 @@
 <% end %>
 
 <h2>Recently updated</h2>
-<%= will_paginate @gel_plates %>
+<%= pagination @gel_plates %>
 <table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
   <thead>
   <tr>
@@ -33,4 +37,4 @@
   <% end %>
   </tbody>
 </table>
-<%= will_paginate @gel_plates %>
+<%= pagination @gel_plates %>

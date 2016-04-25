@@ -1,53 +1,82 @@
-Factory.sequence :lot_number do |n|
-  "lot#{n}"
-end
-Factory.sequence :lot_type_name do |n|
-  "lot_type#{n}"
-end
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 
-Factory.define :lot_type do |lot_type|
-  lot_type.name           { Factory.next :lot_type_name }
-  lot_type.template_class 'PlateTemplate'
-  lot_type.target_purpose { Tube::Purpose.stock_library_tube }
-end
+FactoryGirl.define do
+  sequence :lot_number do |n|
+    "lot#{n}"
+  end
+  sequence :lot_type_name do |n|
+    "lot_type#{n}"
+  end
 
-Factory.define :qcable_creator do |qcable_creator|
-  qcable_creator.count    0
-  qcable_creator.user    { Factory :user }
-  qcable_creator.lot     { Factory :lot }
-end
+  factory :lot_type do |lot_type|
+    name           { FactoryGirl.generate :lot_type_name }
+    template_class 'PlateTemplate'
+    target_purpose { Tube::Purpose.stock_library_tube }
+  end
 
-Factory.define :lot do |lot|
-  lot.lot_number  { Factory.next :lot_number }
-  lot.lot_type    { Factory :lot_type }
-  lot.template    { Factory :plate_template_with_well }
-  lot.user        { Factory :user }
-  lot.received_at '2014-02-01'
-end
+  factory :pending_purpose, :parent => :tube_purpose do |pp|
+    name { FactoryGirl.generate :purpose_name }
+    default_state 'pending'
+  end
 
-Factory.define :stamp do |stamp|
-  stamp.lot     { Factory :lot }
-  stamp.user    { Factory :user }
-  stamp.robot   { Factory :robot }
-  stamp.tip_lot '555'
-end
+  factory :created_purpose, :parent => :tube_purpose do |pp|
+    name { FactoryGirl.generate :purpose_name }
+    default_state 'created'
+  end
 
-Factory.define :qcable do |qcable|
-  qcable.state  'created'
-  qcable.lot    { Factory :lot }
-  qcable.qcable_creator { Factory :qcable_creator }
-end
+  factory :tag2_lot_type, :parent=> :lot_type do |lot_type|
+    name           { FactoryGirl.generate :lot_type_name }
+    template_class 'Tag2LayoutTemplate'
+    target_purpose { Tube::Purpose.stock_library_tube }
+  end
 
-Factory.define :plate_template_with_well, :class=>PlateTemplate do |p|
-  p.name      "testtemplate2"
-  p.value     96
-  p.size      96
-  p.wells    { [Factory(:well_with_sample_and_without_plate,:map=>Factory(:map))] }
-end
+  factory :qcable_creator do |qcable_creator|
+    count    0
+    user    { create :user }
+    lot     { create :lot }
+  end
 
-Factory.define :qcable_with_asset, :class=>Qcable do |qcable|
-  qcable.state  'created'
-  qcable.lot    { Factory :lot }
-  qcable.qcable_creator { Factory :qcable_creator }
-  qcable.asset  {Factory :full_plate }
+  factory :lot do |lot|
+    lot_number  { FactoryGirl.generate :lot_number }
+    lot_type    { create :lot_type }
+    template    { create :plate_template_with_well }
+    user        { create :user }
+    received_at '2014-02-01'
+  end
+
+  factory :tag2_lot, :parent => :lot do |lot|
+    lot_number  { FactoryGirl.generate :lot_number }
+    lot_type    { |a| create(:tag2_lot_type) }
+    template    { |a| create(:tag2_layout_template) }
+    user        { |a| create(:user) }
+    received_at '2014-02-01'
+  end
+
+  factory :stamp do |stamp|
+    lot     { create :lot }
+    user    { create :user }
+    robot   { create :robot }
+    tip_lot '555'
+  end
+
+  factory :qcable do |qcable|
+    lot    { create :lot }
+    qcable_creator { create :qcable_creator }
+  end
+
+  factory :plate_template_with_well, :class=>PlateTemplate do |p|
+    name      "testtemplate2"
+    value     96
+    size      96
+    wells    { [create(:well_with_sample_and_without_plate,:map=>create(:map))] }
+  end
+
+  factory :qcable_with_asset, :class=>Qcable do |qcable|
+    state  'created'
+    lot    { create :lot }
+    qcable_creator { create :qcable_creator }
+    asset  {create :full_plate }
+  end
 end

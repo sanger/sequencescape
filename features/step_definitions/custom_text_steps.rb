@@ -1,7 +1,11 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 Given /^the following custom texts are defined$/ do |table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    ct = Factory(:custom_text, hash)
+    ct = FactoryGirl.create(:custom_text, hash)
     ct.save
   end
 end
@@ -32,7 +36,7 @@ end
 Given /^the application information box should contain "([^\"]*)"$/ do |info_text|
   regexp = Regexp.new(info_text)
   with_scope('#app-info-box') do
-      assert page.has_xpath?('//*', :text => regexp)
+    assert page.has_xpath?('//*', :text => regexp)
   end
 end
 
@@ -50,7 +54,7 @@ end
 
 Given /^I am editing the custom text field "([^\"]+)"$/ do |name|
  field = CustomText.find_by_identifier(name) or raise StandardError, "Cannot find custom text field #{ name.inspect }"
- visit edit_custom_text_path(field)
+ visit edit_admin_custom_text_path(field)
 end
 
 Then /^the page should contain the following$/ do |table|
@@ -70,10 +74,10 @@ end
 Then /^I should be able to (enter|edit) the following fields$/ do |action, table|
    # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    step(%Q{I fill in the field labeled "Custom text #{ hash[:label] }" with "#{ hash[:value] }"})
+    step(%Q{I fill in "#{ hash[:label] }" with "#{ hash[:value] }"})
   end
 
-  step "I press \"Save changes\""
+  step "I press \"Save Custom text\""
   case action
   when "enter"
     step "I should see \"Custom text successfully created\""

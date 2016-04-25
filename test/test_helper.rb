@@ -1,38 +1,38 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+
+require 'simplecov'
+
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-#TODO: for rails 3 replace with rails/test_help
-require "test_help"
-require 'test_benchmark'
+
+require 'minitest/autorun'
+require 'shoulda'
+require 'rails/test_help'
+require 'factory_girl'
+
+begin
+  require 'pry'
+rescue LoadError => exception
+end
 
 require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
- Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
-   require factory_filename
- end
+Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
+ require factory_filename
+end
+
+Dir.glob(File.expand_path(File.join(Rails.root, %w{test shoulda_macros *.rb}))) do |macro_filename|
+  require macro_filename
+end
 
 require "#{Rails.root}/test/unit/task_test_base"
-
-# add the ci_reporter to create reports for test-runs, since parallel_tests is not invoked through rake
-if ENV.has_key?("CI")
-  require 'ci/reporter/test_unit' # needed, despite "bundle exec"!
-  # Intercepts mediator creation in ruby-test >= 2.1
-  module Test #:nodoc:all
-    module Unit
-      module UI
-        class TestRunner
-          def setup_mediator
-            # swap in our custom mediator
-            @mediator = CI::Reporter::TestUnit.new(@suite)
-          end
-        end
-      end
-    end
-  end
-end
 
 class ActiveSupport::TestCase
   extend Sanger::Testing::Controller::Macros
   extend Sanger::Testing::View::Macros
   extend Sanger::Testing::Model::Macros
+  include FactoryGirl::Syntax::Methods
 
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the
@@ -70,38 +70,12 @@ class ActiveSupport::TestCase
 
   # Used by Quiet Backtrace pluging to reduce testing noise
   #self.backtrace_silencers << :rails_vendor
-  #self.backtrace_filters   << :rails_root
+  #self.backtrace_filters   << :Rails.root
   # Add more helper methods to be used by all tests here...
 end
 
-# Adds support for a setup and teardown method across a set of tests, meaning that expensive DB
-# operations can be done once.  Please note that you are responsible for tidying up after yourself,
-# don't rely on a transaction doing it for you!
-class ActiveSupport::TestCase
-  class << self
-    # Called at the start of a group of tests.
-    def startup
-      # Does nothing
-    end
-
-    # Called at the end of a group of tests.  You must manage your exception handling yourself
-    # and not raise any out of this method.
-    def shutdown
-      # Does nothing
-    end
-
-    def suite #:nodoc:
-      test_suite = super
-      test_suite.instance_variable_set('@test_class', self)
-      class << test_suite
-        def run(*args, &block)
-          @test_class.startup
-          super
-        ensure
-          @test_class.shutdown
-        end
-      end
-      test_suite
-    end
-  end
+class ActionController::TestCase
+  include FactoryGirl::Syntax::Methods
 end
+
+

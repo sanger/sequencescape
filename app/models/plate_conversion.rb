@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 # Creating an instance of this class causes the target to become converted to the new
 # plate purpose
 class PlateConversion < ActiveRecord::Base
@@ -10,7 +14,9 @@ class PlateConversion < ActiveRecord::Base
 
   belongs_to :parent, :class_name => 'Plate'
 
-  validates_presence_of :target, :purpose, :user
+  validates :target, :presence => true
+  validates :purpose, :presence => true
+  validates :user, :presence =>true
 
   after_create :convert_target
 

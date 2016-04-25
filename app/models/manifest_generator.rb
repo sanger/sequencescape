@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+
 class ManifestGenerator
 
   QUOTE_CHAR = "!"
@@ -11,7 +15,7 @@ class ManifestGenerator
   end
 
   def self.generate_manifest_for_plate_ids(plate_ids,study)
-    csv_string = FasterCSV.generate(:row_sep => "\n", :quote_char => "#{QUOTE_CHAR}") do |csv|
+    csv_string = CSV.generate(:row_sep => "\n", :quote_char => "#{QUOTE_CHAR}") do |csv|
       create_header(csv,study)
       row = 1
       plate_ids.each do |plate_id|

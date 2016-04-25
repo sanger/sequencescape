@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013 Genome Research Ltd.
 module AuthenticatedSystem
   protected
     # Returns true or false if the user is logged in.
@@ -68,6 +71,7 @@ module AuthenticatedSystem
 
       respond_to do |accepts|
         accepts.html   { logged_in? && authorized? ? true : access_denied }
+        accepts.csv   { logged_in? && authorized? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -167,7 +171,7 @@ module AuthenticatedSystem
     #
     # We can return to this location by calling #redirect_back_or_default.
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.original_url
     end
 
     # Redirect to the URI stored by the most recent store_location call or

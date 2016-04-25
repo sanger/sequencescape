@@ -1,9 +1,11 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 module ModelExtensions::Plate
   module NamedScopeHelpers
     def include_plate_named_scope(plate_association)
-      named_scope :"include_#{plate_association}", {
-        :include => { plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES }
-      }
+      scope :"include_#{plate_association}", -> { includes(plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES) }
     end
   end
 
@@ -19,8 +21,8 @@ module ModelExtensions::Plate
 
   def self.included(base)
     base.class_eval do
-      named_scope :include_plate_purpose, :include => :plate_purpose
-      named_scope :include_plate_metadata, :include => :plate_metadata
+      scope :include_plate_purpose, -> { includes(:plate_purpose) }
+      scope :include_plate_metadata, -> { includes(:plate_metadata) }
       delegate :pool_id_for_well, :to => :plate_purpose, :allow_nil => true
     end
   end
@@ -31,6 +33,18 @@ module ModelExtensions::Plate
 
   def source_plate
     self.plate_purpose.source_plate(self)
+  end
+
+  def source_plates
+    self.plate_purpose.source_plates(self)
+  end
+
+  def library_source_plate
+    self.plate_purpose.library_source_plate(self)
+  end
+
+  def library_source_plates
+    self.plate_purpose.library_source_plate(self)
   end
 
   # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is
@@ -52,6 +66,8 @@ module ModelExtensions::Plate
       Request.include_request_metadata.for_pre_cap_grouping_of(self).each do |request|
         groups[request.group_id] = { :wells => request.group_into.split(',') }.tap do |pool_information|
           pool_information[:pre_capture_plex_level] ||= request.request_metadata.pre_capture_plex_level
+          # We supply the submission id to assist with correctly tagging transfer requests later
+          pool_information[:submission_id] ||= request.submission_id
         end unless request.group_id.nil?
       end
     end

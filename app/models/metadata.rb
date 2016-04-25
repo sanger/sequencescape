@@ -1,3 +1,9 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
+require 'app/models/attributable'
+
 module Metadata
   def has_metadata(options = {}, &block)
     as_class = options.delete(:as) || self
@@ -5,6 +11,9 @@ module Metadata
     construct_metadata_class(table_name, as_class, &block)
     build_association(as_class, options)
   end
+
+  SECTION_FIELDS = [ :edit_info, :help, :label, :unspecified ]
+  Section = Struct.new(*SECTION_FIELDS,:label_options)
 
 private
 
@@ -14,32 +23,32 @@ private
     association_name = "#{ as_name }_metadata".underscore.to_sym
     class_name = "#{ self.name}::Metadata"
 
-    has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))
+    has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true, :inverse_of => :owner }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))
     accepts_nested_attributes_for(association_name, :update_only => true)
-    named_scope :"include_#{ association_name }", { :include => association_name }
+    scope :"include_#{ association_name }", -> { includes(association_name) }
 
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
     # do this through the initialization of our model because we use the ActiveRecord::Base#becomes method in
     # our code, which would create a new default instance.
-    class_eval <<-END_OF_INITIALIZER
+    line = __LINE__ + 1
+    class_eval(%Q{
+
       def #{association_name}_with_initialization
-        #{association_name}_without_initialization || build_#{association_name}
+        #{association_name}_without_initialization ||
+        build_#{association_name}
       end
+
       alias_method_chain(:#{association_name}, :initialization)
-
-      before_validation { |record| record.#{association_name } }
-    END_OF_INITIALIZER
-
-    # TODO: This should be genericised if metadata attribute grouping is extended
-    class_eval <<-VALIDATING_METADATA_ATTRIBUTE_GROUPS
-      def validating_ena_required_fields?
-        @validating_ena_required_fields
-      end
 
       def validating_ena_required_fields=(state)
         @validating_ena_required_fields = !!state
         self.#{ association_name }.validating_ena_required_fields = state
       end
+
+      def validating_ena_required_fields?
+        @validating_ena_required_fields
+      end
+
 
       def tags
         self.class.tags.select{|tag| tag.for?(accession_service.provider)}
@@ -53,14 +62,17 @@ private
         @tags ||= []
       end
 
-      def self.required_tags
-        @required_tags ||= Hash.new {|h,k| h[k] = Array.new }
-      end
-    VALIDATING_METADATA_ATTRIBUTE_GROUPS
+      before_validation { |record| record.#{association_name } }
+
+    }, __FILE__, line)
+
+    def self.required_tags
+      @required_tags ||= Hash.new {|h,k| h[k] = Array.new }
+    end
   end
 
   def include_tag(tag,options=Hash.new)
-    tags << AccessionedTag.new(tag,options[:as],options[:services])
+    tags << AccessionedTag.new(tag,options[:as],options[:services],options[:downcase])
   end
 
   def require_tag(tag,services=:all)
@@ -71,11 +83,12 @@ private
 
 
   class AccessionedTag
-    attr_reader :tag, :name
-    def initialize(tag, as=nil, services=[])
+    attr_reader :tag, :name, :downcase
+    def initialize(tag, as=nil, services=[],downcase=false)
       @tag = tag
       @name = as||tag
       @services = [services].flatten.compact
+      @downcase = downcase
     end
 
     def for?(service)
@@ -93,7 +106,7 @@ private
     # Ensure that it is correctly associated back to the owner model and that the table name
     # is correctly set.
     metadata.instance_eval %Q{
-      set_table_name('#{table_name}')
+      self.table_name =('#{table_name}')
       belongs_to :#{as_name}, :class_name => #{ self.name.inspect }, :validate => false, :autosave => false
       belongs_to :owner, :foreign_key => :#{as_name}_id, :class_name => #{self.name.inspect}, :validate => false, :autosave => false, :inverse_of => :#{as_name}_metadata
     }
@@ -109,11 +122,11 @@ private
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
     # nil which lead to us having to guess.
-    def initialize(attributes = {}, &block)
-      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), &block)
+    def initialize(attributes = {}, *args, &block)
+      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}),*args, &block)
     end
 
-    before_validation_on_create :merge_instance_defaults
+    before_validation :merge_instance_defaults, :on => :create
 
     def merge_instance_defaults
       # Replace attributes with the default if the value is nil
@@ -132,35 +145,45 @@ private
 
     delegate :validator_for, :to => :owner
 
-
     def service_specific_fields
       owner.required_tags.uniq.select do |tag|
-        owner.errors.add_to_base("#{tag} is required") if send(tag).blank?
+        owner.errors.add(:base,"#{tag} is required") if send(tag).blank?
       end.empty?
     end
 
     class << self
-      extend ActiveSupport::Memoizable
 
-      def metadata_attribute_path(field)
+      def metadata_attribute_path_store
+        @md_a_p ||= Hash.new {|h,field| h[field] = metadata_attribute_path_generator(field) }
+      end
+
+      def metadata_attribute_path_generator(field)
         self.name.underscore.split('/').map(&:to_sym) + [ field.to_sym ]
       end
-      memoize :metadata_attribute_path
 
-      def localised_sections(field)
-        OpenStruct.new(
-          [ :edit_info, :help, :label, :unspecified ].inject({}) do |hash,section|
-            hash.tap do
-              hash[ section ] = I18n.t(
-                section,
-                :scope => [ :metadata, metadata_attribute_path(field) ].flatten,
-                :default => I18n.t(section, :scope => [ :metadata, :defaults ])
-              )
-            end
-          end.merge(:label_options => {})
+      def metadata_attribute_path(field)
+        metadata_attribute_path_store[field]
+      end
+
+      def localised_sections_store
+        @loc_sec ||= Hash.new {|h,field| h[field] = localised_sections_generator(field) }
+      end
+
+      def localised_sections_generator(field)
+        Section.new(
+          * (SECTION_FIELDS.map do |section|
+            I18n.t(
+              section,
+              :scope => [ :metadata, metadata_attribute_path(field) ].flatten,
+              :default => I18n.t(section, :scope => [ :metadata, :defaults ])
+            )
+          end << {})
         )
       end
-      memoize :localised_sections
+
+      def localised_sections(field)
+        localised_sections_store[field]
+      end
     end
   end
 end

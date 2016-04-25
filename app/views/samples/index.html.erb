@@ -1,35 +1,34 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
+
 <% add :title, "Samples are registered here for sequencing or other laboratory pipelines." -%>
 
-<h1>All Samples</h1>
+<%= page_title 'Samples', 'Index' %>
 
 <div style="text-align:center">
-  <%= will_paginate @samples %>
+  <%= pagination @samples %>
 </div>
 <br />
-<table cellpadding="4" cellspacing="0" width="100%" class="sortable">
+<table class="sortable table table-striped">
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Sample Name</th>
-      <th>Date Created</th>
-      <th></th>
+      <th><a>ID</a></th>
+      <th><a>Sample Name</a></th>
+      <th><a>Date Created</a></th>
       <th></th>
       <th></th>
     </tr>
   </thead>
   <tbody>
+    <% admin = current_user.administrator? %>
     <% @samples.each do |sample| -%>
-      <tr class="<%= cycle("rowodd", "roweven") %><%= " withdrawn" if sample.consent_withdrawn? %>">
+      <tr class="<%= " withdrawn" if sample.consent_withdrawn? %>">
         <td width="5%"><%= link_to sample.id, sample_path(sample) %></td>
         <td><%= sample.name %><%= " - Consent withdrawn" if sample.consent_withdrawn? %></td>
         <td><%= sample.created_at.to_formatted_s(:day_full_with_time) %></td>
-        <% if current_user.administrator? -%>
+        <% if admin -%>
           <td><%= link_to "Edit", edit_sample_path(sample) -%></td>
-          <% if ! sample.has_submission? %>
-            <td><%= link_to "Delete", sample, :method => :delete, :confirm => "Are you sure?" -%></td>
-           <% else %>
-            <td>&nbsp;</td>
-          <% end %>
         <% end -%>
       </tr>
     <% end -%>
@@ -37,5 +36,5 @@
 </table>
 <br />
 <div style="text-align:center">
-  <%= will_paginate @samples %>
+  <%= pagination @samples %>
 </div>

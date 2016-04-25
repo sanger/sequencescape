@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013 Genome Research Ltd.
 class AddIlluminaCCherrypickPipeline < ActiveRecord::Migration
   require 'control_request_type_creation'
 
@@ -10,7 +13,7 @@ class AddIlluminaCCherrypickPipeline < ActiveRecord::Migration
 
       LabInterface::Workflow.find_by_name('Cherrypick').tasks.each do |task|
         # next if task.name == 'Set Location'
-        new_task = task.clone
+        new_task = task.dup
         new_task.workflow = liw
         new_task.save!
       end

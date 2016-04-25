@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+
 class SequencingPipeline < Pipeline
   def sequencing?
     true
@@ -5,6 +9,14 @@ class SequencingPipeline < Pipeline
 
   def request_actions
     [:remove]
+  end
+
+  def inbox_partial
+    group_by_parent? ? 'group_by_parent' : super
+  end
+
+  def purpose_information?
+    false
   end
 
   def is_read_length_consistent_for_batch?(batch)
@@ -35,7 +47,7 @@ class SequencingPipeline < Pipeline
 
     # Note that the request metadata also needs to be cloned for this to work.
     ActiveRecord::Base.transaction do
-      request.clone.tap do |request_clone|
+      request.dup.tap do |request_clone|
         rma = request.request_metadata.attributes.merge(:request=>request_clone)
         request_clone.update_attributes!(:state => 'pending', :target_asset_id => nil,:request_metadata_attributes => rma)
         request_clone.comments.create!(:description => "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now()}")
@@ -43,4 +55,18 @@ class SequencingPipeline < Pipeline
       end
     end
   end
+
+  def on_start_batch(batch, user)
+    BroadcastEvent::SequencingStart.create!(:seed=>batch,:user=>user,:properties=>{},:created_at=>DateTime.now)
+  end
+
+  def post_release_batch(batch, user)
+    # We call compact to handle ControlRequests which may have no target asset.
+    # In practice this isn't required, as we don't use control lanes any more.
+    # However some old features still use them, and until this behaviour is completely
+    # deprecated we should leave it here.
+    batch.assets.compact.uniq.each(&:index_aliquots)
+    Messenger.create!(:target=>batch,:template=>'FlowcellIO',:root=>'flowcell')
+  end
+
 end

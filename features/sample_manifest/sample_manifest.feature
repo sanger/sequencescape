@@ -21,9 +21,36 @@ Feature: Sample manifest
     When I follow "Sample Manifests"
     Then I should see "Create manifest for plates"
 
+  Scenario: Create a plate manifest and print just the first barcode when selecting option Only First Label
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
+    And I fill in the field labeled "Plates required" with "4"
+    And I check "Print only the first label"
+    When I press "Create manifest and print labels"
+    Then exactly 1 label should have been printed
+
+  Scenario: Create a plate manifest and print all the barcodes
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
+    And I fill in the field labeled "Plates required" with "4"
+    When I press "Create manifest and print labels"
+    Then exactly 4 labels should have been printed
+
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     When I follow "View all manifests"
     Then I should see the manifest table:
@@ -52,7 +79,7 @@ Feature: Sample manifest
 
   Scenario: Create a manifest then upload an excel file instead of a csv file
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "data/base_manifest.xls"
+    When I fill in "File to upload" with the file "data/base_manifest.xls"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     Then I should see the manifest table:
@@ -67,7 +94,7 @@ Feature: Sample manifest
     And I select "default tube layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I fill in the field labeled "Count" with "10"
+    And I fill in the field labeled "Tubes required" with "10"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
     Then I should see "Download Blank Manifest"
@@ -87,7 +114,7 @@ Feature: Sample manifest
 
   Scenario Outline: Upload a manifest that has mismatched information
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "<filename>"
+    When I fill in "File to upload" with the file "<filename>"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -95,7 +122,7 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State  | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest | Errors | Failed | john       |
     When I follow "Errors for manifest for Test study"
-    And I should see "Well info for sample_1 mismatch: expected DN1234567T B1 but reported as <barcode> <well>"
+    And I should see "You can not move samples between wells or modify barcodes: sample_1 should be in 'DN1234567T B1' but the manifest is trying to put it in '<barcode> <well>'"
 
     Scenarios:
       | filename                                 | barcode    | well |
@@ -104,7 +131,7 @@ Feature: Sample manifest
 
   Scenario: Upload a csv manifest with empty samples
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -243,7 +270,7 @@ Feature: Sample manifest
   @concentration @volume
   Scenario: Upload a manifest without volume or concentration set
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_no_vol_conc.csv"
+    When I fill in "File to upload" with the file "test/data/test_no_vol_conc.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -259,7 +286,7 @@ Feature: Sample manifest
   @cell_line
   Scenario: Upload a manifest with invalid cell line
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_dna_sources_invalid.csv"
+    When I fill in "File to upload" with the file "test/data/test_dna_sources_invalid.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -267,23 +294,29 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State  |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
     When I follow "Errors for manifest for Test study"
-    Then I should see "Dna source is not included in the list"
+    Then I should see "DNA source is not included in the list"
 
   @cell_line
   Scenario: Upload a manifest with invalid cell line
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_dna_sources_valid.csv"
+    When I fill in "File to upload" with the file "test/data/test_dna_sources_valid.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors   | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |          | Completed |
+    Then the samples table should look like:
+      | sanger_sample_id | supplier_name | dna_source |
+      | sample_1         | a             | Cell Line                      |
+      | sample_2         | b             | Blood                          |
+      | sample_3         | c             | Genomic                        |
+      | sample_4         | d             | Amniocentesis Cultured         |
 
   @is_control
   Scenario: Check is_control and is_resubmit are set properly in an uploaded manifest
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_is_control_is_resubmit.csv"
+    When I fill in "File to upload" with the file "test/data/test_is_control_is_resubmit.csv"
     And I press "Upload manifest"
     Given the manifests are successfully processed
     When I follow "View all manifests"
@@ -305,7 +338,7 @@ Feature: Sample manifest
   @override
   Scenario: Upload some empty samples, reupload with samples but without override set
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -328,7 +361,7 @@ Feature: Sample manifest
       | sample_12        | gggg          | false                      | 9617            |
 
 
-    When I fill in "File to upload" with "test/data/test_blank_wells_with_no_blanks.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -354,7 +387,7 @@ Feature: Sample manifest
   @override
   Scenario: Upload some empty samples, reupload with samples but with override set
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -377,7 +410,7 @@ Feature: Sample manifest
      | sample_12        | gggg          | false                      | 9617            |
 
 
-    When I fill in "File to upload" with "test/data/test_blank_wells_with_no_blanks.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
@@ -403,14 +436,14 @@ Feature: Sample manifest
  @override
   Scenario Outline: Updating of sample accession numbers
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/<initial>"
+    When I fill in "File to upload" with the file "test/data/<initial>"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
-    When I fill in "File to upload" with "test/data/<update>"
+    When I fill in "File to upload" with the file "test/data/<update>"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
@@ -439,7 +472,43 @@ Feature: Sample manifest
       | sample_manifest_a_accessions.csv  | sample_manifest_b_accessions.csv  | Failed    | Errors |
       | sample_manifest_no_accessions.csv | sample_manifest_a_accessions.csv  | Completed |        |
 
+@override
+  Scenario: Setting of reference_genomes
+    Given a manifest has been created for "Test study"
+    And the reference genome "Dragon" exists
+    And the reference genome "Centaur" exists
+    When I fill in "File to upload" with the file "test/data/sample_manifest_reference_genomes.csv"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+      | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
+      | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
+    Then the sample reference genomes should be:
+     | sanger_sample_id | reference_genome |
+     | sample_1         | Dragon           |
+     | sample_2         | Dragon           |
+     | sample_3         | Dragon           |
+     | sample_4         | Dragon           |
+     | sample_5         | Dragon           |
+     | sample_6         | Centaur          |
+     | sample_7         | Centaur          |
+     | sample_8         | Centaur          |
+     | sample_9         | Centaur          |
+     | sample_10        | Centaur          |
+     | sample_11        | Centaur          |
+     | sample_12        | Centaur          |
 
-
-
-
+  @override
+  Scenario: Using an invalid reference genome
+    Given a manifest has been created for "Test study"
+    And the reference genome "Dragon" exists
+    When I fill in "File to upload" with the file "test/data/sample_manifest_reference_genomes.csv"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State  |
+       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
+    When I follow "Errors for manifest for Test study"
+    Then I should see "Couldn't find a Reference Genome with named 'Centaur'."

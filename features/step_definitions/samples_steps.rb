@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 def GivenSampleMetadata(attribute, regexp)
   Given(regexp) do |name,value|
     sample = Sample.find_by_name(name) or raise StandardError, "There appears to be no sample named '#{ name }'"
@@ -8,7 +12,7 @@ end
 
 
 When /^I attach a valid excel file$/ do
-  attach_file(:file, File.join(RAILS_ROOT, 'public', 'data', 'sample_information.xls'))
+  attach_file(:file, File.join(Rails.root, 'public', 'data', 'sample_information.xls'))
 end
 
 Then /^a "([^\"]*)" number of "([^\"]*)" should be created$/ do |num, records|
@@ -77,6 +81,66 @@ Then /^the reference genome for the sample "([^\"]+)" should be "([^\"]+)"$/ do 
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
+Then /^the UUID for the sample "([^\"]+)" should be "([^\"]+)"$/ do |name, uuid|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  assert_equal(uuid, sample.uuid)
+end
+
+Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").length == 0)
+end
+
+Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
+end
+
+Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/ do |sample_name, schema|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
+  xsd = Nokogiri::XML::Schema(File.open(schema))
+  result = xsd.validate(Nokogiri(xml))
+  assert(result.length==0, result.map(&:message).join(""))
+end
+
+Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").length == 0)
+end
+
+Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
+end
+
+Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").text)
+end
+
+Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").text)
+end
+
+Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample.sample_metadata.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
+end
+
+Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample.update_attributes(Hash[* [attr_name, (value unless value=="empty")]])
+end
+
 Then /^the sample "([^\"]+)" should exist$/ do |name|
   assert_not_nil(Sample.find_by_name(name), "The sample #{name.inspect} does not exist")
 end
@@ -92,7 +156,7 @@ When /^I get the XML for the sample "([^\"]+)"$/ do |name|
 end
 
 Given /^I have a sample called "([^"]*)" with metadata$/ do |name|
-  sample = Factory :sample, :name => name
+  sample = FactoryGirl.create :sample, :name => name
 end
 
 Given /^the sample "([^"]*)" has a supplier name of "([^"]*)"$/ do |sample_name, supplier_name|
@@ -123,25 +187,25 @@ Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_na
 end
 
 Given /^I run the "([^\"]+)" cron script$/ do |script_name|
-  eval File.read("#{RAILS_ROOT}/lib/cron_scripts/#{script_name}")
+  eval File.read("#{Rails.root}/lib/cron_scripts/#{script_name}")
 end
 
 GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
 
-When /^I generate an? accession number for sample "([^\"]+)"$/ do |sample_name|
+When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
  step %Q{I am on the show page for sample "#{sample_name}"}
- step(%Q{I follow "Generate Accession Number"})
+ action_str = (action_type=='create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+ step(%Q{I follow "#{action_str}"})
 end
 
-When /^I update an? accession number for sample "([^\"]+)"$/ do |sample_name|
- step %Q{I am on the show page for sample "#{sample_name}"}
- step(%Q{I follow "Update EBI Sample data"})
+Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, dest|
+  xml = (type_action == "sent") ? FakeAccessionService.instance.sent.last["SAMPLE"] : FakeAccessionService.instance.last_received
+  assert_equal (state_action == "should"), Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?, "XML was: #{xml}"
 end
-
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by_name(sample_name)
-  sample_manifest = Factory(:sample_manifest, :id => 1)
+  sample_manifest = FactoryGirl.create(:sample_manifest, :id => 1)
   sample.update_attributes!(:sample_manifest => sample_manifest)
 end
 

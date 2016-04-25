@@ -1,4 +1,7 @@
 #!/usr/bin/env script/runner
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012 Genome Research Ltd.
 require 'optparse'
 require 'rgl/dot'
 DOT=RGL::DOT
@@ -55,7 +58,7 @@ class ScriptRenderer < Renderer
     objects.map do |object|
       att = object_to_hash(object)
         %Q{
-            #{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save_without_validation
+            #{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save(validate: false)
           }
     end
   end
@@ -384,9 +387,9 @@ end
 # use :skip_super to not include superclass association
 Models = {
   :submission => [{
-  Submission => [:study, :project, RequestByType=lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
+  Submission => [:study, :project, RequestByType=->(s) {  s.requests.group_by(&:request_type_id).values }, :asset_group],
   Request => [:asset, :target_asset],
-  Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :requests_as_target, :children, :parent],
+  Asset => [->(s) {  s.requests.group_by(&:request_type_id).values }, :requests_as_target, :children, :parent],
   AssetGroup => [:assets]
 },
   {
@@ -394,7 +397,7 @@ Models = {
 }
 ],
 
-  :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
+  :simple_submission =>  { Submission => ->(s) {  s.requests.group_by(&:request_type_id).values }} ,
 
   :asset_down => AssetDown={ Asset => [:children, RequestByType, :sample, :tags],
     Request => [:target_asset],
@@ -421,7 +424,7 @@ Models = {
   :asset_up_and_down => [AssetUp, AssetDown],
   :asset_down_and_up => [AssetDown, AssetUp],
   :full_asset => AssetUp.merge(AssetDown),
-  :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
+  :asset => [{Asset => [ ->(s) {  s.requests.group_by(&:request_type_id).values },
         :requests_as_target, :children, :parents]},
         { Request => [:asset, :target_asset]}],
   :submission_down => [{ Submission => RequestByType}.merge(AssetDown)] ,

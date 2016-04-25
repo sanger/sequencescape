@@ -1,7 +1,0 @@
-<tr class="<%= cycle("rowodd", "roweven") %>">
-  <td><%= link_to library.ident, "#{configatron.studies_url}/items/show_item/#{library.ident}", :target => "_blank" %></td>
-  <td><%= link_to library.name, "#{configatron.studies_url}/items/show_item/#{library.ident}", :target => "_blank" %></td>
-  <td><%= link_to library.batch.id, :controller => :batches, :action => :show, :id => library.batch.id %></td>
-  <td><%= link_to library.batch.pipeline.name, :controller => :pipelines, :action => :show, :id => library.batch.pipeline.id %></td>
-  <td><%= library.state.humanize %></td>
-</tr>

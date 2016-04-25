@@ -1,7 +1,12 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 module SampleManifest::InputBehaviour
+
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
-      csv        = FasterCSV.parse(spreadsheet_file.read)
+      csv        = CSV.parse(spreadsheet_file.read)
       column_map = compute_column_map(csv[spreadsheet_header_row])
 
       spreadsheet_offset.upto(csv.size-1) do |n|
@@ -36,7 +41,7 @@ module SampleManifest::InputBehaviour
           # These need to be checked when updating from a sample manifest.  We need to be able to display
           # the sample ID so this can't be done with validates_presence_of
           validates_each(:volume, :concentration, :if => :updating_from_manifest?) do |record, attr, value|
-            record.errors.add_on_blank(attr, "can't be blank for #{record.sample.sanger_sample_id}")
+            record.errors.add_on_blank(attr, message:"can't be blank for #{record.sample.sanger_sample_id}")
           end
 
         end
@@ -57,7 +62,7 @@ module SampleManifest::InputBehaviour
 
         # You cannot create a sample through updating the sample manifest
         validates_each(:id, :on => :create, :if => :updating_from_manifest?) do |record, attr, value|
-          record.errors.add_to_base("Could not find sample #{record.sanger_sample_id}") if value.blank?
+          record.errors.add(:base,"Could not find sample #{record.sanger_sample_id}") if value.blank?
         end
 
         # We ensure that certain fields are updated properly if we're doing so through a manifest
@@ -118,6 +123,7 @@ module SampleManifest::InputBehaviour
 
   def self.included(base)
     base.class_eval do
+      include ManifestUtil
       extend ClassMethods
       handle_asynchronously :process
 
@@ -162,11 +168,19 @@ module SampleManifest::InputBehaviour
 
   InvalidManifest = Class.new(StandardError)
 
+  def get_headers(csv)
+    filter_end_of_header(csv[spreadsheet_header_row]).map do |header|
+      h = header.gsub(/\s+/, ' ')
+      SampleManifest::Headers.renamed(h)
+    end
+  end
+
   def each_csv_row(&block)
-    csv = FasterCSV.parse(uploaded.current_data)
+    csv = CSV.parse(uploaded.current_data)
     clean_up_sheet(csv)
 
-    headers = csv[spreadsheet_header_row].map { |header| h = header.gsub(/\s+/, ' '); SampleManifest::Headers.renamed(h) }
+    headers = get_headers(csv)
+
     headers.each_with_index.map do |name, index|
       "Header '#{name}' not recognised!" unless name.blank? || SampleManifest::Headers.valid?(name)
     end.compact.tap do |headers_with_errors|
@@ -177,8 +191,8 @@ module SampleManifest::InputBehaviour
     spreadsheet_offset.upto(csv.size-1) do |row|
       yield(Hash[headers.each_with_index.map { |header, column| [ header, csv[row][column] ] }])
     end
-  rescue FasterCSV::MalformedCSVError => exception
-    raise InvalidManifest, "Invalid CSV file, did you upload an EXCEL file by accident? - #{exception.message}"
+  rescue CSV::MalformedCSVError => exception
+    raise InvalidManifest, "Invalid CSV file, did you upload an Excel file by accident? - #{exception.message}"
   end
   private :each_csv_row
 
@@ -195,18 +209,27 @@ module SampleManifest::InputBehaviour
       #
       # NOTE: Do not include the primary_receptacle here as it will cause the wrong one to be loaded!
       sample = samples.find_by_sanger_sample_id(sanger_sample_id)
+
+      errors = false
+
       if sample.nil?
         sample_errors.push("Sample #{sanger_sample_id} does not appear to be part of this manifest")
-        next
+         errors = true
       elsif sample.primary_receptacle.nil?
         sample_errors.push("Sample #{sanger_sample_id} appears to not have a receptacle defined! Contact PSD")
-        next
+        errors = true
       else
         validate_sample_container(sample, row) do |message|
           sample_errors.push(message)
-          next
+          errors = true
+        end
+        validate_specialized_fields(sample,row) do |message|
+          sample_errors.push(message)
+          errors = true
         end
       end
+
+      next if errors
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
@@ -222,11 +245,11 @@ module SampleManifest::InputBehaviour
           :sanger_sample_id           => sanger_sample_id,
           :control                    => convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
           :sample_metadata_attributes => metadata.delete_if { |_,v| v.nil? }
-        }
+        }.merge( specialized_fields(row) )
       ])
     end
 
-    raise InvalidManifest, sample_errors unless sample_errors.empty?
+    return fail_with_errors!(sample_errors) unless sample_errors.empty?
 
     ActiveRecord::Base.transaction do
       update_attributes!({
@@ -239,6 +262,7 @@ module SampleManifest::InputBehaviour
     self.last_errors = nil
     self.finished!
   rescue ActiveRecord::RecordInvalid => exception
+    errors.add(:base,exception.message)
     fail_with_errors!(errors.full_messages)
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)
@@ -266,7 +290,9 @@ module SampleManifest::InputBehaviour
   private :ensure_samples_are_being_updated_by_manifest
 
   def update_attributes_with_sample_manifest!(attributes, user = nil)
-    ensure_samples_are_being_updated_by_manifest(attributes, user)
-    update_attributes_without_sample_manifest!(attributes)
+    ActiveRecord::Base.transaction do
+      ensure_samples_are_being_updated_by_manifest(attributes, user)
+      update_attributes_without_sample_manifest!(attributes)
+    end
   end
 end

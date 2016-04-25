@@ -1,5 +1,9 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Then /^I should see dna qc table:$/ do |expected_results_table|
-  actual_table = table(tableish('table#sortable_batches tr', 'td,th'))
+  actual_table = table(fetch_table('table#sortable_batches'))
   actual_table.map_column!('Qc') { |text| "" }
   expected_results_table.diff!(actual_table)
 end
@@ -19,30 +23,30 @@ When /^I select "([^"]*)" for the remaining rows of the plate$/ do |qc_result|
 end
 
 Given /^a plate template exists$/ do
-  Factory :plate_template
+  FactoryGirl.create :plate_template
 end
 
 Given /^a robot exists$/ do
-  robot = Factory :robot
+  robot = FactoryGirl.create :robot
   robot.robot_properties.create(:key => 'max_plates', :value => "21")
 end
 
 Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |study_name, plate_barcode, expected_results_table|
   study = Study.find_by_name(study_name)
   plate = Plate.find_by_barcode(plate_barcode)
-  manifest = FasterCSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id],study))
+  manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id],study))
   manifest.shift(3)
   expected_results_table.diff!(manifest)
 end
 
 Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/ do |plate_barcode, study_name, number_of_samples,asset_group_name|
   study = Study.find_by_name(study_name)
-  plate = Factory(:plate, :barcode => plate_barcode, :location => Location.find_by_name("Sample logistics freezer"))
+  plate = FactoryGirl.create(:plate, :barcode => plate_barcode, :location => Location.find_by_name("Sample logistics freezer"))
 
   asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(:name => asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
-    Factory(:well, :plate => plate, :map_id => index).tap do |well|
-      well.aliquots.create!(:sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}"),
+    FactoryGirl.create(:well, :plate => plate, :map_id => index).tap do |well|
+      well.aliquots.create!(:sample => FactoryGirl.create(:sample, :name => "Sample_#{plate_barcode}_#{index}"),
                                               :study => study)
     end
   end
@@ -72,12 +76,12 @@ Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
   step(%Q{I am on the show page for pipeline "Cherrypick"})
 
   step(%Q{I check "Select DN1234567T for batch"})
-  step(%Q{I select "Create Batch" from "action_on_requests"})
-  step(%Q{I press "Submit"})
+  step(%Q{I select "Create Batch" from the first "action_on_requests"})
+  step(%Q{I press the first "Submit"})
 end
 
 Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
-  robot = Factory :robot, :barcode => robot_barcode
+  robot = FactoryGirl.create :robot, :barcode => robot_barcode
   robot.robot_properties.create(:key => 'max_plates', :value => "21")
   robot.robot_properties.create(:key => 'SCRC1', :value => "1")
   robot.robot_properties.create(:key => 'SCRC2', :value => "2")
@@ -106,8 +110,8 @@ Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
   step(%Q{I have a Cherrypicking submission for asset group "Plate asset group"})
   step(%Q{I am on the show page for pipeline "Cherrypick"})
   step(%Q{I check "Select DN1234567T for batch"})
-  step(%Q{I select "Create Batch" from "action_on_requests"})
-  step(%Q{I press "Submit"})
+  step(%Q{I select "Create Batch" from the first "action_on_requests"})
+  step(%Q{I press the first "Submit"})
   step(%Q{a plate barcode webservice is available and returns "#{plate_barcode}"})
   step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
 end
@@ -122,7 +126,7 @@ end
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
   well =Uuid.find_by_external_id(uuid).resource
 
-  sample = Factory(:sample, :name => "Testing_the_JSON_API")
+  sample = FactoryGirl.create(:sample, :name => "Testing_the_JSON_API")
   sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
   sample.external_properties.create!(:key => 'genotyping_snp_plate_id')
 

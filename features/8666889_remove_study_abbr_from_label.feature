@@ -8,7 +8,7 @@ Feature: Print truncated sanger sample id on sample tube barcode
     And the "1D Tube" barcode printer "xyz" exists
     Given I am on the show page for pipeline "Illumina-C Library preparation"
     And I check "Select SampleTube 1 for batch"
-    And I press "Submit"
+    And I press the first "Submit"
     And I follow "Print labels"
     And 1 pending delayed jobs are processed
 

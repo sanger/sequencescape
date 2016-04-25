@@ -1,4 +1,8 @@
-<% form_for(:sample_registrars, nil, :url => study_sample_registration_index_path, :method => :post) do |registrars_fields| %>
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
+
+<%= form_for(:sample_registrars, :url => study_sample_registration_index_path, :method => :post) do |registrars_fields| %>
   <%= error_messages_for(:sample_registrars, :object => @sample_registrars, :object_name => "set of sample(s)") %>
 
   <h2>1. Enter sample information</h2>
@@ -38,8 +42,8 @@
           2D Barcode
         </th>
         <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
-        <% fields_for(Sample.new) do |form| %>
-          <% form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+        <%= fields_for(Sample.new) do |form| %>
+          <%= form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
             <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
 
             <%# Fields for 'Microarray genotyping' %>
@@ -115,7 +119,7 @@
     </thead>
     <tbody>
     <% @sample_registrars.each_with_index do |registrar, index| %>
-      <% registrars_fields.fields_for(index.to_s, registrar) do |registrar_fields| %>
+      <%= registrars_fields.fields_for(index.to_s, registrar) do |registrar_fields| %>
         <tr class="sample_row">
           <td>
             <%= registrar_fields.label(:ignore, "Ignore sample #{ index }", :style => 'display:none;') %>
@@ -126,14 +130,14 @@
             <%= registrar_fields.text_field(:asset_group_name, :size => 15) %>
           </td>
 
-          <% registrar_fields.fields_for(:sample) do |sample_fields| %>
+          <%= registrar_fields.fields_for(:sample) do |sample_fields| %>
             <td>
               <%= sample_fields.label(:name, "Sample name for sample #{ index }", :style => 'display:none;') %>
               <%= sample_fields.text_field(:name, :size => 15) %>
             </td>
           <% end %>
 
-          <% registrar_fields.fields_for(:sample_tube) do |sample_tube_fields| %>
+          <%= registrar_fields.fields_for(:sample_tube) do |sample_tube_fields| %>
             <td>
               <%= sample_tube_fields.label(:two_dimensional_barcode, "2D barcode for sample #{ index }", :style => 'display:none;') %>
               <%= sample_tube_fields.text_field(:two_dimensional_barcode, :size => 15) %>
@@ -141,8 +145,8 @@
           <% end %>
 
           <%# TODO[xxx]: This is really inefficient, taking 25s to render for the large spreadsheet %>
-          <% registrar_fields.fields_for(:sample) do |sample_fields| %>
-            <% sample_fields.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+          <%= registrar_fields.fields_for(:sample) do |sample_fields| %>
+            <%= sample_fields.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
               <% metadata_fields.view_for(:field, 'shared/metadata/edit_value') %>
               <% metadata_fields.locals = { :index => index } %>
               <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
@@ -241,37 +245,37 @@
     });
   };
   var attachIgnoreHandlerToRow = function(row) {
-    row.select('.ignore').each(function(checkbox) {
-      checkbox.observe('click', function() { updateIgnoreState(checkbox.checked, row); });
+    $(".ignore", row).each(function(pos, checkbox) {
+      $(checkbox).on('click', function() { updateIgnoreState(checkbox.checked, row); });
     });
   };
   var addNewSampleRow = function() {
-    sampleRows = $$('.sample_row');
+    sampleRows = $('.sample_row');
     var row_number = sampleRows.length;
 
     // Perform a deep clone of the first sample row.  Change any fields so that they are properly
     // setup for the new row.  Note that 'hidden' fields don't have an ID attribute.
     newRow = sampleRows[0].clone(true);
-    newRow.select('input', 'textarea', 'select').each(function(e) {
-      if (e.readAttribute('type') != 'hidden') {
-        e.writeAttribute('id', e.readAttribute('id').sub(/_0_/, '_' + row_number + '_'));
+    $('input, textarea, select', newRow).each(function(pos, e) {
+      if (e.attr('type') != 'hidden') {
+        e.attr('id', e.attr('id').sub(/_0_/, '_' + row_number + '_'));
       }
-      e.writeAttribute('name', e.readAttribute('name').sub(/\[0\]/, '[' + row_number + ']'));
+      e.attr('name', e.attr('name').sub(/\[0\]/, '[' + row_number + ']'));
       e.value = ''
     });
     newRow.select('label').each(function(e) {
-      e.writeAttribute('for', e.readAttribute('for').sub(/_0_/, '_' + row_number + '_'));
+      e.attr('for', e.attr('for').sub(/_0_/, '_' + row_number + '_'));
       e.innerHTML = e.innerHTML.gsub('0', row_number);
     });
     newRow.select('.ignore').each(function(e) {
       e.value = '1';      // Got reset in the previous loop!
-      e.setAttribute('id', "ignore_" + row_number);
-      e.setAttribute('name', "ignore[" + row_number + "]");
+      e.attr('id', "ignore_" + row_number);
+      e.attr('name', "ignore[" + row_number + "]");
       updateIgnoreState(e.checked = false, newRow);
     });
 
-    // Remove any fieldWithErrors elements
-    newRow.select('.fieldWithErrors').each(function(field) {
+    // Remove any field_with_errors elements
+    $('.field_with_errors', newRow).each(function(pos, field) {
       field.childElements().reverse().each(function(child) {
         field.insert({ after: child });
       });
@@ -279,23 +283,24 @@
     });
 
     // Now we can append the new row to the end of our table.
-    $$('#samples_to_register tbody')[0].insert(newRow);
-    new Effect.Highlight(newRow);
+    $('#samples_to_register tbody')[0].insert(newRow);
+    newRow.show("highlight");
+    //new Effect.Highlight(newRow);
 
     attachIgnoreHandlerToRow(newRow);
   };
 
-  document.observe('dom:loaded', function() {
-    $$('.sample_row').each(function(row) {
+  $(document).on('dom:loaded', function() {
+    $('.sample_row').each(function(row) {
       attachIgnoreHandlerToRow(row);
 
       // Firefox has a nasty habit of keeping the state of the checkbox but we know that it should
       // always be unchecked on the initial load of the page.
-      row.select('.ignore').each(function(checkbox) { updateIgnoreState(checkbox.checked = false, row); });
+      $('.ignore', row).each(function(pos, checkbox) { updateIgnoreState(checkbox.checked = false, row); });
     });
 
-    $$('.add_row').each(function(link) {
-      link.observe('click', function(event) {
+    $('.add_row').each(function(pos, link) {
+      $(link).on('click', function(event) {
         event.preventDefault();
         addNewSampleRow();
         return false;
@@ -305,7 +310,7 @@
 })();
 
 // Fix Firefox tooltip layout
-Element.setStyle($('property_sample_name'),"overflow:auto;");
+$('#property_sample_name').css("overflow", "auto;");
 </script>
 
 <%= organism_validation_javascript %>
@@ -313,23 +318,23 @@ Element.setStyle($('property_sample_name'),"overflow:auto;");
 <script type="text/javascript">
   function resetColumnVisibility(classname)
   {
-    var template_node = $$(classname)[0];
-    var cell_styles = Element.getElementsBySelector(template_node,"div")
-    var row_number = $$(classname).length;
+    var template_node = $(classname)[0];
+    var cell_styles = $("div", template_node);
+    var row_number = $(classname).length;
     for(var r = 1; r< row_number; r++)
     {
-      var new_row_details = $$(classname)[r];
-      var new_row_styles = Element.getElementsBySelector(new_row_details,"div");
+      var new_row_details = $(classname)[r];
+      var new_row_styles = $("div", new_row_details);
       for(var c = 0; c < cell_styles.length; c++)
       {
-        if(Element.getStyle(cell_styles[c],"display") == "none")
+        if($(cell_styles[c]).css("display") == "none")
         {
-          Element.hide(new_row_styles[c]);
+          $(new_row_styles[c]).hide();
           new_row_styles[c].style.display = 'none';
         }
         else
         {
-          Element.show(new_row_styles[c]);
+          $(new_row_styles[c]).show();
           new_row_styles[c].style.display = '';
         }
       }
@@ -345,7 +350,7 @@ Element.setStyle($('property_sample_name'),"overflow:auto;");
 
   function toggleCellVisibility(tag, classname, group_name,visible)
   {
-    var cells = $$(''+tag+' div.cell_'+classname+'');
+    var cells = $(''+tag+' div.cell_'+classname+'');
 
     for(var i =0; i< cells.length; i++)
     {
@@ -376,7 +381,7 @@ Element.setStyle($('property_sample_name'),"overflow:auto;");
       }
     }
 
-    var cells = $$(''+tag+' div.collapse_'+classname+'')
+    var cells = $(''+tag+' div.collapse_'+classname+'')
     for(var i =0; i< cells.length; i++)
     {
       var td = cells[i];

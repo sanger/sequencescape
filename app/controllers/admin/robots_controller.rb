@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 class Admin::RobotsController < ApplicationController
   before_filter :find_robot_by_id, :only => [:show, :edit, :update, :destroy]
 
@@ -35,7 +39,7 @@ class Admin::RobotsController < ApplicationController
     respond_to do |format|
       if @robot.save
         flash[:notice] = 'Robot was successfully created.'
-        format.html { redirect_to(@robot) }
+        format.html { redirect_to admin_robot_path(@robot) }
         format.xml  { render :xml => @robot, :status => :created, :location => @robot }
       else
         format.html { render :action => "new" }
@@ -48,7 +52,7 @@ class Admin::RobotsController < ApplicationController
     respond_to do |format|
       if @robot.update_attributes(params[:robot])
         flash[:notice] = 'Robot was successfully updated.'
-        format.html { redirect_to(@robot) }
+        format.html { redirect_to admin_robot_path(@robot) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -62,7 +66,7 @@ class Admin::RobotsController < ApplicationController
     flash[:notice] = "Robot removed successfully"
 
     respond_to do |format|
-      format.html { redirect_to(robots_url) }
+      format.html { redirect_to(admin_robots_url) }
       format.xml  { head :ok }
     end
   end

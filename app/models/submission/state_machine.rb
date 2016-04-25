@@ -1,3 +1,10 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
+
+require 'aasm'
+
 module Submission::StateMachine
   def self.extended(base)
     base.class_eval do
@@ -54,6 +61,19 @@ module Submission::StateMachine
     def unprocessed?
       UnprocessedStates.include?(state)
     end
+
+    def cancellable?
+      (pending? || ready?) && requests_cancellable?
+    end
+
+    def requests_cancellable?
+      # Default behaviour, overidden in the model itself
+      false
+    end
+
+    def broadcast_events
+      orders.each(&:generate_broadcast_event)
+    end
   end
 
   def configure_state_machine
@@ -62,11 +82,16 @@ module Submission::StateMachine
     aasm_state :building, :exit => :valid_for_leaving_building_state
     aasm_state :pending, :enter => :complete_building
     aasm_state :processing, :enter => :process_submission!, :exit => :process_callbacks!
-    aasm_state :ready
+    aasm_state :ready, :enter => :broadcast_events
     aasm_state :failed
+    aasm_state :cancelled, :enter => :cancel_all_requests
 
     aasm_event :built do
       transitions :to => :pending, :from => [ :building ]
+    end
+
+    aasm_event :cancel do
+      transitions :to => :cancelled, :from => [ :pending, :ready, :cancelled ], :guard => :requests_cancellable?
     end
 
     aasm_event :process do
@@ -85,8 +110,8 @@ module Submission::StateMachine
 
   UnprocessedStates = ["building", "pending", "processing"]
   def configure_named_scopes
-    named_scope :unprocessed, :conditions => {:state => UnprocessedStates}
-    named_scope :processed, :conditions => {:state => ["ready", "failed"]}
+   scope :unprocessed, -> { where(:state => UnprocessedStates) }
+   scope :processed, -> { where(:state => ["ready", "failed"]) }
   end
 
   private :configure_named_scopes

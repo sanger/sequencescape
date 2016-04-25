@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+
 # This is a layout template for tags.  Think of it as a partially created TagLayout, defining only the tag
 # group that will be used and the actual TagLayout implementation that will do the work.
 class TagLayoutTemplate < ActiveRecord::Base
@@ -15,6 +19,8 @@ class TagLayoutTemplate < ActiveRecord::Base
 
   delegate :direction, :to => :direction_algorithm_class
   delegate :walking_by, :to => :walking_algorithm_class
+
+  scope :include_tags, -> { includes({ :tag_group => :tags }) }
 
   def stamp_to(_)
     # Do Nothing

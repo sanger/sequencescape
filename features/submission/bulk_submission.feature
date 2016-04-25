@@ -32,6 +32,7 @@ Feature: Bulk Submission
     Then I should see "Bulk submission successfully made"
     And I should see "Your submissions:"
 
+
   Scenario: Uploading a valid file with bait library specified should set the bait library name
     # Given I have a well called "testing123"
     # And the sample in the last well is registered under the study "abc123_study"

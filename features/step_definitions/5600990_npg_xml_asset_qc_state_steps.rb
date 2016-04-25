@@ -1,33 +1,28 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 Given /^sequencescape is setup for 5600990$/ do
- lane = Factory :lane, :name => "NPG_Action_Lane_Test", :qc_state => 'passed', :external_release => 1
- library_tube = Factory :empty_library_tube
+ lane = FactoryGirl.create :lane, :name => "NPG_Action_Lane_Test", :qc_state => 'passed', :external_release => 1
+ library_tube = FactoryGirl.create :empty_library_tube
 
- request = Factory :request_with_sequencing_request_type, :asset => library_tube, :target_asset => lane, :state => 'started'
+ request = FactoryGirl.create :request_with_sequencing_request_type, :asset => library_tube, :target_asset => lane, :state => 'started'
 
- batch = Factory :batch, :state => 'started', :qc_state => 'qc_manual'
- Factory :batch_request, :request => request, :batch => batch, :position => 1
+ batch = FactoryGirl.create :batch, :state => 'started', :qc_state => 'qc_manual'
+ FactoryGirl.create :batch_request, :request => request, :batch => batch, :position => 1
 end
 
 Given /^a second request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")
- library_tube = Factory :empty_library_tube
- request = Factory :request_with_sequencing_request_type, :asset => library_tube, :target_asset => lane
+ library_tube = FactoryGirl.create :empty_library_tube
+ request = FactoryGirl.create :request_with_sequencing_request_type, :asset => library_tube, :target_asset => lane
 end
 
-Given /^a billing event to the request$/ do
- lane = Lane.find_by_name("NPG_Action_Lane_Test")
- request = lane.source_request
- BillingEvent.send(:map_for_each_aliquot, request) do |aliquot_info|
-   reference = BillingEvent.build_reference(request, aliquot_info)
-   Factory :billing_event, :reference => reference,  :quantity => 1, :kind => "charge"
-   Factory :billing_event, :reference => reference,  :quantity => 1, :kind => "refund"
- end
-end
 
 Given /^an event to the request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")
  request = lane.source_request
- Factory :event, :eventful => request, :created_by =>'npg'
+ FactoryGirl.create :event, :eventful => request, :created_by =>'npg'
 end
 
 When /^I (POST|PUT) following XML to change the QC state on the last asset:$/ do |action, xml|

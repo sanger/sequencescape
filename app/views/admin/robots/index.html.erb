@@ -1,3 +1,7 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
 <h1>Listing robots</h1>
 
 <table>
@@ -13,13 +17,13 @@
   <tr>
     <td><%=h robot.name %></td>
     <td><%=h robot.location %></td>
-    <td><%= link_to 'Show', robot %></td>
-    <td><%= link_to 'Edit', edit_robot_path(robot) %></td>
-    <td><%= link_to 'Delete', robot, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', admin_robot_path(robot) %></td>
+    <td><%= link_to 'Edit', edit_admin_robot_path(robot) %></td>
+    <td><%= link_to 'Delete', admin_robot_path(robot), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New robot', new_robot_path %>
+<%= link_to 'New robot', new_admin_robot_path %>

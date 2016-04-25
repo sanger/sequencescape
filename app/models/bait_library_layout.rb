@@ -1,6 +1,9 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+
 class BaitLibraryLayout < ActiveRecord::Base
   include Uuid::Uuidable
-  include Transfer::WellHelpers
   include ModelExtensions::BaitLibraryLayout
 
   # So we can track who is requesting the layout of the bait libraries
@@ -53,7 +56,7 @@ class BaitLibraryLayout < ActiveRecord::Base
 
   def each_bait_library_assignment(&block)
     plate.stock_wells.each do |well, stock_wells|
-      bait_library = stock_wells.map { |w| w.requests_as_source.where_is_not_a?(TransferRequest).where_has_a_submission.first }.compact.map(&:request_metadata).map(&:bait_library).uniq
+      bait_library = stock_wells.map { |w| w.requests_as_source.where_is_not_a?(TransferRequest).for_submission_id(well.pool_id).first }.compact.map(&:request_metadata).map(&:bait_library).uniq
       raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.sanger_human_barcode}" if bait_library.size > 1
       yield(well, bait_library.first)
     end

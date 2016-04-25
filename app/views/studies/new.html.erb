@@ -1,11 +1,15 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <% add :title, I18n.t("studies.about") -%>
 
-<h1>CREATE STUDY</h1>
+<%= page_title "Study", "Create" %>
 
 <p>To register a new study, complete the form below. Required fields are marked with <%= required_marker %>.</p>
 
 <div id="study">
-  <% form_for :study, :url => studies_path, :html => {:multipart => true } do |form| %>
+  <%= form_for @study, :html => {:multipart => true } do |form| %>
     <%= render :partial => "study", :locals => {:read_only => false, :creation => true, :form => form, :study => @study} %>
   <% end %>
 </div>

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+
 class Admin::FacultySponsorsController < ApplicationController
   before_filter :admin_login_required
   before_filter :discover_faculty_sponsor, :only => [:show, :edit, :update, :destroy]
@@ -22,7 +26,7 @@ class Admin::FacultySponsorsController < ApplicationController
     respond_to do |format|
       if @faculty_sponsor.save
         flash[:notice] = 'Faculty Sponsor was successfully created.'
-        format.html { redirect_to(faculty_sponsors_path) }
+        format.html { redirect_to(admin_faculty_sponsors_path) }
       else
         format.html { render :action => "new" }
       end
@@ -33,7 +37,7 @@ class Admin::FacultySponsorsController < ApplicationController
     respond_to do |format|
       if @faculty_sponsor.update_attributes(params[:faculty_sponsor])
         flash[:notice] = 'Faculty Sponsor was successfully updated.'
-        format.html { redirect_to(faculty_sponsors_path) }
+        format.html { redirect_to(admin_faculty_sponsors_path) }
       else
         format.html { render :action => "edit" }
       end
@@ -45,7 +49,7 @@ class Admin::FacultySponsorsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Faculty Sponsor was successfully deleted.'
-      format.html { redirect_to(faculty_sponsors_url) }
+      format.html { redirect_to(admin_faculty_sponsors_path) }
     end
   end
 

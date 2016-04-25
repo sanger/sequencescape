@@ -1,108 +1,93 @@
-<h1>New request for <%= @asset.label %> "<%= h(@asset.display_name) %>"</h1>
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.%>
 
-<% form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
+<%= page_title "New request", "#{@asset.label} - #{@asset.display_name}" %>
+
+<%= form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
   <%= f.error_messages %>
 
-  <div id="details">
-    <table width="100%" cellspacing="0" cellpadding="0">
-      <% instance_variable_or_id_param(:request_type) do |field_name, value| %>
-        <tr>
-          <td class="item" width="40%"><%= label_tag(field_name, 'Request type') %>:</td>
-          <td><%= select_field_sorted_by_name(field_name, @request_types, value) %></td>
-          <td class="help_field"></td>
-        </tr>
-      <% end %>
-      <% if @asset.studies.uniq.count > 1 -%>
-        <tr>
-          <td class="item" width="40%"><%= label_tag('cross_study_request', 'Cross Study Request') %>:</td>
-          <td><%= check_box_tag('cross_study_request', 'cross_study_request', true) %></td>
-          <td class="help_field"></td>
-        </tr>
-      <% end %>
-      <% instance_variable_or_id_param(:study) do |field_name, value| %>
-        <tr>
-          <td class="item" width="40%"><%= label_tag(field_name, 'Study') %>:</td>
-          <td><%= select_field_sorted_by_name(field_name, current_user_studies_from(@asset), value) %></td>
-          <td class="help_field"></td>
-        </tr>
-      <% end %>
-      <% if @asset.projects.uniq.count > 1 -%>
-        <tr>
-          <td class="item" width="40%"><%= label_tag('cross_project_request', 'Cross Project Request') %>:</td>
-          <td><%= check_box_tag('cross_project_request', 'cross_project_request', true) %></td>
-          <td class="help_field"></td>
-        </tr>
-      <% end %>
-      <% instance_variable_or_id_param(:project) do |field_name, value| %>
-        <tr>
-          <td class="item" width="40%"><%= label_tag(field_name, 'Project') %>:</td>
-          <td><%= select_field_sorted_by_name(field_name, Project, value) %></td>
-          <td class="help_field"></td>
-        </tr>
-      <% end %>
-      <tr>
-        <td class="item" width="40%"><%= label_tag(:priority, 'Priority') %>:</td>
-        <td><%= select_tag(:priority, options_for_select(
-          Submission::Priorities.options,
-          @asset.requests.last.try(:priority)
-        )) %></td>
-        <td class="help_field"></td>
-      </tr>
-    </table>
-  </div>
+  <fieldset id="details">
+    <h3>Submission Options</h3>
+    <% instance_variable_or_id_param(:request_type) do |field_name, value| %>
+      <div class="form-group  col-xs-12">
+        <%= label_tag(field_name, 'Request type', :class=>'col-md-4') %>
+        <%= select_field_sorted_by_name(field_name, @request_types, value) %>
+      </div>
+    <% end %>
+    <% if @asset.studies.uniq.count > 1 -%>
+      <div class="form-group col-xs-12">
+        <%= label_tag('cross_study_request', 'Cross Study Request', :class=>'col-md-4') %>
+        <%= check_box_tag('cross_study_request', 'cross_study_request', true) %>
+      </div>
+    <% end %>
+    <% instance_variable_or_id_param(:study) do |field_name, value| %>
+      <div class="form-group col-xs-12">
+        <%= label_tag(field_name, 'Study', :class=>'col-md-4') %>
+        <%= select_field_sorted_by_name(field_name, current_user_studies_from(@asset), value) %>
+      </div>
+    <% end %>
+    <% if @asset.projects.uniq.count > 1 -%>
+      <div class="form-group col-xs-12">
+        <%= label_tag('cross_project_request', 'Cross Project Request', :class=>'col-md-4') %>:
+        <%= check_box_tag('cross_project_request', 'cross_project_request', true) %>
+      </div>
+    <% end %>
+    <% instance_variable_or_id_param(:project) do |field_name, value| %>
+      <div class="form-group col-xs-12">
+        <%= label_tag(field_name, 'Project', :class=>'col-md-4') %>
+        <%= select_field_sorted_by_name(field_name, Project, value) %>
+      </div>
+    <% end %>
+    <div class="form-group col-xs-12">
+      <%= label_tag(:priority, 'Priority', :class=>'col-md-4') %>
+      <%= content_tag(:div, select_tag(:priority, options_for_select(
+        Submission::Priorities.options,
+        @asset.requests.last.try(:priority)
+      ),:class => 'form-control'),:class=>'col-md-5') %>
+    </div>
+    <div class="form-group col-xs-12">
+      <%= label_tag(:count, 'Number of requests to generate', :class=>'col-md-4') %>
+      <%= content_tag(:div, number_field_tag(:count, 1, {:min=>0, :step=>1, :class => 'form-control' }),:class=>'col-md-5') %>
+    </div>
+  </fieldset>
 
-  <h3>Number of copies</h3>
 
-  <div id="property_group_ENAAN">
+  <% if @request.present? %>
+  <fieldset id="existing_request_options">
+    <h3><%= @request.request_type.name %> Options</h3>
     <table width="100%" cellspacing="0" cellpadding="0">
       <tr>
-        <td class="item" width="40%"><%= label_tag(:count, 'Number of requests to generate') %>:</td>
-        <td><%= text_field_tag :count, 1, {:size => 3 } %></td>
-        <td class="help_field"></td>
-      </tr>
-    </table>
-  </div>
-
-  <div id="study">
-
-    <h3>Properties</h3>
-    <table width="100%" cellspacing="0" cellpadding="0">
-      <% if @request.present? %>
-        <tr>
-          <%= tabulated_error_messages_for "request" %>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => @request } %>
-          </td>
-        </tr>
-      <% else %>
-        <% @request_types.each do |request_type| %>
-          <tr id="request_type_options_for_<%= request_type.id %>" class="request_options">
-            <td colspan="2">
-              <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => request_type.new_request(:request_metadata_attributes => @asset.created_with_request_options) } %>
-            </td>
-          </tr>
-        <% end %>
-      <% end %>
-    </table>
-
-    <table width="100%" cellspacing="0" cellpadding="0">
-      <tr>
-        <td class="item" width="40%"><%= label_tag(:comments, 'Comments') %>:</td>
-        <td><%= text_area_tag :comments,nil, :rows => 10, :cols => 40%></td>
-        <td class="help_field"></td>
+        <%= tabulated_error_messages_for "request" %>
       </tr>
     </table>
 
-    <table width="100%" cellspacing="0" cellpadding="0">
-      <tr>
-        <td class="item" width="40%"><%= f.submit "Create" %></td>
-        <td>or <%= link_to 'Back', asset_url(@asset) %></td>
-        <td class="help_field"></td>
-      </tr>
-    </table>
-  </div>
+    <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => @request } %>
+  </fieldset>
+  <% else %>
+    <% @request_types.each do |request_type| %>
+      <fieldset id="request_type_options_for_<%= request_type.id %>" class="request_options">
+        <h3><%= request_type.name %> Options</h3>
+          <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => request_type.new_request(:request_metadata_attributes => @asset.created_with_request_options) } %>
+      </fieldset>
+    <% end %>
+  <% end %>
+
+  <fieldset class="comments">
+    <div class="form-group col-xs-12">
+      <%= label_tag(:comments, 'Comments', :class=>'col-md-4') %>
+      <%= content_tag(:div,text_area_tag(:comments,nil, :rows => 10, :cols => 40,:class=>'form-control'),:class=>'col-md-8') %>
+    </div>
+  </fieldset>
+
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td class="item" width="40%"><%= f.submit "Create" %></td>
+      <td>or <%= link_to 'Back', asset_url(@asset) %></td>
+      <td class="help_field"></td>
+    </tr>
+  </table>
+
 <% end %>
 
 <script type="text/javascript">
@@ -112,15 +97,15 @@
    */
   (function($, undefined) {
     $(function() {
-      request_type_element   = $('#request_type_id');
-      request_options        = $('.request_options');
+      var request_type_element   = $('#request_type_id');
+      var request_options        = $('.request_options');
 
       // Can't use ':input' selector as it ignores disabled inputs!
-      disable_inputs = function(context) { $('input,select,textarea', context).attr('disabled', true);  }
-      enable_inputs  = function(context) { $('input,select,textarea', context).attr('disabled', false); }
+      var disable_inputs = function(context) { $('input,select,textarea', context).attr('disabled', true);  }
+      var enable_inputs  = function(context) { $('input,select,textarea', context).attr('disabled', false); }
 
       handler = function() {
-        selected_request_type_id = $('option:selected', request_type_element).attr('value');
+        var selected_request_type_id = $('option:selected', request_type_element).attr('value');
 
         // Not only hide but disable inputs; not only show, but enable inputs.  If this isn't done
         // the parameters passed to the server are incorrect.
@@ -132,15 +117,15 @@
       handler();
 
       checkStudyHandler = function() {
-        var cross_study = $('#cross_study_request').attr('checked')=='checked';
+        var cross_study = ($('#cross_study_request')[0] !== undefined) && $('#cross_study_request')[0].checked;
         $('#study_id').attr('disabled',cross_study);
       }
       checkProjectHandler = function() {
-        var cross_project = $('#cross_project_request').attr('checked')=='checked';
+        var cross_project = ($('#cross_project_request')[0] !== undefined) && $('#cross_project_request')[0].checked;
         $('#project_id').attr('disabled',cross_project);
       }
-      $('#study_id').change(checkStudyHandler);
-      $('#project_id').change(checkProjectHandler);
+      $('#cross_study_request').change(checkStudyHandler);
+      $('#cross_project_request').change(checkProjectHandler);
       checkStudyHandler();
       checkProjectHandler();
     });

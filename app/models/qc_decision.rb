@@ -1,15 +1,21 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 class QcDecision < ActiveRecord::Base
 
   include Uuid::Uuidable
 
   class QcDecisionQcable < ActiveRecord::Base
 
-    set_table_name('qc_decision_qcables')
+    self.table_name =('qc_decision_qcables')
 
     belongs_to :qcable
     belongs_to :qc_decision, :inverse_of=>:qc_decision_qcables
 
-    validates_presence_of :qcable, :qc_decision, :decision
+    validates :qcable, :presence => true
+    validates :qc_decision, :presence => true
+    validates :decision, :presence => true
 
     validates_inclusion_of :decision, :in => Qcable.aasm_events.map {|i,j| i.to_s }
 

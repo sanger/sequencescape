@@ -1,8 +1,12 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+
 <p>
   <b>Name:</b>
   <%=h @plate_purpose.name %>
 </p>
 
 
-<%= link_to 'Edit', edit_plate_purpose_path(@plate_purpose) %> |
-<%= link_to 'Back', plate_purposes_path %>
+<%= link_to 'Edit', [:edit,:admin,@plate_purpose] %> |
+<%= link_to 'Back', admin_plate_purposes_path %>

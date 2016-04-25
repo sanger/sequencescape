@@ -13,13 +13,13 @@ Feature: if request is pending then the admin could change of request type.
    Scenario: Request is pending. I should see combobox Request Type. No change. it should work properly
      Given I am on the page for editing the last request
      Then I should see "Request Type:"
-     And I press "Save changes"
+     And I press "Save Request"
      Then I should see "Request details have been updated"
 
    Scenario: The user asks to change with Request Type
      Given I am on the page for editing the last request
      Then I should see "Request Type:"
      When I select "Single ended sequencing" from "Request Type:"
-     And I press "Save changes"
+     And I press "Save Request"
      Then I should see "Request details have been updated"
 

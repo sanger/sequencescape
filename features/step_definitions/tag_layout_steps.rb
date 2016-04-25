@@ -1,5 +1,13 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
-  Factory(style.gsub(/ /, '_'), :name => name)
+  FactoryGirl.create(style.gsub(/ /, '_'), :name => name)
+end
+
+Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
+  FactoryGirl.create(:tag2_layout_template, :name => name)
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -70,8 +78,32 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
   end
 end
 
+def check_tag2_layout(name, well_range, expected_wells_to_oligos)
+  plate           = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  wells_to_oligos = Hash[
+    plate.wells.map do |w|
+      next unless well_range.include?(w)
+      [ w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || "" ]
+    end.compact
+  ]
+  if expected_wells_to_oligos != wells_to_oligos
+    plate_view_of_oligos('Expected', expected_wells_to_oligos)
+    plate_view_of_oligos('Got',      wells_to_oligos)
+    assert(false, 'Tag 2 assignment appears to be invalid')
+  end
+end
+
 Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
+    name, WellRange.new('A1', 'H12'),
+    ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
+      h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }
+    end
+  )
+end
+
+Then /^the tag 2 layout on the plate "([^"]+)" should be:$/ do |name, table|
+  check_tag2_layout(
     name, WellRange.new('A1', 'H12'),
     ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
       h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }
@@ -110,7 +142,10 @@ def pool_by_strategy(source, destination, pooling_strategy)
   pooling_strategy.each_with_index do |pool, submission_id|
     submission_id = Submission.create!(:user=>User.first||User.create!(:login=>'a')).id
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
-    wells_for_source.zip(wells_for_destination).each { |w| RequestType.transfer.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id);Request.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id) }
+    wells_for_source.zip(wells_for_destination).each do |w|
+      RequestType.transfer.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id)
+      FactoryGirl.create :request_without_submission, :asset => w.first, :target_asset => w.last, :submission_id => submission_id
+    end
   end
 end
 
@@ -123,4 +158,23 @@ end
 
 Given /^the wells for (the plate.+) have been pooled to (the plate.+) according to the pooling strategy (\d+(?:,\s*\d+)*)$/ do |source, destination, pooling_strategy|
   pool_by_strategy(source, destination, pooling_strategy.split(',').map(&:to_i))
+end
+
+Given /^the tag group "(.*?)" exists$/ do |name|
+  TagGroup.create!(:name=>name)
+end
+
+Given /^the tag group "(.*?)" has (\d+) tags$/ do |group, count|
+  (1..count.to_i).each { |index| TagGroup.find_by_name!(group).tags.create!(:map_id => index, :oligo => "TAG#{index}") }
+end
+
+Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
+  Plate.find_by_name!(plate).wells.located_at(well).first.aliquots.each(&:destroy)
+end
+
+Given /^the tag2 layout template "(.*?)" is associated with the last submission$/ do |template|
+  Tag2Layout::TemplateSubmission.create!(
+    :tag2_layout_template => Tag2LayoutTemplate.find_by_name!(template),
+    :submission => Submission.last
+    )
 end

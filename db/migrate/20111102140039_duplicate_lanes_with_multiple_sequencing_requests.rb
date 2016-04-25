@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011 Genome Research Ltd.
 class DuplicateLanesWithMultipleSequencingRequests < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
@@ -7,8 +10,8 @@ class DuplicateLanesWithMultipleSequencingRequests < ActiveRecord::Migration
         say_with_time("Duplicating for lane #{lane.id}, original request #{original_request.id}, duplicates #{requests.map(&:id).inspect}") do
           requests.each do |request|
             # Duplicate the lane
-            duplicated_lane = request.target_asset.clone.tap do |duplicated_lane|
-              duplicated_lane.aliquots = request.target_asset.aliquots.map(&:clone)
+            duplicated_lane = request.target_asset.dup.tap do |duplicated_lane|
+              duplicated_lane.aliquots = request.target_asset.aliquots.map(&:dup)
               duplicated_lane.save!
 
               duplicated_lane.comments.create!(

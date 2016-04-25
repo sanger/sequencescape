@@ -1,10 +1,14 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
-  sample_tube = Factory(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio library prep freezer'))
+  sample_tube = FactoryGirl.create(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio library prep freezer'))
   sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by_name(asset_group_name)
   if asset_group.nil?
-    asset_group = Factory(:asset_group, :name => asset_group_name, :study => study)
+    asset_group = FactoryGirl.create(:asset_group, :name => asset_group_name, :study => study)
   end
 
   asset_group.assets << sample_tube
@@ -35,8 +39,8 @@ end
 
 Given /^I have a plate for PacBio$/ do
   PlatePurpose.stock_plate_purpose.create!(:without_wells, :barcode=>1234567) do |plate|
-    plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'A1'),:aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:clone))
-    plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'B1'),:aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:clone)) if  SampleTube.find_by_barcode(222).present?
+    plate.wells.build(:map=>Map.find_by_asset_size_and_description(96,'A1'),:aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:dup))
+    plate.wells.build(:map=>Map.find_by_asset_size_and_description(96,'B1'),:aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:dup)) if  SampleTube.find_by_barcode(222).present?
     plate.location = Location.find_by_name('PacBio library prep freezer')
     AssetGroup.create!(:name=>"PacBio group", :study=>Study.find_by_name('Test study')).assets << plate.wells
   end
@@ -47,18 +51,18 @@ Given /^I have a PacBio Library Prep batch$/ do
   step(%Q{I have a PacBio submission})
   step(%Q{I am on the show page for pipeline "PacBio Library Prep"})
   step(%Q{I check "Select DN1234567T for batch"})
-  step(%Q{I press "Submit"})
+  step(%Q{I press the first "Submit"})
   step(%Q{Well "1234567":"A1" has a PacBioLibraryTube "333"})
   step(%Q{Well "1234567":"B1" has a PacBioLibraryTube "444"})
 end
 
-Given /^SampleTube "([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |sample_tube_barcode, library_tube_barcode|
+Given /^SampleTube "([^\"]*)" has a PacBioLibraryTube "([^\"]*)"$/ do |sample_tube_barcode, library_tube_barcode|
   sample_tube = SampleTube.find_by_barcode(sample_tube_barcode)
   request = Request.find_by_asset_id(sample_tube.id)
   request.target_asset.update_attributes!(:barcode => library_tube_barcode)
 end
 
-Given /^Well "([^"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
+Given /^Well "([^\"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
   well = Plate.find_by_barcode(plate_barcode).wells.located_at(well).first
   request = Request.find_by_asset_id(well.id)
   request.target_asset.update_attributes!(:barcode => library_tube_barcode, :name=>well.display_name)
@@ -70,16 +74,17 @@ Given /^I have a fast PacBio sequencing batch$/ do
   step(%Q{the sample tubes are part of the study})
   step(%Q{I have a PacBio submission})
   location = Location.find_by_name("PacBio sequencing freezer")
-  library_1 = PacBioLibraryTube.create!(:location => location, :barcode => "333", :aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:clone))
+  library_1 = PacBioLibraryTube.create!(:location => location, :barcode => "333", :aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:dup))
   library_1.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 3)
-  library_2 = PacBioLibraryTube.create!(:location => location, :barcode => "444", :aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:clone))
+  library_2 = PacBioLibraryTube.create!(:location => location, :barcode => "444", :aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:dup))
   library_2.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 1)
   PacBioSequencingRequest.first.update_attributes!(:asset => library_1)
   PacBioSequencingRequest.last.update_attributes!(:asset => library_2)
   step(%Q{I am on the show page for pipeline "PacBio Sequencing"})
   step(%Q{I check "Select Request Group 0"})
-  step(%Q{I check "Select Request 0"})
-  step(%Q{I check "Select Request 1"})
+
+  step(%Q{I check the invisible "Select Request 0"})
+  step(%Q{I check the invisible "Select Request 1"})
   step(%Q{I press "Submit"})
 end
 
@@ -97,9 +102,9 @@ Given /^I have a PacBio sequencing batch$/ do
   step(%Q{set the location of PacBioLibraryTube "3980000444684" to be in "PacBio sequencing freezer"})
   step(%Q{I am on the show page for pipeline "PacBio Sequencing"})
   step(%Q{I check "Select Request Group 0"})
-  step(%Q{I check "Select Request 0"})
-  step(%Q{I check "Select Request 1"})
-  step(%Q{I press "Submit"})
+  step(%Q{I check the invisible "Select Request 0"})
+  step(%Q{I check the invisible "Select Request 1"})
+  step(%Q{I press the first "Submit"})
   step(%Q{the sample tubes are part of the study})
 end
 
@@ -134,7 +139,7 @@ Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asse
 end
 
 Then /^the plate layout should look like:$/ do |expected_results_table|
-  actual_table = table(tableish('table.plate tr', 'option[@selected],th.plate_column'))
+  actual_table = table(fetch_table('table.plate'))
   expected_results_table.diff!(actual_table)
 end
 
@@ -143,7 +148,7 @@ Then /^the PacBio manifest for the last batch should look like:$/ do |expected_r
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
   expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
-  actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
+  actual_table = CSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -166,10 +171,10 @@ Given /^the sample validation webservice returns "(true|false)"$/ do |success_bo
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
-  worksheet = page.body
+  worksheet = page.source
   csv_rows = worksheet.split(/\r\n/)
   csv_rows.shift(2)
-  actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
+  actual_table = CSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -188,7 +193,7 @@ Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, 
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
-  Factory :reference_genome, :name =>name
+  FactoryGirl.create :reference_genome, :name => name
 end
 
 Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |barcode, reference_genome_name|
@@ -197,7 +202,7 @@ Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |b
 end
 
 Then /^the sample reference sequence table should look like:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#reference_sequence tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#reference_sequence')))
 end
 
 Then /^Library tube "([^"]*)" should have protocol "([^"]*)"$/ do |barcode, expected_protocol|
@@ -209,14 +214,23 @@ Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name
 end
 
 Then /^the default protocols should be:$/ do |expected_results_table|
-    actual_table = table(tableish('table#reference_sequence tr', 'option[@selected],th#protocol'))
+    actual_table = table(fetch_table('table#reference_sequence'))
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|
-  pac_bio_run_file = page.body
+  pac_bio_run_file = page.source
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
-  actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
+  actual_table = CSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
   expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
   expected_results_table.diff!(actual_table)
+end
+
+Then /^I fill in the field for "(.*?)" with "(.*?)"$/ do |asset_name, content|
+  request_id = Asset.find_by_name!(asset_name).requests.first.id
+  step(%Q{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
+end
+
+When /^I drag the library tube to well "(.*?)"$/ do |well|
+  step %Q{I drag ".library_tube" to "#well_#{well}"}
 end

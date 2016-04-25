@@ -1,7 +1,10 @@
-class Order < ActiveRecord::Base
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
+class Order < ActiveRecord::Base
   class OrderRole < ActiveRecord::Base
-    set_table_name('order_roles')
+    self.table_name =('order_roles')
   end
 
   module InstanceMethods
@@ -23,13 +26,15 @@ class Order < ActiveRecord::Base
 
   # Required at initial construction time ...
   belongs_to :study
-  validates_presence_of :study, :unless => :cross_study_allowed
+  validates :study, :presence => true, :unless => :cross_study_allowed
 
   belongs_to :project
-  validates_presence_of :project, :unless => :cross_project_allowed
+  validates :project, :presence => true, :unless => :cross_project_allowed
 
   belongs_to :order_role, :class_name => 'Order::OrderRole'
   delegate :role, :to => :order_role, :allow_nil => true
+
+  belongs_to :product
 
   belongs_to :user
   validates_presence_of :user
@@ -37,8 +42,10 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
+  has_many :requests, :inverse_of => :order
 
   belongs_to :submission, :inverse_of => :orders
+  scope :include_for_study_view, -> { includes(:submission) }
   #validates_presence_of :submission
 
   before_destroy :is_building_submission?
@@ -72,6 +79,7 @@ class Order < ActiveRecord::Base
 
   def cross_study_allowed; false; end
   def cross_project_allowed; false; end
+  def cross_compatible?; false; end
 
   def no_consent_withdrawl
     return true unless all_samples.detect(&:consent_withdrawn?)
@@ -82,34 +90,54 @@ class Order < ActiveRecord::Base
 
   def assets_are_appropriate
     all_assets.each do |asset|
-      errors.add(:asset, "#{asset.name} is not an appropriate type for the request") unless is_asset_applicable_to_type?(first_request_type, asset)
+      errors.add(:asset, "'#{asset.name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless is_asset_applicable_to_type?(first_request_type, asset)
     end
     return true if errors.empty?
     false
   end
   private :assets_are_appropriate
 
+  # TODO: Figure out why eager loading aliquots/samples returns [] even when
+  # we limit order_assets to receptacles.
   def samples
     #naive way
-    assets.map(&:aliquots).flatten.map(&:sample).uniq
+    assets.map(&:samples).flatten.uniq
   end
 
   def all_samples
     # slightly less naive way
-    all_assets.map do |asset|
-      asset.aliquots
-    end.flatten.map(&:sample).uniq
+    all_assets.map(&:samples).flatten.uniq
   end
 
   def all_assets
-    ((asset_group.try(:assets) || []) + (assets)).uniq
+    pull_assets_from_asset_group if assets.empty? && asset_group.present?
+    assets
   end
 
-  named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
+  scope :for_studies, ->(*args) { {:conditions => { :study_id => args[0]} } }
+  scope :with_plate_as_target, ->(plate) {
+    # Essentially :joins => {:requests=>{:target_asset=>:container_association}}
+    # But container_association only exists on wells
+    # Note: This is a basic update of the scope performed during the merge. Need to make more rails-threey
+      select("DISTINCT orders.*").
+      joins([
+        'INNER JOIN requests AS wpat_r ON wpat_r.order_id = orders.id',
+        'INNER JOIN container_associations ON container_associations.content_id = wpat_r.target_asset_id'
+      ]).
+      where(['container_associations.container_id = ?',plate.id])
+  }
 
-  cattr_reader :per_page
-  @@per_page = 500
-  named_scope :including_associations_for_json, { :include => [:uuid_object, {:assets => [:uuid_object] }, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
+
+  self.per_page = 500
+  scope :including_associations_for_json, -> {
+    includes([
+      :uuid_object,
+      {:assets => [:uuid_object] },
+      { :project => :uuid_object },
+      { :study => :uuid_object },
+      :user
+    ])
+  }
 
 
   def self.render_class
@@ -122,7 +150,7 @@ class Order < ActiveRecord::Base
   alias_method(:json_root, :url_name)
 
   def asset_uuids
-    assets.select{ |asset| ! asset.nil? }.map(&:uuid) if assets
+    assets.select{ |asset| asset.present? }.map(&:uuid) if assets
   end
 
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
@@ -140,6 +168,7 @@ class Order < ActiveRecord::Base
     #call submission with appropriate Order subclass
     Submission.build!({:template => self}.merge(options))
   end
+
   def self.extended(base)
     class_eval do
       def self.build!(*args)
@@ -194,12 +223,16 @@ class Order < ActiveRecord::Base
 
   #  attributes which are not saved for a submission but can be pre-set via SubmissionTemplate
   # return a list of request_types lists  (a sequence of choices) to display in the new view
-  attr_accessor_with_default :request_type_ids_list, [[]]
+  attr_writer :request_type_ids_list
+
+  def request_type_ids_list; @request_type_ids_list ||= [[]]; end
+
   attr_accessor :info_differential # aggrement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
   DefaultAssetInputMethods = ["select an asset group"]
   #DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
-  attr_accessor_with_default :asset_input_methods, DefaultAssetInputMethods
+  attr_writer :asset_input_methods
+  def asset_input_methods; @asset_input_methods ||= DefaultAssetInputMethods; end
 
   # return a hash with the values needed to be saved as a template
   # beware nil values are filtered to not overwride default value set in the initializer
@@ -333,7 +366,7 @@ class Order < ActiveRecord::Base
     [
      PacBioSequencingRequest,
      SequencingRequest,
-     *Class.subclasses_of(SequencingRequest)
+     *SequencingRequest.descendants
     ].include?(RequestType.find(request_types.last).request_class)
   end
 
@@ -341,6 +374,26 @@ class Order < ActiveRecord::Base
     input_field_infos.any? {|k| k.key==:gigabases_expected}
   end
 
+  def add_comment(comment_str, user)
+    update_attribute(:comments, [comments, comment_str ].compact.join('; '))
+    save!
+
+    submission.requests.where_is_not_a?(TransferRequest).for_order_including_submission_based_requests(self).map do |request|
+      request.add_comment(comment_str, user)
+    end
+  end
+
+  def friendly_name
+    asset_group.try(:name)||asset_group_name||id
+  end
+
+  def subject_type
+    'order'
+  end
+
+  def generate_broadcast_event
+    BroadcastEvent::OrderMade.create!(:seed=>self,:user=>user)
+  end
 end
 
 

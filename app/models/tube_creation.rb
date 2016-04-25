@@ -1,6 +1,10 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+
 class TubeCreation < AssetCreation
   class ChildTube < ActiveRecord::Base
-    set_table_name('tube_creation_children')
+    self.table_name =('tube_creation_children')
     belongs_to :tube_creation
     belongs_to :tube
   end
@@ -29,6 +33,14 @@ class TubeCreation < AssetCreation
     self.children = (1..parent.pools.size).map { |_| child_purpose.create! }
   end
   private :create_children!
+
+  def create_ancestor_plate!
+    children.each do |child|
+      create_ancestor_asset!(parent.plate, child) if can_create_ancestor_plate?(parent.plate, child)
+    end
+  end
+  before_save :create_ancestor_plate!
+
 
   def record_creation_of_children
 #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }

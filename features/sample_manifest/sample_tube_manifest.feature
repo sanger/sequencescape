@@ -27,7 +27,7 @@ Feature: Sample manifest
     And I select "default tube layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I fill in the field labeled "Count" with "5"
+    And I fill in the field labeled "Tubes required" with "5"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
     Then I should see "Download Blank Manifest"
@@ -43,7 +43,7 @@ Feature: Sample manifest
       | Contains    | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 5 1dtubes  | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
 
-    When I fill in "File to upload" with "test/data/tube_sample_manifest.csv"
+    When I fill in "File to upload" with the file "test/data/tube_sample_manifest.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
 require "test_helper"
 require 'locations_controller'
 
@@ -8,8 +12,8 @@ class LocationsControllerTest < ActionController::TestCase
       @controller = LocationsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @location  = Factory :location
-      @user = Factory :user
+      @location  =FactoryGirl.create :location
+      @user =FactoryGirl.create :user
       @controller.stubs(:current_user).returns(@user)
     end
     should_require_login
@@ -19,7 +23,7 @@ class LocationsControllerTest < ActionController::TestCase
         get :index
       end
 
-      should_render_template :index
+      should render_template :index
     end
 
     context "#show" do
@@ -27,7 +31,7 @@ class LocationsControllerTest < ActionController::TestCase
         get :show, :id => @location.id
       end
 
-      should_render_template :show
+      should render_template :show
     end
 
     context "#new" do

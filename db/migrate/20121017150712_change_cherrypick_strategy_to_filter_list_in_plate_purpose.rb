@@ -1,11 +1,14 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012 Genome Research Ltd.
 class ChangeCherrypickStrategyToFilterListInPlatePurpose < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
-    set_inheritance_column(nil)
+    self.table_name =('plate_purposes')
+    self.inheritance_column =
 
     serialize :cherrypick_strategy
 
-    named_scope :with_strategy, { :conditions => 'cherrypick_strategy IS NOT NULL' }
+    scope :with_strategy, -> { where('cherrypick_strategy IS NOT NULL') }
   end
 
   def self.up

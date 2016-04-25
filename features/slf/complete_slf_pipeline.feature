@@ -34,7 +34,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     And I select "Yes" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "No" from "Does this study require the removal of X chromosome and autosome sequence?"
-    And I select "open" from "What is the data release strategy for this study?"
+    And I select "Open (ENA)" from "What is the data release strategy for this study?"
 
     # NOTE[xxx]: This feels like a bit of a hack but I can't see a way to turn off enforce_accessioning
     # at this level of the UI.  Apparently no studies that come through the SLF pipeline will need accession
@@ -48,7 +48,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     And I select "default layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I fill in "Count" with "1"
+    And I fill in "Plates required" with "1"
     When I press "Create manifest and print labels"
     Given 3 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -85,7 +85,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     Given I am on the show page for pipeline "DNA QC"
 
     When I check "Select DN1234567T for batch"
-    And I select "Create Batch" from "action_on_requests"
+    And I select "Create Batch" from the first "action_on_requests"
     And I press "Submit"
     When I follow "QC result"
     Then I should see dna qc table:
@@ -198,7 +198,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
 
     Given I am on the show page for pipeline "Cherrypick"
     When I check "Select DN1234567T for batch"
-    And I select "Create Batch" from "action_on_requests"
+    And I select "Create Batch" from the first "action_on_requests"
     And I press "Submit"
     When I follow "Select Plate Template"
     When I select "testtemplate" from "Plate Template"
@@ -218,7 +218,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     Given I am on the show page for pipeline "Genotyping"
 
     When I check "Select DN99999F for batch"
-    And I select "Create Batch" from "action_on_requests"
+    And I select "Create Batch" from the first "action_on_requests"
     And I press "Submit"
     When I follow "Attach Infinium Barcode"
 

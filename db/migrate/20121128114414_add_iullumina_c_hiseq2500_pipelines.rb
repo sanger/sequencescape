@@ -1,8 +1,11 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012 Genome Research Ltd.
 class AddIulluminaCHiseq2500Pipelines < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       cloned_pipeline = SequencingPipeline.find_by_name('HiSeq Cluster formation PE (spiked in controls)')
-      cloned_pipeline.clone.tap do |pipeline|
+      cloned_pipeline.dup.tap do |pipeline|
         pipeline.name = 'HiSeq 2500 PE (spiked in controls)'
         pipeline.max_size = 2 # Can only take one tube
         pipeline.request_information_types = cloned_pipeline.request_information_types

@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013,2015 Genome Research Ltd.
+
 module SampleManifest::Headers
 
   def self.valid?(name)
@@ -15,6 +19,11 @@ module SampleManifest::Headers
     'PHENOTYPE' => 'PHENOTYPE (required for EGA)'
   }
 
+  # Used in a number of places, pulled out as not immediately obvious
+  TAG_GROUP_FIELD = 'TAG GROUP'
+  TAG2_GROUP_FIELD = 'TAG2 GROUP (Fill in for dual Index Only)'
+  TAG2_INDEX_FIELD = 'TAG2 INDEX (Fill in for dual Index Only)'
+
 
   CORE_FIELDS = [
     'SANGER PLATE ID',
@@ -22,7 +31,14 @@ module SampleManifest::Headers
     'WELL',
     'SANGER SAMPLE ID',
     'IS SAMPLE A CONTROL?',
-    'IS RE-SUBMITTED SAMPLE?'
+    'IS RE-SUBMITTED SAMPLE?',
+    TAG_GROUP_FIELD,
+    'TAG INDEX',
+    TAG2_GROUP_FIELD,
+    TAG2_INDEX_FIELD,
+    'LIBRARY TYPE',
+    'INSERT SIZE FROM',
+    'INSERT SIZE TO'
   ]
 
   METADATA_ATTRIBUTES_TO_CSV_COLUMNS = {
@@ -70,7 +86,8 @@ module SampleManifest::Headers
     :time_point                     => 'Time Point',
     :treatment                      => 'Treatment',
     :subject                        => 'Subject',
-    :disease                        => 'Disease'
+    :disease                        => 'Disease',
+    :reference_genome_name          => 'REFERENCE GENOME'
   }
 
 end

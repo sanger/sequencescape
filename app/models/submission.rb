@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class Submission < ActiveRecord::Base
   include Uuid::Uuidable
   extend  Submission::StateMachine
@@ -7,19 +11,18 @@ class Submission < ActiveRecord::Base
   include Request::Statistics::DeprecatedMethods
   include Submission::Priorities
 
-
-  include DelayedJobEx
-
   belongs_to :user
   validates_presence_of :user
 
   # Created during the lifetime ...
-  has_many :requests
+  has_many :requests, :inverse_of => :submission
   has_many :items, :through => :requests
 
   has_many :orders, :inverse_of => :submission
   has_many :studies, :through => :orders
   accepts_nested_attributes_for :orders, :update_only => true
+
+  has_many :comments_from_requests, :through => :requests, :source => :comments
 
   def comments
     # has_many throug doesn't work. Comments is a column (string) of order
@@ -27,21 +30,28 @@ class Submission < ActiveRecord::Base
     orders.map(&:comments).flatten(1).compact
   end
 
-  cattr_reader :per_page
-  @@per_page = 500
-  named_scope :including_associations_for_json, {
-    :include => [
+  def add_comment(description,user)
+    requests.where_is_not_a?(TransferRequest).map do |request|
+      request.add_comment(description,user)
+    end
+  end
+
+
+  self.per_page = 500
+  scope :including_associations_for_json, -> { includes([
       :uuid_object,
       {:orders => [
          {:project => :uuid_object},
          {:assets => :uuid_object },
          {:study => :uuid_object },
          :user]}
-  ]}
+  ])}
 
-  named_scope :building, :conditions => { :state => "building" }
-  named_scope :pending, :conditions => { :state => "pending" }
-  named_scope :ready, :conditions => { :state => "ready" }
+  scope :building, -> { where( :state => "building" ) }
+  scope :pending,  -> { where( :state => "pending" ) }
+  scope :ready,    -> { where( :state => "ready" ) }
+
+  scope :latest_first, -> { order('id DESC') }
 
   before_destroy :building?, :empty_of_orders?
 
@@ -57,12 +67,23 @@ class Submission < ActiveRecord::Base
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
-        request.cancel_before_started!  # Cancel first to prevent event doing something stupid
+        request.submission_cancelled!  # Cancel first to prevent event doing something stupid
         request.events.create!(:message => "Submission #{self.id} as destroyed")
       end
     end
   end
   private :cancel_all_requests_on_destruction
+
+  def cancel_all_requests
+    ActiveRecord::Base.transaction do
+      requests.each(&:submission_cancelled!)
+    end
+  end
+  private :cancel_all_requests
+
+  def requests_cancellable?
+    requests.all?(&:cancellable?)
+  end
 
   def self.render_class
     Api::SubmissionIO
@@ -73,6 +94,11 @@ class Submission < ActiveRecord::Base
   end
   alias_method(:json_root, :url_name)
 
+  def subject_type
+    'submission'
+  end
+  alias_attribute :friendly_name, :name
+
   def self.build!(options)
     submission_options = {}
     [:message, :priority].each do |option|
@@ -81,11 +107,13 @@ class Submission < ActiveRecord::Base
     end
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
-      order.create_submission({:user_id => order.user_id}.merge(submission_options)).built!
+      order.create_submission({:user_id => order.user_id}.merge(submission_options))
       order.save! #doesn't save submission id otherwise
       study_name = order.study.try(:name)
       order.submission.update_attributes!(:name=>study_name) if study_name
       order.submission.reload
+      order.submission.built!
+      order.submission
     end
   end
   # TODO[xxx]: ... to here really!
@@ -192,23 +220,26 @@ class Submission < ActiveRecord::Base
     request_type_ids[request_type_ids.index(request_type_id)+1]  if request_type_ids.present?
   end
 
-  def next_requests(request)
-    # We should never be receiving requests that are not part of our request graph.
-    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
+  def previous_request_type_id(request_type_id)
+    request_type_ids[request_type_ids.index(request_type_id)-1]  if request_type_ids.present?
+  end
 
-      # Pick out the siblings of the request, so we can work out where it is in the list, and all of
-      # the requests in the subsequent request type, so that we can tie them up.  We order by ID
-      # here so that the earliest requests, those created by the submission build, are always first;
-      # any additional requests will have come from a sequencing batch being reset.
+  def obtain_next_requests_to_connect(request, next_request_type_id=nil)
+    if next_request_type_id.nil?
       next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
-      return request.target_asset.requests.find(:all,:conditions=>{:submission_id=>id,:request_type_id=>next_request_type_id}) if request.target_asset.present?
-      all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
-      sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
+    end
+    all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
+    sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
     if request.request_type.for_multiplexing?
-      # Multiplexed requests should not get batched separately, and furthermore, will all use the same sequencing request for
-      # each lane. The divergence ratio plays no part in identifying the start index
-      next_possible_requests
+      # If we have no pooling behaviour specified, then we're pooling by submission.
+      # We keep to the existing behaviour, to isolate risk
+      return next_possible_requests if request.request_type.pooling_method.nil?
+      # If we get here we've got custom pooling behaviour defined.
+      index = request.request_type.pool_index_for_request(request)
+      number_to_return = next_possible_requests.count / request.request_type.pool_count
+      return next_possible_requests.slice(index*number_to_return,number_to_return)
+
     else
       # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
       # if downstream changes affect the ratio. We can use the multiplier on order however, as we
@@ -222,6 +253,19 @@ class Submission < ActiveRecord::Base
       index = sibling_requests.index(request)
       next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
     end
+  end
+
+  def next_requests(request)
+    # We should never be receiving requests that are not part of our request graph.
+    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
+
+      # Pick out the siblings of the request, so we can work out where it is in the list, and all of
+      # the requests in the subsequent request type, so that we can tie them up.  We order by ID
+      # here so that the earliest requests, those created by the submission build, are always first;
+      # any additional requests will have come from a sequencing batch being reset.
+      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      return request.target_asset.requests.find(:all,:conditions=>{:submission_id=>id,:request_type_id=>next_request_type_id}) if request.target_asset.present?
+      obtain_next_requests_to_connect(request, next_request_type_id)
   end
 
   def name
