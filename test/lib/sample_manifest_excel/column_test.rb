@@ -162,6 +162,10 @@ class ColumnTest < ActiveSupport::TestCase
       assert_match range.absolute_reference, rule.options['formula']
     end
 
+    should "have cf_options" do
+      assert_equal conditional_formatting_rules, column.cf_options
+    end
+
   end
 
 end

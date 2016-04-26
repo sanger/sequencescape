@@ -86,6 +86,7 @@ module SampleManifestExcel
         range = ranges.find_by(column.range_name) if column.validation?
         column.prepare_conditional_formatting_rules(styles, range)
       end
+      self
     end
 
   private

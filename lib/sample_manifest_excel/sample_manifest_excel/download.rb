@@ -12,7 +12,7 @@ module SampleManifestExcel
       @ranges = range_list
       add_worksheet("DNA Collections Form")
       create_validation_ranges_worksheet_and_update_absolute_references_in_ranges
-      @columns = column_list.set_formula1(ranges).add_references(first_row, last_row).unlock(styles[:unlock].reference)  
+      @columns = column_list.set_formula1(ranges).add_references(first_row, last_row).unlock(styles[:unlock].reference).prepare_conditional_formatting_rules(styles, ranges)
       add_attributes
       create_worksheet
       protect_worksheet
@@ -83,7 +83,7 @@ module SampleManifestExcel
     end
 
     def conditional_formatting_rules
-      @conditional_formatting_rules ||= {dxfId: styles[:empty_cell].reference, priority: 1, operator: :equal, formula: 'FALSE', type: :cellIs}
+      @conditional_formatting_rules ||= {dxfId: styles[:empty_cell].reference, priority: 1, operator: :equal, formula: 'FALSE', type: :cellIs, stopIfTrue: true}
     end
 
   private
@@ -121,6 +121,9 @@ module SampleManifestExcel
       columns.with_unlocked.each do |column|
         worksheet.add_conditional_formatting column.reference, conditional_formatting_rules
       end
+      columns.with_cf_rules.each do |column|
+        worksheet.add_conditional_formatting column.reference, column.cf_options
+      end
     end
 
     def add_attributes
@@ -139,7 +142,7 @@ module SampleManifestExcel
     end
 
     def create_styles
-      {}.tap do |s| 
+      {}.tap do |s|
         STYLES.each do |name, options|
           s[name] = SampleManifestExcel::Style.new workbook, options
         end

@@ -4,7 +4,7 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formatting_rules
+    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formatting_rules, :cf_options
     attr_reader :position
 
     validates_presence_of :name, :heading
@@ -68,6 +68,10 @@ module SampleManifestExcel
     def set_number(number)
       self.number = number
       self
+    end
+
+    def cf_options
+      conditional_formatting_rules.collect {|rule| rule.options}
     end
 
     def prepare_conditional_formatting_rules(styles, range=nil)
