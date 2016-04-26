@@ -24,7 +24,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   rescue CSV::MalformedCSVError
     flash[:error] = "Invalid CSV file"
   ensure
-    redirect_to sample_manifests_path
+    redirect_to (@sample_manifest.present? ? sample_manifests_study_path(@sample_manifest.study) : sample_manifests_path)
   end
 
   def export
