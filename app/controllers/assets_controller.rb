@@ -359,9 +359,9 @@ class AssetsController < ApplicationController
       if barcode.size == 13 && Barcode.check_EAN(barcode)
         num_prefix, number, _ = Barcode.split_barcode(barcode)
         prefix = BarcodePrefix.find_by_prefix(Barcode.prefix_to_human(num_prefix))
-        @asset = Asset.find_by_barcode_and_barcode_prefix_id(number,prefix.id)
+        @asset = Asset.find_by_barcode_and_barcode_prefix_id(number.to_s,prefix.id)
       else
-        @asset = Asset.find_by_barcode(barcode)
+        @asset = Asset.find_by_barcode(barcode.to_s)
       end
 
       if @asset.nil?
