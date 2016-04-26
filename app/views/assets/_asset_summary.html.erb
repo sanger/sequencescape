@@ -20,10 +20,10 @@
     <td class="item">Type:</td>
     <td><strong><%=h @asset.label %></strong></td>
   </tr>
-  <% if @asset.respond_to? :plate_purpose %>
+  <% if @asset.respond_to? :purpose %>
   <tr>
     <td class="item">Purpose:</td>
-    <td><strong><%=h @asset.plate_purpose.try(:name)||'Unknown' %></strong></td>
+    <td><strong><%=h @asset.purpose.try(:name)||'Unknown' %></strong></td>
   </tr>
   <% end %>
   <% if @asset.is_a?(Lane) %>
@@ -48,6 +48,12 @@
   <tr>
     <td class="item">Human barcode:</td>
     <td><strong><%=h @asset.sanger_human_barcode %></strong></td>
+  </tr>
+<% end %>
+<% if  @source_plate %>
+  <tr>
+    <td class="item">Summary page:</td>
+    <td><strong><%= link_to "Summary for #{@source_plate.sanger_human_barcode}", plate_summary_path(@source_plate.sanger_human_barcode) %></strong></td>
   </tr>
 <% end %>
   <tr>

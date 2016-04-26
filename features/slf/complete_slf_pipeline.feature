@@ -25,7 +25,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
 
 
     When I go to the homepage
-    And I follow "Create study"
+    And I follow "Create Study"
     When I fill in "Study name" with "Test study"
     And I fill in "Study description" with "writing cukes"
     And I fill in "ENA Study Accession Number" with "12345"
