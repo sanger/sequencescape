@@ -398,7 +398,7 @@ class Asset < ActiveRecord::Base
         if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
           { :query => 'FALSE' }
         else
-          { :query => '(barcode="?" AND barcode_prefix_id=?)', :conditions => [ barcode_number, barcode_prefix.id ] }
+          { :query => '(barcode=? AND barcode_prefix_id=?)', :conditions => [ barcode_number, barcode_prefix.id ] }
         end
       when /^\d{10}$/ # A Fluidigm barcode
         { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query=>'(pmmb.fluidigm_barcode=?)', :conditions => source_barcode.to_s }
