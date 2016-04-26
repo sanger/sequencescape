@@ -3,7 +3,7 @@ FactoryGirl.define do
   factory :worksheet, class: Axlsx::Worksheet do
 
   	workbook Axlsx::Package.new.workbook
-  	name 'New worksheet'
+  	sequence(:name) {|n| "Worksheet #{n}"}
 
   	initialize_with { new(workbook, name: name) }
 

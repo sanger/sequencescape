@@ -75,6 +75,7 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal SampleManifestExcel::Position.new(first_column: 1, first_row: 10, last_row: 15).reference, column.reference
       column.set_number(125).add_reference(27, 150)
       assert_equal SampleManifestExcel::Position.new(first_column: 125, first_row: 27, last_row: 150).reference, column.reference
+      assert_equal SampleManifestExcel::Position.new(first_column: 125, first_row: 27, last_row: 150).first_cell_relative_reference, column.first_cell_relative_reference
     end
   end
 
@@ -128,16 +129,37 @@ class ColumnTest < ActiveSupport::TestCase
 
   end
 
-  context "with conditional formatting" do
-    attr_reader :conditional_formatting
+  context "with conditional formatting rules" do
+    attr_reader :conditional_formatting_rules, :validation, :styles, :range
 
     setup do
-      @conditional_formatting = [{type: 'type1', operator: 'operator1', formula: "smth"},{type: 'type1', operator: 'operator2', formula: "smth2"}]
-      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, conditional_formatting: conditional_formatting)
+      @validation = {options: {type: :textLength, operator: :lessThanOrEqual, formula1: "20", showErrorMessage: true, errorStyle: :stop, errorTitle: "Supplier Sample Name", error: "Name must be a maximum of 20 characters in length", allowBlank: false}, range_name: :some_name}
+      @conditional_formatting_rules = [{'type' => 'type1', 'operator' => 'operator1', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'},{'type' => 'type1', 'operator' => 'operator2', formula: "smth2(first_cell_relative_reference)"}]
+      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, conditional_formatting_rules: conditional_formatting_rules, validation: validation)
+      column.set_number(3).add_reference(10, 15)
+      style =build :style
+      @styles = {unlock: style, style_name: style, style_name_2: style}
+      @range = build :range
+      worksheet = build :worksheet
+      range.set_absolute_reference(worksheet)
     end
 
-    should "have a conditional_formatting" do
-      assert column.conditional_formatting
+    should "have conditional formatting rules" do
+      column.conditional_formatting_rules.each do |rule|
+        assert_instance_of SampleManifestExcel::ConditionalFormattingRule, rule
+      end
+    end
+
+    should "#cf_rules? should be true" do
+      assert column.cf_rules?
+    end
+
+    should "#prepare_conditional_formatting_rules should prepare all rules to be applied" do
+      column.prepare_conditional_formatting_rules(styles, range)
+      rule = column.conditional_formatting_rules.first
+      assert_equal styles[:style_name].reference, rule.options['dxfId']
+      assert_match column.first_cell_relative_reference, rule.options['formula']
+      assert_match range.absolute_reference, rule.options['formula']
     end
 
   end

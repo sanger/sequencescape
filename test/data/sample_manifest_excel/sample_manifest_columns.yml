@@ -31,6 +31,11 @@
       errorTitle: "gender"
       error: "Please enter gender"
     :range_name: :gender
+  :conditional_formatting_rules:
+  - type: :expression
+    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    dxfId: :wrong_value
+    priority: 2
 :public_name:
   :heading: PUBLIC NAME
   :unlocked: true
@@ -46,11 +51,20 @@
       operator: :lessThanOrEqual
       formula1: "15"
       allowBlank: false
-      showInputMessage: true    
-      promptTitle: "Sibling - Supplier Sample Name"    
+      showInputMessage: true
+      promptTitle: "Sibling - Supplier Sample Name"
       prompt: "Please enter an existing supplier sample name that relates to the sibling of this individual."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Sibling - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
+  :conditional_formatting_rules:
+  - type: :expression
+    formula: "LEN(first_cell_relative_reference)>15"
+    dxfId: :wrong_value
+    priority: 2
+  - type: :expression
+    formula: "ISNUMBER(first_cell_relative_reference)"
+    dxfId: :wrong_value
+    priority: 2
 :invalid_column:

@@ -2,13 +2,17 @@ require 'test_helper'
 
 class ColumnListTest < ActiveSupport::TestCase
 
-  attr_reader :column_list, :column_headings, :yaml, :valid_columns, :ranges
+  attr_reader :column_list, :column_headings, :yaml, :valid_columns, :ranges, :styles, :worksheet
 
   def setup
     @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
     @column_list = SampleManifestExcel::ColumnList.new(yaml)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
     @ranges = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges_short.yml"))))
+    style = build :style
+    @styles = {unlock: style, style_name: style, wrong_value: style}
+    @worksheet = build :worksheet
+    ranges.set_absolute_references(worksheet)
   end
 
   test "should create a list of columns" do
@@ -72,6 +76,10 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 7, column_list.with_unlocked.count
   end
 
+  test "#with_cf_rules should return a list of columns which have conditional formatting rules" do
+    assert_equal 2, column_list.with_cf_rules.count
+  end
+
   test "#add_references should add positions and references to columns" do
     column_list.add_references(10, 15)
     column = column_list.columns.values.first
@@ -88,10 +96,18 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "#set_formula1 should set the right formula1 to validations" do
-    worksheet = build :worksheet
-    ranges.set_absolute_references(worksheet)
     column_list.set_formula1(ranges)
     column = column_list.find_by(:gender)
     assert_equal ranges.find_by(:gender).absolute_reference, column.validation.options[:formula1]
+  end
+
+  test "#prepare_conditional_formatting_rules should prepare rules" do
+    column_list.add_references(10, 15)
+    column_list.prepare_conditional_formatting_rules(styles, ranges)
+    column = column_list.find_by(:gender)
+    rule = column.conditional_formatting_rules.first
+    assert_equal styles[:wrong_value].reference, rule.options['dxfId']
+    assert_match column.first_cell_relative_reference, rule.options['formula']
+    assert_match ranges.find_by(:gender).absolute_reference, rule.options['formula']
   end
 end

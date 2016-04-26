@@ -3,7 +3,7 @@ module SampleManifestExcel
 
     include Enumerable
 
-    attr_reader :columns 
+    attr_reader :columns
 
     def initialize(columns = {})
       create_columns(columns)
@@ -42,6 +42,10 @@ module SampleManifestExcel
       columns.values.select { |column| column.unlocked? }
     end
 
+    def with_cf_rules
+      columns.values.select { |column| column.cf_rules?}
+    end
+
     def add(column)
       return unless column.valid?
       columns[column.name] = column.set_number(next_number)
@@ -71,9 +75,17 @@ module SampleManifestExcel
 
     def set_formula1(ranges)
       with_validations.each do |column|
-        column.set_formula1(ranges.find_by(column.range_name))
+        range = ranges.find_by(column.range_name)
+        column.set_formula1(range)
       end
       self
+    end
+
+    def prepare_conditional_formatting_rules(styles, ranges)
+      with_cf_rules.each do |column|
+        range = ranges.find_by(column.range_name) if column.validation?
+        column.prepare_conditional_formatting_rules(styles, range)
+      end
     end
 
   private

@@ -9,6 +9,10 @@ module SampleManifestExcel
   	  @reference = workbook.styles.add_style options
   	end
 
+  	def valid?
+  		reference && options
+  	end
+
   end
 
 end

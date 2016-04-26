@@ -4,14 +4,16 @@ module SampleManifestExcel
 
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formatting
+    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formatting_rules
     attr_reader :position
 
     validates_presence_of :name, :heading
 
     delegate :reference, to: :position
+    delegate :first_cell_relative_reference, to: :position
 
     delegate :range_name, to: :validation
+    delegate :set_formula1, to: :validation
 
     def initialize(attributes = {})
       default_attributes.merge(attributes).each do |name, value|
@@ -21,6 +23,13 @@ module SampleManifestExcel
 
     def validation=(validation)
       @validation = Validation.new(validation)
+    end
+
+    def conditional_formatting_rules=(conditional_formatting_rules)
+      @conditional_formatting_rules = []
+      conditional_formatting_rules.each do |rule|
+        @conditional_formatting_rules << ConditionalFormattingRule.new(rule)
+      end
     end
 
     def attribute?
@@ -33,6 +42,10 @@ module SampleManifestExcel
 
     def unlocked?
       unlocked
+    end
+
+    def cf_rules?
+      conditional_formatting_rules.present?
     end
 
     def actual_value(object)
@@ -48,10 +61,6 @@ module SampleManifestExcel
       self
     end
 
-    def set_formula1(range)
-      validation.set_formula1(range)
-    end
-
     def add_reference(first_row, last_row)
       @position = Position.new(first_column: number, first_row: first_row, last_row: last_row)
     end
@@ -61,12 +70,21 @@ module SampleManifestExcel
       self
     end
 
+    def prepare_conditional_formatting_rules(styles, range=nil)
+      conditional_formatting_rules.each do |rule|
+        style_name = rule.options['dxfId']
+        rule.set_style(styles[style_name])
+        rule.set_first_cell_in_formula(first_cell_relative_reference)
+        rule.set_range_reference_in_formula(range) if range
+      end
+    end
+
   private
 
     def default_attributes
       {number: 0, type: :string}
     end
-   
+
   end
 
 end
