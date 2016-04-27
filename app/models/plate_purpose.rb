@@ -27,6 +27,7 @@ class PlatePurpose < Purpose
   end
 
   include Relationship::Associations
+  include StudyReport::PlatePurposesFinder
 
  # We declare the scopes as lambdas as Rails 3.2 seems to fail to include the various subclasses otherwise
   scope :compatible_with_purpose, ->(purpose) {
