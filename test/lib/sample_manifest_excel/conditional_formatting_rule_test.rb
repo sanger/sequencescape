@@ -6,7 +6,7 @@ class ConditionalFormattingRuleTest < ActiveSupport::TestCase
 
   def setup
     @conditional_formatting_rule = SampleManifestExcel::ConditionalFormattingRule.new({'option1' => 'value1', 'option2' => 'value2', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'})
-    @range = build :range
+    @range = build :range_with_absolute_reference
     @style = build :style
     @column = build :column
   end
@@ -27,8 +27,6 @@ class ConditionalFormattingRuleTest < ActiveSupport::TestCase
   end
 
   test "#set_range_reference_in_formula should set range absolute reference in formula" do
-  	@worksheet = build :worksheet
-  	range.set_absolute_reference(worksheet)
   	conditional_formatting_rule.set_range_reference_in_formula(range)
   	assert_match range.absolute_reference, conditional_formatting_rule.options['formula']
   end

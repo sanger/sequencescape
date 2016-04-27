@@ -107,8 +107,7 @@ class ColumnTest < ActiveSupport::TestCase
     attr_reader :validation
 
     setup do
-      @validation = {options: {type: :textLength, operator: :lessThanOrEqual, formula1: "20", showErrorMessage: true, errorStyle: :stop, errorTitle: "Supplier Sample Name", error: "Name must be a maximum of 20 characters in length", allowBlank: false}, range_name: :some_name}
-      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, validation: validation)
+      @column = build :column_with_validation
     end
 
     should "#validation? should be true" do
@@ -133,15 +132,11 @@ class ColumnTest < ActiveSupport::TestCase
     attr_reader :conditional_formatting_rules, :validation, :styles, :range
 
     setup do
-      @validation = {options: {type: :textLength, operator: :lessThanOrEqual, formula1: "20", showErrorMessage: true, errorStyle: :stop, errorTitle: "Supplier Sample Name", error: "Name must be a maximum of 20 characters in length", allowBlank: false}, range_name: :some_name}
-      @conditional_formatting_rules = [{'type' => 'type1', 'operator' => 'operator1', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'},{'type' => 'type1', 'operator' => 'operator2', formula: "smth2(first_cell_relative_reference)"}]
-      @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, conditional_formatting_rules: conditional_formatting_rules, validation: validation)
+      @column = build :column_with_validation_and_cf
       column.set_number(3).add_reference(10, 15)
       style =build :style
       @styles = {unlock: style, style_name: style, style_name_2: style}
-      @range = build :range
-      worksheet = build :worksheet
-      range.set_absolute_reference(worksheet)
+      @range = build :range_with_absolute_reference
     end
 
     should "have conditional formatting rules" do
@@ -163,7 +158,11 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "have cf_options" do
-      assert_equal conditional_formatting_rules, column.cf_options
+      assert_instance_of Array, column.cf_options
+      assert_equal 2, column.cf_options.count
+      column.cf_options.each do |cf|
+        assert_instance_of Hash, cf
+      end
     end
 
   end

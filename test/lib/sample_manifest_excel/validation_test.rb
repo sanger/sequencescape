@@ -2,34 +2,49 @@ require 'test_helper'
 
 class ValidationTest < ActiveSupport::TestCase
 
-  attr_reader :validation, :range
+  attr_reader :validation
 
-  def setup
-    @validation = SampleManifestExcel::Validation.new({options: {option1: 'value1', option2: 'value2', type: :list, formula1: 'smth'}, range_name: :some_range})
-    @range = build :range
+  context "basic" do
+
+    setup do
+      @validation = build :validation
+    end
+
+    should "should have options" do
+      assert_equal ({option1: 'value1', option2: 'value2', type: :smth, formula1: 'smth'}), validation.options
+    end
+
+    should "should know if range is required" do
+      refute validation.range_required?
+    end
+
   end
 
-  test "should have options" do
-    assert_equal ({option1: 'value1', option2: 'value2', type: :list, formula1: 'smth'}), validation.options
-  end
+  context "with_range" do
 
-  test "should have range" do
-    assert_equal :some_range, validation.range_name
-  end
+    attr_reader :validation_with_range, :range
 
-  test "#set_formula1 should set range for fromula1 if required" do
-    worksheet = build :worksheet
-    range.set_absolute_reference(worksheet)
-    validation.set_formula1(range)
-    assert_equal range.absolute_reference, validation.options[:formula1]
-    validation_without_range = SampleManifestExcel::Validation.new({options: {option1: 'value1', option2: 'value2', type: :list, formula1: 'smth'}})
-    refute validation_without_range.set_formula1(range)
-  end 
+    setup do
+      @validation = build :validation
+      @validation_with_range = build :validation_with_range
+      @range = build :range
+      worksheet = build :worksheet
+      range.set_absolute_reference(worksheet)
+    end
 
-  test "should know if range is required" do
-    assert validation.range_required?
-    validation = SampleManifestExcel::Validation.new({options: {option1: 'value1', option2: 'value2', type: :list, formula1: 'smth'}})
-    refute validation.range_required?
+    should "should have range" do
+      assert_equal :some_range, validation_with_range.range_name
+    end
+
+    should "#set_formula1 should set range for fromula1" do
+      validation_with_range.set_formula1(range)
+      assert_equal range.absolute_reference, validation_with_range.options[:formula1]
+      refute validation.set_formula1(range)
+    end
+
+    should "should know if range is required" do
+      assert validation_with_range.range_required?
+    end
   end
 
 end
