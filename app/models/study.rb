@@ -162,7 +162,7 @@ class Study < ActiveRecord::Base
   scope :alphabetical, ->() { order('name ASC') }
   scope :for_listing, ->()  { select('name, id') }
 
-  STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate', 'Pre-Extracted Plate']
+  STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate']
 
   def each_well_for_qc_report_in_batches(exclude_existing,product_criteria)
     base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(STOCK_PLATE_PURPOSES)).
