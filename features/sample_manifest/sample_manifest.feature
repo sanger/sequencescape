@@ -33,23 +33,7 @@ Feature: Sample manifest
     And I fill in the field labeled "Plates required" with "4"
     And I check "Print only the first label"
     When I press "Create manifest and print labels"
-    And all pending delayed jobs are processed
     Then exactly 1 label should have been printed
-
-  Scenario: Create a plate manifest and print all the barcodes when deselecting option Only First Label
-    When I follow "Create manifest for plates"
-    Then I should see "Barcode printer"
-    When I select "Test study" from "Study"
-    And I select "default layout" from "Template"
-    And I select "Test supplier name" from "Supplier"
-    And I select "xyz" from "Barcode printer"
-    And I select "default layout" from "Template"
-    And the plate barcode service is available with barcodes "1..4"
-    And I fill in the field labeled "Plates required" with "4"
-    And I uncheck "Print only the first label"
-    When I press "Create manifest and print labels"
-    And all pending delayed jobs are processed
-    Then exactly 4 labels should have been printed
 
   Scenario: Create a plate manifest and print all the barcodes
     When I follow "Create manifest for plates"
@@ -62,9 +46,7 @@ Feature: Sample manifest
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     When I press "Create manifest and print labels"
-    And all pending delayed jobs are processed
     Then exactly 4 labels should have been printed
-
 
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"

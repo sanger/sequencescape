@@ -2,6 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
+require 'lib/lab_where_client'
+
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -280,15 +282,6 @@ WHERE c.container_id=?
 
   before_create :set_plate_name_and_size
 
- # scope :qc_started_plates, -> {
- #    {
- #      :select => "distinct assets.*",
- #      :order => 'assets.id DESC',
- #      :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.find_by_name('Stock Plate') ],
- #      :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id" ,
- #      :include => [:events, :asset_audits]
- #    }
- #  }
   scope :qc_started_plates, -> {
     select('DISTINCT assets.*').
     joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
@@ -332,7 +325,7 @@ WHERE c.container_id=?
         }
       }).
       where(['batches.id = ?',batch.id])
- 
+
   }
 
   scope :with_wells, ->(wells) {

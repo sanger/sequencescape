@@ -40,6 +40,7 @@ class Aliquot < ActiveRecord::Base
 
     # Named scopes for the future
     scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
+    scope :include_aliquots_for_api, -> { includes( :aliquots => [ {:sample=>[:uuid_object,:study_reference_genome,{:sample_metadata=>:reference_genome}]}, { :tag => :tag_group }, :bait_library ] ) }
 
     # This is a lambda as otherwise the scope selects Aliquot::Receptacles
     scope :with_aliquots, -> { joins(:aliquots) }
@@ -124,11 +125,8 @@ class Aliquot < ActiveRecord::Base
 
         has_many :aliquots
         has_many :receptacles, :through => :aliquots, :uniq => true
-        # has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
-
-        def primary_receptacle
-          receptacles.order('aliquots.created_at, aliquots.id ASC').first
-        end
+        has_one :primary_aliquot, :class_name => 'Aliquot', :order => 'created_at ASC, aliquots.id ASC', :readonly => true
+        has_one :primary_receptacle, :through => :primary_aliquot, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
 
         has_many :requests, :through => :assets
         has_many :submissions, :through => :requests

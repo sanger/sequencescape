@@ -213,6 +213,16 @@ class AssetsController < ApplicationController
     end
   end
 
+  def print
+    if @asset.printable?
+      @printable = @asset.printable_target
+      @direct_printing = (@asset.printable_target == @asset)
+    else
+      flash[:error] = "#{@asset.display_name} does not have a barcode so a label can not be printed."
+      redirect_to asset_path(@asset)
+    end
+  end
+
   def print_labels
     print_asset_labels(new_asset_url, new_asset_url)
   end

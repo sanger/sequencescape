@@ -455,7 +455,7 @@ class BatchesController < ApplicationController
         BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
       rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue SOAP::FaultError
+      rescue Savon::Error
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
       else
         flash[:notice] = "Your labels have been printed to #{params[:printer]}."
@@ -482,7 +482,7 @@ class BatchesController < ApplicationController
         BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
       rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue SOAP::FaultError
+      rescue Savon::Error
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
       else
         flash[:notice] = "Your labels have been printed to #{params[:printer]}."
@@ -535,7 +535,7 @@ class BatchesController < ApplicationController
           BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
         rescue PrintBarcode::BarcodeException
           flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-        rescue SOAP::FaultError
+        rescue Savon::Error
           flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
         else
           flash[:notice] = "Your labels have been printed to #{params[:printer]}."

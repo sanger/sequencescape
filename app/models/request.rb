@@ -213,7 +213,7 @@ class Request < ActiveRecord::Base
     where(:request_type_id => request_type)
   }
 
-  scope :where_is_a?,     ->(clazz) { where([ 'sti_type IN (?)',     [ clazz, *clazz.descendants ].map(&:name) ]) }
+  scope :where_is_a?,     ->(clazz) { where( sti_type: [ clazz, *clazz.descendants ].map(&:name) ) }
   scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 

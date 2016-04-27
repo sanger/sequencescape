@@ -19,11 +19,11 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def target_requests(tube)
-    tube.requests_as_target.for_billing.all(
-      :conditions=>[
+    tube.requests_as_target.for_billing.where(
+      [
         "state IN (?) OR (state='passed' AND sti_type IN (?))",
         Request::Statemachine::OPENED_STATE,
-        TransferRequest.descendants.map(&:to_s)
+        [TransferRequest,*TransferRequest.descendants].map(&:name)
       ])
   end
   private :target_requests
