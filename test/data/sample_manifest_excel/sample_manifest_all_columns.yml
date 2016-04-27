@@ -7,13 +7,13 @@ sanger_tube_id:
 sanger_sample_id:
   heading: SANGER SAMPLE ID
 tag_group:
-  heading: TAG GROUP 
+  heading: TAG GROUP
   unlocked: true
   validation:
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Tag set name"    
-    prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set." 
+    showInputMessage: true
+    promptTitle: "Tag set name"
+    prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
 tag_index:
   heading: TAG INDEX
   unlocked: true
@@ -22,20 +22,20 @@ tag_index:
     operator: :greaterThanOrEqual
     formula1: "1"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Tag index"    
+    showInputMessage: true
+    promptTitle: "Tag index"
     prompt: "The index of the tag within the tag set."
     showErrorMessage: true
     errorStyle: :stop
     errorTitle: "Tag index"
-    error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."  
-tag2_group: 
+    error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
+tag2_group:
   heading: TAG2 GROUP (Fill in for dual Index Only)
   unlocked: true
   validation:
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Tag set name"    
+    showInputMessage: true
+    promptTitle: "Tag set name"
     prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
 tag2_index:
   heading: TAG2 INDEX (Fill in for dual Index Only)
@@ -45,22 +45,22 @@ tag2_index:
     operator: :greaterThanOrEqual
     formula1: "1"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Tag index"    
+    showInputMessage: true
+    promptTitle: "Tag index"
     prompt: "The index of the tag within the tag set."
     showErrorMessage: true
     errorStyle: :stop
     errorTitle: "Tag index"
-    error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."   
-library_type: 
+    error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
+library_type:
   heading: LIBRARY TYPE
   unlocked: true
   validation:
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Library type"    
+    showInputMessage: true
+    promptTitle: "Library type"
     prompt: "Provide a library type from the approved list"
-insert_size_from: 
+insert_size_from:
   heading: INSERT SIZE FROM
   unlocked: true
   validation:
@@ -68,8 +68,8 @@ insert_size_from:
     operator: :greaterThanOrEqual
     formula1: "1"
     allowBlank: true
-    showInputMessage: true   
-    promptTitle: "Insert size from"    
+    showInputMessage: true
+    promptTitle: "Insert size from"
     prompt: "The minimum insert size in the library"
 insert_size_to:
   heading: INSERT SIZE TO
@@ -79,13 +79,13 @@ insert_size_to:
     operator: :greaterThanOrEqual
     formula1: "1"
     allowBlank: true
-    showInputMessage: true   
-    promptTitle: "Insert size to"    
+    showInputMessage: true
+    promptTitle: "Insert size to"
     prompt: "Maximum insert size in the library"
     showErrorMessage: true
     errorStyle: :stop
     errorTitle: "Insert size to"
-    error: "Insert size to must be a whole number, greater or equal to the insert size from"  
+    error: "Insert size to must be a whole number, greater or equal to the insert size from"
 supplier_sample_name:
   heading: SUPPLIER SAMPLE NAME
   unlocked: true
@@ -94,8 +94,8 @@ supplier_sample_name:
     operator: :lessThanOrEqual
     formula1: "20"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Supplier Sample Name"    
+    showInputMessage: true
+    promptTitle: "Supplier Sample Name"
     prompt: "Please enter a sample name up to a maximum of 20 characters in length. Only include characters A-Z, 0-9 and underscores."
     showErrorMessage: true
     errorStyle: :stop
@@ -109,8 +109,8 @@ cohort:
     operator: :lessThanOrEqual
     formula1: "7"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Cohort"    
+    showInputMessage: true
+    promptTitle: "Cohort"
     prompt: "Please refer to the list of current cohorts to enter, or add a new abbreviation up to a maximum of 7 uppercase letters."
     showErrorMessage: true
     errorStyle: :stop
@@ -124,8 +124,8 @@ volume:
     operator: :greaterThanOrEqual
     formula1: "0"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: ""    
+    showInputMessage: true
+    promptTitle: ""
     prompt: ""
     showErrorMessage: true
     errorStyle: :stop
@@ -139,8 +139,8 @@ conc:
     operator: :greaterThanOrEqual
     formula1: "0"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: ""    
+    showInputMessage: true
+    promptTitle: ""
     prompt: ""
     showErrorMessage: true
     errorStyle: :stop
@@ -154,8 +154,8 @@ gender:
     formula1: "Male, Female, Mixed, Hermaphrodite, Unknown, Not Applicable"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true    
-    promptTitle: "Gender"    
+    showInputMessage: true
+    promptTitle: "Gender"
     prompt: "Please enter gender"
     showErrorMessage: true
     errorStyle: :stop
@@ -169,8 +169,8 @@ country_of_origin:
     operator: :lessThanOrEqual
     formula1: "30"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Country Of Origin"    
+    showInputMessage: true
+    promptTitle: "Country Of Origin"
     prompt: "Please refer to the list of current countries to enter, or add a new description up to a maximum of 30 uppercase letters."
     showErrorMessage: true
     errorStyle: :stop
@@ -184,8 +184,8 @@ geographical_region:
     operator: :lessThanOrEqual
     formula1: "30"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Region"    
+    showInputMessage: true
+    promptTitle: "Region"
     prompt: "Please refer to the list of current regions to enter, or add a new description up to a maximum of 30 uppercase letters."
     showErrorMessage: true
     errorStyle: :stop
@@ -199,8 +199,8 @@ ethnicity:
     operator: :lessThanOrEqual
     formula1: "30"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Ethnicity"    
+    showInputMessage: true
+    promptTitle: "Ethnicity"
     prompt: "Please refer to the list of current ethnicities to enter, or add a new description up to a maximum of 30 uppercase letters."
     showErrorMessage: true
     errorStyle: :stop
@@ -214,8 +214,8 @@ dna_source:
     formula1: "$A$1:$A$2"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true    
-    promptTitle: "DNA Source"    
+    showInputMessage: true
+    promptTitle: "DNA Source"
     prompt: "Please enter a Source from the Provided List."
     showErrorMessage: true
     errorStyle: :stop
@@ -229,8 +229,8 @@ date_of_sample_collection:
     operator: :lessThanOrEqual
     formula1: "5"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Sample Collection Date"    
+    showInputMessage: true
+    promptTitle: "Sample Collection Date"
     prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
     showErrorMessage: true
     errorStyle: :stop
@@ -244,8 +244,8 @@ date_of_dna_extraction:
     operator: :lessThanOrEqual
     formula1: "5"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Sample Collection Date"    
+    showInputMessage: true
+    promptTitle: "Sample Collection Date"
     prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
     showErrorMessage: true
     errorStyle: :stop
@@ -259,8 +259,8 @@ is_sample_a_control?:
     formula1: "$A$1:$A$2"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true    
-    promptTitle: "Is the Sample a Control?"    
+    showInputMessage: true
+    promptTitle: "Is the Sample a Control?"
     prompt: "Please Enter Y or N."
     showErrorMessage: true
     errorStyle: :stop
@@ -274,8 +274,8 @@ is_re_submitted_sample?:
     formula1: "$A$1:$A$2"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true    
-    promptTitle: "Is the Sample being Resubmitted?"    
+    showInputMessage: true
+    promptTitle: "Is the Sample being Resubmitted?"
     prompt: "Please Enter Y or N."
     showErrorMessage: true
     errorStyle: :stop
@@ -284,18 +284,6 @@ is_re_submitted_sample?:
 dna_extraction_method:
   heading: DNA EXTRACTION METHOD
   unlocked: true
-  validation:
-    type: :whole
-    operator: :greaterThanOrEqual
-    formula1: "0"
-    allowBlank: true
-    showInputMessage: true    
-    promptTitle: "DNA Extraction Method"    
-    prompt: "Please Enter The Number of the DNA Extraction Method."
-    showErrorMessage: true
-    errorStyle: :stop
-    errorTitle: "DNA Extraction Method"
-    error: "This value must be numeric."
 sample_purified?:
   heading: SAMPLE PURIFIED?
   unlocked: true
@@ -304,8 +292,8 @@ sample_purified?:
     formula1: "$A$1:$A$2"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true    
-    promptTitle: "Has the Sample Been Purified?"    
+    showInputMessage: true
+    promptTitle: "Has the Sample Been Purified?"
     prompt: "Please Enter Y or N."
     showErrorMessage: true
     errorStyle: :stop
@@ -319,8 +307,8 @@ purification_method:
     formula1: "$A$1:$A$2"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true    
-    promptTitle: "Purification Method"    
+    showInputMessage: true
+    promptTitle: "Purification Method"
     prompt: "Please enter a Method from the Provided List."
     showErrorMessage: true
     errorStyle: :stop
@@ -334,8 +322,8 @@ concentration_determined_by:
     formula1: "$A$1:$A$2"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true 
-    promptTitle: "Concentration Determined By"    
+    showInputMessage: true
+    promptTitle: "Concentration Determined By"
     prompt: "Please enter a Method from the Provided List."
     showErrorMessage: true
     errorStyle: :stop
@@ -349,8 +337,8 @@ dna_storage_conditions:
     formula1: "$A$1:$A$2"
     allowBlank: true
     showDropDown: false
-    showInputMessage: true    
-    promptTitle: "DNA Storage Conditions"    
+    showInputMessage: true
+    promptTitle: "DNA Storage Conditions"
     prompt: "Please enter a Temperature from the Provided List."
     showErrorMessage: true
     errorStyle: :stop
@@ -364,8 +352,8 @@ mother:
     operator: :lessThanOrEqual
     formula1: "15"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Mother - Supplier Sample Name"    
+    showInputMessage: true
+    promptTitle: "Mother - Supplier Sample Name"
     prompt: "Please enter an existing supplier sample name that relates to the mother of this individual."
     showErrorMessage: true
     errorStyle: :stop
@@ -379,8 +367,8 @@ father:
     operator: :lessThanOrEqual
     formula1: "15"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Father - Supplier Sample Name"    
+    showInputMessage: true
+    promptTitle: "Father - Supplier Sample Name"
     prompt: "Please enter an existing supplier sample name that relates to the father of this individual."
     showErrorMessage: true
     errorStyle: :stop
@@ -394,8 +382,8 @@ sibling:
     operator: :lessThanOrEqual
     formula1: "15"
     allowBlank: true
-    showInputMessage: true    
-    promptTitle: "Sibling - Supplier Sample Name"    
+    showInputMessage: true
+    promptTitle: "Sibling - Supplier Sample Name"
     prompt: "Please enter an existing supplier sample name that relates to the sibling of this individual."
     showErrorMessage: true
     errorStyle: :stop
@@ -438,52 +426,51 @@ genotype:
   heading: GENOTYPE
   unlocked: true
 age:
-  heading: AGE (with units) 
+  heading: AGE (with units)
   unlocked: true
-developmental_stage: 
-  heading: Developmental stage 
+developmental_stage:
+  heading: Developmental stage
   unlocked: true
-cell_type: 
-  heading: Cell Type 
+cell_type:
+  heading: Cell Type
   unlocked: true
-disease_state: 
-  heading: Disease State 
+disease_state:
+  heading: Disease State
   unlocked: true
-compound: 
-  heading: Compound 
+compound:
+  heading: Compound
   unlocked: true
-dose: 
-  heading: Dose 
+dose:
+  heading: Dose
   unlocked: true
-immunoprecipitate: 
-  heading: Immunoprecipitate 
+immunoprecipitate:
+  heading: Immunoprecipitate
   unlocked: true
-growth_condition: 
-  heading: Growth condition 
+growth_condition:
+  heading: Growth condition
   unlocked: true
-rnai: 
-  heading: RNAi 
+rnai:
+  heading: RNAi
   unlocked: true
 rnai_2:
-  heading: RNAi 
+  heading: RNAi
   unlocked: true
-organism_part:  
-  heading: Organism part 
-  unlocked: true 
-time_point: 
-  heading: Time Point 
+organism_part:
+  heading: Organism part
   unlocked: true
-treatment: 
-  heading: Treatment 
+time_point:
+  heading: Time Point
   unlocked: true
-subject: 
-  heading: Subject 
+treatment:
+  heading: Treatment
   unlocked: true
-disease: 
-  heading: Disease 
+subject:
+  heading: Subject
+  unlocked: true
+disease:
+  heading: Disease
   unlocked: true
 donor_id_2:
   heading: DONOR ID (required for cancer samples)
   unlocked: true
 
- 

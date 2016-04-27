@@ -322,29 +322,6 @@
 :dna_extraction_method:
   :heading: DNA EXTRACTION METHOD
   :unlocked: true
-  :validation:
-    :options:
-      type: :whole
-      operator: :greaterThanOrEqual
-      formula1: "0"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "DNA Extraction Method"
-      prompt: "Please Enter The Number of the DNA Extraction Method."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "DNA Extraction Method"
-      error: "This value must be numeric."
-  :conditional_formatting_rules:
-  - type: :cellIs
-    operator: :lessThan
-    formula: "0"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISTEXT(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
 :sample_purified?:
   :heading: SAMPLE PURIFIED?
   :unlocked: true
