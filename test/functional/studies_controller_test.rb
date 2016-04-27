@@ -77,7 +77,7 @@ class StudiesControllerTest < ActionController::TestCase
             'study_metadata_attributes' => {
               'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me'),
               'study_description' => 'some new study',
-              'program' => @program.name,
+              'program_id' => @program.name,
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
@@ -120,7 +120,7 @@ class StudiesControllerTest < ActionController::TestCase
               'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
-              'program' => @program.name,
+              'program_id' => @program.id,
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
               'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
@@ -136,8 +136,6 @@ class StudiesControllerTest < ActionController::TestCase
 
       context "create a new study using permission allowed (not required)" do
         setup do
-          binding.pry
-          debugger
 
           @study_count = Study.count
           post :create, "study" => {
@@ -147,7 +145,7 @@ class StudiesControllerTest < ActionController::TestCase
               'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
-              'program' => @program.name,
+              'program_id' => @program.id,
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
               'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
