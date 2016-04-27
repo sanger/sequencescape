@@ -65,6 +65,7 @@ class StudiesControllerTest < ActionController::TestCase
     context "#create" do
       setup do
         @request_type_1 =FactoryGirl.create :request_type
+        @program = FactoryGirl.create :program
       end
 
       context "successfullyFactoryGirl.create a new study" do
@@ -76,6 +77,7 @@ class StudiesControllerTest < ActionController::TestCase
             'study_metadata_attributes' => {
               'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me'),
               'study_description' => 'some new study',
+              'program' => @program.name,
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
@@ -108,8 +110,35 @@ class StudiesControllerTest < ActionController::TestCase
         should set_the_flash.now.to('Problems creating your new study')
       end
 
+      context "create a new study with a program specified" do
+        setup do
+          #Program.new(:name => 'testing program').save
+          post :create, "study" => {
+            "name" => "hello 4",
+            "reference_genome_id" => ReferenceGenome.find_by_name("").id,
+            'study_metadata_attributes' => {
+              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
+              'study_description' => 'some new study',
+              'contains_human_dna' => 'No',
+              'program' => @program.name,
+              'contaminated_human_dna' => 'No',
+              'commercially_available' => 'No',
+              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
+              'data_release_strategy' => 'open',
+              'study_type_id' => StudyType.find_by_name("Not specified").id
+            }
+          }
+        end
+        should "create a study with a new program" do
+
+        end
+      end
+
       context "create a new study using permission allowed (not required)" do
         setup do
+          binding.pry
+          debugger
+
           @study_count = Study.count
           post :create, "study" => {
             "name" => "hello 3",
@@ -118,6 +147,7 @@ class StudiesControllerTest < ActionController::TestCase
               'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
+              'program' => @program.name,
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
               'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,

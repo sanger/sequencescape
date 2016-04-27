@@ -57,6 +57,7 @@ class StudiesController < ApplicationController
   ## Redirect to the index page with a notice.
   def create
     ActiveRecord::Base.transaction do
+
       @study = Study.new(params['study'].merge(:user => current_user))
       @study.save!
       current_user.has_role('manager', @study)
