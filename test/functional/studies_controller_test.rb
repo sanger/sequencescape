@@ -130,8 +130,33 @@ class StudiesControllerTest < ActionController::TestCase
           }
         end
         should "create a study with a new program" do
-
+          assert_equal Study.find_by_name("hello 4").study_metadata.program.name, @program.name
         end
+      end
+      context "creating a new study if the program does not exist" do
+        setup do
+          @study_count = Study.count
+          #Program.new(:name => 'testing program').save
+          post :create, "study" => {
+            "name" => "hello 4",
+            "reference_genome_id" => ReferenceGenome.find_by_name("").id,
+            'study_metadata_attributes' => {
+              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
+              'study_description' => 'some new study',
+              'contains_human_dna' => 'No',
+              'program_id' => -1,
+              'contaminated_human_dna' => 'No',
+              'commercially_available' => 'No',
+              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
+              'data_release_strategy' => 'open',
+              'study_type_id' => StudyType.find_by_name("Not specified").id
+            }
+          }
+        end
+        should "fail on trying to create the study" do
+          assert_equal  Study.count, @study_count
+        end
+
       end
 
       context "create a new study using permission allowed (not required)" do
