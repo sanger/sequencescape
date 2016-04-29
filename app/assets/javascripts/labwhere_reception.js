@@ -30,7 +30,12 @@
   }
 
   scannedBarcode.prototype = {
-    destroy: function() { this.domElement.remove(); updateCounter(counter, this.list); },
+    destroy: function() {
+      if (typeof this.domElement.remove !== "undefined") {
+        this.domElement.remove();
+        updateCounter(counter, this.list);
+      }
+    },
     notInList: function(){
       var li_items = this.list.getElementsByTagName('li')
       for (var i=0; i<li_items.length; ++i){
@@ -48,7 +53,7 @@
 
       removeLink = document.createElement('a')
       removeLink.appendChild(document.createTextNode('Remove from list'));
-      $(removeLink).bind('click',function() { scanned_barcode.destroy(); })
+      $(removeLink).bind('click',$.proxy(function() { this.destroy(); }, scanned_barcode));
 
       hiddenField = document.createElement('input');
       hiddenField.setAttribute('type','hidden');
@@ -63,7 +68,7 @@
   }
 
   var counter = document.getElementById('scanned')
-  
+
   updateCounter = function(counter, list){
     counter.innerText = "Scanned: " + list.getElementsByTagName('li').length
   }

@@ -1,6 +1,6 @@
 @javascript
 Feature: Labwhere reception
-  Background: 
+  Background:
     Given I am a "administrator" user logged in as "user"
     And I am on the homepage
   Scenario: Scan a plate, add plate's barcode to barcode list
