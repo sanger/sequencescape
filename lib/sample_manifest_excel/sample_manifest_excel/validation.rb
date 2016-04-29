@@ -18,6 +18,10 @@ module SampleManifestExcel
     def range_required?
       range_name.presence
     end
+
+    def valid?
+      options
+    end
   end
 
 end

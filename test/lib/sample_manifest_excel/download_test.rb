@@ -103,7 +103,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should add conditional formatting to unlocked columns" do
-    assert_equal column_list.with_unlocked.count, download.worksheet.send(:conditional_formattings).count {|cf| cf.rules.first.formula.first == 'FALSE'}
+    assert_equal column_list.with_unlocked.count, download.worksheet.send(:conditional_formattings).count {|cf| cf.rules.find {|rule| rule.formula.first == 'FALSE'}}
     column = column_list.with_unlocked.first
     assert_equal column.reference, download.worksheet.send(:conditional_formattings).first.sqref
     column = column_list.with_unlocked.last
@@ -111,11 +111,10 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "should add all required conditional formatting to all columns" do
-    assert_equal 52, download.worksheet.send(:conditional_formattings).count
+    assert_equal 32, download.worksheet.send(:conditional_formattings).count
     column = column_list.find_by(:supplier_sample_name)
     assert download.worksheet.send(:conditional_formattings).any? {|cf| cf.sqref == column.reference}
     cf = download.worksheet.send(:conditional_formattings).select {|cf| cf.sqref == column.reference}
-    assert_equal 2, cf.count
     assert_equal column.cf_options.count, cf.last.rules.count
     assert_equal column.cf_options.last['formula'], cf.last.rules.last.formula.first
   end

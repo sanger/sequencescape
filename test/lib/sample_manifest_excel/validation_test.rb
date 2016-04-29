@@ -18,6 +18,11 @@ class ValidationTest < ActiveSupport::TestCase
       refute validation.range_required?
     end
 
+    should "should not be valid without options" do
+      validation = SampleManifestExcel::Validation.new
+      refute validation.valid?
+    end
+
   end
 
   context "with_range" do

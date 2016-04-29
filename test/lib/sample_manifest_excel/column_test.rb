@@ -129,7 +129,7 @@ class ColumnTest < ActiveSupport::TestCase
   end
 
   context "with conditional formatting rules" do
-    attr_reader :conditional_formatting_rules, :validation, :styles, :range
+    attr_reader :conditional_formatting_rules, :validation, :styles, :range, :column_without_cf
 
     setup do
       @column = build :column_with_validation_and_cf
@@ -137,6 +137,8 @@ class ColumnTest < ActiveSupport::TestCase
       style =build :style
       @styles = {unlock: style, style_name: style, style_name_2: style}
       @range = build :range_with_absolute_reference
+      @column_without_cf = build :column
+      @conditional_formatting_rules = SampleManifestExcel::ConditionalFormattingRule.new({'option1' => 'value1', 'option2' => 'value2', 'dxfId' => :style_name})
     end
 
     should "have conditional formatting rules" do
@@ -163,6 +165,15 @@ class ColumnTest < ActiveSupport::TestCase
       column.cf_options.each do |cf|
         assert_instance_of Hash, cf
       end
+    end
+
+    should "add conditional formatting rule" do
+      refute column_without_cf.cf_rules?
+      column_without_cf.add_conditional_formatting_rules(conditional_formatting_rules)
+      assert column_without_cf.cf_rules?
+      assert_equal conditional_formatting_rules, column_without_cf.conditional_formatting_rules.first
+      column.add_conditional_formatting_rules(conditional_formatting_rules)
+      assert_equal conditional_formatting_rules, column.conditional_formatting_rules.last
     end
 
   end

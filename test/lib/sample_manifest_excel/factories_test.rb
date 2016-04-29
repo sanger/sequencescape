@@ -6,6 +6,7 @@ class FactoryGirlTest < ActiveSupport::TestCase
 		assert FactoryGirl.build(:range).valid?
 		assert FactoryGirl.build(:column).valid?
 		assert FactoryGirl.build(:style).valid?
+		assert FactoryGirl.build(:validation).valid?
   end
 
 end

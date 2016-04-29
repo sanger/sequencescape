@@ -82,10 +82,6 @@ module SampleManifestExcel
       columns.find_by(name)
     end
 
-    def conditional_formatting_rules
-      @conditional_formatting_rules ||= {dxfId: styles[:empty_cell].reference, priority: 1, operator: :equal, formula: 'FALSE', type: :cellIs, stopIfTrue: true}
-    end
-
   private
 
     def create_worksheet
@@ -118,9 +114,6 @@ module SampleManifestExcel
     end
 
     def add_condititional_formatting
-      columns.with_unlocked.each do |column|
-        worksheet.add_conditional_formatting column.reference, conditional_formatting_rules
-      end
       columns.with_cf_rules.each do |column|
         worksheet.add_conditional_formatting column.reference, column.cf_options
       end

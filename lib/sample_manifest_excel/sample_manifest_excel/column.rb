@@ -83,10 +83,14 @@ module SampleManifestExcel
       end
     end
 
+    def add_conditional_formatting_rules(cf_rules)
+      conditional_formatting_rules << cf_rules
+    end
+
   private
 
     def default_attributes
-      {number: 0, type: :string}
+      {number: 0, type: :string, conditional_formatting_rules: []}
     end
 
   end
