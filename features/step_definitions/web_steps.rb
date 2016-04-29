@@ -46,6 +46,10 @@ When /^(?:|I )follow "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
   end
 end
 
+When /^I follow first "(.*?)"$/ do |link|
+  first("a", text: link).click
+end
+
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/ do |field, value, selector|
   with_scope(selector) do
     fill_in(field, :with => value)
@@ -156,6 +160,15 @@ Then /^(?:|I )should see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, selec
     else
       assert page.has_xpath?('//*', :text => regexp)
     end
+  end
+end
+
+
+Then /^I should see "(.*?)" once$/ do |text|
+  if page.respond_to? :should
+    page.should have_content(text, count: 1)
+  else
+    assert page.has_content?(text, count: 1)
   end
 end
 
