@@ -133,10 +133,9 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal Study.find_by_name("hello 4").study_metadata.program.name, @program.name
         end
       end
-      context "creating a new study if the program does not exist" do
+      context "creating a new study without program" do
         setup do
           @study_count = Study.count
-          #Program.new(:name => 'testing program').save
           post :create, "study" => {
             "name" => "hello 4",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
@@ -144,7 +143,6 @@ class StudiesControllerTest < ActionController::TestCase
               'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
-              'program_id' => -1,
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
               'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
