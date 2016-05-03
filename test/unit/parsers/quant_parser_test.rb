@@ -52,6 +52,7 @@ class QuantParserTest < ActiveSupport::TestCase
         should "not update attributes for lines without content" do
           assert_equal 30, @plate.wells.located_at("B1").first.get_concentration
           assert_equal 30, @plate.wells.located_at("B2").first.get_concentration
+          assert_equal 30, @plate.wells.located_at("B3").first.get_concentration
         end
       end
     end

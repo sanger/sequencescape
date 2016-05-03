@@ -3,7 +3,8 @@ Assay Plate Barcode, 999991,
 Headers,,
 Well Location,Concentration,RIN
 A1,35,7.5
-A2,56,8.1
+A2,56 ng/ml,8.1
 A3,89,4.3
 B1,,
 B2, ,
+B3,five,
