@@ -196,7 +196,7 @@ class Well < Aliquot::Receptacle
   def update_values_from_object(attributes_hash)
     ActiveRecord::Base.transaction do
       attributes_hash.each do|method_name, value|
-        send(method_name, value) if methods.include?(method_name)
+        send(method_name, value.strip) unless (value.nil? || value.blank?)
       end
     end
   end

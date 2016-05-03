@@ -27,6 +27,8 @@ class QuantParserTest < ActiveSupport::TestCase
         assert_equal :pass, Parsers.parser_for(@filename,nil,@content)
       end
 
+
+
       context "processing the file" do
         setup do
           @parser = Parsers.parser_for(@filename,nil,@content)
@@ -37,7 +39,6 @@ class QuantParserTest < ActiveSupport::TestCase
           @plate.wells.each do |well|
             well.set_concentration(30)
           end
-          binding.pry
           @parser.update_values_for(@plate)
         end
 
@@ -47,13 +48,24 @@ class QuantParserTest < ActiveSupport::TestCase
             ["A3",89,4.3]].each do |location, concentration, rin|
               assert_equal concentration, @plate.wells.located_at(location).first.get_concentration
           end
-
+        end
+        should "not update attributes for lines without content" do
+          assert_equal 30, @plate.wells.located_at("B1").first.get_concentration
+          assert_equal 30, @plate.wells.located_at("B2").first.get_concentration
         end
       end
     end
 
     context "with an invalid csv file" do
+      setup do
+        @filename = Rails.root.to_s + "/test/data/invalid_quant_test.csv"
+        @content = read_file @filename
+        @csv = CSV.parse(@content)
+      end
 
+      should "detect that the format is not correct" do
+        refute Parsers::QuantParser.is_quant_file?(@csv)
+      end
     end
   end
 end

@@ -101,7 +101,7 @@ en:
           label: Concentration
 
         rin:
-          label: rin
+          label: RIN
 
     sample:
       metadata:
