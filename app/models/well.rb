@@ -193,6 +193,15 @@ class Well < Aliquot::Receptacle
 
   delegate_to_well_attribute(:gender_markers)
 
+  def update_values_from_object(attributes_hash)
+    ActiveRecord::Base.transaction do
+      attributes_hash.each do|method_name, value|
+        send(method_name, value) if methods.include?(method_name)
+      end
+    end
+  end
+
+
   def update_gender_markers!(gender_markers, resource)
     if self.well_attribute.gender_markers == gender_markers
       gender_marker_event = self.events.find_by_family('update_gender_markers', :order => 'id desc')

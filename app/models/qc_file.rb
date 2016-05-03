@@ -65,7 +65,8 @@ class QcFile < ActiveRecord::Base
 
   def store_file_extracted_data
     return if parser.nil?
-    asset.update_concentrations_from(parser)
+    parser.update_values_for(asset)
+
   end
 
   # Save Size/content_type Metadata
