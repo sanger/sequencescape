@@ -105,7 +105,7 @@ class ColumnListTest < ActiveSupport::TestCase
     column_list.add_references(10, 15)
     column_list.prepare_conditional_formatting_rules(styles, ranges)
     column = column_list.find_by(:gender)
-    rule = column.conditional_formatting_rules.first
+    rule = column.conditional_formatting_rules.last
     assert_equal styles[:wrong_value].reference, rule.options['dxfId']
     assert_match column.first_cell_relative_reference, rule.options['formula']
     assert_match ranges.find_by(:gender).absolute_reference, rule.options['formula']

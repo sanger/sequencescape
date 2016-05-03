@@ -173,7 +173,7 @@ class ColumnTest < ActiveSupport::TestCase
       assert column_without_cf.cf_rules?
       assert_equal conditional_formatting_rules, column_without_cf.conditional_formatting_rules.first
       column.add_conditional_formatting_rules(conditional_formatting_rules)
-      assert_equal conditional_formatting_rules, column.conditional_formatting_rules.last
+      assert_equal conditional_formatting_rules, column.conditional_formatting_rules.first
     end
 
   end

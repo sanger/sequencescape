@@ -84,7 +84,7 @@ module SampleManifestExcel
     end
 
     def add_conditional_formatting_rules(cf_rules)
-      conditional_formatting_rules << cf_rules
+      conditional_formatting_rules.unshift cf_rules
     end
 
   private
