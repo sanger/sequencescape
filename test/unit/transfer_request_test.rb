@@ -3,6 +3,7 @@
 #Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 require 'test_helper'
+require 'unit/illumina_b/request_statemachine_checks'
 
 class TransferRequestTest < ActiveSupport::TestCase
 
@@ -63,6 +64,17 @@ class TransferRequestTest < ActiveSupport::TestCase
       end
     end
 
+  end
+
+  extend IlluminaB::RequestStatemachineChecks
+
+  state_machine(TransferRequest) do
+    check_event(:start!, :pending)
+    check_event(:pass!, :pending, :started, :failed)
+    check_event(:qc!, :passed)
+    check_event(:fail!, :pending, :started, :passed)
+    check_event(:cancel!, :started, :passed, :qc_complete)
+    check_event(:cancel_before_started!, :pending)
   end
 
 end

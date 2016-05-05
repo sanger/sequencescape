@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module StudyReport::StudyDetails
 
@@ -37,7 +37,7 @@ module StudyReport::StudyDetails
   private :handle_wells
 
   def well_batch_from(initial_id, join, study_condition, plate_purpose_id)
-    Asset.select('DISTINCT assets.id').joins([
+    Well.select('DISTINCT assets.id').joins([
         "INNER JOIN container_associations ON assets.id=container_associations.content_id",
         "INNER JOIN assets AS plates ON container_associations.container_id=plates.id AND plates.sti_type='Plate'",
         join

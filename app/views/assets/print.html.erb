@@ -8,6 +8,11 @@
 	<% add :menu, "Back to #{study.name}" => study_url(study) %>
 <% end %>
 
-<%= page_title "Print Labels", "#{@asset.label} #{@asset.id} (#{@asset.sanger_human_barcode})" %>
 
-<%= render :partial => 'print_form', :locals => { :asset => @asset } %>
+<%= page_title "Print Labels", "#{@printable.label} #{@printable.id} (#{@printable.sanger_human_barcode})" %>
+<%= alert(:warning) do %>
+<strong>Caution!</strong>
+<p>The <%= @asset.label %> <%= @asset.display_name %> is not barcoded directly. This page is for printing barcodes for <%= @printable.label %> <%= @printable.sanger_human_barcode %> instead.</p>
+<% end %>
+<%= render :partial => 'print_form', :locals => { :asset => @printable } %>
+
