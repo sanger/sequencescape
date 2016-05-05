@@ -37,7 +37,7 @@ FactoryGirl.define do
   factory  :study_metadata, :class => Study::Metadata  do
     faculty_sponsor             { |faculty_sponsor| faculty_sponsor.association(:faculty_sponsor)}
     study_description           'Some study on something'
-    program                     { |program| program.association(:program)}
+    program                     { Program.find_by_name("General") }
     contaminated_human_dna      'No'
     contains_human_dna          'No'
     commercially_available      'No'
