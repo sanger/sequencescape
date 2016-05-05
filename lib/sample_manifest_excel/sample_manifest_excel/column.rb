@@ -13,7 +13,6 @@ module SampleManifestExcel
     delegate :first_cell_relative_reference, to: :position
 
     delegate :range_name, to: :validation
-    delegate :set_formula1, to: :validation
 
     def initialize(attributes = {})
       default_attributes.merge(attributes).each do |name, value|
@@ -68,6 +67,10 @@ module SampleManifestExcel
     def set_number(number)
       self.number = number
       self
+    end
+
+    def prepare_validation(range)
+      validation.set_formula1(range)
     end
 
     def cf_options

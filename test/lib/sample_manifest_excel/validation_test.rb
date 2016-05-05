@@ -50,6 +50,7 @@ class ValidationTest < ActiveSupport::TestCase
     should "should know if range is required" do
       assert validation_with_range.range_required?
     end
+
   end
 
 end

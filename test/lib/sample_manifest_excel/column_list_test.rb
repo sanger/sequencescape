@@ -95,8 +95,8 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 3, column_list.with_unlocked.last.unlocked
   end
 
-  test "#set_formula1 should set the right formula1 to validations" do
-    column_list.set_formula1(ranges)
+  test "#prepare_validations should set the right formula1 to validations" do
+    column_list.prepare_validations(ranges)
     column = column_list.find_by(:gender)
     assert_equal ranges.find_by(:gender).absolute_reference, column.validation.options[:formula1]
   end

@@ -22,6 +22,7 @@ module SampleManifestExcel
     def valid?
       options
     end
+
   end
 
 end

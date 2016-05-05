@@ -73,10 +73,10 @@ module SampleManifestExcel
       self
     end
 
-    def set_formula1(ranges)
+    def prepare_validations(ranges)
       with_validations.each do |column|
         range = ranges.find_by(column.range_name)
-        column.set_formula1(range)
+        column.prepare_validation(range)
       end
       self
     end
