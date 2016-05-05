@@ -124,7 +124,7 @@ class DownloadTest < ActiveSupport::TestCase
     assert spreadsheet.sheet(1)
   end
 
-  test "should set right formula 1" do
+  test "should set right formula 1 to validations" do
     range = range_list.find_by(:gender)
     assert download.worksheet.send(:data_validations).find {|validation| validation.formula1 == range.absolute_reference}
   end
