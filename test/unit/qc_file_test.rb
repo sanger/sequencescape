@@ -11,11 +11,12 @@ class QcFileTest < ActiveSupport::TestCase
     context "with an asset" do
       setup do
         @plate = create :plate
-        Parsers.expects(:parser_for).returns(:parser)
+        @parser = Object.new
+        Parsers.expects(:parser_for).returns(@parser)
       end
 
-      should "update the well concentration" do
-        @plate.expects(:update_concentrations_from).with(:parser)
+      should "uses the parser to update the values of a well" do
+        @parser.expects(:update_values_for).with(@plate)
         QcFile.create!(:asset=>@plate)
       end
     end
