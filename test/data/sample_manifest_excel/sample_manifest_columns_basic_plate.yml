@@ -246,10 +246,6 @@
     formula: "LEN(first_cell_relative_reference)>5"
     dxfId: :wrong_value
     priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
 :date_of_dna_extraction:
   :heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   :unlocked: true
@@ -269,10 +265,6 @@
   :conditional_formatting_rules:
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>5"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
     dxfId: :wrong_value
     priority: 2
 :is_sample_a_control?:

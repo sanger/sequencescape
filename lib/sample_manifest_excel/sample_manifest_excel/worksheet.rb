@@ -2,13 +2,15 @@ module SampleManifestExcel
 
   class Worksheet
 
-  	attr_accessor :axlsx_worksheet, :columns, :ranges, :sample_manifest, :styles, :name
+  	attr_accessor :axlsx_worksheet, :columns, :ranges, :sample_manifest, :styles, :name, :password
 
   	def initialize(attributes = {})
   	  attributes.each do |name, value|
         send("#{name}=", value)
       end
   	  @name = axlsx_worksheet.name
+      columns ? create_data_worksheet : add_ranges
+      protect if password
   	end
 
   	def add_row(values = [], style = nil, types = nil)
@@ -17,10 +19,6 @@ module SampleManifestExcel
 
   	def add_rows(n)
       n.times { |i| add_row }
-    end
-
-    def columns
-      @columns ||= []
     end
 
     def first_row
@@ -45,15 +43,12 @@ module SampleManifestExcel
   	end
 
   	def add_ranges
-  	  ranges.each do |k, range|
-  	    add_row range.options
-  	  end
+  	  ranges.each { |k, range| add_row range.options }
   	  self
   	end
 
     def create_data_worksheet
     	prepare_columns
-    	add_attributes
     	add_title_and_info
     	add_columns_headings
     	add_data
@@ -61,13 +56,6 @@ module SampleManifestExcel
       add_condititional_formatting
       freeze_panes
       self
-    end
-
-  	def add_attributes
-      columns.find_by(:sanger_plate_id).attribute = {sanger_human_barcode: Proc.new { |sample| sample.wells.first.plate.sanger_human_barcode }}
-      columns.find_by(:well).attribute = {well: Proc.new { |sample| sample.wells.first.map.description }}
-      columns.find_by(:sanger_sample_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
-      columns.find_by(:donor_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }}
     end
 
     def prepare_columns
@@ -111,7 +99,7 @@ module SampleManifestExcel
       columns.find_by(name)
     end
 
-    def protect(password)
+    def protect
     	axlsx_worksheet.sheet_protection.format_columns = false
       axlsx_worksheet.sheet_protection.format_rows = false
     	axlsx_worksheet.sheet_protection.password = password

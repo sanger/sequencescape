@@ -2,6 +2,8 @@
   :heading: SANGER PLATE ID
 :well:
   :heading: WELL
+:sanger_tube_id:
+  :heading: SANGER TUBE ID
 :sanger_sample_id:
   :heading: SANGER SAMPLE ID
 :supplier_sample_name:
@@ -67,4 +69,7 @@
     formula: "ISNUMBER(first_cell_relative_reference)"
     dxfId: :wrong_value
     priority: 2
+:donor_id:
+  :heading: DONOR ID (required for EGA)
+  :unlocked: true
 :invalid_column:

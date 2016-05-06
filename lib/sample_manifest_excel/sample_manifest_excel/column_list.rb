@@ -96,6 +96,15 @@ module SampleManifestExcel
       columns.each do |k,v|
         add SampleManifestExcel::Column.new((v || {}).merge(name: k))
       end
+      add_attributes
+    end
+
+    def add_attributes
+      find_by(:sanger_plate_id).attribute = {sanger_human_barcode: Proc.new { |sample| sample.wells.first.plate.sanger_human_barcode }} if columns[:sanger_plate_id]
+      find_by(:well).attribute = {well: Proc.new { |sample| sample.wells.first.map.description }} if columns[:well]
+      find_by(:sanger_sample_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }} if columns[:sanger_sample_id]
+      find_by(:donor_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }} if columns[:donor_id]
+      find_by(:sanger_tube_id).attribute = {sanger_tube_id: Proc.new { |sample| sample.assets.first.sanger_human_barcode}} if columns[:sanger_tube_id]
     end
 
     def add_conditional_formatting_for_empty_cells

@@ -1,7 +1,7 @@
 
 require 'test_helper.rb'
 
-class DownloadTest < ActiveSupport::TestCase
+class BaseTest < ActiveSupport::TestCase
 
   attr_reader :download, :spreadsheet, :sample_manifest, :column_list, :range_list
 
@@ -9,7 +9,7 @@ class DownloadTest < ActiveSupport::TestCase
     @sample_manifest = create(:sample_manifest_with_samples)
     @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
     @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
-    @download = SampleManifestExcel::Download.new(sample_manifest, column_list, range_list)
+    @download = SampleManifestExcel::Download::Base.new(sample_manifest, column_list, range_list)
     download.save('test.xlsx')
     @spreadsheet = Roo::Spreadsheet.open('test.xlsx')
   end

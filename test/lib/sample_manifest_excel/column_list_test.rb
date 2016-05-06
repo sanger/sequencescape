@@ -19,6 +19,14 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal yaml.length-1, column_list.count
   end
 
+  test "should add the attributes to the column list" do
+    assert column_list.find_by(:sanger_plate_id).attribute?
+    assert column_list.find_by(:well).attribute?
+    assert column_list.find_by(:sanger_sample_id).attribute?
+    assert column_list.find_by(:donor_id).attribute?
+    assert column_list.find_by(:sanger_tube_id).attribute?
+  end
+
   test "#headings should return headings" do
     assert_equal yaml.values.compact.collect { |column| column[:heading] }, column_list.headings
   end
@@ -59,6 +67,7 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "#with_attributes should return a list of columns which have attributes" do
+    assert_equal 5, column_list.with_attributes.count
     column_list = SampleManifestExcel::ColumnList.new
     column_1 = SampleManifestExcel::Column.new(name: :column_1, heading: "Column 1")
     column_2 = SampleManifestExcel::Column.new(name: :column_2, heading: "Column 1", attribute: {attribute_column: true})
@@ -73,7 +82,7 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "#with_unlocked should return a list of columns which are unlocked" do
-    assert_equal 7, column_list.with_unlocked.count
+    assert_equal 8, column_list.with_unlocked.count
   end
 
   test "#with_cf_rules should return a list of columns which have conditional formatting rules" do

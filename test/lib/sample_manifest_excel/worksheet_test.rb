@@ -13,13 +13,14 @@ class WorksheetTest < ActiveSupport::TestCase
 	    @axlsx_ranges_worksheet = workbook.add_worksheet(name: 'Ranges')
 	    @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
 	    @ranges_worksheet = SampleManifestExcel::Worksheet.new(axlsx_worksheet: @axlsx_ranges_worksheet, ranges: range_list)
-	    ranges_worksheet.add_ranges
 	    range_list.set_absolute_references(ranges_worksheet)
 	    @sample_manifest = create(:sample_manifest_with_samples)
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = SampleManifestExcel::Style.new(workbook, {locked: false})
     	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
-	    @worksheet = SampleManifestExcel::Worksheet.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list
+	    @worksheet = SampleManifestExcel::Worksheet.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111'
+	  	xls.serialize('test.xlsx')
+	  	@spreadsheet = Roo::Spreadsheet.open('test.xlsx')
 	  end
 
 		should "should have a axlsx worksheet" do
@@ -27,8 +28,6 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "should add title and info" do
-	  	worksheet.add_title_and_info
-	  	save_file
 	    assert_equal "DNA Collections Form", spreadsheet.sheet(0).cell(1,1)
 	    assert_equal "Study:", spreadsheet.sheet(0).cell(5,1)
 	    assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(0).cell(5,2)
@@ -39,24 +38,12 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "add standard headings to worksheet" do
-	  	worksheet.add_title_and_info
-	  	worksheet.add_columns_headings
-	  	save_file
 	    worksheet.columns.headings.each_with_index do |heading, i|
 	      assert_equal heading, spreadsheet.sheet(0).cell(9,i+1)
 	    end
 	  end
 
-	  should "should add the attributes to the column list" do
-	  	worksheet.add_attributes
-	    assert worksheet.columns.find_by(:sanger_plate_id).attribute?
-	    assert worksheet.columns.find_by(:well).attribute?
-	    assert worksheet.columns.find_by(:sanger_sample_id).attribute?
-	    assert worksheet.columns.find_by(:donor_id).attribute?
-	  end
-
 	  should "prepare columns" do
-	  	worksheet.prepare_columns
 	  	worksheet.columns.each do |k, column|
 	  		assert column.position
 	  	end
@@ -64,14 +51,10 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "should add all of the samples" do
-	  	worksheet.create_data_worksheet
-	  	save_file
 	    assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(0).last_row
 	  end
 
 	  should "should add the attributes for each sample" do
-	  	worksheet.create_data_worksheet
-	  	save_file
 	    [sample_manifest.samples.first, sample_manifest.samples.last].each do |sample|
 	      worksheet.columns.with_attributes.each do |column|
 	        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.number)
@@ -80,7 +63,6 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "add the data validations" do
-	  	worksheet.create_data_worksheet
 	    assert_equal column_list.with_validations.count, worksheet.axlsx_worksheet.send(:data_validations).count
 	    column = column_list.with_validations.first
 	    assert_equal column.reference, worksheet.axlsx_worksheet.send(:data_validations).first.sqref
@@ -90,13 +72,11 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "set right formula 1 to validations" do
-	  	worksheet.create_data_worksheet
 	    range = range_list.find_by(:gender)
 	    assert worksheet.axlsx_worksheet.send(:data_validations).find {|validation| validation.formula1 == range.absolute_reference}
 	  end
 
 	  should "add conditional formatting to unlocked columns" do
-	  	worksheet.create_data_worksheet
 	    assert_equal column_list.with_unlocked.count, worksheet.axlsx_worksheet.send(:conditional_formattings).count {|cf| cf.rules.find {|rule| rule.formula.first == 'FALSE'}}
 	    column = column_list.with_unlocked.first
 	    assert_equal column.reference, worksheet.axlsx_worksheet.send(:conditional_formattings).first.sqref
@@ -105,7 +85,6 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "add all required conditional formatting to all columns" do
-	  	worksheet.create_data_worksheet
 	    assert_equal 32, worksheet.axlsx_worksheet.send(:conditional_formattings).count
 	    column = column_list.find_by(:supplier_sample_name)
 	    assert worksheet.axlsx_worksheet.send(:conditional_formattings).any? {|cf| cf.sqref == column.reference}
@@ -115,14 +94,12 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "panes should be frozen correctly" do
-	  	worksheet.create_data_worksheet
 	    assert_equal worksheet.freeze_after_column(:sanger_sample_id).number, worksheet.axlsx_worksheet.sheet_view.pane.x_split
 	    assert_equal worksheet.first_row-1, worksheet.axlsx_worksheet.sheet_view.pane.y_split
 	    assert_equal "frozen", worksheet.axlsx_worksheet.sheet_view.pane.state
 	  end
 
 	  should "worksheet should be protected with password but columns and rows format can be changed" do
-	  	worksheet.protect('1111')
 	    assert worksheet.axlsx_worksheet.sheet_protection.password
 	    refute worksheet.axlsx_worksheet.sheet_protection.format_columns
 	    refute worksheet.axlsx_worksheet.sheet_protection.format_rows
@@ -132,13 +109,15 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	context "validations ranges worksheet" do
 
-	  attr_reader :range_worksheet, :axlsx_worksheet, :range_list
+	  attr_reader :range_worksheet, :axlsx_worksheet, :range_list, :spreadsheet
 
 	  setup do
 	    @xls = Axlsx::Package.new
 		  @axlsx_worksheet = xls.workbook.add_worksheet(name: 'Ranges')
 		  @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
 	    @range_worksheet = SampleManifestExcel::Worksheet.new(axlsx_worksheet: axlsx_worksheet, ranges: range_list)
+	 	  @xls.serialize('test.xlsx')
+	  	@spreadsheet = Roo::Spreadsheet.open('test.xlsx')
 	  end
 
 	  should "should have a axlsx worksheet" do
@@ -146,19 +125,12 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "add ranges to axlsx worksheet" do
-	  	range_worksheet.add_ranges
-	  	save_file
 	  	range = range_worksheet.ranges.first.last
 	  	range.options.each_with_index do |option, i|
 	  		assert_equal option, spreadsheet.sheet(0).cell(1,i+1)
 	  	end
 	  	assert_equal range_worksheet.ranges.count, axlsx_worksheet.rows.count
 	  end
-	end
-
-	def save_file
-	  xls.serialize('test.xlsx')
-	  @spreadsheet = Roo::Spreadsheet.open('test.xlsx')
 	end
 
 	def teardown
