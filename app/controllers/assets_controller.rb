@@ -33,6 +33,7 @@ class AssetsController < ApplicationController
   end
 
   def show
+    @source_plate = @asset.source_plate
     respond_to do |format|
       format.html
       format.xml
@@ -352,23 +353,29 @@ class AssetsController < ApplicationController
   end
 
   def lab_view
-    barcode = params[:barcode]
+    barcode = params.fetch(:barcode,'').strip
+
     if barcode.blank?
       redirect_to :action => "find_by_barcode"
+      return
+    elsif barcode.size == 13 && Barcode.check_EAN(barcode)
+      @asset = Asset.with_machine_barcode(barcode).first
+    elsif match = /\A(\w{2})([0-9]{1,7})\w{0,1}\z/.match(barcode) # Human Readable
+      prefix = BarcodePrefix.find_by_prefix(match[1])
+      @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2],prefix.id)
+    elsif /\A[0-9]{1,7}\z/.match(barcode) # Just a number
+      @asset = Asset.find_by_barcode(barcode)
     else
-      if barcode.size == 13 && Barcode.check_EAN(barcode)
-        num_prefix, number, _ = Barcode.split_barcode(barcode)
-        prefix = BarcodePrefix.find_by_prefix(Barcode.prefix_to_human(num_prefix))
-        @asset = Asset.find_by_barcode_and_barcode_prefix_id(number.to_s,prefix.id)
-      else
-        @asset = Asset.find_by_barcode(barcode.to_s)
-      end
-
-      if @asset.nil?
-        flash[:error] = "Unable to find anything with this barcode"
-        redirect_to :action => "find_by_barcode"
-      end
+      flash[:error] = "'#{barcode}' is not a recognized barcode format"
+      redirect_to :action => "find_by_barcode"
+      return
     end
+
+    if @asset.nil?
+      flash[:error] = "Unable to find anything with this barcode: #{barcode}"
+      redirect_to :action => "find_by_barcode"
+    end
+
   end
 
   def create_stocks
