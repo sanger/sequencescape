@@ -94,7 +94,7 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "panes should be frozen correctly" do
-	    assert_equal worksheet.freeze_after_column(:sanger_sample_id).number, worksheet.axlsx_worksheet.sheet_view.pane.x_split
+	    assert_equal worksheet.freeze_after_column(:sanger_sample_id), worksheet.axlsx_worksheet.sheet_view.pane.x_split
 	    assert_equal worksheet.first_row-1, worksheet.axlsx_worksheet.sheet_view.pane.y_split
 	    assert_equal "frozen", worksheet.axlsx_worksheet.sheet_view.pane.state
 	  end

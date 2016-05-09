@@ -90,13 +90,13 @@ module SampleManifestExcel
       axlsx_worksheet.sheet_view.pane do |pane|
         pane.state = :frozen
         pane.y_split = first_row-1
-        pane.x_split = freeze_after_column(name).number
+        pane.x_split = freeze_after_column(name)
         pane.active_pane = :bottom_right
       end
     end
 
     def freeze_after_column(name)
-      columns.find_by(name)
+      columns.find_by(name) ? columns.find_by(name).number : 0
     end
 
     def protect

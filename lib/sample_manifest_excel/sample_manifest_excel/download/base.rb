@@ -2,15 +2,15 @@ module SampleManifestExcel
   module Download
     class Base
 
-      STYLES = {unlock: {locked: false, border: { style: :thin, color: "00" }}, empty_cell: {bg_color: '82CAFA', type: :dxf}, wrong_value: {bg_color: "FF0000", type: :dxf}, wrap_text: {alignment: {horizontal: :center, vertical: :center, wrap_text: true}, border: { style: :thin, color: "00", edges: [:left, :right, :top, :bottom] }}, borders_only: {border: { style: :thin, color: "00" }}}
+      attr_reader :sample_manifest, :data_worksheet, :type, :styles, :ranges, :ranges_worksheet, :column_list
+      attr_accessor :columns_names
 
-      attr_reader :sample_manifest, :data_worksheet, :type, :styles, :ranges, :ranges_worksheet
-
-      def initialize(sample_manifest, column_list, range_list)
+      def initialize(sample_manifest, full_column_list, range_list)
         @sample_manifest = sample_manifest
         @type = sample_manifest.asset_type
         @styles = create_styles
         @ranges = range_list
+        @column_list = full_column_list.extract(columns_names)
         data_axlsx_worksheet = add_worksheet("DNA Collections Form")
         ranges_axlsx_worksheet = add_worksheet("Ranges")
         @ranges_worksheet = SampleManifestExcel::Worksheet.new(ranges: ranges, axlsx_worksheet: ranges_axlsx_worksheet, password: password)
@@ -36,6 +36,16 @@ module SampleManifestExcel
 
       def add_worksheet(name)
         workbook.add_worksheet(name: name)
+      end
+
+      def columns_names
+        @columns_names ||= type_specific_column_names
+      end
+
+      def type_specific_column_names
+        @columns_names ||= [:sanger_plate_id, :well] if type == 'plate'
+        @columns_names ||= [:sanger_tube_id] if type == '1dtube'
+        @columns_names
       end
 
     private

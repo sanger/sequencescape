@@ -32,6 +32,19 @@ class BaseTest < ActiveSupport::TestCase
     assert_instance_of SampleManifestExcel::Worksheet, download.ranges_worksheet
   end
 
+  test "should have styles" do
+    assert_equal 5, download.styles.count
+  end
+
+  test "should know the columns names specific to the download type" do
+    assert_equal [:sanger_plate_id, :well], download.columns_names
+  end
+
+  test "column list should be extracted from full column list based on required columns names" do
+    assert_equal 2, download.column_list.count
+    assert_instance_of SampleManifestExcel::ColumnList, download.column_list
+  end
+
   def teardown
     File.delete('test.xlsx') if File.exists?('test.xlsx')
   end
