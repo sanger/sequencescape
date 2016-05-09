@@ -8,9 +8,9 @@ module Submission::AssetSubmissionFinder
   end
 
   def find_all_assets_by_id_or_name_including_samples!(ids, names)
-    return Asset.find(*ids) unless ids.blank?
+    return Aliquot::Receptacle.including_samples.find(*ids) unless ids.blank?
     raise StandardError, "Must specify at least an ID or a name" if names.blank?
-    Asset.find_all_by_name(names).tap do |found|
+    Aliquot::Receptacle.including_samples.where(name:names).tap do |found|
       missing = names - found.map(&:name)
       raise ActiveRecord::RecordNotFound, "Could not find #{self.name} with names #{missing.inspect}" unless missing.blank?
     end
@@ -32,10 +32,13 @@ module Submission::AssetSubmissionFinder
   end
 
   def find_tubes_including_samples_for!(details)
+
+    prefix_cache = Hash.new {|cache,prefix| cache[prefix]= BarcodePrefix.find_by_prefix(prefix) }
+
     details['barcode'].map do |barcode|
       match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"
-      prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-      plate  = Tube.including_samples.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
+      prefix = prefix_cache[match[1]] or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
+      Tube.including_samples.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
     end
   end
 end
