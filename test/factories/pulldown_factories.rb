@@ -189,7 +189,7 @@ FactoryGirl.define do
   factory(:pooling_transfer, :class=>RequestType) do |pooling_transfer|
     asset_type 'Well'
     order 1
-    request_class_name 'IlluminaHtp::Requests::PcrXpToPool'
+    request_class_name 'TransferRequest::InitialDownstream'
     request_purpose {|rp| rp.association(:request_purpose) }
   end
   # Plate creations

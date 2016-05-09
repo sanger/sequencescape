@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2016 Genome Research Ltd.
 class IlluminaHtp::LibraryCompleteOnQcPurpose < PlatePurpose
-
+  include PlatePurpose::Library
   include PlatePurpose::RequestAttachment
   include PlatePurpose::BroadcastLibraryComplete
 
