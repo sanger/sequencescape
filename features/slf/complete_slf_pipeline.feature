@@ -76,7 +76,6 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     Given plate "1221234567841" has concentration and sequenom results
 
     When I follow "Reception"
-    When I select "Plate" from "type_id"
     And I fill in "barcode_0" with "1221234567841"
     And I press "Submit"
     When I select "Sample logistics freezer" from "asset_location_id"
