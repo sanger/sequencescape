@@ -53,6 +53,7 @@ class Asset < ActiveRecord::Base
   has_one  :source_request,     :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
+  has_many :state_changes, foreign_key: :target_id
 
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
@@ -434,6 +435,19 @@ class Asset < ActiveRecord::Base
     end
   }
 
+  def self.find_from_any_barcode(source_barcode)
+    if source_barcode.blank?
+      return
+    elsif source_barcode.size == 13 && Barcode.check_EAN(source_barcode)
+      with_machine_barcode(source_barcode).first
+    elsif match = /\A(\w{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
+      prefix = BarcodePrefix.find_by_prefix(match[1])
+      find_by_barcode_and_barcode_prefix_id(match[2],prefix.id)
+    elsif /\A[0-9]{1,7}\z/.match(source_barcode) # Just a number
+      find_by_barcode(source_barcode)
+    end
+  end
+
 
   def self.find_from_machine_barcode(source_barcode)
     with_machine_barcode(source_barcode).first
@@ -519,6 +533,10 @@ class Asset < ActiveRecord::Base
   end
 
   def contained_samples; []; end
+
+  def source_plate
+    nil
+  end
 
   def printable?
     printable_target.present?

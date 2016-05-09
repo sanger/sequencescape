@@ -292,4 +292,16 @@ FactoryGirl.define do
       request.request_metadata.bait_library                = BaitLibrary.first||create(:bait_library)
     end
   end
+
+  factory(:state_change) do
+    user
+    target { |target| target.association(:plate) }
+    target_state "passed"
+  end
+
+  factory(:plate_owner) do
+    user
+    plate
+    eventable { |eventable| eventable.association(:state_change)}
+  end
 end

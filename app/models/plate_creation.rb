@@ -44,4 +44,12 @@ class PlateCreation < AssetCreation
   end
   include Children
 
+  module CreationChild
+    def self.included(base)
+      base.class_eval do
+        has_many :plate_creations, foreign_key: :child_id
+      end
+    end
+  end
+
 end
