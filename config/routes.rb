@@ -285,6 +285,7 @@ Sequencescape::Application.routes.draw do
     resources :plate_purposes
     resources :delayed_jobs
     resources :faculty_sponsors
+    resources :programs
     resources :delayed_jobs
 
     resources :users do

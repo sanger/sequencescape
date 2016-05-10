@@ -138,6 +138,13 @@ def GivenStudyTypeStudyMetadata(attribute, regexp)
   end
 end
 
+Given /^the study "([^\"]+)" belongs to the program "([^\"]*)"$/ do |study_name, program_name|
+  study = Study.find_by_name(study_name) or raise StandardError, "There appears to be no study named '#{study_name }'"
+  program = Program.find_by_name(program_name) or raise StandardError, "Program not valid: '#{program_name}'"
+  study.study_metadata.program=program
+  study.save!
+end
+
 GivenStudyTypeStudyMetadata(:study_type,              /^the study "([^\"]+)" is a "([^\"]*)" study$/)
 
 def GivenStudyDataReleaseTypeStudyMetadata(attribute, regexp)
@@ -412,6 +419,7 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
   Study.create!(
       :name => study_name,
       :study_metadata_attributes => {
+        :program => Program.find_by_name("General"),
         :faculty_sponsor => FactoryGirl.create(:faculty_sponsor),
         :study_type => StudyType.last,
         :data_release_strategy => managed,

@@ -13,6 +13,7 @@ Feature: The XML for the sequencescape API
     And the faculty sponsor for study "Study for XML" is "Jack Sponsor"
 
     And the study "Study for XML" has samples contaminated with human DNA
+    And the study "Study for XML" belongs to the program "General"
     And the study "Study for XML" does not contain samples commercially available
     And the study "Study for XML" has samples which need x and autosome data removed
     And the study "Study for XML" has a data access group of "group1"
@@ -59,6 +60,10 @@ Feature: The XML for the sequencescape API
           <descriptor>
             <name>Prelim ID</name>
             <value></value>
+          </descriptor>
+          <descriptor>
+            <name>Program</name>
+            <value>General</value>
           </descriptor>
           <descriptor>
             <name>Reason for delaying release</name>

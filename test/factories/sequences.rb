@@ -38,6 +38,10 @@ FactoryGirl.define do
     "Key #{n}"
   end
 
+  sequence :lab_workflow_name do |n|
+    "Lab Workflow #{n}"
+  end
+
   sequence :library_type_id do |n|
     n
   end
@@ -52,6 +56,10 @@ FactoryGirl.define do
 
   sequence :product_name do |n|
     "Product#{n}"
+  end
+
+  sequence :program_name do |n|
+    "Program#{n}"
   end
 
   sequence :project_name do |n|
@@ -77,10 +85,6 @@ FactoryGirl.define do
 
   sequence :study_name do |n|
     "Study #{n}"
-  end
-
-  sequence :lab_workflow_name do |n|
-    "Lab Workflow #{n}"
   end
 
   sequence :pipeline_name do |n|
