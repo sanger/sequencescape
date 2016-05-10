@@ -20,14 +20,15 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
 
     context "#create" do
       setup do
-
-        Program.create(:name => 'My unique name of program')
+        FactoryGirl.create :program, :name => 'My unique name of program'
       end
 
       should "create a new program" do
         num = Program.count
         post :create, {:program => {:name => "A very new program name"}}
         assert_equal num+1, Program.count
+        assert assigns(:program)
+        assert_redirected_to admin_program_path(assigns(:program))
       end
 
       should "not create a new program with same name as a previous program" do
@@ -39,8 +40,7 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
 
     context "#edit" do
       setup do
-        @program = Program.create(:name => 'My program name')
-        @program.save
+        @program = FactoryGirl.create :program, :name => 'My program name'
       end
 
       should "edit the name of the new program" do
@@ -49,6 +49,17 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
         assert_equal true, Program.find_by_name('My program name').nil?
         assert_equal false, Program.find_by_name('A new name for the program').nil?
         assert_equal @program.id, Program.find_by_name('A new name for the program').id
+      end
+    end
+
+    context "#show" do
+      setup do
+        @program = create :program
+      end
+
+      should "display existing programs" do
+        get :show, :id => @program.id
+        assert_equal @program, assigns(:program)
       end
     end
 

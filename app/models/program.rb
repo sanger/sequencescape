@@ -9,6 +9,7 @@ class Program < ActiveRecord::Base
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of programs already present in database"
 
+  has_many :study_metadata, :class_name => 'Study::Metadata'
   has_many :studies, :through => :study_metadata
 
   module Associations

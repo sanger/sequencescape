@@ -81,6 +81,10 @@ FactoryGirl.define do
     after(:build) { |project| project.project_metadata = create(:project_metadata, :project => project) }
   end
 
+  factory :program do
+    name { generate :program_name }
+  end
+
   factory  :project_with_order , :parent => :project  do
     after(:build) { |project| project.orders ||= [create(:order, :project => project)] }
   end
@@ -717,10 +721,6 @@ FactoryGirl.define do
 
   factory(:faculty_sponsor) do
     name  {|a| FactoryGirl.generate :faculty_sponsor_name }
-  end
-
-  factory(:program) do
-    name  {|a| FactoryGirl.generate :program_name }
   end
 
   factory(:pooling_method, :class=> 'RequestType::PoolingMethod')  do
