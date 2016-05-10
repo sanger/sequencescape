@@ -15,9 +15,8 @@
   <% for program in @programs %>
     <tr>
       <td><%= link_to program.name, admin_program_path(program), :title => "View #{program.name}" %></td>
-      <td><%= program.count_studies %></td>
+      <td><%= program.studies.count %></td>
       <td><%= link_to 'Edit', edit_admin_program_path(program), :title => "Edit #{program.name}" %></td>
-      <td><%= link_to 'Delete', [:admin,program], :title => "Delete #{program.name}", :confirm => 'Are you sure?', :method => :delete %></td>
     </tr>
   <% end %>
   </tbody>

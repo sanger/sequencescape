@@ -43,15 +43,6 @@ class Admin::ProgramsController < ApplicationController
     end
   end
 
-  def destroy
-    @program.destroy
-
-    respond_to do |format|
-      flash[:notice] = 'Program was successfully deleted.'
-      format.html { redirect_to(admin_programs_path) }
-    end
-  end
-
   private
   def discover_program
     @program = Program.find(params[:id])

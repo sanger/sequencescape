@@ -9,13 +9,7 @@ class Program < ActiveRecord::Base
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of programs already present in database"
 
-  def count_studies
-    Study.count(:joins => { :study_metadata => :program }, :conditions => { :study_metadata => { :program_id => self.id } })
-  end
-
-  def studies
-    Study.find(:all, :joins => { :study_metadata => :program }, :conditions => { :study_metadata => { :program_id => self.id } })
-  end
+  has_many :studies, :through => :study_metadata
 
   module Associations
     def self.included(base)
