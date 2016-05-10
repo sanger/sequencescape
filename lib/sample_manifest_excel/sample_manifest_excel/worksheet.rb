@@ -2,7 +2,7 @@ module SampleManifestExcel
 
   class Worksheet
 
-  	attr_accessor :axlsx_worksheet, :columns, :ranges, :sample_manifest, :styles, :name, :password
+  	attr_accessor :axlsx_worksheet, :columns, :ranges, :sample_manifest, :styles, :name, :password, :type
 
   	def initialize(attributes = {})
   	  attributes.each do |name, value|
@@ -34,7 +34,7 @@ module SampleManifestExcel
       add_rows(3)
       add_row ["Study:", sample_manifest.study.abbreviation]
       add_row ["Supplier:", sample_manifest.supplier.name]
-      add_row ["No. #{sample_manifest.asset_type.pluralize.capitalize} Sent:", sample_manifest.count]
+      add_row ["No. #{type} Sent:", sample_manifest.count]
       add_rows(1)
   	end
 
@@ -105,6 +105,9 @@ module SampleManifestExcel
     	axlsx_worksheet.sheet_protection.password = password
     end
 
+    def type
+      @type ||= sample_manifest.asset_type == 'plate' ? 'Plates' : 'Tubes'
+    end
   end
 
 end
