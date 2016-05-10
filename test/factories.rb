@@ -684,6 +684,17 @@ FactoryGirl.define do
     end
   end
 
+  factory :tube_sample_manifest, class: SampleManifest do
+    study     {|wa| wa.association(:study)}
+    supplier  {|wa| wa.association(:supplier)}
+    asset_type "1dtube"
+    count     1
+
+    factory :tube_sample_manifest_with_samples do
+      samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
+    end
+  end
+
   factory  :db_file  do
     data "blahblahblah"
   end
