@@ -1,17 +1,18 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
+
 <%= render :partial => "side_links" %>
 
 <%= page_title 'Sample Manifest', 'Create' %>
 
-<%= semantic_form_for(@sample_manifest) do |form| %>
+<%= semantic_form_for(@sample_manifest, html: {novalidate: false}) do |form| %>
   <%= form.inputs :name => "Manifest Type" do %>
-    <%= form.input :template,  :as => :select, :collection => @templates%>
+    <%= form.input :template, required: true, :as => :select, :prompt => 'Select a template', :collection => @templates, input_html: { class: 'form-control'} %>
   <% end %>
   <%= form.inputs :name => "Manifest For" do %>
-    <%= form.input :study,  :as => :select, :collection => @studies %>
-    <%= form.input :supplier,  :as => :select, :collection => @suppliers %>
+    <%= form.input :study,  as: :select, prompt: 'Select a study', collection: options_from_collection_for_select(@studies, :id, :name, @study_id), required: true, input_html: { class: 'form-control select2'} %>
+    <%= form.input :supplier,  as: :select, prompt: 'Select a supplier', collection: @suppliers, required: true, input_html: { class: 'form-control select2'} %>
   <% end %>
 
   <%= form.inputs :name => "Barcodes" do %>

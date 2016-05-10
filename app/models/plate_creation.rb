@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class PlateCreation < AssetCreation
@@ -42,5 +43,13 @@ class PlateCreation < AssetCreation
 
   end
   include Children
+
+  module CreationChild
+    def self.included(base)
+      base.class_eval do
+        has_many :plate_creations, foreign_key: :child_id
+      end
+    end
+  end
 
 end

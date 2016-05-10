@@ -1,9 +1,12 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_filter :set_sample_manifest_id, :only => [:show, :generated]
   before_filter :validate_type,    :only => [:new, :create]
+
+  LIMIT_ERROR_LENGTH = 10000
 
   # Upload the manifest and store it for later processing
   def upload
@@ -17,13 +20,14 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       flash[:error] = "Cannot find details about the sample manifest"
       return
     end
+
     @sample_manifest.update_attributes(params[:sample_manifest])
     @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
     flash[:notice] = "Manifest being processed"
   rescue CSV::MalformedCSVError
     flash[:error] = "Invalid CSV file"
   ensure
-    redirect_to sample_manifests_path
+    redirect_to (@sample_manifest.present? ? sample_manifests_study_path(@sample_manifest.study) : sample_manifests_path)
   end
 
   def export
@@ -42,8 +46,9 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def new
     @sample_manifest  = SampleManifest.new(:asset_type => params[:type])
-    @studies          = Study.all.sort{ |a,b,| a.name <=> b.name }
-    @suppliers        = Supplier.all.sort{ |a,b,| a.name <=> b.name }
+    @study_id         = params[:study_id] || ""
+    @studies          = Study.alphabetical
+    @suppliers        = Supplier.alphabetical
     @barcode_printers = @sample_manifest.applicable_barcode_printers
     @templates        = @sample_manifest.applicable_templates
   end
@@ -86,6 +91,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   # Show the manifest
   def show
+    @study_id = @sample_manifest.study_id
     @samples = @sample_manifest.samples.paginate(:page => params[:page])
   end
 

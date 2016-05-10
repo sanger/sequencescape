@@ -1,6 +1,9 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
+require 'lib/lab_where_client'
+
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -13,6 +16,7 @@ class Plate < Asset
   include Plate::Iterations
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
+  include PlateCreation::CreationChild
 
   extend QcFile::Associations
   has_qc_files
@@ -38,6 +42,10 @@ class Plate < Asset
     plate_purpose.cherrypick_completed(self)
   end
 
+  def source_plate
+    self.purpose.source_plate(self)
+  end
+
   SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
@@ -51,9 +59,7 @@ class Plate < Asset
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, :through => :wells, :source => :transfer_requests_as_target
-  # def transfer_requests
-  #   wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
-  # end
+
 
   # About 10x faster than going through the wells
   def submission_ids
@@ -281,15 +287,6 @@ WHERE c.container_id=?
 
   before_create :set_plate_name_and_size
 
- # scope :qc_started_plates, -> {
- #    {
- #      :select => "distinct assets.*",
- #      :order => 'assets.id DESC',
- #      :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.find_by_name('Stock Plate') ],
- #      :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id" ,
- #      :include => [:events, :asset_audits]
- #    }
- #  }
   scope :qc_started_plates, -> {
     select('DISTINCT assets.*').
     joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
@@ -323,10 +320,53 @@ WHERE c.container_id=?
     }
   }
 
+  scope :output_by_batch, ->(batch) {
+
+      joins({
+        :container_associations => {
+          :content => {
+            :requests_as_target => :batch
+          }
+        }
+      }).
+      where(['batches.id = ?',batch.id])
+
+  }
+
   scope :with_wells, ->(wells) {
       select('DISTINCT assets.*').
       joins(:container_associations).
       where(:container_associations=>{:content_id=> wells.map(&:id) })
+  }
+  #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
+  has_many :descendant_plates, :class_name => "Plate", :conditions => {:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_lanes, :class_name => "Lane", :conditions => {:assets=>{:sti_type=>"Lane"}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :tag_layouts
+
+  scope :with_descendants_owned_by, ->(user) {
+    joins(:descendant_plates => :plate_owner).
+    where(:plate_owners=>{:user_id=>user.id}).
+    uniq
+  }
+
+  scope :source_plates, -> {
+    joins(:plate_purpose).
+    where("plate_purposes.id = plate_purposes.source_purpose_id")
+  }
+
+  scope :with_wells_and_requests, ->() {
+    includes({
+      :wells => [
+        :uuid_object, :map,
+        {
+          :requests_as_target => [
+            {:initial_study=>:uuid_object},
+            {:initial_project=>:uuid_object},
+            {:asset=>{:aliquots=>:sample}}
+          ]
+        }
+      ]
+    })
   }
 
   def wells_sorted_by_map_id

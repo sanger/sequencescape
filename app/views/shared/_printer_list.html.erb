@@ -1,6 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+
 <label for="barcode_printer_list" style="display:none">Barcode Printer</label>
 <select name="printer" id="barcode_printer_list" class="form-control select2">
    <% printer_list = BarcodePrinter.alphabetical.includes(:barcode_printer_type).all.group_by {|printer| "#{printer.barcode_printer_type.name} (#{printer.active? ? 'Active' : 'Inactive'})" } %>

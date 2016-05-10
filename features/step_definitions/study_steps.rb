@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+
 Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_name,property_name,value|
   study = Study.first(:conditions => { :name => study_name }) or raise StandardError, "Study '#{ study_name }' does not exist"
   study.properties.set(property_name.downcase.gsub(/[^a-z0-9]+/, '_'), value)
@@ -135,6 +136,13 @@ def GivenStudyTypeStudyMetadata(attribute, regexp)
     study.study_metadata.send(:"#{ attribute }=", study_type)
     study.save!
   end
+end
+
+Given /^the study "([^\"]+)" belongs to the program "([^\"]*)"$/ do |study_name, program_name|
+  study = Study.find_by_name(study_name) or raise StandardError, "There appears to be no study named '#{study_name }'"
+  program = Program.find_by_name(program_name) or raise StandardError, "Program not valid: '#{program_name}'"
+  study.study_metadata.program=program
+  study.save!
 end
 
 GivenStudyTypeStudyMetadata(:study_type,              /^the study "([^\"]+)" is a "([^\"]*)" study$/)
@@ -390,7 +398,7 @@ end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
   step(%Q{I am on the homepage})
-  step(%Q{I follow "Create study"})
+  step(%Q{I follow "Create Study"})
   step(%Q{I fill in "Study name" with "#{study_name}"})
   step(%Q{I select "Not suitable for alignment" from "Reference genome"})
   step(%Q{I fill in "Study description" with "some description"})
@@ -411,6 +419,7 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
   Study.create!(
       :name => study_name,
       :study_metadata_attributes => {
+        :program => Program.find_by_name("General"),
         :faculty_sponsor => FactoryGirl.create(:faculty_sponsor),
         :study_type => StudyType.last,
         :data_release_strategy => managed,

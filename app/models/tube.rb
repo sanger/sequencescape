@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class Tube < Aliquot::Receptacle
   include LocationAssociation::Locatable
   include Barcode::Barcodeable
@@ -35,6 +36,11 @@ class Tube < Aliquot::Receptacle
 
   def submission
     submissions.first
+  end
+
+  def source_plate
+    return nil if purpose.nil?
+    purpose.source_plate(self)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)

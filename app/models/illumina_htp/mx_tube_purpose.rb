@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
   def created_with_request_options(tube)
     tube.requests_as_target.where_is_a?(Request::LibraryCreation).first.try(:request_options_for_creation) || {}
@@ -18,11 +19,11 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def target_requests(tube)
-    tube.requests_as_target.for_billing.all(
-      :conditions=>[
+    tube.requests_as_target.for_billing.where(
+      [
         "state IN (?) OR (state='passed' AND sti_type IN (?))",
         Request::Statemachine::OPENED_STATE,
-        TransferRequest.descendants.map(&:to_s)
+        [TransferRequest,*TransferRequest.descendants].map(&:name)
       ])
   end
   private :target_requests

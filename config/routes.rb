@@ -1,8 +1,9 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 Sequencescape::Application.routes.draw do
-  root to:'studies#index'
+  root to:'homes#show'
   resource :home, :only => [:show]
 
   mount Api::RootService.new => '/api/1'
@@ -37,6 +38,12 @@ Sequencescape::Application.routes.draw do
   match '/login' => 'sessions#login', :as => :login
   match '/logout' => 'sessions#logout', :as => :logout
 
+  resources :plate_summaries, only: [:index, :show] do
+    collection do
+      get :search
+    end
+  end
+
   resources :reference_genomes
   resources :barcode_printers
 
@@ -58,8 +65,8 @@ Sequencescape::Application.routes.draw do
   resources :items
 
   resources :batches do
-    resources :requests
-    resources :comments
+    resources :requests, :controller => "batches/requests"
+    resources :comments, :controller => "batches/comments"
 
     member do
       get :print_labels
@@ -71,6 +78,8 @@ Sequencescape::Application.routes.draw do
     end
 
   end
+
+  resources :uuids, :only => [ :show ]
 
   match 'batches/released/clusters' => 'batches#released'
   match 'batches/released/:id' => 'batches#released'
@@ -276,6 +285,7 @@ Sequencescape::Application.routes.draw do
     resources :plate_purposes
     resources :delayed_jobs
     resources :faculty_sponsors
+    resources :programs
     resources :delayed_jobs
 
     resources :users do
@@ -587,6 +597,8 @@ Sequencescape::Application.routes.draw do
   end
 
   resources :labwhere_receptions, :only => [:index, :create]
+
+  resources :qc_files, only: [:show]
 
   match '/:controller(/:action(/:id))'
 

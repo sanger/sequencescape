@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class Sample
@@ -22,12 +23,12 @@ class SampleTest < ActiveSupport::TestCase
         @tube_a = create :empty_library_tube
         @tube_b = create :empty_sample_tube
 
-        @tube_b.aliquots.create!(:sample=>@sample)
-        @tube_a.aliquots.create!(:sample=>@sample)
+       create(:aliquot, :sample=>@sample, :receptacle => @tube_b)
+       create(:aliquot, :sample=>@sample, :receptacle => @tube_a)
       end
 
       should "have the first tube it was added to as a primary asset" do
-        assert_equal @sample.primary_receptacle, @tube_b
+        assert_equal @sample.reload.primary_receptacle, @tube_b
       end
 
     end

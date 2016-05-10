@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class RequestType < ActiveRecord::Base
 
   include RequestType::Validation
@@ -127,6 +128,11 @@ class RequestType < ActiveRecord::Base
   def self.transfer
     find_by_key("transfer") or raise "Cannot find transfer request type"
   end
+
+  def self.initial_transfer
+    find_by_key("initial_transfer") or raise "Cannot find initial request type"
+  end
+
 
   def extract_metadata_from_hash(request_options)
     # WARNING: we need a copy of the options (we delete stuff from attributes)

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [
@@ -80,7 +81,7 @@ module IlluminaHtp::PlatePurposes
   }
 
   PF_PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    ['PF Cherrypicked', 'PF Shear', 'IlluminaHtp::Requests::CherrypickedToShear'],
+    ['PF Cherrypicked', 'PF Shear', :initial],
     ['PF Shear', 'PF Post Shear'],
     ['PF Post Shear', 'PF Post Shear XP'],
     ['PF Post Shear XP', 'PF Lib XP'],
@@ -88,28 +89,17 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'PF Cherrypicked', 'PF Shear',            'IlluminaHtp::Requests::CherrypickedToShear'   ],
-    [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
-    [ 'Shear',           'Post Shear',          'IlluminaHtp::Requests::CovarisToSheared'      ],
-    [ 'Post Shear',      'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
-    [ 'Post Shear XP',   'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
-    [ 'AL Libs',         'Lib PCR',             'IlluminaHtp::Requests::PrePcrToPcr'           ],
-    [ 'AL Libs',         'Lib PCRR',            'IlluminaHtp::Requests::PrePcrToPcr'           ],
-    [ 'Lib PCR',         'Lib PCR-XP',          'IlluminaHtp::Requests::PcrToPcrXp'            ],
-    [ 'Lib PCRR',        'Lib PCRR-XP',         'IlluminaHtp::Requests::PcrToPcrXp'            ],
-    [ 'Lib PCR-XP',      'Lib Pool',            'IlluminaHtp::Requests::PcrXpToPool'           ],
-    [ 'Lib PCRR-XP',     'Lib Pool',            'IlluminaHtp::Requests::PcrXpToPool'           ],
-    [ 'Lib Pool SS',     'Lib Pool SS-XP',      'IlluminaHtp::Requests::LibPoolSsToLibPoolSsXp'],
-    [ 'Lib PCR-XP',      'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ],
-    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ],
-    [ 'Lib Pool',        'Lib Pool Norm',       'IlluminaHtp::Requests::LibPoolToLibPoolNorm'  ],
-    [ 'Lib Pool SS-XP',  'Lib Pool SS-XP-Norm', 'IlluminaHtp::Requests::LibPoolToLibPoolNorm'  ],
-    [ 'Lib PCR-XP',      'Lib Norm',            'IlluminaHtp::Requests::PcrXpToLibNorm'        ]
+    [ 'PF Cherrypicked', 'PF Shear',            :initial   ],
+    [ 'Cherrypicked',    'Shear',               :initial   ],
+    [ 'Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'           ],
+    [ 'Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'           ],
+    [ 'Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ],
+    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ]
   ]
 
   PLATE_PURPOSE_TYPE = {
     'PF Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
-    'PF Shear'               => IlluminaHtp::CovarisPlatePurpose,
+    'PF Shear'               => PlatePurpose::InitialPurpose,
     'PF Post Shear'          => PlatePurpose,
     'PF Post Shear XP'       => PlatePurpose,
     'PF Lib'                 => PlatePurpose,
@@ -123,7 +113,7 @@ module IlluminaHtp::PlatePurposes
 
 
     'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
-    'Shear'               => IlluminaHtp::CovarisPlatePurpose,
+    'Shear'               => PlatePurpose::InitialPurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
     'Lib PCR'             => PlatePurpose,
@@ -242,6 +232,7 @@ module IlluminaHtp::PlatePurposes
       std = RequestPurpose.find_by_key('standard')
       _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
+      return RequestType.initial_transfer if request_class == :initial
       request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
       RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1,
         :request_purpose => std

@@ -1,11 +1,13 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.%>
+
 <%# NOTE[xxx]: Kind of a hack because we need 'study[study_metadata_attributes][X]' -%>
 
 <%= fields_for(study) do |form| %>
   <%= form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
     <%= metadata_fields.select_by_association(:faculty_sponsor)%>
+    <%= metadata_fields.select_by_association(:program)%>
     <%= metadata_fields.text_field(:number_of_gigabases_per_sample) %>
     <%= metadata_fields.text_field(:prelim_id) %>
 

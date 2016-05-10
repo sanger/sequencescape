@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
 require "test_helper"
 
 class PlateTest < ActiveSupport::TestCase
@@ -408,6 +409,29 @@ end
         assert_equal 12.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_concentration
         assert_equal 34.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_molarity
       end
+    end
+  end
+
+  context "::with_descendants_owned_by" do
+    setup do
+      @user = create :user
+      @source_plate = create :source_plate
+      @child_plate = create :child_plate, parent: @source_plate
+    end
+
+    should 'find source plates with owners' do
+      create :plate_owner, user: @user, plate: @child_plate
+      assert_includes Plate.with_descendants_owned_by(@user), @source_plate
+    end
+
+    should 'not find plates without owners' do
+      refute_includes Plate.with_descendants_owned_by(@user), @source_plate
+    end
+
+    should 'allow filtering of source plates' do
+      plates = Plate.source_plates
+      assert_includes plates, @source_plate
+      refute_includes plates, @child_plate
     end
   end
 

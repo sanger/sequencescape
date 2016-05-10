@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+
 ActiveRecord::Base.transaction do
   # And here is pulldown
   purpose_flows = Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.clone
@@ -30,8 +31,7 @@ ActiveRecord::Base.transaction do
       :name                  => flow.shift,
       :cherrypickable_target => false
     ).tap do |plate_purpose|
-      request_type_name = "Pulldown #{stock_plate_purpose.name}-#{plate_purpose.name}"
-      transfer = RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => 'Pulldown::Requests::StockToCovaris', :asset_type => 'Well', :order => 1)
+      transfer = RequestType.initial_transfer
       stock_plate_purpose.child_relationships.create!(:child => plate_purpose, :transfer_request_type => transfer)
     end
     final_purpose = flow.inject(initial_purpose) do |parent, child_plate_name|

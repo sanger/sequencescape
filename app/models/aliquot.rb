@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
@@ -23,6 +24,10 @@ class Aliquot < ActiveRecord::Base
     has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
     has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
+    has_many :creation_batches, class_name: "Batch", through: :requests_as_target, source: :batch
+    has_many :source_batches, class_name: "Batch", through: :requests_as_source, source: :batch
+
+
     def default_state
       nil
     end
@@ -39,6 +44,10 @@ class Aliquot < ActiveRecord::Base
 
     # Named scopes for the future
     scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
+    scope :include_aliquots_for_api, -> { includes( :aliquots => [ {:sample=>[:uuid_object,:study_reference_genome,{:sample_metadata=>:reference_genome}]}, { :tag => :tag_group }, :bait_library ] ) }
+    scope :for_summary, -> { includes(:map,:samples,:studies,:projects) }
+    scope :include_creation_batches, -> { includes(:creation_batches)}
+    scope :include_source_batches, -> { includes(:source_batches)}
 
     # This is a lambda as otherwise the scope selects Aliquot::Receptacles
     scope :with_aliquots, -> { joins(:aliquots) }
@@ -123,11 +132,8 @@ class Aliquot < ActiveRecord::Base
 
         has_many :aliquots
         has_many :receptacles, :through => :aliquots, :uniq => true
-        # has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
-
-        def primary_receptacle
-          receptacles.order('aliquots.created_at, aliquots.id ASC').first
-        end
+        has_one :primary_aliquot, :class_name => 'Aliquot', :order => 'created_at ASC, aliquots.id ASC', :readonly => true
+        has_one :primary_receptacle, :through => :primary_aliquot, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
 
         has_many :requests, :through => :assets
         has_many :submissions, :through => :requests

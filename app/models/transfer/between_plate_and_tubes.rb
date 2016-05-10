@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+
 class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = {
     :destination => [
@@ -39,6 +40,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, :class_name => 'Transfer::BetweenPlateAndTubes::WellToTube', :foreign_key => :transfer_id
+  has_many :destinations, through: :well_to_tubes, uniq: true
   scope :include_transfers, -> { includes( :well_to_tubes => DESTINATION_INCLUDES ) }
 
   def transfers
@@ -127,4 +129,9 @@ class Transfer::BetweenPlateAndTubes < Transfer
     destination.transfer_request_type_from(source)
   end
   private :request_type_between
+
+  def build_asset_links
+    AssetLink::Job.create(source, destinations)
+  end
+  private :build_asset_links
 end

@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+
 class ReceptionsController < ApplicationController
   before_filter :find_asset_by_id, :only => [:print, :snp_register]
 
@@ -41,29 +42,13 @@ class ReceptionsController < ApplicationController
         @errors << "Wrong barcode checksum for barcode: #{barcode}"
         next
       end
-      prefix, id, checksum = Barcode.split_barcode(barcode)
 
-      case 'Plate'
-      when 'LibraryTube' then @asset = LibraryTube.find_by_barcode(id)
-      when 'MultiplexedLibraryTube' then @asset = MultiplexedLibraryTube.find_by_barcode(id)
-      when 'PulldownMultiplexedLibraryTube' then @asset = PulldownMultiplexedLibraryTube.find_by_barcode(id)
-      when 'Plate' then @asset = Asset.find_from_machine_barcode(barcode)
-      when 'SampleTube' then @asset =  SampleTube.find_by_barcode(id)
+      asset = Asset.find_from_machine_barcode(barcode)
+
+      if asset.nil?
+          @errors << "Asset with barcode #{barcode} not found"
       else
-        @asset = Asset.find_from_machine_barcode(barcode)
-      end
-
-
-      if @asset.nil?
-        @generic_asset = Asset.find_by_barcode(id)
-        if @generic_asset.nil?
-          @errors << "Sample with barcode #{barcode} not found"
-        else
-          @errors << "Incorrect type for #{barcode} is a #{@generic_asset.sti_type} not a #{params[:type][:id]}"
-        end
-        next
-      else
-        @assets << @asset
+        @assets << asset
       end
     end
 
