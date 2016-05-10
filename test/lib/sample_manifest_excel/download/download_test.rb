@@ -3,12 +3,12 @@ require 'test_helper.rb'
 
 class DownloadTest < ActiveSupport::TestCase
 
-  attr_reader :download, :spreadsheet, :sample_manifest, :column_list, :range_list
+  attr_reader :download, :spreadsheet, :sample_manifest, :column_list, :range_list, :styles
 
   context "Base download" do
 
     setup do
-      @download = SampleManifestExcel::Download::Base.new(sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::Base.new(sample_manifest, column_list, range_list, styles)
       save_file
     end
 
@@ -44,7 +44,7 @@ class DownloadTest < ActiveSupport::TestCase
   context "Plate default download" do
 
     setup do
-      @download = SampleManifestExcel::Download::PlateDefault.new(sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::PlateDefault.new(sample_manifest, column_list, range_list, styles)
     end
 
     should "have correct number of columns" do
@@ -52,12 +52,16 @@ class DownloadTest < ActiveSupport::TestCase
       assert_equal 35, download.column_list.count
     end
 
+    should "have proper type" do
+      assert_equal 'Plates', download.type
+    end
+
   end
 
   context "Plate full download" do
 
     setup do
-      @download = SampleManifestExcel::Download::PlateFull.new(sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::PlateFull.new(sample_manifest, column_list, range_list, styles)
     end
 
     should "have correct number of columns" do
@@ -65,12 +69,16 @@ class DownloadTest < ActiveSupport::TestCase
       assert_equal 51, download.column_list.count
     end
 
+    should "have proper type" do
+      assert_equal 'Plates', download.type
+    end
+
   end
 
   context "Plate rnachip download" do
 
     setup do
-      @download = SampleManifestExcel::Download::PlateRnachip.new(sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::PlateRnachip.new(sample_manifest, column_list, range_list, styles)
     end
 
     should "have correct number of columns" do
@@ -78,12 +86,16 @@ class DownloadTest < ActiveSupport::TestCase
       assert_equal 24, download.column_list.count
     end
 
+    should "have proper type" do
+      assert_equal 'Plates', download.type
+    end
+
   end
 
   context "Tube default download" do
 
     setup do
-      @download = SampleManifestExcel::Download::TubeDefault.new(tube_sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::TubeDefault.new(tube_sample_manifest, column_list, range_list, styles)
     end
 
     should "have correct number of columns" do
@@ -91,12 +103,16 @@ class DownloadTest < ActiveSupport::TestCase
       assert_equal 34, download.column_list.count
     end
 
+    should "have proper type" do
+      assert_equal 'Tubes', download.type
+    end
+
   end
 
   context "Tube full download" do
 
     setup do
-      @download = SampleManifestExcel::Download::TubeFull.new(tube_sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::TubeFull.new(tube_sample_manifest, column_list, range_list, styles)
     end
 
     should "have correct number of columns" do
@@ -104,12 +120,16 @@ class DownloadTest < ActiveSupport::TestCase
       assert_equal 50, download.column_list.count
     end
 
+    should "have proper type" do
+      assert_equal 'Tubes', download.type
+    end
+
   end
 
   context "Tube rnachip download" do
 
     setup do
-      @download = SampleManifestExcel::Download::TubeRnachip.new(tube_sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::TubeRnachip.new(tube_sample_manifest, column_list, range_list, styles)
     end
 
     should "have correct number of columns" do
@@ -117,12 +137,16 @@ class DownloadTest < ActiveSupport::TestCase
       assert_equal 23, download.column_list.count
     end
 
+    should "have proper type" do
+      assert_equal 'Tubes', download.type
+    end
+
   end
 
   context "Multiplexed library default download" do
 
     setup do
-      @download = SampleManifestExcel::Download::MultiplexedLibraryDefault.new(tube_sample_manifest, column_list, range_list)
+      @download = SampleManifestExcel::Download::MultiplexedLibraryDefault.new(tube_sample_manifest, column_list, range_list, styles)
     end
 
     should "have correct number of columns" do
@@ -130,6 +154,10 @@ class DownloadTest < ActiveSupport::TestCase
       assert_equal 41, SampleManifestExcel::Download::MultiplexedLibraryDefault.column_names.count
       assert_equal 41, download.column_list.count
       assert_equal all_column_names, SampleManifestExcel::Download::MultiplexedLibraryDefault.column_names
+    end
+
+    should "have proper type" do
+      assert_equal 'Tubes', download.type
     end
 
   end
@@ -148,6 +176,10 @@ class DownloadTest < ActiveSupport::TestCase
 
   def range_list
     @range_list ||= SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
+  end
+
+  def styles
+    @styles ||= YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_styles.yml")))
   end
 
   def save_file

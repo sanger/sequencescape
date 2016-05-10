@@ -105,9 +105,6 @@ module SampleManifestExcel
     	axlsx_worksheet.sheet_protection.password = password
     end
 
-    def type
-      @type ||= sample_manifest.asset_type == 'plate' ? 'Plates' : 'Tubes'
-    end
   end
 
 end

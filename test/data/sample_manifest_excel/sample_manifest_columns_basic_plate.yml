@@ -21,6 +21,10 @@
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 20 characters in length."
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>20"
     dxfId: :wrong_value
@@ -46,6 +50,10 @@
       errorTitle: "Cohort"
       error: "7 uppercase characters, maximum"
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>7"
     dxfId: :wrong_value
@@ -71,6 +79,10 @@
       errorTitle: "Volume"
       error: "This value must be numeric."
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :cellIs
     operator: :lessThan
     formula: "0"
@@ -98,6 +110,10 @@
       error: "This value must be numeric."
   :conditional_formatting_rules:
   - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
+  - type: :cellIs
     operator: :lessThan
     formula: "0"
     dxfId: :wrong_value
@@ -124,6 +140,10 @@
       error: "Please enter gender"
     :range_name: :gender
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -145,6 +165,10 @@
       errorTitle: "Country Of Origin"
       error: "30 uppercase characters, maximum"
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>30"
     dxfId: :wrong_value
@@ -170,6 +194,10 @@
       errorTitle: "Region"
       error: "30 uppercase characters, maximum"
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>30"
     dxfId: :wrong_value
@@ -195,6 +223,10 @@
       errorTitle: "Ethnicity"
       error: "30 uppercase characters, maximum"
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>30"
     dxfId: :wrong_value
@@ -221,6 +253,10 @@
       error: "You must enter a Source from the list provided."
     :range_name: :dna_source
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -242,6 +278,10 @@
       errorTitle: "Sample Collection Date"
       error: "This must be either a combination of month and year, or a whole year, with no spaces."
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>5"
     dxfId: :wrong_value
@@ -263,6 +303,10 @@
       errorTitle: "Sample Collection Date"
       error: "This must be either a combination of month and year, or a whole year, with no spaces."
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>5"
     dxfId: :wrong_value
@@ -285,6 +329,10 @@
       error: "You must enter either Y or N."
     :range_name: :yes_no
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -307,6 +355,10 @@
       error: "You must enter either Y or N."
     :range_name: :yes_no
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -314,6 +366,11 @@
 :dna_extraction_method:
   :heading: DNA EXTRACTION METHOD
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :sample_purified?:
   :heading: SAMPLE PURIFIED?
   :unlocked: true
@@ -332,6 +389,10 @@
       error: "You must enter either Y or N."
     :range_name: :yes_no
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -354,6 +415,10 @@
       error: "You must enter a Method from the list provided."
     :range_name: :purification_method
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -376,6 +441,10 @@
       error: "You must enter a Method from the list provided."
     :range_name: :concentration_determined_by
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -398,6 +467,10 @@
       error: "You must enter a Temperature from the list provided, in the correct format e.g.+4C."
     :range_name: :dna_storage_conditions
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
     dxfId: :wrong_value
@@ -419,6 +492,10 @@
       errorTitle: "Mother - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>15"
     dxfId: :wrong_value
@@ -444,6 +521,10 @@
       errorTitle: "Father - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>15"
     dxfId: :wrong_value
@@ -469,6 +550,10 @@
       errorTitle: "Sibling - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
   - type: :expression
     formula: "LEN(first_cell_relative_reference)>15"
     dxfId: :wrong_value
@@ -480,34 +565,89 @@
 :gc_content:
   :heading: GC CONTENT
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :public_name:
   :heading: PUBLIC NAME
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :taxon_id:
   :heading: TAXON ID
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :common_name:
   :heading: COMMON NAME
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :sample_description:
   :heading: SAMPLE DESCRIPTION
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :strain:
   :heading: STRAIN
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :sample_visibility:
   :heading: SAMPLE VISIBILITY
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :sample_type:
   :heading: SAMPLE TYPE
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :sample_accession_number:
   :heading: SAMPLE ACCESSION NUMBER (optional)
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :donor_id:
   :heading: DONOR ID (required for EGA)
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 :phenotype:
   :heading: PHENOTYPE (required for EGA)
   :unlocked: true
+  :conditional_formatting_rules:
+  - type: :cellIs
+    formula: 'FALSE'
+    operator: :equal
+    dxfid: :empty_cell
 

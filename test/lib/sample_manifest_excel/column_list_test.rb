@@ -8,7 +8,7 @@ class ColumnListTest < ActiveSupport::TestCase
     @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
     @column_list = SampleManifestExcel::ColumnList.new(yaml)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
-    @ranges = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges_short.yml"))))
+    @ranges = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
     style = build :style
     @styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style}
     @worksheet = build :worksheet

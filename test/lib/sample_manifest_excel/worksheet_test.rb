@@ -18,7 +18,7 @@ class WorksheetTest < ActiveSupport::TestCase
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = SampleManifestExcel::Style.new(workbook, {locked: false})
     	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
-	    @worksheet = SampleManifestExcel::Worksheet.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111'
+	    @worksheet = SampleManifestExcel::Worksheet.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
 	  	xls.serialize('test.xlsx')
 	  	@spreadsheet = Roo::Spreadsheet.open('test.xlsx')
 	  end

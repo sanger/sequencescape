@@ -82,7 +82,6 @@ module SampleManifestExcel
     end
 
     def prepare_conditional_formatting_rules(styles, ranges)
-      add_conditional_formatting_for_empty_cells
       with_cf_rules.each do |column|
         range = ranges.find_by(column.range_name) if column.validation?
         column.prepare_conditional_formatting_rules(styles, range)
@@ -107,14 +106,5 @@ module SampleManifestExcel
       find_by(:sanger_tube_id).attribute = {sanger_tube_id: Proc.new { |sample| sample.assets.first.sanger_human_barcode}} if columns[:sanger_tube_id]
     end
 
-    def add_conditional_formatting_for_empty_cells
-      with_unlocked.each do |column|
-        column.add_conditional_formatting_rules conditional_formatting_rules_for_empty_cells
-      end
-    end
-
-    def conditional_formatting_rules_for_empty_cells
-      @cf_rules_for_empty_cells ||= SampleManifestExcel::ConditionalFormattingRule.new ({'dxfId' => :empty_cell, 'priority' => 1, 'operator' => :equal, 'formula' => 'FALSE', 'type' => :cellIs, 'stopIfTrue' => true})
-    end
   end
 end

@@ -5,7 +5,7 @@ class RangeListTest < ActiveSupport::TestCase
   attr_reader :ranges, :range_list
 
   def setup
-    @ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges_short.yml")))
+    @ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml")))
     @range_list = SampleManifestExcel::RangeList.new(ranges)
   end
 
