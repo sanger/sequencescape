@@ -5,7 +5,7 @@ Feature: Upload volume results from the volume checker robot
     Given I am a "manager" user logged in as "user"
     And a study named "Study B" exists
 
-  Scenario: Update measured volume results on one plate
+  Scenario: Update current volume results on one plate
     Given I have a project called "Test project"
 
     Given study "Study B" has a plate "1234567" to be volume checked
@@ -14,7 +14,7 @@ Feature: Upload volume results from the volume checker robot
      And I am on the Qc reports homepage
     Then I follow "Download report for Study B"
     Then I should see the report for "Study B":
-      | Plate   | Well |Measured Volume |
+      | Plate   | Well |Current Volume  |
       | 1234567 | A1   |55.3281         |
       | 1234567 | A2   |25.296          |
       | 1234567 | A3   |0.1074          |
@@ -73,7 +73,7 @@ Feature: Upload volume results from the volume checker robot
       | B12  | 0.0547  |
 
 
-  Scenario: Update measured volume results on 3 plates
+  Scenario: Update current volume results on 3 plates
     Given study "Study B" has a plate "1234567" to be volume checked
      And study "Study B" has a plate "111" to be volume checked
      And study "Study B" has a plate "222" to be volume checked
@@ -82,7 +82,7 @@ Feature: Upload volume results from the volume checker robot
      And I am on the Qc reports homepage
     Then I follow "Download report for Study B"
     Then I should see the report for "Study B":
-      | Plate   | Well | Measured Volume |
+      | Plate   | Well | Current Volume  |
       | 1234567 | A1   | 55.3281         |
       | 1234567 | A2   | 25.296          |
       | 1234567 | A3   | 0.1074          |
@@ -164,7 +164,7 @@ Feature: Upload volume results from the volume checker robot
      And I am on the Qc reports homepage
     Then I follow "Download report for Study B"
     Then I should see the report for "Study B":
-     | Plate | Well | Measured Volume |
+     | Plate | Well | Current Volume  |
      | 111   | A1   | 0.0             |
      | 111   | A2   | 5.2463          |
      | 111   | A3   | 36.2634         |

@@ -5,6 +5,7 @@
 require 'lib/lab_where_client'
 
 class Plate < Asset
+
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
@@ -42,6 +43,14 @@ class Plate < Asset
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
     plate_purpose.state_of(self)
+  end
+
+  def update_volume(volume_change)
+    ActiveRecord::Base.transaction do
+      wells.each do |w|
+        w.update_volume(volume_change)
+      end
+    end
   end
 
   def occupied_well_count
