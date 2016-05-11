@@ -20,6 +20,24 @@ class Plate < Asset
 
   extend QcFile::Associations
   has_qc_files
+
+  # Contained associations all look up through wells (Wells in turn delegate to aliquots)
+  has_many :contained_samples, :through => :wells, :source => :samples
+  has_many :conatined_aliquots, :through => :wells, :source => :aliquots
+
+  # We also look up studies and projects through wells
+  has_many :studies, :through=> :wells, :uniq => true
+  has_many :projects, :through=> :wells, :uniq => true
+
+
+  has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
+  has_many :orders_as_target, :through => :well_requests_as_target, :source => :order, :uniq => true
+
+  # We use stock well associations here as stock_wells is already used to generate some kind of hash.
+  has_many :stock_requests, :through => :stock_well_associations, :source => :requests, :uniq => true
+  has_many :stock_well_associations, :through => :wells, :source => :stock_wells, :uniq => true
+  has_many :stock_orders, :through => :stock_requests, :source => :order, :uniq => true
+
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
@@ -196,16 +214,6 @@ class Plate < Asset
 
   def study
     wells.first.try(:study)
-  end
-
-  def studies
-    Study.find_by_sql([ %Q{
-SELECT DISTINCT s.*
-FROM container_associations c
-INNER JOIN aliquots a ON a.receptacle_id=c.content_id
-INNER JOIN studies s ON a.study_id=s.id
-WHERE c.container_id=?
-}, self.id ])
   end
 
   contains :wells do #, :order => '`assets`.map_id ASC' do
@@ -667,13 +675,13 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    spp = PlatePurpose.where(:can_be_considered_a_stock_plate=>true).all.map(&:id)
+    spp = PlatePurpose.considered_stock_plate.pluck(:id)
     self.ancestors.order('created_at DESC').where(:plate_purpose_id=>spp).first
   end
   private :lookup_stock_plate
 
   def original_stock_plates
-    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+    ancestors.where(:plate_purpose_id => PlatePurpose.stock_plate_purpose)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
@@ -821,20 +829,12 @@ WHERE c.container_id=?
     true
   end
 
-  def orders_as_target
-    Order.with_plate_as_target(self)
-  end
-
   def samples_in_order(order_id)
     Sample.for_plate_and_order(self.id,order_id)
   end
 
   def samples_in_order_by_target(order_id)
     Sample.for_plate_and_order_as_target(self.id,order_id)
-  end
-
-  def contained_samples
-    Sample.on_plate(self)
   end
 
   def team

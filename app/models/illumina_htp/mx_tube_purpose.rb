@@ -15,7 +15,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       request.transition_to(to_state) unless to_state.nil?
       orders << request.order.id unless request.is_a?(TransferRequest)
     end
-    generate_events_for(tube,orders,user) if state == 'qc_complete'
+    generate_events_for(tube,orders,user) if mappings[state] == 'passed'
   end
 
   def target_requests(tube)
@@ -33,14 +33,12 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def library_source_plates(tube)
-    Plate.find(:all,
-      :select=>'DISTINCT assets.*',
-      :joins=>{:wells=>:requests},
-      :conditions=>[
-        'requests.target_asset_id = ? AND requests.sti_type IN (?)',
-        tube.id,
-        [Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
-      ]
+    Plate.select('DISTINCT assets.*').
+      joins(:wells=>:requests).
+      where(:requests=>{
+        :target_asset_id => tube.id,
+        :sti_type=>[Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
+      }
     ).map(&:source_plate)
   end
 

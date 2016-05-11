@@ -92,6 +92,11 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/library_tubes"
           }
         },
+        "library_events": {
+          "actions": {
+            "read": "http://www.example.com/api/1/library_events"
+          }
+        },
         "lot_types": {
           "actions": {
             "read": "http://www.example.com/api/1/lot_types"
@@ -401,6 +406,12 @@ And I have a "full" authorised user with the key "cucumber"
         "sample_tubes": {
           "actions": {
             "read": "http://www.example.com/api/1/sample_tubes"
+          }
+        },
+        "library_events": {
+          "actions": {
+            "read": "http://www.example.com/api/1/library_events",
+            "create": "http://www.example.com/api/1/library_events"
           }
         },
         "library_tubes": {
