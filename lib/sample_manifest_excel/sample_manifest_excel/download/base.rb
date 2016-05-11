@@ -12,9 +12,9 @@ module SampleManifestExcel
         @column_list = full_column_list.extract(self.class.column_names)
         data_axlsx_worksheet = add_worksheet("DNA Collections Form")
         ranges_axlsx_worksheet = add_worksheet("Ranges")
-        @ranges_worksheet = SampleManifestExcel::Worksheet.new(ranges: ranges, axlsx_worksheet: ranges_axlsx_worksheet, password: password)
+        @ranges_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(ranges: ranges, axlsx_worksheet: ranges_axlsx_worksheet, password: password)
         ranges.set_absolute_references(ranges_worksheet)
-        @data_worksheet = SampleManifestExcel::Worksheet.new(axlsx_worksheet: data_axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: ranges, password: password, type: type)
+        @data_worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(axlsx_worksheet: data_axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: ranges, password: password, type: type)
       end
 
       def save(filename)

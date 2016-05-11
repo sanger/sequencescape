@@ -103,6 +103,7 @@ module SampleManifestExcel
       find_by(:well).attribute = {well: Proc.new { |sample| sample.wells.first.map.description }} if columns[:well]
       find_by(:sanger_sample_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }} if columns[:sanger_sample_id]
       find_by(:donor_id).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }} if columns[:donor_id]
+      find_by(:donor_id_2).attribute = {sanger_sample_id: Proc.new { |sample| sample.sanger_sample_id }} if columns[:donor_id_2]
       find_by(:sanger_tube_id).attribute = {sanger_tube_id: Proc.new { |sample| sample.assets.first.sanger_human_barcode}} if columns[:sanger_tube_id]
     end
 

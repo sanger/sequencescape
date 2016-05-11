@@ -26,8 +26,8 @@ class DownloadTest < ActiveSupport::TestCase
     end
 
     should "should have a data worksheet and ranges worksheet" do
-      assert_instance_of SampleManifestExcel::Worksheet, download.data_worksheet
-      assert_instance_of SampleManifestExcel::Worksheet, download.ranges_worksheet
+      assert_instance_of SampleManifestExcel::Worksheet::DataWorksheet, download.data_worksheet
+      assert_instance_of SampleManifestExcel::Worksheet::RangesWorksheet, download.ranges_worksheet
     end
 
     should "should have styles" do

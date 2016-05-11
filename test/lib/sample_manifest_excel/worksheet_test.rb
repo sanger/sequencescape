@@ -2,6 +2,29 @@ require 'test_helper'
 
 class WorksheetTest < ActiveSupport::TestCase
 
+	context "base worksheet" do
+
+	 	attr_reader :xls, :worksheet, :axlsx_worksheet, :sample_manifest, :column_list, :spreadsheet, :styles, :workbook, :ranges_worksheet, :range_list
+
+		setup do
+			@xls = Axlsx::Package.new
+			@workbook = xls.workbook
+	    @axlsx_worksheet = workbook.add_worksheet(name: 'Base worksheet')
+	    @range_list = build :range_list_with_absolute_reference
+	    @sample_manifest = create :sample_manifest_with_samples
+	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
+	    style = build(:style, workbook: workbook)
+    	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
+	    @worksheet = SampleManifestExcel::Worksheet::Base.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
+	  	save_file
+	  end
+
+	  should "should have a axlsx worksheet" do
+	  	assert worksheet.axlsx_worksheet
+	  end
+
+	end
+
 	context "data worksheet" do
 
 		attr_reader :xls, :worksheet, :axlsx_worksheet, :sample_manifest, :column_list, :spreadsheet, :styles, :workbook, :ranges_worksheet
@@ -10,17 +33,13 @@ class WorksheetTest < ActiveSupport::TestCase
 			@xls = Axlsx::Package.new
 			@workbook = xls.workbook
 	    @axlsx_worksheet = workbook.add_worksheet(name: 'Data worksheet')
-	    @axlsx_ranges_worksheet = workbook.add_worksheet(name: 'Ranges')
-	    @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
-	    @ranges_worksheet = SampleManifestExcel::Worksheet.new(axlsx_worksheet: @axlsx_ranges_worksheet, ranges: range_list)
-	    range_list.set_absolute_references(ranges_worksheet)
+	    @range_list = build :range_list_with_absolute_reference
 	    @sample_manifest = create(:sample_manifest_with_samples)
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = SampleManifestExcel::Style.new(workbook, {locked: false})
     	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
-	    @worksheet = SampleManifestExcel::Worksheet.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
-	  	xls.serialize('test.xlsx')
-	  	@spreadsheet = Roo::Spreadsheet.open('test.xlsx')
+	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
+	  	save_file
 	  end
 
 		should "should have a axlsx worksheet" do
@@ -109,15 +128,14 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	context "validations ranges worksheet" do
 
-	  attr_reader :range_worksheet, :axlsx_worksheet, :range_list, :spreadsheet
+	  attr_reader :range_worksheet, :axlsx_worksheet, :spreadsheet
 
 	  setup do
 	    @xls = Axlsx::Package.new
 		  @axlsx_worksheet = xls.workbook.add_worksheet(name: 'Ranges')
-		  @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
-	    @range_worksheet = SampleManifestExcel::Worksheet.new(axlsx_worksheet: axlsx_worksheet, ranges: range_list)
-	 	  @xls.serialize('test.xlsx')
-	  	@spreadsheet = Roo::Spreadsheet.open('test.xlsx')
+		  @range_list = build :range_list
+	    @range_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(axlsx_worksheet: axlsx_worksheet, ranges: @range_list)
+	 	  save_file
 	  end
 
 	  should "should have a axlsx worksheet" do
@@ -131,10 +149,16 @@ class WorksheetTest < ActiveSupport::TestCase
 	  	end
 	  	assert_equal range_worksheet.ranges.count, axlsx_worksheet.rows.count
 	  end
+
 	end
 
 	def teardown
     File.delete('test.xlsx') if File.exists?('test.xlsx')
+  end
+
+  def save_file
+		@xls.serialize('test.xlsx')
+	  @spreadsheet = Roo::Spreadsheet.open('test.xlsx')
   end
 
 end
