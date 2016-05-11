@@ -46,7 +46,7 @@ Feature: Sample manifest
     When I fill in "File to upload" with the file "test/data/multiplexed_library_manifest.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then print any manifest errors for debugging
     Then I should see the manifest table:
       | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
@@ -78,7 +78,7 @@ Scenario: Create a dual indexed mx manifest
     When I fill in "File to upload" with the file "test/data/multiplexed_di_library_manifest.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-    When I follow "View all manifests"
+    When I refresh the page
     Then print any manifest errors for debugging
     Then I should see the manifest table:
       | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
