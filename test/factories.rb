@@ -89,6 +89,10 @@ FactoryGirl.define do
     after(:build) { |project| project.orders ||= [create(:order, :project => project)] }
   end
 
+  factory :product_catalogue_library_driven do
+    selection_behaviour 'LibraryDriven'
+  end
+
   factory  :study_sample  do
     study       {|study| study.association(:study)}
     sample      {|sample| sample.association(:sample)}

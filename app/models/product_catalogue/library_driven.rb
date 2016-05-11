@@ -7,7 +7,7 @@ class ProductCatalogue::LibraryDriven
   attr_reader :product
 
   def initialize(catalogue,submission_attributes)
-    @product = catalogue.products.first
+    @product = catalogue.product_with_criteria(submission_attributes[:request_options][:library_type]) || catalogue.product_with_criteria(nil)
   end
 
 end

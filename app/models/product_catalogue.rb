@@ -44,7 +44,7 @@ class ProductCatalogue < ActiveRecord::Base
   end
 
   def product_with_criteria(criteria)
-    products.find(:first,:conditions=>{:product_product_catalogues=>{:selection_criterion=>criteria}})
+    products.where(:product_product_catalogues=>{:selection_criterion=>criteria}).first
   end
 
   private
