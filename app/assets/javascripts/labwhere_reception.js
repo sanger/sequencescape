@@ -15,6 +15,12 @@
     };
   }
 
+  // Remove polyfill
+  if (!Element.prototype.remove) {
+    Element.prototype.remove = function() { this.parentNode.removeChild(this); };
+
+  }
+
   scannedBarcode = function(barcode_source,list) {
     var barcode, new_item;
       barcode = barcode_source.value.trim();
@@ -32,10 +38,8 @@
 
   scannedBarcode.prototype = {
     destroy: function() {
-      if (typeof this.domElement.remove !== "undefined") {
-        this.domElement.remove();
-        updateCounter(counter, this.list);
-      }
+      this.domElement.remove();
+      updateCounter(counter, this.list);
     },
     notInList: function(){
       var li_items = this.list.getElementsByTagName('li')
@@ -54,7 +58,7 @@
 
       removeLink = document.createElement('a')
       removeLink.appendChild(document.createTextNode('Remove from list'));
-      $(removeLink).bind('click',$.proxy(function() { this.destroy(); }, scanned_barcode));
+      $(removeLink).bind('click',function() { scanned_barcode.destroy(); })
 
       hiddenField = document.createElement('input');
       hiddenField.setAttribute('type','hidden');
