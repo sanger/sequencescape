@@ -4,7 +4,7 @@ module SampleManifestExcel
 
     class Base
 
-    	attr_accessor :axlsx_worksheet, :columns, :ranges, :sample_manifest, :styles, :name, :password, :type
+    	attr_accessor :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :styles, :name, :password, :type
 
     	def initialize(attributes = {})
     	  attributes.each { |name, value| send("#{name}=", value) }
@@ -30,7 +30,12 @@ module SampleManifestExcel
       	axlsx_worksheet.sheet_protection.password = password
       end
 
+      def insert_axlsx_worksheet(index=0, name)
+        @axlsx_worksheet ||= workbook.insert_worksheet(index, name: name)
+      end
+
       def create_worksheet
+        insert_axlsx_worksheet("Base")
       end
 
     end

@@ -9,13 +9,12 @@ class WorksheetTest < ActiveSupport::TestCase
 		setup do
 			@xls = Axlsx::Package.new
 			@workbook = xls.workbook
-	    @axlsx_worksheet = workbook.add_worksheet(name: 'Base worksheet')
 	    @range_list = build :range_list_with_absolute_reference
 	    @sample_manifest = create :sample_manifest_with_samples
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = build(:style, workbook: workbook)
     	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
-	    @worksheet = SampleManifestExcel::Worksheet::Base.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
+	    @worksheet = SampleManifestExcel::Worksheet::Base.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
 	  	save_file
 	  end
 
@@ -32,13 +31,12 @@ class WorksheetTest < ActiveSupport::TestCase
 		setup do
 			@xls = Axlsx::Package.new
 			@workbook = xls.workbook
-	    @axlsx_worksheet = workbook.add_worksheet(name: 'Data worksheet')
 	    @range_list = build :range_list_with_absolute_reference
 	    @sample_manifest = create(:sample_manifest_with_samples)
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = SampleManifestExcel::Style.new(workbook, {locked: false})
     	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
-	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new axlsx_worksheet: axlsx_worksheet, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
+	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
 	  	save_file
 	  end
 
@@ -128,13 +126,13 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	context "validations ranges worksheet" do
 
-	  attr_reader :range_worksheet, :axlsx_worksheet, :spreadsheet
+	  attr_reader :range_worksheet, :axlsx_worksheet, :spreadsheet, :range_list
 
 	  setup do
 	    @xls = Axlsx::Package.new
-		  @axlsx_worksheet = xls.workbook.add_worksheet(name: 'Ranges')
+	    @workbook = xls.workbook
 		  @range_list = build :range_list
-	    @range_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(axlsx_worksheet: axlsx_worksheet, ranges: @range_list)
+	    @range_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list)
 	 	  save_file
 	  end
 
@@ -147,7 +145,13 @@ class WorksheetTest < ActiveSupport::TestCase
 	  	range.options.each_with_index do |option, i|
 	  		assert_equal option, spreadsheet.sheet(0).cell(1,i+1)
 	  	end
-	  	assert_equal range_worksheet.ranges.count, axlsx_worksheet.rows.count
+	  	assert_equal range_worksheet.ranges.count, spreadsheet.sheet(0).last_row
+	  end
+
+	  should "set absolute references in ranges" do
+	  	range = range_list.ranges.values.first
+    	assert_equal "Ranges!#{range.reference}", range.absolute_reference
+    	assert range_list.all? {|k, range| range.absolute_reference.present?}
 	  end
 
 	end

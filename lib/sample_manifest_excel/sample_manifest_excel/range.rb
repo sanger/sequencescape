@@ -12,8 +12,8 @@ module SampleManifestExcel
       @position = Position.new(first_column: 1, last_column: options.length, first_row: row)
   	end
 
-    def set_absolute_reference(worksheet)
-      @absolute_reference = "#{worksheet.name}!#{reference}"
+    def set_absolute_reference(worksheet_name)
+      @absolute_reference = "#{worksheet_name}!#{reference}"
       self
     end
 

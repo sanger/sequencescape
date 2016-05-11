@@ -4,7 +4,9 @@ module SampleManifestExcel
 	  class RangesWorksheet < Base
 
 	  	def create_worksheet
+	  		insert_axlsx_worksheet("Ranges")
 	  		add_ranges
+	  		ranges.set_absolute_references(name)
 	  	end
 
 	  	def add_ranges

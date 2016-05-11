@@ -4,6 +4,18 @@ module SampleManifestExcel
 
 	  class DataWorksheet < Base
 
+      def create_worksheet
+      	insert_axlsx_worksheet("DNA Collections Form")
+      	prepare_columns
+      	add_title_and_info
+      	add_columns_headings
+      	add_data
+        add_validations
+        add_condititional_formatting
+        freeze_panes
+        self
+      end
+
     	def add_title_and_info
         add_row ["DNA Collections Form"]
         add_rows(3)
@@ -16,17 +28,6 @@ module SampleManifestExcel
     	def add_columns_headings
   			add_row columns.headings, styles[:wrap_text].reference
     	end
-
-      def create_worksheet
-      	prepare_columns
-      	add_title_and_info
-      	add_columns_headings
-      	add_data
-        add_validations
-        add_condititional_formatting
-        freeze_panes
-        self
-      end
 
       def prepare_columns
       	columns.prepare_validations(ranges).add_references(first_row, last_row).unlock(styles[:unlock].reference).prepare_conditional_formatting_rules(styles, ranges)

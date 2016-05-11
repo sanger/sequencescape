@@ -17,8 +17,8 @@ module SampleManifestExcel
       ranges[key]
     end
 
-    def set_absolute_references(worksheet)
-      each {|k, range| range.set_absolute_reference(worksheet)}
+    def set_absolute_references(worksheet_name)
+      each {|k, range| range.set_absolute_reference(worksheet_name)}
       self
     end
 

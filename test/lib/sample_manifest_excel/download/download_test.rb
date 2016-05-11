@@ -16,7 +16,7 @@ class DownloadTest < ActiveSupport::TestCase
       assert File.file?('test.xlsx')
     end
 
-    should "should create a axlsx data worksheet and axlsx ranges worksheet" do
+    should "should have a axlsx data worksheet and axlsx ranges worksheet" do
       assert_equal "DNA Collections Form", spreadsheet.sheets.first
       assert_equal "Ranges", spreadsheet.sheets.last
     end
@@ -37,6 +37,12 @@ class DownloadTest < ActiveSupport::TestCase
     should "column list should be extracted from full column list based on required columns names" do
       assert_equal 0, download.column_list.count
       assert_instance_of SampleManifestExcel::ColumnList, download.column_list
+    end
+
+    should "ranges should have absolute references" do
+      range = download.range_list.ranges.values.first
+      assert_equal "Ranges!#{range.reference}", range.absolute_reference
+      assert download.range_list.all? {|k, range| range.absolute_reference.present?}
     end
 
   end

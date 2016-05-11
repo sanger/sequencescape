@@ -21,9 +21,8 @@ class RangeTest < ActiveSupport::TestCase
   end
 
   test "#set_absolute_reference should set full reference" do
-    worksheet = Axlsx::Package.new.workbook.add_worksheet name: 'New worksheet'
-    range.set_absolute_reference(worksheet)
-    assert_equal "#{worksheet.name}!#{range.reference}", range.absolute_reference
+    range.set_absolute_reference('Ranges')
+    assert_equal "Ranges!#{range.reference}", range.absolute_reference
   end
 
   test "should not be valid without row" do
