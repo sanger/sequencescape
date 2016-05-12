@@ -10,8 +10,8 @@ FactoryGirl.define do
 
   	factory :range_list_with_absolute_reference do
     	after(:build)  do |range_list|
-    		worksheet = build :worksheet
-    		range_list.set_absolute_references(worksheet)
+    		worksheet = build :axlsx_worksheet
+    		range_list.set_absolute_references(worksheet.name)
     	end
     end
 

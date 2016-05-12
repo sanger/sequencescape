@@ -32,9 +32,7 @@ class ValidationTest < ActiveSupport::TestCase
     setup do
       @validation = build :validation
       @validation_with_range = build :validation_with_range
-      @range = build :range
-      worksheet = build :worksheet
-      range.set_absolute_reference(worksheet)
+      @range = build :range_with_absolute_reference
     end
 
     should "should have range" do

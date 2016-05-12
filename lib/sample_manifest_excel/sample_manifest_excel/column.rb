@@ -43,7 +43,7 @@ module SampleManifestExcel
       unlocked
     end
 
-    def cf_rules?
+    def conditional_formatting_rules?
       conditional_formatting_rules.present?
     end
 
@@ -60,6 +60,19 @@ module SampleManifestExcel
       self
     end
 
+    def add_validation_and_conditional_formatting(axlsx_worksheet)
+      axlsx_worksheet.add_data_validation(reference, validation.options) if validation?
+      axlsx_worksheet.add_conditional_formatting(reference, conditional_formatting_options) if conditional_formatting_rules?
+    end
+
+    def prepare_with(first_row, last_row, styles, ranges)
+      add_reference(first_row, last_row)
+      @unlocked = styles[:unlock].reference if unlocked?
+      range = ranges.find_by(range_name) if validation?
+      prepare_validation(range) if validation?
+      prepare_conditional_formatting_rules(styles, range) if conditional_formatting_rules?
+    end
+
     def add_reference(first_row, last_row)
       @position = Position.new(first_column: number, first_row: first_row, last_row: last_row)
     end
@@ -73,21 +86,14 @@ module SampleManifestExcel
       validation.set_formula1(range)
     end
 
-    def cf_options
+    def conditional_formatting_options
       conditional_formatting_rules.collect {|rule| rule.options}
     end
 
     def prepare_conditional_formatting_rules(styles, range=nil)
       conditional_formatting_rules.each do |rule|
-        style_name = rule.options['dxfId']
-        rule.set_style(styles[style_name])
-        rule.set_first_cell_in_formula(first_cell_relative_reference)
-        rule.set_range_reference_in_formula(range) if range
+        rule.prepare(styles[rule.style_name], first_cell_relative_reference, range)
       end
-    end
-
-    def add_conditional_formatting_rules(cf_rules)
-      conditional_formatting_rules.unshift cf_rules
     end
 
   private

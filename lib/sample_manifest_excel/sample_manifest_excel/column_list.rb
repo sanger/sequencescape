@@ -42,8 +42,8 @@ module SampleManifestExcel
       columns.values.select { |column| column.unlocked? }
     end
 
-    def with_cf_rules
-      columns.values.select { |column| column.cf_rules?}
+    def with_conditional_formatting_rules
+      columns.values.select { |column| column.conditional_formatting_rules?}
     end
 
     def add(column)
@@ -63,30 +63,12 @@ module SampleManifestExcel
       @columns ||= {}
     end
 
-    def add_references(first_row, last_row)
-      each {|k, column| column.add_reference(first_row, last_row)}
-      self
+    def prepare_columns(first_row, last_row, styles, ranges)
+      each {|k, column| column.prepare_with(first_row, last_row, styles, ranges)}
     end
 
-    def unlock(n)
-      with_unlocked.each {|column| column.unlocked = n}
-      self
-    end
-
-    def prepare_validations(ranges)
-      with_validations.each do |column|
-        range = ranges.find_by(column.range_name)
-        column.prepare_validation(range)
-      end
-      self
-    end
-
-    def prepare_conditional_formatting_rules(styles, ranges)
-      with_cf_rules.each do |column|
-        range = ranges.find_by(column.range_name) if column.validation?
-        column.prepare_conditional_formatting_rules(styles, range)
-      end
-      self
+    def add_validation_and_conditional_formatting(axlsx_worksheet)
+      each {|k, column| column.add_validation_and_conditional_formatting(axlsx_worksheet)}
     end
 
   private

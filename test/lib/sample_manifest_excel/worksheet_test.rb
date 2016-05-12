@@ -88,26 +88,13 @@ class WorksheetTest < ActiveSupport::TestCase
 	    assert worksheet.axlsx_worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by(:gender).validation.options[:formula1]}
 	  end
 
-	  should "set right formula 1 to validations" do
-	    range = range_list.find_by(:gender)
-	    assert worksheet.axlsx_worksheet.send(:data_validations).find {|validation| validation.formula1 == range.absolute_reference}
-	  end
-
-	  should "add conditional formatting to unlocked columns" do
-	    assert_equal column_list.with_unlocked.count, worksheet.axlsx_worksheet.send(:conditional_formattings).count {|cf| cf.rules.find {|rule| rule.formula.first == 'FALSE'}}
-	    column = column_list.with_unlocked.first
-	    assert_equal column.reference, worksheet.axlsx_worksheet.send(:conditional_formattings).first.sqref
-	    column = column_list.with_unlocked.last
-	    assert_equal column.reference, worksheet.axlsx_worksheet.send(:conditional_formattings).select {|cf| cf.rules.first.formula.first == 'FALSE'}.last.sqref
-	  end
-
 	  should "add all required conditional formatting to all columns" do
 	    assert_equal 32, worksheet.axlsx_worksheet.send(:conditional_formattings).count
 	    column = column_list.find_by(:supplier_sample_name)
-	    assert worksheet.axlsx_worksheet.send(:conditional_formattings).any? {|cf| cf.sqref == column.reference}
-	    cf = worksheet.axlsx_worksheet.send(:conditional_formattings).select {|cf| cf.sqref == column.reference}
-	    assert_equal column.cf_options.count, cf.last.rules.count
-	    assert_equal column.cf_options.last['formula'], cf.last.rules.last.formula.first
+	    assert worksheet.axlsx_worksheet.send(:conditional_formattings).any? {|conditional_formatting| conditional_formatting.sqref == column.reference}
+	    conditional_formatting = worksheet.axlsx_worksheet.send(:conditional_formattings).select {|conditional_formatting| conditional_formatting.sqref == column.reference}
+	    assert_equal column.conditional_formatting_options.count, conditional_formatting.last.rules.count
+	    assert_equal column.conditional_formatting_options.last['formula'], conditional_formatting.last.rules.last.formula.first
 	  end
 
 	  should "panes should be frozen correctly" do

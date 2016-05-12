@@ -5,15 +5,22 @@ class ConditionalFormattingRuleTest < ActiveSupport::TestCase
   attr_reader :conditional_formatting_rule, :simple_conditional_formatting_rule, :range, :style, :column, :worksheet
 
   def setup
-    @conditional_formatting_rule = SampleManifestExcel::ConditionalFormattingRule.new({'option1' => 'value1', 'option2' => 'value2', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'})
-    @simple_conditional_formatting_rule = SampleManifestExcel::ConditionalFormattingRule.new({'option1' => 'value1', 'option2' => 'value2', 'formula' => 'some_formula'})
+    @conditional_formatting_rule = SampleManifestExcel::ConditionalFormattingRule.new('option1' => 'value1', 'option2' => 'value2', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)')
+    @simple_conditional_formatting_rule = build :simple_conditional_formatting_rule
     @range = build :range_with_absolute_reference
     @style = build :style
-    @column = build :column
+    @column = build :column_with_position
   end
 
   test "should have options" do
   	assert conditional_formatting_rule.options
+  end
+
+  test "#prepare should prepare conditional formatting" do
+    conditional_formatting_rule.prepare(style, column.first_cell_relative_reference, range)
+    assert_equal style.reference, conditional_formatting_rule.options['dxfId']
+    assert_match column.first_cell_relative_reference, conditional_formatting_rule.options['formula']
+    assert_match range.absolute_reference, conditional_formatting_rule.options['formula']
   end
 
   test "#set_style should set style" do
@@ -24,7 +31,6 @@ class ConditionalFormattingRuleTest < ActiveSupport::TestCase
   end
 
   test "#set_first_cell_in_formula should set the column first cell relative reference in formula" do
-  	column.set_number(3).add_reference(10, 15)
   	conditional_formatting_rule.set_first_cell_in_formula(column.first_cell_relative_reference)
   	assert_match column.first_cell_relative_reference, conditional_formatting_rule.options['formula']
     refute simple_conditional_formatting_rule.set_first_cell_in_formula(column.first_cell_relative_reference)

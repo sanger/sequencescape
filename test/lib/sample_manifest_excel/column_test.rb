@@ -119,9 +119,7 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "#prepare_validation should prepare validation" do
-      range = build :range
-      worksheet = build :worksheet
-      range.set_absolute_reference(worksheet)
+      range = build :range_with_absolute_reference
       column.prepare_validation(range)
       assert range.absolute_reference, column.validation.options[:formula1]
     end
@@ -129,16 +127,11 @@ class ColumnTest < ActiveSupport::TestCase
   end
 
   context "with conditional formatting rules" do
-    attr_reader :conditional_formatting_rules, :validation, :styles, :range, :column_without_cf
+    attr_reader :raw_column, :ranges, :validation, :styles, :range
 
     setup do
-      @column = build :column_with_validation_and_cf
+      @column = build(:column_with_validation_and_conditional_formatting, conditional_formatting_rules: [{'type' => 'type1', 'operator' => 'operator1', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'},{'type' => 'type1', 'operator' => 'operator2', formula: "smth2(first_cell_relative_reference)"}])
       column.set_number(3).add_reference(10, 15)
-      style =build :style
-      @styles = {unlock: style, style_name: style, style_name_2: style}
-      @range = build :range_with_absolute_reference
-      @column_without_cf = build :column
-      @conditional_formatting_rules = SampleManifestExcel::ConditionalFormattingRule.new({'option1' => 'value1', 'option2' => 'value2', 'dxfId' => :style_name})
     end
 
     should "have conditional formatting rules" do
@@ -147,11 +140,14 @@ class ColumnTest < ActiveSupport::TestCase
       end
     end
 
-    should "#cf_rules? should be true" do
-      assert column.cf_rules?
+    should "#conditional_formatting_rules? should be true" do
+      assert column.conditional_formatting_rules?
     end
 
-    should "#prepare_conditional_formatting_rules should prepare all rules to be applied" do
+    should "#prepare_conditional_formatting_rules should prepare all rules" do
+      style =build :style
+      styles = {unlock: style, style_name: style, style_name_2: style}
+      range = build :range_with_absolute_reference
       column.prepare_conditional_formatting_rules(styles, range)
       rule = column.conditional_formatting_rules.first
       assert_equal styles[:style_name].reference, rule.options['dxfId']
@@ -159,21 +155,36 @@ class ColumnTest < ActiveSupport::TestCase
       assert_match range.absolute_reference, rule.options['formula']
     end
 
-    should "have cf_options" do
-      assert_instance_of Array, column.cf_options
-      assert_equal 2, column.cf_options.count
-      column.cf_options.each do |cf|
-        assert_instance_of Hash, cf
+    should "have conditional_formatting_options" do
+      assert_instance_of Array, column.conditional_formatting_options
+      assert_equal 2, column.conditional_formatting_options.count
+      column.conditional_formatting_options.each do |conditional_formatting|
+        assert_instance_of Hash, conditional_formatting
       end
     end
 
-    should "add conditional formatting rule" do
-      refute column_without_cf.cf_rules?
-      column_without_cf.add_conditional_formatting_rules(conditional_formatting_rules)
-      assert column_without_cf.cf_rules?
-      assert_equal conditional_formatting_rules, column_without_cf.conditional_formatting_rules.first
-      column.add_conditional_formatting_rules(conditional_formatting_rules)
-      assert_equal conditional_formatting_rules, column.conditional_formatting_rules.first
+  end
+
+  context "complicated column" do
+
+    setup do
+      style =build :style
+      @styles = {unlock: style, style_name: style, style_name_2: style}
+      @raw_column = build :column_with_validation_and_conditional_formatting
+      @ranges = build :range_list_with_absolute_reference
+    end
+
+    should "prepare column" do
+      refute raw_column.position
+      refute raw_column.unlocked.is_a? Integer
+      raw_column.prepare_with(10, 15, styles, ranges)
+      assert raw_column.position
+      assert raw_column.unlocked.is_a? Integer
+      assert_equal ranges.find_by(:gender).absolute_reference, raw_column.validation.options[:formula1]
+      rule = raw_column.conditional_formatting_rules.first
+      assert_equal styles[:style_name].reference, rule.options['dxfId']
+      assert_match raw_column.first_cell_relative_reference, rule.options['formula']
+      assert_match ranges.find_by(:gender).absolute_reference, rule.options['formula']
     end
 
   end

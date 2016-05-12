@@ -30,10 +30,6 @@ module SampleManifestExcel
         @workbook ||= xls.workbook
       end
 
-      def insert_worksheet(index=0, name)
-        workbook.insert_worksheet(index, name: name)
-      end
-
       def self.column_names
         @column_names ||= []
       end

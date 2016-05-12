@@ -8,11 +8,9 @@ class ColumnListTest < ActiveSupport::TestCase
     @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
     @column_list = SampleManifestExcel::ColumnList.new(yaml)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
-    @ranges = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
+    @ranges = build :range_list_with_absolute_reference
     style = build :style
     @styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style}
-    @worksheet = build :worksheet
-    ranges.set_absolute_references(worksheet)
   end
 
   test "should create a list of columns" do
@@ -85,38 +83,40 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 8, column_list.with_unlocked.count
   end
 
-  test "#with_cf_rules should return a list of columns which have conditional formatting rules" do
-    assert_equal 2, column_list.with_cf_rules.count
+  test "#with_conditional_formatting_rules should return a list of columns which have conditional formatting rules" do
+    assert_equal 2, column_list.with_conditional_formatting_rules.count
   end
 
-  test "#add_references should add positions and references to columns" do
-    column_list.add_references(10, 15)
-    column = column_list.columns.values.first
-    assert_equal SampleManifestExcel::Position.new(first_column: column.number, first_row: 10, last_row: 15).reference, column.reference
-    assert column_list.all? {|k, column| column.reference.present?}
-  end
-
-  test "#unlock should assign the right unlock to columns" do
-    unlocked = column_list.with_unlocked.count
-    column_list.unlock(3)
-    assert_equal unlocked, column_list.with_unlocked.count
-    assert_equal 3, column_list.with_unlocked.first.unlocked
-    assert_equal 3, column_list.with_unlocked.last.unlocked
-  end
-
-  test "#prepare_validations should set the right formula1 to validations" do
-    column_list.prepare_validations(ranges)
+  test "#prepare_columns should prepare columns" do
+    column_list.prepare_columns(10, 15, styles, ranges)
+    column_list.each { |k, column| assert column.position }
+    assert column_list.with_unlocked.all? {|column| column.unlocked.is_a? Integer}
     column = column_list.find_by(:gender)
     assert_equal ranges.find_by(:gender).absolute_reference, column.validation.options[:formula1]
-  end
-
-  test "#prepare_conditional_formatting_rules should prepare rules" do
-    column_list.add_references(10, 15)
-    column_list.prepare_conditional_formatting_rules(styles, ranges)
-    column = column_list.find_by(:gender)
     rule = column.conditional_formatting_rules.last
     assert_equal styles[:wrong_value].reference, rule.options['dxfId']
     assert_match column.first_cell_relative_reference, rule.options['formula']
     assert_match ranges.find_by(:gender).absolute_reference, rule.options['formula']
   end
+
+  test "#add_validation_and_conditional_formatting should add it to axlsx_worksheet" do
+    axlsx_worksheet = build :axlsx_worksheet
+    column_list.prepare_columns(10, 15, styles, ranges)
+    column_list.add_validation_and_conditional_formatting(axlsx_worksheet)
+
+    assert_equal column_list.with_validations.count, axlsx_worksheet.send(:data_validations).count
+    column = column_list.with_validations.first
+    assert_equal column.reference, axlsx_worksheet.send(:data_validations).first.sqref
+    column = column_list.with_validations.last
+    assert_equal column.reference, axlsx_worksheet.send(:data_validations).last.sqref
+    assert axlsx_worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by(:gender).validation.options[:formula1]}
+
+    assert_equal 2, axlsx_worksheet.send(:conditional_formattings).count
+    column = column_list.find_by(:sibling)
+    assert axlsx_worksheet.send(:conditional_formattings).any? {|conditional_formatting| conditional_formatting.sqref == column.reference}
+    conditional_formatting = axlsx_worksheet.send(:conditional_formattings).select {|conditional_formatting| conditional_formatting.sqref == column.reference}
+    assert_equal column.conditional_formatting_options.count, conditional_formatting.last.rules.count
+    assert_equal column.conditional_formatting_options.last['formula'], conditional_formatting.last.rules.last.formula.first
+  end
+
 end

@@ -6,14 +6,9 @@ module SampleManifestExcel
 
       def create_worksheet
       	insert_axlsx_worksheet("DNA Collections Form")
-      	prepare_columns
       	add_title_and_info
-      	add_columns_headings
-      	add_data
-        add_validations
-        add_condititional_formatting
+      	add_columns
         freeze_panes
-        self
       end
 
     	def add_title_and_info
@@ -25,13 +20,20 @@ module SampleManifestExcel
         add_rows(1)
     	end
 
+      def add_columns
+        prepare_columns
+        add_columns_headings
+        add_data
+        columns.add_validation_and_conditional_formatting axlsx_worksheet
+      end
+
+      def prepare_columns
+        columns.prepare_columns(first_row, last_row, styles, ranges)
+      end
+
     	def add_columns_headings
   			add_row columns.headings, styles[:wrap_text].reference
     	end
-
-      def prepare_columns
-      	columns.prepare_validations(ranges).add_references(first_row, last_row).unlock(styles[:unlock].reference).prepare_conditional_formatting_rules(styles, ranges)
-      end
 
       def add_data
   			sample_manifest.samples.each { |sample| create_row(sample) }
@@ -42,18 +44,6 @@ module SampleManifestExcel
           columns.each do |k, column|
             row.add_cell column.actual_value(sample), type: column.type, style: column.unlocked
           end
-        end
-      end
-
-      def add_validations
-        columns.with_validations.each do |column|
-          axlsx_worksheet.add_data_validation(column.reference, column.validation.options)
-        end
-      end
-
-      def add_condititional_formatting
-        columns.with_cf_rules.each do |column|
-          axlsx_worksheet.add_conditional_formatting column.reference, column.cf_options
         end
       end
 
