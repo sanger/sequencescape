@@ -10,5 +10,5 @@ class ProductCatalogue::LibraryDriven
     # library_type_name will be set to nil if it was not defined
     library_type_name = (submission_attributes[:request_options] || {})[:library_type]
     @product = catalogue.product_with_library_type(library_type_name)
-
+  end
 end

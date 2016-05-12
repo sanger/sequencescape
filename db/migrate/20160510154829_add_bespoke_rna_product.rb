@@ -1,8 +1,19 @@
 class AddBespokeRnaProduct < ActiveRecord::Migration
-  # We need to add here the list of DNA and RNA libraries. By default, the product selected will be Generic
-  # (that is the product we will use for anything not RNA)
-  DNA_LIBRARIES = []
-  RNA_LIBRARIES = []
+
+  DNA_LIBRARIES = [
+    # No DNA libraries
+  ]
+  RNA_LIBRARIES = [
+    "RNA-seq dUTP",
+    "RNA-seq dUTP eukaryotic",
+    "RNA-seq dUTP prokaryotic",
+    "Ribozero RNA depletion",
+    "Ribozero RNA-seq (Bacterial)",
+    "Ribozero RNA-seq (HMR)",
+    "Small RNA",
+    "TruSeq mRNA (RNA Seq)",
+    "DAFT-seq"
+  ]
 
   DNA_CONFIG = {
       :concentration => { :less_than => 1},
@@ -56,10 +67,14 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
       self.send(action, product_catalogue, self.DEFAULT_PRODUCT, nil)
 
       DNA_LIBRARIES.each do |library_type_name|
+        # Check if it exists
+        LibraryType.find_by_name!(library_type_name)
         self.send(action, product_catalogue, self.DNA_PRODUCT, library_type_name)
       end
 
       RNA_LIBRARIES.each do |library_type_name|
+        # Check if it exists
+        LibraryType.find_by_name!(library_type_name)
         self.send(action, product_catalogue, self.RNA_PRODUCT, library_type_name)
       end
   end
