@@ -9,7 +9,7 @@ class AddFurtherHistoricEvents < ActiveRecord::Migration
       tube = sc.target
       next if BroadcastEvent::LibraryComplete.find_by_seed_id_and_seed_type(tube.id,'Asset').present?
       user = sc.user
-      orders = sc.target.requests_as_target.pluck(&:order_id).compact.uniq
+      orders = sc.target.requests_as_target.pluck(:order_id).compact.uniq
       orders.each do |order_id|
         BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>order_id},:created_at=>sc.created_at)
       end
@@ -25,7 +25,7 @@ class AddFurtherHistoricEvents < ActiveRecord::Migration
       plate = sc.target
       next if LibraryEvent.find_by_seed_id_and_seed_type(plate.id,'Asset').present?
       user = sc.user
-      orders = sc.target.requests_as_target.pluck(&:order_id).compact.uniq
+      orders = sc.target.requests_as_target.pluck(:order_id).compact.uniq
       orders.each do |order_id|
         LibraryEvent.create!(:seed=>plate,:user=>user,:properties=>{:event_type=>'lib_pcr_xp_created'},:created_at=>sc.created_at)
       end
