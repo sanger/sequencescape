@@ -52,6 +52,31 @@ Feature: Pick a ng quantity using the Tecan robot
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
+    A;BUFF;;96-TROUGH;2;;1.7
+    D;1220099999705;;ABgene 0800;2;;1.7
+    W;
+    A;BUFF;;96-TROUGH;3;;2.9
+    D;1220099999705;;ABgene 0800;3;;2.9
+    W;
+    A;BUFF;;96-TROUGH;4;;3.8
+    D;1220099999705;;ABgene 0800;4;;3.8
+    W;
+    A;BUFF;;96-TROUGH;8;;9.0
+    D;1220099999705;;ABgene 0800;8;;9.0
+    W;
+    A;BUFF;;96-TROUGH;9;;8.9
+    D;1220099999705;;ABgene 0800;9;;8.9
+    W;
+    A;BUFF;;96-TROUGH;10;;8.8
+    D;1220099999705;;ABgene 0800;10;;8.8
+    W;
+    A;BUFF;;96-TROUGH;11;;8.6
+    D;1220099999705;;ABgene 0800;11;;8.6
+    W;
+    A;BUFF;;96-TROUGH;12;;8.3
+    D;1220099999705;;ABgene 0800;12;;8.3
+    W;
+    C;
     A;1220000222748;;ABgene 0765;2;;10.0
     D;1220099999705;;ABgene 0800;1;;10.0
     W;
@@ -99,31 +124,6 @@ Feature: Pick a ng quantity using the Tecan robot
     W;
     A;1220000333802;;ABgene 0765;28;;20.0
     D;1220099999705;;ABgene 0800;16;;20.0
-    W;
-    C;
-    A;BUFF;;96-TROUGH;2;;1.7
-    D;1220099999705;;ABgene 0800;2;;1.7
-    W;
-    A;BUFF;;96-TROUGH;3;;2.9
-    D;1220099999705;;ABgene 0800;3;;2.9
-    W;
-    A;BUFF;;96-TROUGH;4;;3.8
-    D;1220099999705;;ABgene 0800;4;;3.8
-    W;
-    A;BUFF;;96-TROUGH;8;;9.0
-    D;1220099999705;;ABgene 0800;8;;9.0
-    W;
-    A;BUFF;;96-TROUGH;9;;8.9
-    D;1220099999705;;ABgene 0800;9;;8.9
-    W;
-    A;BUFF;;96-TROUGH;10;;8.8
-    D;1220099999705;;ABgene 0800;10;;8.8
-    W;
-    A;BUFF;;96-TROUGH;11;;8.6
-    D;1220099999705;;ABgene 0800;11;;8.6
-    W;
-    A;BUFF;;96-TROUGH;12;;8.3
-    D;1220099999705;;ABgene 0800;12;;8.3
     W;
     C;
     C; SCRC1 = 1220000222748
