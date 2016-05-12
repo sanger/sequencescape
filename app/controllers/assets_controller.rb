@@ -360,9 +360,9 @@ class AssetsController < ApplicationController
       return
     elsif barcode.size == 13 && Barcode.check_EAN(barcode)
       @asset = Asset.with_machine_barcode(barcode).first
-    elsif match = /\A(\w{2})([0-9]{1,7})\w{0,1}\z/.match(barcode) # Human Readable
+    elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
-      @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2],prefix.id)
+      @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2],prefix.id) if prefix
     elsif /\A[0-9]{1,7}\z/.match(barcode) # Just a number
       @asset = Asset.find_by_barcode(barcode)
     else
