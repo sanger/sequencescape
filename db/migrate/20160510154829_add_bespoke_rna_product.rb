@@ -1,27 +1,39 @@
 class AddBespokeRnaProduct < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do
+      DNA_LIBRARIES = []
+      RNA_LIBRARIES = ['Small RNA']
+
+      def add_criteria(product_catalogue, product, library_type_name, configuration)
+        ProductCriteria.create!(:product => product,
+          :stage => 'stock',
+          :configuration => configuration)
+        ProductProductCatalogue.create!(:product_catalogue => pc, :product => product, :selection_criterion => library_type_name)
+      end
+
       pc = ProductCatalogue.find_by_name!("GenericPCR")
-      rna_library = LibraryType.find_by_name!('Small RNA')
       product = Product.find_or_create_by_name('Bespoke RNA')
 
-      ProductCriteria.create!(:product => product,
-        :stage => 'stock',
-        :configuration => {
-        :concentration => { :less_than => 1},
-        :rin => {:less_than => 6},
-        :sanger_sample_id => {},
-        :plate_barcode => {},
-        :well_location => {},
-        :supplier_name => {},
-        :current_volume => {},
-        :total_micrograms => {},
-        :gender => {},
-        :gender_markers => {}
-      })
 
-      ProductProductCatalogue.create!(:product_catalogue => pc, :product => product, :selection_criterion => rna_library.name)
+      DNA_CONFIG = {
+          :concentration => { :less_than => 1},
+          :rin => {:less_than => 6},
+          :gender_markers => {}
+        }
 
+      RNA_CONFIG = {
+          :concentration => { :less_than => 1},
+          :rin => {:less_than => 6},
+          :gender_markers => {}
+        }
+
+      DNA_LIBRARIES.each do |library_type_name|
+        add_criteria(pc, product, library_type_name, DNA_CONFIG)
+      end
+
+      RNA_LIBRARIES.each do |library_type_name|
+        add_criteria(pc, product, library_type_name, RNA_CONFIG)
+      end
     end
   end
 

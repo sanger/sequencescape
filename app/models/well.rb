@@ -170,6 +170,7 @@ class Well < Aliquot::Receptacle
   delegate_to_well_attribute(:gel_pass)
   delegate_to_well_attribute(:study_id)
   delegate_to_well_attribute(:gender)
+  delegate_to_well_attribute(:rin)
 
   delegate_to_well_attribute(:concentration)
   alias_method(:get_pico_result, :get_concentration)
