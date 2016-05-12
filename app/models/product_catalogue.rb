@@ -49,7 +49,12 @@ class ProductCatalogue < ActiveRecord::Base
   end
 
   def product_with_library_type(library_type_name)
-    return product_with_criteria(library_type_name) || product_with_criteria(nil)
+    # Order of priorities to select a Product:
+    # In a LibraryDriven selection we select the Product with this priorities:
+    # 1- The product linked with the library type
+    # 2- The first product linked with "nil" SelectionCriterion
+    # 3- nil in any other case
+    product_with_criteria(library_type_name) || product_with_criteria(nil)
   end
 
   private
