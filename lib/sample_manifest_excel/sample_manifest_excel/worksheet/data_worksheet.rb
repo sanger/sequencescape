@@ -2,16 +2,24 @@ module SampleManifestExcel
 
 	module Worksheet
 
+    #DataWorksheet creates a data worksheet to be filled in by a client.
+
 	  class DataWorksheet < Base
+
+      #Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
+      #data validations, conditional formattings, freezes panes at required place.
 
       def create_worksheet
       	insert_axlsx_worksheet("DNA Collections Form")
-      	add_title_and_info
+      	add_title_and_description
       	add_columns
         freeze_panes
       end
 
-    	def add_title_and_info
+      #Adds title and description (study abbreviation, supplier name, number of assets sent)
+      #to a worksheet.
+
+    	def add_title_and_description
         add_row ["DNA Collections Form"]
         add_rows(3)
         add_row ["Study:", sample_manifest.study.abbreviation]
@@ -20,6 +28,8 @@ module SampleManifestExcel
         add_rows(1)
     	end
 
+      #Adds columns with all required data to a worksheet
+
       def add_columns
         prepare_columns
         add_columns_headings
@@ -27,17 +37,35 @@ module SampleManifestExcel
         columns.add_validation_and_conditional_formatting axlsx_worksheet
       end
 
+      #Prepares columns to be added to the worksheet, provides information required to
+      #prepare columns:
+      #- the first row where the table with columns starts (to be used for columns positions,
+      #  i.e. first cell of column),
+      #- the last row where the table with columns ends (to be used for columns positions,
+      #  i.e. last cell of column),
+      #- styles (to be used for conditional formattings, lock/unlock of cells, borders)
+      #- range list object (to be used in data validations and conditional formattings)
+
       def prepare_columns
         columns.prepare_columns(first_row, last_row, styles, ranges)
       end
+
+      #Adds columns headings to a worksheet, also adds style to headings (they have borders,
+      #alignement (center), cells wrap text)
 
     	def add_columns_headings
   			add_row columns.headings, styles[:wrap_text].reference
     	end
 
+      #Adds values to particular columns (for example, plate_id, sanger_sample_id)
+      #row by row based on samples information
+
       def add_data
   			sample_manifest.samples.each { |sample| create_row(sample) }
       end
+
+      #Creates row filled in with required column values, also unlocks (adds unlock style)
+      #the cells that should be filled in by clients
 
       def create_row(sample)
         axlsx_worksheet.add_row do |row|
@@ -46,6 +74,9 @@ module SampleManifestExcel
           end
         end
       end
+
+      #Freezes panes vertically after particular column (sanger_sample_id by default)
+      #and horizontally after headings
 
       def freeze_panes(name = :sanger_sample_id)
         axlsx_worksheet.sheet_view.pane do |pane|
@@ -56,13 +87,20 @@ module SampleManifestExcel
         end
       end
 
+      #Finds the column after whech the panes should be frozen. If the column was not found
+      #freezes the panes after column 0 (basically not frozen vertically)
+
       def freeze_after_column(name)
         columns.find_by(name) ? columns.find_by(name).number : 0
       end
 
+      #The row where the table with data starts (after headings)
+
       def first_row
         10
       end
+
+      #The row where the table with data end
 
       def last_row
         @last_row ||= sample_manifest.samples.count + first_row - 1

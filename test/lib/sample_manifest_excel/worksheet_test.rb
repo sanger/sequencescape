@@ -44,7 +44,7 @@ class WorksheetTest < ActiveSupport::TestCase
 	  	assert worksheet.axlsx_worksheet
 	  end
 
-	  should "should add title and info" do
+	  should "should add title and description" do
 	    assert_equal "DNA Collections Form", spreadsheet.sheet(0).cell(1,1)
 	    assert_equal "Study:", spreadsheet.sheet(0).cell(5,1)
 	    assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(0).cell(5,2)

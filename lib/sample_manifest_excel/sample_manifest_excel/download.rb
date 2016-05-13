@@ -1,4 +1,19 @@
 module SampleManifestExcel
+
+	#A download takes data of all possible columns used in various excel sample manifests
+	#and creates an excel sample manifest file with the  columns, required for particular type
+	#of sample manifest, values, data validation and conditional formatting.
+	#
+	#For now 7 types of excel sample manifests can be created:
+	#- plate default,
+	#- tube default,
+	#- multiplexed library default,
+	#- plate full,
+	#- tube full,
+	#- plate RNAChIP,
+	#- tube RNAChIP.
+	#
+
   module Download
 
 	  module ColumnHelper
@@ -17,6 +32,8 @@ module SampleManifestExcel
 
 	  end
 
+	  #Plate has specific columns names required for plate sample manifests.
+
 	  module Plate
 	    extend ActiveSupport::Concern
 
@@ -30,6 +47,8 @@ module SampleManifestExcel
 	    	'Plates'
 	    end
     end
+
+	  #Tube has specific columns names required for tube sample manifests.
 
     module Tube
 	    extend ActiveSupport::Concern
@@ -45,6 +64,8 @@ module SampleManifestExcel
 	    end
     end
 
+	  #Default has specific columns names required for default sample manifests.
+
 	  module Default
 	    extend ActiveSupport::Concern
 
@@ -55,6 +76,8 @@ module SampleManifestExcel
 	    end
 
 	  end
+
+	  #Full has specific columns names required for full sample manifests.
 
 	  module Full
 
@@ -68,6 +91,8 @@ module SampleManifestExcel
 
 	  end
 
+	  #Rnachip has specific columns names required for RNAChIP sample manifests.
+
 	  module Rnachip
 
 	    extend ActiveSupport::Concern
@@ -79,6 +104,8 @@ module SampleManifestExcel
 	    end
 
 	  end
+
+	  #Multiplexed has specific columns names required for multiplexed libraries sample manifests.
 
 	  module Multiplexed
 
