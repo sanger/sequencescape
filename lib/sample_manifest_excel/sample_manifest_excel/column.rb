@@ -130,7 +130,7 @@ module SampleManifestExcel
 
     def prepare_conditional_formatting_rules(styles, range=nil)
       conditional_formatting_rules.each do |rule|
-        rule.prepare(styles[rule.style_name], first_cell_relative_reference, range)
+        rule.prepare(styles[rule.style], first_cell_relative_reference, range)
       end
     end
 

@@ -16,12 +16,13 @@
       promptTitle: "Tag set name"
       prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :tag_index:
   :heading: TAG INDEX
   :unlocked: true
@@ -39,21 +40,24 @@
       errorTitle: "Tag index"
       error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :cellIs
-    operator: :lessThan
-    formula: "1"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISTEXT(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :options:
+      type: :cellIs
+      operator: :lessThan
+      formula: "1"
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISTEXT(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :tag2_group:
   :heading: TAG2 GROUP (Fill in for dual Index Only)
   :unlocked: true
@@ -64,12 +68,13 @@
       promptTitle: "Tag set name"
       prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :tag2_index:
   :heading: TAG2 INDEX (Fill in for dual Index Only)
   :unlocked: true
@@ -87,21 +92,24 @@
       errorTitle: "Tag index"
       error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :cellIs
-    operator: :lessThan
-    formula: "1"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISTEXT(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :options:
+      type: :cellIs
+      operator: :lessThan
+      formula: "1"
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISTEXT(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :library_type:
   :heading: LIBRARY TYPE
   :unlocked: true
@@ -112,12 +120,13 @@
       promptTitle: "Library type"
       prompt: "Provide a library type from the approved list"
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :insert_size_from:
   :heading: INSERT SIZE FROM
   :unlocked: true
@@ -131,21 +140,24 @@
       promptTitle: "Insert size from"
       prompt: "The minimum insert size in the library"
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :cellIs
-    operator: :lessThan
-    formula: "1"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISTEXT(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :options:
+      type: :cellIs
+      operator: :lessThan
+      formula: "1"
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISTEXT(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :insert_size_to:
   :heading: INSERT SIZE TO
   :unlocked: true
@@ -163,21 +175,24 @@
       errorTitle: "Insert size to"
       error: "Insert size to must be a whole number, greater or equal to the insert size from"
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :cellIs
-    operator: :lessThan
-    formula: "1"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISTEXT(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :options:
+      type: :cellIs
+      operator: :lessThan
+      formula: "1"
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISTEXT(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :supplier_sample_name:
   :heading: SUPPLIER SAMPLE NAME
   :unlocked: true
@@ -195,20 +210,23 @@
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 20 characters in length."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>20"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>20"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :cohort:
   :heading: COHORT
   :unlocked: true
@@ -226,20 +244,23 @@
       errorTitle: "Cohort"
       error: "7 uppercase characters, maximum"
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>7"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>7"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :volume:
   :heading: VOLUME (ul)
   :unlocked: true
@@ -257,21 +278,24 @@
       errorTitle: "Volume"
       error: "This value must be numeric."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :cellIs
-    operator: :lessThan
-    formula: "0"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISTEXT(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :options:
+      type: :cellIs
+      operator: :lessThan
+      formula: "0"
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISTEXT(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :conc:
   :heading: CONC. (ng/ul)
   :unlocked: true
@@ -289,21 +313,24 @@
       errorTitle: "Concentration"
       error: "This value must be numeric."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :cellIs
-    operator: :lessThan
-    formula: "0"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISTEXT(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :options:
+      type: :cellIs
+      operator: :lessThan
+      formula: "0"
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISTEXT(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :gender:
   :heading: GENDER
   :unlocked: true
@@ -322,16 +349,18 @@
       error: "Please enter gender"
     :range_name: :gender
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :country_of_origin:
   :heading: COUNTRY OF ORIGIN
   :unlocked: true
@@ -349,20 +378,23 @@
       errorTitle: "Country Of Origin"
       error: "30 uppercase characters, maximum"
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>30"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>30"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :geographical_region:
   :heading: GEOGRAPHICAL REGION
   :unlocked: true
@@ -380,20 +412,23 @@
       errorTitle: "Region"
       error: "30 uppercase characters, maximum"
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>30"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>30"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :ethnicity:
   :heading: ETHNICITY
   :unlocked: true
@@ -411,20 +446,23 @@
       errorTitle: "Ethnicity"
       error: "30 uppercase characters, maximum"
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>30"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>30"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :dna_source:
   :heading: DNA SOURCE
   :unlocked: true
@@ -443,16 +481,18 @@
       error: "You must enter a Source from the list provided."
     :range_name: :dna_source
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :date_of_sample_collection:
   :heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
   :unlocked: true
@@ -470,16 +510,18 @@
       errorTitle: "Sample Collection Date"
       error: "This must be either a combination of month and year, or a whole year, with no spaces."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>5"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>5"
+    :options:
+      type: :expression
+      priority: 2
 :date_of_dna_extraction:
   :heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   :unlocked: true
@@ -497,16 +539,18 @@
       errorTitle: "Sample Collection Date"
       error: "This must be either a combination of month and year, or a whole year, with no spaces."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>5"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>5"
+    :options:
+      type: :expression
+      priority: 2
 :is_sample_a_control?:
   :heading: IS SAMPLE A CONTROL?
   :unlocked: true
@@ -525,16 +569,18 @@
       error: "You must enter either Y or N."
     :range_name: :yes_no
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :is_re_submitted_sample?:
   :heading: IS RE-SUBMITTED SAMPLE?
   :unlocked: true
@@ -553,26 +599,29 @@
       error: "You must enter either Y or N."
     :range_name: :yes_no
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :dna_extraction_method:
   :heading: DNA EXTRACTION METHOD
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :sample_purified?:
   :heading: SAMPLE PURIFIED?
   :unlocked: true
@@ -591,16 +640,18 @@
       error: "You must enter either Y or N."
     :range_name: :yes_no
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :purification_method:
   :heading: PURIFICATION METHOD
   :unlocked: true
@@ -619,16 +670,18 @@
       error: "You must enter a Method from the list provided."
     :range_name: :purification_method
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :concentration_determined_by:
   :heading: CONCENTRATION DETERMINED BY
   :unlocked: true
@@ -647,16 +700,18 @@
       error: "You must enter a Method from the list provided."
     :range_name: :concentration_determined_by
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :dna_storage_conditions:
   :heading: DNA STORAGE CONDITIONS
   :unlocked: true
@@ -675,16 +730,18 @@
       error: "You must enter a Temperature from the list provided, in the correct format e.g.+4C."
     :range_name: :dna_storage_conditions
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :mother:
   :heading: MOTHER (optional)
   :unlocked: true
@@ -702,20 +759,23 @@
       errorTitle: "Mother - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>15"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>15"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :father:
   :heading: FATHER (optional)
   :unlocked: true
@@ -733,20 +793,23 @@
       errorTitle: "Father - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>15"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>15"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :sibling:
   :heading: SIBLING (optional)
   :unlocked: true
@@ -764,298 +827,329 @@
       errorTitle: "Sibling - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>15"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>15"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :gc_content:
   :heading: GC CONTENT
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :public_name:
   :heading: PUBLIC NAME
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :taxon_id:
   :heading: TAXON ID
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :common_name:
   :heading: COMMON NAME
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :sample_description:
   :heading: SAMPLE DESCRIPTION
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :strain:
   :heading: STRAIN
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :sample_visibility:
   :heading: SAMPLE VISIBILITY
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :sample_type:
   :heading: SAMPLE TYPE
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :sample_accession_number:
   :heading: SAMPLE ACCESSION NUMBER (optional)
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :donor_id:
   :heading: DONOR ID (required for EGA)
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :phenotype:
   :heading: PHENOTYPE (required for EGA)
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :genotype:
   :heading: GENOTYPE
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :age:
   :heading: AGE (with units)
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :developmental_stage:
   :heading: Developmental stage
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :cell_type:
   :heading: Cell Type
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :disease_state:
   :heading: Disease State
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :compound:
   :heading: Compound
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :dose:
   :heading: Dose
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :immunoprecipitate:
   :heading: Immunoprecipitate
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :growth_condition:
   :heading: Growth condition
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :rnai:
   :heading: RNAi
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :rnai_2:
   :heading: RNAi
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :organism_part:
   :heading: Organism part
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :time_point:
   :heading: Time Point
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :treatment:
   :heading: Treatment
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :subject:
   :heading: Subject
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :disease:
   :heading: Disease
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 :donor_id_2:
   :heading: DONOR ID (required for cancer samples)
   :unlocked: true
   :conditional_formatting_rules:
-  - dxfId: :empty_cell
-    priority: 1
-    operator: :equal
-    formula: 'FALSE'
-    type: :cellIs
-    stopIfTrue: true
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
 

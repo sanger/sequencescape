@@ -14,7 +14,7 @@ FactoryGirl.define do
       	initialize_with { new(name: name, heading: heading, validation: validation) }
 
       	factory :column_with_validation_and_conditional_formatting do
-        	conditional_formatting_rules [{'type' => 'type1', 'operator' => 'operator1', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'},{'type' => 'type1', 'operator' => 'operator2', formula: "smth2(first_cell_relative_reference)"}]
+        	conditional_formatting_rules [{options: {'type' => 'type1', 'operator' => 'operator1'}, style: :style_name, formula: 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'},{options: {'type' => 'type1', 'operator' => 'operator2', formula: "smth2"}}]
       		initialize_with { new(name: name, heading: heading, unlocked: true, validation: validation, conditional_formatting_rules: conditional_formatting_rules) }
 
         end

@@ -130,7 +130,7 @@ class ColumnTest < ActiveSupport::TestCase
     attr_reader :raw_column, :ranges, :validation, :styles, :range
 
     setup do
-      @column = build(:column_with_validation_and_conditional_formatting, conditional_formatting_rules: [{'type' => 'type1', 'operator' => 'operator1', 'dxfId' => :style_name, 'formula' => 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'},{'type' => 'type1', 'operator' => 'operator2', formula: "smth2(first_cell_relative_reference)"}])
+      @column = build(:column_with_validation_and_conditional_formatting, conditional_formatting_rules: [{style: :style_name, options: {'type' => 'type1', 'operator' => 'operator1'}, formula: 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'},{options: {'type' => 'type1', 'operator' => 'operator2', formula: "smth2"}}])
       column.set_number(3).add_reference(10, 15)
     end
 

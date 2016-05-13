@@ -34,10 +34,18 @@
       error: "Please enter gender"
     :range_name: :gender
   :conditional_formatting_rules:
-  - type: :expression
-    formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :options:
+      type: :expression
+      priority: 2
 :public_name:
   :heading: PUBLIC NAME
   :unlocked: true
@@ -61,14 +69,23 @@
       errorTitle: "Sibling - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   :conditional_formatting_rules:
-  - type: :expression
-    formula: "LEN(first_cell_relative_reference)>15"
-    dxfId: :wrong_value
-    priority: 2
-  - type: :expression
-    formula: "ISNUMBER(first_cell_relative_reference)"
-    dxfId: :wrong_value
-    priority: 2
+  - :style: :empty_cell
+    :options:
+      priority: 1
+      operator: :equal
+      formula: 'FALSE'
+      type: :cellIs
+      stopIfTrue: true
+  - :style: :wrong_value
+    :formula: "LEN(first_cell_relative_reference)>15"
+    :options:
+      type: :expression
+      priority: 2
+  - :style: :wrong_value
+    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :options:
+      type: :expression
+      priority: 2
 :donor_id:
   :heading: DONOR ID (required for EGA)
   :unlocked: true
