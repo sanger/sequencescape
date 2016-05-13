@@ -27,13 +27,13 @@ module SampleManifestExcel
       end
     end
 
-    #Assignes validation to a column. Validation is an object.
+    #Assigns validation to a column. Validation is an object.
 
     def validation=(validation)
       @validation = Validation.new(validation)
     end
 
-    #Assignes conditional formatting rules to a column.
+    #Assigns conditional formatting rules to a column.
     #As column may have more than one conditional formatting rule, it returns a hash of
     #conditional formatting rule objects
 
