@@ -32,6 +32,23 @@ class Well < Aliquot::Receptacle
     end
   end
 
+  def concentration_from_normalization
+    wells = target_wells.wells_for_norm("Lib Norm")
+    wells.first.get_concentration unless wells.empty?
+  end
+
+  scope :wells_for_norm, ->(purpose_name) {
+    {
+    :joins      => [
+      "LEFT OUTER JOIN plate_purposes AS p1 ON p1.id = assets.plate_purpose_id AND p1.name='#{purpose_name}'",
+      :plate, :well_attribute
+    ],
+    :conditions => ["well_attributes.concentration IS NOT NULL"],
+    :order => 'updated_at DESC',
+    :limit => 1
+    }
+  }
+
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
   # hams_many due to eager loading requirement and can't have a has one through a has_many

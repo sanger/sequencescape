@@ -15,14 +15,9 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
     "DAFT-seq"
   ]
 
-  DNA_CONFIG = {
-      :concentration => { :less_than => 1},
-      :rin => {:less_than => 6},
-      :gender_markers => {}
-    }
-
   RNA_CONFIG = {
       :concentration => { :less_than => 1},
+      :concentration_from_normalization => { :less_than => 1},
       :rin => {:less_than => 6},
       :gender_markers => {}
     }
@@ -81,9 +76,6 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
 
   def up
     ActiveRecord::Base.transaction do
-      ProductCriteria.create!(:product => AddBespokeRnaProduct.DNA_PRODUCT,
-        :stage => 'stock',
-        :configuration => DNA_CONFIG)
       ProductCriteria.create!(:product => AddBespokeRnaProduct.RNA_PRODUCT,
         :stage => 'stock',
         :configuration => RNA_CONFIG)
