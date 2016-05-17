@@ -11,7 +11,7 @@
     SCAPE.preventMatchingSamplePooling = false;
   })(window, jQuery);
 </script>
-<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
   <%# This isn't ideal. We pass in certain aspects of the pipeline configuration %>
   <h2>Wells</h2>
   <%= render :partial => 'source_asset_requests', :locals => { :requests => @requests, :type => 'wells' } %>
