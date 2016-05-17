@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <ul id="asset_annotations_<%= @asset.id %>" style="list-style-type:none;padding:0;">
-  <% if @asset.comments.size > 0 %>
+  <% if @asset.comments.length > 0 %>
     <% @comments.each do |comment| %>
       <li><%= render :partial => "comment" , :locals => {:comment => comment, :asset => @asset}%></li>
     <% end %>

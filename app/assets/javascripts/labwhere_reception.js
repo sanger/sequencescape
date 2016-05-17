@@ -5,7 +5,7 @@
 (function(window,$,undefined) {
   'use strict';
 
-  var scannedBarcode;
+  var scannedBarcode, updateCounter;
 
   // Trim polyfill courtesy of MDN (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim)
   // That said, support is pretty much universal, its only IE8 that might cause issues.
@@ -15,13 +15,20 @@
     };
   }
 
+  // Remove polyfill
+  if (!Element.prototype.remove) {
+    Element.prototype.remove = function() { this.parentNode.removeChild(this); };
+
+  }
+
   scannedBarcode = function(barcode_source,list) {
     var barcode, new_item;
       barcode = barcode_source.value.trim();
       if (barcode != "") {
         this.barcode = barcode;
         this.list    = list;
-        this.createDomElement();
+        if (this.notInList()) {this.createDomElement()};
+        updateCounter(counter, this.list);
         barcode_source.value = "";
       } else {
         // We're blank or just whitespace.
@@ -30,7 +37,19 @@
   }
 
   scannedBarcode.prototype = {
-    destroy: function() { this.domElement.remove(); },
+    destroy: function() {
+      this.domElement.remove();
+      updateCounter(counter, this.list);
+    },
+    notInList: function(){
+      var li_items = this.list.getElementsByTagName('li')
+      for (var i=0; i<li_items.length; ++i){
+        if (this.barcode == li_items[i].firstChild.textContent) {
+          return false
+        }
+      }
+      return true
+    },
     createDomElement: function() {
       var removeLink, scanned_barcode, hiddenField;
       scanned_barcode = this;
@@ -51,6 +70,12 @@
       this.list.appendChild(this.domElement);
     },
     domElement: null
+  }
+
+  var counter = document.getElementById('scanned')
+
+  updateCounter = function(counter, list){
+    counter.innerText = "Scanned: " + list.getElementsByTagName('li').length
   }
 
   $( document ).ready(function() {

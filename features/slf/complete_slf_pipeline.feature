@@ -25,7 +25,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
 
 
     When I go to the homepage
-    And I follow "Create study"
+    And I follow "Create Study"
     When I fill in "Study name" with "Test study"
     And I fill in "Study description" with "writing cukes"
     And I fill in "ENA Study Accession Number" with "12345"
@@ -76,7 +76,6 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     Given plate "1221234567841" has concentration and sequenom results
 
     When I follow "Reception"
-    When I select "Plate" from "type_id"
     And I fill in "barcode_0" with "1221234567841"
     And I press "Submit"
     When I select "Sample logistics freezer" from "asset_location_id"

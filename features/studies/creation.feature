@@ -4,7 +4,7 @@ Feature: Creating studies
     Given I am an "administrator" user logged in as "John Smith"
 
   Scenario: The required fields are required and study creation is on the homepage
-    When I follow "Create study"
+    When I follow "Create Study"
     Then I should be on the study creation page
     Then I should see the following required fields:
       | field                                                                                                         | type                                                                                       |

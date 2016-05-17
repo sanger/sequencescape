@@ -297,6 +297,12 @@ en:
         faculty_sponsor:
           label: Faculty Sponsor
 
+        program_id:
+          label: Program
+
+        program:
+          label: Program
+
         study_description:
           label: Study description
           edit_info: '[ ENA requirement ]'
