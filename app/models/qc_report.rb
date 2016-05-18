@@ -96,8 +96,10 @@ class QcReport < ActiveRecord::Base
           # The rescue event clears out the remaining metrics, this avoids the risk of duplicate
           # metric on complete reports (Although wont help if, say, the database connection fails)
           ActiveRecord::Base.transaction do
+            connected_wells = Well.hash_stock_with_targets(assets, "Lib Norm")
             assets.each do |asset|
-              criteria = product_criteria.assess(asset)
+              result = connected_wells[asset].sort{|w, w2| w.updated_at <=> w2.updated_at}.last if connected_wells[asset]
+              criteria = product_criteria.assess(asset, result)
               QcMetric.create!(:asset=>asset,:qc_decision=>criteria.qc_decision,:metrics=>criteria.metrics,:qc_report=>self)
             end
           end

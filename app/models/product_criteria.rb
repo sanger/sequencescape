@@ -32,8 +32,8 @@ class ProductCriteria < ActiveRecord::Base
   include SharedBehaviour::Immutable
 
 
-  def assess(asset)
-    ProductCriteria.const_get(behaviour).new(configuration,asset)
+  def assess(asset, target_well)
+    ProductCriteria.const_get(behaviour).new(configuration,asset, target_well)
   end
 
   def headers

@@ -37,15 +37,23 @@ class Well < Aliquot::Receptacle
     wells.first.get_concentration unless wells.empty?
   end
 
+  def self.hash_stock_with_targets(wells, purpose_name)
+    target_wells = Well.target_wells_for(wells).wells_for_norm(purpose_name)
+    {}.tap do |result|
+      target_wells.each do |target|
+        key = target.stock_wells.first
+        result[key] ? result[key] << target : (result[key] = [target])
+      end
+    end
+  end
+
   scope :wells_for_norm, ->(purpose_name) {
     {
-    :joins      => [
-      "LEFT OUTER JOIN plate_purposes AS p1 ON p1.id = assets.plate_purpose_id AND p1.name='#{purpose_name}'",
-      :plate, :well_attribute
-    ],
-    :conditions => ["well_attributes.concentration IS NOT NULL"],
-    :order => 'updated_at DESC',
-    :limit => 1
+      :joins      => [
+        "LEFT OUTER JOIN plate_purposes AS p1 ON p1.id = plates_assets.plate_purpose_id AND p1.name='#{purpose_name}'",
+        :plate, :well_attribute
+      ],
+      :conditions => ["well_attributes.concentration IS NOT NULL"]
     }
   }
 
@@ -89,6 +97,77 @@ class Well < Aliquot::Receptacle
 
   has_many :target_well_links, :class_name => 'Well::Link', :foreign_key => :source_well_id, :conditions => { :type => 'stock' }
   has_many :target_wells, :through => :target_well_links, :source => :target_well
+
+  scope :target_wells_for, ->(wells) {
+    {
+    :joins      => [:stock_well_links, :well_attribute],
+    :conditions => {
+      :well_links =>{
+        :source_well_id => [wells].flatten.map(&:id)
+        }
+      }
+    }
+  }
+
+
+  # TO REMOVE / BEGIN
+  # The purpose of this code was to find in one request the newest well with concentration set from the Normalization plate for all the stock wells in
+  # one query
+  def self.find_latest_norm_wells(stock_wells)
+    ids_of_stock_wells = "#{stock_wells.map(&:id).join(',')}"
+    subclasses_list = [Plate.to_s, Plate.descendants].flatten.map{|k| "'#{k.to_s}'" }.join(', ')
+    find_by_sql("select assets.* from (
+      SELECT `well_links`.source_well_id, MAX(well_attributes.updated_at) as updated_at
+      FROM `assets`
+      INNER JOIN `well_links` ON `well_links`.`target_well_id` = `assets`.`id` AND `well_links`.`type` = 'stock'
+      INNER JOIN `container_associations` ON `container_associations`.`content_id` = `assets`.`id`
+      INNER JOIN `assets` `plates_assets` ON `plates_assets`.`id` = `container_associations`.`container_id` AND `plates_assets`.`sti_type` IN
+      (#{subclasses_list})
+      INNER JOIN `well_attributes` ON `well_attributes`.`well_id` = `assets`.`id`
+      LEFT OUTER JOIN plate_purposes AS p1 ON p1.id = plates_assets.plate_purpose_id AND p1.name='Lib Norm'
+      WHERE `assets`.`sti_type` IN ('Well') AND `well_links`.`source_well_id` IN
+        (#{ids_of_stock_wells}) AND (well_attributes.concentration IS NOT NULL)
+      GROUP BY well_links.source_well_id) as linking_data
+    INNER JOIN `well_links` on `well_links`.source_well_id=linking_data.source_well_id
+    INNER JOIN assets on `well_links`.`target_well_id` = `assets`.`id` AND `well_links`.`type` = 'stock'
+    INNER JOIN `container_associations` ON `container_associations`.`content_id` = `assets`.`id`
+    INNER JOIN `assets` `plates_assets` ON `plates_assets`.`id` = `container_associations`.`container_id` AND `plates_assets`.`sti_type` IN
+      (#{subclasses_list})
+    INNER JOIN `well_attributes` ON `well_attributes`.`well_id` = `assets`.`id` and well_attributes.updated_at=linking_data.updated_at
+    LEFT OUTER JOIN plate_purposes AS p1 ON p1.id = plates_assets.plate_purpose_id AND p1.name='Lib Norm'
+    WHERE `assets`.`sti_type` IN ('Well') AND `well_links`.`source_well_id` IN
+      (#{ids_of_stock_wells}) AND (well_attributes.concentration IS NOT NULL);")
+  end
+
+  scope :stock_and_max_updated_at, -> (wells) {
+    ids_of_stock_wells = "#{stock_wells.map(&:id).join(',')}"
+    subclasses_list = [Plate.to_s, Plate.descendants].flatten.map{|k| "'#{k.to_s}'" }.join(', ')
+
+    joins([
+      "INNER JOIN `well_links` ON `well_links`.`target_well_id` = `assets`.`id` AND `well_links`.`type` = 'stock'",
+      "INNER JOIN `container_associations` ON `container_associations`.`content_id` = `assets`.`id`",
+      "INNER JOIN `assets` `plates_assets` ON `plates_assets`.`id` = `container_associations`.`container_id` AND `plates_assets`.`sti_type` IN (#{subclasses_list})",
+      "INNER JOIN `well_attributes` ON `well_attributes`.`well_id` = `assets`.`id`",
+      "LEFT OUTER JOIN plate_purposes AS p1 ON p1.id = plates_assets.plate_purpose_id AND p1.name='Lib Norm'"
+      ]).
+    where("`assets`.`sti_type` IN ('Well') AND `well_links`.`source_well_id` IN (#{ids_of_stock_wells}) AND (well_attributes.concentration IS NOT NULL)").
+    select("`well_links`.source_well_id, MAX(well_attributes.updated_at) as updated_at").
+    group("well_links.source_well_id")
+  }
+
+  scope :latest_norm_wells, -> (wells) {
+    joins([
+      "INNER JOIN `well_links` on `well_links`.source_well_id=linking_data.source_well_id",
+      "INNER JOIN assets on `well_links`.`target_well_id` = `assets`.`id` AND `well_links`.`type` = 'stock'",
+      "INNER JOIN `container_associations` ON `container_associations`.`content_id` = `assets`.`id`",
+      "INNER JOIN `assets` `plates_assets` ON `plates_assets`.`id` = `container_associations`.`container_id` AND `plates_assets`.`sti_type` IN (#{subclasses_list})",
+      "INNER JOIN `well_attributes` ON `well_attributes`.`well_id` = `assets`.`id` and well_attributes.updated_at=linking_data.updated_at",
+      "LEFT OUTER JOIN plate_purposes AS p1 ON p1.id = plates_assets.plate_purpose_id AND p1.name='Lib Norm'"
+    ]).
+    where("`assets`.`sti_type` IN ('Well') AND `well_links`.`source_well_id` IN (#{ids_of_stock_wells}) AND (well_attributes.concentration IS NOT NULL)").
+    select("assets.*")
+  }
+  # TO REMOVE /END
 
   scope :stock_wells_for, ->(wells) { {
     :joins      => :target_well_links,

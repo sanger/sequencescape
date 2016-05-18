@@ -44,11 +44,12 @@ class ProductCriteria::Basic
     end
   end
 
-  def initialize(params,well)
+  def initialize(params,well, target_well=nil)
     @params = params
     @well_or_metric = well
     @comment = []
     @values = {}
+    @target_well = target_well
     assess!
   end
 
@@ -74,7 +75,7 @@ class ProductCriteria::Basic
   end
 
   def concentration_from_normalization
-     @well_or_metric.try(:concentration_from_normalization) || "Unknown"
+     (@target_well.get_concentration || "Unknown") if @target_well
   end
 
   SUPPORTED_SAMPLE.each do |attribute|
