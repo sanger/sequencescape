@@ -23,13 +23,15 @@ module SampleManifestExcel
       end
 		end
 
+    def formula=(options)
+      @formula = Formula.new(options)
+    end
+
     #Prepares conditional formatting to be used with axlsx worksheet
 
-    def prepare(style, first_cell_relative_reference, range)
+    def prepare(style, first_cell, absolute_reference)
       set_style(style)
-      set_first_cell_in_formula(first_cell_relative_reference)
-      set_range_reference_in_formula(range)
-      set_formula
+      set_formula(first_cell, absolute_reference)
     end
 
     #Sets style in options
@@ -40,30 +42,20 @@ module SampleManifestExcel
 
     #Sets formula in options
 
-    def set_formula
-      options['formula'] = formula if has_formula?
+    def set_formula(first_cell, absolute_reference)
+      if formula.present?
+        options['formula'] = formula.update(first_cell: first_cell, absolute_reference: absolute_reference).to_s 
+      end
     end
 
-    #Updates formula with actual first cell reference
-
-    def set_first_cell_in_formula(first_cell_relative_reference)
-      formula.sub!('first_cell_relative_reference', first_cell_relative_reference) if has_formula?
-    end
-
-    #Updates formula with actual reference to a range
-
-    def set_range_reference_in_formula(range)
-      formula.sub!('range_absolute_reference', range.absolute_reference) if has_formula? && range
+    def valid?
+      options.present?
     end
 
     private
 
     def has_style?
       style
-    end
-
-    def has_formula?
-      formula
     end
 
     def style_not_set?

@@ -72,10 +72,10 @@ class ColumnTest < ActiveSupport::TestCase
 
     should "#add_reference should create position and set reference" do
       column.set_number(1).add_reference(10, 15)
-      assert_equal SampleManifestExcel::Position.new(first_column: 1, first_row: 10, last_row: 15).reference, column.reference
+      assert_equal SampleManifestExcel::Range.new(first_column: 1, first_row: 10, last_row: 15).reference, column.reference
       column.set_number(125).add_reference(27, 150)
-      assert_equal SampleManifestExcel::Position.new(first_column: 125, first_row: 27, last_row: 150).reference, column.reference
-      assert_equal SampleManifestExcel::Position.new(first_column: 125, first_row: 27, last_row: 150).first_cell_relative_reference, column.first_cell_relative_reference
+      assert_equal SampleManifestExcel::Range.new(first_column: 125, first_row: 27, last_row: 150).reference, column.reference
+      assert_equal SampleManifestExcel::Range.new(first_column: 125, first_row: 27, last_row: 150).first_cell_relative_reference, column.first_cell_relative_reference
     end
   end
 
@@ -119,7 +119,7 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "#prepare_validation should prepare validation" do
-      range = build :range_with_absolute_reference
+      range = build :range
       column.prepare_validation(range)
       assert range.absolute_reference, column.validation.options[:formula1]
     end
@@ -147,7 +147,7 @@ class ColumnTest < ActiveSupport::TestCase
     should "#prepare_conditional_formatting_rules should prepare all rules" do
       style =build :style
       styles = {unlock: style, style_name: style, style_name_2: style}
-      range = build :range_with_absolute_reference
+      range = build :range
       column.prepare_conditional_formatting_rules(styles, range)
       rule = column.conditional_formatting_rules.first
       assert_equal styles[:style_name].reference, rule.options['dxfId']
@@ -171,14 +171,14 @@ class ColumnTest < ActiveSupport::TestCase
       style =build :style
       @styles = {unlock: style, style_name: style, style_name_2: style}
       @raw_column = build :column_with_validation_and_conditional_formatting
-      @ranges = build :range_list_with_absolute_reference
+      @ranges = build(:range_list, options: YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
     end
 
     should "prepare column" do
-      refute raw_column.position
+      refute raw_column.range
       refute raw_column.unlocked.is_a? Integer
       raw_column.prepare_with(10, 15, styles, ranges)
-      assert raw_column.position
+      assert raw_column.range
       assert raw_column.unlocked.is_a? Integer
       assert_equal ranges.find_by(:gender).absolute_reference, raw_column.validation.options[:formula1]
       rule = raw_column.conditional_formatting_rules.first

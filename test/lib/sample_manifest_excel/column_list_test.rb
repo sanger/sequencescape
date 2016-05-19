@@ -8,7 +8,7 @@ class ColumnListTest < ActiveSupport::TestCase
     @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
     @column_list = SampleManifestExcel::ColumnList.new(yaml)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
-    @ranges = build :range_list_with_absolute_reference
+    @ranges = build(:range_list, options: YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
     style = build :style
     @styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style}
   end
@@ -89,7 +89,7 @@ class ColumnListTest < ActiveSupport::TestCase
 
   test "#prepare_columns should prepare columns" do
     column_list.prepare_columns(10, 15, styles, ranges)
-    column_list.each { |k, column| assert column.position }
+    column_list.each { |k, column| assert column.range }
     assert column_list.with_unlocked.all? {|column| column.unlocked.is_a? Integer}
     column = column_list.find_by(:gender)
     assert_equal ranges.find_by(:gender).absolute_reference, column.validation.options[:formula1]
@@ -100,7 +100,7 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "#add_validation_and_conditional_formatting should add it to axlsx_worksheet" do
-    axlsx_worksheet = build :axlsx_worksheet
+    axlsx_worksheet = Axlsx::Worksheet.new(Axlsx::Workbook.new)
     column_list.prepare_columns(10, 15, styles, ranges)
     column_list.add_validation_and_conditional_formatting(axlsx_worksheet)
 

@@ -11,7 +11,7 @@ module SampleManifestExcel
 	  	def create_worksheet
 	  		insert_axlsx_worksheet("Ranges")
 	  		add_ranges
-	  		ranges.set_absolute_references(name)
+	  		ranges.set_worksheet_names(name)
 	  	end
 
 	  	#Adds ranges on the worksheet. One range one row.

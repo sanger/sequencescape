@@ -21,7 +21,7 @@ module SampleManifestExcel
 
 	    module ClassMethods
 
-	      def   set_columns (names)
+	      def set_columns (names)
 	        _column_names = self.respond_to?(:column_names) ? self.column_names : []
 	          define_singleton_method :column_names do
 	            _column_names + names

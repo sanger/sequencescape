@@ -9,12 +9,11 @@ module SampleManifestExcel
     include ActiveModel::Validations
 
     attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formatting_rules, :conditional_formatting_options
-    attr_reader :position
+    attr_reader :range
 
     validates_presence_of :name, :heading
 
-    delegate :reference, to: :position
-    delegate :first_cell_relative_reference, to: :position
+    delegate :reference, :first_cell_relative_reference, to: :range
 
     delegate :range_name, to: :validation
 
@@ -103,7 +102,7 @@ module SampleManifestExcel
     #Adds reference to a column (i.e. $A$10:$A$15)
 
     def add_reference(first_row, last_row)
-      @position = Position.new(first_column: number, first_row: first_row, last_row: last_row)
+      @range = Range.new(first_column: number, first_row: first_row, last_row: last_row)
     end
 
     #Sets column number

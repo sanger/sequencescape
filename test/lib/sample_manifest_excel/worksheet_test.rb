@@ -9,7 +9,7 @@ class WorksheetTest < ActiveSupport::TestCase
 		setup do
 			@xls = Axlsx::Package.new
 			@workbook = xls.workbook
-	    @range_list = build :range_list_with_absolute_reference
+	    @range_list = build(:range_list, options: YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
 	    @sample_manifest = create :sample_manifest_with_samples
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = build(:style, workbook: workbook)
@@ -31,7 +31,7 @@ class WorksheetTest < ActiveSupport::TestCase
 		setup do
 			@xls = Axlsx::Package.new
 			@workbook = xls.workbook
-	    @range_list = build :range_list_with_absolute_reference
+	    @range_list = build(:range_list, options: YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
 	    @sample_manifest = create(:sample_manifest_with_samples)
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = SampleManifestExcel::Style.new(workbook, {locked: false})
@@ -62,7 +62,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	  should "prepare columns" do
 	  	worksheet.columns.each do |k, column|
-	  		assert column.position
+	  		assert column.range
 	  	end
 	  	worksheet.columns.with_unlocked.all? {|column| column.unlocked.is_a? Integer}
 	  end

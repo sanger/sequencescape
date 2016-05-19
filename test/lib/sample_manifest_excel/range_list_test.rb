@@ -17,11 +17,10 @@ class RangeListTest < ActiveSupport::TestCase
     assert range_list.find_by(ranges.keys.first)
   end
 
-  test "#set_absolute_references should set absolute references to ranges" do
-    range_list.set_absolute_references('Ranges')
-    range = range_list.ranges.values.first
-    assert_equal "Ranges!#{range.reference}", range.absolute_reference
-    assert range_list.all? {|k, range| range.absolute_reference.present?}
+  test "#set_worksheet_names should set worksheet names" do
+    range_list.set_worksheet_names('Ranges').each do |k, range|
+      assert_equal "Ranges", range.worksheet_name
+    end
   end
 
 end
