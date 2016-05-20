@@ -2,10 +2,11 @@ require 'test_helper'
 
 class FormulaTest < ActiveSupport::TestCase
 
-  attr_reader :formula
+  attr_reader :formula, :options
 
   def setup
-    @formula = SampleManifestExcel::Formula.new(type: :bollocks)
+    @options = {type: :nice, operator: '>', operand: 30, first_cell: 'A1', absolute_reference: "A1:A5"}
+    @formula = SampleManifestExcel::Formula.new(options)
   end
 
   test "should produce the correct output for the ISTEXT formula" do
@@ -23,6 +24,11 @@ class FormulaTest < ActiveSupport::TestCase
 
   test "should produce the correc output for the ISERROR formula" do
     assert_equal "ISERROR(MATCH(A10,Ranges!$A$4:$B$639,0)>0)", formula.update(type: :is_error, first_cell: "A10", absolute_reference: "Ranges!$A$4:$B$639", operator: ">", operand: 999).to_s
+  end
+
+  test "should be comparable" do
+    assert_equal formula, SampleManifestExcel::Formula.new(options)
+    refute_equal formula, SampleManifestExcel::Formula.new(options.except(:operand))
   end
 
 end

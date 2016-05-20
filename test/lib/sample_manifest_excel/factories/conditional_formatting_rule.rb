@@ -8,7 +8,7 @@ FactoryGirl.define do
     factory :conditional_formatting_rule_with_style_and_complex_formula, class: SampleManifestExcel::ConditionalFormattingRule do
 
       style :style_name
-      formula 'ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)'
+      formula { {type: :len, operator: ">", operand: 10} }
       options ({'option1' => 'value1', 'option2' => 'value2'})
       initialize_with { new(style: style, formula: formula, options: options) }
     end

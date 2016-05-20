@@ -29,12 +29,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>20"
+    :formula: 
+      :type: :len
+      :operator: ">"
+      :operand: 20
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula: 
+      :type: :is_number
     :options:
       type: :expression
       priority: 2
@@ -63,12 +67,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>7"
+    :formula: 
+      :type: :len
+      :operator: ">"
+      :operand: 7
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula: 
+      :type: :is_number
     :options:
       type: :expression
       priority: 2
@@ -103,7 +111,8 @@
       formula: "0"
       priority: 2
   - :style: :wrong_value
-    :formula: "ISTEXT(first_cell_relative_reference)"
+    :formula: 
+      type: :is_text
     :options:
       type: :expression
       priority: 2
@@ -138,7 +147,8 @@
       formula: "0"
       priority: 2
   - :style: :wrong_value
-    :formula: "ISTEXT(first_cell_relative_reference)"
+    :formula: 
+      :type: :is_text
     :options:
       type: :expression
       priority: 2
@@ -168,7 +178,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula: 
+      :type: :is_error
     :options:
       type: :expression
       priority: 2
@@ -197,12 +208,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>30"
+    :formula: 
+      :type: len
+      :operator: '>'
+      :operand: 30
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula: 
+      :type: :is_number"
     :options:
       type: :expression
       priority: 2
@@ -231,12 +246,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>30"
+    :formula: 
+      :type: :len
+      :operator: '>'
+      :operand: 30
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula: 
+      :type: :is_number
     :options:
       type: :expression
       priority: 2
@@ -265,12 +284,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>30"
+    :formula: 
+      :type: :len
+      :operator: '>'
+      :operand: 30
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula:
+      :type: :is_number
     :options:
       type: :expression
       priority: 2
@@ -300,7 +323,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula: 
+      :type: :is_error
     :options:
       type: :expression
       priority: 2
@@ -329,7 +353,10 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>5"
+    :formula: 
+      :type: :len
+      :operator: '>'
+      :operand: 5
     :options:
       type: :expression
       priority: 2
@@ -358,7 +385,10 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>5"
+    :formula:
+      :type: :len
+      :operator: '>'
+      :operand: 5
     :options:
       type: :expression
       priority: 2
@@ -388,7 +418,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula:
+      :type: :is_error
     :options:
       type: :expression
       priority: 2
@@ -418,7 +449,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula:
+      :type: is_error
     :options:
       type: :expression
       priority: 2
@@ -459,7 +491,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula: 
+      :type: :is_error
     :options:
       type: :expression
       priority: 2
@@ -489,7 +522,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula: 
+      :type: :is_error
     :options:
       type: :expression
       priority: 2
@@ -519,7 +553,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula:
+      :type: :is_error
     :options:
       type: :expression
       priority: 2
@@ -549,7 +584,8 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "ISERROR(MATCH(first_cell_relative_reference,range_absolute_reference,0)>0)"
+    :formula:
+      :type: :is_error
     :options:
       type: :expression
       priority: 2
@@ -578,12 +614,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>15"
+    :formula: 
+      :type: :len
+      :operator: '>'
+      :operand: 15
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula: 
+      :type: is_number
     :options:
       type: :expression
       priority: 2
@@ -612,12 +652,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>15"
+    :formula: 
+      :type: :len
+      :operator: '>'
+      :operand: 15
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula: 
+      :type: :is_number
     :options:
       type: :expression
       priority: 2
@@ -646,12 +690,16 @@
       type: :cellIs
       stopIfTrue: true
   - :style: :wrong_value
-    :formula: "LEN(first_cell_relative_reference)>15"
+    :formula:
+      :type: :len
+      :operator: '>'
+      :operand: 15
     :options:
       type: :expression
       priority: 2
   - :style: :wrong_value
-    :formula: "ISNUMBER(first_cell_relative_reference)"
+    :formula: 
+      :type: :is_number
     :options:
       type: :expression
       priority: 2

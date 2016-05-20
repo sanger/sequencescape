@@ -1,6 +1,0 @@
-:empty_cell:
-  type: :cellIs
-  formula: 'FALSE' 
-  operator: :equal 
-  dxfId: :empty_cell
-  priority: 1

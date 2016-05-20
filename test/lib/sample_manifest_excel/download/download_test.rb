@@ -177,7 +177,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   def column_list
-    @column_list ||= SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_all_columns.yml"))))
+    @column_list ||= SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
   end
 
   def range_list

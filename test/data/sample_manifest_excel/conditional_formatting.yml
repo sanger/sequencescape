@@ -1,0 +1,56 @@
+empty_cell:
+  style:
+    bg_color: '82CAFA'
+    type: :dxf
+  options:
+    type: :cellIs
+    formula: 'FALSE' 
+    operator: :equal
+    priority: 1
+len:
+  style:
+    bg_color: "FF0000"
+    type: :dxf
+  formula:
+    type: :len
+    operator: ">"
+    operand: 15
+  options:
+    type: :expression
+    priority: 2
+is_number:
+  formula:
+    type: :is_number
+  style:
+    bg_color: "FF0000"
+    type: :dxf
+  options:
+    type: :expression
+    priority: 2
+is_text:
+  style:
+    bg_color: "FF0000"
+    type: :dxf
+  formula:
+    type: :is_text
+  options:
+    type: :expression
+    priority: 2
+is_error:
+  formula:
+    type: :is_error
+  style:
+    bg_color: "FF0000"
+    type: :dxf
+  options:
+    type: :expression
+    priority: 2
+number_greater_than_zero:
+  style:
+    bg_color: "FF0000"
+    type: :dxf
+  options:
+    type: :cellIs
+    operator: :lessThan
+    formula: "0"
+    priority: 2
