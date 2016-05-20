@@ -124,8 +124,8 @@ class Aliquot < ActiveRecord::Base
         extend ClassMethods
 
         has_many :aliquots
-        has_many :receptacles, :through => :aliquots, :uniq => true
-        has_one :primary_aliquot, ->() { order('created_at ASC, aliquots.id ASC') }, :class_name => 'Aliquot', :readonly => true
+        has_many :receptacles, ->() { uniq }, :through => :aliquots
+        has_one :primary_aliquot, ->() { order('created_at ASC, aliquots.id ASC').readonly }, :class_name => 'Aliquot'
         has_one :primary_receptacle, ->() { order('created_at ASC, aliquots.id ASC') }, :through => :primary_aliquot, :source => :receptacle
 
         has_many :requests, :through => :assets

@@ -34,31 +34,39 @@ FactoryGirl.define do
     closed            false
   end
 
+  factory :study_type do
+    name  { generate :study_type_name }
+  end
+
+  factory :data_release_study_type do
+    name  { generate :data_release_study_type_name }
+  end
+
   factory  :study_metadata, :class => Study::Metadata  do
     faculty_sponsor             { |faculty_sponsor| faculty_sponsor.association(:faculty_sponsor)}
     study_description           'Some study on something'
     contaminated_human_dna      'No'
     contains_human_dna          'No'
     commercially_available      'No'
-    study_type                  { StudyType.find_by_name('Not specified') }
-    data_release_study_type     { DataReleaseStudyType.find_by_name('genomic sequencing') }
-    reference_genome            { ReferenceGenome.find_by_name("") }
+    study_type
+    data_release_study_type
+    reference_genome            { ReferenceGenome.find_by_name!("") }
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
   end
 
   factory  :study  do
     name                 { |a| FactoryGirl.generate :study_name }
-    user                 {|user| user.association(:user)}
+    user
     blocked              false
     state                "pending"
     enforce_data_release false
     enforce_accessioning false
     reference_genome     { ReferenceGenome.find_by_name("") }
 
-    study_metadata
+    # study_metadata
 
-    # after(:build) { |study| study.study_metadata = create(:study_metadata, :study => study) }
+    after(:build) { |study| study.study_metadata = create(:study_metadata, :study => study) }
   end
 
   factory  :budget_division  do

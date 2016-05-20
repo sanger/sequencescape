@@ -6,40 +6,36 @@ module Request::Statistics
   module DeprecatedMethods
     # TODO - Move these to named scope on Request
     def total_requests(request_type)
-      self.requests.request_type(request_type).count(:id, :distinct=>true)
+      self.requests.request_type(request_type).distinct.count(:id)
     end
 
     def completed_requests(request_type)
-      self.requests.request_type(request_type).completed.count(:id, :distinct=>true)
+      self.requests.request_type(request_type).completed.distinct.count(:id)
     end
 
     def passed_requests(request_type)
-      self.requests.request_type(request_type).passed.count(:id, :distinct=>true)
+      self.requests.request_type(request_type).passed.distinct.count(:id)
     end
 
     def failed_requests(request_type)
-      self.requests.request_type(request_type).failed.count(:id, :distinct=>true)
+      self.requests.request_type(request_type).failed.distinct.count(:id)
     end
 
     def pending_requests(request_type)
-      self.requests.request_type(request_type).pending.count(:id, :distinct=>true)
+      self.requests.request_type(request_type).pending.distinct.count(:id)
     end
 
     def started_requests(request_type)
-      self.requests.request_type(request_type).started.count(:id, :distinct=>true)
+      self.requests.request_type(request_type).started.distinct.count(:id)
     end
 
     def cancelled_requests(request_type)
       # distinct.count(:id) in rails_4
-      self.requests.request_type(request_type).cancelled.count(:id, :distinct=>true)
+      self.requests.request_type(request_type).cancelled.distinct.count(:id)
     end
     def total_requests_report
       Hash[
-        self.requests.find(
-          :all,
-          :select=>'request_type_id,count(requests.id) AS total',
-          :group=>'request_type_id'
-          ).map {|rt| [rt.request_type_id,rt.total] }
+        self.requests.select('request_type_id,count(requests.id) AS total').group('request_type_id').map {|rt| [rt.request_type_id,rt.total] }
       ]
     end
   end

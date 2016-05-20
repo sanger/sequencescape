@@ -10,8 +10,8 @@ class StudyReport < ActiveRecord::Base
 
   self.per_page = 50
 
- scope :for_study, ->(study) { { :conditions => { :study_id => study.id } } }
- scope :for_user, ->(user) { { :conditions => { :user_id => user.id } } }
+ scope :for_study, ->(study) { where(:study_id => study.id) }
+ scope :for_user, ->(user) { where(:user_id => user.id) }
   #named_scope :without_files, -> { select_without_file_columns_for(:report) }
 
   has_uploaded :report, {:serialization_column => "report_filename"}

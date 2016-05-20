@@ -79,6 +79,14 @@ FactoryGirl.define do
     "Study #{n}"
   end
 
+  sequence :study_type_name do |n|
+    "Study Type #{n}"
+  end
+
+  sequence :data_release_study_type_name do |n|
+    "Data release study Type #{n}"
+  end
+
   sequence :lab_workflow_name do |n|
     "Lab Workflow #{n}"
   end

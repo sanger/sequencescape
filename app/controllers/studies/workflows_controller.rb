@@ -14,7 +14,7 @@ class Studies::WorkflowsController < ApplicationController
     @total_requests = compute_total_request(@study)
     @cache          = { :total => @total_requests }
 
-    @request_types  = @workflow.request_types.all(:order => "`order` ASC").reject { |r| @total_requests[r].zero? }
+    @request_types  = @workflow.request_types.order("`order` ASC").reject { |r| @total_requests[r].zero? }
 
     @basic_tabs = ["Summary", "Sample progress", "Assets progress"]
     @summaries = @basic_tabs + @request_types.map(&:name)
@@ -26,7 +26,7 @@ class Studies::WorkflowsController < ApplicationController
       @current_user.workflow = @workflow
       @current_user.save!
     end
-    @workflows = Submission::Workflow.find(:all, :order => ["name DESC"])
+    @workflows = Submission::Workflow.order("name DESC")
 
     @default_tab_label = "Sample progress"
     @summary = params[:summary].to_i

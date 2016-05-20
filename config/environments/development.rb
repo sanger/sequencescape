@@ -16,8 +16,7 @@ Sequencescape::Application.configure do
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
 
-  config.serve_static_assets = true
-  config.threadsafe! unless $rails_rake_task
+  config.serve_static_files = true
   config.consider_all_requests_local = true
 
   # Show full error reports and disable caching

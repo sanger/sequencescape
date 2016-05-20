@@ -44,7 +44,7 @@ class Tube < Aliquot::Receptacle
   end
 
   def original_stock_plates
-    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+    ancestors.where(:plate_purpose_id => PlatePurpose.stock_plate_purpose)
   end
 
   alias_method :friendly_name, :sanger_human_barcode

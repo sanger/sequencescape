@@ -112,9 +112,9 @@ class ProjectsController < ApplicationController
   def collaborators
     @project    = Project.find(params[:id])
     #@all_roles  = Role.all(:select => " distinct `name`")
-    @all_roles  = Role.all(:conditions => {:name => ["owner","follower","manager"]},:select => " distinct `name`")
-    @roles      = Role.find(:all, :conditions => {:authorizable_id => @project.id, :authorizable_type => "Project"})
-    @users      = User.all(:order => :first_name)
+    @all_roles  = Role.where(:name => ["owner","follower","manager"]).select(" distinct `name`")
+    @roles      = Role.where(:authorizable_id => @project.id, :authorizable_type => "Project")
+    @users      = User.order(:first_name)
   end
 
   def follow
@@ -137,16 +137,16 @@ class ProjectsController < ApplicationController
     if request.xhr?
       if params[:role]
         @user.has_role(params[:role][:authorizable_type].to_s, @project)
-        @roles   = Role.find(:all, :conditions => {:authorizable_id => @project.id, :authorizable_type => "Project"})
+        @roles   = @project.roles
         flash[:notice] = "Role added"
         render :partial => "roles", :status => 200
       else
-        @roles   = Role.find(:all, :conditions => {:authorizable_id => @project.id, :authorizable_type => "Project"})
+        @roles   = @project.roles
         flash[:error] = "A problem occurred while adding the role"
         render :partial => "roles", :status => 500
       end
     else
-      @roles   = Role.find(:all, :conditions => {:authorizable_id => @project.id, :authorizable_type => "Project"})
+      @roles   = @project.roles
       flash[:error] = "A problem occurred while adding the role"
       render :partial => "roles", :status => 401
     end
@@ -160,16 +160,16 @@ class ProjectsController < ApplicationController
     if request.xhr?
       if params[:role]
         @user.has_no_role(params[:role][:authorizable_type].to_s, @project)
-        @roles   = Role.find(:all, :conditions => {:authorizable_id => @project.id, :authorizable_type => "Project"})
+        @roles   = @project.roles
         flash[:error] = "Role was removed"
         render :partial => "roles", :status => 200
       else
-        @roles   = Role.find(:all, :conditions => {:authorizable_id => @project.id, :authorizable_type => "Project"})
+        @roles   = @project.roles
         flash[:error] = "A problem occurred while removing the role"
         render :partial => "roles", :status => 500
       end
     else
-      @roles   = Role.find(:all, :conditions => {:authorizable_id => @project.id, :authorizable_type => "Project"})
+      @roles   = @project.roles
       flash[:error] = "A problem occurred while removing the role"
       render :partial => "roles", :status => 401
     end

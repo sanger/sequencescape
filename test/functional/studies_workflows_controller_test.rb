@@ -15,10 +15,10 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @workflow =FactoryGirl.create :submission_workflow
-      @user     =FactoryGirl.create :user, :login => "someone", :workflow_id => @workflow.id
+      @workflow = create :submission_workflow
+      @user     = create :user, :login => "someone", :workflow_id => @workflow.id
       @controller.stubs(:current_user).returns(@user)
-      @study  =FactoryGirl.create :study
+      @study    = create :study
     end
 
     should_require_login(:show)

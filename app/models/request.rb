@@ -169,11 +169,11 @@ class Request < ActiveRecord::Base
 
 
   def submission_plate_count
-    submission.requests.find(:all,
-      :conditions=>{:request_type_id=>request_type_id},
-      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
-      :group=>'spca.container_id'
-    ).count
+    submission.requests.
+      where(:request_type_id=>request_type_id).
+      joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id').
+      group('spca.container_id').
+      count
   end
 
   def update_responsibilities!
@@ -276,9 +276,8 @@ class Request < ActiveRecord::Base
   scope :for_submission_id, ->(id) { { :conditions => { :submission_id => id } } }
   scope :for_asset_id, ->(id) { { :conditions => { :asset_id => id } } }
   scope :for_study_ids, ->(ids) {
-       select('DISTINCT requests.*').
        joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
-       where(['al.study_id IN (?)',ids])
+       where(['al.study_id IN (?)',ids]).uniq
    }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
@@ -303,8 +302,8 @@ class Request < ActiveRecord::Base
 
   delegate :study, :study_id, :to => :asset, :allow_nil => true
 
- scope :for_workflow, ->(workflow) { { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
- scope :for_request_types, ->(types) { { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
+ scope :for_workflow, ->(workflow) { joins(:workflow).where(:workflow => { :key => workflow })  }
+ scope :for_request_types, ->(types) { joins(:request_type).where(:request_types => { :key => types }) }
 
  scope :for_search_query, ->(query,with_includes) {
     where([ 'id=?', query ])
