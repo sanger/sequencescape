@@ -8,9 +8,4 @@ module ModelExtensions::Asset
       scope :include_barcode_prefix, -> { includes(:barcode_prefix) }
     end
   end
-
-  def source_plate
-    self.purpose.source_plate(self)
-  end
-
 end

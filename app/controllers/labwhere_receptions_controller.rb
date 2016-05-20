@@ -19,7 +19,7 @@ class LabwhereReceptionsController < ApplicationController
     if lwr.save
       flash[:notice] = "Locations updated!"
     else
-      flash[:error] = lwr.errors.join('; ')
+      flash[:error] = lwr.errors.full_messages.join('; ')
     end
     redirect_to labwhere_receptions_path, :location_id => params[:location_id]
   end

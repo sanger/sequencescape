@@ -412,6 +412,29 @@ end
     end
   end
 
+  context "::with_descendants_owned_by" do
+    setup do
+      @user = create :user
+      @source_plate = create :source_plate
+      @child_plate = create :child_plate, parent: @source_plate
+    end
+
+    should 'find source plates with owners' do
+      create :plate_owner, user: @user, plate: @child_plate
+      assert_includes Plate.with_descendants_owned_by(@user), @source_plate
+    end
+
+    should 'not find plates without owners' do
+      refute_includes Plate.with_descendants_owned_by(@user), @source_plate
+    end
+
+    should 'allow filtering of source plates' do
+      plates = Plate.source_plates
+      assert_includes plates, @source_plate
+      refute_includes plates, @child_plate
+    end
+  end
+
 
 end
 

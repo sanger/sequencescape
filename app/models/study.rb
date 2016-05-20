@@ -162,8 +162,10 @@ class Study < ActiveRecord::Base
   scope :alphabetical, ->() { order('name ASC') }
   scope :for_listing, ->()  { select('name, id') }
 
+  STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate']
+
   def each_well_for_qc_report_in_batches(exclude_existing,product_criteria)
-    base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate'])).
+    base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(STOCK_PLATE_PURPOSES)).
       for_study_through_aliquot(self).
       without_blank_samples.
       includes(:well_attribute, samples: :sample_metadata ).
@@ -219,11 +221,13 @@ class Study < ActiveRecord::Base
     include DataReleaseStudyType::Associations
     include ReferenceGenome::Associations
     include FacultySponsor::Associations
+    include Program::Associations
 
     association(:study_type, :name, :required => true)
     association(:data_release_study_type, :name, :required => true)
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
+    association(:program, :name, :required => true)
 
     attribute(:prelim_id, :with => /^[a-zA-Z]\d{4}$/, :required => false)
     attribute(:study_description, :required => true)

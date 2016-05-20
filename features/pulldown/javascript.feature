@@ -48,6 +48,37 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
+    A;BUFF;;96-TROUGH;2;;1.7
+    D;1220099999705;;ABgene 0800;2;;1.7
+    W;
+    A;BUFF;;96-TROUGH;3;;2.9
+    D;1220099999705;;ABgene 0800;3;;2.9
+    W;
+    A;BUFF;;96-TROUGH;4;;3.8
+    D;1220099999705;;ABgene 0800;4;;3.8
+    W;
+    A;BUFF;;96-TROUGH;5;;4.4
+    D;1220099999705;;ABgene 0800;5;;4.4
+    W;
+    A;BUFF;;96-TROUGH;6;;5.0
+    D;1220099999705;;ABgene 0800;6;;5.0
+    W;
+    A;BUFF;;96-TROUGH;11;;9.0
+    D;1220099999705;;ABgene 0800;11;;9.0
+    W;
+    A;BUFF;;96-TROUGH;13;;8.9
+    D;1220099999705;;ABgene 0800;13;;8.9
+    W;
+    A;BUFF;;96-TROUGH;14;;8.8
+    D;1220099999705;;ABgene 0800;14;;8.8
+    W;
+    A;BUFF;;96-TROUGH;15;;8.6
+    D;1220099999705;;ABgene 0800;15;;8.6
+    W;
+    A;BUFF;;96-TROUGH;16;;8.3
+    D;1220099999705;;ABgene 0800;16;;8.3
+    W;
+    C;
     A;1220000222748;;ABgene 0765;2;;10.0
     D;1220099999705;;ABgene 0800;1;;10.0
     W;
@@ -95,37 +126,6 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     W;
     A;1220000333802;;ABgene 0765;59;;1.7
     D;1220099999705;;ABgene 0800;16;;1.7
-    W;
-    C;
-    A;BUFF;;96-TROUGH;2;;1.7
-    D;1220099999705;;ABgene 0800;2;;1.7
-    W;
-    A;BUFF;;96-TROUGH;3;;2.9
-    D;1220099999705;;ABgene 0800;3;;2.9
-    W;
-    A;BUFF;;96-TROUGH;4;;3.8
-    D;1220099999705;;ABgene 0800;4;;3.8
-    W;
-    A;BUFF;;96-TROUGH;5;;4.4
-    D;1220099999705;;ABgene 0800;5;;4.4
-    W;
-    A;BUFF;;96-TROUGH;6;;5.0
-    D;1220099999705;;ABgene 0800;6;;5.0
-    W;
-    A;BUFF;;96-TROUGH;11;;9.0
-    D;1220099999705;;ABgene 0800;11;;9.0
-    W;
-    A;BUFF;;96-TROUGH;13;;8.9
-    D;1220099999705;;ABgene 0800;13;;8.9
-    W;
-    A;BUFF;;96-TROUGH;14;;8.8
-    D;1220099999705;;ABgene 0800;14;;8.8
-    W;
-    A;BUFF;;96-TROUGH;15;;8.6
-    D;1220099999705;;ABgene 0800;15;;8.6
-    W;
-    A;BUFF;;96-TROUGH;16;;8.3
-    D;1220099999705;;ABgene 0800;16;;8.3
     W;
     C;
     C; SCRC1 = 1220000222748

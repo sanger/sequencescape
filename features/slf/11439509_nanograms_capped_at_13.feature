@@ -53,6 +53,31 @@ Feature: Picking more than 13 minimum volume should render in tecan file
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
+    A;BUFF;;96-TROUGH;7;;10.0
+    D;1220099999705;;ABgene 0800;7;;10.0
+    W;
+    A;BUFF;;96-TROUGH;8;;10.0
+    D;1220099999705;;ABgene 0800;8;;10.0
+    W;
+    A;BUFF;;96-TROUGH;10;;5.0
+    D;1220099999705;;ABgene 0800;10;;5.0
+    W;
+    A;BUFF;;96-TROUGH;11;;10.0
+    D;1220099999705;;ABgene 0800;11;;10.0
+    W;
+    A;BUFF;;96-TROUGH;13;;10.0
+    D;1220099999705;;ABgene 0800;13;;10.0
+    W;
+    A;BUFF;;96-TROUGH;14;;10.0
+    D;1220099999705;;ABgene 0800;14;;10.0
+    W;
+    A;BUFF;;96-TROUGH;15;;10.0
+    D;1220099999705;;ABgene 0800;15;;10.0
+    W;
+    A;BUFF;;96-TROUGH;16;;10.0
+    D;1220099999705;;ABgene 0800;16;;10.0
+    W;
+    C;
     A;1220000222748;;ABgene 0765;2;;150.0
     D;1220099999705;;ABgene 0800;1;;150.0
     W;
@@ -99,31 +124,6 @@ Feature: Picking more than 13 minimum volume should render in tecan file
     D;1220099999705;;ABgene 0800;15;;10.0
     W;
     A;1220000333802;;ABgene 0765;59;;10.0
-    D;1220099999705;;ABgene 0800;16;;10.0
-    W;
-    C;
-    A;BUFF;;96-TROUGH;7;;10.0
-    D;1220099999705;;ABgene 0800;7;;10.0
-    W;
-    A;BUFF;;96-TROUGH;8;;10.0
-    D;1220099999705;;ABgene 0800;8;;10.0
-    W;
-    A;BUFF;;96-TROUGH;10;;5.0
-    D;1220099999705;;ABgene 0800;10;;5.0
-    W;
-    A;BUFF;;96-TROUGH;11;;10.0
-    D;1220099999705;;ABgene 0800;11;;10.0
-    W;
-    A;BUFF;;96-TROUGH;13;;10.0
-    D;1220099999705;;ABgene 0800;13;;10.0
-    W;
-    A;BUFF;;96-TROUGH;14;;10.0
-    D;1220099999705;;ABgene 0800;14;;10.0
-    W;
-    A;BUFF;;96-TROUGH;15;;10.0
-    D;1220099999705;;ABgene 0800;15;;10.0
-    W;
-    A;BUFF;;96-TROUGH;16;;10.0
     D;1220099999705;;ABgene 0800;16;;10.0
     W;
     C;

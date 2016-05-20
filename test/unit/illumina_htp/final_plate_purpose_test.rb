@@ -4,10 +4,10 @@
 
 require 'test_helper'
 
-class IlluminaB::FinalPlatePurposeTest < ActiveSupport::TestCase
-  context IlluminaB::FinalPlatePurpose do
+class IlluminaHtp::FinalPlatePurposeTest < ActiveSupport::TestCase
+  context IlluminaHtp::FinalPlatePurpose do
     setup do
-      @purpose = IlluminaB::FinalPlatePurpose.new
+      @purpose = IlluminaHtp::FinalPlatePurpose.new
       @purpose.stubs(:assign_library_information_to_wells)
     end
 
