@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 class PipelinesController < ApplicationController
   before_filter :find_pipeline_by_id, :only => [ :show, :setup_inbox,
                                    :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
@@ -33,7 +34,7 @@ class PipelinesController < ApplicationController
     @batches = @last_5_batches = @pipeline.batches.latest_first.includes_for_ui
 
     unless @pipeline.qc?
-      @information_types = @pipeline.request_information_types
+      @information_types = @pipeline.request_information_types.shown_in_inbox
       @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
 
       if @pipeline.group_by_parent?
