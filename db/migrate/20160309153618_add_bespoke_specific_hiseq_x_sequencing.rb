@@ -28,6 +28,8 @@ class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
         {:request_option=>"fragment_size_required_from", :valid_options=>["350", "450"]}
       ])
       rt.save!
+      Pipeline.find_by_name('HiSeq X PE (spiked in controls)').request_types << rt
+      Pipeline.find_by_name('HiSeq X PE (no controls)').request_types << rt
     end
   end
 
