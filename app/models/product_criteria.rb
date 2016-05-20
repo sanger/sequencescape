@@ -31,9 +31,12 @@ class ProductCriteria < ActiveRecord::Base
   include SharedBehaviour::Deprecatable
   include SharedBehaviour::Immutable
 
+  def target_plate_purposes
+    configuration.fetch('target_plate_purposes', nil)
+  end
 
-  def assess(asset, target_well)
-    ProductCriteria.const_get(behaviour).new(configuration,asset, target_well)
+  def assess(asset, target_wells)
+    ProductCriteria.const_get(behaviour).new(configuration,asset, target_wells)
   end
 
   def headers

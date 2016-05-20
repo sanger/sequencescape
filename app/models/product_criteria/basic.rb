@@ -44,12 +44,12 @@ class ProductCriteria::Basic
     end
   end
 
-  def initialize(params,well, target_well=nil)
+  def initialize(params,well, target_wells=nil)
     @params = params
     @well_or_metric = well
     @comment = []
     @values = {}
-    @target_well = target_well
+    @target_wells = target_wells
     assess!
   end
 
@@ -74,8 +74,12 @@ class ProductCriteria::Basic
     @well_or_metric.plate.try(:sanger_human_barcode) || "Unknown"
   end
 
+  def most_recent_concentration_from_target_well_by_updating_date
+    @target_wells.sort{|w, w2| w.well_attribute.updated_at <=> w2.well_attribute.updated_at}.last.get_concentration if @target_wells
+  end
+
   def concentration_from_normalization
-     (@target_well.get_concentration || "Unknown") if @target_well
+    most_recent_concentration_from_target_well_by_updating_date || "Unknown"
   end
 
   SUPPORTED_SAMPLE.each do |attribute|

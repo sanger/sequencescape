@@ -90,16 +90,17 @@ class QcReport < ActiveRecord::Base
     def generate_report
       begin
         study.each_well_for_qc_report_in_batches(exclude_existing,product_criteria) do |assets|
+          # If there are some wells of interest, we get them in a list
+          connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
+
           # This transaction is inside the block as otherwise large reports experience issues
           # with high memory usage. In the event that an exception is raised the most
           # recent set of decisions will be rolled back, and the report will be re-queued.
           # The rescue event clears out the remaining metrics, this avoids the risk of duplicate
           # metric on complete reports (Although wont help if, say, the database connection fails)
           ActiveRecord::Base.transaction do
-            connected_wells = Well.hash_stock_with_targets(assets, "Lib Norm")
             assets.each do |asset|
-              result = connected_wells[asset].sort{|w, w2| w.updated_at <=> w2.updated_at}.last if connected_wells[asset]
-              criteria = product_criteria.assess(asset, result)
+              criteria = product_criteria.assess(asset, connected_wells[asset])
               QcMetric.create!(:asset=>asset,:qc_decision=>criteria.qc_decision,:metrics=>criteria.metrics,:qc_report=>self)
             end
           end
