@@ -1296,9 +1296,7 @@ x10_requests_types = ['a', 'b'].map do |pipeline|
     :billable => true,
     :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}")
   })
-end
-
-RequestType.create!({
+end << RequestType.create!({
   :key => "bespoke_hiseq_x_paired_end_sequencing",
   :name => "Bespoke HiSeq X Paired end sequencing",
   :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
