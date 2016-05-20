@@ -12,11 +12,12 @@ module Sanger
 
           source_barcode_index = source_barcode_to_plate_index(data_object["destination"])
           buffer_data = buffers(data_object, total_volume)
-          output_file_contents = [ header(data_object), dyn_mappings(data_object)]
+          output_file_contents = [ header(data_object)]
           unless buffer_data.blank?
-            output_file_contents << buffer_seperator
             output_file_contents << buffer_data
+            output_file_contents << buffer_seperator
           end
+          output_file_contents << dyn_mappings(data_object)
           output_file_contents << footer(source_barcode_index,dest_barcode_index)
 
           output_file_contents.join("\n").gsub(/\n\n/,"\n")

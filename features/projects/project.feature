@@ -5,7 +5,7 @@ Feature: Project management
    Given I am a "manager" user logged in as "user"
    And user "user" has a workflow "Next-gen sequencing"
 
-   When I follow "Create project"
+   When I follow "Create Project"
    Then I should see "Projects New"
    And I should not see "External funding source"
    And I should not see "Sequencing Project Manager"
@@ -25,7 +25,7 @@ Feature: Project management
    Given I am a "administrator" user logged in as "user"
    And user "user" has a workflow "Next-gen sequencing"
 
-   When I follow "Create project"
+   When I follow "Create Project"
    Then I should see "Projects New"
    When I fill in the field labeled "Name" with "Test project"
    And I fill in the field labeled "Project cost code" with "ABC"
@@ -51,7 +51,7 @@ Feature: Project management
    And user "user" has a workflow "Microarray genotyping"
    And I am on the homepage
 
-   When I follow "Create project"
+   When I follow "Create Project"
    Then I should see "Projects New"
    When I fill in the field labeled "Name" with "Test project"
    And I fill in the field labeled "Project cost code" with "ABC"

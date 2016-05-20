@@ -287,4 +287,8 @@ class Well < Aliquot::Receptacle
     stock_well = stock_wells.first || self
     stock_well.qc_metrics.for_product(product).most_recent_first.first
   end
+
+  def source_plate
+    plate.source_plate
+  end
 end

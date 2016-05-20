@@ -117,18 +117,6 @@ class Order < ActiveRecord::Base
   end
 
   scope :for_studies, ->(*args) { {:conditions => { :study_id => args[0]} } }
-  scope :with_plate_as_target, ->(plate) {
-    # Essentially :joins => {:requests=>{:target_asset=>:container_association}}
-    # But container_association only exists on wells
-    # Note: This is a basic update of the scope performed during the merge. Need to make more rails-threey
-      select("DISTINCT orders.*").
-      joins([
-        'INNER JOIN requests AS wpat_r ON wpat_r.order_id = orders.id',
-        'INNER JOIN container_associations ON container_associations.content_id = wpat_r.target_asset_id'
-      ]).
-      where(['container_associations.container_id = ?',plate.id])
-  }
-
 
   self.per_page = 500
   scope :including_associations_for_json, -> {

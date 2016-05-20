@@ -20,6 +20,8 @@ namespace :working do
     :ilc => Location.find_by_name('Library creation freezer')
    }
 
+   program = Program.find_by_name('General')
+
    # Admin full barcode will be: Barcode.human_to_machine_barcode("ID99A")
    user = User.create!(:login=>'admin',:password=>'admin', :swipecard_code=>'abcdef', :barcode =>'ID99A')
    user.is_administrator
@@ -27,9 +29,9 @@ namespace :working do
 
    project = Project.create!(:name=>'A project',:enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111', :project_funding_model=>'Internal' })
    project.activate!
-   study = Study.create!(:name=>'A study',:study_metadata_attributes=>{:study_type=>StudyType.first,:faculty_sponsor=>faculty_sponsor,:data_release_study_type=>DataReleaseStudyType.first, :study_type=>StudyType.first,:study_description=>'A seeded test study',:contaminated_human_dna=>'No',:contains_human_dna=>'No',:commercially_available=>'No'})
+   study = Study.create!(:name=>'A study',:study_metadata_attributes=>{:study_type=>StudyType.first,:faculty_sponsor=>faculty_sponsor,:data_release_study_type=>DataReleaseStudyType.first, :study_type=>StudyType.first,:study_description=>'A seeded test study',:contaminated_human_dna=>'No',:contains_human_dna=>'No',:commercially_available=>'No', :program_id => program.id})
    study.activate!
-   study_b = Study.create!(:name=>'B study',:study_metadata_attributes=>{:study_type=>StudyType.first,:faculty_sponsor=>faculty_sponsor,:data_release_study_type=>DataReleaseStudyType.first, :study_type=>StudyType.first,:study_description=>'A seeded test study',:contaminated_human_dna=>'No',:contains_human_dna=>'No',:commercially_available=>'No'})
+   study_b = Study.create!(:name=>'B study',:study_metadata_attributes=>{:study_type=>StudyType.first,:faculty_sponsor=>faculty_sponsor,:data_release_study_type=>DataReleaseStudyType.first, :study_type=>StudyType.first,:study_description=>'A seeded test study',:contaminated_human_dna=>'No',:contains_human_dna=>'No',:commercially_available=>'No', :program_id => program.id})
    study_b.activate!
 
    user.is_owner(study)

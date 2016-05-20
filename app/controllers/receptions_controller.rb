@@ -45,29 +45,13 @@ class ReceptionsController < ApplicationController
         @errors << "Wrong barcode checksum for barcode: #{barcode}"
         next
       end
-      prefix, id, checksum = Barcode.split_barcode(barcode)
 
-      case 'Plate'
-      when 'LibraryTube' then @asset = LibraryTube.find_by_barcode(id)
-      when 'MultiplexedLibraryTube' then @asset = MultiplexedLibraryTube.find_by_barcode(id)
-      when 'PulldownMultiplexedLibraryTube' then @asset = PulldownMultiplexedLibraryTube.find_by_barcode(id)
-      when 'Plate' then @asset = Asset.find_from_machine_barcode(barcode)
-      when 'SampleTube' then @asset =  SampleTube.find_by_barcode(id)
+      asset = Asset.find_from_machine_barcode(barcode)
+
+      if asset.nil?
+          @errors << "Asset with barcode #{barcode} not found"
       else
-        @asset = Asset.find_from_machine_barcode(barcode)
-      end
-
-
-      if @asset.nil?
-        @generic_asset = Asset.find_by_barcode(id)
-        if @generic_asset.nil?
-          @errors << "Sample with barcode #{barcode} not found"
-        else
-          @errors << "Incorrect type for #{barcode} is a #{@generic_asset.sti_type} not a #{params[:type][:id]}"
-        end
-        next
-      else
-        @assets << @asset
+        @assets << asset
       end
     end
 

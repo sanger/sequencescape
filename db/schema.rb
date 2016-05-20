@@ -947,6 +947,12 @@ ActiveRecord::Schema.define(:version => 20160413110717) do
     t.datetime "deprecated_at"
   end
 
+   create_table "programs", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "project_managers", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.datetime "created_at"
@@ -1505,11 +1511,12 @@ ActiveRecord::Schema.define(:version => 20160413110717) do
     t.string   "hmdmc_approval_number",                  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remove_x_and_autosomes",                 limit: 255,   default: "No",  null: false
-    t.string   "dac_policy_title",                       limit: 255
-    t.boolean  "separate_y_chromosome_data",                           default: false, null: false
-    t.string   "data_access_group",                      limit: 255
-    t.string   "prelim_id",                              limit: 255
+    t.string   "remove_x_and_autosomes",                 :default => "No",  :null => false
+    t.string   "dac_policy_title"
+    t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
+    t.string   "data_access_group"
+    t.string   "prelim_id"
+    t.integer  "program_id"
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id", using: :btree

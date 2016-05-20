@@ -35,8 +35,6 @@ class SubmissionPool < ActiveRecord::Base
               end
           end
 
-          has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
-
           def submission_pools
             SubmissionPool.for_plate(self)
           end

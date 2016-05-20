@@ -45,6 +45,7 @@ class Purpose < ActiveRecord::Base
 
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type
+  belongs_to :source_purpose, :class_name => 'Purpose'
 
   def barcode_type
     barcode_printer_type.printer_type_id

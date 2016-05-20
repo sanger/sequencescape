@@ -38,6 +38,11 @@ class Tube < Aliquot::Receptacle
     submissions.first
   end
 
+  def source_plate
+    return nil if purpose.nil?
+    purpose.source_plate(self)
+  end
+
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
     ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
