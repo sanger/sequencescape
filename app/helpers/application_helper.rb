@@ -57,9 +57,6 @@ module ApplicationHelper
         Array(message).reduce(String.new.html_safe) { |buffer,m| buffer << content_tag(:div, m) }
       end
     end
-    # Default flash handling is a bit weird, and flashes don't actually get cleared until the start
-    # of the next request.
-    flash.clear
     return output
   end
 
