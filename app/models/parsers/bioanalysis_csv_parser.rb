@@ -148,10 +148,6 @@ class Parsers::BioanalysisCsvParser
     end
   end
 
-  def update_values_for(asset)
-    asset.update_concentrations_from(self)
-  end
-
   def self.is_bioanalyzer?(content)
     # We don't go through the whole file
     content[0..10].detect do |line|

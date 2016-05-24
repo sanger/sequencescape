@@ -63,10 +63,6 @@ class Parsers::ISCXTenParser
     table.sort {|a,b| a[0] <=> b[0] && a[1].to_i <=> b[1].to_i}.map {|l| l[0]+l[1]}
   end
 
-  def update_values_for(asset)
-    asset.update_concentrations_from(self)
-  end
-
   def each_well_and_parameters
     locations.each do |location_name|
       yield(location_name, concentration(location_name))

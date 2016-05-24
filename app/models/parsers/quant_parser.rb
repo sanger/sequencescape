@@ -20,32 +20,29 @@ class Parsers::QuantParser
   def method_set_list
     headers_section.map do |description|
       {
-        localization_text("concentration").strip.downcase => :set_concentration
+        localization_text("concentration").strip.downcase => :set_concentration,
+        localization_text("volume").strip.downcase        => :set_current_volume,
+        localization_text("rin").strip.downcase           => :set_rin
       }[description.strip.downcase]
     end
   end
 
-  def values_for_location(location)
-    data_list = @content.find{|w| w[0]==location}
+  def data_list
+    @content.find{|w| w[0]==location}
+  end
+
+  def qc_values_for_location(location)
     Hash[method_set_list.zip(data_list).reject{|header, value| header.nil?}] unless data_list.nil?
-  end
-
-  def valid_float_value_update(v)
-    # If it is nil, we won't update anything. We are just indicating that it is considered a valid input
-    v.nil? || v.downcase.strip.match(/^\d/)
-  end
-
-  def update_values_for(plate)
-    plate.wells.each do |well|
-      location = well.map.description
-      updated_data = values_for_location(location)
-      unless updated_data.nil? || !(updated_data.values.all?{|v| valid_float_value_update(v) })
-        well.update_values_from_object(updated_data)
-      end
-    end
   end
 
   def self.is_quant_file?(content)
     (content[0][0] == 'Assay Plate Barcode') && self.headers_index(content)
   end
+
+  def each_well_and_parameters
+    data_list.each do |line|
+      yield(line[0], nil, nil, qc_values_for_location(line[0]))
+    end
+  end
+
 end

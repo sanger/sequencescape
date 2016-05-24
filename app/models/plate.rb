@@ -788,12 +788,15 @@ WHERE c.container_id=?
     PlatePurpose.compatible_with_purpose(self.purpose)
   end
 
-  def update_concentrations_from(parser)
+  def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
-      parser.each_well_and_parameters do |position,concentration,molarity|
+      parser.each_well_and_parameters do |position, concentration, molarity|
         wells.include_map.detect {|w| w.map_description == position }.tap do |well|
-          well.set_concentration(concentration)
-          well.set_molarity(molarity)
+          well.set_concentration(concentration) unless concentration.nil?
+          well.set_molarity(molarity) unless concentration.nil?
+          if parser.respond_to(:qc_values_for_location)
+            well.update_qc_values_with_hash(parser.qc_values_for_location(well.map.description))
+          end
           well.save!
         end
       end
