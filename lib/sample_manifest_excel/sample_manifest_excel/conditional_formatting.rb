@@ -2,20 +2,25 @@ module SampleManifestExcel
 
 	class ConditionalFormatting
 
-    attr_accessor :options, :style, :formula
+    include HashAttributes
+
+    set_attributes :options, :style, :formula
 
 		def initialize(attributes={})
-      attributes.each do |name, value|
-        send("#{name}=", value)
-      end
+      create_attributes(attributes)
 		end
 
     def update(attributes = {})
+
+
       if attributes[:workbook].present?
         options['dxfId'] = attributes[:workbook].styles.add_style(style)
-      else
+      end
+
+      if formula.present?
         options['formula'] = formula.update(attributes).to_s
       end
+
       self
     end
 

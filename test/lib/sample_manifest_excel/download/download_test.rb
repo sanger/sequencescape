@@ -1,5 +1,5 @@
 
-require 'test_helper.rb'
+require_relative '../../../test_helper.rb'
 
 class DownloadTest < ActiveSupport::TestCase
 

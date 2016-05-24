@@ -1,6 +1,5 @@
 module SampleManifestExcel
 
-
   class ConditionalFormattingList
 
     include Enumerable

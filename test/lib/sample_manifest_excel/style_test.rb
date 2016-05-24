@@ -1,4 +1,5 @@
-require 'test_helper'
+
+require_relative '../../test_helper'
 
 class StyleTest < ActiveSupport::TestCase
 
@@ -8,7 +9,7 @@ class StyleTest < ActiveSupport::TestCase
   	@workbook = Axlsx::Package.new.workbook
     @style = SampleManifestExcel::Style.new(workbook, {locked: false})
   end
-
+ 
   test "should have options" do
   	refute style.options[:locked]
   end

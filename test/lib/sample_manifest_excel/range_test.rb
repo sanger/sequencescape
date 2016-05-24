@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative '../../test_helper'
 
 class RangeTest < ActiveSupport::TestCase
 
@@ -41,10 +41,6 @@ class RangeTest < ActiveSupport::TestCase
     should "set the reference" do
       assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.reference
     end
-
-    # should "#set_absolute_reference should set the absolute reference" do
-    #   assert_equal "Ranges!#{range.reference}", range.set_absolute_reference("Ranges").absolute_reference
-    # end
 
   end
 

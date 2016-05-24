@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative '../../test_helper'
 
 class ConditionalFormattingListTest < ActiveSupport::TestCase
 
@@ -13,5 +13,5 @@ class ConditionalFormattingListTest < ActiveSupport::TestCase
     assert_equal options.length, conditional_formatting_list.count
   end
 
-
+  
 end
