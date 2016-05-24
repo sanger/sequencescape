@@ -39,7 +39,7 @@ class QuantParserTest < ActiveSupport::TestCase
           @plate.wells.each do |well|
             well.set_concentration(30)
           end
-          @parser.update_values_for(@plate)
+          @plate.update_qc_values_with_parser(@parser)
         end
 
         should "update well attributes with the file contents" do

@@ -144,7 +144,10 @@ class Parsers::BioanalysisCsvParser
 
   def each_well_and_parameters
     parsed_content.each do |well,values|
-      yield(well,values[:peak_table][field_name_for(:concentration)],values[:peak_table][field_name_for(:molarity)])
+      yield(well, {
+        :set_concentration => values[:peak_table][field_name_for(:concentration)],
+        :set_molarity => values[:peak_table][field_name_for(:molarity)]
+        })
     end
   end
 

@@ -790,13 +790,9 @@ WHERE c.container_id=?
 
   def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
-      parser.each_well_and_parameters do |position, concentration, molarity|
+      parser.each_well_and_parameters do |position, well_updates|
         wells.include_map.detect {|w| w.map_description == position }.tap do |well|
-          well.set_concentration(concentration) unless concentration.nil?
-          well.set_molarity(molarity) unless concentration.nil?
-          if parser.respond_to(:qc_values_for_location)
-            well.update_qc_values_with_hash(parser.qc_values_for_location(well.map.description))
-          end
+          well.update_qc_values_with_hash(well_updates)
           well.save!
         end
       end

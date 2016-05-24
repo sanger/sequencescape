@@ -13,6 +13,10 @@ class Parsers::QuantParser
     @content[self.class.headers_index(@content)+1]
   end
 
+  def data_section
+    @content.slice(self.class.headers_index(@content)+2, @content.length)
+  end
+
   def localization_text(attribute_name)
     I18n.t("metadata.well.metadata.#{attribute_name}.label")
   end
@@ -27,12 +31,12 @@ class Parsers::QuantParser
     end
   end
 
-  def data_list
+  def data_list(location)
     @content.find{|w| w[0]==location}
   end
 
   def qc_values_for_location(location)
-    Hash[method_set_list.zip(data_list).reject{|header, value| header.nil?}] unless data_list.nil?
+    Hash[method_set_list.zip(data_list(location)).reject{|header, value| header.nil?}] unless data_list(location).nil?
   end
 
   def self.is_quant_file?(content)
@@ -40,8 +44,8 @@ class Parsers::QuantParser
   end
 
   def each_well_and_parameters
-    data_list.each do |line|
-      yield(line[0], nil, nil, qc_values_for_location(line[0]))
+    data_section.each do |line|
+      yield(line[0], qc_values_for_location(line[0]))
     end
   end
 
