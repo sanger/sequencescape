@@ -2,7 +2,7 @@ require_relative '../../test_helper'
 
 class HashAttributesTest < ActiveSupport::TestCase
 
-  attr_reader :goose
+  attr_reader :goose, :options
 
   class Goose
 
@@ -19,6 +19,7 @@ class HashAttributesTest < ActiveSupport::TestCase
   end
 
   def setup
+    @options = { gosling_a: "Bert", gosling_b: "Ernie", gosling_c: "Liz", gosling_d: "Lisa", gosling_e: "Henry" }
     @goose = Goose.new(gosling_a: "Bert", gosling_b: "Ernie", gosling_c: "Liz", gosling_d: "Lisa", gosling_e: "Henry")
   end
 
@@ -49,6 +50,9 @@ class HashAttributesTest < ActiveSupport::TestCase
     goose.update_attributes(gosling_a: "Arnie")
     assert_equal "Arnie", goose.gosling_a
     assert_equal "Lisa", goose.gosling_d
+  end
+
+  test "should add attributes irrespective of key type" do
   end
 
 end

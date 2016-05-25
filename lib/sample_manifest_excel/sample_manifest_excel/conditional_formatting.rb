@@ -28,6 +28,10 @@ module SampleManifestExcel
       @formula = Formula.new(options)
     end
 
+    def styled?
+      options['dxfId'].present?
+    end
+
     def to_h
       options
     end

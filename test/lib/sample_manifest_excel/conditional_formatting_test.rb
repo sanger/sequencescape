@@ -25,7 +25,7 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
     end
 
     should "update the style from a workbook" do
-      assert conditional_formatting.update(workbook: workbook).options['dxfId']
+      assert conditional_formatting.update(workbook: workbook).styled?
     end
 
     should "#to_h should produce a hash of options" do
@@ -57,7 +57,7 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
     end
 
     should "update the style from a workbook" do
-      assert conditional_formatting.update(options).options['dxfId']
+      assert conditional_formatting.update(options).styled?
     end
 
   end
