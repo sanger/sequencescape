@@ -26,13 +26,6 @@ class AmqpObserver < ActiveRecord::Observer
   # To prevent ActiveRecord::Observer doing something insane when we test this, we pull
   # out the implementation in a module (which can be tested) and leave the rest behind.
   module Implementation
-    def self.included(base)
-      base.class_eval do
-        attr_reader :exchange
-        private :exchange
-      end
-    end
-
     # A transaction is (potentially) a bulk send of messages and hence we can create a buffer that
     # will be written to during changes.  But transactions can be nested, which means that only the
     # very outer one should do any publishing.
@@ -47,16 +40,30 @@ class AmqpObserver < ActiveRecord::Observer
     # there's stuff to broadcast.
     #++
     def transaction(&block)
+      # JG: This code took me a while to get my head around.
+      # If thread buffer is unset (Ie. we are in the outermost transaction) then
+      # create a new MostRecentBuffer and also set current buffer equal to this
+      # If thread buffer is set (Ie. we are in a nested transaction) do nothing,
+      # current_buffer will be nil
       Thread.current[:buffer] ||= (current_buffer = MostRecentBuffer.new(self))
       transaction_good = true
       yield
     rescue => exception
+      # Something has gone wrong. We'll be rolling back to record this so we don't broadcast
+      # then reraise the error
       transaction_good = false
       raise
     ensure
-      activate_exchange do
-        current_buffer.map(&method(:publish))
+      # Everything is complete, grab an exchange and broadcast but only if
+      # 1) The transaction is still flagged as good
+      # 2) current buffer is not blank (ie. we have something to broadcast, and aren't in an inner transaction)
+      activate_exchange do |exchange|
+        current_buffer.each do |record|
+          publish_to(exchange,record)
+        end
       end if transaction_good and not current_buffer.blank?
+      # The transaction is over, if current buffer isn't nil (ie. we're in the outermost transaction)
+      # clean up after yourself and set the thread buffer to nil.
       Thread.current[:buffer] = nil unless current_buffer.nil?
     end
 
@@ -90,7 +97,7 @@ class AmqpObserver < ActiveRecord::Observer
 
       delegate :determine_record_to_broadcast, :to => :@observer
 
-      def map(&block)
+      def each(&block)
         @updated.group_by(&:first).each do |model, pairs|
           # Regardless of what the scoping says, we're going by ID so we always want to do what
           # the standard model does.  If we need eager loading we'll add it.
@@ -99,7 +106,7 @@ class AmqpObserver < ActiveRecord::Observer
             pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
           end
         end
-        @deleted.map(&block)
+        @deleted.each(&block)
       end
 
       def <<(record)
@@ -129,32 +136,32 @@ class AmqpObserver < ActiveRecord::Observer
         @observer = observer
       end
 
-      delegate :activate_exchange, :publish, :determine_record_to_broadcast, :to => :@observer
-      private :activate_exchange, :publish
+      delegate :activate_exchange, :publish_to, :determine_record_to_broadcast, :to => :@observer
+      private :activate_exchange, :publish_to
 
       def <<(record)
-        activate_exchange do
+        activate_exchange do |exchange|
           determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
             Rails.logger.warn { "AmqpObserver called outside transaction: #{caller.join("\n")}" }
 
             if record.destroyed?
-              publish(record_for_deletion) if record_for_deletion.present?
+              publish_to(exchange,record_for_deletion) if record_for_deletion.present?
             else
-              publish(record_to_broadcast)
+              publish_to(exchange,record_to_broadcast)
             end
           end
         end
       end
     end
 
-    def publish(record)
+    def publish_to(exchange,record)
       exchange.publish(
         MultiJson.dump(record),
         :key        => record.routing_key||"#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
         :persistent => configatron.amqp.persistent
       )
     end
-    private :publish
+    private :publish_to
 
     # The buffer that should be written to is either the one created within the transaction, or it is a
     # wrapper around ourselves.
@@ -165,17 +172,14 @@ class AmqpObserver < ActiveRecord::Observer
 
     # The combination of Bunny & Mongrel means that, unless you start & stop the Bunny connection,
     # the Mongrel process will start killing threads because of too many open files.  This method,
-    # therefore, enables transactional support for connecting to the exchange.
+    # therefore, enables transactional support for connecting to an exchange.
     def activate_exchange(&block)
-      return yield unless @exchange.nil?
-
       client = Bunny.new(configatron.amqp.url, :spec => '09', :frame_max => configatron.amqp.fetch(:maximum_frame,0))
       begin
         client.start
-        @exchange = client.exchange('psd.sequencescape', :passive => true)
-        yield
+        exchange = client.exchange('psd.sequencescape', :passive => true)
+        yield exchange
       ensure
-        @exchange = nil
         client.stop
       end
     rescue Qrack::ConnectionTimeout, StandardError => exception
