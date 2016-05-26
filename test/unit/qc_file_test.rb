@@ -16,7 +16,7 @@ class QcFileTest < ActiveSupport::TestCase
       end
 
       should "uses the parser to update the values of a well" do
-        @parser.expects(:update_values_for).with(@plate)
+        @plate.expects(:update_qc_values_with_parser).with(@parser)
         QcFile.create!(:asset=>@plate)
       end
     end
