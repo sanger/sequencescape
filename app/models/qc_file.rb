@@ -21,7 +21,7 @@ class QcFile < ActiveRecord::Base
           qc_files.create!(opts) unless file.blank?
         end
 
-        def update_concentrations_from(parser)
+        def update_qc_values_with_parser(parser)
           true
         end
       }, __FILE__, line)

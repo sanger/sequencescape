@@ -395,7 +395,7 @@ end
         @plate.wells.first.set_molarity('34')
         @plate.save! # Because we use a well scope, and mocking it is asking for trouble
 
-        @plate.update_concentrations_from(MockParser.new)
+        @plate.update_qc_values_with_parser(MockParser.new)
       end
 
       should 'update new wells' do
