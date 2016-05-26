@@ -95,6 +95,14 @@ en:
         no_pcr_library_request:
           <<: *REQUEST
 
+    well:
+      metadata:
+        concentration:
+          label: Concentration
+
+        rin:
+          label: RIN
+
     sample:
       metadata:
         organism:

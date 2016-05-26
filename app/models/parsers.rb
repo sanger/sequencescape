@@ -12,6 +12,7 @@ module Parsers
     # This converts everything to \n before processing
     cleaned_content = content.gsub(/\r\n?/,"\n")
     csv = CSV.parse(cleaned_content)
+    return Parsers::QuantParser.new(csv) if Parsers::QuantParser.is_quant_file?(csv)
     return Parsers::BioanalysisCsvParser.new(csv) if Parsers::BioanalysisCsvParser.is_bioanalyzer?(csv)
     return Parsers::ISCXTenParser.new(csv) if Parsers::ISCXTenParser.is_isc_xten_file?(csv)
     nil

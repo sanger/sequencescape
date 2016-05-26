@@ -379,8 +379,8 @@ end
 
       class MockParser
         def each_well_and_parameters
-          yield('B1','2','3')
-          yield('C1','4','5')
+          yield('B1',{:set_concentration =>'2', :set_molarity => '3'})
+          yield('C1',{:set_concentration =>'4', :set_molarity => '5'})
         end
       end
 
@@ -395,7 +395,7 @@ end
         @plate.wells.first.set_molarity('34')
         @plate.save! # Because we use a well scope, and mocking it is asking for trouble
 
-        @plate.update_concentrations_from(MockParser.new)
+        @plate.update_qc_values_with_parser(MockParser.new)
       end
 
       should 'update new wells' do
