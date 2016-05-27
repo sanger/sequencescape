@@ -6,7 +6,8 @@ class ColumnListTest < ActiveSupport::TestCase
 
   def setup
     @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
-    @column_list = SampleManifestExcel::ColumnList.new(yaml)
+    conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formatting.yml"))).with_indifferent_access
+    @column_list = SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
     @ranges = build(:range_list, options: YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
     style = build :style
@@ -14,7 +15,12 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "should create a list of columns" do
-    assert_equal yaml.length-1, column_list.count
+    assert_equal yaml.length, column_list.count
+  end
+
+  test "columns should have conditionsl formattings" do
+    assert_equal yaml[:gender][:conditional_formattings].length, column_list.find_by(:gender).conditional_formattings.count
+    assert_equal yaml[:sibling][:conditional_formattings].length, column_list.find_by(:sibling).conditional_formattings.count
   end
 
   test "should add the attributes to the column list" do
@@ -83,25 +89,16 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal 8, column_list.with_unlocked.count
   end
 
-  test "#with_conditional_formatting_rules should return a list of columns which have conditional formatting rules" do
-    assert_equal 2, column_list.with_conditional_formatting_rules.count
-  end
-
   test "#prepare_columns should prepare columns" do
-    column_list.prepare_columns(10, 15, styles, ranges)
+    column_list.prepare_columns(10, 15, Axlsx::Workbook.new, ranges)
     column_list.each { |k, column| assert column.range }
-    assert column_list.with_unlocked.all? {|column| column.unlocked.is_a? Integer}
     column = column_list.find_by(:gender)
     assert_equal ranges.find_by(:gender).absolute_reference, column.validation.options[:formula1]
-    # rule = column.conditional_formatting_rules.last
-    # assert_equal styles[:wrong_value].reference, rule.options['dxfId']
-    # assert_match column.first_cell_relative_reference, rule.options['formula']
-    # assert_match ranges.find_by(:gender).absolute_reference, rule.options['formula']
   end
 
   test "#add_validation_and_conditional_formatting should add it to axlsx_worksheet" do
     axlsx_worksheet = Axlsx::Worksheet.new(Axlsx::Workbook.new)
-    column_list.prepare_columns(10, 15, styles, ranges)
+    column_list.prepare_columns(10, 15, Axlsx::Workbook.new, ranges)
     column_list.add_validation_and_conditional_formatting(axlsx_worksheet)
 
     assert_equal column_list.with_validations.count, axlsx_worksheet.send(:data_validations).count
@@ -111,12 +108,12 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal column.reference, axlsx_worksheet.send(:data_validations).last.sqref
     assert axlsx_worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by(:gender).validation.options[:formula1]}
 
-    assert_equal 2, axlsx_worksheet.send(:conditional_formattings).count
+    assert_equal column_list.count, axlsx_worksheet.send(:conditional_formattings).count
     column = column_list.find_by(:sibling)
     assert axlsx_worksheet.send(:conditional_formattings).any? {|conditional_formatting| conditional_formatting.sqref == column.reference}
     conditional_formatting = axlsx_worksheet.send(:conditional_formattings).select {|conditional_formatting| conditional_formatting.sqref == column.reference}
-    assert_equal column.conditional_formatting_options.count, conditional_formatting.last.rules.count
-    assert_equal column.conditional_formatting_options.last['formula'], conditional_formatting.last.rules.last.formula.first
+    assert_equal column.conditional_formattings.options.count, conditional_formatting.last.rules.count
+    assert_equal column.conditional_formattings.options.last['formula'], conditional_formatting.last.rules.last.formula.first
   end
 
 end

@@ -33,20 +33,9 @@
       errorTitle: "gender"
       error: "Please enter gender"
     :range_name: :gender
-  :conditional_formatting_rules:
-  - :style: :empty_cell
-    :options:
-      priority: 1
-      operator: :equal
-      formula: 'FALSE'
-      type: :cellIs
-      stopIfTrue: true
-  - :style: :wrong_value
-    :formula: 
-      type: :is_error
-    :options:
-      type: :expression
-      priority: 2
+  :conditional_formattings:
+  - :empty_cell
+  - :is_error
 :public_name:
   :heading: PUBLIC NAME
   :unlocked: true
@@ -69,29 +58,12 @@
       errorStyle: :stop
       errorTitle: "Sibling - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
-  :conditional_formatting_rules:
-  - :style: :empty_cell
-    :options:
-      priority: 1
-      operator: :equal
-      formula: 'FALSE'
-      type: :cellIs
-      stopIfTrue: true
-  - :style: :wrong_value
-    :formula: 
-      :type: :len
-      :operator: ">"
-      :operand: 15
-    :options:
-      type: :expression
-      priority: 2
-  - :style: :wrong_value
-    :formula: 
-      :type: :is_number
-    :options:
-      type: :expression
-      priority: 2
+  :conditional_formattings:
+  - :empty_cell
+  - :len
+      :operator: '>'
+      :operand: '15'
+  - :is_number
 :donor_id:
   :heading: DONOR ID (required for EGA)
   :unlocked: true
-:invalid_column:

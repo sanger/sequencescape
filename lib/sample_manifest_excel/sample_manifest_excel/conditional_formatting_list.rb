@@ -19,6 +19,10 @@ module SampleManifestExcel
       conditional_formattings.each(&block)
     end
 
+    def each_item(&block)
+      conditional_formattings.values.each(&block)
+    end
+
     def update(attributes = {})
       each do |k, conditional_formatting|
         conditional_formatting.update(attributes)

@@ -1,7 +1,6 @@
 module SampleManifestExcel
   class Formula
 
-    include Comparable
     include HashAttributes
 
     set_attributes :type, :first_cell, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: ">", operand: 999}
@@ -27,14 +26,6 @@ module SampleManifestExcel
       when :is_error
         "ISERROR(MATCH(#{first_cell},#{absolute_reference},0)>0)"
       end
-    end
-
-    def <=>(other)
-      type <=> other.type && 
-      operator <=> other.operator &&
-      operand <=> other.operand &&
-      first_cell <=> other.first_cell &&
-      absolute_reference <=> other.absolute_reference
     end
 
   end

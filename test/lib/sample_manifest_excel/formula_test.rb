@@ -28,7 +28,7 @@ class FormulaTest < ActiveSupport::TestCase
 
   test "should be comparable" do
     assert_equal formula, SampleManifestExcel::Formula.new(options)
-    refute_equal formula, SampleManifestExcel::Formula.new(options.except(:operand))
+    refute_equal formula, SampleManifestExcel::Formula.new(options.except(:operand).merge(first_cell: "A10"))
   end
 
 end

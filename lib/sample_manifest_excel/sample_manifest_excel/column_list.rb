@@ -13,8 +13,8 @@ module SampleManifestExcel
     #conditional formatting rules, etc.
     #An example of a hash is in file test/data/sample_manifest_excel/sample_manifest_all_columns.yml
 
-    def initialize(columns = {})
-      create_columns(columns)
+    def initialize(columns = {}, conditional_formattings = {})
+      create_columns(columns, conditional_formattings)
       yield self if block_given?
     end
 
@@ -94,8 +94,8 @@ module SampleManifestExcel
     #Prepares columns to be added to the data worksheet. All argumens are not known to column list
     #(they are attributes of data worksheet, see also DataWorksheet#prepare_columns)
 
-    def prepare_columns(first_row, last_row, styles, ranges)
-      each {|k, column| column.prepare_with(first_row, last_row, styles, ranges)}
+    def prepare_columns(first_row, last_row, workbook, ranges)
+      each {|k, column| column.prepare_with(first_row, last_row, workbook, ranges)}
     end
 
     #Receives axlsx_worksheet as an argument and adds data validations and conditional
@@ -109,8 +109,9 @@ module SampleManifestExcel
 
     #Creates columns from columns data (a hash)
 
-    def create_columns(columns)
+    def create_columns(columns, conditional_formattings)
       columns.each do |k,v|
+        v[:conditional_formattings] = conditional_formattings.slice(*v[:conditional_formattings])
         add SampleManifestExcel::Column.new((v || {}).merge(name: k))
       end
       add_attributes

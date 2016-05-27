@@ -6,9 +6,12 @@ module SampleManifestExcel
 
   class Column
 
+    include HashAttributes
     include ActiveModel::Validations
 
-    attr_accessor :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formatting_rules, :conditional_formatting_options
+    set_attributes :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formattings, 
+                    defaults: {number: 0, type: :string, conditional_formattings: {}}
+
     attr_reader :range
 
     validates_presence_of :name, :heading
@@ -21,9 +24,7 @@ module SampleManifestExcel
     #Other arguments can include unlocked, validation, conditional_formatting_rules, etc.
 
     def initialize(attributes = {})
-      default_attributes.merge(attributes).each do |name, value|
-        send("#{name}=", value)
-      end
+      create_attributes(attributes)
     end
 
     #Assigns validation to a column. Validation is an object.
@@ -32,15 +33,8 @@ module SampleManifestExcel
       @validation = Validation.new(validation)
     end
 
-    #Assigns conditional formatting rules to a column.
-    #As column may have more than one conditional formatting rule, it returns a hash of
-    #conditional formatting rule objects
-
-    def conditional_formatting_rules=(conditional_formatting_rules)
-      @conditional_formatting_rules = []
-      conditional_formatting_rules.each do |rule|
-        @conditional_formatting_rules << ConditionalFormattingRule.new(rule)
-      end
+    def conditional_formattings=(conditional_formattings)
+      @conditional_formattings = ConditionalFormattingList.new(conditional_formattings)
     end
 
     #Checks if a column has an attribute
@@ -59,12 +53,6 @@ module SampleManifestExcel
 
     def unlocked?
       unlocked
-    end
-
-    #check if column has conditional formatting rules
-
-    def conditional_formatting_rules?
-      conditional_formatting_rules.present?
     end
 
     #Returns an actual value for a column
@@ -91,12 +79,12 @@ module SampleManifestExcel
     #  the rule should be applied), and also with range reference)
     #All arguments are worksheet attributes. Also see DataWorksheet#prepare_columns
 
-    def prepare_with(first_row, last_row, styles, ranges)
+    def prepare_with(first_row, last_row, workbook, ranges)
       add_reference(first_row, last_row)
-      @unlocked = styles[:unlock].reference if unlocked?
+      # @unlocked = styles[:unlock].reference if unlocked?
       range = ranges.find_by(range_name) if validation?
       prepare_validation(range) if validation?
-      prepare_conditional_formatting_rules(styles, range) if conditional_formatting_rules?
+      prepare_conditional_formattings(workbook, range || NullRange.new)
     end
 
     #Adds reference to a column (i.e. $A$10:$A$15)
@@ -118,18 +106,11 @@ module SampleManifestExcel
       validation.set_formula1(range)
     end
 
-    #Extracts conditional formatting rules options from all conditional formatting
-    #rules of this column, for easier use in axlsx #add_conditional_formatting method
-
-    def conditional_formatting_options
-      conditional_formatting_rules.collect {|rule| rule.options}
-    end
-
     #Updates all conditional formatting rules with the right style and the right formula
 
-    def prepare_conditional_formatting_rules(styles, range=nil)
-      conditional_formatting_rules.each do |rule|
-        rule.prepare(styles[rule.style], first_cell_relative_reference, range)
+    def prepare_conditional_formattings(workbook, range)
+      conditional_formattings.each_item do |conditional_formatting|
+        conditional_formatting.update(workbook: workbook, first_cell: first_cell_relative_reference, absolute_reference: range.reference)
       end
     end
 
@@ -138,13 +119,7 @@ module SampleManifestExcel
 
     def add_validation_and_conditional_formatting(axlsx_worksheet)
       axlsx_worksheet.add_data_validation(reference, validation.options) if validation?
-      axlsx_worksheet.add_conditional_formatting(reference, conditional_formatting_options) if conditional_formatting_rules?
-    end
-
-  private
-
-    def default_attributes
-      {number: 0, type: :string, conditional_formatting_rules: []}
+      axlsx_worksheet.add_conditional_formatting(reference, conditional_formattings.options)
     end
 
   end

@@ -43,7 +43,7 @@ class HashAttributesTest < ActiveSupport::TestCase
     refute goose.gosling_a
     refute goose.gosling_b
     refute goose.gosling_c
-    assert "Consuela", goose.gosling_d
+    assert_equal "Consuela", goose.gosling_d
   end
 
   test "#update_attributes should not reset default attributes" do
@@ -53,6 +53,24 @@ class HashAttributesTest < ActiveSupport::TestCase
   end
 
   test "should add attributes irrespective of key type" do
+    goose = Goose.new(options.stringify_keys)
+    assert_equal "Bert", goose.gosling_a
+    assert_equal "Ernie", goose.gosling_b
+    assert_equal "Liz", goose.gosling_c
+    assert_equal "Lisa", goose.gosling_d
+    refute goose.gosling_e
+  end
+
+  test "#to_a should return array of instance variables that have been set" do
+    assert_equal ["Bert", "Ernie", "Liz", "Lisa"].sort, goose.to_a.sort
+    goose.update_attributes(gosling_a: nil)
+    assert_equal ["Ernie", "Liz", "Lisa"].sort, goose.to_a.sort
+  end
+
+  test "should be comparable" do
+    assert_equal goose, Goose.new(options)
+    refute_equal goose, Goose.new(options.except(:gosling_d))
+    refute_equal goose, Goose.new(options.merge(gosling_d: "Ernie"))
   end
 
 end

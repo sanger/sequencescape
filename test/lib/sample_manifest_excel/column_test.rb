@@ -86,10 +86,6 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "have an attribute" do
-      assert_equal :test_attribute, column.attribute.keys.first
-    end
-
-    should "#attribute? should be true" do
       assert column.attribute?
     end
 
@@ -130,37 +126,17 @@ class ColumnTest < ActiveSupport::TestCase
     attr_reader :raw_column, :ranges, :validation, :styles, :range
 
     setup do
-      @column = build(:column_with_validation_and_conditional_formatting, conditional_formatting_rules: [{style: :style_name, options: {'type' => 'type1', 'operator' => 'operator1'}, formula: {type: :len, operator: ">", operand: 10}}, {options: {'type' => 'type1', 'operator' => 'operator2', formula: "smth2"}}])
+      @column = SampleManifestExcel::Column.new(validation: FactoryGirl.attributes_for(:validation), conditional_formattings: {simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula)})
       column.set_number(3).add_reference(10, 15)
     end
 
     should "have conditional formatting rules" do
-      column.conditional_formatting_rules.each do |rule|
-        assert_instance_of SampleManifestExcel::ConditionalFormattingRule, rule
-      end
-    end
-
-    should "#conditional_formatting_rules? should be true" do
-      assert column.conditional_formatting_rules?
+      assert_equal 2, column.conditional_formattings.count
     end
 
     should "#prepare_conditional_formatting_rules should prepare all rules" do
-      style =build :style
-      styles = {unlock: style, style_name: style, style_name_2: style}
-      range = build :range
-      column.prepare_conditional_formatting_rules(styles, range)
-      rule = column.conditional_formatting_rules.first
-      assert_equal styles[:style_name].reference, rule.options['dxfId']
-      # assert_match column.first_cell_relative_reference, rule.options['formula']
-      # assert_match range.absolute_reference, rule.options['formula']
-    end
-
-    should "have conditional_formatting_options" do
-      assert_instance_of Array, column.conditional_formatting_options
-      assert_equal 2, column.conditional_formatting_options.count
-      column.conditional_formatting_options.each do |conditional_formatting|
-        assert_instance_of Hash, conditional_formatting
-      end
+      column.prepare_conditional_formattings(Axlsx::Workbook.new, build(:range))
+      assert column.conditional_formattings.each_item.first.styled?
     end
 
   end
@@ -176,15 +152,9 @@ class ColumnTest < ActiveSupport::TestCase
 
     should "prepare column" do
       refute raw_column.range
-      refute raw_column.unlocked.is_a? Integer
       raw_column.prepare_with(10, 15, styles, ranges)
       assert raw_column.range
-      assert raw_column.unlocked.is_a? Integer
       assert_equal ranges.find_by(:gender).absolute_reference, raw_column.validation.options[:formula1]
-      rule = raw_column.conditional_formatting_rules.first
-      assert_equal styles[:style_name].reference, rule.options['dxfId']
-      # assert_match raw_column.first_cell_relative_reference, rule.options['formula']
-      # assert_match ranges.find_by(:gender).absolute_reference, rule.options['formula']
     end
 
   end
