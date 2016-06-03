@@ -43,8 +43,8 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
     attr_reader :options
 
     setup do
-      @options = { first_cell: "A1", absolute_reference: "A1:A100", workbook: Axlsx::Workbook.new}
-      @rule = {type: :len, style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
+      @options = { type: :len, operator: :lt, operand: 333, first_cell: "A1", absolute_reference: "A1:A100", workbook: Axlsx::Workbook.new}
+      @rule = {formula: options.except(:first_cell, :absolute_reference), style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule)
     end
 

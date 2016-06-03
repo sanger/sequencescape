@@ -5,7 +5,7 @@ class ColumnListTest < ActiveSupport::TestCase
   attr_reader :column_list, :column_headings, :yaml, :valid_columns, :ranges, :styles, :worksheet
 
   def setup
-    @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml")))
+    @yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns.yml"))).with_indifferent_access
     conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formatting.yml"))).with_indifferent_access
     @column_list = SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
     @valid_columns = yaml.collect { |k,v| k if v.present? }.compact
@@ -21,14 +21,6 @@ class ColumnListTest < ActiveSupport::TestCase
   test "columns should have conditionsl formattings" do
     assert_equal yaml[:gender][:conditional_formattings].length, column_list.find_by(:gender).conditional_formattings.count
     assert_equal yaml[:sibling][:conditional_formattings].length, column_list.find_by(:sibling).conditional_formattings.count
-  end
-
-  test "should add the attributes to the column list" do
-    assert column_list.find_by(:sanger_plate_id).attribute?
-    assert column_list.find_by(:well).attribute?
-    assert column_list.find_by(:sanger_sample_id).attribute?
-    assert column_list.find_by(:donor_id).attribute?
-    assert column_list.find_by(:sanger_tube_id).attribute?
   end
 
   test "#headings should return headings" do
@@ -68,17 +60,6 @@ class ColumnListTest < ActiveSupport::TestCase
     column = SampleManifestExcel::Column.new(name: :plate_id, heading: "Plate ID")
     column_list_new.add_with_dup(column)
     refute_equal column, column_list_new.find_by(:plate_id)
-  end
-
-  test "#with_attributes should return a list of columns which have attributes" do
-    assert_equal 5, column_list.with_attributes.count
-    column_list = SampleManifestExcel::ColumnList.new
-    column_1 = SampleManifestExcel::Column.new(name: :column_1, heading: "Column 1")
-    column_2 = SampleManifestExcel::Column.new(name: :column_2, heading: "Column 1", attribute: {attribute_column: true})
-    column_list.add column_1
-    column_list.add column_2
-    assert_equal 1, column_list.with_attributes.count
-    assert_equal column_2, column_list.with_attributes.first
   end
 
   test "#with_validations should return a list of columns which have validations" do

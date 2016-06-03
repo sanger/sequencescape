@@ -2,25 +2,7 @@ require_relative '../../test_helper'
 
 class ColumnTest < ActiveSupport::TestCase
 
-  class TestAttribute
-    attr_accessor :name
-    attr_reader :nested
-    def initialize(name, value = nil)
-      @name = name
-      unless value.nil?
-        @nested = NestedAttribute.new(value)
-      end
-    end
-
-    class NestedAttribute
-      attr_accessor :value
-      def initialize(value)
-        @value = value
-      end
-    end
-  end
-
-  attr_reader :column
+  attr_reader :column, :sample
 
   context "basic" do
 
@@ -62,8 +44,10 @@ class ColumnTest < ActiveSupport::TestCase
       assert column.unlocked?
     end
 
-    should "have an actual value" do
-      refute column.actual_value(TestAttribute.new("My Attribute", "My Value"))
+    should "have an attribute value" do
+      refute column.attribute_value(build(:sample))
+      column.value = "a value"
+      assert_equal "a value", column.attribute_value(build(:sample))
     end
 
     should "#set_number should set correct number to a column" do
@@ -79,23 +63,19 @@ class ColumnTest < ActiveSupport::TestCase
     end
   end
 
-  context "with attribute" do
+  context "with known attribute" do
+
+    attr_reader :sample
 
     setup do
-       @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :public_name, attribute: { test_attribute: Proc.new { |test_attribute| test_attribute.nested.value } } )
-    end
-
-    should "have an attribute" do
-      assert column.attribute?
+       @column = SampleManifestExcel::Column.new(heading: "PUBLIC NAME", name: :sanger_sample_id)
+       @sample = build(:sample)
     end
 
     should "retrieve the value" do
-      assert_equal "My Value", column.attribute_value(TestAttribute.new("My Attribute", "My Value"))
+      assert_equal SampleManifestExcel::Attributes.find(:sanger_sample_id).value(sample), column.attribute_value(sample)
     end
 
-    should "retrieve the actual value" do
-      assert_equal "My Value", column.actual_value(TestAttribute.new("My Attribute", "My Value"))
-    end
   end
 
   context "with validation" do

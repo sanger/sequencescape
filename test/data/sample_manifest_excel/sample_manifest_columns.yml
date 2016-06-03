@@ -1,26 +1,26 @@
-:sanger_plate_id:
-  :heading: SANGER PLATE ID
-:well:
-  :heading: WELL
-:sanger_tube_id:
-  :heading: SANGER TUBE ID
-:sanger_sample_id:
-  :heading: SANGER SAMPLE ID
-:supplier_sample_name:
-  :heading: SUPPLIER SAMPLE NAME
-  :unlocked: true
-:cohort:
-  :heading: COHORT
-  :unlocked: true
-:volume:
-  :heading: VOLUME (ul)
-  :type: :integer
-  :unlocked: true
-:gender:
-  :heading: GENDER
-  :unlocked: true
-  :validation:
-    :options:
+sanger_plate_id:
+  heading: SANGER PLATE ID
+well:
+  heading: WELL
+sanger_tube_id:
+  heading: SANGER TUBE ID
+sanger_sample_id:
+  heading: SANGER SAMPLE ID
+supplier_sample_name:
+  heading: SUPPLIER SAMPLE NAME
+  unlocked: true
+cohort:
+  heading: COHORT
+  unlocked: true
+volume:
+  heading: VOLUME (ul)
+  type: :integer
+  unlocked: true
+gender:
+  heading: GENDER
+  unlocked: true
+  validation:
+    options:
       type: :list
       formula1: "A1:A2"
       showDropDown: true
@@ -32,21 +32,21 @@
       errorStyle: :stop
       errorTitle: "gender"
       error: "Please enter gender"
-    :range_name: :gender
-  :conditional_formattings:
-  - :empty_cell
-  - :is_error
-:public_name:
-  :heading: PUBLIC NAME
-  :unlocked: true
-:taxon_id:
-  :heading: TAXON ID
-  :unlocked: true
-:sibling:
-  :heading: SIBLING (optional)
-  :unlocked: true
-  :validation:
-    :options:
+    range_name: :gender
+  conditional_formattings:
+    empty_cell:
+    is_error:
+public_name:
+  heading: PUBLIC NAME
+  unlocked: true
+taxon_id:
+  heading: TAXON ID
+  unlocked: true
+sibling:
+  heading: SIBLING (optional)
+  unlocked: true
+  validation:
+    options:
       type: :textLength
       operator: :lessThanOrEqual
       formula1: "15"
@@ -57,13 +57,15 @@
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Sibling - Supplier Sample Name"
-      error: "Name must be a miaximum of 15 characters in length."
-  :conditional_formattings:
-  - :empty_cell
-  - :len
-      :operator: '>'
-      :operand: '15'
-  - :is_number
-:donor_id:
-  :heading: DONOR ID (required for EGA)
-  :unlocked: true
+      error: "Name must be a maximum of 15 characters in length."
+  conditional_formattings:
+    empty_cell:
+    is_number:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 15
+donor_id:
+  heading: DONOR ID (required for EGA)
+  unlocked: true

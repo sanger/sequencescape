@@ -4,16 +4,10 @@ module SampleManifestExcel
 
     include HashAttributes
 
-    FORMULAS = [:len, :is_number, :is_text, :is_error]
-
     set_attributes :options, :style, :formula, :type
 
 		def initialize(attributes={})
       create_attributes(attributes)
-      binding.pry
-      if FORMULAS.include? type
-        formula = attributes
-      end
 		end
 
     def update(attributes = {})
@@ -42,7 +36,7 @@ module SampleManifestExcel
     end
 
     def to_h
-      options
+      options.to_hash
     end
 
 	end

@@ -70,7 +70,7 @@ module SampleManifestExcel
       def create_row(sample)
         axlsx_worksheet.add_row do |row|
           columns.each do |k, column|
-            row.add_cell column.actual_value(sample), type: column.type, style: styles[:unlocked] if column.unlocked
+            row.add_cell column.attribute_value(sample), type: column.type, style: styles[:unlocked] if column.unlocked
           end
         end
       end

@@ -9,7 +9,7 @@ module SampleManifestExcel
     include HashAttributes
     include ActiveModel::Validations
 
-    set_attributes :name, :heading, :number, :type, :attribute, :validation, :value, :unlocked, :conditional_formattings, 
+    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, 
                     defaults: {number: 0, type: :string, conditional_formattings: {}}
 
     attr_reader :range
@@ -25,6 +25,8 @@ module SampleManifestExcel
 
     def initialize(attributes = {})
       create_attributes(attributes)
+
+      @attribute = Attributes.find(name) if valid?
     end
 
     #Assigns validation to a column. Validation is an object.
@@ -35,12 +37,6 @@ module SampleManifestExcel
 
     def conditional_formattings=(conditional_formattings)
       @conditional_formattings = ConditionalFormattingList.new(conditional_formattings)
-    end
-
-    #Checks if a column has an attribute
-
-    def attribute?
-      attribute.present?
     end
 
     #Checks if a column has a validation
@@ -55,16 +51,10 @@ module SampleManifestExcel
       unlocked
     end
 
-    #Returns an actual value for a column
-
-    def actual_value(object)
-      attribute? ? attribute_value(object) : value
-    end
-
     #Returns a value based on collumn's attribute (when the value is dynamic (different for different cells))
 
-    def attribute_value(object)
-      attribute.values.first.call(object)
+    def attribute_value(sample)
+      attribute.value(sample) || value
     end
 
     #Prepares a column to be used on a worksheet:
@@ -120,7 +110,12 @@ module SampleManifestExcel
     def add_validation_and_conditional_formatting(axlsx_worksheet)
       axlsx_worksheet.add_data_validation(reference, validation.options) if validation?
       axlsx_worksheet.add_conditional_formatting(reference, conditional_formattings.options)
+      binding.pry
     end
+
+  private
+
+    attr_reader :attribute
 
   end
 

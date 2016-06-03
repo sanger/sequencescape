@@ -2,14 +2,22 @@ require_relative '../../test_helper'
 
 class WorksheetTest < ActiveSupport::TestCase
 
+	attr_reader :xls, :worksheet, :ranges, :plate_yaml, :conditional_formattings, :axlsx_worksheet, :sample_manifest, :column_list, :spreadsheet, :styles, :workbook, :ranges_worksheet, :range_list
+
+	def setup
+		@xls = Axlsx::Package.new
+		@workbook = xls.workbook
+		@ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml")))
+    @conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formatting.yml"))).with_indifferent_access
+    @plate_yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))).with_indifferent_access
+	  @sample_manifest = create(:sample_manifest_with_samples)
+	  @column_list = SampleManifestExcel::ColumnList.new(plate_yaml, conditional_formattings)
+	end
+
 	context "base worksheet" do
 
-	 	attr_reader :xls, :worksheet, :axlsx_worksheet, :sample_manifest, :column_list, :spreadsheet, :styles, :workbook, :ranges_worksheet, :range_list
-
 		setup do
-			@xls = Axlsx::Package.new
-			@workbook = xls.workbook
-	    @range_list = build(:range_list, options: YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
+	    @range_list = build(:range_list, options: ranges)
 	    @sample_manifest = create :sample_manifest_with_samples
 	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
 	    style = build(:style, workbook: workbook)
@@ -26,14 +34,10 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	context "data worksheet" do
 
-		attr_reader :xls, :worksheet, :axlsx_worksheet, :sample_manifest, :column_list, :spreadsheet, :styles, :workbook, :ranges_worksheet
-
 		setup do
-			@xls = Axlsx::Package.new
-			@workbook = xls.workbook
-	    @range_list = build(:range_list, options: YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
+			@range_list = build(:range_list, options: ranges)
 	    @sample_manifest = create(:sample_manifest_with_samples)
-	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
+	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))).with_indifferent_access)
 	    style = SampleManifestExcel::Style.new(workbook, {locked: false})
     	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
 	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
@@ -73,7 +77,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	  should "should add the attributes for each sample" do
 	    [sample_manifest.samples.first, sample_manifest.samples.last].each do |sample|
-	      worksheet.columns.with_attributes.each do |column|
+	      worksheet.columns.each do |k, column|
 	        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.number)
 	      end
 	    end
@@ -113,11 +117,9 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	context "validations ranges worksheet" do
 
-	  attr_reader :range_worksheet, :axlsx_worksheet, :spreadsheet, :range_list
+		attr_reader :range_worksheet
 
 	  setup do
-	    @xls = Axlsx::Package.new
-	    @workbook = xls.workbook
 		  @range_list = build :range_list
 	    @range_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list)
 	 	  save_file

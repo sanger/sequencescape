@@ -5,7 +5,7 @@ class FormulaTest < ActiveSupport::TestCase
   attr_reader :formula, :options
 
   def setup
-    @options = {type: :nice, operator: '>', operand: 30, first_cell: 'A1', absolute_reference: "A1:A5"}
+    @options = {type: :nice, operator: :gt, operand: 30, first_cell: 'A1', absolute_reference: "A1:A5"}
     @formula = SampleManifestExcel::Formula.new(options)
   end
 
@@ -19,7 +19,8 @@ class FormulaTest < ActiveSupport::TestCase
 
 
   test "should produce the correct output for the LEN formula" do
-    assert_equal "LEN(A10)>999", formula.update(type: :len, first_cell: "A10", operator: ">", operand: 999).to_s
+    assert_equal "LEN(A10)>999", formula.update(type: :len, first_cell: "A10", operator: :gt, operand: 999).to_s
+    assert_equal "LEN(A10)<999", formula.update(type: :len, first_cell: "A10", operator: :lt, operand: 999).to_s
   end
 
   test "should produce the correc output for the ISERROR formula" do
