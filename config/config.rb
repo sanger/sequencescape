@@ -21,7 +21,10 @@ configatron.api_documentation_url = "http://localhost:3000/documentation"
 configatron.api_url = "http://localhost:3000"
 
 configatron.authentication = "local"
-configatron.barcode_service_url = "http://localhost:9998/barcode_service.wsdl"
+configatron.barcode_service_url = "http://dev.psd.sanger.ac.uk:3090/rest/wsdl/barcodeservice?stringtype=xsd"
+
+configatron.pmb_api = "http://localhost:9292/v1"
+
 configatron.default_policy_text = "https://www.example.com/"
 configatron.default_policy_title = "Default Policy Title"
 configatron.fluidigm_data.source = "directory"

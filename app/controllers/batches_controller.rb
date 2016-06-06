@@ -478,6 +478,7 @@ class BatchesController < ApplicationController
     end
     unless printables.empty?
       begin
+        # RestClient.post "http://localhost:9292/v1/print_jobs", {"data":{"attributes":{"printer_name":params[:printer], "label_template_id": 6, "labels":  {"body": [{"main_label": {"top_left": "#{Date.today}", "bottom_left": "#{@batch.assets.first.plate.sanger_human_barcode}", "top_right": "#{@batch.study.abbreviation}", "bottom_right": "#{@batch.assets.first.plate.name}",   "barcode": "#{@batch.assets.first.plate.ean13_barcode}"}}]}}}}.to_json, :content_type => "application/vnd.api+json", :accept => "application/vnd.api+json"
         printables.sort! {|a,b| a.number <=> b.number }
         BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
       rescue PrintBarcode::BarcodeException
