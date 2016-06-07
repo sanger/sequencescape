@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160413110717) do
+ActiveRecord::Schema.define(:version => 20160607091438) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1683,6 +1683,7 @@ ActiveRecord::Schema.define(:version => 20160413110717) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "source_id"
+    t.integer  "column"
   end
 
   create_table "tag_groups", :force => true do |t|
