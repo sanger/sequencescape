@@ -6,6 +6,7 @@
 require 'aasm'
 
 class Request < ActiveRecord::Base
+
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
 
@@ -44,17 +45,18 @@ class Request < ActiveRecord::Base
     request_type.request_type_validators.find_by_request_option!(request_option.to_s)
   end
 
+  scope :customer_requests, ->() { where(sti_type:[CustomerRequest,*CustomerRequest.descendants].map(&:name)) }
+
  	scope :for_pipeline, ->(pipeline) {
-    {
-      :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
-      :conditions => [ 'prt.pipeline_id=?', pipeline.id],
-      :readonly => false
-    }
+
+      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
+      where(['prt.pipeline_id=?', pipeline.id]).
+      readonly(false)
   }
 
   scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
-    joins =
+    add_joins =
       if plate.stock_plate?
         [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
       else
@@ -63,23 +65,25 @@ class Request < ActiveRecord::Base
           'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
         ]
       end
-    {
-      :select => 'uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, requests.*',
-      :joins => joins + [
+
+
+    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id').
+    joins( add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
         'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
-      ],
-      :group => 'requests.submission_id',
-      :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND requests.submission_id IN (?)',
-        [TransferRequest,*TransferRequest.descendants].map(&:name), plate.id, submission_ids
-      ]
-    }
+      ]).
+    group('uuids.external_id').
+    customer_requests.
+    where([
+        'container_associations.container_id=? AND requests.submission_id IN (?)',
+        plate.id, submission_ids
+    ])
+
   }
 
-   scope :for_pre_cap_grouping_of, ->(plate) {
-    joins =
+  scope :for_pre_cap_grouping_of, ->(plate) {
+    add_joins =
       if plate.stock_plate?
         [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
       else
@@ -89,27 +93,28 @@ class Request < ActiveRecord::Base
         ]
       end
 
-      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, requests.*').
-      joins(joins + [
-        'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
+      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id').
+      joins(add_joins + [
+        'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
         'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-        'INNER JOIN uuids ON uuids.resource_id=pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+        'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
         ]
       ).
       group('pre_capture_pool_pooled_requests.pre_capture_pool_id').
+      customer_requests.
+      where(state:'pending').
       where([
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND requests.state="pending"',
-        [TransferRequest,*TransferRequest.descendants].map(&:name), plate.id
+        'container_associations.container_id=?',
+        plate.id
       ])
 
   }
 
+  scope :in_order, ->(order) { were(order_id:order) }
+
   scope :for_event_notification_by_order, ->(order) {
-      where([
-        'requests.sti_type NOT IN (?) AND requests.state = "passed" AND requests.order_id=?',
-        [TransferRequest,*TransferRequest.descendants].map(&:name), order.id
-      ])
+    customer_requests.in_order(order).where(state:'passed')
   }
 
 
@@ -168,11 +173,10 @@ class Request < ActiveRecord::Base
 
 
   def submission_plate_count
-    submission.requests.find(:all,
-      :conditions=>{:request_type_id=>request_type_id},
-      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
-      :group=>'spca.container_id'
-    ).count
+    submission.requests.
+      where(:request_type_id=>request_type_id).
+      joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id').
+      count('DISTINCT(spca.container_id)')
   end
 
   def update_responsibilities!
@@ -265,7 +269,7 @@ class Request < ActiveRecord::Base
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
 
     send(finder_method, options.slice(:group).merge(
-      :select  => "DISTINCT requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
+      :select  => "requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
       :joins   => "INNER JOIN container_associations tca ON tca.content_id=#{target}",
       :readonly => false,
       :include => :request_metadata
@@ -282,9 +286,21 @@ class Request < ActiveRecord::Base
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
 
+  # Because of our group we need to explicitly declare what we are selecting for 5.7
+  # We add :request_type_id to the group by as this allows us to select it without an aggregate operation
+  # Now, in practice it hardly matters, as there should be only one request_type_id anyway
+  # However, in the event this changes, an aggregate would hide this, so we should probably ensure that
+  # its explicit.
+  # We select MIN submission_id, this isn't ideal, but struggling to think of an alternative without
+  # complete restructuring.
   scope :for_group_by, ->(attributes) {
-    group(attributes).
-    select('requests.*, MAX(priority) AS max_priority, hl.container_id AS container_id, count(DISTINCT requests.id) AS request_count')
+    attributes << 'requests.request_type_id'
+    # SELECT and GROUP BY do NOT scrub their input. While there shouldn't be any user provided input
+    # comming in here, lets cautious!
+    scrubbed_atts = attributes.map {|a| a.gsub(/[^\w\.]/,'')}
+    group(scrubbed_atts).
+    select('MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MAX(priority) AS max_priority, hl.container_id AS container_id, count(DISTINCT requests.id) AS request_count').
+    select(scrubbed_atts)
   }
 
   def self.for_study(study)

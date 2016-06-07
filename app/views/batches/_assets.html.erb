@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @request_groups.each do |group, requests| -%>
+    <% request_groups.each do |group, requests| -%>
       <% next if group.blank? %>
 
       <% parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
