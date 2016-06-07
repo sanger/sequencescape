@@ -17,16 +17,15 @@ class PlateLabelTest < ActiveSupport::TestCase
 	end
 
 	test 'should return the correct hash' do
-		labels = {body:
-							[{main_label:
+		labels = 	[{main_label:
 								{top_left: "#{Date.today}",
 								bottom_left: "#{plate.sanger_human_barcode}",
 								top_right: "#{plate_purpose.name.to_s}",
 								bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
 								top_far_right: "#{plate.parent.try(:barcode)}",
-								barcode: "#{plate.barcode}"}}]}
+								barcode: "#{plate.barcode}"}}]
 		assert_equal labels, plate_label.labels
-		assert_equal ({labels: labels}), plate_label.to_h
+		assert_equal ({labels: {body: labels}}), plate_label.to_h
 	end
 
 end

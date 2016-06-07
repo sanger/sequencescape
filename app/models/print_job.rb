@@ -12,7 +12,7 @@ class PrintJob
 		@label = label
 		@options = options
 		# @label_template_id = barcode_printer.label_template
-		@label_template_id = 6
+		@label_template_id = 8
 	end
 
 	def execute

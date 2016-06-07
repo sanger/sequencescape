@@ -11,21 +11,25 @@ module Label
 		end
 
 		def to_h
-			{labels: labels}
+			{labels: {body: labels}}
 		end
 
 		def labels
-			result = []
-			plates.each do |plate|
-				result.push({main_label:
-									{top_left: "#{Date.today}",
-									bottom_left: "#{plate.sanger_human_barcode}",
-									top_right: "#{plate_purpose.name.to_s}",
-									bottom_right: "#{user_login} #{plate.find_study_abbreviation_from_parent}",
-									top_far_right: "#{plate.parent.try(:barcode)}",
-									barcode: "#{plate.barcode}"}})
+			[].tap do |l|
+				plates.each do |plate|
+					l.push({main_label:
+										{top_left: "#{date_today}",
+										bottom_left: "#{plate.sanger_human_barcode}",
+										top_right: "#{plate_purpose.name.to_s}",
+										bottom_right: "#{user_login} #{plate.find_study_abbreviation_from_parent}",
+										top_far_right: "#{plate.parent.try(:barcode)}",
+										barcode: "#{plate.ean13_barcode}"}})
+				end
 			end
-			{body: result}
+		end
+
+		def date_today
+			Date.today.strftime("%e-%^b-%Y")
 		end
 
 	end
