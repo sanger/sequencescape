@@ -318,9 +318,9 @@ FactoryGirl.define do
     state           'pending'
   end
 
-  %w(failed passed pending cancelled).each do |state|
-    factory  :"#{state}_request", :parent =>  :request  do
-      after(:create) { |request| request.update_attributes!(:state =>state) }
+  %w(failed passed pending cancelled).each do |request_state|
+    factory  :"#{request_state}_request", :parent =>  :request  do
+      state request_state
     end
   end
 
