@@ -37,6 +37,7 @@ class ProductCatalogue < ActiveRecord::Base
       end
     end
 
+
   end
 
   def product_for(submission_attributes)
@@ -44,7 +45,16 @@ class ProductCatalogue < ActiveRecord::Base
   end
 
   def product_with_criteria(criteria)
-    products.find(:first,:conditions=>{:product_product_catalogues=>{:selection_criterion=>criteria}})
+    products.where(:product_product_catalogues=>{:selection_criterion=>criteria}).first
+  end
+
+  def product_with_library_type(library_type_name)
+    # Order of priorities to select a Product:
+    # In a LibraryDriven selection we select the Product with this priorities:
+    # 1- The product linked with the library type
+    # 2- The first product linked with "nil" SelectionCriterion
+    # 3- nil in any other case
+    product_with_criteria(library_type_name) || product_with_criteria(nil)
   end
 
   private

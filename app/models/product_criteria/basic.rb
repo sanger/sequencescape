@@ -4,10 +4,10 @@
 
 class ProductCriteria::Basic
 
-  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :measured_volume, :initial_volume, :molarity, :sequenom_count]
+  SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :rin, :current_volume, :pico_pass, :gender_markers, :measured_volume, :initial_volume, :molarity, :sequenom_count]
   SUPPORTED_SAMPLE = [:sanger_sample_id]
   SUPPORTED_SAMPLE_METADATA = [:gender, :sample_ebi_accession_number, :supplier_name]
-  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender, :well_location, :plate_barcode]
+  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender, :well_location, :plate_barcode, :concentration_from_normalization]
 
   PASSSED_STATE = 'passed'
   FAILED_STATE = 'failed'
@@ -44,11 +44,12 @@ class ProductCriteria::Basic
     end
   end
 
-  def initialize(params,well)
+  def initialize(params,well, target_wells=nil)
     @params = params
     @well_or_metric = well
     @comment = []
     @values = {}
+    @target_wells = target_wells
     assess!
   end
 
@@ -71,6 +72,14 @@ class ProductCriteria::Basic
 
   def plate_barcode
     @well_or_metric.plate.try(:sanger_human_barcode) || "Unknown"
+  end
+
+  def most_recent_concentration_from_target_well_by_updating_date
+    @target_wells.sort{|w, w2| w.well_attribute.updated_at <=> w2.well_attribute.updated_at}.last.get_concentration if @target_wells
+  end
+
+  def concentration_from_normalization
+    most_recent_concentration_from_target_well_by_updating_date || "Unknown"
   end
 
   SUPPORTED_SAMPLE.each do |attribute|

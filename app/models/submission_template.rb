@@ -77,7 +77,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
     submission_class.new(attributes).tap do |order|
       order.template_name = self.name
-      order.product = product_for(params)
+      order.product = product_for(attributes)
       order.set_input_field_infos(infos) unless infos.nil?
     end
   end

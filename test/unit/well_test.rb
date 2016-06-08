@@ -75,6 +75,38 @@ class WellTest < ActiveSupport::TestCase
       end
     end
 
+    should "return a correct hash of target wells" do
+      purposes = create_list :plate_purpose, 4
+      stock_plate = create :plate, { :wells => create_list(:well, 96) }
+      norm_plates = create_list :plate, 4
+      norm_plates.each_with_index do |plate, index|
+        plate.update_attributes(:plate_purpose => purposes[index], :wells => create_list(:well, 96))
+        plate.wells.each do |w|
+          w.well_attribute.update_attributes(:concentration => nil)
+        end
+      end
+
+      stock_plate.wells.each_with_index do |stock_well, index|
+        4.times do |norm_plate_index|
+          stock_well.target_wells << norm_plates[norm_plate_index].wells[index]
+        end
+      end
+
+      norm_plates[0].wells[0].set_concentration(50)
+      norm_plates[0].wells[1].set_concentration(30)
+      norm_plates[1].wells[0].set_concentration(40)
+      norm_plates[1].wells[2].set_concentration(10)
+
+      norm_plates[2].wells[0].set_concentration(60)
+
+      result = Well.hash_stock_with_targets(stock_plate.wells, purposes.map(&:name))
+
+      assert_equal result.count, 3
+      assert_equal result[stock_plate.wells[1]].count, 1
+      assert_equal result[stock_plate.wells[2]].count, 1
+      assert_equal result[stock_plate.wells[0]].count, 3
+    end
+
     should "have pico pass" do
       @well.well_attribute.pico_pass = "Yes"
       assert_equal "Yes", @well.get_pico_pass

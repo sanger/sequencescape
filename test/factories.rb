@@ -106,7 +106,7 @@ FactoryGirl.define do
   factory  :submission_template  do
     submission_class_name LinearSubmission.name
     name                  "my_template"
-    submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
+    submission_parameters {|pc| { :workflow_id => 1, :request_type_ids_list => [] } }
     product_catalogue {|pc| pc.association(:single_product_catalogue) }
   end
 

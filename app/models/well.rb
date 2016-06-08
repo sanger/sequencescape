@@ -32,6 +32,29 @@ class Well < Aliquot::Receptacle
     end
   end
 
+  def self.hash_stock_with_targets(wells, purpose_names)
+    return {} unless purpose_names
+    purposes = PlatePurpose.find(:all, :conditions => {:name => purpose_names})
+    target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).with_concentration
+
+    # Eager-loading of well attributes
+    well_attributes = WellAttribute.find(:all, :conditions => {
+      :id => target_wells.map(&:well_attribute_id)
+      })
+
+    {}.tap do |result|
+      target_wells.group_by(&:stock_well_id).each do |k,v|
+        stock_well = wells.select{|w| w.id == k}.first
+        result[stock_well] = v
+      end
+    end
+  end
+
+  scope :with_concentration, ->() {
+    joins(:well_attribute).
+    where("well_attributes.concentration IS NOT NULL")
+  }
+
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
   # hams_many due to eager loading requirement and can't have a has one through a has_many
@@ -81,6 +104,16 @@ class Well < Aliquot::Receptacle
         }
       }
     }}
+
+  scope :target_wells_for, ->(wells) {
+    select('assets.*, well_attributes.well_id AS well_attribute_id, well_links.source_well_id AS stock_well_id').
+    joins(:well_attribute).
+    joins(:stock_well_links).where({
+      :well_links =>{
+        :source_well_id => wells
+        }
+    })
+  }
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(:maps => { :description => position }) }
 
@@ -170,6 +203,7 @@ class Well < Aliquot::Receptacle
   delegate_to_well_attribute(:gel_pass)
   delegate_to_well_attribute(:study_id)
   delegate_to_well_attribute(:gender)
+  delegate_to_well_attribute(:rin)
 
   delegate_to_well_attribute(:concentration)
   alias_method(:get_pico_result, :get_concentration)
