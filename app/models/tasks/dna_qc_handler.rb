@@ -7,6 +7,7 @@ module Tasks::DnaQcHandler
     @batch = Batch.find(params[:batch_id], :include => [{ :requests => :request_metadata }, :pipeline, :lab_events])
     @batch.start!(current_user) if @batch.pending?
     @rits = @batch.pipeline.request_information_types
+
     @requests = @batch.requests.includes(
       :source_well => [
         :external_properties,
@@ -14,7 +15,10 @@ module Tasks::DnaQcHandler
         :plate,
         :well_attribute,
         { :aliquots => [ :tag, { :sample => :sample_metadata } ] }
-    ]).order('maps.column_order ASC').all
+    # We sort in ruby as otherwise we end up wrestling with MySQL 5.7's requirement for the sort
+    # to be in the select. We'll just end up wrestling with rails handling of the includes if
+    # we try and force it here.
+    ]).sort_by {|r| r.source_well.map.column_order }
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task # @workflow.tasks[params[:id].to_i]

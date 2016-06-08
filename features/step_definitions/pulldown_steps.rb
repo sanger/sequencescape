@@ -71,6 +71,16 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
   )
 end
 
+Given /^"([^\"]+)" of (the plate .+) and (the plate .+) both been (submitted to "[^"]+")$/ do |range, plate, plate2, template|
+  request_options = { :read_length => 100, :fragment_size_required_from => 100, :fragment_size_required_to => 200 }
+  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
+  create_submission_of_assets(
+    template,
+    plate.wells.select(&range.method(:include?))+plate2.wells.select(&range.method(:include?)),
+    request_options
+  )
+end
+
 Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
 
 
@@ -96,9 +106,16 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^\"]+") with the 
   )
 end
 
+
 Given /^the plate (.+) has been submitted to "([^"]+)"$/ do |info, template|
   step(%Q{"A1-H12" of the plate #{info} have been submitted to "#{template}"})
 end
+
+
+Given /^the plate (.+) and (.+) have been submitted to "([^"]+)"$/ do |info, info2, template|
+  step(%Q{"A1-H12" of the plate #{info} and the plate #{info2} both been submitted to "#{template}"})
+end
+
 
 Given /^H12 on (the plate .+) is empty$/ do |plate|
   plate.wells.located_at('H12').first.aliquots.clear
