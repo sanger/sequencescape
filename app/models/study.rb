@@ -65,10 +65,10 @@ class Study < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :study_samples #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
+  has_many :study_samples, :inverse_of => :study #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
   has_many :orders
   has_many :submissions, :through => :orders
-  has_many :samples, :through => :study_samples
+  has_many :samples, :through => :study_samples, :inverse_of => :studies
   has_many :batches
 
   has_many :asset_groups
@@ -581,7 +581,7 @@ class Study < ActiveRecord::Base
   end
 
   def accession_number?
-    not ebi_accession_number.blank?
+    ebi_accession_number.present?
   end
 
   def data_release_strategy
@@ -616,6 +616,10 @@ class Study < ActiveRecord::Base
     else
       NoAccessionService.new(self)
     end
+  end
+
+  def send_samples_to_service?
+    accession_service.no_study_accession_needed || accession_number?
   end
 
   def validate_ena_required_fields!

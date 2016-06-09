@@ -19,6 +19,14 @@ class AccessionService
     attr_accessor :original_filename
   end
 
+  class_attribute :priority, :instance_writer => false
+  class_attribute :no_study_accession_needed, :instance_writer => false
+  class_attribute :operational, :instance_writer => false
+
+  self.priority = 0
+  self.no_study_accession_needed = false
+  self.operational = false
+
   def submit(user, *accessionables)
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
