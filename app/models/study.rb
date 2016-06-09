@@ -449,12 +449,19 @@ class Study < ActiveRecord::Base
     yield(self.initial_requests.asset_statistics(conditions))
   end
 
+  #  Old code put here for reference. If I forget to remove it, please do it for me!
+  # def sample_progress(samples = nil, &block)
+  #   conditions = { }
+  #   conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
+  #   yield(self.requests.sample_statistics(conditions))
+  # end
+
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
   def sample_progress(samples = nil, &block)
     if samples.blank?
       requests.sample_statistics_new
     else
-      yield(requests.where(sample_id:samples)).sample_statistics_new
+      yield(requests.where(aliquots:{sample_id:samples.pluck(:id)}).sample_statistics_new)
     end
   end
 
