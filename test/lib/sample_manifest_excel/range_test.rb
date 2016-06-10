@@ -44,6 +44,24 @@ class RangeTest < ActiveSupport::TestCase
 
   end
 
+  context "without first row" do
+    setup do
+      @range = SampleManifestExcel::Range.new(options: ["option1", "option2", "option3"])
+    end
+
+    should "not be valid" do
+      refute range.valid?
+    end
+
+    should "not have a first cell" do
+      refute range.first_cell
+    end
+
+    should "not have a last cell" do
+      refute range.last_cell
+    end
+  end
+
   context "without options" do
 
     setup do
@@ -87,10 +105,6 @@ class RangeTest < ActiveSupport::TestCase
       assert_equal "Sheet1", range.worksheet_name
       assert_equal "#{range.worksheet_name}!#{range.reference}", range.absolute_reference
     end
-
-    # should "#set_absolute_reference should set the absolute reference" do
-    #   assert_equal "Ranges!#{range.reference}", range.set_absolute_reference("Ranges").absolute_reference
-    # end
 
     context "without last row" do
 

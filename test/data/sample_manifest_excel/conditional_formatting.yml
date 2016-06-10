@@ -44,3 +44,12 @@ number_greater_than_zero:
     operator: :lessThan
     formula: "0"
     priority: 2
+number_greater_than_one:
+  style:
+    bg_color: "FF0000"
+    type: :dxf
+  options:
+    type: :cellIs
+    operator: :lessThan
+    formula: "1"
+    priority: 2

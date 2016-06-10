@@ -1,11 +1,11 @@
-:gender: 
+:gender:
   - Male 
   - Female
   - Mixed
   - Hermaphrodite
   - Unknown
   - Not Applicable
-:dna_source: 
+:dna_source:
   - Blood
   - Cell Line
   - Saliva
@@ -17,22 +17,22 @@
   - CVS Cultured
   - Fetal Blood
   - Tissue
-:yes_no:  
+:yes_no:
   - 'Yes'
   - 'No'
-:purification_method: 
+:purification_method:
   - Glassmilk/Qiagen
   - Ultrapure
   - Column/Qiagen
   - Microdialyser/Spectrum
   - Ethanol
   - Other
-:concentration_determined_by: 
+:concentration_determined_by:
   - PicoGreen
   - Nanodrop
   - Spectrophotometer
   - Other
-:dna_storage_conditions: 
+:dna_storage_conditions:
   - +4C
   - '-20C'
   - '-80C'

@@ -2,25 +2,38 @@ module SampleManifestExcel
 
   class Validation
 
-    attr_accessor :options, :range_name
+    include HashAttributes
+
+    set_attributes :options, :range_name
 
     def initialize(attributes = {})
-      attributes.each do |name, value|
-        send("#{name}=", value)
+      create_attributes(attributes)
+    end
+
+    def update(attributes = {})
+      if range_required?
+        options[:formula1] = attributes[:range].absolute_reference
+      end
+
+      if attributes[:worksheet].present?
+        attributes[:worksheet].add_data_validation(attributes[:reference], options)
       end
     end
 
-    def set_formula1(range)
-      return unless range_required?
-      options[:formula1] = range.absolute_reference
+    def range_required?
+      range_name.present?
     end
 
-    def range_required?
-      range_name.presence
+    def formula1
+      options[:formula1]
     end
 
     def valid?
-      options
+      options.present?
+    end
+
+    def empty?
+      false
     end
 
   end

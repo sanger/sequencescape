@@ -6,14 +6,24 @@ module SampleManifestExcel
 
 	  class DataWorksheet < Base
 
+       STYLES = {  unlocked: { locked: false, border: { style: :thin, color: "00"}},
+                  wrap_text: {alignment: { horizontal: :center, vertical: :center, wrap_text: true},
+                  border: {style: :thin, color: "00", edges: [:left, :right, :top, :bottom]}}
+                }
+
+      def initialize(attributes = {})
+        super
+        create_styles
+        add_title_and_description
+        add_columns
+        freeze_panes
+      end
+
       #Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
       #data validations, conditional formattings, freezes panes at required place.
 
       def create_worksheet
       	insert_axlsx_worksheet("DNA Collections Form")
-      	add_title_and_description
-      	add_columns
-        freeze_panes
       end
 
       #Adds title and description (study abbreviation, supplier name, number of assets sent)
@@ -31,23 +41,10 @@ module SampleManifestExcel
       #Adds columns with all required data to a worksheet
 
       def add_columns
-        prepare_columns
+        columns.update(first_row, last_row, ranges, workbook)
         add_columns_headings
         add_data
         columns.add_validation_and_conditional_formatting axlsx_worksheet
-      end
-
-      #Prepares columns to be added to the worksheet, provides information required to
-      #prepare columns:
-      #- the first row where the table with columns starts (to be used for columns positions,
-      #  i.e. first cell of column),
-      #- the last row where the table with columns ends (to be used for columns positions,
-      #  i.e. last cell of column),
-      #- styles (to be used for conditional formattings, lock/unlock of cells, borders)
-      #- range list object (to be used in data validations and conditional formattings)
-
-      def prepare_columns
-        columns.prepare_columns(first_row, last_row, styles, ranges)
       end
 
       #Adds columns headings to a worksheet, also adds style to headings (they have borders,
@@ -70,7 +67,11 @@ module SampleManifestExcel
       def create_row(sample)
         axlsx_worksheet.add_row do |row|
           columns.each do |k, column|
-            row.add_cell column.attribute_value(sample), type: column.type, style: styles[:unlocked] if column.unlocked
+            if column.unlocked?
+              row.add_cell column.attribute_value(sample), type: column.type, style: styles[:unlocked].reference
+            else
+              row.add_cell column.attribute_value(sample), type: column.type
+            end
           end
         end
       end
@@ -104,6 +105,27 @@ module SampleManifestExcel
 
       def last_row
         @last_row ||= sample_manifest.samples.count + first_row - 1
+      end
+
+      def styles
+        @styles ||= {}
+      end
+
+      def create_styles
+        styles.tap do |s|
+          STYLES.each do |k, style|
+            s[k] = Style.new(workbook, style)
+          end
+        end
+      end
+
+      class Style
+        attr_reader :options, :reference
+
+        def initialize(workbook, options)
+          @options = options
+          @reference = workbook.styles.add_style options
+        end
       end
 
 	  end

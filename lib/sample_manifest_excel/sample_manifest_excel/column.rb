@@ -39,10 +39,8 @@ module SampleManifestExcel
       @conditional_formattings = ConditionalFormattingList.new(conditional_formattings)
     end
 
-    #Checks if a column has a validation
-
-    def validation?
-      validation.present?
+    def range=(attributes)
+      @range = Range.new(attributes)
     end
 
     #Checks if a column should be unlocked
@@ -57,6 +55,14 @@ module SampleManifestExcel
       attribute.value(sample) || value
     end
 
+    def validation
+      @validation || NullValidation.new
+    end
+
+    def updated?
+      @updated
+    end
+
     #Prepares a column to be used on a worksheet:
     #- adds reference to a column (i.e. $A$10:$A$15) to be used to place validation and
     #  conditional formatting on a worksheet,
@@ -69,12 +75,17 @@ module SampleManifestExcel
     #  the rule should be applied), and also with range reference)
     #All arguments are worksheet attributes. Also see DataWorksheet#prepare_columns
 
-    def prepare_with(first_row, last_row, workbook, ranges)
-      add_reference(first_row, last_row)
-      # @unlocked = styles[:unlock].reference if unlocked?
-      range = ranges.find_by(range_name) if validation?
-      prepare_validation(range) if validation?
-      prepare_conditional_formattings(workbook, range || NullRange.new)
+    def update(first_row, last_row, ranges, workbook)
+      self.range = {first_column: number, first_row: first_row, last_row: last_row}
+
+      range = ranges.find_by(range_name)  || NullRange.new
+      validation.update(range: range)
+
+      conditional_formattings.update(workbook: workbook, first_cell: first_cell_relative_reference, absolute_reference: range.reference)
+
+      @updated = true
+
+      self
     end
 
     #Adds reference to a column (i.e. $A$10:$A$15)
@@ -90,27 +101,12 @@ module SampleManifestExcel
       self
     end
 
-    #Prepares validation to be used on a worksheet
-
-    def prepare_validation(range)
-      validation.set_formula1(range)
-    end
-
-    #Updates all conditional formatting rules with the right style and the right formula
-
-    def prepare_conditional_formattings(workbook, range)
-      conditional_formattings.each_item do |conditional_formatting|
-        conditional_formatting.update(workbook: workbook, first_cell: first_cell_relative_reference, absolute_reference: range.reference)
-      end
-    end
-
     #Receives axlsx_worksheet as an argument and adds data validations and conditional
     #formattings for this column on this axlsx_worksheet
 
     def add_validation_and_conditional_formatting(axlsx_worksheet)
-      axlsx_worksheet.add_data_validation(reference, validation.options) if validation?
+      axlsx_worksheet.add_data_validation(reference, validation.options) unless validation.empty?
       axlsx_worksheet.add_conditional_formatting(reference, conditional_formattings.options)
-      binding.pry
     end
 
   private

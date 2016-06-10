@@ -4,7 +4,9 @@ module SampleManifestExcel
 
     class Base
 
-    	attr_accessor :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :styles, :name, :password, :type
+      include HashAttributes
+
+      set_attributes :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :name, :password, :type
 
       #Worksheet constructor takes different arguments depending of a type of worksheet
       #(data or ranges), creates worksheet and protects it if password is provided
@@ -29,9 +31,9 @@ module SampleManifestExcel
       #
 
     	def initialize(attributes = {})
-    	  attributes.each { |name, value| send("#{name}=", value) }
+        create_attributes(attributes)
         create_worksheet
-        protect if password
+        protect if password.present?
     	end
 
       #Adds row to a worksheet with particular value, style and type for each cell
@@ -56,9 +58,11 @@ module SampleManifestExcel
       #Protects worksheet, but sizes of rows and columns can be changed
 
       def protect
-      	axlsx_worksheet.sheet_protection.format_columns = false
-        axlsx_worksheet.sheet_protection.format_rows = false
-      	axlsx_worksheet.sheet_protection.password = password
+        axlsx_worksheet.sheet_protection do |sheet_protection|
+          sheet_protection.format_columns = false
+          sheet_protection.format_rows = false
+          sheet_protection.password = password
+        end
       end
 
       #Adds axlsx worksheet to a workbook, to a particular place.

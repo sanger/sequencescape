@@ -6,6 +6,8 @@ module SampleManifestExcel
 
     attr_reader :conditional_formattings
 
+    delegate :empty?, to: :conditional_formattings
+
     def initialize(conditional_formattings = {})
       create_conditional_formattings(conditional_formattings)
       yield self if block_given?

@@ -11,8 +11,10 @@ module SampleManifestExcel
     def initialize(attributes = {})
       create_attributes(attributes)
 
-      @first_cell = Cell.new(first_row, first_column)
-      @last_cell = Cell.new(last_row, last_column)
+      if valid?
+        @first_cell = Cell.new(first_row, first_column)
+        @last_cell = Cell.new(last_row, last_column)
+      end
     end
 
     def first_column

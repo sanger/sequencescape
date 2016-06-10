@@ -18,11 +18,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
 		setup do
 	    @range_list = build(:range_list, options: ranges)
-	    @sample_manifest = create :sample_manifest_with_samples
-	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))))
-	    style = build(:style, workbook: workbook)
-    	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
-	    @worksheet = SampleManifestExcel::Worksheet::Base.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
+	    @worksheet = SampleManifestExcel::Worksheet::Base.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: '1111', type: 'Plates'
 	  	save_file
 	  end
 
@@ -36,11 +32,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
 		setup do
 			@range_list = build(:range_list, options: ranges)
-	    @sample_manifest = create(:sample_manifest_with_samples)
-	    @column_list = SampleManifestExcel::ColumnList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))).with_indifferent_access)
-	    style = SampleManifestExcel::Style.new(workbook, {locked: false})
-    	@styles = {unlock: style, style_name: style, wrong_value: style, empty_cell: style, wrap_text: style}
-	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: '1111', type: 'Plates'
+	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: '1111', type: 'Plates'
 	  	save_file
 	  end
 
@@ -93,12 +85,12 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "add all required conditional formatting to all columns" do
-	    assert_equal 32, worksheet.axlsx_worksheet.send(:conditional_formattings).count
+	    assert_equal 35, worksheet.axlsx_worksheet.send(:conditional_formattings).count
 	    column = column_list.find_by(:supplier_sample_name)
 	    assert worksheet.axlsx_worksheet.send(:conditional_formattings).any? {|conditional_formatting| conditional_formatting.sqref == column.reference}
 	    conditional_formatting = worksheet.axlsx_worksheet.send(:conditional_formattings).select {|conditional_formatting| conditional_formatting.sqref == column.reference}
-	    assert_equal column.conditional_formatting_options.count, conditional_formatting.last.rules.count
-	    assert_equal column.conditional_formatting_options.last['formula'], conditional_formatting.last.rules.last.formula.first
+	    assert_equal column.conditional_formattings.options.count, conditional_formatting.last.rules.count
+	    assert_equal ERB::Util.html_escape(column.conditional_formattings.options.last['formula']), conditional_formatting.last.rules.last.formula.first
 	  end
 
 	  should "panes should be frozen correctly" do

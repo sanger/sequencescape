@@ -2,7 +2,7 @@ module SampleManifestExcel
   module Download
     class Base
 
-      attr_reader :sample_manifest, :data_worksheet, :type, :styles, :range_list, :ranges_worksheet, :column_list
+      attr_reader :sample_manifest, :data_worksheet, :type, :range_list, :ranges_worksheet, :column_list
       attr_accessor :columns_names
 
       #A download takes:
@@ -22,14 +22,12 @@ module SampleManifestExcel
       #- ranges worksheet, that contains information about ranges used in data validation and
       #  conditional formatting. This worksheet is locked.
 
-
-      def initialize(sample_manifest, full_column_list, range_list, styles_data)
+      def initialize(sample_manifest, full_column_list, range_list)
         @sample_manifest = sample_manifest
-        @styles = create_styles(styles_data)
         @range_list = range_list
         @column_list = full_column_list.extract(self.class.column_names)
         @ranges_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook, password: password)
-        @data_worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook, columns: column_list, sample_manifest: sample_manifest, styles: styles, ranges: range_list, password: password, type: type)
+        @data_worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: password, type: type)
       end
 
       #Saves file as xlsx document. filename is a name of the file that will be saved.
@@ -66,21 +64,6 @@ module SampleManifestExcel
 
       def type
         ''
-      end
-
-    private
-
-      #Adds styles to a workbook (as required by axlsx) to be used in excel file.
-      #To create styles a hash (styles_data) is required, with styles names as keys and
-      #options for different styles as values, an example of a hash is in file
-      #test/data/sample_manifest_excel/sample_manifest_styles.yml)
-
-      def create_styles(styles_data)
-        {}.tap do |s|
-          styles_data.each do |name, options|
-            s[name] = SampleManifestExcel::Style.new workbook, options
-          end
-        end
       end
 
     end
