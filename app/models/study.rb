@@ -619,7 +619,7 @@ class Study < ActiveRecord::Base
   end
 
   def send_samples_to_service?
-    accession_service.no_study_accession_needed || accession_number?
+    accession_service.no_study_accession_needed || ((!study_metadata.never_release?) && accession_number?)
   end
 
   def validate_ena_required_fields!

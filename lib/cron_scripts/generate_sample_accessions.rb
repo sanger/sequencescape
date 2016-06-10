@@ -6,12 +6,6 @@ class ::Sample
   # studies and themselves.  It comes from a long (and highly frustrating) experience of decoding the
   # app/models/data_release.rb logic.
 
-  scope :without_accession, ->() {
-    # Pick up samples where the accession number is either NULL or blank.
-    # MySQL automatically trims '  ' so '  '=''
-    joins(:sample_metadata).where(sample_metadata:{sample_ebi_accession_number:[nil,'']})
-  }
-
   # We can't just join on studies, as this messes up rails subsequent eager loading,
   # and studies that don't meet the criteria won't be loaded. This causes issues if
   # we have non-accessioned EGA studies, and an accessioned ENA study. This would result
@@ -21,7 +15,7 @@ class ::Sample
       'INNER JOIN study_samples AS iss_ss ON iss_ss.sample_id = samples.id',
       'INNER JOIN study_metadata AS iss_sm ON iss_sm.study_id = iss_ss.study_id',
     ]).where('iss_sm.study_ebi_accession_number <> ""').
-    where(iss_sm: { data_release_strategy:  [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ]}).uniq
+    where(iss_sm: { data_release_strategy:  [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ], data_release_timing: Study::DATA_RELEASE_TIMINGS}).uniq
   }
 
   scope :with_taxon_and_common_name, ->() {

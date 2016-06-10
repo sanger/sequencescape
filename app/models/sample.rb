@@ -106,6 +106,12 @@ class Sample < ActiveRecord::Base
     where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
   }
 
+  scope :without_accession, ->() {
+    # Pick up samples where the accession number is either NULL or blank.
+    # MySQL automatically trims '  ' so '  '=''
+    joins(:sample_metadata).where(sample_metadata:{sample_ebi_accession_number:[nil,'']})
+  }
+
   def self.by_name(sample_id)
     self.find_by_name(sample_id)
   end

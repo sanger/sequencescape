@@ -44,8 +44,8 @@ class Asset < ActiveRecord::Base
   self.per_page = 500
   self.inheritance_column = "sti_type"
 
-  has_many :asset_group_assets, :dependent => :destroy
-  has_many :asset_groups, :through => :asset_group_assets
+  has_many :asset_group_assets, :dependent => :destroy, :inverse_of => :asset
+  has_many :asset_groups, :through => :asset_group_assets, :inverse_of => :assets
   has_many :asset_audits
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
