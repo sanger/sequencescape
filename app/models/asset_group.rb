@@ -22,7 +22,7 @@ class AssetGroup < ActiveRecord::Base
  scope :for_search_query, ->(query,with_includes) { where([ 'name LIKE ?', "%#{query}%" ]) }
 
   def all_samples_have_accession_numbers?
-    unaccessioned_samples.any?
+    unaccessioned_samples.empty?
   end
 
   # The has many through only works if the asset_group_assets are stored in the database,
