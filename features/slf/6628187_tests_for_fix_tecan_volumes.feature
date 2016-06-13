@@ -74,25 +74,6 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
-    A;1220000001831;;ABgene 0765;1;;15.9
-    D;1220099999705;;ABgene 0800;1;;15.9
-    W;
-    A;1220000001831;;ABgene 0765;9;;15.8
-    D;1220099999705;;ABgene 0800;2;;15.8
-    W;
-    A;1220000010734;;ABgene 0765;1;;15.9
-    D;1220099999705;;ABgene 0800;3;;15.9
-    W;
-    A;1220000010734;;ABgene 0765;9;;15.8
-    D;1220099999705;;ABgene 0800;4;;15.8
-    W;
-    A;1220000005877;;ABgene 0765;1;;15.9
-    D;1220099999705;;ABgene 0800;5;;15.9
-    W;
-    A;1220000005877;;ABgene 0765;9;;15.8
-    D;1220099999705;;ABgene 0800;6;;15.8
-    W;
-    C;
     A;BUFF;;96-TROUGH;1;;49.1
     D;1220099999705;;ABgene 0800;1;;49.1
     W;
@@ -110,6 +91,25 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     W;
     A;BUFF;;96-TROUGH;6;;49.2
     D;1220099999705;;ABgene 0800;6;;49.2
+    W;
+    C;
+    A;1220000001831;;ABgene 0765;1;;15.9
+    D;1220099999705;;ABgene 0800;1;;15.9
+    W;
+    A;1220000001831;;ABgene 0765;9;;15.8
+    D;1220099999705;;ABgene 0800;2;;15.8
+    W;
+    A;1220000010734;;ABgene 0765;1;;15.9
+    D;1220099999705;;ABgene 0800;3;;15.9
+    W;
+    A;1220000010734;;ABgene 0765;9;;15.8
+    D;1220099999705;;ABgene 0800;4;;15.8
+    W;
+    A;1220000005877;;ABgene 0765;1;;15.9
+    D;1220099999705;;ABgene 0800;5;;15.9
+    W;
+    A;1220000005877;;ABgene 0765;9;;15.8
+    D;1220099999705;;ABgene 0800;6;;15.8
     W;
     C;
     C; SCRC1 = 1220000001831
