@@ -5,10 +5,11 @@
 <% end %>
 
 <h2>Owned Plates</h2>
-<ul>
+<p>Lists source plates where you own one or more of their descendants.</p>
+<ul class="list-group">
 <%= pagination @plates %>
 <% @plates.each do |plate| %>
-  <li>
+  <li class="list_group-item">
     <%= link_to plate.sanger_human_barcode, plate_summary_path(plate.sanger_human_barcode) %>
   </li>
 <% end %>
