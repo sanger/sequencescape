@@ -9,7 +9,7 @@ class PmbClientTest < ActiveSupport::TestCase
 	end
 
 	test "should have base url"  do
-		assert PmbClient::PrintMyBarcode.base_url
+		assert LabelPrinter::PmbClient.base_url
 	end
 
 	test "sends a print job to the API" do
@@ -23,7 +23,7 @@ class PmbClientTest < ActiveSupport::TestCase
 												content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
 		.returns(200)
 
-		assert_equal 200, PmbClient::PrintMyBarcode.print(attributes)
+		assert_equal 200, LabelPrinter::PmbClient.print(attributes)
 
 	end
 
@@ -31,7 +31,7 @@ class PmbClientTest < ActiveSupport::TestCase
 		attributes =  {"printer_name" => "not_registered",
 										"label_template_id" => 1,
 										"labels" => labels}
-		assert_equal "{\"errors\":{\"printer\":[\"Printer does not exist\"]}}", PmbClient::PrintMyBarcode.print(attributes)
+		assert_equal "{\"errors\":{\"printer\":[\"Printer does not exist\"]}}", LabelPrinter::PmbClient.print(attributes)
 	end
 
 

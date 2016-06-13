@@ -15,6 +15,8 @@ module SampleManifest::PlateBehaviour
 
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
+    attr_reader :plates
+
     def initialize(manifest)
       @manifest = manifest
     end
@@ -24,11 +26,11 @@ module SampleManifest::PlateBehaviour
 
     delegate :samples, :to => :@manifest
 
-    def print_labels_for(plates, &block)
-      plates              = plates.sort_by(&:barcode)
-      stock_plate_purpose = PlatePurpose.stock_plate_purpose
-      yield(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", stock_plate_purpose.name.to_s)
-    end
+    # def print_labels_for(plates, &block)
+    #   plates              = plates.sort_by(&:barcode)
+    #   stock_plate_purpose = PlatePurpose.stock_plate_purpose
+    #   yield(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", stock_plate_purpose.name.to_s)
+    # end
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
     # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
@@ -82,9 +84,9 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def print_labels(&block)
-      print_labels_for(@plates, &block)
-    end
+    # def print_labels(&block)
+    #   print_labels_for(@plates, &block)
+    # end
 
     def details(&block)
       @details.map(&block.method(:call))

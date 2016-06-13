@@ -3,9 +3,9 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.
 require 'rest-client'
 
-module PmbClient
+module LabelPrinter
 
-	class PrintMyBarcode
+	class PmbClient
 
 		def self.base_url
       configatron.pmb_api

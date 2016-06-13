@@ -12,10 +12,10 @@ class PrintJobTest < ActiveSupport::TestCase
 			@plate = plates[0]
 			@plate_purpose = plate.plate_purpose
 			@attributes = {printer_name: barcode_printer.name,
-							label_template_id: 6,
+							label_template_id: 8,
 							labels: {body:
 								[{main_label:
-									{top_left: "#{Date.today}",
+									{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
 									bottom_left: "#{plate.sanger_human_barcode}",
 									top_right: "#{plate_purpose.name.to_s}",
 									bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
@@ -23,7 +23,7 @@ class PrintJobTest < ActiveSupport::TestCase
 									barcode: "#{plate.ean13_barcode}"}}]
 								}
 							}
-			@print_job = PrintJob.new(barcode_printer, Label::PlateLabel, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
+			@print_job = LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::PlateLabel, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
 		end
 
 		should "have attributes" do
@@ -37,7 +37,7 @@ class PrintJobTest < ActiveSupport::TestCase
 		end
 
 		should "print contact pmb to print labels" do
-			PmbClient::PrintMyBarcode.expects(:print).with(attributes).returns('success')
+			LabelPrinter::PmbClient.expects(:print).with(attributes).returns('success')
 			assert_equal 'success', print_job.execute
 		end
 

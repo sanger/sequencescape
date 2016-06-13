@@ -2,6 +2,11 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
+# require 'lib/label_printer/label_printer'
+# require 'lib/label_printer/label_printer/print_job'
+# require 'lib/label_printer/label_printer/sample_manifest_label'
+# require 'lib/label_printer/label_printer/pmb_client'
+
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_filter :set_sample_manifest_id, :only => [:show, :generated]
   before_filter :validate_type,    :only => [:new, :create]
@@ -75,9 +80,15 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     end
     printer_options = printer_options(params)
     barcode_printer=printer_options[:barcode_printer]
+    only_first_label = printer_options[:only_first_label]
 
     unless barcode_printer.nil?
-      @sample_manifest.print_labels(barcode_printer, printer_options)
+      print_job = LabelPrinter::PrintJob.new(barcode_printer,
+                                             LabelPrinter::Label::SampleManifestLabel,
+                                             only_first_label: printer_options[:only_first_label],
+                                             sample_manifest: @sample_manifest)
+      print_job.execute
+      # @sample_manifest.print_labels(barcode_printer, printer_options)
     end
 
     if !@sample_manifest.manifest_errors.empty?
