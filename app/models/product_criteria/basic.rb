@@ -75,7 +75,7 @@ class ProductCriteria::Basic
   end
 
   def most_recent_concentration_from_target_well_by_updating_date
-    @target_wells.order_by {|w| w.well_attribute.updated_at }.last.get_concentration if @target_wells
+    @target_wells.sort_by {|w| w.well_attribute.updated_at }.last.get_concentration if @target_wells
   end
 
   def concentration_from_normalization
