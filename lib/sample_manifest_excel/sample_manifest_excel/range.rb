@@ -3,6 +3,7 @@ module SampleManifestExcel
   class Range
 
     include HashAttributes
+    include Comparable
 
     set_attributes :options, :first_row, :last_row, :first_column, :last_column, :worksheet_name
 
@@ -41,7 +42,7 @@ module SampleManifestExcel
       @reference ||= "#{first_cell.fixed}:#{last_cell.fixed}"
     end
 
-    def first_cell_relative_reference
+    def first_cell_reference
       first_cell.reference
     end
 
@@ -60,6 +61,22 @@ module SampleManifestExcel
 
     def valid?
       first_row.present?
+    end
+
+    def references
+      {
+        first_cell_reference: first_cell_reference,
+        reference: reference,
+        absolute_reference: absolute_reference
+      }
+    end
+
+    def <=>(other)
+      options <=> other.options &&
+      first_row <=> other.last_row &&
+      first_column <=> other.first_column &&
+      last_column <=> other.last_column &&
+      worksheet_name <=> other.worksheet_name
     end
 
   end

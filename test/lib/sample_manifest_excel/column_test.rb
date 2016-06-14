@@ -2,10 +2,11 @@ require_relative '../../test_helper'
 
 class ColumnTest < ActiveSupport::TestCase
 
-  attr_reader :column, :sample, :range_list
+  attr_reader :column, :sample, :range_list, :worksheet
 
   def setup
     @range_list = build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range)})
+    @worksheet = Axlsx::Workbook.new.add_worksheet
   end
 
   def options
@@ -51,14 +52,6 @@ class ColumnTest < ActiveSupport::TestCase
     assert_equal options[:number], SampleManifestExcel::Column.new(options).number
   end
 
-  test "#add_reference should create range and set reference" do
-    @column = SampleManifestExcel::Column.new(options).set_number(125)
-    column.add_reference(27, 150)
-    range = SampleManifestExcel::Range.new(first_column: 125, first_row: 27, last_row: 150)
-    assert_equal range.reference, column.reference
-    assert_equal range.first_cell_relative_reference, column.first_cell_relative_reference
-  end
-
   context "with no validation" do
 
     setup do
@@ -74,7 +67,7 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "update without any problems" do
-      assert column.update(27, 150, range_list, Axlsx::Workbook.new).updated?
+      assert column.update(27, 150, range_list, worksheet).updated?
     end
 
   end
@@ -90,14 +83,17 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "update without any problems" do
-      assert column.update(27, 150, range_list, Axlsx::Workbook.new).updated?
+      assert column.update(27, 150, range_list, worksheet).updated?
     end
   end
 
-  context "#update" do
+  context "#update with validation and formattings" do
+
+    attr_reader :worksheet
 
     setup do
-      @column = SampleManifestExcel::Column.new(options).update(27, 150, range_list, Axlsx::Workbook.new)
+      @worksheet = Axlsx::Workbook.new.add_worksheet
+      @column = SampleManifestExcel::Column.new(options).update(27, 150, range_list, worksheet)
     end
 
     should "work" do
@@ -106,17 +102,17 @@ class ColumnTest < ActiveSupport::TestCase
 
     should "set the reference" do
       range = SampleManifestExcel::Range.new(first_column: column.number, first_row: 27, last_row: 150)
-      assert_equal range.reference, column.reference
-      assert_equal range.first_cell_relative_reference, column.first_cell_relative_reference
+      assert_equal range, column.range
     end
 
     should "update the validation" do
       assert_equal range_list.find_by(column.range_name).absolute_reference, column.validation.formula1
+      assert column.validation.saved?
     end
 
     should "update the conditional formatting" do
       assert_equal options[:conditional_formattings].length, column.conditional_formattings.count
-      assert column.conditional_formattings.each_item.all? { |cf| cf.styled? }
+      assert column.conditional_formattings.saved?
     end
 
   end

@@ -12,8 +12,8 @@ module SampleManifestExcel
 
     def update(attributes = {})
 
-      if attributes[:workbook].present?
-        options['dxfId'] = attributes[:workbook].styles.add_style(style)
+      if attributes[:worksheet].present?
+        options['dxfId'] = attributes[:worksheet].workbook.styles.add_style(style)
       end
 
       if formula.present?

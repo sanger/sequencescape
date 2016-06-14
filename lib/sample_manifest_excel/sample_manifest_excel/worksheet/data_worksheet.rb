@@ -41,24 +41,13 @@ module SampleManifestExcel
       #Adds columns with all required data to a worksheet
 
       def add_columns
-        columns.update(first_row, last_row, ranges, workbook)
-        add_columns_headings
-        add_data
-        columns.add_validation_and_conditional_formatting axlsx_worksheet
-      end
+        columns.update(first_row, last_row, ranges, axlsx_worksheet)
+        add_row columns.headings, styles[:wrap_text].reference
 
-      #Adds columns headings to a worksheet, also adds style to headings (they have borders,
-      #alignement (center), cells wrap text)
+        sample_manifest.samples.each do |sample| 
+          create_row(sample)
+        end
 
-    	def add_columns_headings
-  			add_row columns.headings, styles[:wrap_text].reference
-    	end
-
-      #Adds values to particular columns (for example, plate_id, sanger_sample_id)
-      #row by row based on samples information
-
-      def add_data
-  			sample_manifest.samples.each { |sample| create_row(sample) }
       end
 
       #Creates row filled in with required column values, also unlocks (adds unlock style)

@@ -16,8 +16,6 @@ module SampleManifestExcel
 
     validates_presence_of :name, :heading
 
-    delegate :reference, :first_cell_relative_reference, to: :range
-
     delegate :range_name, to: :validation
 
     #To create a column a hash of arguments is required, name and heading attributes are mandatory
@@ -63,35 +61,17 @@ module SampleManifestExcel
       @updated
     end
 
-    #Prepares a column to be used on a worksheet:
-    #- adds reference to a column (i.e. $A$10:$A$15) to be used to place validation and
-    #  conditional formatting on a worksheet,
-    #- applies unlock style to a column, to unlock the column if required
-    #- prepares validation to be used on a worksheet (updates validation formula with
-    #  reference to a required range)
-    #- prepares conditional formatting rules to be used on worksheet (updates conditional
-    #  formatting rule with style to be applied (red or blue color), updates conditional
-    #  formatting rule formula with column first cell reference(to indicate to which cells
-    #  the rule should be applied), and also with range reference)
-    #All arguments are worksheet attributes. Also see DataWorksheet#prepare_columns
-
-    def update(first_row, last_row, ranges, workbook)
+    def update(first_row, last_row, ranges, worksheet)
       self.range = {first_column: number, first_row: first_row, last_row: last_row}
 
       range = ranges.find_by(range_name)  || NullRange.new
-      validation.update(range: range)
+      validation.update(range: range, reference: range.reference, worksheet: worksheet)
 
-      conditional_formattings.update(workbook: workbook, first_cell: first_cell_relative_reference, absolute_reference: range.reference)
+      conditional_formattings.update(self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet))
 
       @updated = true
 
       self
-    end
-
-    #Adds reference to a column (i.e. $A$10:$A$15)
-
-    def add_reference(first_row, last_row)
-      @range = Range.new(first_column: number, first_row: first_row, last_row: last_row)
     end
 
     #Sets column number

@@ -14,5 +14,15 @@ module SampleManifestExcel
         self
       end
     end
+
+    module AxlsxWorksheet
+      def data_validation_rules
+        data_validations
+      end
+
+      def conditional_formatting_rules
+        conditional_formattings
+      end
+    end
   end
 end

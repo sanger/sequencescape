@@ -8,6 +8,8 @@ module SampleManifestExcel
 
     attr_reader :columns
 
+    delegate :values, to: :columns
+
     #To create a column_list a hash with details of all columns is required. Each key is
     #a column name, each value is options for the column including heading, validation,
     #conditional formatting rules, etc.
@@ -47,21 +49,6 @@ module SampleManifestExcel
       end
     end
 
-#QUESTION. The next four methods are not used in code anymore. But they are very handy in tests.
-#Should I move them to some kind of 'helpers' file in tests? Or is it better just to change the tests?
-
-    def with_validations
-      columns.values.reject { |column| column.validation.empty? }
-    end
-
-    def with_unlocked
-      columns.values.select { |column| column.unlocked? }
-    end
-
-    def with_conditional_formatting_rules
-      columns.values.select { |column| column.conditional_formatting_rules?}
-    end
-
     #Adds column to a column list, assigns a number to a column
 
     def add(column)
@@ -90,15 +77,8 @@ module SampleManifestExcel
     #Prepares columns to be added to the data worksheet. All arguments are not known to column list
     #(they are attributes of data worksheet, see also DataWorksheet#prepare_columns)
 
-    def update(first_row, last_row, ranges, workbook)
-       each {|k, column| column.update(first_row, last_row, ranges, workbook)}
-    end
-
-    #Receives axlsx_worksheet as an argument and adds data validations and conditional
-    #formattings for all columns on this axlsx_worksheet
-
-    def add_validation_and_conditional_formatting(axlsx_worksheet)
-      each {|k, column| column.add_validation_and_conditional_formatting(axlsx_worksheet)}
+    def update(first_row, last_row, ranges, worksheet)
+       each {|k, column| column.update(first_row, last_row, ranges, worksheet)}
     end
 
   private

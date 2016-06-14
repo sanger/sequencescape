@@ -67,9 +67,11 @@ class ValidationTest < ActiveSupport::TestCase
 
     should "add validation to the worksheet" do
       validation.update(reference: range.reference, worksheet: worksheet)
-      validations = worksheet.send(:data_validations)
+      validations = worksheet.data_validation_rules
+      assert validation.saved?
       assert_equal 1, validations.count
-      assert_equal range.reference, validations.first.sqref 
+      assert_equal range.reference, validations.first.sqref
+
     end
 
   end

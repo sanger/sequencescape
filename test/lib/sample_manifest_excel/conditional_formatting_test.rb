@@ -2,13 +2,16 @@ require_relative '../../test_helper'
 
 class ConditionalFormattingTest < ActiveSupport::TestCase
 
-  attr_reader :rule, :workbook, :conditional_formatting
+  attr_reader :rule, :worksheet, :conditional_formatting
+
+  def setup
+    @worksheet = Axlsx::Workbook.new.add_worksheet
+  end
 
   context "without formula" do
 
     setup do
       @rule = { type: :empty_cell, style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
-      @workbook = Axlsx::Workbook.new
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule)
     end
 
@@ -29,7 +32,7 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
     end
 
     should "update the style from a workbook" do
-      assert conditional_formatting.update(workbook: workbook).styled?
+      assert conditional_formatting.update(worksheet: worksheet).styled?
     end
 
     should "#to_h should produce a hash of options" do
@@ -40,28 +43,29 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
 
   context "with formula" do
 
-    attr_reader :options
+    attr_reader :options, :formula, :references
 
     setup do
-      @options = { type: :len, operator: :lt, operand: 333, first_cell: "A1", absolute_reference: "A1:A100", workbook: Axlsx::Workbook.new}
-      @rule = {formula: options.except(:first_cell, :absolute_reference), style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
+      @references = build(:range).references
+      @formula = { type: :len, operator: :lt, operand: 333}
+      @rule = {formula: formula, style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule)
     end
 
     should "have a formula" do
-      assert_equal SampleManifestExcel::Formula.new(options.except(:first_cell, :absolute_reference)), conditional_formatting.formula
+      assert_equal SampleManifestExcel::Formula.new(formula), conditional_formatting.formula
     end
 
     should "update the formula if cell references are added" do
-      assert_equal SampleManifestExcel::Formula.new(options).to_s, conditional_formatting.update(options).options['formula']
+      assert_equal SampleManifestExcel::Formula.new(formula.merge(references)).to_s, conditional_formatting.update(references).options['formula']
     end
 
     should "#to_h should produce a hash of options" do
       assert_equal conditional_formatting.options, conditional_formatting.to_h
     end
 
-    should "update the style from a workbook" do
-      assert conditional_formatting.update(options).styled?
+    should "update the style from a worksheet" do
+      assert conditional_formatting.update(references.merge(worksheet: worksheet)).styled?
     end
 
   end

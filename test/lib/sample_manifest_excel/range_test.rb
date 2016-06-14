@@ -34,12 +34,16 @@ class RangeTest < ActiveSupport::TestCase
       assert_equal SampleManifestExcel::Cell.new(range.last_row, range.last_column), range.last_cell
     end
 
-    should "have a first cell relative reference" do
-      assert_equal range.first_cell.reference, range.first_cell_relative_reference
+    should "have a first cell reference" do
+      assert_equal range.first_cell.reference, range.first_cell_reference
     end
 
     should "set the reference" do
       assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.reference
+    end
+
+    should "#references should return first_cell reference, reference and absolute_reference" do
+      assert_equal({first_cell_reference: range.first_cell_reference, reference: range.reference, absolute_reference: range.absolute_reference}, range.references)
     end
 
   end

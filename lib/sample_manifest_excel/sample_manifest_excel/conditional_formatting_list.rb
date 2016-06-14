@@ -29,6 +29,12 @@ module SampleManifestExcel
       each do |k, conditional_formatting|
         conditional_formatting.update(attributes)
       end
+
+      if attributes[:worksheet].present?
+        @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference], options)
+      end
+
+      self
     end
 
     def options
@@ -41,6 +47,10 @@ module SampleManifestExcel
           cf[key] = ConditionalFormatting.new(conditional_formatting)
         end
       end
+    end
+
+    def saved?
+      @saved.present?
     end
   end
 end

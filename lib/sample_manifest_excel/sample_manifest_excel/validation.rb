@@ -16,7 +16,7 @@ module SampleManifestExcel
       end
 
       if attributes[:worksheet].present?
-        attributes[:worksheet].add_data_validation(attributes[:reference], options)
+        @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], options)
       end
     end
 
@@ -34,6 +34,10 @@ module SampleManifestExcel
 
     def empty?
       false
+    end
+
+    def saved?
+      @worksheet_validation.present?
     end
 
   end

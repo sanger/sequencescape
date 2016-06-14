@@ -56,11 +56,11 @@ class WorksheetTest < ActiveSupport::TestCase
 	    end
 	  end
 
-	  should "prepare columns" do
-	  	worksheet.columns.each do |k, column|
-	  		assert column.range
+	  should "unlock cells for all columns which are unlocked" do
+	  	worksheet.columns.values.select(&:unlocked?).each do |column|
+	  		assert_equal worksheet.styles[:unlocked].reference, worksheet.axlsx_worksheet[column.range.first_cell.reference].style
+	  		assert_equal worksheet.styles[:unlocked].reference, worksheet.axlsx_worksheet[column.range.last_cell.reference].style
 	  	end
-	  	worksheet.columns.with_unlocked.all? {|column| column.unlocked.is_a? Integer}
 	  end
 
 	  should "should add all of the samples" do
@@ -75,22 +75,8 @@ class WorksheetTest < ActiveSupport::TestCase
 	    end
 	  end
 
-	  should "add the data validations" do
-	    assert_equal column_list.with_validations.count, worksheet.axlsx_worksheet.send(:data_validations).count
-	    column = column_list.with_validations.first
-	    assert_equal column.reference, worksheet.axlsx_worksheet.send(:data_validations).first.sqref
-	    column = column_list.with_validations.last
-	    assert_equal column.reference, worksheet.axlsx_worksheet.send(:data_validations).last.sqref
-	    assert worksheet.axlsx_worksheet.send(:data_validations).find {|validation| validation.formula1 == column_list.find_by(:gender).validation.options[:formula1]}
-	  end
-
-	  should "add all required conditional formatting to all columns" do
-	    assert_equal 35, worksheet.axlsx_worksheet.send(:conditional_formattings).count
-	    column = column_list.find_by(:supplier_sample_name)
-	    assert worksheet.axlsx_worksheet.send(:conditional_formattings).any? {|conditional_formatting| conditional_formatting.sqref == column.reference}
-	    conditional_formatting = worksheet.axlsx_worksheet.send(:conditional_formattings).select {|conditional_formatting| conditional_formatting.sqref == column.reference}
-	    assert_equal column.conditional_formattings.options.count, conditional_formatting.last.rules.count
-	    assert_equal ERB::Util.html_escape(column.conditional_formattings.options.last['formula']), conditional_formatting.last.rules.last.formula.first
+	  should "update all of the columns" do
+	  	assert worksheet.columns.values.all? { |column| column.updated? }
 	  end
 
 	  should "panes should be frozen correctly" do
