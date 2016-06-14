@@ -2,7 +2,6 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
-
 class Plate::Creator < ActiveRecord::Base
 
   PlateCreationError = Class.new(StandardError)
@@ -46,7 +45,9 @@ class Plate::Creator < ActiveRecord::Base
       return false if new_plates.empty?
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         # barcode_printer.print_labels(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", plate_purpose.name.to_s, scanned_user.login)
-        print_job = LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::PlateLabel, plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+        print_job = LabelPrinter::PrintJob.new(barcode_printer,
+                                              LabelPrinter::Label::PlateLabel,
+                                              plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
         print_job.execute
       end
       true

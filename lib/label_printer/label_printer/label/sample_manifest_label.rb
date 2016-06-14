@@ -30,14 +30,18 @@ module LabelPrinter
 			def plate_labels
 				[].tap do |l|
 					sample_manifest.core_behaviour.plates.each do |plate|
-						l.push({main_label:
-											{top_left: "#{date_today}",
-											bottom_left: "#{plate.sanger_human_barcode}",
-											top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
-											bottom_right: "#{sample_manifest.study.abbreviation} #{plate.barcode}",
-											barcode: "#{plate.ean13_barcode}"}})
+						l.push({main_label: create_label(plate)})
 					end
 				end
+			end
+
+			def create_label(plate)
+				default_label(plate).merge(label(plate))
+			end
+
+			def label(plate)
+				{top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
+				bottom_right: "#{sample_manifest.study.abbreviation} #{plate.barcode}"}
 			end
 
 		end

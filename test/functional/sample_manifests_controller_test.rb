@@ -38,6 +38,29 @@ class SampleManifestsControllerTest < ActionController::TestCase
       end
     end
 
+    context '#create' do
+      should "send print request" do
+        barcode = mock("barcode")
+        barcode.stubs(:barcode).returns(23)
+        PlateBarcode.stubs(:create).returns(barcode)
+        study = create :study
+        supplier = Supplier.new(name: 'test')
+        supplier.save
+        barcode_printer = BarcodePrinter.new(name: 'd304bc', barcode_printer_type_id: 1)
+        barcode_printer.save
+
+        RestClient.expects(:post)
+        post :create, sample_manifest: {template: "1",
+                                       study_id: study.id,
+                                       supplier_id: supplier.id,
+                                       count: "3",
+                                       barcode_printer: barcode_printer.id,
+                                       only_first_label: "0",
+                                       asset_type: ""}
+      end
+
+    end
+
   end
-  
+
 end
