@@ -100,7 +100,7 @@ class QcReport < ActiveRecord::Base
           # metric on complete reports (Although wont help if, say, the database connection fails)
           ActiveRecord::Base.transaction do
             assets.each do |asset|
-              criteria = product_criteria.assess(asset, connected_wells[asset])
+              criteria = product_criteria.assess(asset, connected_wells[asset.id])
               QcMetric.create!(:asset=>asset,:qc_decision=>criteria.qc_decision,:metrics=>criteria.metrics,:qc_report=>self)
             end
           end

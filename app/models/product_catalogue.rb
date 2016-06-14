@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+#Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 # Product catalogues provide a means of associating products with a submission
@@ -48,13 +48,13 @@ class ProductCatalogue < ActiveRecord::Base
     products.where(:product_product_catalogues=>{:selection_criterion=>criteria}).first
   end
 
-  def product_with_library_type(library_type_name)
+  def product_with_default(criteria)
     # Order of priorities to select a Product:
     # In a LibraryDriven selection we select the Product with this priorities:
     # 1- The product linked with the library type
     # 2- The first product linked with "nil" SelectionCriterion
     # 3- nil in any other case
-    product_with_criteria(library_type_name) || product_with_criteria(nil)
+    product_with_criteria(criteria) || product_with_criteria(nil)
   end
 
   private

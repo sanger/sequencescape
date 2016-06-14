@@ -17,7 +17,7 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
 
   class << self
     def headers(configuration)
-      (configuration.except(*CONFIG_KEYS).values.reduce(&:merge).keys + [:comment]).uniq
+      (configuration.slice(*STATE_ORDER).values.reduce(&:merge).keys + [:comment]).uniq
     end
   end
 

@@ -34,20 +34,12 @@ class Well < Aliquot::Receptacle
 
   def self.hash_stock_with_targets(wells, purpose_names)
     return {} unless purpose_names
-    purposes = PlatePurpose.find(:all, :conditions => {:name => purpose_names})
-    target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).with_concentration
+    purposes = PlatePurpose.where(:name => purpose_names)
+    # We might need to be careful about this line in future.
+    target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).includes(:well_attribute).with_concentration
 
-    # Eager-loading of well attributes
-    well_attributes = WellAttribute.find(:all, :conditions => {
-      :id => target_wells.map(&:well_attribute_id)
-      })
+    target_wells.group_by(&:stock_well_id)
 
-    {}.tap do |result|
-      target_wells.group_by(&:stock_well_id).each do |k,v|
-        stock_well = wells.select{|w| w.id == k}.first
-        result[stock_well] = v
-      end
-    end
   end
 
   scope :with_concentration, ->() {
@@ -106,8 +98,7 @@ class Well < Aliquot::Receptacle
     }}
 
   scope :target_wells_for, ->(wells) {
-    select('assets.*, well_attributes.well_id AS well_attribute_id, well_links.source_well_id AS stock_well_id').
-    joins(:well_attribute).
+    select('assets.*, well_links.source_well_id AS stock_well_id').
     joins(:stock_well_links).where({
       :well_links =>{
         :source_well_id => wells
