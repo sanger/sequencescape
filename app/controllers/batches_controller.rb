@@ -465,30 +465,35 @@ class BatchesController < ApplicationController
   end
 
   def print_plate_barcodes
-    printables = []
-    count = params[:count].to_i
-    params[:printable].each do |key, value|
-      if value == 'on'
-        label = key
-        identifier = key
-        count.times do
-          printables.push PrintBarcode::Label.new({ :number => identifier, :study => label, :batch => @batch })
-        end
-      end
-    end
-    unless printables.empty?
-      begin
-        # RestClient.post "http://localhost:9292/v1/print_jobs", {"data":{"attributes":{"printer_name":params[:printer], "label_template_id": 6, "labels":  {"body": [{"main_label": {"top_left": "#{Date.today}", "bottom_left": "#{@batch.assets.first.plate.sanger_human_barcode}", "top_right": "#{@batch.study.abbreviation}", "bottom_right": "#{@batch.assets.first.plate.name}",   "barcode": "#{@batch.assets.first.plate.ean13_barcode}"}}]}}}}.to_json, :content_type => "application/vnd.api+json", :accept => "application/vnd.api+json"
-        printables.sort! {|a,b| a.number <=> b.number }
-        BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
-      rescue PrintBarcode::BarcodeException
-        flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue Savon::Error
-        flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-      else
-        flash[:notice] = "Your labels have been printed to #{params[:printer]}."
-      end
-    end
+
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                           LabelPrinter::Label::BatchPlateLabel,
+                                           count: params[:count], printable: params[:printable], batch: @batch)
+    print_job.execute
+
+    # printables = []
+    # count = params[:count].to_i
+    # params[:printable].each do |key, value|
+    #   if value == 'on'
+    #     label = key
+    #     identifier = key
+    #     count.times do
+    #       printables.push PrintBarcode::Label.new({ :number => identifier, :study => label, :batch => @batch })
+    #     end
+    #   end
+    # end
+    # unless printables.empty?
+    #   begin
+    #     printables.sort! {|a,b| a.number <=> b.number }
+    #     BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
+    #   rescue PrintBarcode::BarcodeException
+    #     flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
+    #   rescue Savon::Error
+    #     flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
+    #   else
+    #     flash[:notice] = "Your labels have been printed to #{params[:printer]}."
+    #   end
+    # end
     redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
   end
 

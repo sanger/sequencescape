@@ -7,11 +7,11 @@ class PrintJobTest < ActiveSupport::TestCase
 		attr_reader :print_job, :plates, :plate, :plate_purpose, :barcode_printer, :attributes
 
 		setup do
-			@barcode_printer = BarcodePrinter.new(name: 'test')
+			@barcode_printer = 'test'
 			@plates = [(create :child_plate)]
 			@plate = plates[0]
 			@plate_purpose = plate.plate_purpose
-			@attributes = {printer_name: barcode_printer.name,
+			@attributes = {printer_name: barcode_printer,
 							label_template_id: 8,
 							labels: {body:
 								[{main_label:

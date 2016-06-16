@@ -42,7 +42,7 @@ FactoryGirl.define do
 
       plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
 
-     
+
 
       after(:build) do |child_plate, evaluator|
         child_plate.parents << evaluator.parent

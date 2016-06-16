@@ -17,8 +17,7 @@ class SampleManifestLabelTest < ActiveSupport::TestCase
 			plates = @manifest.core_behaviour.plates
 			@plate1 = plates.first
 			@plate2 = plates.last
-			only_first_label = false
-			options = {sample_manifest: manifest, only_first_label: only_first_label}
+			options = {sample_manifest: manifest, only_first_label: false}
 			@sample_manifest_label = LabelPrinter::Label::SampleManifestLabel.new(options)
 		end
 
@@ -31,6 +30,7 @@ class SampleManifestLabelTest < ActiveSupport::TestCase
 										{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
 										bottom_left: "#{plate1.sanger_human_barcode}",
 										top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
+										top_far_right: nil,
 										bottom_right: "#{manifest.study.abbreviation} #{plate1.barcode}",
 										barcode: "#{plate1.ean13_barcode}"}
 									},
@@ -38,10 +38,26 @@ class SampleManifestLabelTest < ActiveSupport::TestCase
 										{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
 										bottom_left: "#{plate2.sanger_human_barcode}",
 										top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
+										top_far_right: nil,
 										bottom_right: "#{manifest.study.abbreviation} #{plate2.barcode}",
 										barcode: "#{plate2.ean13_barcode}"}
 									}
 								]
+			assert_equal labels, sample_manifest_label.labels
+			assert_equal ({labels: {body: labels}}), sample_manifest_label.to_h
+		end
+
+		should "return only one label if required to do so" do
+			options = {sample_manifest: manifest, only_first_label: true}
+			@sample_manifest_label = LabelPrinter::Label::SampleManifestLabel.new(options)
+			labels = 	[{main_label:
+							{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
+							bottom_left: "#{plate1.sanger_human_barcode}",
+							top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
+							top_far_right: nil,
+							bottom_right: "#{manifest.study.abbreviation} #{plate1.barcode}",
+							barcode: "#{plate1.ean13_barcode}"}
+						}]
 			assert_equal labels, sample_manifest_label.labels
 			assert_equal ({labels: {body: labels}}), sample_manifest_label.to_h
 		end

@@ -12,10 +12,6 @@ module LabelPrinter
 				@only_first_label = options[:only_first_label]
 			end
 
-			def to_h
-				{labels: {body: labels}}
-			end
-
 			def labels
 				case sample_manifest.asset_type
 				when '1dtube'
@@ -27,21 +23,17 @@ module LabelPrinter
 	    	end
 			end
 
-			def plate_labels
-				[].tap do |l|
-					sample_manifest.core_behaviour.plates.each do |plate|
-						l.push({main_label: create_label(plate)})
-					end
-				end
+			def top_right
+				PlatePurpose.stock_plate_purpose.name.to_s
 			end
 
-			def create_label(plate)
-				default_label(plate).merge(label(plate))
+			def bottom_right(plate)
+				"#{sample_manifest.study.abbreviation} #{plate.barcode}"
 			end
 
-			def label(plate)
-				{top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
-				bottom_right: "#{sample_manifest.study.abbreviation} #{plate.barcode}"}
+			def plates
+				return [sample_manifest.core_behaviour.plates.first] if @only_first_label
+				sample_manifest.core_behaviour.plates
 			end
 
 		end

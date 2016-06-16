@@ -10,12 +10,14 @@ class PlateLabelTest < ActiveSupport::TestCase
 		@plate_purpose = plate.plate_purpose
 		options = {plate_purpose: plate_purpose, plates: plates, user_login: 'user'}
 		@plate_label = LabelPrinter::Label::PlateLabel.new(options)
-		@label =	{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-							bottom_left: "#{plate.sanger_human_barcode}",
-							top_right: "#{plate_purpose.name.to_s}",
-							bottom_right: "#{plate_label.user_login} #{plate.find_study_abbreviation_from_parent}",
-							top_far_right: "#{plate.parent.try(:barcode)}",
-							barcode: "#{plate.ean13_barcode}"}
+		@label =	{main_label:
+								{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
+								bottom_left: "#{plate.sanger_human_barcode}",
+								top_right: "#{plate_purpose.name.to_s}",
+								bottom_right: "#{plate_label.user_login} #{plate.find_study_abbreviation_from_parent}",
+								top_far_right: "#{plate.parent.try(:barcode)}",
+								barcode: "#{plate.ean13_barcode}"}
+							}
 	end
 
 	test 'should have plates' do
@@ -27,7 +29,7 @@ class PlateLabelTest < ActiveSupport::TestCase
 	end
 
 	test 'should return the correct hash' do
-		labels = 	[{main_label:label}]
+		labels = 	[label]
 		assert_equal labels, plate_label.labels
 		assert_equal ({labels: {body: labels}}), plate_label.to_h
 	end

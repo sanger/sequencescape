@@ -14,26 +14,16 @@ module LabelPrinter
 				@user_login = options[:user_login]
 			end
 
-			def to_h
-				{labels: {body: labels}}
+			def top_right
+				plate_purpose.name.to_s
 			end
 
-			def labels
-				[].tap do |l|
-					plates.each do |plate|
-						l.push({main_label: create_label(plate)})
-					end
-				end
+			def bottom_right(plate)
+				"#{user_login} #{plate.find_study_abbreviation_from_parent}"
 			end
 
-			def create_label(plate)
-				default_label(plate).merge(label(plate))
-			end
-
-			def label(plate)
-				{top_right: "#{plate_purpose.name.to_s}",
-					bottom_right: "#{user_login} #{plate.find_study_abbreviation_from_parent}",
-					top_far_right: "#{plate.parent.try(:barcode)}"}
+			def top_far_right(plate)
+				"#{plate.parent.try(:barcode)}"
 			end
 
 		end

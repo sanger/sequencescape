@@ -31,7 +31,7 @@ module LabelPrinter
 		end
 
 		def printer
-			{printer_name: barcode_printer.name}
+			{printer_name: barcode_printer}
 		end
 
 		def label_template
