@@ -248,6 +248,10 @@ Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |b
   assert_equal label, plate.role
 end
 
+Then(/^the volume of each well in "(.*?)" should be:$/) do |machine, table|
+  plate = Plate.with_machine_barcode(machine).first
+  table.rows.each {|well,volume| assert_equal volume.to_f, plate.wells.located_at(well).first.get_current_volume}
+end
 
 
 

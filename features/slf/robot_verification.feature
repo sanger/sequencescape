@@ -200,6 +200,64 @@ C;
 C; DEST1 = 1220099999705
     """
 
+Scenario: Source volumes should be updated
+    Given the minimum robot pick is 5.0
+    Given I have a released cherrypicking batch with 2 samples
+    And user "user" has a user barcode of "ID41440E"
+
+    Given I am on the robot verification page
+    When I fill in "Scan user ID" with multiline text
+    """
+    2470041440697
+    """
+    When I fill in "Scan Tecan robot" with multiline text
+    """
+    4880000444853
+    """
+    When I fill in "Scan worksheet" with multiline text
+    """
+    550000555760
+    """
+    When I fill in "Scan destination plate" with multiline text
+    """
+    1220099999705
+    """
+    And I press "Check"
+    Then I should see "Scan robot beds and plates"
+    And the source plates should be sorted by bed:
+    | Bed    | Plate ID      |
+    | SCRC 1 | 1221234567841 |
+    | DEST 1 | 1220099999705 |
+
+
+    When I fill in "SCRC 1" with multiline text
+    """
+    4880000001780
+
+    """
+    When I fill in "1221234567841" with multiline text
+    """
+    1221234567841
+
+    """
+    When I fill in "DEST 1" with multiline text
+    """
+    4880000020729
+
+    """
+    When I fill in "1220099999705" with multiline text
+    """
+    1220099999705
+
+    """
+    And I press "Verify"
+    # Then I should see "The volumes in the source plate have been updated"
+    And the volume of each well in "1221234567841" should be:
+    | Well | Volume |
+    | A1   | 5.0    |
+    | A2   | 6.0    |
+
+
   Scenario: Robot minimum volumes should be considered for water
     Given the minimum robot pick is 5.0
     Given I have a released low concentration cherrypicking batch with 2 samples
@@ -255,15 +313,18 @@ C; DEST1 = 1220099999705
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
 C;
+A;BUFF;;96-TROUGH;1;;5.0
+D;1220099999705;;ABgene 0800;1;;5.0
+W;
 A;BUFF;;96-TROUGH;2;;5.0
 D;1220099999705;;ABgene 0800;2;;5.0
 W;
 C;
-A;1221234567841;;ABgene 0765;1;;13.0
-D;1220099999705;;ABgene 0800;1;;13.0
+A;1221234567841;;ABgene 0765;1;;10.0
+D;1220099999705;;ABgene 0800;1;;10.0
 W;
-A;1221234567841;;ABgene 0765;9;;12.7
-D;1220099999705;;ABgene 0800;2;;12.7
+A;1221234567841;;ABgene 0765;9;;11.0
+D;1220099999705;;ABgene 0800;2;;11.0
 W;
 C;
 C; SCRC1 = 1221234567841

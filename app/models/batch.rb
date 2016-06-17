@@ -482,6 +482,10 @@ class Batch < ActiveRecord::Base
     request.target_asset.get_requested_volume
   end
 
+  def robot_verified!
+    pipeline.robot_verified!(self)
+  end
+
   def self.prefix
     "BA"
   end
