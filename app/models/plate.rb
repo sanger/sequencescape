@@ -816,12 +816,11 @@ class Plate < Asset
     PlatePurpose.compatible_with_purpose(self.purpose)
   end
 
-  def update_concentrations_from(parser)
+  def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
-      parser.each_well_and_parameters do |position,concentration,molarity|
+      parser.each_well_and_parameters do |position, well_updates|
         wells.include_map.detect {|w| w.map_description == position }.tap do |well|
-          well.set_concentration(concentration)
-          well.set_molarity(molarity)
+          well.update_qc_values_with_hash(well_updates)
           well.save!
         end
       end

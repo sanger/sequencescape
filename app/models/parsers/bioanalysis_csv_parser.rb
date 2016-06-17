@@ -144,10 +144,12 @@ class Parsers::BioanalysisCsvParser
 
   def each_well_and_parameters
     parsed_content.each do |well,values|
-      yield(well,values[:peak_table][field_name_for(:concentration)],values[:peak_table][field_name_for(:molarity)])
+      yield(well, {
+        :set_concentration => values[:peak_table][field_name_for(:concentration)],
+        :set_molarity => values[:peak_table][field_name_for(:molarity)]
+        })
     end
   end
-
 
   def self.is_bioanalyzer?(content)
     # We don't go through the whole file
@@ -155,4 +157,5 @@ class Parsers::BioanalysisCsvParser
       /Version Created/ === line[0] && /^B.*/ === line[1]
     end.present?
   end
+
 end
