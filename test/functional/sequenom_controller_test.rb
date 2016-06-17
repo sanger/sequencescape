@@ -191,4 +191,5 @@ class SequenomControllerTest < ActionController::TestCase
       end
     end
   end
+
 end

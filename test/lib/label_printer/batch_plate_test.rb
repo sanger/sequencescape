@@ -49,7 +49,7 @@ class BatchPlateTest < ActiveSupport::TestCase
 	end
 
 	test 'should return the correct hash if several copies are required' do
-		options = {count: 3, printable: printable, batch: batch}
+		options = {count: '3', printable: printable, batch: batch}
 		@batch_plate_label = LabelPrinter::Label::BatchPlate.new(options)
 		labels = [label, label, label]
 		assert_equal labels, batch_plate_label.labels

@@ -37,6 +37,7 @@ class SequenomQcPlatesController < ApplicationController
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
         errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k=>v) }
+
         if sequenom_qc_plate.save and valid and sequenom_qc_plate.add_event_to_stock_plates(user_barcode)
           new_plates << sequenom_qc_plate
         else
@@ -59,7 +60,13 @@ class SequenomQcPlatesController < ApplicationController
       else
         # Everything's tickity boo so...
         # print the a label for each plate we created
-        new_plates.each { |p| p.print_labels(barcode_printer) }
+
+        print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
+                                              LabelPrinter::Label::SequenomPlate,
+                                              plates: new_plates, count: 3)
+        print_job.execute
+
+        # new_plates.each { |p| p.print_labels(barcode_printer) }
 
         # and redirect to a fresh page with an appropriate flash[:notice]
         first_plate    = new_plates.first

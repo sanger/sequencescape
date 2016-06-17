@@ -214,4 +214,56 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 		end
 	end
 
+	context "printing plate labels from sequenom qc plates controller/model" do
+
+		#number is plate.barcode
+		#study is nil
+		#suffix is plate.plate_purpose.name => PlatePurpose.find_by_name("Sequenom").name
+		#prefix is plate.prefix
+
+		setup do
+			@label  = Sanger::Barcode::Printing::Label.new number: 9168137, suffix: "Sequenom", prefix: "DN"
+		end
+
+		should 'it should have barcode name and barcode description' do
+			#barcode_name is nil
+			#barcode_description is "#{barcode_name}_#{number}" => study + number =>
+			#=> nil + plate.barcode
+
+			assert_equal nil, label.barcode_name
+			assert_equal "_9168137", label.barcode_description
+		end
+
+		should '#printable should create an instance of BarcodeLabelDTO' do
+			#1 is barcode_printer.printer_type_id
+			#prefix is plate.prefix
+			#study_name is plate.label_text_top => plate.plate_label(2) + plate.plate_label(3) =>
+			#=> plate.name.match(/^([^\d]+)(\d+)?_(\d+)?_(\d+)?_(\d+)?_(\d+)$/) [2] [3] =>
+			#=> plate.name is "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
+			#=> input_plate_names are input plates ean13_barcodes, plate_number converts them to
+			# short barcodes, so it is basically first and second input plates barcodes
+			#user_login is plate.label_text_bottom => plate_label(4) plate_label(5) =>
+			#=> same logic as above => third and fourth input plates barcodes
+
+			label_dto = label.printable(1, prefix: 'DN', type: 'long', study_name: "134443  9168137", user_login: "163993  160200 ")
+
+			#from label to dto >>>> number => barcode, description => desc (something that usually goes bottom right),
+			#text => name (something that usually goes top right), prefix => prefix, scope => project, suffix => suffix
+			#(something that usually goes top far right)
+
+			#barcode is plate.barcode.to_i
+			#desc is barcode_description => plate.name_for_label.to_s + plate.barcode
+			#name is barcode_text(default_prefix) => plate.prefix + plate.barcode
+			#project == description
+
+			assert_equal 9168137, label_dto.barcode
+	    assert_equal "163993  160200   ", label_dto.desc
+	    assert_equal "134443  9168137", label_dto.name
+	    assert_equal "DN", label_dto.prefix
+	    assert_equal "163993  160200   ", label_dto.project
+	    assert_equal "Sequenom", label_dto.suffix
+
+		end
+	end
+
 end

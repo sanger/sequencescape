@@ -9,6 +9,8 @@ namespace :label_printer do
       t.test_files = FileList['test/unit/plate_creator_test.rb',
       												'test/functional/sample_manifests_controller_test.rb',
       												'test/functional/batches_controller_test.rb',
+                              'test/functional/assets_controller_test.rb',
+                              'test/functional/sequenom_qc_plates_controller_test.rb',
       												'test/unit/sanger_barcode_test.rb']
     end
     Rake::Task["all_tests"].execute
