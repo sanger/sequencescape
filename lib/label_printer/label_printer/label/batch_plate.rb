@@ -2,14 +2,12 @@
 module LabelPrinter
 	module Label
 
-		class BatchPlateLabel
-
-			include BasePlateLabel
+		class BatchPlate < BasePlate
 
 			attr_reader :count, :printable, :batch
 
 			def initialize(options)
-				@count = options[:count]
+				@count = options[:count].to_i
 				@printable = options[:printable]
 				@batch = options[:batch]
 			end

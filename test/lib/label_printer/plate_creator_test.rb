@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PlateLabelTest < ActiveSupport::TestCase
+class PlateCreatorTest < ActiveSupport::TestCase
 
 	attr_reader :plate_label, :plate, :plate_purpose, :label
 
@@ -9,7 +9,7 @@ class PlateLabelTest < ActiveSupport::TestCase
 		@plate = plates.first
 		@plate_purpose = plate.plate_purpose
 		options = {plate_purpose: plate_purpose, plates: plates, user_login: 'user'}
-		@plate_label = LabelPrinter::Label::PlateLabel.new(options)
+		@plate_label = LabelPrinter::Label::PlateCreator.new(options)
 		@label =	{main_label:
 								{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
 								bottom_left: "#{plate.sanger_human_barcode}",

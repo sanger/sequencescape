@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SampleManifestLabelTest < ActiveSupport::TestCase
+class SampleManifestPlateTest < ActiveSupport::TestCase
 
 	attr_reader :only_first_label, :manifest, :sample_manifest_label, :plate1, :plate2
 
@@ -18,7 +18,7 @@ class SampleManifestLabelTest < ActiveSupport::TestCase
 			@plate1 = plates.first
 			@plate2 = plates.last
 			options = {sample_manifest: manifest, only_first_label: false}
-			@sample_manifest_label = LabelPrinter::Label::SampleManifestLabel.new(options)
+			@sample_manifest_label = LabelPrinter::Label::SampleManifestPlate.new(options)
 		end
 
 		should "have sample_manifest" do
@@ -49,7 +49,7 @@ class SampleManifestLabelTest < ActiveSupport::TestCase
 
 		should "return only one label if required to do so" do
 			options = {sample_manifest: manifest, only_first_label: true}
-			@sample_manifest_label = LabelPrinter::Label::SampleManifestLabel.new(options)
+			@sample_manifest_label = LabelPrinter::Label::SampleManifestPlate.new(options)
 			labels = 	[{main_label:
 							{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
 							bottom_left: "#{plate1.sanger_human_barcode}",

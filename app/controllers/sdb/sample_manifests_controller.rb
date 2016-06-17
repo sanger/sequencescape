@@ -79,7 +79,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
     unless barcode_printer.nil?
       print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                             LabelPrinter::Label::SampleManifestLabel,
+                                             LabelPrinter::Label::SampleManifestRedirect,
                                              only_first_label: printer_options[:only_first_label], sample_manifest: @sample_manifest)
       print_job.execute
       # @sample_manifest.print_labels(barcode_printer, printer_options)

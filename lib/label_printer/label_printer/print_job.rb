@@ -7,10 +7,10 @@ module LabelPrinter
 
 	class PrintJob
 
-		attr_reader :barcode_printer, :label, :options, :label_template_id
+		attr_reader :printer_name, :label, :options, :label_template_id
 
-		def initialize(barcode_printer, label, options)
-			@barcode_printer = barcode_printer
+		def initialize(printer_name, label, options)
+			@printer_name = printer_name
 			@label = label
 			@options = options
 			# @label_template_id = barcode_printer.label_template
@@ -31,7 +31,7 @@ module LabelPrinter
 		end
 
 		def printer
-			{printer_name: barcode_printer}
+			{printer_name: printer_name}
 		end
 
 		def label_template

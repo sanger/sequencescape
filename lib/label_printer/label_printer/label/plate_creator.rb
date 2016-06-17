@@ -2,9 +2,7 @@
 module LabelPrinter
 	module Label
 
-		class PlateLabel
-
-			include BasePlateLabel
+		class PlateCreator < BasePlate
 
 			attr_reader :plates, :plate_purpose, :user_login
 

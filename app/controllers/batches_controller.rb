@@ -467,7 +467,7 @@ class BatchesController < ApplicationController
   def print_plate_barcodes
 
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                           LabelPrinter::Label::BatchPlateLabel,
+                                           LabelPrinter::Label::BatchPlate,
                                            count: params[:count], printable: params[:printable], batch: @batch)
     print_job.execute
 

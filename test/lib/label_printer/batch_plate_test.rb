@@ -1,8 +1,8 @@
 require 'test_helper'
 
-class BatchPlateLabelTest < ActiveSupport::TestCase
+class BatchPlateTest < ActiveSupport::TestCase
 
-	attr_reader :batch_plate_label, :label, :plate
+	attr_reader :batch_plate_label, :label, :plate, :batch, :printable
 
 	def setup
 		study = create :study
@@ -13,16 +13,16 @@ class BatchPlateLabelTest < ActiveSupport::TestCase
 		order = create :order, order_role: order_role, study: study, assets: [asset], project: project
  		request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order
 
- 		batch = create :batch
+ 		@batch = create :batch
  		batch.requests << request
 
  		@plate = batch.output_plates[0]
 
- 		printable = {batch.output_plates[0].barcode => "on"}
+ 		@printable = {batch.output_plates[0].barcode => "on"}
 
-		options = {count: 1, printable: printable, batch: batch}
+		options = {count: '1', printable: printable, batch: batch}
 
-		@batch_plate_label = LabelPrinter::Label::BatchPlateLabel.new(options)
+		@batch_plate_label = LabelPrinter::Label::BatchPlate.new(options)
 
 		@label = {main_label:
 								{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
@@ -44,6 +44,14 @@ class BatchPlateLabelTest < ActiveSupport::TestCase
 
 	test 'should return the correct hash' do
 		labels = 	[label]
+		assert_equal labels, batch_plate_label.labels
+		assert_equal ({labels: {body: labels}}), batch_plate_label.to_h
+	end
+
+	test 'should return the correct hash if several copies are required' do
+		options = {count: 3, printable: printable, batch: batch}
+		@batch_plate_label = LabelPrinter::Label::BatchPlate.new(options)
+		labels = [label, label, label]
 		assert_equal labels, batch_plate_label.labels
 		assert_equal ({labels: {body: labels}}), batch_plate_label.to_h
 	end

@@ -1,26 +1,13 @@
 module LabelPrinter
 	module Label
 
-		class SampleManifestLabel
-
-			include BasePlateLabel
+		class SampleManifestPlate< BasePlate
 
 			attr_reader :sample_manifest
 
 			def initialize(options)
 				@sample_manifest = options[:sample_manifest]
 				@only_first_label = options[:only_first_label]
-			end
-
-			def labels
-				case sample_manifest.asset_type
-				when '1dtube'
-					return tube_labels
-	  		when 'plate'
-	  			return plate_labels
-	  		when 'multiplexed_library'
-	  			return multiplexed_labels
-	    	end
 			end
 
 			def top_right

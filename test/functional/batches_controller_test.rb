@@ -302,5 +302,27 @@ class BatchesControllerTest < ActionController::TestCase
         assert_template "batches/batch_error"
       end
     end
+
+    should "#print_plate_barcodes should send print request" do
+
+      @user       = create :user
+      @controller.stubs(:current_user).returns(@user)
+
+      study = create :study
+      project = create :project
+      asset = create :empty_sample_tube
+      order_role = Order::OrderRole.new role: 'test'
+
+      order = create :order, order_role: order_role, study: study, assets: [asset], project: project
+      request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order
+
+      @batch = create :batch
+      @batch.requests << request
+
+      RestClient.expects(:post)
+
+      post :print_plate_barcodes, "printer"=>"d304bc", "count"=>"3", "printable"=>{"#{@batch.output_plates.first.barcode}"=>"on"}, "batch_id"=>"#{@batch.id}"
+    end
   end
+
 end

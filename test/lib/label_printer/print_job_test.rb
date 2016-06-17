@@ -23,11 +23,11 @@ class PrintJobTest < ActiveSupport::TestCase
 									barcode: "#{plate.ean13_barcode}"}}]
 								}
 							}
-			@print_job = LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::PlateLabel, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
+			@print_job = LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
 		end
 
 		should "have attributes" do
-			assert print_job.barcode_printer
+			assert print_job.printer_name
 			assert print_job.label_template_id
 			assert print_job.label
 		end
