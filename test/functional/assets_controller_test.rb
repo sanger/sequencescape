@@ -62,6 +62,18 @@ class AssetsControllerTest < ActionController::TestCase
     end
   end
 
+  context "#print_assets" do
+    should "send print request" do
+      @user       = create :user
+      @controller.stubs(:current_user).returns(@user)
+      @asset = create :child_plate
+
+      RestClient.expects(:post)
+
+      post :print_assets, printable: {"#{@asset.id}"=>""}, printer: "d304bc", id: "#{@asset.id}"
+    end
+  end
+
   def valid_json_create_request(asset,request_type,study, project)
     %Q{
       {

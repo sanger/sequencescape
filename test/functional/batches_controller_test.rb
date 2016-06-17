@@ -321,7 +321,7 @@ class BatchesControllerTest < ActionController::TestCase
 
       RestClient.expects(:post)
 
-      post :print_plate_barcodes, "printer"=>"d304bc", "count"=>"3", "printable"=>{"#{@batch.output_plates.first.barcode}"=>"on"}, "batch_id"=>"#{@batch.id}"
+      post :print_plate_barcodes, printer: "d304bc", count: "3", printable: {"#{@batch.output_plates.first.barcode}"=>"on"}, batch_id: "#{@batch.id}"
     end
   end
 

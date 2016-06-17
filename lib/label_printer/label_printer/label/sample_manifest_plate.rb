@@ -10,7 +10,7 @@ module LabelPrinter
 				@only_first_label = options[:only_first_label]
 			end
 
-			def top_right
+			def top_right(plate)
 				PlatePurpose.stock_plate_purpose.name.to_s
 			end
 

@@ -4,7 +4,7 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 
 	attr_reader :label
 
-	context "printing from plate controller/ plate creator" do
+	context "printing plate labels from plate controller/ plate creator" do
 
 		#number is plate.barcode
 		#study is plate.find_study_abbreviation_from_parent
@@ -32,7 +32,7 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 			#prefix is Plate.prefix
 			#study_name is plate.plate_purpose.name.to_s
 			#user_login is user.login
-			barcode_label_dto = label.printable(1, prefix: 'DN',
+			label_dto = label.printable(1, prefix: 'DN',
 	                       type: 'long',
 	                       study_name: 'Stock Plate',
 	                       user_login: 'mdf')
@@ -47,16 +47,16 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 			#project == description
 
 
-			assert_equal 9168090, barcode_label_dto.barcode
-	    assert_equal 'mdf  Gen Ctrl', barcode_label_dto.desc
-	    assert_equal 'Stock Plate', barcode_label_dto.name
-	    assert_equal 'DN', barcode_label_dto.prefix
-	    assert_equal 'mdf  Gen Ctrl', barcode_label_dto.project
-	    assert_equal 134443, barcode_label_dto.suffix
+			assert_equal 9168090, label_dto.barcode
+	    assert_equal 'mdf  Gen Ctrl', label_dto.desc
+	    assert_equal 'Stock Plate', label_dto.name
+	    assert_equal 'DN', label_dto.prefix
+	    assert_equal 'mdf  Gen Ctrl', label_dto.project
+	    assert_equal 134443, label_dto.suffix
 		end
 	end
 
-	context "printing from sample manifest controller/model" do
+	context "printing plate labels (rapid core) from sample manifest controller/model" do
 
 		#number is plate.barcode
 		#study is sample_manifest.study.abbreviation
@@ -81,7 +81,7 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 			#prefix is Plate.prefix
 			#study_name is PlatePurpose.stock_plate_purpose.name.to_s
 
-			barcode_label_dto = label.printable(1, prefix: 'DN',
+			label_dto = label.printable(1, prefix: 'DN',
                    type: 'long',
                    study_name: 'Stock Plate',
                    user_login: nil)
@@ -95,17 +95,17 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 			#name is study_name => PlatePurpose.stock_plate_purpose.name.to_s
 			#project == description
 
-			assert_equal 9168101, barcode_label_dto.barcode
-	    assert_equal '3792STDY_9168101', barcode_label_dto.desc
-	    assert_equal 'Stock Plate', barcode_label_dto.name
-	    assert_equal 'DN', barcode_label_dto.prefix
-	    assert_equal '3792STDY_9168101', barcode_label_dto.project
-	    assert_equal nil, barcode_label_dto.suffix
+			assert_equal 9168101, label_dto.barcode
+	    assert_equal '3792STDY_9168101', label_dto.desc
+	    assert_equal 'Stock Plate', label_dto.name
+	    assert_equal 'DN', label_dto.prefix
+	    assert_equal '3792STDY_9168101', label_dto.project
+	    assert_equal nil, label_dto.suffix
 
 		end
 	end
 
-	context "printing from batches controller" do
+	context "printing plate labels from batches controller" do
 
 		#number is @batch.plate_group_barcodes, key(plate) barcode, (params[:printable] key)
 		#study is @batch.plate_group_barcodes, key(plate) barcode, (params[:printable] key)
@@ -143,7 +143,7 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 			#study_name is @batch.study.abbreviation
 			#user_login current_user.login
 
-			barcode_label_dto = label.printable(1, prefix: 'DN',
+			label_dto = label.printable(1, prefix: 'DN',
                    type: 'cherrypick',
                    study_name: "WTCCC",
                    user_login: 'admin')
@@ -157,16 +157,61 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 			#name is study_name => batch.study.abbreviation
 			#project == description
 
-			assert_equal 434938, barcode_label_dto.barcode
-	    assert_equal 'test Stock Plate 434938', barcode_label_dto.desc
-	    assert_equal "WTCCC", barcode_label_dto.name
-	    assert_equal 'DN', barcode_label_dto.prefix
-	    assert_equal 'test Stock Plate 434938', barcode_label_dto.project
-	    assert_equal nil, barcode_label_dto.suffix
+			assert_equal 434938, label_dto.barcode
+	    assert_equal 'test Stock Plate 434938', label_dto.desc
+	    assert_equal "WTCCC", label_dto.name
+	    assert_equal 'DN', label_dto.prefix
+	    assert_equal 'test Stock Plate 434938', label_dto.project
+	    assert_equal nil, label_dto.suffix
 
 		end
 
 
+	end
+
+	context "printing plate labels from assets controller" do
+
+		#number is plate.barcode
+		#study is plate.name_for_label.to_s
+		#suffix is ""
+		#prefix is plate.prefix
+
+		setup do
+			@label  = Sanger::Barcode::Printing::Label.new number: 434938, study: "Cherrypicked 434938", suffix: nil, prefix: "DN"
+		end
+
+		should 'it should have barcode name and barcode description' do
+			#barcode_name is study.gsub("_", " ").gsub("-"," ")
+			#barcode_description is "#{barcode_name}_#{number}" => study + number =>
+			#=> plate.name_for_label.to_s + plate.barcode
+
+			assert_equal 'Cherrypicked 434938', label.barcode_name
+			assert_equal "Cherrypicked 434938_434938", label.barcode_description
+		end
+
+		should '#printable should create an instance of BarcodeLabelDTO' do
+			#1 is barcode_printer.printer_type_id
+			#prefix is plate.prefix
+
+			label_dto = label.printable(1, prefix: 'DN')
+
+			#from label to dto >>>> number => barcode, description => desc (something that usually goes bottom right),
+			#text => name (something that usually goes top right), prefix => prefix, scope => project, suffix => suffix
+			#(something that usually goes top far right)
+
+			#barcode is plate.barcode.to_i
+			#desc is barcode_description => plate.name_for_label.to_s + plate.barcode
+			#name is barcode_text(default_prefix) => plate.prefix + plate.barcode
+			#project == description
+
+			assert_equal 434938, label_dto.barcode
+	    assert_equal 'Cherrypicked 434938_434938', label_dto.desc
+	    assert_equal 'DN 434938', label_dto.name
+	    assert_equal 'DN', label_dto.prefix
+	    assert_equal 'Cherrypicked 434938_434938', label_dto.project
+	    assert_equal nil, label_dto.suffix
+
+		end
 	end
 
 end

@@ -74,7 +74,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       template.generate(@sample_manifest)
     end
     printer_options = printer_options(params)
-    barcode_printer=printer_options[:barcode_printer]
+    barcode_printer = printer_options[:barcode_printer]
     only_first_label = printer_options[:only_first_label]
 
     unless barcode_printer.nil?

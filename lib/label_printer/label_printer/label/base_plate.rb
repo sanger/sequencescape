@@ -31,7 +31,7 @@ module LabelPrinter
 			def label(plate)
 				{top_left: top_left,
 					bottom_left: bottom_left(plate),
-					top_right: top_right,
+					top_right: top_right(plate),
 					bottom_right: bottom_right(plate),
 					top_far_right: top_far_right(plate),
 					barcode: barcode(plate)}
@@ -45,7 +45,7 @@ module LabelPrinter
 				plate.sanger_human_barcode
 			end
 
-			def top_right
+			def top_right(plate=nil)
 			end
 
 			def bottom_right(plate)
