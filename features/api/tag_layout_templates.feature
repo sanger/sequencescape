@@ -728,6 +728,7 @@ Feature: Access tag layout templates through the API
       }
       """
     Then the HTTP response should be "201 Created"
+
      And the JSON should match the following for the specified fields:
       """
       {
