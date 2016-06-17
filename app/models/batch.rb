@@ -482,8 +482,10 @@ class Batch < ActiveRecord::Base
     request.target_asset.get_requested_volume
   end
 
-  def robot_verified!
+  def robot_verified!(user_id)
+    return if has_event('robot verified')
     pipeline.robot_verified!(self)
+    lab_events.create(:description => "Robot verified",:message=>'Robot verification completed and source volumes updated.',user_id:user_id)
   end
 
   def self.prefix

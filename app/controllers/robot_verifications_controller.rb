@@ -25,7 +25,7 @@ class RobotVerificationsController < ApplicationController
     if @robot_verification.valid_submission?(params)
       @robot_verification.set_plate_types(params[:source_plate_types])
       @batch = Batch.find(params[:batch_id])
-      @batch.robot_verified!
+      @batch.robot_verified!(params[:user_id])
       @destination_plate_id = Plate.with_machine_barcode(params[:destination_plate_barcodes].first.first).first.barcode
     else
       flash[:error] = "Error: #{@robot_verification.errors.join('; ')}"
