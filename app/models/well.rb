@@ -36,7 +36,7 @@ class Well < Aliquot::Receptacle
     return {} unless purpose_names
     purposes = PlatePurpose.where(:name => purpose_names)
     # We might need to be careful about this line in future.
-    target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).includes(:well_attribute).with_concentration
+    target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
 
     target_wells.group_by(&:stock_well_id)
 

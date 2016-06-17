@@ -102,9 +102,9 @@ class WellTest < ActiveSupport::TestCase
       result = Well.hash_stock_with_targets(stock_plate.wells, purposes.map(&:name))
 
       assert_equal result.count, 3
-      assert_equal result[stock_plate.wells[1]].count, 1
-      assert_equal result[stock_plate.wells[2]].count, 1
-      assert_equal result[stock_plate.wells[0]].count, 3
+      assert_equal result[stock_plate.wells[1].id].count, 1
+      assert_equal result[stock_plate.wells[2].id].count, 1
+      assert_equal result[stock_plate.wells[0].id].count, 3
     end
 
     should "have pico pass" do
