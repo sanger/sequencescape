@@ -125,17 +125,19 @@ class Well < Aliquot::Receptacle
   scope :pooled_as_target_by, ->(type) {
     joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id').
     where([ '(patb.sti_type IS NULL OR patb.sti_type IN (?))', [ type, *type.descendants ].map(&:name) ]).
-    select('DISTINCT assets.*, patb.submission_id AS pool_id')
+    select('assets.*, patb.submission_id AS pool_id').uniq
   }
   scope :pooled_as_source_by, ->(type) {
     joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id').
     where([ '(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [ type, *type.descendants ].map(&:name), Request::Statemachine::OPENED_STATE  ]).
-    select('DISTINCT assets.*, pasb.submission_id AS pool_id')
+    select('assets.*, pasb.submission_id AS pool_id').uniq
   }
-  scope :in_column_major_order,         -> { joins(:map).order('column_order ASC') }
-  scope :in_row_major_order,            -> { joins(:map).order('row_order ASC') }
-  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC') }
-  scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC') }
+
+  # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
+  scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select('assets.*, column_order') }
+  scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select('assets.*, row_order') }
+  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select('assets.*, column_order') }
+  scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select('assets.*, row_order') }
 
   scope :in_plate_column, ->(col,size) {  joins(:map).where(:maps => {:description => Map::Coordinate.descriptions_for_column(col,size), :asset_size => size }) }
   scope :in_plate_row,    ->(row,size) {  joins(:map).where(:maps => {:description => Map::Coordinate.descriptions_for_row(row,size), :asset_size =>size }) }
