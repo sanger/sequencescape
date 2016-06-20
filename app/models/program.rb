@@ -4,7 +4,7 @@
 class Program < ActiveRecord::Base
   extend Attributable::Association::Target
 
-  default_scope :order => :name
+  default_scope ->() { order(:name) }
 
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of programs already present in database"

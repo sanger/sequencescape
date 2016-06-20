@@ -26,17 +26,17 @@ class Plate < Asset
   has_many :conatined_aliquots, :through => :wells, :source => :aliquots
 
   # We also look up studies and projects through wells
-  has_many :studies, :through=> :wells, :uniq => true
-  has_many :projects, :through=> :wells, :uniq => true
+  has_many :studies, ->() { uniq }, :through=> :wells
+  has_many :projects, ->() { uniq }, :through=> :wells
 
 
   has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
-  has_many :orders_as_target, :through => :well_requests_as_target, :source => :order, :uniq => true
+  has_many :orders_as_target, ->() { uniq }, :through => :well_requests_as_target, :source => :order
 
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
-  has_many :stock_requests, :through => :stock_well_associations, :source => :requests, :uniq => true
-  has_many :stock_well_associations, :through => :wells, :source => :stock_wells, :uniq => true
-  has_many :stock_orders, :through => :stock_requests, :source => :order, :uniq => true
+  has_many :stock_requests,  ->() { uniq }, :through => :stock_well_associations, :source => :requests
+  has_many :stock_well_associations,  ->() { uniq }, :through => :wells, :source => :stock_wells
+  has_many :stock_orders,  ->() { uniq }, :through => :stock_requests, :source => :order
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
@@ -344,8 +344,8 @@ class Plate < Asset
       where(:container_associations=>{:content_id=> wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
-  has_many :descendant_plates, :class_name => "Plate", :conditions => {:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
-  has_many :descendant_lanes, :class_name => "Lane", :conditions => {:assets=>{:sti_type=>"Lane"}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_plates, ->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})}, :class_name => "Plate", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_lanes, ->() { where(:assets=>{:sti_type=>"Lane"}) }, :class_name => "Lane", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
   has_many :tag_layouts
 
   scope :with_descendants_owned_by, ->(user) {

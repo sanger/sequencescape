@@ -44,12 +44,12 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
         should "find expected plates" do
           plates = {
-            @source_plate_a => [@source_plate_a.sanger_human_barcode, 
-                                @source_plate_a.ean13_barcode, 
+            @source_plate_a => [@source_plate_a.sanger_human_barcode,
+                                @source_plate_a.ean13_barcode,
                                 @child_plate_a.sanger_human_barcode,
                                 @child_plate_a.ean13_barcode],
-            @source_plate_b => [@source_plate_b.sanger_human_barcode, 
-                                @source_plate_b.ean13_barcode, 
+            @source_plate_b => [@source_plate_b.sanger_human_barcode,
+                                @source_plate_b.ean13_barcode,
                                 @child_plate_b.sanger_human_barcode,
                                 @child_plate_b.ean13_barcode]
           }
@@ -69,8 +69,8 @@ class PlateSummariesControllerTest < ActionController::TestCase
           end
 
           should redirect_to "back"
-          should set_the_flash.to "No suitable plates found for barcode abcd"
-        
+          should set_flash.to "No suitable plates found for barcode abcd"
+
         end
       end
 

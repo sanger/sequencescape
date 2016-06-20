@@ -46,6 +46,10 @@ FactoryGirl.define do
     n
   end
 
+  sequence :pipeline_name do |n|
+    "Lab Pipeline #{n}"
+  end
+
   sequence :purpose_name do |n|
     "Purpose #{n}"
   end
@@ -95,11 +99,4 @@ FactoryGirl.define do
     "Data release study Type #{n}"
   end
 
-  sequence :lab_workflow_name do |n|
-    "Lab Workflow #{n}"
-  end
-
-  sequence :pipeline_name do |n|
-    "Lab Pipeline #{n}"
-  end
 end

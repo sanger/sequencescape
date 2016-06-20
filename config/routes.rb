@@ -80,9 +80,6 @@ Sequencescape::Application.routes.draw do
   end
   resources :uuids, :only => [ :show ]
 
-  match 'batches/released/clusters' => 'batches#released'
-  match 'batches/released/:id' => 'batches#released'
-
   match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch, :via => :post
   match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch, :via => :post
 
@@ -596,6 +593,6 @@ Sequencescape::Application.routes.draw do
 
   resources :qc_files, only: [:show]
 
-  match '/:controller(/:action(/:id))'
+  get '/:controller(/:action(/:id))'
 
 end

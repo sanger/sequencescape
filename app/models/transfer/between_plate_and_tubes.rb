@@ -40,7 +40,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, :class_name => 'Transfer::BetweenPlateAndTubes::WellToTube', :foreign_key => :transfer_id
-  has_many :destinations, through: :well_to_tubes, uniq: true
+  has_many :destinations, ->() { uniq }, through: :well_to_tubes
   scope :include_transfers, -> { includes( :well_to_tubes => DESTINATION_INCLUDES ) }
 
   def transfers
