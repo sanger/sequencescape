@@ -20,7 +20,7 @@ class SampleManifest < ActiveRecord::Base
   # to allow for:
   # 1) Subsequent serialization by the delayed job
   # 2) The addition of a 'too many errors' message
-  LIMIT_ERROR_LENGTH = 60000
+  LIMIT_ERROR_LENGTH = 50000
 
   module Associations
     def self.included(base)

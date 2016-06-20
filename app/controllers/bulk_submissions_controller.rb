@@ -21,7 +21,6 @@ class BulkSubmissionsController < ApplicationController
   def create
     begin
       @bulk_submission = BulkSubmission.new(:spreadsheet => params.fetch(:bulk_submission, {})[:spreadsheet])
-
       if @bulk_submission.valid?
         flash.now[:notice]  = "File was processed successfully"
         sub_ids,@sub_details = @bulk_submission.completed_submissions
@@ -31,7 +30,8 @@ class BulkSubmissionsController < ApplicationController
         render :action => "new"
       end
     rescue ActiveRecord::RecordInvalid => exception
-      flash.now[:error] = exception.message
+      flash.now[:error] = "There was a problem when building your submissions"
+      @bulk_submission.errors.add(:base,exception.message)
       render :action => "new"
     end
   end

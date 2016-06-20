@@ -3,10 +3,11 @@
 #Copyright (C) 2015,2016 Genome Research Ltd.
 require 'configatron'
 
-configatron.amqp.url = "amqp://localhost:5672"
+configatron.amqp.url = "amqp://guest:guest@localhost:5672"
 configatron.amqp.persistent = false
 configatron.amqp.burst_size = 1000
 configatron.amqp.lims_id = "SQSCP"
+configatron.amqp.maximum_frame = 131072
 
 configatron.team_name = "LIMS and Informatics"
 configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"

@@ -15,15 +15,6 @@ class ActiveRecord::Base
       raise StandardError, "Must specify at least ID or name" if name.blank?
       find_by_name(name)
     end
-
-    def find_all_by_id_or_name!(ids, names)
-      return Array(find(*ids)) unless ids.blank?
-      raise StandardError, "Must specify at least an ID or a name" if names.blank?
-      where(name: names).tap do |found|
-        missing = names - found.map(&:name)
-        raise ActiveRecord::RecordNotFound, "Could not find #{self.name} with names #{missing.inspect}" unless missing.blank?
-      end
-    end
   end
 end
 
@@ -46,6 +37,8 @@ class BulkSubmission
   include ActiveModel::Validations
   include ActiveModel::Conversion
   extend ActiveModel::Naming
+
+  include Submission::AssetSubmissionFinder
 
   attr_accessor :spreadsheet
   define_attribute_methods [:spreadsheet]
@@ -248,6 +241,12 @@ class BulkSubmission
     end
   end
 
+  def add_study_to_assets(assets, study)
+    assets.map(&:samples).flatten.uniq.each do |sample|
+      sample.studies << study unless sample.studies.include?(study)
+    end
+  end
+
   # Returns an order for the given details
   def prepare_order(details)
     begin
@@ -279,7 +278,6 @@ class BulkSubmission
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
 
-
       attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
       attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
 
@@ -292,11 +290,11 @@ class BulkSubmission
       # Locate either the assets by name or ID, or find the plate and it's well
       if is_plate?(details)
 
-        found_assets = find_wells_for!(details)
+        found_assets = find_wells_including_samples_for!(details)
       # We've probably got a tube
       elsif is_tube?(details)
 
-        found_assets = find_tubes_for!(details)
+        found_assets = find_tubes_including_samples_for!(details)
 
       else
 
@@ -304,7 +302,7 @@ class BulkSubmission
         if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
           found_assets    = []
         else
-          found_assets    = Asset.find_all_by_id_or_name!(asset_ids, asset_names).uniq
+          found_assets    = Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
         end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
@@ -313,14 +311,13 @@ class BulkSubmission
 
       end
 
-
       if attributes[:asset_group].nil?
-        assets_not_in_study = found_assets.select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
-        raise StandardError, "Assets not in study #{study.name.inspect} for #{details['rows']}: #{assets_not_in_study.map(&:display_name).inspect}" unless assets_not_in_study.empty?
         attributes[:assets] = found_assets
       else
         raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name" if found_assets.present? && found_assets != attributes[:asset_group].assets
       end
+      add_study_to_assets(found_assets, study)
+
 
       # Create the order.  Ensure that the number of lanes is correctly set.
       sub_template      = find_template(details['template name'])
@@ -334,37 +331,6 @@ class BulkSubmission
     rescue => exception
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
       nil
-    end
-  end
-
-  def is_plate?(details)
-    details['barcode'].present? and details['plate well'].present?
-  end
-
-  def is_tube?(details)
-    details['barcode'].present? and details['plate well'].blank?
-  end
-
-  def find_wells_for!(details)
-    barcodes, well_list = details['barcode'], details['plate well']
-    self.errors.add(:spreadsheet, "You can only specify one plate per asset group") unless barcodes.uniq.one?
-    barcode = barcodes.first
-
-    match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Plate Barcode should be human readable (e.g. DN111111K)"
-    prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-    plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}"
-
-    well_locations = well_list.map(&:strip)
-    wells = plate.wells.located_at(well_locations)
-    raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
-    wells
-  end
-
-  def find_tubes_for!(details)
-    details['barcode'].map do |barcode|
-      match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"
-      prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-      plate  = Tube.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
     end
   end
 

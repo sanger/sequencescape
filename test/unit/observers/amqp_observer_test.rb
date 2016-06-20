@@ -8,6 +8,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
   OWNED_CLASSES = { WellAttribute => :well, Metadata::Base => :owner }
 
   class AmqpObserver
+    attr_accessor :mock_exchange
     include ::AmqpObserver::Implementation
   end
 
@@ -22,7 +23,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
     setup do
       @target = AmqpObserver.new.tap do |target|
         def target.activate_exchange(&block)
-          yield
+          yield(mock_exchange)
         end
       end
     end
@@ -36,11 +37,11 @@ class AmqpObserverTest < ActiveSupport::TestCase
         object.stubs(:routing_key).returns(nil)
         object_class.stubs(:name).returns('ClassName')
 
-        exchange = mock('Exchange for sending')
-        exchange.expects(:publish).with('JSON', :key => 'test.saved.class_name.123456789', :persistent => false)
-        @target.instance_variable_set(:@exchange, exchange)
+        @exchange = mock('Exchange for sending')
+        @exchange.expects(:publish).with('JSON', :key => 'test.saved.class_name.123456789', :persistent => false)
+        @target.instance_variable_set(:@mock_exchange, @exchange)
 
-        @target.send(:publish, object)
+        @target.send(:publish_to, @exchange, object)
       end
     end
 
@@ -49,7 +50,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         should 'send multiple messages for updates to an object' do
           object = mock('Object to broadcast')
           object.stubs(:destroyed?).returns(false)
-          @target.expects(:publish).with(object).twice
+          @target.expects(:publish_to).with(@exchange,object).twice
 
           @target << object << object
         end
@@ -57,7 +58,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         should 'send both the creation and the deletion message' do
           object = mock('Object to broadcast')
           object.expects(:destroyed?).twice.returns(false, true)
-          @target.expects(:publish).with(object).twice
+          @target.expects(:publish_to).with(@exchange,object).twice
 
           @target << object << object
         end
@@ -87,7 +88,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
             @object.stubs(:is_a?).with(Role).returns(false)
             @object.stubs(:is_a?).with(Role::UserRole).returns(false)
 
-            @target.expects(:publish).with(@object).once
+            @target.expects(:publish_to).with(@exchange,@object).once
           end
 
           should 'send the authorized record for roles' do
@@ -116,7 +117,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:destroyed?).returns(false)
           object_class.expects(:with_exclusive_scope).yields
           object_class.expects(:find).with([object.id]).returns([object])
-          @target.expects(:publish).with(object).once
+          @target.expects(:publish_to).with(@exchange,object).once
           return_from_inside_transaction(@target, object)
         end
 
@@ -143,7 +144,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:destroyed?).returns(false)
           object_class.expects(:with_exclusive_scope).yields
           object_class.expects(:find).with([object.id]).returns([object])
-          @target.expects(:publish).with(object).once
+          @target.expects(:publish_to).with(@exchange,object).once
 
           @target.transaction do
             @target << object << object
@@ -155,7 +156,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.expects(:destroyed?).twice.returns(false, true)
-          @target.expects(:publish).with(object).once
+          @target.expects(:publish_to).with(@exchange,object).once
 
           @target.transaction do
             @target << object << object
@@ -174,7 +175,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           # is called by that inner transaction
           @target.transaction do
             @target.transaction { @target << object }
-            @target.expects(:publish).with(object).once
+            @target.expects(:publish_to).with(@exchange,object).once
           end
         end
 

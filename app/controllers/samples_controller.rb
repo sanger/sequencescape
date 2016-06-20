@@ -58,7 +58,7 @@ class SamplesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { cache_xml_response(@sample) }
+      format.xml { render :layout => false }
       format.json { render :json => @sample.to_json }
     end
   end
