@@ -63,6 +63,7 @@ class Aliquot < ActiveRecord::Base
     has_one :sample, :through => :primary_aliquot
     deprecate :sample
 
+
     def sample=(sample)
       aliquots.clear
       aliquots << Aliquot.new(:sample => sample)

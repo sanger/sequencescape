@@ -7,7 +7,7 @@ module ModelExtensions::Batch
     base.class_eval do
       # These were in Batch but it makes more sense to keep them here for the moment
       has_many :batch_requests, ->() { includes(:request) }, :inverse_of => :batch
-      has_many :requests, ->() { order('batch_requests.position ASC, requests.id ASC') }, :through => :batch_requests, :inverse_of => :batch
+      has_many :requests, ->() { order('batch_requests.position ASC, requests.id ASC').select('requests.*, batch_requests.position').uniq }, :through => :batch_requests, :inverse_of => :batch
 
       # This is the new stuff ...
       accepts_nested_attributes_for :requests

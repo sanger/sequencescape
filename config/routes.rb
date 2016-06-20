@@ -295,8 +295,8 @@ Sequencescape::Application.routes.draw do
 
     end
 
-    resources :roles do
-      resources :users
+    resources :roles, only: [:index,:show,:new,:create] do
+      resources :users, only: :index, controller: 'Roles::Users'
     end
 
     resources :robots do

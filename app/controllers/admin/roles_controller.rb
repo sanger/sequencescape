@@ -2,13 +2,13 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class RolesController < ApplicationController
+class Admin::RolesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_filter :evil_parameter_hack!
 
   def index
-    @roles  = Role.all(:group => :name)
+    @roles  = Role.group(:name).pluck(:name)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -34,10 +34,6 @@ class RolesController < ApplicationController
     end
   end
 
-  def edit
-    @role = Role.find(params[:id])
-  end
-
   def create
     @role = Role.new(params[:role])
 
@@ -53,28 +49,4 @@ class RolesController < ApplicationController
     end
   end
 
-  def update
-    @role = Role.find(params[:id])
-
-    respond_to do |format|
-      if @role.update_attributes(params[:role])
-        flash[:notice] = 'Role was successfully updated.'
-        format.html { redirect_to admin_role_path(@role) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @role.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  def destroy
-    @role = Role.find(params[:id])
-    @role.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(admin_roles_path) }
-      format.xml  { head :ok }
-    end
-  end
 end
