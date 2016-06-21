@@ -89,6 +89,15 @@ Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_ba
   end
 end
 
+Given /^plate "([^\"]*)" has concentration and high volume results$/ do |plate_barcode|
+  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate.wells.each_with_index do |well,index|
+    well.well_attribute.update_attributes!(
+      :current_volume      => 30 + (index%30),
+      :concentration  => 205 + (index%50)
+    )
+  end
+end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
