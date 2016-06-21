@@ -209,6 +209,14 @@ class Well < Aliquot::Receptacle
   alias_method(:get_volume, :get_current_volume)
   writer_for_well_attribute_as_float(:current_volume)
 
+  def update_volume(volume_change)
+    value_current_volume = get_current_volume.nil? ? 0 : get_current_volume
+    set_current_volume([0, value_current_volume + volume_change].max)
+  end
+  alias_method(:set_volume, :set_current_volume)
+  delegate_to_well_attribute(:initial_volume)
+  writer_for_well_attribute_as_float(:initial_volume)
+
   delegate_to_well_attribute(:buffer_volume, :default => 0.0)
   writer_for_well_attribute_as_float(:buffer_volume)
 
