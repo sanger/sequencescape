@@ -11,6 +11,7 @@ namespace :label_printer do
       												'test/functional/batches_controller_test.rb',
                               'test/functional/assets_controller_test.rb',
                               'test/functional/sequenom_qc_plates_controller_test.rb',
+                              'test/functional/studies_asset_groups_controller_test.rb',
       												'test/unit/sanger_barcode_test.rb']
     end
     Rake::Task["all_tests"].execute

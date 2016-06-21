@@ -234,7 +234,7 @@ class AssetsController < ApplicationController
                                           LabelPrinter::Label::AssetPlate,
                                           asset: @asset)
     print_job.execute
-    # return print_asset_labels(, asset_url(@asset))
+    # return print_asset_labels(asset_url(@asset), asset_url(@asset))
     redirect_to asset_url(@asset)
   end
 

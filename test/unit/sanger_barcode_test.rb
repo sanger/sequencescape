@@ -169,7 +169,7 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 
 	end
 
-	context "printing plate labels from assets controller" do
+	context "printing plate labels from assets controller/ asset groups controller" do
 
 		#number is plate.barcode
 		#study is plate.name_for_label.to_s

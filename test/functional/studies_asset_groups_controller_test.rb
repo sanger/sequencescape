@@ -138,5 +138,17 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       end
     end
 
+    context "#print_assets" do
+      should "send print request" do
+        @user       = create :user
+        @controller.stubs(:current_user).returns(@user)
+        @asset = create :child_plate
+
+        RestClient.expects(:post)
+
+        post :print_labels, printables: {"#{@asset.id}"=>"true"}, printer: "d304bc", id: @asset_group.id, study_id: @study.id
+      end
+    end
+
   end
 end
