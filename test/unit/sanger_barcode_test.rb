@@ -193,7 +193,7 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 			#1 is barcode_printer.printer_type_id
 			#prefix is plate.prefix
 
-			label_dto = label.printable(1, prefix: 'DN')
+			label_dto = label.printable(1, prefix: 'DN', type: "short")
 
 			#from label to dto >>>> number => barcode, description => desc (something that usually goes bottom right),
 			#text => name (something that usually goes top right), prefix => prefix, scope => project, suffix => suffix
@@ -264,6 +264,104 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 	    assert_equal "Sequenom", label_dto.suffix
 
 		end
+	end
+
+	context "printing tube label from sample_manifest controller" do
+
+		#number is sample_tube.barcode => sample.assets.first.barcode
+		#study is sample.sanger_sample_id, later changed to sample_manifest.study.abbreviation
+		#suffix is ""
+		#prefix is sample_tube.prefix, sample.assets.first.prefix
+
+		setup do
+			@label  = Sanger::Barcode::Printing::Label.new number: "740500", study: "3792STDY6319922", suffix: "", prefix: "NT"
+		end
+
+		should 'it should have barcode name and barcode description' do
+			#barcode_name is study.gsub("_", " ").gsub("-"," ")
+			#barcode_description is "#{barcode_name}_#{number}" => study + number =>
+			#=> sample.sanger_sample_id + sample_tube.barcode
+
+			assert_equal "3792STDY6319922", label.barcode_name
+			assert_equal "3792STDY6319922_740500", label.barcode_description
+		end
+
+		should '#printable should create an instance of BarcodeLabelDTO' do
+			#2 is barcode_printer.printer_type_id
+			#prefix is sample_tube.prefix
+			label.study = "3792STDY"
+			label_dto = label.printable(2, prefix: 'NT', type: "short")
+
+			#from label to dto >>>> number => barcode, description => desc (something that usually goes to top and middle lines),
+			#text => name (something that goes on round label), prefix => prefix, scope => project, suffix => suffix
+
+			#barcode is sample_tube.barcode.to_i
+			#desc is barcode_description => sample_manifest.study.abbreviation + sample_tube.barcode
+			#name is barcode_text(default_prefix) => sample_tube.prefix + sample_tube.barcode
+			#project == description
+
+			assert_equal 740500, label_dto.barcode
+	    assert_equal "3792STDY_740500", label_dto.desc
+	    assert_equal "NT 740500", label_dto.name
+	    assert_equal "NT", label_dto.prefix
+	    assert_equal "3792STDY_740500", label_dto.project
+	    assert_equal "", label_dto.suffix
+
+		end
+	end
+
+	context "printing tube labels from batches controller" do
+
+		#study differs depending on params[:stock], @batch.multiplexed? and request.tag_number.nil?
+		#study is request.target_asset.children.first.name, if params[:stock] and @batch.multiplexed?
+		#study is request.target_asset.stock_asset.name, if params[:stock] and not @batch.multiplexed?
+		#study is "(#{request.tag_number}) #{request.target_asset.id}", if no params[:stock], @batch.multiplexed? and request.tag_number is not nill
+		#study is request.target_asset.name, if no params[:stock], @batch.multiplexed? and request.tag_number is nill
+		#study is request.target_asset.tube_name, if no params[:stock] and not @batch.multiplexed?
+
+		#number differs depending on params[:stock] and @batch.multiplexed?
+		#number is request.target_asset.children.first.barcode, if params[:stock] and @batch.multiplexed?
+		#number is request.target_asset.stock_asset.barcode, if params[:stock] and not @batch.multiplexed?
+		#number is request.target_asset.barcode (requests ids are in params[printables]), if no params[:stock]
+
+
+		setup do
+			@label  = Sanger::Barcode::Printing::Label.new number: "739884", study: '6295001'
+		end
+
+		should 'it should have barcode name and barcode description' do
+			#barcode_name is study.gsub("_", " ").gsub("-"," ") => up
+			#barcode_description is "#{barcode_name}_#{number}" => up
+
+			assert_equal "6295001", label.barcode_name
+			assert_equal "6295001_739884", label.barcode_description
+
+		end
+
+		should '#printable should create an instance of BarcodeLabelDTO' do
+			#2 is barcode_printer.printer_type_id
+			#prefix is @batch.requests.first.target_asset.prefix
+
+			label_dto = label.printable(2, prefix: 'NT', type: 'short')
+
+			#from label to dto >>>> number => barcode, description => desc (something that usually goes to top and middle lines),
+			#text => name (something that goes on round label), prefix => prefix, scope => project, suffix => suffix
+
+			#barcode is number
+			#desc is barcode_description
+			#name is text => prefix number.to_s
+			#project == description
+
+			assert_equal 739884, label_dto.barcode
+	    assert_equal '6295001_739884', label_dto.desc
+	    assert_equal "NT 739884", label_dto.name
+	    assert_equal 'NT', label_dto.prefix
+	    assert_equal '6295001_739884', label_dto.project
+	    assert_equal nil, label_dto.suffix
+
+		end
+
+
 	end
 
 end

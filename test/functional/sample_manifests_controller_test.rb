@@ -57,6 +57,15 @@ class SampleManifestsControllerTest < ActionController::TestCase
                                        barcode_printer: barcode_printer.id,
                                        only_first_label: "0",
                                        asset_type: ""}
+
+        RestClient.expects(:post)
+        post :create, sample_manifest: {template: "3",
+                                       study_id: study.id,
+                                       supplier_id: supplier.id,
+                                       count: "3",
+                                       barcode_printer: barcode_printer.id,
+                                       only_first_label: "0",
+                                       asset_type: ""}
       end
 
     end

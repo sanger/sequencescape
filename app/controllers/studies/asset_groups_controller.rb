@@ -143,7 +143,6 @@ class Studies::AssetGroupsController < ApplicationController
                                           LabelPrinter::Label::AssetGroup,
                                           printables: params[:printables])
     print_job.execute
-
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     redirect_to study_asset_groups_path(@study)

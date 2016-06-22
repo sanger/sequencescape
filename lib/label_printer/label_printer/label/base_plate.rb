@@ -8,10 +8,6 @@ module LabelPrinter
 			end
 
 			def labels
-				plate_labels
-			end
-
-			def plate_labels
 				[].tap do |l|
 					plates.each do |plate|
 						label = create_label(plate)

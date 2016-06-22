@@ -14,8 +14,8 @@ module LabelPrinter
 				case sample_manifest.asset_type
 				when 'plate'
 	  			return SampleManifestPlate.new(options).to_h
-	  		# when '1dtube'
-					# return tube_labels
+	  		when '1dtube'
+					return SampleManifestTube.new(options).to_h
 	  		# when 'multiplexed_library'
 	  		# 	return multiplexed_labels
 	    	end

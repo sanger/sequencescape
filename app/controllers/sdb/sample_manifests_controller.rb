@@ -69,7 +69,6 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
     ActiveRecord::Base.transaction do
       @sample_manifest = template.create!(template_manifest_options(params))
-
       @sample_manifest.generate
       template.generate(@sample_manifest)
     end
