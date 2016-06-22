@@ -1408,6 +1408,7 @@ ActiveRecord::Schema.define(:version => 20160607091438) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "model_name"
+    t.text     "default_parameters"
   end
 
   create_table "specific_tube_creation_purposes", :force => true do |t|
