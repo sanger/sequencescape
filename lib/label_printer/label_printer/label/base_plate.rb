@@ -41,7 +41,7 @@ module LabelPrinter
 				plate.sanger_human_barcode
 			end
 
-			def top_right(plate=nil)
+			def top_right(plate)
 			end
 
 			def bottom_right(plate)

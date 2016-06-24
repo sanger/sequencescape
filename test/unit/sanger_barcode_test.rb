@@ -349,7 +349,7 @@ class SangerBarcodeTest < ActiveSupport::TestCase
 
 			#barcode is number
 			#desc is barcode_description
-			#name is text => prefix number.to_s
+			#name is text => prefix + number.to_s
 			#project == description
 
 			assert_equal 739884, label_dto.barcode

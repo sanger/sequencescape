@@ -10,12 +10,8 @@ module LabelPrinter
 				@only_first_label = options[:only_first_label]
 			end
 
-			def top_line
+			def top_line(tube)
 				sample_manifest.study.abbreviation
-			end
-
-			def middle_line(tube)
-				tube.barcode
 			end
 
 			def tubes

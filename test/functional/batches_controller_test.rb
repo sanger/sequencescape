@@ -303,26 +303,61 @@ class BatchesControllerTest < ActionController::TestCase
       end
     end
 
-    should "#print_plate_barcodes should send print request" do
+    context "Send print requests" do
 
-      @user       = create :user
-      @controller.stubs(:current_user).returns(@user)
+      setup do
+        @user = create :user
+        @controller.stubs(:current_user).returns(@user)
+      end
 
-      study = create :study
-      project = create :project
-      asset = create :empty_sample_tube
-      order_role = Order::OrderRole.new role: 'test'
+      should "#print_plate_barcodes should send print request" do
 
-      order = create :order, order_role: order_role, study: study, assets: [asset], project: project
-      request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order
+        study = create :study
+        project = create :project
+        asset = create :empty_sample_tube
+        order_role = Order::OrderRole.new role: 'test'
 
-      @batch = create :batch
-      @batch.requests << request
+        order = create :order, order_role: order_role, study: study, assets: [asset], project: project
+        request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order
 
-      RestClient.expects(:post)
+        @batch = create :batch
+        @batch.requests << request
 
-      post :print_plate_barcodes, printer: "d304bc", count: "3", printable: {"#{@batch.output_plates.first.barcode}"=>"on"}, batch_id: "#{@batch.id}"
+        RestClient.expects(:post)
+
+        post :print_plate_barcodes, printer: "d304bc", count: "3", printable: {"#{@batch.output_plates.first.barcode}"=>"on"}, batch_id: "#{@batch.id}"
+      end
+
+      should "#print_barcodes should send print request" do
+
+        request = create :library_creation_request, target_asset: (create :library_tube, barcode: "111")
+        @batch = create :batch
+        @batch.requests << request
+        printable = {request.id => "on"}
+
+        RestClient.expects(:post)
+
+        post :print_barcodes, printer: "g216bc", count: "3", printable: printable, batch_id: "#{@batch.id}"
+
+      end
+
+      should "#print_multiplex_barcodes should send print request" do
+
+        pipeline = create :pipeline,
+          :name          => 'Test pipeline',
+          :workflow      => LabInterface::Workflow.create!(:item_limit => 8),
+          :multiplexed => true
+        batch = pipeline.batches.create!
+        library_tube = create :library_tube, barcode: "111"
+        printable = {library_tube.id => "on"}
+
+        RestClient.expects(:post)
+
+        post :print_multiplex_barcodes, printer: "g216bc", count: "3", printable: printable, batch_id: "#{batch.id}"
+      end
+
     end
+
   end
 
 end

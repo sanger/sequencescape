@@ -19,7 +19,7 @@ module LabelPrinter
 			end
 
 			def plates
-				ids = printables.select{|barcode, tick| tick == "true"}.keys
+				ids = printables.select{|id, tick| tick == "true"}.keys
 				Asset.find(ids)
 			end
 

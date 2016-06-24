@@ -434,38 +434,42 @@ class BatchesController < ApplicationController
   end
 
   def print_multiplex_barcodes
-    printables = []
-    count = params[:count].to_i
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                        LabelPrinter::Label::BatchMultiplex,
+                                        count: params[:count], printable: params[:printable], batch: @batch)
+    print_job.execute
 
-    params[:printable].each do |key, value|
-      if value == 'on'
-        asset = Asset.find(key)
-        if @batch.multiplexed?
-          count.times do
-            printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "(p) #{asset.name}" })
-          end
-        end
-      end
-    end
+    # printables = []
+    # count = params[:count].to_i
 
-    unless printables.empty?
-      asset = @batch.assets.first
-      begin
-        printables.sort! {|a,b| a.number <=> b.number }
-        BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
-      rescue PrintBarcode::BarcodeException
-        flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue Savon::Error
-        flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-      else
-        flash[:notice] = "Your labels have been printed to #{params[:printer]}."
-      end
-    end
+    # params[:printable].each do |key, value|
+    #   if value == 'on'
+    #     asset = Asset.find(key)
+    #     if @batch.multiplexed?
+    #       count.times do
+    #         printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "(p) #{asset.name}" })
+    #       end
+    #     end
+    #   end
+    # end
+
+    # unless printables.empty?
+    #   asset = @batch.assets.first
+    #   begin
+    #     printables.sort! {|a,b| a.number <=> b.number }
+    #     BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
+    #   rescue PrintBarcode::BarcodeException
+    #     flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
+    #   rescue Savon::Error
+    #     flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
+    #   else
+    #     flash[:notice] = "Your labels have been printed to #{params[:printer]}."
+    #   end
+    # end
     redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
   end
 
   def print_plate_barcodes
-
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                            LabelPrinter::Label::BatchPlate,
                                            count: params[:count], printable: params[:printable], batch: @batch)
@@ -500,53 +504,57 @@ class BatchesController < ApplicationController
 
   def print_barcodes
     unless @batch.requests.empty?
-      asset = @batch.requests.first.target_asset
-      printables = []
-      count = params[:count].to_i
-      params[:printable].each do |key, value|
-        if value == 'on'
-          request = Request.find(key)
-          if params[:stock]
-            if @batch.multiplexed?
-              stock = request.target_asset.children.first
-              identifier = stock.barcode
-              label = stock.name
-            else
-              stock = request.target_asset.stock_asset
-              identifier = stock.barcode
-              label = stock.name
-            end
-          else
-            if @batch.multiplexed?
-              unless request.tag_number.nil?
-                label = "(#{request.tag_number}) #{request.target_asset.id}"
-                identifier = request.target_asset.barcode
-              else
-                label = request.target_asset.name
-                identifier = request.target_asset.barcode
-              end
-            else
-              label = request.target_asset.tube_name
-              identifier = request.target_asset.barcode
-            end
-          end
-          count.times do
-            printables.push PrintBarcode::Label.new({ :number => identifier, :study => label })
-          end
-        end
-      end
-      unless printables.empty?
-        begin
-          printables.sort! {|a,b| b.number <=> a.number }
-          BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
-        rescue PrintBarcode::BarcodeException
-          flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-        rescue Savon::Error
-          flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-        else
-          flash[:notice] = "Your labels have been printed to #{params[:printer]}."
-        end
-      end
+      print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::BatchTube,
+                                          stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
+      print_job.execute
+      # asset = @batch.requests.first.target_asset
+      # printables = []
+      # count = params[:count].to_i
+      # params[:printable].each do |key, value|
+      #   if value == 'on'
+      #     request = Request.find(key)
+      #     if params[:stock]
+      #       if @batch.multiplexed?
+      #         stock = request.target_asset.children.first
+      #         identifier = stock.barcode
+      #         label = stock.name
+      #       else
+      #         stock = request.target_asset.stock_asset
+      #         identifier = stock.barcode
+      #         label = stock.name
+      #       end
+      #     else
+      #       if @batch.multiplexed?
+      #         unless request.tag_number.nil?
+      #           label = "(#{request.tag_number}) #{request.target_asset.id}"
+      #           identifier = request.target_asset.barcode
+      #         else
+      #           label = request.target_asset.name
+      #           identifier = request.target_asset.barcode
+      #         end
+      #       else
+      #         label = request.target_asset.tube_name
+      #         identifier = request.target_asset.barcode
+      #       end
+      #     end
+      #     count.times do
+      #       printables.push PrintBarcode::Label.new({ :number => identifier, :study => label })
+      #     end
+      #   end
+      # end
+      # unless printables.empty?
+      #   begin
+      #     printables.sort! {|a,b| b.number <=> a.number }
+      #     BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
+      #   rescue PrintBarcode::BarcodeException
+      #     flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
+      #   rescue Savon::Error
+      #     flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
+      #   else
+      #     flash[:notice] = "Your labels have been printed to #{params[:printer]}."
+      #   end
+      # end
     else
       flash[:notice] = "Your batch contains no requests."
     end

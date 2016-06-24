@@ -16,9 +16,9 @@ class BatchPlateTest < ActiveSupport::TestCase
  		@batch = create :batch
  		batch.requests << request
 
- 		@plate = batch.output_plates[0]
+ 		@plate = batch.plate_group_barcodes.keys[0]
 
- 		@printable = {batch.output_plates[0].barcode => "on"}
+ 		@printable = {@plate.barcode => "on"}
 
 		options = {count: '1', printable: printable, batch: batch}
 
