@@ -225,14 +225,20 @@ class AssetsController < ApplicationController
   end
 
   def print_labels
-    print_asset_labels(new_asset_url, new_asset_url)
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: params[:printables])
+    print_job.execute
+    redirect_to new_asset_url
+
+    # print_asset_labels(new_asset_url, new_asset_url)
   end
 
   def print_assets
     # params[:printables]={@asset =>1}
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetPlate,
-                                          asset: @asset)
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: @asset)
     print_job.execute
     redirect_to asset_url(@asset)
     # return print_asset_labels(asset_url(@asset), asset_url(@asset))

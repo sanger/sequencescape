@@ -140,7 +140,7 @@ class Studies::AssetGroupsController < ApplicationController
   def print_labels
 
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetGroup,
+                                          LabelPrinter::Label::AssetRedirect,
                                           printables: params[:printables])
     print_job.execute
     @asset_group = AssetGroup.find(params[:id])

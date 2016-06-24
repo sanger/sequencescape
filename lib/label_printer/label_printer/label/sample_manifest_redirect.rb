@@ -16,8 +16,8 @@ module LabelPrinter
 	  			return SampleManifestPlate.new(options).to_h
 	  		when '1dtube'
 					return SampleManifestTube.new(options).to_h
-	  		# when 'multiplexed_library'
-	  		# 	return multiplexed_labels
+	  		when 'multiplexed_library'
+	  			return SampleManifestTube.new(options).to_h
 	    	end
 			end
 

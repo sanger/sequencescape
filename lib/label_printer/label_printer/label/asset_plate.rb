@@ -6,8 +6,8 @@ module LabelPrinter
 
 			attr_reader :plates
 
-			def initialize(options)
-				@plates = [options[:asset]]
+			def initialize(plates)
+				@plates = plates
 			end
 
 			def top_right(plate)
