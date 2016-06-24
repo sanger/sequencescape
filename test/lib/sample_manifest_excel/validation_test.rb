@@ -13,6 +13,10 @@ class ValidationTest < ActiveSupport::TestCase
     refute SampleManifestExcel::Validation.new.valid?
   end
 
+  test "should be comparable" do
+    assert_equal SampleManifestExcel::Validation.new(options: options), SampleManifestExcel::Validation.new(options: options)
+  end
+
   context "without range name" do
 
     setup do
@@ -49,6 +53,13 @@ class ValidationTest < ActiveSupport::TestCase
       assert_equal range.absolute_reference, validation.formula1
     end
 
+    should "be duplicated correctly" do
+      dupped = validation.dup
+      validation.update(range: range)
+      refute_equal validation.options, dupped.options
+      refute dupped.saved?
+    end
+
   end
 
   context "with worksheet" do
@@ -71,7 +82,17 @@ class ValidationTest < ActiveSupport::TestCase
       assert validation.saved?
       assert_equal 1, validations.count
       assert_equal range.reference, validations.first.sqref
+    end
 
+    should "be comparable" do
+      validation.update(reference: range.reference, worksheet: worksheet)
+      other_validation = SampleManifestExcel::Validation.new(options: options)
+      other_validation.update(reference: range.reference, worksheet: worksheet)
+      assert_equal other_validation, validation
+
+      other_validation = SampleManifestExcel::Validation.new(options: options.merge(option3: 'value3'))
+      other_validation.update(reference: range.reference, worksheet: worksheet)
+      refute_equal other_validation, validation
     end
 
   end

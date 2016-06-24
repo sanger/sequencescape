@@ -6,17 +6,18 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
 
   def setup
     @worksheet = Axlsx::Workbook.new.add_worksheet
+    @rule = { style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
+  end
+
+  test "should be comparable" do
+    assert_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule)
+    refute_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule.merge(options: {option1: "another_value"}))
   end
 
   context "without formula" do
 
     setup do
-      @rule = { type: :empty_cell, style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule)
-    end
-
-    should "have a type" do
-      assert_equal (rule[:type]), conditional_formatting.type
     end
 
     should "have some options" do
@@ -39,6 +40,12 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
       assert_equal conditional_formatting.options, conditional_formatting.to_h
     end
 
+    should "duplicate correctly" do
+      dup = conditional_formatting.dup
+      conditional_formatting.update(worksheet: worksheet)
+      refute dup.styled?
+    end
+
   end
 
   context "with formula" do
@@ -48,8 +55,7 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
     setup do
       @references = build(:range).references
       @formula = { type: :len, operator: :lt, operand: 333}
-      @rule = {formula: formula, style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
-      @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule)
+      @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule.merge(formula: formula))
     end
 
     should "have a formula" do
@@ -66,6 +72,13 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
 
     should "update the style from a worksheet" do
       assert conditional_formatting.update(references.merge(worksheet: worksheet)).styled?
+    end
+
+    should "duplicate correctly" do
+      dup = conditional_formatting.dup
+      conditional_formatting.update(references.merge(worksheet: worksheet))
+      refute_equal conditional_formatting.options, dup.options
+      refute_equal conditional_formatting.formula, dup.formula
     end
 
   end

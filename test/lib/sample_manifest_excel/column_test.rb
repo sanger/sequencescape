@@ -41,6 +41,11 @@ class ColumnTest < ActiveSupport::TestCase
     refute SampleManifestExcel::Column.new(options.except(:value)).value
   end
 
+  test "should be comparable" do
+    assert_equal SampleManifestExcel::Column.new(options), SampleManifestExcel::Column.new(options)
+    refute_equal SampleManifestExcel::Column.new(options), SampleManifestExcel::Column.new(options.merge(heading: "SOME OTHER NAME"))
+  end
+
   test "should have an attribute value" do
     sample = build(:sample_with_well)
     assert_equal options[:value], SampleManifestExcel::Column.new(options).attribute_value(sample)
@@ -89,11 +94,14 @@ class ColumnTest < ActiveSupport::TestCase
 
   context "#update with validation and formattings" do
 
-    attr_reader :worksheet
+    attr_reader :worksheet, :dupped, :range
 
     setup do
       @worksheet = Axlsx::Workbook.new.add_worksheet
-      @column = SampleManifestExcel::Column.new(options).update(27, 150, range_list, worksheet)
+      @column = SampleManifestExcel::Column.new(options)
+      @range = SampleManifestExcel::Range.new(first_column: column.number, first_row: 27, last_row: 150)
+      @dupped = column.dup
+      column.update(27, 150, range_list, worksheet)
     end
 
     should "work" do
@@ -101,7 +109,6 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "set the reference" do
-      range = SampleManifestExcel::Range.new(first_column: column.number, first_row: 27, last_row: 150)
       assert_equal range, column.range
     end
 
@@ -113,6 +120,12 @@ class ColumnTest < ActiveSupport::TestCase
     should "update the conditional formatting" do
       assert_equal options[:conditional_formattings].length, column.conditional_formattings.count
       assert column.conditional_formattings.saved?
+    end
+
+    should "duplicate correctly" do
+      refute_equal range, dupped.range
+      refute dupped.validation.saved?
+      refute dupped.conditional_formattings.saved?
     end
 
   end

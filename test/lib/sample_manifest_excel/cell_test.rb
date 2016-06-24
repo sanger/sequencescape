@@ -19,4 +19,9 @@ class CellTest < ActiveSupport::TestCase
   test "should create a fixed reference" do
     assert_equal "$BA$150", SampleManifestExcel::Cell.new(150,53).fixed
   end
+
+  test "should be comparable" do
+    assert_equal SampleManifestExcel::Cell.new(1,1), SampleManifestExcel::Cell.new(1,1)
+    refute_equal SampleManifestExcel::Cell.new(1,1), SampleManifestExcel::Cell.new(2,1)
+  end
 end

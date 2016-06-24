@@ -7,9 +7,9 @@ class WorksheetTest < ActiveSupport::TestCase
 	def setup
 		@xls = Axlsx::Package.new
 		@workbook = xls.workbook
-		@ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml")))
-    @conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formatting.yml"))).with_indifferent_access
-    @plate_yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_columns_basic_plate.yml"))).with_indifferent_access
+		@ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","ranges.yml")))
+    @conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formattings.yml"))).with_indifferent_access
+    @plate_yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","columns_plate.yml"))).with_indifferent_access
 	  @sample_manifest = create(:sample_manifest_with_samples)
 	  @column_list = SampleManifestExcel::ColumnList.new(plate_yaml, conditional_formattings)
 	end

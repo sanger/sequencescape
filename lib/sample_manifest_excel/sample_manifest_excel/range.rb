@@ -1,14 +1,21 @@
 module SampleManifestExcel
 
+  ##
+  # A range of cells signified by a reference.
+  # The options are a range of text values which are used to validate a value.
+  # The first row is the only mandatory field everything else can be inferred.
+  # Each field that is not passed in the initializer is lazy loaded.
   class Range
 
     include HashAttributes
-    include Comparable
 
     set_attributes :options, :first_row, :last_row, :first_column, :last_column, :worksheet_name
 
     attr_reader :first_cell, :last_cell, :reference, :absolute_reference
 
+    ##
+    # If the range is valid i.e. has a first row then a first cell and last cell are created
+    # these are used for references.
     def initialize(attributes = {})
       create_attributes(attributes)
 
@@ -18,34 +25,52 @@ module SampleManifestExcel
       end
     end
 
+    # If not defined defaults to one.
     def first_column
       @first_column ||= 1
     end
 
+    # If not defined and options are empty is set to first column.
+    # If not defined and there are options is set to first column plus the
+    # the number of options minus one.
     def last_column
       @last_column ||= if options.empty?
         first_column
       else
-        options.length
+        options.length + (first_column - 1)
       end
     end
 
+    ##
+    # If not defined is set to the first row
     def last_row
       @last_row ||= first_row
     end
 
+    ##
+    # If not defined is set to an empty hash.
     def options
       @options ||= {}
     end
 
+    ##
+    # The reference for a range is a valid Excel reference e.g. $A$1:$H$10
+    # Defined by the fixed reference of the first cell and the fixed reference
+    # of the last cell.
     def reference
       @reference ||= "#{first_cell.fixed}:#{last_cell.fixed}"
     end
 
+    ##
+    # The reference oof the first cell.
     def first_cell_reference
       first_cell.reference
     end
 
+    ##
+    # An absolute reference is defined as a reference preceded by the name of the
+    # worksheet to find a reference that is not in the current worksheet e.g. Sheet1!A1:A100
+    # If the worksheet name is not present just returns the reference.
     def absolute_reference
       @absolute_reference ||= if worksheet_name.present?
         "#{worksheet_name}!#{reference}"
@@ -54,15 +79,22 @@ module SampleManifestExcel
       end
     end
 
+    ##
+    # Set the worksheet name and return the range
     def set_worksheet_name(worksheet_name)
       self.worksheet_name = worksheet_name
       self
     end
 
+    ##
+    # A range is only valid if the first row is present.
     def valid?
       first_row.present?
     end
 
+    ##
+    # Return a list of references which are generally used together in other
+    # classes of the module.
     def references
       {
         first_cell_reference: first_cell_reference,
@@ -71,12 +103,18 @@ module SampleManifestExcel
       }
     end
 
-    def <=>(other)
-      options <=> other.options &&
-      first_row <=> other.last_row &&
-      first_column <=> other.first_column &&
-      last_column <=> other.last_column &&
-      worksheet_name <=> other.worksheet_name
+    ##
+    # Two ranges are comparable if their options, first_row, first_column, 
+    # last_column, last_row and worksheet_name are the same.
+    def ==(other)
+      return false unless other.is_a?(self.class)
+      options == other.options &&
+      first_row == other.first_row &&
+      last_row == other.last_row && 
+      first_column == other.first_column &&
+      last_column == other.last_column &&
+      worksheet_name == other.worksheet_name
+
     end
 
   end

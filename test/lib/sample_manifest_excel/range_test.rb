@@ -2,16 +2,26 @@ require_relative '../../test_helper'
 
 class RangeTest < ActiveSupport::TestCase
 
-  attr_reader :range
+  attr_reader :range, :options
+
+  def setup
+    @options = ["option1", "option2", "option3"]
+  end
+
+  test "should be comparable" do
+    attributes = {options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: "Sheet1"}
+    assert_equal SampleManifestExcel::Range.new(attributes), SampleManifestExcel::Range.new(attributes)
+    refute_equal SampleManifestExcel::Range.new(attributes), SampleManifestExcel::Range.new(attributes.except(:last_row))
+  end
 
   context "with options" do
 
     setup do
-      @range = SampleManifestExcel::Range.new(options: ["option1", "option2", "option3"], first_row: 4)
+      @range = SampleManifestExcel::Range.new(options: options, first_row: 4)
     end
 
     should "have some options" do
-      assert_equal ["option1", "option2", "option3"], range.options
+      assert_equal options, range.options
     end
 
     should "have a first row" do
@@ -24,6 +34,8 @@ class RangeTest < ActiveSupport::TestCase
 
     should "set the last column" do
       assert_equal 3, range.last_column
+
+      assert_equal 6, SampleManifestExcel::Range.new(options: options, first_column: 4, first_row: 4).last_column
     end
 
     should "have a first_cell" do
@@ -50,7 +62,7 @@ class RangeTest < ActiveSupport::TestCase
 
   context "without first row" do
     setup do
-      @range = SampleManifestExcel::Range.new(options: ["option1", "option2", "option3"])
+      @range = SampleManifestExcel::Range.new(options: options)
     end
 
     should "not be valid" do

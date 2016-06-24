@@ -6,10 +6,10 @@ class DownloadTest < ActiveSupport::TestCase
   attr_reader :download, :spreadsheet, :sample_manifest, :sample_manifest_tube, :column_list, :range_list, :conditional_formattings, :plate_yaml
 
   def setup
-    @conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formatting.yml"))).with_indifferent_access
-    @plate_yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_all_columns.yml"))).with_indifferent_access
+    @conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formattings.yml"))).with_indifferent_access
+    @plate_yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","columns.yml"))).with_indifferent_access
     @column_list = SampleManifestExcel::ColumnList.new(plate_yaml, conditional_formattings)
-    @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","sample_manifest_validation_ranges.yml"))))
+    @range_list = SampleManifestExcel::RangeList.new(YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","ranges.yml"))))
     @sample_manifest = create(:sample_manifest_with_samples)
     @sample_manifest_tube = create(:tube_sample_manifest_with_samples)
   end
