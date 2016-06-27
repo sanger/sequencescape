@@ -35,17 +35,17 @@ module SampleManifest::SampleTubeBehaviour
       end
     end
 
-    def print_labels(&block)
-      printables = self.samples.map do |sample|
-        sample_tube = sample.assets.first
-        PrintBarcode::Label.new(
-          :number => sample_tube.barcode,
-          :study  => sample.sanger_sample_id,
-          :prefix => sample_tube.prefix, :suffix => ""
-        )
-      end
-      yield(printables, 'NT')
-    end
+    # def print_labels(&block)
+    #   printables = self.samples.map do |sample|
+    #     sample_tube = sample.assets.first
+    #     PrintBarcode::Label.new(
+    #       :number => sample_tube.barcode,
+    #       :study  => sample.sanger_sample_id,
+    #       :prefix => sample_tube.prefix, :suffix => ""
+    #     )
+    #   end
+    #   yield(printables, 'NT')
+    # end
 
     def updated_by!(user, samples)
       # Does nothing at the moment

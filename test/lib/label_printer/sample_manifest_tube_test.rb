@@ -8,7 +8,6 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
 
 		@manifest = create :sample_manifest, asset_type: '1dtube', count: 3
 		@manifest.generate
-		SampleManifestTemplate.find(3).generate(@manifest)
 
 		@tube1 = manifest.samples.first.assets.first
 		@tube2 = manifest.samples[1].assets.first

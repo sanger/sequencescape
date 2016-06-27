@@ -13,7 +13,7 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 
       @manifest = create :sample_manifest, count: 2, rapid_generation: true
       @manifest.generate
-      SampleManifestTemplate.first.generate(@manifest)
+
 			plates = @manifest.core_behaviour.plates
 			@plate1 = plates.first
 			@plate2 = plates.last
