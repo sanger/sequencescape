@@ -55,6 +55,7 @@ module LabelPrinter
 			end
 
 			def plates
+				[]
 			end
 
 			def date_today
