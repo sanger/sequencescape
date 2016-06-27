@@ -62,15 +62,22 @@ class AssetsControllerTest < ActionController::TestCase
     end
   end
 
-  context "#print_assets" do
-    should "send print request" do
-      @user       = create :user
+  context "print requests" do
+
+    setup do
+      @user = create :user
       @controller.stubs(:current_user).returns(@user)
-      @asset = create :child_plate
+    end
 
+    should "#print_assets should send print request" do
+      asset = create :child_plate
       RestClient.expects(:post)
-
-      post :print_assets, printable: {"#{@asset.id}"=>""}, printer: "d304bc", id: "#{@asset.id}"
+      post :print_assets, printables: asset, printer: "d304bc", id: "#{asset.id}"
+    end
+    should "#print_labels should send print request" do
+      asset = create :sample_tube
+      RestClient.expects(:post)
+      post :print_labels, printables: {"#{asset.id}"=>"true"}, printer: "test", id: "#{asset.id}"
     end
   end
 

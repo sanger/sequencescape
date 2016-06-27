@@ -138,7 +138,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       end
     end
 
-    context "#print_assets" do
+    context "#print_labels" do
       should "send print request" do
         @user       = create :user
         @controller.stubs(:current_user).returns(@user)

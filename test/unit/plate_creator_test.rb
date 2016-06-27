@@ -12,7 +12,7 @@ class CreatorTest < ActiveSupport::TestCase
 		@creator = create :plate_creator, plate_purpose: PlatePurpose.find_by_name("Stock plate")
 	end
 
-	test "should send request to rpint labels" do
+	test "should send request to print labels" do
 
 		barcode = mock("barcode")
     barcode.stubs(:barcode).returns(23)
