@@ -32,6 +32,10 @@ module SampleManifestExcel
       @columns = Columns.new(columns, conditional_formattings, manifest_types)
     end
 
+    def ranges=(ranges)
+      @ranges = RangeList.new(ranges)
+    end
+
     def loaded?
       loaded
     end

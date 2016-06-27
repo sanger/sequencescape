@@ -61,7 +61,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
 
     should "load the ranges" do
-      assert_equal configuration.load_file(folder, "ranges"), configuration.ranges
+      assert_equal SampleManifestExcel::RangeList.new(configuration.load_file(folder, "ranges")), configuration.ranges
     end
 
   end

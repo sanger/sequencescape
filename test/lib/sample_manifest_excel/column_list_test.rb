@@ -7,11 +7,11 @@ class ColumnListTest < ActiveSupport::TestCase
   attr_reader :column_list,:yaml, :ranges, :conditional_formattings
 
   def setup
-    folder = File.join("test","data", "sample_manifest_excel"
+    folder = File.join("test","data", "sample_manifest_excel")
     @yaml = load_file(folder, "columns_extract")
-    @conditional_formattings = load_file(folder, "conditional_formattings.yml")
+    @conditional_formattings = load_file(folder, "conditional_formattings")
     @column_list = SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
-    @ranges = build(:range_list, options: load_file("ranges"))
+    @ranges = build(:range_list, options: load_file(folder, "ranges"))
   end
 
   test "should create a list of columns" do
