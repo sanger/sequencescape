@@ -11,7 +11,7 @@ module PipelinesHelper
 
   def target_purpose_for(request)
     nrs = request.submission.present? ? request.submission.next_requests(request) : []
-    return nrs.first.request_type.acceptable_plate_purposes.map(&:name).join('|') unless nrs.empty?
+    return nrs.first.request_type.acceptable_plate_purposes.pluck(:name).join('|') unless nrs.empty?
     return request.target_purpose.try(:name) || 'Not specified'
   end
 

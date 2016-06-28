@@ -71,12 +71,6 @@ class Study < ActiveRecord::Base
   has_many :samples, :through => :study_samples
   has_many :batches
 
-  # requests read only so no need to use has_many
-  # this return a proper namescope which can be nicely chained
-  def requests(reload=nil)
-    Request.for_study(self)
-  end
-
   has_many :asset_groups
   has_many :study_reports
 
@@ -86,6 +80,8 @@ class Study < ActiveRecord::Base
   has_many :aliquots
   has_many :assets_through_aliquots, :class_name => "Asset", :through => :aliquots, :source => :receptacle, :uniq => :true
   has_many :assets_through_requests, :class_name => "Asset", :through => :initial_requests, :source => :asset, :uniq => :true
+
+  has_many :requests, :through => :assets_through_aliquots, :source => :requests_as_source
 
   has_many :items , :through => :requests, :uniq => true
 
@@ -453,11 +449,20 @@ class Study < ActiveRecord::Base
     yield(self.initial_requests.asset_statistics(conditions))
   end
 
+  #  Old code put here for reference. If I forget to remove it, please do it for me!
+  # def sample_progress(samples = nil, &block)
+  #   conditions = { }
+  #   conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
+  #   yield(self.requests.sample_statistics(conditions))
+  # end
+
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
   def sample_progress(samples = nil, &block)
-    conditions = { }
-    conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
-    yield(self.requests.sample_statistics(conditions))
+    if samples.blank?
+      requests.sample_statistics_new
+    else
+      yield(requests.where(aliquots:{sample_id:samples.pluck(:id)}).sample_statistics_new)
+    end
   end
 
   def study_status
