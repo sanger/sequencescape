@@ -65,23 +65,15 @@ module SampleManifestExcel
       #the cells that should be filled in by clients
 
       def create_row(sample)
-        values, types, s = [], [], []
-        # axlsx_worksheet.add_row do |row|
-        #   columns.each do |k, column|
-        #     if column.unlocked?
-        #       row.add_cell column.attribute_value(sample), type: column.type, style: styles[:unlocked].reference
-        #     else
-        #       row.add_cell column.attribute_value(sample), type: column.type
-        #     end
-        #   end
-        # end
-
-        columns.each do |k, column|
-          values << column.attribute_value(sample)
-          types << column.type
-          s << (column.unlocked? ? styles[:unlocked].reference : nil)
+        axlsx_worksheet.add_row do |row|
+          columns.each do |k, column|
+            if column.unlocked?
+              row.add_cell column.attribute_value(sample), type: column.type, style: styles[:unlocked].reference
+            else
+              row.add_cell column.attribute_value(sample), type: column.type
+            end
+          end
         end
-        axlsx_worksheet.add_row values, types: types, style: s
       end
 
       #Freezes panes vertically after particular column (sanger_sample_id by default)
