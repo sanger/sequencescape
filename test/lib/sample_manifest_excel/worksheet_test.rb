@@ -2,37 +2,59 @@ require_relative '../../test_helper'
 
 class WorksheetTest < ActiveSupport::TestCase
 
-	attr_reader :xls, :worksheet, :ranges, :plate_yaml, :conditional_formattings, :axlsx_worksheet, :sample_manifest, :column_list, :spreadsheet, :styles, :workbook, :ranges_worksheet, :range_list
+	attr_reader :xls, :worksheet, :sample_manifest, :workbook, :spreadsheet
 
 	def setup
 		@xls = Axlsx::Package.new
 		@workbook = xls.workbook
-		@ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","ranges.yml")))
-    @conditional_formattings = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formattings.yml"))).with_indifferent_access
-    @plate_yaml = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","columns_plate.yml"))).with_indifferent_access
+
+		SampleManifestExcel.configure do |config|
+			config.folder = File.join("test","data", "sample_manifest_excel")
+			config.load!
+		end
+
 	  @sample_manifest = create(:sample_manifest_with_samples)
-	  @column_list = SampleManifestExcel::ColumnList.new(plate_yaml, conditional_formattings)
 	end
 
-	context "base worksheet" do
+	context "type" do
+
+		attr_reader :options
 
 		setup do
-	    @range_list = build(:range_list, options: ranges)
-	    @worksheet = SampleManifestExcel::Worksheet::Base.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: '1111', type: 'Plates'
-	  	save_file
-	  end
+			@options = {
+				workbook: workbook, ranges: SampleManifestExcel.configuration.ranges.dup, password: '1111'
+			}
+		end
 
-	  should "should have a axlsx worksheet" do
-	  	assert worksheet.axlsx_worksheet
-	  end
+		should "be Plates for any plate based manifest" do
+			column_list = SampleManifestExcel.configuration.columns.plate_full.dup
+			worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
+			assert_equal "Plates", worksheet.type
+		end
+
+		should "be Tubes for a tube based manifest" do
+			sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: "1dtube")
+			column_list = SampleManifestExcel.configuration.columns.tube_full.dup
+			worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
+			assert_equal "Tubes", worksheet.type
+		end
+
+		should "be Tubes for a multiplexed library tube" do
+			sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: "multiplexedlibrary")
+			column_list = SampleManifestExcel.configuration.columns.tube_full.dup
+			worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
+			assert_equal "Tubes", worksheet.type
+		end
 
 	end
 
 	context "data worksheet" do
 
 		setup do
-			@range_list = build(:range_list, options: ranges)
-	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: '1111', type: 'Plates'
+	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook, 
+	    	columns: SampleManifestExcel.configuration.columns.plate_full.dup, 
+	    	sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup, 
+	    	password: '1111', type: 'Plates')
 	  	save_file
 	  end
 
@@ -95,24 +117,24 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	context "validations ranges worksheet" do
 
-		attr_reader :range_worksheet
+		attr_reader :range_list
 
 	  setup do
-		  @range_list = build :range_list
-	    @range_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list)
+		  @range_list = SampleManifestExcel.configuration.ranges.dup
+	    @worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list)
 	 	  save_file
 	  end
 
 	  should "should have a axlsx worksheet" do
-	  	assert range_worksheet.axlsx_worksheet
+	  	assert worksheet.axlsx_worksheet
 	  end
 
 	  should "add ranges to axlsx worksheet" do
-	  	range = range_worksheet.ranges.first.last
+	  	range = worksheet.ranges.first.last
 	  	range.options.each_with_index do |option, i|
 	  		assert_equal option, spreadsheet.sheet(0).cell(1,i+1)
 	  	end
-	  	assert_equal range_worksheet.ranges.count, spreadsheet.sheet(0).last_row
+	  	assert_equal worksheet.ranges.count, spreadsheet.sheet(0).last_row
 	  end
 
 	  should "set absolute references in ranges" do
@@ -125,6 +147,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	def teardown
     File.delete('test.xlsx') if File.exists?('test.xlsx')
+    SampleManifestExcel.reset!
   end
 
   def save_file

@@ -64,6 +64,17 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert_equal SampleManifestExcel::RangeList.new(configuration.load_file(folder, "ranges")), configuration.ranges
     end
 
+    should "freeze all of the configuration options" do
+      assert configuration.conditional_formattings.frozen?
+      assert configuration.manifest_types.frozen?
+      assert configuration.ranges.frozen?
+      assert configuration.columns.frozen?
+      assert configuration.columns.all.frozen?
+      configuration.manifest_types.each do |k,v|
+        assert configuration.columns.send(k).frozen?
+      end
+    end
+
   end
   
 end

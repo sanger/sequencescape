@@ -8,28 +8,6 @@ module SampleManifestExcel
 
       set_attributes :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :name, :password, :type
 
-      #Worksheet constructor takes different arguments depending of a type of worksheet
-      #(data or ranges), creates worksheet and protects it if password is provided
-      #
-      #For data worksheet the following argumens are required:
-      #- workbook (axlsx workbook, to insert an axlsx worksheet there)
-      #- column list object (consists of columns to be placed on a worksheet)
-      #- sample manifest object (from ss, used to insert values to columns that have attributes)
-      #- styles (a hash with styles names as keys and style objects as values, used to apply
-      #  styles to worksheet (borders, colours for conditional formatting, lock/unlock))
-#  QUESTION: styles are not used in downloads and ranges worksheet.
-#  Should we create them in DataWorksheet(not in Download)? (to create styles workbook and a hash with styles details are required)
-      #- range list object (consists of ranges with absolute references(already placed on a
-      #  ranges worksheet), to be used in data validations and conditional formatting)
-      #- download type ('Plates' or 'Tubes'), used in DNA Collections Form description
-      #- password, if worksheet needs to be locked (a string)
-      #
-      #For ranges worksheet the following arguments are required:
-      #- workbook (axlsx workbook, to insert an axlsx worksheet there)
-      #- range list object (consists of ranges to be placed on a worksheet)
-      #- password, if worksheet needs to be locked (a string)
-      #
-
     	def initialize(attributes = {})
         create_attributes(attributes)
         create_worksheet

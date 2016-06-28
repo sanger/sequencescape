@@ -28,12 +28,20 @@ module SampleManifestExcel
       end
     end
 
+    def conditional_formattings=(conditional_formattings)
+      @conditional_formattings = conditional_formattings.with_indifferent_access.freeze
+    end
+
     def columns=(columns)
-      @columns = Columns.new(columns, conditional_formattings, manifest_types)
+      @columns = Columns.new(columns, conditional_formattings, manifest_types).freeze
     end
 
     def ranges=(ranges)
-      @ranges = RangeList.new(ranges)
+      @ranges = RangeList.new(ranges).freeze
+    end
+
+    def manifest_types=(manifest_types)
+      @manifest_types = manifest_types.with_indifferent_access.freeze
     end
 
     def loaded?
@@ -54,10 +62,10 @@ module SampleManifestExcel
       attr_reader :all
 
       def initialize(columns, conditional_formattings, manifest_types)
-        @all = ColumnList.new(columns, conditional_formattings)
+        @all = ColumnList.new(columns, conditional_formattings).freeze
 
         manifest_types.each do |key, column_names|
-          instance_variable_set "@#{key}", all.extract(column_names)
+          instance_variable_set "@#{key}", all.extract(column_names).freeze
           self.class_eval { attr_reader key }
         end
       end
