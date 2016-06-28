@@ -31,39 +31,4 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
 		assert_equal manifest.samples.first.assets.first, sample_manifest_label.tubes.first
 	end
 
-	test "should return a correct label" do
-		label = {top_line: manifest.study.abbreviation,
-					middle_line: tube1.barcode,
-					bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
-					round_label_top_line: tube1.prefix,
-					round_label_bottom_line: tube1.barcode,
-					barcode: tube1.ean13_barcode}
-		assert_equal label, sample_manifest_label.label(tube1)
-	end
-
-	test "should return correct labels" do
-		labels = 	[{main_label:
-								{top_line: manifest.study.abbreviation,
-									middle_line: tube1.barcode,
-									bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
-									round_label_top_line: tube1.prefix,
-									round_label_bottom_line: tube1.barcode,
-									barcode: tube1.ean13_barcode}},
-							{main_label:
-								{top_line: manifest.study.abbreviation,
-									middle_line: tube2.barcode,
-									bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
-									round_label_top_line: tube2.prefix,
-									round_label_bottom_line: tube2.barcode,
-									barcode: tube2.ean13_barcode}},
-							{main_label:
-								{top_line: manifest.study.abbreviation,
-									middle_line: tube3.barcode,
-									bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
-									round_label_top_line: tube3.prefix,
-									round_label_bottom_line: tube3.barcode,
-									barcode: tube3.ean13_barcode}}]
-		assert_equal labels, sample_manifest_label.labels
-		assert_equal ({labels: {body: labels}}), sample_manifest_label.to_h
-	end
 end

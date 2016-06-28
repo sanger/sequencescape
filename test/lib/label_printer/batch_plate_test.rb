@@ -20,40 +20,23 @@ class BatchPlateTest < ActiveSupport::TestCase
 
  		@printable = {@plate.barcode => "on"}
 
-		options = {count: '1', printable: printable, batch: batch}
-
-		@batch_plate_label = LabelPrinter::Label::BatchPlate.new(options)
-
-		@label = {main_label:
-								{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-								bottom_left: "#{plate.sanger_human_barcode}",
-								top_right: "#{batch.study.abbreviation}",
-								bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate.barcode}",
-								top_far_right: nil,
-								barcode: "#{plate.ean13_barcode}"}
-							}
-	end
-
-	test 'should have batch' do
-		assert batch_plate_label.batch
-	end
-
-	test 'should return the right label for a plate' do
-		assert_equal label, batch_plate_label.create_label(plate)
-	end
-
-	test 'should return the correct hash' do
-		labels = 	[label]
-		assert_equal labels, batch_plate_label.labels
-		assert_equal ({labels: {body: labels}}), batch_plate_label.to_h
-	end
-
-	test 'should return the correct hash if several copies are required' do
 		options = {count: '3', printable: printable, batch: batch}
+
 		@batch_plate_label = LabelPrinter::Label::BatchPlate.new(options)
-		labels = [label, label, label]
-		assert_equal labels, batch_plate_label.labels
-		assert_equal ({labels: {body: labels}}), batch_plate_label.to_h
+
+	end
+
+	test 'should have count' do
+		assert_equal 3, batch_plate_label.count
+	end
+
+	test 'should have return the right plates' do
+		assert_equal [plate], batch_plate_label.plates
+	end
+
+	test 'should return the right values' do
+		assert_equal batch.study.abbreviation, batch_plate_label.top_right(plate)
+		assert_equal "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate.barcode}", batch_plate_label.bottom_right(plate)
 	end
 
 end

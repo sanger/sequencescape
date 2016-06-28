@@ -7,6 +7,7 @@ module LabelPrinter
 			attr_reader :count, :printable, :batch, :stock
 
 			def initialize(options)
+				super
 				@count = options[:count].to_i
 				@printable = options[:printable]
 				@batch = options[:batch]
@@ -14,7 +15,7 @@ module LabelPrinter
 			end
 
 			def top_line(tube)
-				if stock
+				if stock.present?
 					tube.name
 				else
 					if batch.multiplexed?
@@ -26,7 +27,7 @@ module LabelPrinter
 			end
 
 			def tubes
-				if stock
+				if stock.present?
 					if batch.multiplexed?
 						#all info on a label including barcode is about target_asset first child
 						tubes = requests.map {|request| request.target_asset.children.first}

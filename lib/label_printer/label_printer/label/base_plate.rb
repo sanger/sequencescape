@@ -3,38 +3,37 @@ module LabelPrinter
 
 		class BasePlate
 
-			# attr_reader :label_template_id
+			attr_reader :label_template_id
+			attr_accessor :plates, :count
 
-			# def initialize
-			# 	@label_template_id = 10
-			# end
-
-			# def label_template
-			# 	{label_template_id: label_template_id}
-			# end
+			def initialize(options={})
+				@label_template_id = 14
+				@count = 1
+				@plates = []
+			end
 
 			def to_h
-				{labels: {body: labels}}
+				labels.merge(label_template)
 			end
 
 			def labels
+				{labels: {body: create_labels}}
+			end
+
+			def create_labels
 				[].tap do |l|
 					plates.each do |plate|
-						label = create_label(plate)
+						label = label(plate)
 						count.times { l.push(label) }
 					end
 				end
 			end
 
-			def count
-				1
+			def label(plate)
+				{main_label: create_label(plate)}
 			end
 
 			def create_label(plate)
-				{main_label: label(plate)}
-			end
-
-			def label(plate)
 				{top_left: top_left,
 					bottom_left: bottom_left(plate),
 					top_right: top_right(plate),
@@ -64,8 +63,8 @@ module LabelPrinter
 				plate.ean13_barcode
 			end
 
-			def plates
-				[]
+			def label_template
+				{label_template_id: label_template_id}
 			end
 
 			def date_today

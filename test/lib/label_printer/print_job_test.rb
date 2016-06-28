@@ -12,23 +12,22 @@ class PrintJobTest < ActiveSupport::TestCase
 			@plate = plates[0]
 			@plate_purpose = plate.plate_purpose
 			@attributes = {printer_name: barcode_printer,
-							label_template_id: 8,
-							labels: {body:
-								[{main_label:
-									{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-									bottom_left: "#{plate.sanger_human_barcode}",
-									top_right: "#{plate_purpose.name.to_s}",
-									bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
-									top_far_right: "#{plate.parent.try(:barcode)}",
-									barcode: "#{plate.ean13_barcode}"}}]
-								}
-							}
+									labels: {body:
+										[{main_label:
+											{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
+											bottom_left: "#{plate.sanger_human_barcode}",
+											top_right: "#{plate_purpose.name.to_s}",
+											bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
+											top_far_right: "#{plate.parent.try(:barcode)}",
+											barcode: "#{plate.ean13_barcode}"}}]
+										},
+									label_template_id: 14,
+									}
 			@print_job = LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
 		end
 
 		should "have attributes" do
 			assert print_job.printer_name
-			assert print_job.label_template_id
 			assert print_job.label
 		end
 

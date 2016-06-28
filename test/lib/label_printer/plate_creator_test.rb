@@ -25,13 +25,13 @@ class PlateCreatorTest < ActiveSupport::TestCase
 	end
 
 	test 'should return the right label for a plate' do
-		assert_equal label, plate_label.create_label(plate)
+		assert_equal label, plate_label.label(plate)
 	end
 
 	test 'should return the correct hash' do
 		labels = 	[label]
-		assert_equal labels, plate_label.labels
-		assert_equal ({labels: {body: labels}}), plate_label.to_h
+		assert_equal labels, plate_label.create_labels
+		assert_equal ({labels: {body: labels}}), plate_label.labels
 	end
 
 end

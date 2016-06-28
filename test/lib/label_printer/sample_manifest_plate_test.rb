@@ -22,45 +22,20 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 		end
 
 		should "have the right plates" do
-			assert_equal 2, plates.count
+			assert_equal 2, sample_manifest_label.plates.count
 			assert_equal plates, sample_manifest_label.plates
 		end
 
-		should "return the correct hash" do
-			labels = 	[{main_label:
-										{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-										bottom_left: "#{plate1.sanger_human_barcode}",
-										top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
-										top_far_right: nil,
-										bottom_right: "#{manifest.study.abbreviation} #{plate1.barcode}",
-										barcode: "#{plate1.ean13_barcode}"}
-									},
-									{main_label:
-										{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-										bottom_left: "#{plate2.sanger_human_barcode}",
-										top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
-										top_far_right: nil,
-										bottom_right: "#{manifest.study.abbreviation} #{plate2.barcode}",
-										barcode: "#{plate2.ean13_barcode}"}
-									}
-								]
-			assert_equal labels, sample_manifest_label.labels
-			assert_equal ({labels: {body: labels}}), sample_manifest_label.to_h
-		end
-
-		should "return only one label if required to do so" do
+		should "have the right plates if only first label required" do
 			options = {sample_manifest: manifest, only_first_label: true}
 			@sample_manifest_label = LabelPrinter::Label::SampleManifestPlate.new(options)
-			labels = 	[{main_label:
-							{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-							bottom_left: "#{plate1.sanger_human_barcode}",
-							top_right: "#{PlatePurpose.stock_plate_purpose.name.to_s}",
-							top_far_right: nil,
-							bottom_right: "#{manifest.study.abbreviation} #{plate1.barcode}",
-							barcode: "#{plate1.ean13_barcode}"}
-						}]
-			assert_equal labels, sample_manifest_label.labels
-			assert_equal ({labels: {body: labels}}), sample_manifest_label.to_h
+			assert_equal 1, sample_manifest_label.plates.count
+			assert_equal [plate1], sample_manifest_label.plates
+		end
+
+		should "have the right values" do
+			assert_equal PlatePurpose.stock_plate_purpose.name.to_s, sample_manifest_label.top_right(plate1)
+			assert_equal "#{manifest.study.abbreviation} #{plate1.barcode}", sample_manifest_label.bottom_right(plate1)
 		end
 
 	end

@@ -41,7 +41,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}, label_template_id: 14}), asset_redirect.to_h
 		end
 	end
 
@@ -70,7 +70,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}, label_template_id: 14}), asset_redirect.to_h
 		end
 	end
 
@@ -111,7 +111,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}, label_template_id: 10}), asset_redirect.to_h
 		end
 	end
 
@@ -140,7 +140,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}, label_template_id: 10}), asset_redirect.to_h
 		end
 	end
 

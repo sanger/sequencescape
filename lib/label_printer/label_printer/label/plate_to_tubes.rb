@@ -6,6 +6,7 @@ module LabelPrinter
 			attr_reader :tubes
 
 			def initialize(options)
+				super
 				@tubes = options[:sample_tubes]
 			end
 
