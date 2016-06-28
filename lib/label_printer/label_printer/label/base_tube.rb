@@ -3,6 +3,16 @@ module LabelPrinter
 
 		class BaseTube
 
+			# attr_reader :label_template_id
+
+			# def initialize
+			# 	@label_template_id = 13
+			# end
+
+			# def label_template
+			# 	{label_template_id: label_template_id}
+			# end
+
 			def to_h
 				{labels: {body: labels}}
 			end

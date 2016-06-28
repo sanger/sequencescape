@@ -25,11 +25,6 @@ module LabelPrinter
 				end
 			end
 
-			def requests
-				request_ids = printable.select{|barcode, tick| tick == 'on'}.keys
-				requests = Request.find request_ids
-			end
-
 			def tubes
 				if stock
 					if batch.multiplexed?
@@ -45,6 +40,12 @@ module LabelPrinter
 				end
 			end
 
+			private
+
+			def requests
+				request_ids = printable.select{|barcode, tick| tick == 'on'}.keys
+				requests = Request.find request_ids
+			end
 
 		end
 	end

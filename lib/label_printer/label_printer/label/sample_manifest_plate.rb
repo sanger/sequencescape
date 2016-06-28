@@ -19,8 +19,18 @@ module LabelPrinter
 			end
 
 			def plates
-				return [sample_manifest.core_behaviour.plates.first] if @only_first_label
-				sample_manifest.core_behaviour.plates
+				return [_plates.first] if @only_first_label
+				_plates
+			end
+
+			private
+
+			def _plates
+				if sample_manifest.rapid_generation?
+					sample_manifest.core_behaviour.plates
+				else
+					sample_manifest.core_behaviour.samples.map { |s| s.primary_receptacle.plate }.uniq
+				end
 			end
 
 		end

@@ -71,7 +71,7 @@ class BarcodePrintersController < ApplicationController
     end
   end
   # This module define common behavior used by other controller to print things
-  # module Print
+  module Print
   #   def print_asset_labels(succes_url, failure_url)
   #     assets = params[:printables]
   #     prefix = nil
@@ -104,6 +104,6 @@ class BarcodePrintersController < ApplicationController
   #     Rails.logger.error($!)
 
   #     redirect_to failure_url
-  #   end
+    end
   # end
 end

@@ -2,9 +2,9 @@ require 'test_helper'
 
 class SampleManifestPlateTest < ActiveSupport::TestCase
 
-	attr_reader :only_first_label, :manifest, :sample_manifest_label, :plate1, :plate2
+	attr_reader :only_first_label, :manifest, :sample_manifest_label, :plate1, :plate2, :plates
 
-	context "labels for plate sample manifest" do
+	context "labels for plate sample manifest rapid_core" do
 
 		setup do
 			barcode = mock("barcode")
@@ -14,15 +14,16 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
       @manifest = create :sample_manifest, count: 2, rapid_generation: true
       @manifest.generate
 
-			plates = @manifest.core_behaviour.plates
+			@plates = @manifest.core_behaviour.plates
 			@plate1 = plates.first
 			@plate2 = plates.last
 			options = {sample_manifest: manifest, only_first_label: false}
 			@sample_manifest_label = LabelPrinter::Label::SampleManifestPlate.new(options)
 		end
 
-		should "have sample_manifest" do
-			assert sample_manifest_label.sample_manifest
+		should "have the right plates" do
+			assert_equal 2, plates.count
+			assert_equal plates, sample_manifest_label.plates
 		end
 
 		should "return the correct hash" do
@@ -60,6 +61,28 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 						}]
 			assert_equal labels, sample_manifest_label.labels
 			assert_equal ({labels: {body: labels}}), sample_manifest_label.to_h
+		end
+
+	end
+
+	context "labels for plate sample manifest rapid_core" do
+
+		setup do
+			barcode = mock("barcode")
+      barcode.stubs(:barcode).returns(23)
+      PlateBarcode.stubs(:create).returns(barcode)
+
+      @manifest = create :sample_manifest, count: 2
+      @manifest.generate
+
+			@plates = @manifest.core_behaviour.samples.map { |s| s.primary_receptacle.plate }.uniq
+			options = {sample_manifest: manifest, only_first_label: false}
+			@sample_manifest_label = LabelPrinter::Label::SampleManifestPlate.new(options)
+		end
+
+		should "have the right plates" do
+			assert_equal 2, plates.count
+			assert_equal plates, sample_manifest_label.plates
 		end
 
 	end
