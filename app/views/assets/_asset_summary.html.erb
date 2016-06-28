@@ -20,10 +20,10 @@
     <td class="item">Type:</td>
     <td><strong><%=h @asset.label %></strong></td>
   </tr>
-  <% if @asset.respond_to? :plate_purpose %>
+  <% if @asset.respond_to? :purpose %>
   <tr>
     <td class="item">Purpose:</td>
-    <td><strong><%=h @asset.plate_purpose.try(:name)||'Unknown' %></strong></td>
+    <td><strong><%=h @asset.purpose.try(:name)||'Unknown' %></strong></td>
   </tr>
   <% end %>
   <% if @asset.is_a?(Lane) %>
@@ -35,15 +35,6 @@
       <td class="item"><%= h(@asset.lane_metadata.attribute_details_for(:release_reason).to_field_info.display_name) %>:</td>
       <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>
     </tr>
-  <% elsif @asset.is_a?(SpikedBuffer) %>
-  <!--
-    The percentage needs to be calculated differently.
-    BJ to fix - PT 9221511
-   -->
-  <!-- <tr>
-    <td class="item">Percentage of phiX:</td>
-    <td><strong><%=h @asset.percentage_of_index %></strong> %</td>
-  </tr> -->
   <% end %>
   <tr>
     <td class="item">Volume:</td>
@@ -57,6 +48,12 @@
   <tr>
     <td class="item">Human barcode:</td>
     <td><strong><%=h @asset.sanger_human_barcode %></strong></td>
+  </tr>
+<% end %>
+<% if  @source_plate %>
+  <tr>
+    <td class="item">Summary page:</td>
+    <td><strong><%= link_to "Summary for #{@source_plate.sanger_human_barcode}", plate_summary_path(@source_plate.sanger_human_barcode) %></strong></td>
   </tr>
 <% end %>
   <tr>

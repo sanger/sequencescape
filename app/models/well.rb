@@ -34,10 +34,8 @@ class Well < Aliquot::Receptacle
 
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
-  def is_in_fluidigm?
-    sta_plate_purpose_name = "#{configatron.sta_plate_purpose_name}"
-    !self.target_wells.detect{|w| w.events.detect {|e| e.family == PlatesHelper::event_family_for_pick(sta_plate_purpose_name)}.nil?}
-  end
+  # hams_many due to eager loading requirement and can't have a has one through a has_many
+  has_many :latest_child_well, :class_name => 'Well', :through => :links_as_parent, :limit => 1, :source => :descendant, :order => 'asset_links.descendant_id DESC', :conditions => {:assets=>{:sti_type => 'Well'}}
 
   scope :include_stock_wells, -> { includes(:stock_wells => :requests_as_source) }
   scope :include_map,         -> { includes(:map) }
@@ -94,7 +92,7 @@ class Well < Aliquot::Receptacle
     plate
   end
 
-  delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
+  delegate :location, :location_id, :location_id=, :printable_target, :to => :container , :allow_nil => true
   self.per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
@@ -103,17 +101,19 @@ class Well < Aliquot::Receptacle
   scope :pooled_as_target_by, ->(type) {
     joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id').
     where([ '(patb.sti_type IS NULL OR patb.sti_type IN (?))', [ type, *type.descendants ].map(&:name) ]).
-    select('DISTINCT assets.*, patb.submission_id AS pool_id')
+    select('assets.*, patb.submission_id AS pool_id').uniq
   }
   scope :pooled_as_source_by, ->(type) {
     joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id').
     where([ '(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [ type, *type.descendants ].map(&:name), Request::Statemachine::OPENED_STATE  ]).
-    select('DISTINCT assets.*, pasb.submission_id AS pool_id')
+    select('assets.*, pasb.submission_id AS pool_id').uniq
   }
-  scope :in_column_major_order,         -> { joins(:map).order('column_order ASC') }
-  scope :in_row_major_order,            -> { joins(:map).order('row_order ASC') }
-  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC') }
-  scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC') }
+
+  # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
+  scope :in_column_major_order,         -> { joins(:map).order('column_order ASC').select('assets.*, column_order') }
+  scope :in_row_major_order,            -> { joins(:map).order('row_order ASC').select('assets.*, row_order') }
+  scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select('assets.*, column_order') }
+  scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select('assets.*, row_order') }
 
   scope :in_plate_column, ->(col,size) {  joins(:map).where(:maps => {:description => Map::Coordinate.descriptions_for_column(col,size), :asset_size => size }) }
   scope :in_plate_row,    ->(row,size) {  joins(:map).where(:maps => {:description => Map::Coordinate.descriptions_for_row(row,size), :asset_size =>size }) }
@@ -261,11 +261,9 @@ class Well < Aliquot::Receptacle
   end
   private :buffer_required?
 
-  def find_child_plate
-    self.children.reverse_each do |child_asset|
-      return child_asset if child_asset.is_a?(Well)
-    end
-    nil
+  # If we eager load, things fair badly, and we end up returning all children.
+  def find_latest_child_well
+    latest_child_well.sort_by(&:id).last
   end
 
   validate(:on => :save) do |record|
@@ -293,5 +291,9 @@ class Well < Aliquot::Receptacle
     # qc metric. If its not a stock well, then a metric won't be present anyway
     stock_well = stock_wells.first || self
     stock_well.qc_metrics.for_product(product).most_recent_first.first
+  end
+
+  def source_plate
+    plate.source_plate
   end
 end

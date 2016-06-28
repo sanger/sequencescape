@@ -18,6 +18,10 @@ class Transfer < ActiveRecord::Base
           joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`").
           where('outgoing_transfers.source_id IS NULL')
         }
+
+        scope :including_used_plates?, ->(filter) {
+          filter ? where('true') : with_no_outgoing_transfers
+        }
       end
     end
   end
@@ -26,7 +30,7 @@ class Transfer < ActiveRecord::Base
     # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
     # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
     # are failed).
-    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'nx_in_progress', 'started_fx', 'started_mj', 'passed', 'failed', 'cancelled' ]
+    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'nx_in_progress', 'passed', 'failed', 'cancelled' ]
 
     def self.state_helper(names)
       Array(names).each do |name|

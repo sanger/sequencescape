@@ -37,7 +37,7 @@ class PacBioSamplePrepRequest < CustomerRequest
   end
 
   class Initial < TransferRequest
-    include TransferRequest::InitialTransfer
+    include TransferRequest::InitialTransfer::Behaviour
     def outer_request
       asset.requests.detect{|r| r.is_a?(PacBioSamplePrepRequest)}
     end

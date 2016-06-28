@@ -37,6 +37,7 @@ FactoryGirl.define do
   factory  :study_metadata, :class => Study::Metadata  do
     faculty_sponsor             { |faculty_sponsor| faculty_sponsor.association(:faculty_sponsor)}
     study_description           'Some study on something'
+    program                     { Program.find_by_name("General") }
     contaminated_human_dna      'No'
     contains_human_dna          'No'
     commercially_available      'No'
@@ -78,6 +79,10 @@ FactoryGirl.define do
     state               "active"
 
     after(:build) { |project| project.project_metadata = create(:project_metadata, :project => project) }
+  end
+
+  factory :program do
+    name { generate :program_name }
   end
 
   factory  :project_with_order , :parent => :project  do
@@ -313,9 +318,9 @@ FactoryGirl.define do
     state           'pending'
   end
 
-  %w(failed passed pending cancelled).each do |state|
-    factory  :"#{state}_request", :parent =>  :request  do
-      after(:create) { |request| request.update_attributes!(:state =>state) }
+  %w(failed passed pending cancelled).each do |request_state|
+    factory  :"#{request_state}_request", :parent =>  :request  do
+      state request_state
     end
   end
 

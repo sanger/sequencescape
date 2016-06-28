@@ -11,7 +11,7 @@ module PlatePurpose::BroadcastLibraryComplete
   private
 
   def prepare_library_complete(plate,user)
-    orders = plate.orders_as_target.map(&:id)
+    orders = plate.orders_as_target.pluck(:id)
     generate_events_for(plate,orders,user)
   end
 

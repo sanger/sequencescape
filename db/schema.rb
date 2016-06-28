@@ -1,6 +1,3 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 # encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
@@ -14,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160304100345) do
+ActiveRecord::Schema.define(:version => 20160519124121) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -950,6 +947,12 @@ ActiveRecord::Schema.define(:version => 20160304100345) do
     t.datetime "deprecated_at"
   end
 
+  create_table "programs", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "project_managers", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1405,6 +1408,7 @@ ActiveRecord::Schema.define(:version => 20160304100345) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "model_name"
+    t.text     "default_parameters"
   end
 
   create_table "specific_tube_creation_purposes", :force => true do |t|
@@ -1513,6 +1517,7 @@ ActiveRecord::Schema.define(:version => 20160304100345) do
     t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
     t.string   "data_access_group"
     t.string   "prelim_id"
+    t.integer  "program_id"
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"

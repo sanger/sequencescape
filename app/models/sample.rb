@@ -87,14 +87,6 @@ class Sample < ActiveRecord::Base
 
   scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }
 
-  scope :on_plate, ->(plate) {
-    joins([
-      'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-      'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id'
-    ]).
-    where(['ca.container_id = ?',plate.id])
-  }
-
   scope :for_plate_and_order, ->(plate_id,order_id) {
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
@@ -446,9 +438,9 @@ class Sample < ActiveRecord::Base
   end
 
   def sample_reference_genome
-    reference_genome = self.sample_metadata.reference_genome
-    reference_genome = self.primary_study.try(:study_metadata).try(:reference_genome) if ( reference_genome.nil? ) || reference_genome.name.blank?
-    reference_genome
+    return sample_metadata.reference_genome unless sample_metadata.reference_genome.try(:name).blank?
+    return study_reference_genome unless study_reference_genome.try(:name).blank?
+    nil
   end
 
   def affiliated_with?(object)

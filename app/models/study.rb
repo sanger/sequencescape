@@ -71,12 +71,6 @@ class Study < ActiveRecord::Base
   has_many :samples, :through => :study_samples
   has_many :batches
 
-  # requests read only so no need to use has_many
-  # this return a proper namescope which can be nicely chained
-  def requests(reload=nil)
-    Request.for_study(self)
-  end
-
   has_many :asset_groups
   has_many :study_reports
 
@@ -86,6 +80,8 @@ class Study < ActiveRecord::Base
   has_many :aliquots
   has_many :assets_through_aliquots, :class_name => "Asset", :through => :aliquots, :source => :receptacle, :uniq => :true
   has_many :assets_through_requests, :class_name => "Asset", :through => :initial_requests, :source => :asset, :uniq => :true
+
+  has_many :requests, :through => :assets_through_aliquots, :source => :requests_as_source
 
   has_many :items , :through => :requests, :uniq => true
 
@@ -162,8 +158,10 @@ class Study < ActiveRecord::Base
   scope :alphabetical, ->() { order('name ASC') }
   scope :for_listing, ->()  { select('name, id') }
 
+  STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate']
+
   def each_well_for_qc_report_in_batches(exclude_existing,product_criteria)
-    base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate'])).
+    base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(STOCK_PLATE_PURPOSES)).
       for_study_through_aliquot(self).
       without_blank_samples.
       includes(:well_attribute, samples: :sample_metadata ).
@@ -219,11 +217,13 @@ class Study < ActiveRecord::Base
     include DataReleaseStudyType::Associations
     include ReferenceGenome::Associations
     include FacultySponsor::Associations
+    include Program::Associations
 
     association(:study_type, :name, :required => true)
     association(:data_release_study_type, :name, :required => true)
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
+    association(:program, :name, :required => true)
 
     attribute(:prelim_id, :with => /^[a-zA-Z]\d{4}$/, :required => false)
     attribute(:study_description, :required => true)
@@ -449,11 +449,20 @@ class Study < ActiveRecord::Base
     yield(self.initial_requests.asset_statistics(conditions))
   end
 
+  #  Old code put here for reference. If I forget to remove it, please do it for me!
+  # def sample_progress(samples = nil, &block)
+  #   conditions = { }
+  #   conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
+  #   yield(self.requests.sample_statistics(conditions))
+  # end
+
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
   def sample_progress(samples = nil, &block)
-    conditions = { }
-    conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
-    yield(self.requests.sample_statistics(conditions))
+    if samples.blank?
+      requests.sample_statistics_new
+    else
+      yield(requests.where(aliquots:{sample_id:samples.pluck(:id)}).sample_statistics_new)
+    end
   end
 
   def study_status

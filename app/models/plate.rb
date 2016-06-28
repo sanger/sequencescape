@@ -2,6 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
+require 'lib/lab_where_client'
+
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -14,9 +16,28 @@ class Plate < Asset
   include Plate::Iterations
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
+  include PlateCreation::CreationChild
 
   extend QcFile::Associations
   has_qc_files
+
+  # Contained associations all look up through wells (Wells in turn delegate to aliquots)
+  has_many :contained_samples, :through => :wells, :source => :samples
+  has_many :conatined_aliquots, :through => :wells, :source => :aliquots
+
+  # We also look up studies and projects through wells
+  has_many :studies, :through=> :wells, :uniq => true
+  has_many :projects, :through=> :wells, :uniq => true
+
+
+  has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
+  has_many :orders_as_target, :through => :well_requests_as_target, :source => :order, :uniq => true
+
+  # We use stock well associations here as stock_wells is already used to generate some kind of hash.
+  has_many :stock_requests, :through => :stock_well_associations, :source => :requests, :uniq => true
+  has_many :stock_well_associations, :through => :wells, :source => :stock_wells, :uniq => true
+  has_many :stock_orders, :through => :stock_requests, :source => :order, :uniq => true
+
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
@@ -37,6 +58,10 @@ class Plate < Asset
 
   def cherrypick_completed
     plate_purpose.cherrypick_completed(self)
+  end
+
+  def source_plate
+    self.purpose.source_plate(self)
   end
 
   SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
@@ -191,16 +216,6 @@ class Plate < Asset
     wells.first.try(:study)
   end
 
-  def studies
-    Study.find_by_sql([ %Q{
-SELECT DISTINCT s.*
-FROM container_associations c
-INNER JOIN aliquots a ON a.receptacle_id=c.content_id
-INNER JOIN studies s ON a.study_id=s.id
-WHERE c.container_id=?
-}, self.id ])
-  end
-
   contains :wells do #, :order => '`assets`.map_id ASC' do
 
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
@@ -280,15 +295,6 @@ WHERE c.container_id=?
 
   before_create :set_plate_name_and_size
 
- # scope :qc_started_plates, -> {
- #    {
- #      :select => "distinct assets.*",
- #      :order => 'assets.id DESC',
- #      :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.find_by_name('Stock Plate') ],
- #      :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id" ,
- #      :include => [:events, :asset_audits]
- #    }
- #  }
   scope :qc_started_plates, -> {
     select('DISTINCT assets.*').
     joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
@@ -332,13 +338,28 @@ WHERE c.container_id=?
         }
       }).
       where(['batches.id = ?',batch.id])
- 
+
   }
 
   scope :with_wells, ->(wells) {
       select('DISTINCT assets.*').
       joins(:container_associations).
       where(:container_associations=>{:content_id=> wells.map(&:id) })
+  }
+  #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
+  has_many :descendant_plates, :class_name => "Plate", :conditions => {:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_lanes, :class_name => "Lane", :conditions => {:assets=>{:sti_type=>"Lane"}}, :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :tag_layouts
+
+  scope :with_descendants_owned_by, ->(user) {
+    joins(:descendant_plates => :plate_owner).
+    where(:plate_owners=>{:user_id=>user.id}).
+    uniq
+  }
+
+  scope :source_plates, -> {
+    joins(:plate_purpose).
+    where("plate_purposes.id = plate_purposes.source_purpose_id")
   }
 
   scope :with_wells_and_requests, ->() {
@@ -654,13 +675,13 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    spp = PlatePurpose.where(:can_be_considered_a_stock_plate=>true).all.map(&:id)
+    spp = PlatePurpose.considered_stock_plate.pluck(:id)
     self.ancestors.order('created_at DESC').where(:plate_purpose_id=>spp).first
   end
   private :lookup_stock_plate
 
   def original_stock_plates
-    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+    ancestors.where(:plate_purpose_id => PlatePurpose.stock_plate_purpose)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
@@ -808,20 +829,12 @@ WHERE c.container_id=?
     true
   end
 
-  def orders_as_target
-    Order.with_plate_as_target(self)
-  end
-
   def samples_in_order(order_id)
     Sample.for_plate_and_order(self.id,order_id)
   end
 
   def samples_in_order_by_target(order_id)
     Sample.for_plate_and_order_as_target(self.id,order_id)
-  end
-
-  def contained_samples
-    Sample.on_plate(self)
   end
 
   def team

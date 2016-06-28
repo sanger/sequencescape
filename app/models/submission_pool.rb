@@ -36,8 +36,6 @@ class SubmissionPool < ActiveRecord::Base
               end
           end
 
-          has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
-
           def submission_pools
             SubmissionPool.for_plate(self)
           end
@@ -63,7 +61,7 @@ class SubmissionPool < ActiveRecord::Base
 
     return where('false') if stock_plate.nil?
 
-    select('submissions.*, our.id AS outer_request_id').
+    select('submissions.*, MIN(our.id) AS outer_request_id').
     joins([
       'LEFT JOIN requests as our ON our.submission_id = submissions.id',
       'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
@@ -74,7 +72,7 @@ class SubmissionPool < ActiveRecord::Base
       [TransferRequest,*TransferRequest.descendants].map(&:name),
       Request::Statemachine::ACTIVE
     ]).
-    group('submission_id')
+    group('submissions.id')
   } do
 
       def count(*args)

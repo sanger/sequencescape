@@ -2,22 +2,24 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015,2016 Genome Research Ltd.
 
-
+require 'lib/lab_where_client'
 # A simple class to handle the behaviour from the labwhere reception controller
 class LabwhereReception
   # The following two modules include methods used by a number of rails
   # helpers, such that we can use them in eg. form_for
   extend ActiveModel::Naming
   include ActiveModel::Conversion
+  include ActiveModel::Validations
 
-  attr_reader :errors, :asset_barcodes, :user_code, :location_barcode, :location_id
+  attr_reader :asset_barcodes, :user_code, :location_barcode, :location_id
+
+  validates :asset_barcodes, :user_code, :location, presence: true
 
   def initialize(user_code,location_barcode,location_id,asset_barcodes)
     @asset_barcodes = asset_barcodes.map(&:strip)
     @location_id = location_id.to_i
     @location_barcode = location_barcode.try(:strip)
     @user_code = user_code.try(:strip)
-    @errors = []
   end
 
   def location
@@ -34,15 +36,21 @@ class LabwhereReception
     return false unless valid?
 
     begin
+
       scan = LabWhereClient::Scan.create(
         :location_barcode=> location_barcode,
         :user_code => user_code,
         :labware_barcodes => asset_barcodes
       )
 
-      return add_error(scan.error) unless scan.valid?
+      unless scan.valid?
+        errors.add(:scan, scan.error)
+        return false
+      end 
+
     rescue LabWhereClient::LabwhereException => exception
-      add_error("Could not connect to Labwhere. Sequencescape location has still been updated")
+      errors.add(:base, "Could not connect to Labwhere. Sequencescape location has still been updated")
+      return false 
     end
 
     assets.each do |asset|
@@ -50,31 +58,13 @@ class LabwhereReception
       asset.events.create_scanned_into_lab!(location)
     end
 
-    @valid
+    valid?
   end
 
   private
 
-  def valid?
-    @valid = true
-    add_error('Could not find specified location in Sequencescape') if location.nil?
-    add_error("Could not find labware #{missing_assets.join(', ')} in Sequencescape") unless missing_assets.empty?
-    add_error("No user supplied") if user_code.blank?
-    @valid
-  end
-
-  def add_error(message)
-    errors << message
-    @valid = false
-  end
-
   def assets
     @assets ||= Asset.with_machine_barcode(asset_barcodes)
-  end
-
-  def missing_assets
-    add_error('No barcodes scanned in!') if asset_barcodes.empty?
-    asset_barcodes - assets.map(&:machine_barcode)
   end
 
 end

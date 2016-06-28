@@ -9,6 +9,8 @@ module ModelExtensions::Sample
 
       has_one :primary_study_samples, :class_name => 'StudySample', :order => 'study_id'
       has_one :primary_study, :through => :primary_study_samples, :source => :study
+      has_one :primary_study_metadata, :through => :primary_study, :source => :study_metadata
+      has_one :study_reference_genome, :through => :primary_study_metadata, :source => :reference_genome
     end
   end
 

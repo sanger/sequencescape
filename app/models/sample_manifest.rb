@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
@@ -15,6 +15,12 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::SharedTubeBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
+
+  # While the maximum length of the column is 65536 we place a shorter restriction
+  # to allow for:
+  # 1) Subsequent serialization by the delayed job
+  # 2) The addition of a 'too many errors' message
+  LIMIT_ERROR_LENGTH = 50000
 
   module Associations
     def self.included(base)
@@ -49,6 +55,29 @@ class SampleManifest < ActiveRecord::Base
   validates_numericality_of :count, :only_integer => true, :greater_than => 0, :allow_blank => false
 
   before_save :default_asset_type
+
+  # Too many errors overflow the text column when serialized. This can affect de-serialization
+  # and can even prevent manifest resubmission.
+  before_save :truncate_errors
+
+  def truncate_errors
+    if self.last_errors && self.last_errors.join.length > LIMIT_ERROR_LENGTH
+
+      full_last_errors = self.last_errors
+
+      removed_errors = 0
+
+      while full_last_errors.join.length > LIMIT_ERROR_LENGTH
+        full_last_errors.pop
+        removed_errors += 1
+      end
+
+      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown."
+
+      self.last_errors = full_last_errors
+
+    end
+  end
 
   def only_first_label
     false

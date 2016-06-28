@@ -18,20 +18,17 @@ class BulkSubmissionsController < ApplicationController
   def create
     begin
       @bulk_submission = BulkSubmission.new(:spreadsheet => params.fetch(:bulk_submission, {})[:spreadsheet])
-
       if @bulk_submission.valid?
-        flash[:notice]  = "File was processed successfully"
+        flash.now[:notice]  = "File was processed successfully"
         sub_ids,@sub_details = @bulk_submission.completed_submissions
         @these_subs     = Submission.find(sub_ids)
-        #Submission.all(:conditions => ["created_at > :lastminute", { :lastminute => Time.now - 1.day}])
-
       else
-        #flash[:error] = "There was a problem with your upload"
-        # apparently this should redirect_to rather than render, but then the errors don't show up properly
+        flash.now[:error] = "There was a problem with your upload"
         render :action => "new"
       end
     rescue ActiveRecord::RecordInvalid => exception
-      flash.now[:error] = exception.message
+      flash.now[:error] = "There was a problem when building your submissions"
+      @bulk_submission.errors.add(:base,exception.message)
       render :action => "new"
     end
   end

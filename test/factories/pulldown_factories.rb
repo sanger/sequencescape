@@ -189,7 +189,7 @@ FactoryGirl.define do
   factory(:pooling_transfer, :class=>RequestType) do |pooling_transfer|
     asset_type 'Well'
     order 1
-    request_class_name 'IlluminaHtp::Requests::PcrXpToPool'
+    request_class_name 'TransferRequest::InitialDownstream'
     request_purpose {|rp| rp.association(:request_purpose) }
   end
   # Plate creations
@@ -291,5 +291,17 @@ FactoryGirl.define do
       request.request_metadata.fragment_size_required_to   = 400
       request.request_metadata.bait_library                = BaitLibrary.first||create(:bait_library)
     end
+  end
+
+  factory(:state_change) do
+    user
+    target { |target| target.association(:plate) }
+    target_state "passed"
+  end
+
+  factory(:plate_owner) do
+    user
+    plate
+    eventable { |eventable| eventable.association(:state_change)}
   end
 end

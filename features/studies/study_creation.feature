@@ -9,7 +9,7 @@ Feature: Study creation
    Given I am a "administrator" user logged in as "user"
    Given a faculty sponsor called "Jack Sponsor" exists
    When I go to the homepage
-   When I follow "Create study"
+   When I follow "Create Study"
    Then I should be on the new study page
    Then I should see "Study Create"
    Then I should see "Properties"
