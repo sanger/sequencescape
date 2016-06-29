@@ -21,7 +21,7 @@ class PrintJobTest < ActiveSupport::TestCase
 											top_far_right: "#{plate.parent.try(:barcode)}",
 											barcode: "#{plate.ean13_barcode}"}}]
 										},
-									label_template_id: 14,
+									label_template_id: 15,
 									}
 			@print_job = LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
 		end

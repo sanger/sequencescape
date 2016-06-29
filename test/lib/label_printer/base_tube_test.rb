@@ -48,7 +48,7 @@ class BaseTubeTest < ActiveSupport::TestCase
 		base_tube_label.tubes = tubes
 		assert_equal labels, base_tube_label.create_labels
 		assert_equal ({labels: {body: labels}}), base_tube_label.labels
-		assert_equal ({labels: {body: labels}, label_template_id: 10}), base_tube_label.to_h
+		assert_equal ({labels: {body: labels}, label_template_id: 16}), base_tube_label.to_h
 	end
 
 	test "should return the right values for labels" do

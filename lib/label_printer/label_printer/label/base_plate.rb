@@ -7,7 +7,7 @@ module LabelPrinter
 			attr_accessor :plates, :count
 
 			def initialize(options={})
-				@label_template_id = 14
+				@label_template_id = 15
 				@count = 1
 				@plates = []
 			end

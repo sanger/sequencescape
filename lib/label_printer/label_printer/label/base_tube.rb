@@ -7,7 +7,7 @@ module LabelPrinter
 			attr_accessor :tubes, :count
 
 			def initialize(options={})
-				@label_template_id = 10
+				@label_template_id = 16
 				@count = 1
 				@tubes = []
 			end
