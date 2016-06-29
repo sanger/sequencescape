@@ -3,34 +3,17 @@ module LabelPrinter
 
 		class BaseTube
 
+			include Label::MultipleLabels
+
 			attr_reader :label_template_id
 			attr_accessor :tubes, :count
+
+			alias_method :assets, :tubes
 
 			def initialize(options={})
 				@label_template_id = 16
 				@count = 1
 				@tubes = []
-			end
-
-			def to_h
-				labels.merge(label_template)
-			end
-
-			def labels
-				{labels: {body: create_labels}}
-			end
-
-			def create_labels
-				[].tap do |l|
-					tubes.each do |tube|
-						label = label(tube)
-						count.times { l.push(label) }
-					end
-				end
-			end
-
-			def label(tube)
-				{main_label: create_label(tube)}
 			end
 
 			def create_label(tube)
@@ -63,10 +46,6 @@ module LabelPrinter
 
 			def barcode(tube)
 				tube.ean13_barcode
-			end
-
-			def label_template
-				{label_template_id: label_template_id}
 			end
 
 			def date_today

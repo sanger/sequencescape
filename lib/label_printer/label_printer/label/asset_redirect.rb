@@ -18,6 +18,10 @@ module LabelPrinter
 			end
 
 			def assets
+				_assets.each {|asset| add_barcode(asset)}
+			end
+
+			def _assets
 				if printables.is_a? Asset
 					[printables]
 				else
@@ -25,6 +29,13 @@ module LabelPrinter
 					Asset.find(ids)
 				end
 			end
+
+			def add_barcode(asset)
+		    unless asset.barcode.present?
+	        asset.barcode = AssetBarcode.new_barcode
+	        asset.save!
+	      end
+      end
 
 		end
 
