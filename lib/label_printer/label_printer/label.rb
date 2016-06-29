@@ -4,14 +4,10 @@ module LabelPrinter
 		module MultipleLabels
 
 			def to_h
-				labels.merge(label_template)
+				{labels: {body: labels}}
 			end
 
 			def labels
-				{labels: {body: create_labels}}
-			end
-
-			def create_labels
 				[].tap do |l|
 					assets.each do |asset|
 						label = label(asset)
@@ -24,9 +20,6 @@ module LabelPrinter
 				{main_label: create_label(asset)}
 			end
 
-			def label_template
-				{label_template_id: label_template_id}
-			end
 
 		end
 

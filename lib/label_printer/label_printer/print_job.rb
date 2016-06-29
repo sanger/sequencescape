@@ -13,7 +13,8 @@ module LabelPrinter
 			@printer_name = printer_name
 			@label = label
 			@options = options
-			# @label_template_id = barcode_printer.label_template
+			# @label_template_id = barcode_printer.barcode_printer_type.label_template_name
+			@label_template_id = 15
 		end
 
 		def execute
@@ -22,7 +23,7 @@ module LabelPrinter
 		end
 
 		def build_attributes
-			printer.merge(labels)
+			printer.merge(label_template).merge(labels)
 		end
 
 		def labels
@@ -33,9 +34,9 @@ module LabelPrinter
 			{printer_name: printer_name}
 		end
 
-		# def label_template
-		# 	{label_template_id: label_template_id}
-		# end
+		def label_template
+			{label_template_id: label_template_id}
+		end
 
 	end
 end

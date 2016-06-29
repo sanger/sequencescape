@@ -40,15 +40,14 @@ class BaseTubeTest < ActiveSupport::TestCase
 	test "should return the right labels if count changes" do
 		base_tube_label.tubes = [tube1]
 		base_tube_label.count = 3
-		labels = {labels: {body: [{main_label: label}, {main_label: label}, {main_label: label}]}}
+		labels = [{main_label: label}, {main_label: label}, {main_label: label}]
 		assert_equal labels, base_tube_label.labels
 	end
 
 	test "should return the right labels" do
 		base_tube_label.tubes = tubes
-		assert_equal labels, base_tube_label.create_labels
-		assert_equal ({labels: {body: labels}}), base_tube_label.labels
-		assert_equal ({labels: {body: labels}, label_template_id: 16}), base_tube_label.to_h
+		assert_equal labels, base_tube_label.labels
+		assert_equal ({labels: {body: labels}}), base_tube_label.to_h
 	end
 
 	test "should return the right values for labels" do

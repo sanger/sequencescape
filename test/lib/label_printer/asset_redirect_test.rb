@@ -32,16 +32,12 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 							]
 		end
 
-		should 'should have printables' do
-			assert asset_redirect.printables
-		end
-
 		should 'should return the right assets' do
 			assert_equal assets, asset_redirect.assets
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}, label_template_id: 15}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
 		end
 	end
 
@@ -61,16 +57,12 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 								}]
 		end
 
-		should 'should have printables' do
-			assert asset_redirect.printables
-		end
-
 		should 'should return the right assets' do
 			assert_equal [asset], asset_redirect.assets
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}, label_template_id: 15}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
 		end
 	end
 
@@ -102,16 +94,12 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 							]
 		end
 
-		should 'should have printables' do
-			assert asset_redirect.printables
-		end
-
 		should 'should return the right assets' do
 			assert_equal assets, asset_redirect.assets
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}, label_template_id: 16}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
 		end
 	end
 
@@ -131,16 +119,12 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 								}]
 		end
 
-		should 'should have printables' do
-			assert asset_redirect.printables
-		end
-
 		should 'should return the right assets' do
 			assert_equal [asset], asset_redirect.assets
 		end
 
 		should 'should return the right labels' do
-			assert_equal ({labels: {body: labels}, label_template_id: 16}), asset_redirect.to_h
+			assert_equal ({labels: {body: labels}}), asset_redirect.to_h
 		end
 	end
 

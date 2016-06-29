@@ -43,15 +43,14 @@ class BasePlateTest < ActiveSupport::TestCase
 	test "should return the right labels if count changes" do
 		base_plate_label.plates = [plate1]
 		base_plate_label.count = 3
-		labels = {labels: {body: [{main_label: label}, {main_label: label}, {main_label: label}]}}
+		labels = [{main_label: label}, {main_label: label}, {main_label: label}]
 		assert_equal labels, base_plate_label.labels
 	end
 
 	test "should return the right labels" do
 		base_plate_label.plates = plates
-		assert_equal labels, base_plate_label.create_labels
-		assert_equal ({labels: {body: labels}}), base_plate_label.labels
-		assert_equal ({labels: {body: labels}, label_template_id: 15}), base_plate_label.to_h
+		assert_equal labels, base_plate_label.labels
+		assert_equal ({labels: {body: labels}}), base_plate_label.to_h
 	end
 
 	test "should return the right values for labels" do
