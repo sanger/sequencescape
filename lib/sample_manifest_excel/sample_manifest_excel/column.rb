@@ -90,7 +90,7 @@ module SampleManifestExcel
       self.range = {first_column: number, first_row: first_row, last_row: last_row}
 
       range = ranges.find_by(range_name)  || NullRange.new
-      validation.update(range: range, reference: range.reference, worksheet: worksheet)
+      validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
 
       conditional_formattings.update(self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet))
 

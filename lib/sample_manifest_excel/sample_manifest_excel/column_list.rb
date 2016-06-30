@@ -96,7 +96,6 @@ module SampleManifestExcel
       super
     end
 
-
   private
 
     def reset!

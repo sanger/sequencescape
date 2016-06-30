@@ -12,9 +12,7 @@ module SampleManifestExcel
 
     include HashAttributes
 
-    OPERATORS = { gt: ">", lt: "<"}
-
-    set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: :gt, operand: 999}
+    set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: ">", operand: 999}
 
     def initialize(attributes = {})
       create_attributes(attributes)
@@ -23,6 +21,10 @@ module SampleManifestExcel
     def update(attributes = {})
       update_attributes(attributes)
       self
+    end
+
+    def type=(type)
+      @type = type.to_sym
     end
 
     ##
@@ -34,7 +36,7 @@ module SampleManifestExcel
       when :is_number
         "ISNUMBER(#{first_cell_reference})"
       when :len
-        "LEN(#{first_cell_reference})#{OPERATORS[operator]}#{operand}"
+        "LEN(#{first_cell_reference})#{operator}#{operand}"
       when :is_error
         "ISERROR(MATCH(#{first_cell_reference},#{absolute_reference},0)>0)"
       end

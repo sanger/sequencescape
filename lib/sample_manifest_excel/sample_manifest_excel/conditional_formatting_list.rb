@@ -40,7 +40,7 @@ module SampleManifestExcel
         conditional_formatting.update(attributes)
       end
 
-      if attributes[:worksheet].present?
+      if attributes[:worksheet].present? && conditional_formattings.any?
         @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference], options)
       end
 

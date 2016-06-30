@@ -15,6 +15,7 @@ class RangeListTest < ActiveSupport::TestCase
 
   test "#find_by returns correct range" do
     assert range_list.find_by(ranges.keys.first)
+    assert range_list.find_by(ranges.keys.first.to_sym)
   end
 
   test "#set_worksheet_names should set worksheet names" do

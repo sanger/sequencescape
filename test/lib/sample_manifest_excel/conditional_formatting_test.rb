@@ -54,7 +54,7 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
 
     setup do
       @references = build(:range).references
-      @formula = { type: :len, operator: :lt, operand: 333}
+      @formula = { type: :len, operator: "<", operand: 333}
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule.merge(formula: formula))
     end
 

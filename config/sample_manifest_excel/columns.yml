@@ -2,8 +2,119 @@ sanger_plate_id:
   heading: SANGER PLATE ID
 well:
   heading: WELL
+sanger_tube_id:
+  heading: SANGER TUBE ID
 sanger_sample_id:
   heading: SANGER SAMPLE ID
+tag_group:
+  heading: TAG GROUP
+  unlocked: true
+  validation:
+    options:
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag set name"
+      prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+  conditional_formattings:
+    empty_cell:
+tag_index:
+  heading: TAG INDEX
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag index"
+      prompt: "The index of the tag within the tag set."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Tag index"
+      error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+tag2_group:
+  heading: TAG2 GROUP (Fill in for dual Index Only)
+  unlocked: true
+  validation:
+    options:
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag set name"
+      prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+  conditional_formattings:
+    empty_cell:
+tag2_index:
+  heading: TAG2 INDEX (Fill in for dual Index Only)
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag index"
+      prompt: "The index of the tag within the tag set."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Tag index"
+      error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+library_type:
+  heading: LIBRARY TYPE
+  unlocked: true
+  validation:
+    options:
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Library type"
+      prompt: "Provide a library type from the approved list"
+  conditional_formattings:
+    empty_cell:
+insert_size_from:
+  heading: INSERT SIZE FROM
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Insert size from"
+      prompt: "The minimum insert size in the library"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+insert_size_to:
+  heading: INSERT SIZE TO
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Insert size to"
+      prompt: "Maximum insert size in the library"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Insert size to"
+      error: "Insert size to must be a whole number, greater or equal to the insert size from"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
 supplier_sample_name:
   heading: SUPPLIER SAMPLE NAME
   unlocked: true
@@ -70,6 +181,7 @@ volume:
   conditional_formattings:
     empty_cell:
     number_greater_than_zero:
+    is_text:
 conc:
   heading: CONC. (ng/ul)
   unlocked: true
@@ -88,6 +200,7 @@ conc:
       error: "This value must be numeric."
   conditional_formattings:
     empty_cell:
+    number_greater_than_zero:
     is_text:
 gender:
   heading: GENDER
@@ -128,11 +241,10 @@ country_of_origin:
   conditional_formattings:
     empty_cell:
     len:
-      formula: 
-        type: len
-        operator: '>'
+      formula:
+        type: :len
+        operator: :gt
         operand: 30
-    is_number:
 geographical_region:
   heading: GEOGRAPHICAL REGION
   unlocked: true
@@ -197,7 +309,7 @@ dna_source:
       errorStyle: :stop
       errorTitle: "DNA Source"
       error: "You must enter a Source from the list provided."
-    range_name: :dna_source
+    :range_name: :dna_source
   conditional_formattings:
     empty_cell:
     is_error:
@@ -283,7 +395,7 @@ is_re_submitted_sample?:
       errorStyle: :stop
       errorTitle: "Is the Sample being Resubmitted?"
       error: "You must enter either Y or N."
-    range_name: :yes_no
+    :range_name: :yes_no
   conditional_formattings:
     empty_cell:
     is_error:
@@ -308,7 +420,7 @@ sample_purified?:
       errorStyle: :stop
       errorTitle: "Has the Sample Been Purified?"
       error: "You must enter either Y or N."
-    :range_name: :yes_no
+    range_name: :yes_no
   conditional_formattings:
     empty_cell:
     is_error:
@@ -348,7 +460,7 @@ concentration_determined_by:
       errorStyle: :stop
       errorTitle: "Concentration Determined By"
       error: "You must enter a Method from the list provided."
-    :range_name: :concentration_determined_by
+    range_name: :concentration_determined_by
   conditional_formattings:
     empty_cell:
     is_error:
@@ -389,6 +501,7 @@ mother:
       errorTitle: "Mother - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   conditional_formattings:
+    empty_cell:
     len:
       formula:
         type: :len
@@ -412,11 +525,12 @@ father:
       errorTitle: "Father - Supplier Sample Name"
       error: "Name must be a miaximum of 15 characters in length."
   conditional_formattings:
+    empty_cell:
     len:
-      formula: 
+      formula:
         type: :len
         operator: :gt
-        operand: 15 
+        operand: 15
     is_number:
 sibling:
   heading: SIBLING (optional)
@@ -437,10 +551,10 @@ sibling:
   conditional_formattings:
     empty_cell:
     len:
-      formula: 
+      formula:
         type: :len
         operator: :gt
-        operand: 15 
+        operand: 15
     is_number:
 gc_content:
   heading: GC CONTENT
@@ -494,6 +608,91 @@ donor_id:
     empty_cell:
 phenotype:
   heading: PHENOTYPE (required for EGA)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+genotype:
+  heading: GENOTYPE
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+age:
+  heading: AGE (with units)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+developmental_stage:
+  heading: Developmental stage
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+cell_type:
+  heading: Cell Type
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+disease_state:
+  heading: Disease State
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+compound:
+  heading: Compound
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+dose:
+  heading: Dose
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+immunoprecipitate:
+  heading: Immunoprecipitate
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+growth_condition:
+  heading: Growth condition
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+rnai:
+  heading: RNAi
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+rnai_2:
+  heading: RNAi
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+organism_part:
+  heading: Organism part
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+time_point:
+  heading: Time Point
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+treatment:
+  heading: Treatment
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+subject:
+  heading: Subject
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+disease:
+  heading: Disease
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+donor_id_2:
+  heading: DONOR ID (required for cancer samples)
   unlocked: true
   conditional_formattings:
     empty_cell:

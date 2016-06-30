@@ -7,8 +7,8 @@ module SampleManifestExcel
       @sample_manifest = sample_manifest
       @range_list = range_list
       @column_list = column_list
-      @ranges_worksheet = SampleManifestExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook, password: password)
-      @data_worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: password)
+      @ranges_worksheet = Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook, password: password)
+      @data_worksheet = Worksheet::DataWorksheet.new(workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: password)
     end
 
     def save(filename)

@@ -25,7 +25,7 @@ module SampleManifestExcel
     ##
     # Find a range by it's key.
     def find_by(key)
-      ranges[key]
+      ranges[key] || ranges[key.to_s]
     end
 
     ##
@@ -35,6 +35,7 @@ module SampleManifestExcel
       each {|k, range| range.set_worksheet_name(worksheet_name)}
       self
     end
+
 
     ##
     # A RangeList is only valid if it contains at least one range object.

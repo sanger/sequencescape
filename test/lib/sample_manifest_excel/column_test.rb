@@ -114,6 +114,7 @@ class ColumnTest < ActiveSupport::TestCase
 
     should "update the validation" do
       assert_equal range_list.find_by(column.range_name).absolute_reference, column.validation.formula1
+      assert worksheet.data_validation_rules.all? { |rule| rule.sqref == column.range.reference }
       assert column.validation.saved?
     end
 

@@ -28,7 +28,14 @@ class ConditionalFormattingListTest < ActiveSupport::TestCase
   test "#update should update the worksheet with conditional formatting rules" do
     conditional_formatting_list.update(options)
     assert_equal rules.length, worksheet.conditional_formatting_rules.to_a.first.rules.length
+    assert options[:reference], worksheet.conditional_formatting_rules.to_a.first.sqref
     assert conditional_formatting_list.saved?
+  end
+
+  test "#update should only work if there are some conditional formattings in the list" do
+    conditional_formatting_list = SampleManifestExcel::ConditionalFormattingList.new
+    conditional_formatting_list.update(options)
+    refute conditional_formatting_list.saved?
   end
 
   #TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.

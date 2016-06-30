@@ -51,11 +51,17 @@ class RangeTest < ActiveSupport::TestCase
     end
 
     should "set the reference" do
-      assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.reference
+      assert_equal "#{range.first_cell.reference}:#{range.last_cell.reference}", range.reference
     end
 
-    should "#references should return first_cell reference, reference and absolute_reference" do
-      assert_equal({first_cell_reference: range.first_cell_reference, reference: range.reference, absolute_reference: range.absolute_reference}, range.references)
+    should "set the fixed reference" do
+      assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.fixed_reference
+    end
+
+    should "#references should return first_cell reference, reference, fixed_reference and absolute_reference" do
+      assert_equal({first_cell_reference: range.first_cell_reference, 
+        reference: range.reference, fixed_reference: range.fixed_reference, 
+        absolute_reference: range.absolute_reference}, range.references)
     end
 
   end
@@ -108,18 +114,22 @@ class RangeTest < ActiveSupport::TestCase
       assert_equal SampleManifestExcel::Cell.new(range.last_row, range.last_column), range.last_cell
     end
 
-    should "set the reference" do
-      assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.reference
+    should "set the fixed_reference" do
+      assert_equal "#{range.first_cell.reference}:#{range.last_cell.reference}", range.reference
+    end
+
+    should "set the fixed reference" do
+      assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.fixed_reference
     end
 
     should "have an absolute reference" do
-      assert_equal range.reference, range.absolute_reference
+      assert_equal range.fixed_reference, range.absolute_reference
     end
 
     should "#set_worksheet_name should set worksheet name and modify absolute reference" do
       range.set_worksheet_name "Sheet1"
       assert_equal "Sheet1", range.worksheet_name
-      assert_equal "#{range.worksheet_name}!#{range.reference}", range.absolute_reference
+      assert_equal "#{range.worksheet_name}!#{range.fixed_reference}", range.absolute_reference
     end
 
     context "without last row" do
@@ -156,7 +166,7 @@ class RangeTest < ActiveSupport::TestCase
       end
 
       should "set absolute reference" do
-        assert_equal "Sheet1!#{range.reference}", range.absolute_reference
+        assert_equal "Sheet1!#{range.fixed_reference}", range.absolute_reference
       end
     end
 

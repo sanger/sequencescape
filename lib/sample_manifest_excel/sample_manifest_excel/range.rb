@@ -58,11 +58,15 @@ module SampleManifestExcel
     # Defined by the fixed reference of the first cell and the fixed reference
     # of the last cell.
     def reference
-      @reference ||= "#{first_cell.fixed}:#{last_cell.fixed}"
+      "#{first_cell.reference}:#{last_cell.reference}"
+    end
+
+    def fixed_reference
+      "#{first_cell.fixed}:#{last_cell.fixed}"
     end
 
     ##
-    # The reference oof the first cell.
+    # The reference of the first cell.
     def first_cell_reference
       first_cell.reference
     end
@@ -72,10 +76,10 @@ module SampleManifestExcel
     # worksheet to find a reference that is not in the current worksheet e.g. Sheet1!A1:A100
     # If the worksheet name is not present just returns the reference.
     def absolute_reference
-      @absolute_reference ||= if worksheet_name.present?
-        "#{worksheet_name}!#{reference}"
+      if worksheet_name.present?
+        "#{worksheet_name}!#{fixed_reference}"
       else
-        "#{reference}"
+        "#{fixed_reference}"
       end
     end
 
@@ -99,6 +103,7 @@ module SampleManifestExcel
       {
         first_cell_reference: first_cell_reference,
         reference: reference,
+        fixed_reference: fixed_reference,
         absolute_reference: absolute_reference
       }
     end

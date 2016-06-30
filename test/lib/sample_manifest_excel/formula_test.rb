@@ -6,7 +6,7 @@ class FormulaTest < ActiveSupport::TestCase
 
   def setup
     @references = build(:range).references
-    @options = {type: :nice, operator: :gt, operand: 30}
+    @options = {type: :smooth, operator: ">", operand: 30}
     @formula = SampleManifestExcel::Formula.new(options)
   end
 
@@ -19,12 +19,16 @@ class FormulaTest < ActiveSupport::TestCase
   end
 
   test "should produce the correct output for the LEN formula" do
-    assert_equal "LEN(#{references[:first_cell_reference]})>999", formula.update(references.merge(type: :len, operator: :gt, operand: 999)).to_s
-    assert_equal "LEN(#{references[:first_cell_reference]})<999", formula.update(references.merge(type: :len, operator: :lt, operand: 999)).to_s
+    assert_equal "LEN(#{references[:first_cell_reference]})>999", formula.update(references.merge(type: :len, operator: ">", operand: 999)).to_s
+    assert_equal "LEN(#{references[:first_cell_reference]})<999", formula.update(references.merge(type: :len, operator: "<", operand: 999)).to_s
   end
 
-  test "should produce the correc output for the ISERROR formula" do
+  test "should produce the correct output for the ISERROR formula" do
     assert_equal "ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0)", formula.update(references.merge(type: :is_error, operator: ">", operand: 999)).to_s
+  end
+
+  test "should produce the correct output irrespective of the format of type" do
+    assert_equal "ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0)", formula.update(references.merge(type: "is_error", operator: ">", operand: 999)).to_s
   end
 
   test "should be comparable" do

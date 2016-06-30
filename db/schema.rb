@@ -13,17 +13,6 @@
 
 ActiveRecord::Schema.define(:version => 20160519124121) do
 
-  create_table "aliquot_indices", :force => true do |t|
-    t.integer  "aliquot_id",    :null => false
-    t.integer  "lane_id",       :null => false
-    t.integer  "aliquot_index", :null => false
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-  end
-
-  add_index "aliquot_indices", ["aliquot_id"], :name => "index_aliquot_indices_on_aliquot_id", :unique => true
-  add_index "aliquot_indices", ["lane_id", "aliquot_index"], :name => "index_aliquot_indices_on_lane_id_and_aliquot_index", :unique => true
-
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",                    :null => false
     t.integer  "study_id"
