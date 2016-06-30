@@ -58,6 +58,7 @@ Feature: Sample manifest
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Pending | john       |
     When I follow "Manifest for Test study"
     Then I should see "DN1234567T"
+    Then I should see "Download Completed Manifest"
 
   @asset_type
   Scenario: Create a manifest without passing in an asset type
@@ -86,6 +87,8 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
     And I should see "Invalid CSV file"
+    When I follow "Manifest for Test study"
+    Then I should not see "Download Completed Manifest"
 
   Scenario: Create a 1D tube manifest without processing the manifest
     When I follow "Create manifest for 1D tubes"
@@ -409,7 +412,7 @@ Feature: Sample manifest
      | sample_11        | None          | true                       |                 |
      | sample_12        | gggg          | false                      | 9617            |
 
-    When I follow "Manifest for Test study"    
+    When I follow "Manifest for Test study"
     When I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
@@ -443,7 +446,7 @@ Feature: Sample manifest
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
-    When I follow "Manifest for Test study"    
+    When I follow "Manifest for Test study"
     When I fill in "File to upload" with the file "test/data/<update>"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
