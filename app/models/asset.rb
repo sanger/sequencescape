@@ -529,7 +529,7 @@ class Asset < ActiveRecord::Base
 
   # We only support wells for the time being
   def latest_stock_metrics(product,*args)
-    nil
+    []
   end
 
   def contained_samples; []; end
