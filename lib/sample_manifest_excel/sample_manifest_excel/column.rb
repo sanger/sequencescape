@@ -92,7 +92,8 @@ module SampleManifestExcel
       range = ranges.find_by(range_name)  || NullRange.new
       validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
 
-      conditional_formattings.update(self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet))
+      conditional_formattings.update(
+        self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet))
 
       @updated = true
 
@@ -123,6 +124,40 @@ module SampleManifestExcel
       self.validation = source.validation
       self.conditional_formattings = source.conditional_formattings
       super
+    end
+
+    def self.build_arguments(args, key, conditional_formattings)
+      ArgumentBuilder.new(args, key, conditional_formattings).to_h
+    end
+
+    class ArgumentBuilder
+
+      attr_reader :arguments
+
+      def initialize(args, key, default_conditional_formattings)
+        @arguments = args.merge(name: key)
+        combine_conditional_formattings(default_conditional_formattings)
+      end
+
+      def to_h
+        arguments
+      end
+
+    private
+
+      def combine_conditional_formattings(defaults)
+        if arguments[:conditional_formattings].present?
+          arguments[:conditional_formattings].each do |k, cf|
+            (cf || {}).tap do |conditional_formatting|
+              arguments[:conditional_formattings][k] = if conditional_formatting[:formula].present?
+                defaults.fetch(k).merge(formula: conditional_formatting[:formula])
+              else
+                defaults.fetch(k)
+              end
+            end
+          end
+        end
+      end
     end
 
   private

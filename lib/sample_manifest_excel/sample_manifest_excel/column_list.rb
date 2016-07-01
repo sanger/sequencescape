@@ -106,7 +106,7 @@ module SampleManifestExcel
       columns.each do |k,v|
         begin
           if v.kind_of?(Hash)
-            add SampleManifestExcel::Column.new(v.combine_by_key(conditional_formattings, :conditional_formattings).merge(name: k))
+            add SampleManifestExcel::Column.new(SampleManifestExcel::Column.build_arguments(v, k, conditional_formattings))
           else
             copy k, v
           end

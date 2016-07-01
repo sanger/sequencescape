@@ -24,7 +24,6 @@ module SampleManifestExcel
     end
   end
 
-  Hash.send(:include, CoreExtensions::Hash)
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
 
   class << self

@@ -131,4 +131,43 @@ class ColumnTest < ActiveSupport::TestCase
 
   end
 
+  #TODO: Need to improve way keys are found to reduce brittleness of tests.
+  # would break if column names changed.
+  context "argument builder" do
+
+    include SampleManifestExcel::Helpers
+
+    attr_reader :columns, :conditional_formattings
+
+    setup do
+      folder = File.join("test","data", "sample_manifest_excel", "extract")
+      @columns = load_file(folder, "columns")
+      @conditional_formattings = load_file(folder, "conditional_formattings")
+    end
+
+    should "insert the name of the column" do
+      arguments = SampleManifestExcel::Column.build_arguments(columns.values.first, columns.keys.first, conditional_formattings)
+      assert_equal columns.keys.first, arguments[:name]
+    end
+
+    should "still have the validations" do
+      key = columns.find { |k, v| v[:validation].present? }.first
+      assert SampleManifestExcel::Column.build_arguments(columns[key], key, conditional_formattings)[:validation].present?
+    end
+
+    should "combine the conditional formattings correctly" do
+      arguments = SampleManifestExcel::Column.build_arguments(columns[:gender], "gender", conditional_formattings)
+      assert_equal columns[:gender][:conditional_formattings].length, arguments[:conditional_formattings].length
+      arguments[:conditional_formattings].each do |k, conditional_formatting|
+        assert_equal columns[:gender][:conditional_formattings][k][:style], conditional_formatting[:style]
+        assert_equal columns[:gender][:conditional_formattings][k][:options], conditional_formatting[:options]
+      end
+    end
+
+    should "combine the conditional formattings correctly if there is a formula" do
+      arguments = SampleManifestExcel::Column.build_arguments(columns[:supplier_sample_name], "supplier_sample_name", conditional_formattings)
+      assert_equal columns[:supplier_sample_name][:conditional_formattings][:len][:formula], arguments[:conditional_formattings][:len][:formula]
+    end
+  end
+
 end
