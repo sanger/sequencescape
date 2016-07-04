@@ -489,6 +489,13 @@ FactoryGirl.define do
     workflow          {|workflow| workflow.association(:submission_workflow)}
   end
 
+  factory  :data_access_coordinator, :class => "User"  do
+    login                 "abc123"
+    email                 {|a| "#{a.login}@example.com".downcase }
+    roles                 {|role| [role.association(:data_access_coordinator_role)]}
+    workflow              {|workflow| workflow.association(:submission_workflow)}
+  end
+
   factory  :role  do
     sequence(:name)   { |i| "Role #{ i }" }
     authorizable       nil
@@ -504,6 +511,10 @@ FactoryGirl.define do
 
   factory  :manager_role, :class => 'Role'  do
     name            "manager"
+  end
+
+  factory  :data_access_coordinator_role, :class => 'Role'  do
+    name            "data_access_coordinator"
   end
 
   factory  :owner_role, :class => 'Role'  do
