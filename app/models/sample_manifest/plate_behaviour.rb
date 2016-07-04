@@ -111,9 +111,9 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def print_labels(&block)
-      print_labels_for(self.samples.map { |s| s.primary_receptacle.plate }.uniq, &block)
-    end
+    # def print_labels(&block)
+    #   print_labels_for(self.samples.map { |s| s.primary_receptacle.plate }.uniq, &block)
+    # end
 
     def updated_by!(user, samples)
       # It's more efficient to look for the wells with the samples than to look for the assets from the samples

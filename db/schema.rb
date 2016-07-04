@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160413110717) do
+ActiveRecord::Schema.define(:version => 20160701140304) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -245,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20160413110717) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "label_template_name"
   end
 
   add_index "barcode_printer_types", ["name"], :name => "index_barcode_printer_types_on_name"
@@ -1408,6 +1409,7 @@ ActiveRecord::Schema.define(:version => 20160413110717) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "model_name"
+    t.text     "default_parameters"
   end
 
   create_table "specific_tube_creation_purposes", :force => true do |t|

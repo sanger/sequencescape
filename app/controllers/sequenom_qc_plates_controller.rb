@@ -58,13 +58,14 @@ class SequenomQcPlatesController < ApplicationController
         flash[:error] = bad_plate.errors.full_messages || "Failed to create Sequenom QC Plate"
         format.html { render :new }
       else
-        # Everything's tickity boo so...
-        # print the a label for each plate we created
 
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                               LabelPrinter::Label::SequenomPlate,
                                               plates: new_plates, count: 3)
         print_job.execute
+
+        # Everything's tickity boo so...
+        # print the a label for each plate we created
 
         # new_plates.each { |p| p.print_labels(barcode_printer) }
 

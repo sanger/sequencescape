@@ -5,16 +5,7 @@ module LabelPrinter
 
 			include Label::MultipleLabels
 
-			attr_reader :label_template_id
-			attr_accessor :tubes, :count
-
-			alias_method :assets, :tubes
-
-			def initialize(options={})
-				@label_template_id = 16
-				@count = 1
-				@tubes = []
-			end
+			attr_accessor :tubes
 
 			def create_label(tube)
 				{top_line: top_line(tube),
@@ -46,6 +37,14 @@ module LabelPrinter
 
 			def barcode(tube)
 				tube.ean13_barcode
+			end
+
+			def tubes
+				@tubes || []
+			end
+
+			def assets
+				tubes
 			end
 
 			def date_today

@@ -728,14 +728,19 @@ FactoryGirl.define do
     pooling_options({:pool_count => 8 })
   end
 
-factory :tag2_layout_template do |itlt|
-  name 'Tag 2 layout template'
-  tag {|tag| tag.association :tag }
-end
+  factory :tag2_layout_template do |itlt|
+    name 'Tag 2 layout template'
+    tag {|tag| tag.association :tag }
+  end
 
   factory(:messenger_creator)  do
     root 'a_plate'
     template 'FluidigmPlateIO'
     purpose {|purpose| purpose.association(:plate_purpose)}
+  end
+
+  factory(:barcode_printer) do
+    name 'd304bc'
+    barcode_printer_type_id 2
   end
 end

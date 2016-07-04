@@ -5,16 +5,7 @@ module LabelPrinter
 
 			include Label::MultipleLabels
 
-			attr_reader :label_template_id
-			attr_accessor :plates, :count
-
-			alias_method :assets, :plates
-
-			def initialize(options={})
-				@label_template_id = 15
-				@plates = []
-				@count = 1
-			end
+			attr_accessor :plates
 
 			def create_label(plate)
 				{top_left: top_left,
@@ -48,6 +39,14 @@ module LabelPrinter
 
 			def date_today
 				Date.today.strftime("%e-%^b-%Y")
+			end
+
+			def plates
+				@plates || []
+			end
+
+			def assets
+				plates
 			end
 
 		end

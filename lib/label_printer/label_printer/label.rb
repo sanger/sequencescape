@@ -3,6 +3,8 @@ module LabelPrinter
 
 		module MultipleLabels
 
+			attr_accessor :count
+
 			def to_h
 				{labels: {body: labels}}
 			end
@@ -20,6 +22,9 @@ module LabelPrinter
 				{main_label: create_label(asset)}
 			end
 
+			def count
+				@count || 1
+			end
 
 		end
 

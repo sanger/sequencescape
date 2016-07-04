@@ -143,10 +143,12 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
         @user       = create :user
         @controller.stubs(:current_user).returns(@user)
         @asset = create :child_plate
+        barcode_printer = create :barcode_printer
+        LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
 
         RestClient.expects(:post)
 
-        post :print_labels, printables: {"#{@asset.id}"=>"true"}, printer: "d304bc", id: @asset_group.id, study_id: @study.id
+        post :print_labels, printables: {"#{@asset.id}"=>"true"}, printer: barcode_printer.name, id: @asset_group.id, study_id: @study.id
       end
     end
 

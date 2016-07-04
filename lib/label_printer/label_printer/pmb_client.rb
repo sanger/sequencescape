@@ -15,6 +15,10 @@ module LabelPrinter
     	"#{base_url}/print_jobs"
     end
 
+    def self.label_templates_url
+      "#{base_url}/label_templates"
+    end
+
     def self.headers
     	{content_type: "application/vnd.api+json", accept: "application/vnd.api+json"}
     end
@@ -25,6 +29,10 @@ module LabelPrinter
       return e.response
     rescue Errno::ECONNREFUSED => e
       return e
+    end
+
+    def self.get_label_template_by_name(name)
+      JSON.parse(RestClient.get "#{label_templates_url}?filter[name]=#{name}", headers)
     end
 	end
 

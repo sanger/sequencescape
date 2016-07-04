@@ -305,9 +305,13 @@ class BatchesControllerTest < ActionController::TestCase
 
     context "Send print requests" do
 
+      attr_reader :barcode_printer
+
       setup do
         @user = create :user
         @controller.stubs(:current_user).returns(@user)
+        @barcode_printer = create :barcode_printer
+        LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
       end
 
       should "#print_plate_barcodes should send print request" do
@@ -325,7 +329,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, printer: "d304bc", count: "3", printable: {"#{@batch.output_plates.first.barcode}"=>"on"}, batch_id: "#{@batch.id}"
+        post :print_plate_barcodes, printer: barcode_printer.name, count: "3", printable: {"#{@batch.output_plates.first.barcode}"=>"on"}, batch_id: "#{@batch.id}"
       end
 
       should "#print_barcodes should send print request" do
@@ -337,7 +341,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_barcodes, printer: "g216bc", count: "3", printable: printable, batch_id: "#{@batch.id}"
+        post :print_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: "#{@batch.id}"
 
       end
 
@@ -353,7 +357,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_multiplex_barcodes, printer: "g216bc", count: "3", printable: printable, batch_id: "#{batch.id}"
+        post :print_multiplex_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: "#{batch.id}"
       end
 
     end

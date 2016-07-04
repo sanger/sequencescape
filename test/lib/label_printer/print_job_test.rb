@@ -7,11 +7,12 @@ class PrintJobTest < ActiveSupport::TestCase
 		attr_reader :print_job, :plates, :plate, :plate_purpose, :barcode_printer, :attributes
 
 		setup do
-			@barcode_printer = 'test'
+			@barcode_printer = create :barcode_printer
+			LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
 			@plates = [(create :child_plate)]
 			@plate = plates[0]
 			@plate_purpose = plate.plate_purpose
-			@attributes = {printer_name: barcode_printer,
+			@attributes = {printer_name: barcode_printer.name,
 									labels: {body:
 										[{main_label:
 											{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
@@ -23,12 +24,13 @@ class PrintJobTest < ActiveSupport::TestCase
 										},
 									label_template_id: 15,
 									}
-			@print_job = LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
+			@print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
 		end
 
 		should "have attributes" do
-			assert print_job.printer_name
-			assert print_job.label
+			assert print_job.printer
+			assert print_job.label_class
+			assert_equal 15, print_job.label_template_id
 		end
 
 		should "build attributes" do

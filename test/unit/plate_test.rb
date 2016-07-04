@@ -439,7 +439,8 @@ end
     should "send print request" do
       plate = create :plate
       10.times {plate.add_and_save_well(create :well_with_sample_and_without_plate)}
-      barcode_printer = BarcodePrinter.new(name: 'test', barcode_printer_type_id: 2)
+      barcode_printer = create :barcode_printer
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
 
       RestClient.expects(:post)
 

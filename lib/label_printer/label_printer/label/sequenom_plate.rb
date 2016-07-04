@@ -6,7 +6,6 @@ module LabelPrinter
 			attr_reader :plates, :count
 
 			def initialize(options)
-				super
 				@plates = options[:plates]
 				@count = options[:count].to_i
 			end
