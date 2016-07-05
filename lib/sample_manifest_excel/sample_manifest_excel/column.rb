@@ -107,18 +107,6 @@ module SampleManifestExcel
       self
     end
 
-    def ==(other)
-      return false unless other.is_a?(self.class) 
-      name == other.name &&
-      heading == other.heading &&
-      number == other.number &&
-      type == other.type &&
-      validation == other.validation &&
-      value == other.value &&
-      unlocked == other.unlocked &&
-      conditional_formattings == other.conditional_formattings
-    end
-
     def initialize_dup(source)
       self.range = {}
       self.validation = source.validation
@@ -148,13 +136,7 @@ module SampleManifestExcel
       def combine_conditional_formattings(defaults)
         if arguments[:conditional_formattings].present?
           arguments[:conditional_formattings].each do |k, cf|
-            (cf || {}).tap do |conditional_formatting|
-              arguments[:conditional_formattings][k] = if conditional_formatting[:formula].present?
-                defaults.fetch(k).merge(formula: conditional_formatting[:formula])
-              else
-                defaults.fetch(k)
-              end
-            end
+            arguments[:conditional_formattings][k] = defaults.find_by(k).combine(cf)
           end
         end
       end

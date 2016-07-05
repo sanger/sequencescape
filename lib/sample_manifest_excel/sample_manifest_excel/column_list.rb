@@ -4,6 +4,7 @@ module SampleManifestExcel
   class ColumnList
 
     include Enumerable
+    include Comparable
 
     attr_reader :columns
 
@@ -85,9 +86,9 @@ module SampleManifestExcel
        each {|k, column| column.update(first_row, last_row, ranges, worksheet)}
     end
 
-    def ==(other)
-      return false unless other.is_a?(self.class) 
-      columns == other.columns
+    def <=>(other)
+      return unless other.is_a?(self.class) 
+      columns <=> other.columns
     end
 
     def initialize_dup(source)

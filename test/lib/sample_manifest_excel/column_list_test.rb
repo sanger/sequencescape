@@ -9,7 +9,7 @@ class ColumnListTest < ActiveSupport::TestCase
   def setup
     folder = File.join("test","data", "sample_manifest_excel", "extract")
     @yaml = load_file(folder, "columns")
-    @conditional_formattings = load_file(folder, "conditional_formattings")
+    @conditional_formattings = SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, "conditional_formattings"))
     @column_list = SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
     @ranges = build(:range_list, options: load_file(folder, "ranges"))
   end

@@ -15,6 +15,7 @@ class ValidationTest < ActiveSupport::TestCase
 
   test "should be comparable" do
     assert_equal SampleManifestExcel::Validation.new(options: options), SampleManifestExcel::Validation.new(options: options)
+    refute_equal SampleManifestExcel::Validation.new(options: options), SampleManifestExcel::Validation.new(options: options.except(:formula1))
   end
 
   context "without range name" do

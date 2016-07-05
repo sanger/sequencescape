@@ -42,6 +42,7 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
 
     should "duplicate correctly" do
       dup = conditional_formatting.dup
+      refute dup.formula
       conditional_formatting.update(worksheet: worksheet)
       refute dup.styled?
     end

@@ -2,10 +2,13 @@ require_relative '../../test_helper'
 
 class ConditionalFormattingListTest < ActiveSupport::TestCase
 
+  include SampleManifestExcel::Helpers
+
   attr_reader :conditional_formatting_list, :rules, :worksheet, :options
 
   def setup
-    @rules = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","conditional_formattings.yml")))
+    folder = File.join("test","data", "sample_manifest_excel", "extract")
+    @rules = load_file(folder, "conditional_formattings")
     @conditional_formatting_list = SampleManifestExcel::ConditionalFormattingList.new(rules)
     @worksheet = Axlsx::Workbook.new.add_worksheet
     @options = build(:range).references.merge(worksheet: worksheet)
@@ -50,6 +53,7 @@ class ConditionalFormattingListTest < ActiveSupport::TestCase
     assert_equal conditional_formatting_list, SampleManifestExcel::ConditionalFormattingList.new(rules)
     rules.shift
     refute_equal conditional_formatting_list, SampleManifestExcel::ConditionalFormattingList.new(rules)
+    refute_equal Array.new, SampleManifestExcel::ConditionalFormattingList.new(rules)
   end
 
   test "should be duplicated correctly" do

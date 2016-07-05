@@ -58,16 +58,11 @@ module SampleManifestExcel
       options.to_hash
     end
 
-    def ==(other)
-      return false unless other.is_a?(self.class) 
-      options == other.options &&
-      style == other.style &&
-      formula == other.formula
-    end
-
     def initialize_dup(source)
       self.options = source.options.dup
-      self.formula = source.formula.to_h
+      if source.formula.present?
+        self.formula = source.formula.to_h
+      end
       super
     end
 

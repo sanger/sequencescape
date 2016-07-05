@@ -5,6 +5,7 @@ module SampleManifestExcel
   class ConditionalFormattingList
 
     include Enumerable
+    include Comparable
 
     attr_reader :conditional_formattings
 
@@ -76,9 +77,9 @@ module SampleManifestExcel
       @saved.present?
     end
 
-    def ==(other)
-      return false unless other.is_a?(self.class) 
-      conditional_formattings == other.conditional_formattings
+    def <=>(other)
+      return unless other.is_a?(self.class) 
+      conditional_formattings <=> other.conditional_formattings
     end
 
     ##

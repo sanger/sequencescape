@@ -45,7 +45,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
 
     should "load the columns" do
-      columns = SampleManifestExcel::ColumnList.new(configuration.load_file(folder, "columns"), configuration.load_file(folder, "conditional_formattings"))
+      columns = SampleManifestExcel::ColumnList.new(configuration.load_file(folder, "columns"), configuration.conditional_formattings)
       assert_equal columns, configuration.columns.all
       configuration.manifest_types.each do |k,v|
         assert_equal columns.extract(v), configuration.columns.send(k)
@@ -53,7 +53,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
 
     should "load the conditional formattings" do
-      assert_equal configuration.load_file(folder, "conditional_formattings"), configuration.conditional_formattings
+      assert_equal SampleManifestExcel::ConditionalFormattingDefaultList.new(configuration.load_file(folder, "conditional_formattings")), configuration.conditional_formattings
     end
 
     should "load the manifest types" do

@@ -64,12 +64,6 @@ module SampleManifestExcel
       @worksheet_validation.present?
     end
 
-    def ==(other)
-      return false unless other.is_a?(self.class) 
-      options == other.options &&
-      range_name == other.range_name
-    end
-
     def initialize_dup(source)
       self.options = source.options.dup
       super

@@ -6,6 +6,7 @@ module SampleManifestExcel
   class RangeList
 
   	include Enumerable
+    include Comparable
 
   	attr_reader :ranges
 
@@ -36,16 +37,15 @@ module SampleManifestExcel
       self
     end
 
-
     ##
     # A RangeList is only valid if it contains at least one range object.
     def valid?
       ranges.any?
     end
 
-    def ==(other)
-      return false unless other.is_a?(self.class)
-      ranges == other.ranges
+    def <=>(other)
+      return unless other.is_a?(self.class)
+      ranges <=> other.ranges
     end
 
   private

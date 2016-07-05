@@ -54,13 +54,14 @@ module SampleManifestExcel
     ##
     # returns an array of the instance variables removing null values.
     def to_a
-      instance_variables.collect { |v| instance_variable_get(v) }.compact
+      attributes.collect { |v| instance_variable_get("@#{v}") }.compact
     end
 
     ##
     # Two objects are comparable if all of their instance variables that are present
     # are comparable.
     def <=>(other)
+      return unless other.is_a?(self.class)
       to_a <=> other.to_a
     end
 

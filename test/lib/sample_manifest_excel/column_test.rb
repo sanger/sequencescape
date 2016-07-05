@@ -137,36 +137,35 @@ class ColumnTest < ActiveSupport::TestCase
 
     include SampleManifestExcel::Helpers
 
-    attr_reader :columns, :conditional_formattings
+    attr_reader :columns, :defaults
 
     setup do
       folder = File.join("test","data", "sample_manifest_excel", "extract")
       @columns = load_file(folder, "columns")
-      @conditional_formattings = load_file(folder, "conditional_formattings")
+      @defaults = SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, "conditional_formattings"))
     end
 
     should "insert the name of the column" do
-      arguments = SampleManifestExcel::Column.build_arguments(columns.values.first, columns.keys.first, conditional_formattings)
+      arguments = SampleManifestExcel::Column.build_arguments(columns.values.first, columns.keys.first, defaults)
       assert_equal columns.keys.first, arguments[:name]
     end
 
     should "still have the validations" do
       key = columns.find { |k, v| v[:validation].present? }.first
-      assert SampleManifestExcel::Column.build_arguments(columns[key], key, conditional_formattings)[:validation].present?
+      assert SampleManifestExcel::Column.build_arguments(columns[key], key, defaults)[:validation].present?
     end
 
     should "combine the conditional formattings correctly" do
-      arguments = SampleManifestExcel::Column.build_arguments(columns[:gender], "gender", conditional_formattings)
+      arguments = SampleManifestExcel::Column.build_arguments(columns[:gender], "gender", defaults)
       assert_equal columns[:gender][:conditional_formattings].length, arguments[:conditional_formattings].length
       arguments[:conditional_formattings].each do |k, conditional_formatting|
-        assert_equal columns[:gender][:conditional_formattings][k][:style], conditional_formatting[:style]
-        assert_equal columns[:gender][:conditional_formattings][k][:options], conditional_formatting[:options]
+        assert_equal defaults.find_by(k).combine(columns[:gender][:conditional_formattings][k]), arguments[:conditional_formattings][k]
       end
     end
 
     should "combine the conditional formattings correctly if there is a formula" do
-      arguments = SampleManifestExcel::Column.build_arguments(columns[:supplier_sample_name], "supplier_sample_name", conditional_formattings)
-      assert_equal columns[:supplier_sample_name][:conditional_formattings][:len][:formula], arguments[:conditional_formattings][:len][:formula]
+      arguments = SampleManifestExcel::Column.build_arguments(columns[:supplier_sample_name], "supplier_sample_name", defaults)
+      assert_equal defaults.find_by(:len).combine(columns[:supplier_sample_name][:conditional_formattings][:len])[:formula], arguments[:conditional_formattings][:len][:formula]
     end
   end
 

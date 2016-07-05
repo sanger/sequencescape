@@ -108,20 +108,6 @@ module SampleManifestExcel
       }
     end
 
-    ##
-    # Two ranges are comparable if their options, first_row, first_column, 
-    # last_column, last_row and worksheet_name are the same.
-    def ==(other)
-      return false unless other.is_a?(self.class)
-      options == other.options &&
-      first_row == other.first_row &&
-      last_row == other.last_row && 
-      first_column == other.first_column &&
-      last_column == other.last_column &&
-      worksheet_name == other.worksheet_name
-
-    end
-
   end
 
 end

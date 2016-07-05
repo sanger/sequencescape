@@ -29,7 +29,7 @@ module SampleManifestExcel
     end
 
     def conditional_formattings=(conditional_formattings)
-      @conditional_formattings = conditional_formattings.with_indifferent_access.freeze
+      @conditional_formattings = ConditionalFormattingDefaultList.new(conditional_formattings).freeze
     end
 
     def columns=(columns)

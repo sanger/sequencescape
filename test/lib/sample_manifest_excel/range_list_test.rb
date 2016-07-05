@@ -2,10 +2,13 @@ require_relative '../../test_helper'
 
 class RangeListTest < ActiveSupport::TestCase
 
+  include SampleManifestExcel::Helpers
+
   attr_reader :ranges, :range_list
 
   def setup
-    @ranges = YAML::load_file(File.expand_path(File.join(Rails.root,"test","data", "sample_manifest_excel","ranges.yml")))
+    folder = File.join("test","data", "sample_manifest_excel")
+    @ranges = load_file(folder, "ranges")
     @range_list = SampleManifestExcel::RangeList.new(ranges)
   end
 

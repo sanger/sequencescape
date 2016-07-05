@@ -42,15 +42,6 @@ module SampleManifestExcel
       end
     end
 
-    def ==(other)
-      return false unless other.is_a?(self.class)
-      type == other.type &&
-      first_cell_reference == other.first_cell_reference &&
-      absolute_reference == other.absolute_reference &&
-      operator == other.operator &&
-      operand == other.operand
-    end
-
     def to_h
       {
         type: type,

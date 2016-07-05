@@ -24,7 +24,6 @@ supplier_sample_name:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 20
 cohort:
@@ -47,7 +46,6 @@ cohort:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 7
     is_number:
@@ -121,7 +119,6 @@ sibling:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 15
     is_number:

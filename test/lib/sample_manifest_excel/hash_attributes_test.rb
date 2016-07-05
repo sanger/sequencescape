@@ -71,6 +71,7 @@ class HashAttributesTest < ActiveSupport::TestCase
     assert_equal goose, Goose.new(options)
     refute_equal goose, Goose.new(options.except(:gosling_d))
     refute_equal goose, Goose.new(options.merge(gosling_d: "Ernie"))
+    refute_equal Array.new, Goose.new(options)
   end
 
 end
