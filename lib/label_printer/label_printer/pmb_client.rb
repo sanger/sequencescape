@@ -5,7 +5,9 @@ require 'rest-client'
 
 module LabelPrinter
 
-	class PmbClient
+  PmbException = Class.new(StandardError)
+
+  class PmbClient
 
 		def self.base_url
       configatron.pmb_api
@@ -26,9 +28,9 @@ module LabelPrinter
     def self.print(attributes)
       RestClient.post print_job_url, {"data"=>{"attributes"=>attributes}}.to_json, headers
     rescue RestClient::UnprocessableEntity => e
-      return e.response
+      raise PmbException.new(e), e.response
     rescue Errno::ECONNREFUSED => e
-      return e
+      raise PmbException.new(e), "PrintMyBarcode service is down"
     end
 
     def self.get_label_template_by_name(name)

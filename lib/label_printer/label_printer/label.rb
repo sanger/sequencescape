@@ -6,10 +6,15 @@ module LabelPrinter
 			attr_accessor :count
 
 			def to_h
-				{labels: {body: labels}}
+				{labels: labels}
 			end
 
 			def labels
+				return [] unless assets
+				{body: create_labels}
+			end
+
+			def create_labels
 				[].tap do |l|
 					assets.each do |asset|
 						label = label(asset)

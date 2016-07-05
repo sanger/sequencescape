@@ -14,7 +14,7 @@ class BaseTubeTest < ActiveSupport::TestCase
 							round_label_top_line: tube1.prefix,
 							round_label_bottom_line: tube1.barcode,
 							barcode: tube1.ean13_barcode}
-		@labels = [{main_label:
+		@labels = {body: [{main_label:
 								{top_line: nil,
 									middle_line: tube1.barcode,
 									bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
@@ -27,7 +27,7 @@ class BaseTubeTest < ActiveSupport::TestCase
 									bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
 									round_label_top_line: tube2.prefix,
 									round_label_bottom_line: tube2.barcode,
-									barcode: tube2.ean13_barcode}}]
+									barcode: tube2.ean13_barcode}}]}
 
 		@base_tube_label = LabelPrinter::Label::BaseTube.new
 	end
@@ -40,14 +40,14 @@ class BaseTubeTest < ActiveSupport::TestCase
 	test "should return the right labels if count changes" do
 		base_tube_label.tubes = [tube1]
 		base_tube_label.count = 3
-		labels = [{main_label: label}, {main_label: label}, {main_label: label}]
+		labels = {body: [{main_label: label}, {main_label: label}, {main_label: label}]}
 		assert_equal labels, base_tube_label.labels
 	end
 
 	test "should return the right labels" do
 		base_tube_label.tubes = tubes
 		assert_equal labels, base_tube_label.labels
-		assert_equal ({labels: {body: labels}}), base_tube_label.to_h
+		assert_equal ({labels: labels}), base_tube_label.to_h
 	end
 
 	test "should return the right values for labels" do

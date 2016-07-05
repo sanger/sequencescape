@@ -28,10 +28,14 @@ class PmbClientTest < ActiveSupport::TestCase
 	end
 
 	test "should inform if printer is not registered" do
-		attributes =  {"printer_name" => "not_registered",
-										"label_template_id" => 1,
-										"labels" => labels}
-		assert_equal "{\"errors\":{\"printer\":[\"Printer does not exist\"]}}", LabelPrinter::PmbClient.print(attributes)
+		RestClient.expects(:post).raises(RestClient::UnprocessableEntity)
+		assert_raises(LabelPrinter::PmbException) {LabelPrinter::PmbClient.print({})}
+	end
+
+	test "should inform if pmb is down" do
+		RestClient.expects(:post).raises(Errno::ECONNREFUSED)
+		err = assert_raises(LabelPrinter::PmbException) {LabelPrinter::PmbClient.print({})}
+		assert_equal "PrintMyBarcode service is down", err.message
 	end
 
 	test "should get all label templates from the API" do

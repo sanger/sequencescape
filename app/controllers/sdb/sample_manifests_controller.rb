@@ -80,7 +80,11 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                              LabelPrinter::Label::SampleManifestRedirect,
                                              only_first_label: printer_options[:only_first_label], sample_manifest: @sample_manifest)
-      print_job.execute
+      if print_job.execute
+        flash[:notice] = print_job.success
+      else
+        flash[:error] = print_job.errors.full_messages.join('; ')
+      end
       # @sample_manifest.print_labels(barcode_printer, printer_options)
     end
 

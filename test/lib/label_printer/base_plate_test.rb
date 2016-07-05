@@ -14,7 +14,7 @@ class BasePlateTest < ActiveSupport::TestCase
 						bottom_right: nil,
 						top_far_right: nil,
 						barcode: "#{plate1.ean13_barcode}"}
-		@labels = [{main_label:
+		@labels = {body: [{main_label:
 									{top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
 									bottom_left: "#{plate1.sanger_human_barcode}",
 									top_right: nil,
@@ -30,7 +30,7 @@ class BasePlateTest < ActiveSupport::TestCase
 									top_far_right: nil,
 									barcode: "#{plate2.ean13_barcode}"}
 								}
-							]
+							]}
 
 		@base_plate_label = LabelPrinter::Label::BasePlate.new
 	end
@@ -43,14 +43,14 @@ class BasePlateTest < ActiveSupport::TestCase
 	test "should return the right labels if count changes" do
 		base_plate_label.plates = [plate1]
 		base_plate_label.count = 3
-		labels = [{main_label: label}, {main_label: label}, {main_label: label}]
+		labels = {body: [{main_label: label}, {main_label: label}, {main_label: label}]}
 		assert_equal labels, base_plate_label.labels
 	end
 
 	test "should return the right labels" do
 		base_plate_label.plates = plates
 		assert_equal labels, base_plate_label.labels
-		assert_equal ({labels: {body: labels}}), base_plate_label.to_h
+		assert_equal ({labels: labels}), base_plate_label.to_h
 	end
 
 	test "should return the right values for labels" do

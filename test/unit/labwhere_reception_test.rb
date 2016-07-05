@@ -6,7 +6,7 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
 
 	attr_reader :user, :plate_1, :plate_2, :location, :labware_barcodes_in_ss, :labware_barcodes_not_in_ss, :labware_barcodes_both
 
-	def setup 
+	def setup
     @user = create(:user, barcode:'ID123', swipecard_code:'02face')
     @plate_1   = create(:plate, barcode: 1)
     @plate_2 = create(:plate, barcode: 2)

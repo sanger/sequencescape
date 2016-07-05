@@ -29,7 +29,7 @@ class PlateCreatorTest < ActiveSupport::TestCase
 	end
 
 	test 'should return the correct hash' do
-		labels = 	[label]
+		labels = 	{body: [label]}
 		assert_equal labels, plate_label.labels
 	end
 
