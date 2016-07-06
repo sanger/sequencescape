@@ -48,6 +48,7 @@ class BasePlateTest < ActiveSupport::TestCase
 	end
 
 	test "should return the right labels" do
+		assert_equal ({body: []}), base_plate_label.labels
 		base_plate_label.plates = plates
 		assert_equal labels, base_plate_label.labels
 		assert_equal ({labels: labels}), base_plate_label.to_h

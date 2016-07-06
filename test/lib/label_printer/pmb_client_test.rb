@@ -38,7 +38,7 @@ class PmbClientTest < ActiveSupport::TestCase
 		assert_equal "PrintMyBarcode service is down", err.message
 	end
 
-	test "should get all label templates from the API" do
+	test "should get label template by name from pmb" do
 		  RestClient.expects(:get)
 		  					.with('http://localhost:9292/v1/label_templates?filter[name]=test_template',
         							content_type: "application/vnd.api+json", accept: "application/vnd.api+json")

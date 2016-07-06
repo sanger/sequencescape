@@ -42,7 +42,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
     # def print_labels(&block)
     #   label = [self.samples.first,self.samples.last].map(&:sanger_sample_id).join('-')
-    #   binding.pry
     #   printables = [PrintBarcode::Label.new(
     #       :number => multiplexed_library_tube.barcode,
     #       :study  => label,
