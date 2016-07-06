@@ -149,7 +149,7 @@ Feature: Patients should be able to withdraw consent
     | Read length                 | 108                    |
   Then the order should be invalid
   And the order should have errors
-  And the last error should contain "Samples in this submission have had patient consent withdrawn."
+  And the last error should contain "Samples in this submission have had patient consent withdrawn: sample_withdrawn"
   When I try to save the order
   Then the order should not be built
   Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
@@ -161,7 +161,7 @@ Feature: Patients should be able to withdraw consent
     | Read length                 | 108                    |
   Then the order should be invalid
   And the order should have errors
-  And the last error should contain "Samples in this submission have had patient consent withdrawn."
+  And the last error should contain "Samples in this submission have had patient consent withdrawn: sample_withdrawn"
   When I try to save the order
   Then the order should not be built
   Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
