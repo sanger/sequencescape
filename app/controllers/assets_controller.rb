@@ -228,9 +228,13 @@ class AssetsController < ApplicationController
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                           LabelPrinter::Label::AssetRedirect,
                                           printables: params[:printables])
-    print_job.execute
-    redirect_to new_asset_url
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
 
+    redirect_to new_asset_url
     # print_asset_labels(new_asset_url, new_asset_url)
   end
 
@@ -239,7 +243,11 @@ class AssetsController < ApplicationController
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                           LabelPrinter::Label::AssetRedirect,
                                           printables: @asset)
-    print_job.execute
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
     redirect_to asset_url(@asset)
     # return print_asset_labels(asset_url(@asset), asset_url(@asset))
 

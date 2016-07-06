@@ -35,6 +35,10 @@ module LabelPrinter
 
     def self.get_label_template_by_name(name)
       JSON.parse(RestClient.get "#{label_templates_url}?filter[name]=#{name}", headers)
+    rescue RestClient::UnprocessableEntity => e
+      raise PmbException.new(e), e.response
+    rescue Errno::ECONNREFUSED => e
+      raise PmbException.new(e), "PrintMyBarcode service is down"
     end
 	end
 

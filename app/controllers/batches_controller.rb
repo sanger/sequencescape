@@ -437,7 +437,11 @@ class BatchesController < ApplicationController
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                         LabelPrinter::Label::BatchMultiplex,
                                         count: params[:count], printable: params[:printable], batch: @batch)
-    print_job.execute
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
 
     # printables = []
     # count = params[:count].to_i
@@ -473,7 +477,11 @@ class BatchesController < ApplicationController
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                            LabelPrinter::Label::BatchPlate,
                                            count: params[:count], printable: params[:printable], batch: @batch)
-    print_job.execute
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
 
     # printables = []
     # count = params[:count].to_i
@@ -507,7 +515,11 @@ class BatchesController < ApplicationController
       print_job = LabelPrinter::PrintJob.new(params[:printer],
                                           LabelPrinter::Label::BatchTube,
                                           stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
-      print_job.execute
+      if print_job.execute
+        flash[:notice] = print_job.success
+      else
+        flash[:error] = print_job.errors.full_messages.join('; ')
+      end
       # asset = @batch.requests.first.target_asset
       # printables = []
       # count = params[:count].to_i
