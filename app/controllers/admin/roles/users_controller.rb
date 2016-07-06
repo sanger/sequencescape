@@ -2,11 +2,10 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class Roles::UsersController < ApplicationController
+class Admin::Roles::UsersController < ApplicationController
 
   def index
-    @role   = Role.find(params[:role_id], :include => [:users])
-    @users  = User.all.select{|user| user.has_role? @role.name}
-    @users  = @users.sort_by{|n| n.login}
+    @role_name  = params[:role_id]
+    @users  = User.joins(:roles).where(roles: {name: params[:role_id]}).order(:login).uniq
   end
 end

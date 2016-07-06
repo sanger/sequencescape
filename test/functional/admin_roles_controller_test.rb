@@ -3,15 +3,15 @@
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
-require 'roles_controller'
+require 'admin/roles_controller'
 
 # Re-raise errors caught by the controller.
-class RolesController; def rescue_action(e) raise e end; end
+class Admin::RolesController; def rescue_action(e) raise e end; end
 
-class RolesControllerTest < ActionController::TestCase
+class Admin::RolesControllerTest < ActionController::TestCase
   context "Roles controller" do
     setup do
-      @controller = RolesController.new
+      @controller = Admin::RolesController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
@@ -23,6 +23,6 @@ class RolesControllerTest < ActionController::TestCase
 
     should_require_login
 
-    resource_test('role', :with_prefix => 'admin_', :ignore_actions =>['show', 'create'], :formats => ['html'])
+    resource_test('role', :with_prefix => 'admin_', :ignore_actions =>['create','destroy','update','edit'], :formats => ['html'])
   end
 end

@@ -34,13 +34,7 @@ module Request::Statistics
       self.requests.request_type(request_type).cancelled.count(:id, :distinct=>true)
     end
     def total_requests_report
-      Hash[
-        self.requests.find(
-          :all,
-          :select=>'request_type_id,count(requests.id) AS total',
-          :group=>'request_type_id'
-          ).map {|rt| [rt.request_type_id,rt.total] }
-      ]
+      self.requests.group(:request_type_id).count
     end
   end
 
@@ -118,6 +112,16 @@ module Request::Statistics
 
   def sample_statistics(options = {})
     counters = self.join_asset.all(options.merge(:select => 'sample_id,request_type_id,state,count(*) as total', :group => 'sample_id, request_type_id, state', :include=>:request_type))
+    tabulated = Hash.new { |h,k| h[k] = Summary.new }
+    tabulated.tap do
+      counters.each do |sample_request_type_state_count|
+        tabulated[sample_request_type_state_count.sample_id.to_i][sample_request_type_state_count.request_type_id.to_i][sample_request_type_state_count.state] = sample_request_type_state_count.total.to_i
+      end
+    end
+  end
+
+  def sample_statistics_new
+    counters = join_asset.select('sample_id,request_type_id,state,count(*) as total').group('sample_id, request_type_id, state').includes(:request_type)
     tabulated = Hash.new { |h,k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |sample_request_type_state_count|
