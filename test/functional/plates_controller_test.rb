@@ -28,18 +28,20 @@ class PlatesControllerTest < ActionController::TestCase
 
       @gel_dilution_plates_creator =FactoryGirl.create :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Gel Dilution Plates')
 
-      @barcode_printer = mock("printer abc")
-      @barcode_printer.stubs(:id).returns(1)
-      @barcode_printer.stubs(:name).returns("abc")
-      @barcode_printer.stubs(:print_labels).returns(nil)
-      @barcode_printer.stubs(:map).returns(["abc",1])
-      @barcode_printer.stubs(:first).returns(@barcode_printer)
-      BarcodePrinter.stubs(:find).returns(@barcode_printer)
+      @barcode_printer = create :barcode_printer
+      # @barcode_printer.stubs(:id).returns(1)
+      # @barcode_printer.stubs(:name).returns("abc")
+      # @barcode_printer.stubs(:print_labels).returns(nil)
+      # @barcode_printer.stubs(:map).returns(["abc",1])
+      # @barcode_printer.stubs(:first).returns(@barcode_printer)
+      # BarcodePrinter.stubs(:find).returns(@barcode_printer)
       @plate_barcode = mock("plate barcode")
       @plate_barcode.stubs(:barcode).returns("1234567")
       PlateBarcode.stubs(:create).returns(@plate_barcode)
-      @barcode_printer.stubs(:each).returns(@barcode_printer )
-      @barcode_printer.stubs(:blank?).returns(true)
+      # @barcode_printer.stubs(:each).returns(@barcode_printer )
+      # @barcode_printer.stubs(:blank?).returns(true)
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+      LabelPrinter::PmbClient.stubs(:print).returns(200)
     end
 
     context "with a logged in user" do
