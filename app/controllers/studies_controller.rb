@@ -415,7 +415,7 @@ class StudiesController < ApplicationController
 
    def sample_manifests
      @study = Study.find(params[:id])
-     @sample_manifests = @study.sample_manifests.paginate(:page => params[:page])
+     @sample_manifests = @study.sample_manifests.paginate(page: params[:page], order: 'id DESC')
    end
 
    def suppliers

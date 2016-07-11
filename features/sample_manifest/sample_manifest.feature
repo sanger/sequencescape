@@ -62,6 +62,7 @@ Feature: Sample manifest
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Pending | john       |
     When I follow "Manifest for Test study"
     Then I should see "DN1234567T"
+    Then I should see "Download Completed Manifest"
 
   @asset_type
   Scenario: Create a manifest without passing in an asset type
@@ -90,6 +91,8 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
     And I should see "Invalid CSV file"
+    When I follow "Manifest for Test study"
+    Then I should not see "Download Completed Manifest"
 
   Scenario: Create a 1D tube manifest without processing the manifest
     When I follow "Create manifest for 1D tubes"

@@ -436,6 +436,13 @@ FactoryGirl.define do
 
   factory  :sample  do
     name            {|a| FactoryGirl.generate :sample_name }
+
+    factory :sample_with_well do
+      sequence(:sanger_sample_id) {|n| n.to_s }
+      wells { [ FactoryGirl.create(:well_with_sample_and_plate)]}
+      assets { [ wells.first.plate ] }
+    end
+
   end
 
   factory  :sample_submission  do
@@ -489,6 +496,13 @@ FactoryGirl.define do
     workflow          {|workflow| workflow.association(:submission_workflow)}
   end
 
+  factory  :data_access_coordinator, :class => "User"  do
+    login                 "abc123"
+    email                 {|a| "#{a.login}@example.com".downcase }
+    roles                 {|role| [role.association(:data_access_coordinator_role)]}
+    workflow              {|workflow| workflow.association(:submission_workflow)}
+  end
+
   factory  :role  do
     sequence(:name)   { |i| "Role #{ i }" }
     authorizable       nil
@@ -504,6 +518,10 @@ FactoryGirl.define do
 
   factory  :manager_role, :class => 'Role'  do
     name            "manager"
+  end
+
+  factory  :data_access_coordinator_role, :class => 'Role'  do
+    name            "data_access_coordinator"
   end
 
   factory  :owner_role, :class => 'Role'  do
@@ -680,7 +698,18 @@ FactoryGirl.define do
     count     1
 
     factory :sample_manifest_with_samples do
-      samples { FactoryGirl.create_list(:sample, 5)}
+      samples { FactoryGirl.create_list(:sample_with_well, 5)}
+    end
+  end
+
+  factory :tube_sample_manifest, class: SampleManifest do
+    study     {|wa| wa.association(:study)}
+    supplier  {|wa| wa.association(:supplier)}
+    asset_type "1dtube"
+    count     1
+
+    factory :tube_sample_manifest_with_samples do
+      samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
     end
   end
 

@@ -171,6 +171,10 @@ class User < ActiveRecord::Base
     self.has_role? 'owner', item
   end
 
+  def data_access_coordinator?
+    self.has_role? 'data_access_coordinator'
+  end
+
   def manager_or_administrator?
     self.is_administrator? || self.is_manager?
   end
