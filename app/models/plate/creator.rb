@@ -48,7 +48,7 @@ class Plate::Creator < ActiveRecord::Base
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                               LabelPrinter::Label::PlateCreator,
                                               plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
-        print_job.execute
+        return false unless print_job.execute
       end
       true
     end

@@ -9,7 +9,7 @@ module LabelPrinter
 
 	include ActiveModel::Validations
 
-		attr_reader :printer_name, :label_class, :options
+		attr_reader :printer_name, :label_class, :options, :labels
 
 		def initialize(printer_name, label_class, options)
 			@printer_name = printer_name
@@ -18,7 +18,6 @@ module LabelPrinter
 		end
 
 		def execute
-
 			begin
 				attributes = build_attributes
 				LabelPrinter::PmbClient.print(attributes)
@@ -38,7 +37,7 @@ module LabelPrinter
 		end
 
 		def labels_attribute
-			label_class.new(options).to_h
+			@labels = label_class.new(options).to_h
 		end
 
 		def printer_name_attribute
@@ -60,7 +59,11 @@ module LabelPrinter
 		end
 
 		def success
-			"Your labels have been sent to printer #{printer_name}"
+			"Your #{number_of_labels} label(s) have been sent to printer #{printer_name}"
+		end
+
+		def number_of_labels
+			labels[:labels][:body] ? labels[:labels][:body].count : 0
 		end
 
 	end

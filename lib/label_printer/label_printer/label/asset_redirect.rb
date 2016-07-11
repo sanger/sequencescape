@@ -25,7 +25,7 @@ module LabelPrinter
 				if printables.is_a? Asset
 					[printables]
 				else
-					ids = printables.select{|id, tick| tick == "true"}.keys
+					ids = printables.select{|id, check| check == "true"}.keys
 					Asset.find(ids)
 				end
 			end

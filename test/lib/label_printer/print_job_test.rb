@@ -35,6 +35,12 @@ class PrintJobTest < ActiveSupport::TestCase
 		assert_equal attributes, print_job.build_attributes
 	end
 
+	test "should know number of labels, return correct success message" do
+		print_job.build_attributes
+		assert_equal 1, print_job.number_of_labels
+		assert_equal "Your 1 label(s) have been sent to printer #{barcode_printer.name}", print_job.success
+	end
+
 	test "should contact pmb to print labels" do
 		LabelPrinter::PmbClient.expects(:print).with(attributes)
 		assert print_job.execute

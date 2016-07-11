@@ -17,8 +17,8 @@ module LabelPrinter
     	"#{base_url}/print_jobs"
     end
 
-    def self.label_templates_url
-      "#{base_url}/label_templates"
+    def self.label_templates_filter_url
+      "#{base_url}/label_templates?filter[name]="
     end
 
     def self.headers
@@ -34,7 +34,7 @@ module LabelPrinter
     end
 
     def self.get_label_template_by_name(name)
-      JSON.parse(RestClient.get "#{label_templates_url}?filter[name]=#{name}", headers)
+      JSON.parse(RestClient.get "#{label_templates_filter_url}#{name}", headers)
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), e.response
     rescue Errno::ECONNREFUSED => e

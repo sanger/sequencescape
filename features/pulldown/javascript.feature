@@ -176,7 +176,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     When I follow "Print labels"
     When I select "xyz" from "Print to"
     When I press "Print labels"
-    Then I should see "Your labels have been printed to xyz."
+    Then I should see "Your labels have been sent to printer xyz"
 
   Scenario: Cherrypick for pulldown and print barcodes
     Given I have a project called "Test project"
@@ -199,5 +199,6 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     When I follow "Print plate labels"
     Then I should see "99999"
     When I select "xyz" from "Print to"
-    When I press "Print labels"
-    Then I should see "Your labels have been printed to xyz."
+    When Pmb is up and running
+    And I press "Print labels"
+    Then I should see "Your 1 label(s) have been sent to printer xyz"

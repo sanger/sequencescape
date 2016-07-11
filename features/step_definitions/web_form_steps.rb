@@ -5,6 +5,7 @@
 ########################################################################################
 # TODO: Remove these from the features and replace them with the new versions
 ########################################################################################
+
 Then /^the field labeled "([^"]+)" should contain "([^"]*)"$/ do |label, value|
   step %Q{the "#{ label }" field should contain "#{ value }"}
 end

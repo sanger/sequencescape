@@ -128,6 +128,7 @@ group :cucumber do
   gem "cucumber", :require => false
   gem "cucumber-rails", :require => false
   gem "poltergeist"
+  gem "webmock"
 end
 
 group :deployment do

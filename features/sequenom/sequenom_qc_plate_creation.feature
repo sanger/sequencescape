@@ -33,8 +33,8 @@ Feature: Sequenom QC Plate Creation
 
 
     When I press "Create new Plate"
-    Then exactly <number_of_plates> barcodes different should have been sent to print
-      And all pending delayed jobs are processed
+    # Then exactly <number_of_plates> barcodes different should have been sent to print
+      Then all pending delayed jobs are processed
     Then I should see "Sequenom <plate_type> Plate <plate_type><plate_1_human>_<plate_2_human>_<plate_3_human>_<plate_4_human>_20100804 successfully created"
       And I should see "labels printed"
       And I should be on the new Sequenom QC Plate page
