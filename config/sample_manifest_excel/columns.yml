@@ -135,8 +135,7 @@ supplier_sample_name:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 20
 cohort:
   heading: COHORT
@@ -158,8 +157,7 @@ cohort:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 7
     is_number:
 volume:
@@ -242,8 +240,7 @@ country_of_origin:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 30
 geographical_region:
   heading: GEOGRAPHICAL REGION
@@ -265,8 +262,7 @@ geographical_region:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 30
     is_number:
 ethnicity:
@@ -289,8 +285,7 @@ ethnicity:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 30
     is_number:
 dna_source:
@@ -333,8 +328,7 @@ date_of_sample_collection:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 5
 date_of_dna_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
@@ -356,8 +350,7 @@ date_of_dna_extraction:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 5
 is_sample_a_control?:
   heading: IS SAMPLE A CONTROL?
@@ -504,8 +497,7 @@ mother:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 15
     is_number:
 father:
@@ -528,8 +520,7 @@ father:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 15
     is_number:
 sibling:
@@ -552,8 +543,7 @@ sibling:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 15
     is_number:
 gc_content:

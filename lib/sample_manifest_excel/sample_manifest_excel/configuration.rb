@@ -65,9 +65,19 @@ module SampleManifestExcel
         @all = ColumnList.new(columns, conditional_formattings).freeze
 
         manifest_types.each do |key, column_names|
-          instance_variable_set "@#{key}", all.extract(column_names).freeze
+          extract = all.extract(column_names).freeze
+          instance_variable_set "@#{key}", extract
           self.class_eval { attr_reader key }
+          self.manifest_types[key] = extract
         end
+      end
+
+      def manifest_types
+        @manifest_types ||= {}
+      end
+
+      def find(key)
+        manifest_types[key] || manifest_types[key.to_s]
       end
 
       def ==(other)

@@ -89,6 +89,11 @@ module SampleManifest::PlateBehaviour
     def details(&block)
       @details.map(&block.method(:call))
     end
+
+    def details_array
+      @details
+    end
+
   end
 
   class Core < Base

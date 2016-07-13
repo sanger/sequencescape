@@ -1,5 +1,4 @@
-
-require_relative '../../test_helper.rb'
+require 'test_helper'
 
 class DownloadTest < ActiveSupport::TestCase
 
@@ -12,12 +11,19 @@ class DownloadTest < ActiveSupport::TestCase
       config.load!
     end
 
+    barcode = mock("barcode")
+    barcode.stubs(:barcode).returns(23)
+    PlateBarcode.stubs(:create).returns(barcode)
+
+    
+
   end
 
   context "Plate download" do
 
     setup do
-      @sample_manifest = create(:sample_manifest_with_samples)
+      @sample_manifest = create(:sample_manifest, rapid_generation: true)
+      sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest, 
         SampleManifestExcel.configuration.columns.plate_full.dup, SampleManifestExcel.configuration.ranges.dup)
       save_file
@@ -40,7 +46,8 @@ class DownloadTest < ActiveSupport::TestCase
   context "Tube download" do
 
     setup do
-      @sample_manifest = create(:tube_sample_manifest_with_samples)
+      @sample_manifest = create(:tube_sample_manifest)
+      sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest, 
         SampleManifestExcel.configuration.columns.tube_full.dup, SampleManifestExcel.configuration.ranges.dup)
       save_file

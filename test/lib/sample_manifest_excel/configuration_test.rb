@@ -1,4 +1,4 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class ConfigurationTest < ActiveSupport::TestCase
 
@@ -49,6 +49,8 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert_equal columns, configuration.columns.all
       configuration.manifest_types.each do |k,v|
         assert_equal columns.extract(v), configuration.columns.send(k)
+        assert_equal columns.extract(v), configuration.columns.find(k)
+        assert_equal columns.extract(v), configuration.columns.find(k.to_sym)
       end
     end
 

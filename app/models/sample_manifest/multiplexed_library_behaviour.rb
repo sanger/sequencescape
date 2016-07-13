@@ -64,6 +64,17 @@ module SampleManifest::MultiplexedLibraryBehaviour
       end
     end
 
+    def details_array
+      [].tap do |details|
+        samples.each do |sample|
+          details << {
+            :barcode   => sample.assets.first.sanger_human_barcode,
+            :sample_id => sample.sanger_sample_id
+          }
+        end
+      end
+    end
+
     def validate_sample_container(sample, row, &block)
       manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
       return if primary_barcode == manifest_barcode

@@ -10,7 +10,7 @@ module SampleManifestExcel
     include HashAttributes
     include ActiveModel::Validations
 
-    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, 
+    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute,
                     defaults: {number: 0, type: :string, conditional_formattings: {}}
 
     attr_reader :range
@@ -22,7 +22,7 @@ module SampleManifestExcel
     def initialize(attributes = {})
       create_attributes(attributes)
 
-      @attribute = Attributes.find(name) if valid?
+      # @attribute = Attributes.find(name) if valid?
     end
 
     ##
@@ -65,8 +65,12 @@ module SampleManifestExcel
 
     ##
     # Some columns relate to a specific value. If that is null we return the column value.
-    def attribute_value(sample)
-      attribute.value(sample) || value
+    # def attribute_value(sample)
+    #   attribute.value(sample) || value
+    # end
+
+    def attribute_value(detail)
+      detail[attribute] || value
     end
 
     ##

@@ -65,7 +65,9 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def create
+
     template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
+
 
     ActiveRecord::Base.transaction do
       @sample_manifest = template.create!(template_manifest_options(params))

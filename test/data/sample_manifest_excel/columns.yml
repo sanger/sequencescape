@@ -1,11 +1,15 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
+  attribute: :barcode
 well:
   heading: WELL
+  attribute: :position
 sanger_tube_id:
   heading: SANGER TUBE ID
+  attribute: :barcode
 sanger_sample_id:
   heading: SANGER SAMPLE ID
+  attribute: :sample_id
 tag_group:
   heading: TAG GROUP
   unlocked: true
@@ -135,7 +139,6 @@ supplier_sample_name:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 20
 cohort:
@@ -158,7 +161,6 @@ cohort:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 7
     is_number:
@@ -242,7 +244,6 @@ country_of_origin:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 30
 geographical_region:
@@ -265,7 +266,6 @@ geographical_region:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 30
     is_number:
@@ -289,7 +289,6 @@ ethnicity:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 30
     is_number:
@@ -333,7 +332,6 @@ date_of_sample_collection:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 5
 date_of_dna_extraction:
@@ -356,7 +354,6 @@ date_of_dna_extraction:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 5
 is_sample_a_control?:
@@ -504,7 +501,6 @@ mother:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 15
     is_number:
@@ -528,7 +524,6 @@ father:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 15
     is_number:
@@ -552,7 +547,6 @@ sibling:
     empty_cell:
     len:
       formula:
-        type: :len
         operator: ">"
         operand: 15
     is_number:
@@ -606,6 +600,7 @@ donor_id:
   unlocked: true
   conditional_formattings:
     empty_cell:
+  attribute: :sample_id
 phenotype:
   heading: PHENOTYPE (required for EGA)
   unlocked: true
@@ -696,3 +691,4 @@ donor_id_2:
   unlocked: true
   conditional_formattings:
     empty_cell:
+  attribute: :sample_id
