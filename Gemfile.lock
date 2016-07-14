@@ -216,8 +216,8 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
-    puma (2.16.0)
-    puma (2.16.0-java)
+    puma (3.4.0)
+    puma (3.4.0-java)
     rack (1.4.7)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
@@ -409,3 +409,6 @@ DEPENDENCIES
   uuidtools
   will_paginate
   will_paginate-bootstrap
+
+BUNDLED WITH
+   1.11.2
