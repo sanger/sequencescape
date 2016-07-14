@@ -13,7 +13,7 @@ module Submission::LinearRequestGraph
     ActiveRecord::Base.transaction do
       create_request_chain!(
         build_request_type_multiplier_pairs,
-        assets.map { |asset| [ asset, [asset.latest_stock_metric(product)], create_item_for!(asset) ] },
+        assets.map { |asset| [ asset, asset.latest_stock_metrics(product), create_item_for!(asset) ] },
         multiplexing_assets,
         &block
       )
