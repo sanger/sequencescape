@@ -34,9 +34,7 @@ class BatchesController < ApplicationController
     @pipeline = @batch.pipeline
     @tasks    = @batch.tasks.sort_by(&:sorted)
     @rits = @pipeline.request_information_types
-    @input_assets, @output_assets = []
-    # Should it be this?
-    # @input_assets, @output_assets = [], []
+    @input_assets, @output_assets = [], []
 
     if @pipeline.group_by_parent
       @input_assets = @batch.input_group

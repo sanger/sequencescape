@@ -1,0 +1,12 @@
+test:
+  - :sanger_plate_id
+  - :well
+  - :sanger_sample_id
+  - :supplier_sample_name
+  - :cohort
+  - :volume
+  - :gender
+  - :public_name
+  - :taxon_id
+  - :sibling
+  - :donor_id

@@ -64,6 +64,35 @@ Feature: Access plates through the API
        }]
        }
       """
+  @read
+  Scenario: With a multi plate submission
+    Given the plate with ID 1 has a barcode of "1220000001831"
+    And plate "1" has "2" wells with samples
+    Given the plate exists with ID 2
+    And the plate with ID 2 has a plate purpose of "Cherrypicked"
+    And the UUID for the plate with ID 2 is "00000000-1111-2222-3333-444444444445"
+    Given the plate with ID 2 has a barcode of "1220000002845"
+    And plate "2" has "2" wells with samples
+    Given the plate with UUID "00000000-1111-2222-3333-444444444444" and with UUID "00000000-1111-2222-3333-444444444445" have been submitted to "Illumina-B - Pooled PATH - HiSeq Paired end sequencing"
+    When I GET the API path "/00000000-1111-2222-3333-444444444444/submission_pools"
+    Then the HTTP response should be "200 OK"
+    And the JSON should match the following for the specified fields:
+      """
+      {
+      "actions":
+        {"read":
+          "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/submission_pools/1",
+         "first":
+          "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/submission_pools/1",
+         "last":
+          "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/submission_pools/1"},
+       "size":1,
+       "submission_pools":[{
+          "plates_in_submission":2,
+          "used_tag2_layout_templates":[]
+       }]
+       }
+      """
 
   @read
   Scenario: With a submission and a used template on children

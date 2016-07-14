@@ -11,9 +11,8 @@
 <ul>
   <% @roles.each do |role| -%>
     <li>
-      <h3><%= role.name.humanize %></h3>
-      <p><%= link_to "<strong>Edit #{role.name}'s role</strong>", edit_admin_role_path(role) %></p>
-      <p><%= link_to "<strong>Show all users that are #{role.name}s</strong>", admin_role_users_path(role) %></p>
+      <h3><%= role.humanize %></h3>
+      <p><strong><%= link_to "Show all users that are #{role}s", admin_role_users_path(role) %></strong></p>
     </li>
   <% end %>
 </ul>

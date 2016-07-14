@@ -252,8 +252,11 @@ class StudyTest < ActiveSupport::TestCase
     context '#deactivate!' do
       setup do
         @study, @request_type = create(:study), create(:request_type)
-        (1..2).each { |_| @study.requests << create(:passed_request, :request_type => @request_type) }
-        (1..2).each { |_| create(:order, :study => @study ) }
+        2.times do
+          r=create(:passed_request, :request_type => @request_type, :initial_study_id => @study.id)
+          r.asset.aliquots.each {|al| al.study=@study; al.save!}
+        end
+        2.times { create(:order, :study => @study ) }
         @study.projects.each do |project|
           project.enforce_quotas=true
         end
