@@ -2,7 +2,7 @@ require "test_helper"
 
 class SampleManifestGeneratorTest < ActiveSupport::TestCase
 
-  attr_reader :generator, :attributes, :study, :supplier, :user
+  attr_reader :generator, :attributes, :study, :supplier, :user, :configuration
 
   def stub_barcode_service
     barcode = mock("barcode")
@@ -11,22 +11,49 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
   end
 
   def setup
+
+    SampleManifestExcel.configure do |config|
+      config.folder = File.join("test","data", "sample_manifest_excel")
+      config.load!
+    end
+
     @user = create(:user)
     @study = create(:study)
     @supplier = create(:supplier)
-    @attributes = { "template": "full_plate", "study_id": study.id, "supplier_id": supplier.id,
-                    "count": "4", "barcode_printer": "41", "only_first_label": "1", 
-                    "asset_type": "plate"}.with_indifferent_access
+    @attributes = { "template": "plate_full", "study_id": study.id, "supplier_id": supplier.id,
+                    "count": "4", "asset_type": "plate"}.with_indifferent_access
+    @configuration = SampleManifestExcel.configuration
     stub_barcode_service
   end
 
+  test "model name should be sample manifest" do
+    assert_equal "SampleManifest", SampleManifestGenerator.model_name
+  end
+
   test "should not be valid without a user" do
-    @generator = SampleManifestGenerator.new(attributes, nil)
+    @generator = SampleManifestGenerator.new(attributes, nil, configuration)
+    refute generator.valid?
+  end
+
+  test "should not be valid unless all of the attributes are present" do
+    SampleManifestGenerator::REQUIRED_ATTRIBUTES.each do |attribute|
+      @generator = SampleManifestGenerator.new(attributes.except(attribute), user, configuration)
+      refute generator.valid?
+    end
+  end
+
+  test "should not be valid without configuration" do
+    @generator = SampleManifestGenerator.new(attributes, user, nil)
+    refute generator.valid?
+  end
+
+  test "should not be valid without columns" do
+    @generator = SampleManifestGenerator.new(attributes.merge(template: "dodgy_template"), user, configuration)
     refute generator.valid?
   end
 
   test "should create a sample manifest" do
-    @generator = SampleManifestGenerator.new(attributes, user)
+    @generator = SampleManifestGenerator.new(attributes, user, configuration)
     generator.execute
     assert_equal study.id, generator.sample_manifest.study_id
     refute generator.sample_manifest.new_record?
@@ -34,14 +61,35 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
 
   test "should raise an error if sample manifest is not valid" do
     assert_raises ActiveRecord::RecordInvalid do
-      SampleManifestGenerator.new(attributes.except(:study_id), user).execute
+      SampleManifestGenerator.new(attributes.except(:study_id), user, configuration).execute
     end
   end
 
-  test "should generate sample manifest to create samples" do
-    @generator = SampleManifestGenerator.new(attributes, user)
+  test "should generate sample manifest to create details_array" do
+    @generator = SampleManifestGenerator.new(attributes, user, configuration)
     generator.execute
     refute generator.sample_manifest.details_array.empty?
   end
-  
+
+  test "xlsx file should be generated and saved" do
+    @generator = SampleManifestGenerator.new(attributes, user, configuration)
+    generator.execute
+    assert generator.sample_manifest.generated
+  end
+
+  test "should add a password to the sample manifest" do
+    @generator = SampleManifestGenerator.new(attributes, user, configuration)
+    generator.execute
+    assert generator.sample_manifest.password.present?
+  end
+
+  test "if asset type is not passed sample manifest should still have an asset_type" do
+    @generator = SampleManifestGenerator.new(attributes.except(:asset_type).merge(template: 'tube_full'), user, configuration)
+    generator.execute
+    assert_equal configuration.manifest_types.find_by('tube_full').asset_type, generator.sample_manifest.asset_type
+  end
+
+  def teardown
+    SampleManifestExcel.reset!
+  end  
 end

@@ -9,6 +9,7 @@ Feature: Sample manifest
 
   Background:
     Given I am an "External" user logged in as "john"
+    And the configuration exists for creating sample manifest Excel spreadsheets
     And the "1D Tube" barcode printer "xyz" exists
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
@@ -24,7 +25,7 @@ Feature: Sample manifest
     When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default tube layout" from "Template"
+    And I select "Default Tube" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "5"

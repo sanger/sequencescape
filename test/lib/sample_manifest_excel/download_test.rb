@@ -67,6 +67,31 @@ class DownloadTest < ActiveSupport::TestCase
     end
   end
 
+  context "Multiplexed library tube download" do
+
+    setup do
+      @sample_manifest = create(:tube_sample_manifest, asset_type: "multiplexed_library")
+      sample_manifest.generate
+      @download = SampleManifestExcel::Download.new(sample_manifest, 
+        SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, SampleManifestExcel.configuration.ranges.dup)
+      save_file
+    end
+
+    should "create an excel file" do
+      assert File.file?('test.xlsx')
+    end
+
+    should "create the two different types of worksheet" do
+      assert_equal "DNA Collections Form", spreadsheet.sheets.first
+      assert_equal "Ranges", spreadsheet.sheets.last
+    end
+
+    should "have the correct number of columns" do
+      assert_equal SampleManifestExcel.configuration.columns.tube_multiplexed_library.count, download.column_list.count
+    end
+
+  end
+
   def save_file
     download.save('test.xlsx')
     @spreadsheet = Roo::Spreadsheet.open('test.xlsx')

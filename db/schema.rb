@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160519124121) do
+ActiveRecord::Schema.define(:version => 20160714070943) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1303,6 +1303,7 @@ ActiveRecord::Schema.define(:version => 20160519124121) do
     t.string   "state"
     t.text     "barcodes"
     t.integer  "user_id"
+    t.string   "password"
   end
 
   add_index "sample_manifests", ["asset_type"], :name => "index_sample_manifests_on_asset_type"

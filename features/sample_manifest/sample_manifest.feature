@@ -9,6 +9,7 @@ Feature: Sample manifest
 
   Background:
     Given I am an "External" user logged in as "john"
+    And the configuration exists for creating sample manifest Excel spreadsheets
     And the "96 Well Plate" barcode printer "xyz" exists
     And the plate barcode webservice returns "1234567"
     Given a supplier called "Test supplier name" exists
@@ -25,10 +26,10 @@ Feature: Sample manifest
     When I follow "Create manifest for plates"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default layout" from "Template"
+    And I select "Default Plate" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "default layout" from "Template"
+    And I select "Default Plate" from "Template"
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     And I check "Print only the first label"
@@ -39,10 +40,10 @@ Feature: Sample manifest
     When I follow "Create manifest for plates"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default layout" from "Template"
+    And I select "Default Plate" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "default layout" from "Template"
+    And I select "Default Plate" from "Template"
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     When I press "Create manifest and print labels"
@@ -65,10 +66,10 @@ Feature: Sample manifest
     When I visit the sample manifest new page without an asset type
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default layout" from "Template"
+    And I select "Default Plate" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "default layout" from "Template"
+    And I select "Default Plate" from "Template"
     And I fill in the field labeled "Count" with "1"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
@@ -94,7 +95,7 @@ Feature: Sample manifest
     When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default tube layout" from "Template"
+    And I select "Default Tube" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "10"

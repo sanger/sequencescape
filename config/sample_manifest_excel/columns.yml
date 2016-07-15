@@ -1,11 +1,15 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
+  attribute: :barcode
 well:
   heading: WELL
+  attribute: :position
 sanger_tube_id:
   heading: SANGER TUBE ID
+  attribute: :barcode
 sanger_sample_id:
   heading: SANGER SAMPLE ID
+  attribute: :sample_id
 tag_group:
   heading: TAG GROUP
   unlocked: true
@@ -596,6 +600,7 @@ donor_id:
   unlocked: true
   conditional_formattings:
     empty_cell:
+  attribute: :sample_id
 phenotype:
   heading: PHENOTYPE (required for EGA)
   unlocked: true
@@ -686,3 +691,4 @@ donor_id_2:
   unlocked: true
   conditional_formattings:
     empty_cell:
+  attribute: :sample_id

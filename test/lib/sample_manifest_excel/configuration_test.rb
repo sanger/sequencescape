@@ -48,9 +48,9 @@ class ConfigurationTest < ActiveSupport::TestCase
       columns = SampleManifestExcel::ColumnList.new(configuration.load_file(folder, "columns"), configuration.conditional_formattings)
       assert_equal columns, configuration.columns.all
       configuration.manifest_types.each do |k,v|
-        assert_equal columns.extract(v), configuration.columns.send(k)
-        assert_equal columns.extract(v), configuration.columns.find(k)
-        assert_equal columns.extract(v), configuration.columns.find(k.to_sym)
+        assert_equal columns.extract(v.columns), configuration.columns.send(k)
+        assert_equal columns.extract(v.columns), configuration.columns.find(k)
+        assert_equal columns.extract(v.columns), configuration.columns.find(k.to_sym)
       end
     end
 
@@ -59,7 +59,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
 
     should "load the manifest types" do
-      assert_equal configuration.load_file(folder, "manifest_types"), configuration.manifest_types
+      assert_equal SampleManifestExcel::ManifestTypeList.new(configuration.load_file(folder, "manifest_types")), configuration.manifest_types
     end
 
     should "load the ranges" do

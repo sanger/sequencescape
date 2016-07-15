@@ -50,7 +50,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @studies          = Study.alphabetical
     @suppliers        = Supplier.alphabetical
     @barcode_printers = @sample_manifest.applicable_barcode_printers
-    @templates        = @sample_manifest.applicable_templates
+    @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:type]).to_a
   end
 
   def printer_options(params)
@@ -66,29 +66,52 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def create
 
-    template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
+    @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest], 
+                                  current_user, SampleManifestExcel.configuration)
 
+    if @sample_manifest_generator.execute 
 
-    ActiveRecord::Base.transaction do
-      @sample_manifest = template.create!(template_manifest_options(params))
+      printer_options = printer_options(params)
+      barcode_printer=printer_options[:barcode_printer]
 
-      @sample_manifest.generate
-      template.generate(@sample_manifest)
-    end
-    printer_options = printer_options(params)
-    barcode_printer=printer_options[:barcode_printer]
+      unless barcode_printer.nil?
+        @sample_manifest_generator.sample_manifest.print_labels(barcode_printer, printer_options)
+      end
 
-    unless barcode_printer.nil?
-      @sample_manifest.print_labels(barcode_printer, printer_options)
-    end
-
-    if !@sample_manifest.manifest_errors.empty?
-      flash[:error] = @sample_manifest.manifest_errors.join(", ")
-      @sample_manifest.destroy
-      redirect_to new_sample_manifest_path
+      redirect_to sample_manifest_path(@sample_manifest_generator.sample_manifest)
     else
-      redirect_to sample_manifest_path(@sample_manifest)
+
+      flash[:error] = @sample_manifest_generator.errors.full_messages.join(", ")
+
+      redirect_to new_sample_manifest_path
+
+
     end
+
+    # template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
+
+
+    # ActiveRecord::Base.transaction do
+    #   @sample_manifest = template.create!(template_manifest_options(params))
+
+    #   @sample_manifest.generate
+    #   template.generate(@sample_manifest)
+    # end
+    
+    # printer_options = printer_options(params)
+    # barcode_printer=printer_options[:barcode_printer]
+
+    # unless barcode_printer.nil?
+    #   @sample_manifest.print_labels(barcode_printer, printer_options)
+    # end
+
+    # if !@sample_manifest.manifest_errors.empty?
+    #   flash[:error] = @sample_manifest.manifest_errors.join(", ")
+    #   @sample_manifest.destroy
+    #   redirect_to new_sample_manifest_path
+    # else
+    #   redirect_to sample_manifest_path(@sample_manifest)
+    # end
   end
 
   # Show the manifest
