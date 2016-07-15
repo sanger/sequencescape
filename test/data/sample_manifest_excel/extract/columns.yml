@@ -1,0 +1,129 @@
+sanger_plate_id:
+  heading: SANGER PLATE ID
+well:
+  heading: WELL
+sanger_sample_id:
+  heading: SANGER SAMPLE ID
+supplier_sample_name:
+  heading: SUPPLIER SAMPLE NAME
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "20"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Supplier Sample Name"
+      prompt: "Please enter a sample name up to a maximum of 20 characters in length. Only include characters A-Z, 0-9 and underscores."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Supplier Sample Name"
+      error: "Name must be a maximum of 20 characters in length."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        operator: ">"
+        operand: 20
+cohort:
+  heading: COHORT
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "7"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Cohort"
+      prompt: "Please refer to the list of current cohorts to enter, or add a new abbreviation up to a maximum of 7 uppercase letters."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Cohort"
+      error: "7 uppercase characters, maximum"
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        operator: ">"
+        operand: 7
+    is_number:
+volume:
+  heading: VOLUME (ul)
+  unlocked: true
+  validation:
+    options:
+      type: :decimal
+      operator: :greaterThanOrEqual
+      formula1: "0"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: ""
+      prompt: ""
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Volume"
+      error: "This value must be numeric."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_zero:
+    is_text:
+gender:
+  heading: GENDER
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "A1:A2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Gender"
+      prompt: "Please enter gender"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "gender"
+      error: "Please enter gender"
+    range_name: :gender
+  conditional_formattings:
+    empty_cell:
+    is_error:
+public_name:
+  heading: PUBLIC NAME
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+taxon_id:
+  heading: TAXON ID
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+sibling:
+  heading: SIBLING (optional)
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "15"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Sibling - Supplier Sample Name"
+      prompt: "Please enter an existing supplier sample name that relates to the sibling of this individual."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Sibling - Supplier Sample Name"
+      error: "Name must be a miaximum of 15 characters in length."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        operator: ">"
+        operand: 15
+    is_number:
+donor_id:
+  heading: DONOR ID (required for EGA)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:

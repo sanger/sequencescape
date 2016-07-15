@@ -21,4 +21,5 @@ capybara*.html
 database_suffix
 tags
 *.sublime-workspace
+lib/sample_manifest_excel/doc/
 coverage
