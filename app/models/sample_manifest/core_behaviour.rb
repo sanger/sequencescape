@@ -37,5 +37,4 @@ module SampleManifest::CoreBehaviour
     core = rapid_generation? ? 'RapidCore' : 'Core'
     @core_behaviour = "::SampleManifest::#{behaviour}::#{core}".constantize.new(self)
   end
-  private :core_behaviour
 end

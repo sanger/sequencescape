@@ -113,20 +113,6 @@ class SampleManifest < ActiveRecord::Base
     return nil
   end
 
-  def print_labels(barcode_printer, options={})
-    return false if barcode_printer.nil?
-    core_behaviour.print_labels do |printables, prefix, *args|
-      unless printables.empty?
-        printables.each { |printable| printable.study = self.study.abbreviation }
-        printables = [printables.first] if options[:only_first_label]==true
-        barcode_printer.print_labels(printables, prefix, *args)
-      end
-    end
-    true
-  rescue SOAP::FaultError => exception
-    false
-  end
-
   def create_sample(sanger_sample_id)
     Sample.create!(:name => sanger_sample_id, :sanger_sample_id => sanger_sample_id, :sample_manifest => self).tap do |sample|
       sample.events.created_using_sample_manifest!(self.user)

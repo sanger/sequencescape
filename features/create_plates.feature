@@ -17,14 +17,15 @@ Feature: Printing new plate barcodes
     Then I should see "Please scan your user barcode"
 
   Scenario: Creating plates where the barcode service errors
-    Given the plate barcode printing service will error
     Given I am on the new plate page
     Then I should see "Create Plates"
     And I should see "Barcode printer"
     When I select "Pulldown" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
-    Then I expect an exception to be raised when I press "Submit"
+    Then Pmb is down
+    And I press "Submit"
+    Then I should see "Failed to create plates"
 
   Scenario: Creating plates where the scanner appends a carriage return
     Given I am on the new plate page
@@ -35,19 +36,17 @@ Feature: Printing new plate barcodes
     """
     When I select "Stock Plate" from "Plate purpose"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
-    And the last printed label should contains:
-      | Field | Value |
-      | name  | Stock Plate       |
-      | desc  | jack\s+ |
 
   Scenario Outline: Creating plates
     Given I am on the new plate page
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
@@ -70,6 +69,7 @@ Feature: Printing new plate barcodes
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
@@ -98,6 +98,7 @@ Feature: Printing new plate barcodes
     When I select "Pico Standard" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
@@ -106,6 +107,7 @@ Feature: Printing new plate barcodes
     When I select "Stock Plate" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
@@ -114,6 +116,7 @@ Feature: Printing new plate barcodes
     When I select "Working dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
@@ -122,6 +125,7 @@ Feature: Printing new plate barcodes
     When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
@@ -130,6 +134,7 @@ Feature: Printing new plate barcodes
     When I select "Pico Assay Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
@@ -138,6 +143,7 @@ Feature: Printing new plate barcodes
     When I select "Gel Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And plate with barcode "4331234567653" should exist

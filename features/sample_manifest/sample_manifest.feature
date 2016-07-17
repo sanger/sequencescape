@@ -32,8 +32,9 @@ Feature: Sample manifest
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     And I check "Print only the first label"
+    And Pmb is up and running
     When I press "Create manifest and print labels"
-    Then exactly 1 label should have been printed
+    And I should see "Your 1 label(s) have been sent to printer xyz"
 
   Scenario: Create a plate manifest and print all the barcodes
     When I follow "Create manifest for plates"
@@ -45,8 +46,9 @@ Feature: Sample manifest
     And I select "default layout" from "Template"
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
+    And Pmb is up and running
     When I press "Create manifest and print labels"
-    Then exactly 4 labels should have been printed
+    And I should see "Your 4 label(s) have been sent to printer xyz"
 
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"

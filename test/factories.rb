@@ -767,4 +767,9 @@ end
     template 'FluidigmPlateIO'
     purpose {|purpose| purpose.association(:plate_purpose)}
   end
+
+  factory(:barcode_printer) do
+    name 'd304bc'
+    barcode_printer_type_id 2
+  end
 end

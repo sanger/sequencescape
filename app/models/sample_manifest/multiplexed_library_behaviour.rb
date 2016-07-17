@@ -12,6 +12,9 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   class Core
+
+    attr_reader :mx_tube
+
     def initialize(manifest)
       @manifest = manifest
     end
@@ -35,16 +38,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
           :library_information => sample.primary_receptacle.library_information
         }
       end
-    end
-
-    def print_labels(&block)
-      label = [self.samples.first,self.samples.last].map(&:sanger_sample_id).join('-')
-      printables = [PrintBarcode::Label.new(
-          :number => multiplexed_library_tube.barcode,
-          :study  => label,
-          :prefix => multiplexed_library_tube.prefix, :suffix => ""
-        )]
-      yield(printables, 'NT')
     end
 
     def multiplexed_library_tube
