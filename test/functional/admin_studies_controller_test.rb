@@ -41,6 +41,18 @@ class Admin::StudiesControllerTest < ActionController::TestCase
         should redirect_to("admin studies path") { "/admin/studies/#{@study.id}" }
       end
 
+      should "change 'ethically_approved' only if user has data_access_coordinator role" do
+        put :managed_update, :id => @study.id, study: { name: @study.name, ethically_approved: "1"}
+        @study.reload
+        refute @study.ethically_approved
+
+        @user.roles << (create :data_access_coordinator_role)
+        put :managed_update, :id => @study.id, study: { name: @study.name, ethically_approved: "1"}
+        @study.reload
+        assert @study.ethically_approved
+
+      end
+
     end
 
   end

@@ -9,8 +9,8 @@ class PlatePurpose < Purpose
         # TODO: change to purpose_id
         belongs_to :plate_purpose, :foreign_key => :plate_purpose_id
         belongs_to :purpose, :foreign_key => :plate_purpose_id
-       scope :with_plate_purpose, ->(*purposes) {
-          { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
+        scope :with_plate_purpose, ->(*purposes) {
+          where(:plate_purpose_id => purposes.flatten)
         }
       end
     end

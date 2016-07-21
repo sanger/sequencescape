@@ -213,5 +213,16 @@ if false
       end
     end
 
+    context "is a data_access_coordinator" do
+      setup do
+        @user = create :data_access_coordinator
+      end
+
+      should "be able to access data_access_coordinator functions" do
+        assert @user.data_access_coordinator?
+      end
+
+    end
+
   end
 end
