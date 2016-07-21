@@ -7,7 +7,7 @@ module Qcable::Statemachine
   module ClassMethods
     # A little more sensitive than the request state machine
     def suggested_transition_between(current, target)
-      aasm_events.select do |name, event|
+      aasm.state_machine.events.select do |name, event|
 
         event.transitions_from_state(current.to_sym).any? do |transition|
           transition.options[:allow_automated?] && transition.to == target.to_sym

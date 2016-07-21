@@ -28,7 +28,7 @@ end
 
 require "#{Rails.root}/test/unit/task_test_base"
 
- Rails.application.load_seed
+# Rails.application.load_seed
 
 class ActiveSupport::TestCase
   extend Sanger::Testing::Controller::Macros

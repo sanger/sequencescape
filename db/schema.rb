@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160519124121) do
+ActiveRecord::Schema.define(version: 20160519124121) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -947,10 +947,10 @@ ActiveRecord::Schema.define(:version => 20160519124121) do
     t.datetime "deprecated_at"
   end
 
-   create_table "programs", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+  create_table "programs", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "project_managers", force: :cascade do |t|
@@ -1403,12 +1403,12 @@ ActiveRecord::Schema.define(:version => 20160519124121) do
   end
 
   create_table "searches", force: :cascade do |t|
-    t.string   "name",              limit: 255
-    t.string   "type",              limit: 255
+    t.string   "name",               limit: 255
+    t.string   "type",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "target_model_name", limit: 255
-    t.text     "default_parameters"
+    t.string   "target_model_name",  limit: 255
+    t.text     "default_parameters", limit: 65535
   end
 
   create_table "specific_tube_creation_purposes", force: :cascade do |t|
@@ -1512,12 +1512,12 @@ ActiveRecord::Schema.define(:version => 20160519124121) do
     t.string   "hmdmc_approval_number",                  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remove_x_and_autosomes",                 :default => "No",  :null => false
-    t.string   "dac_policy_title"
-    t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
-    t.string   "data_access_group"
-    t.string   "prelim_id"
-    t.integer  "program_id"
+    t.string   "remove_x_and_autosomes",                 limit: 255,   default: "No",  null: false
+    t.string   "dac_policy_title",                       limit: 255
+    t.boolean  "separate_y_chromosome_data",                           default: false, null: false
+    t.string   "data_access_group",                      limit: 255
+    t.string   "prelim_id",                              limit: 255
+    t.integer  "program_id",                             limit: 4
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id", using: :btree

@@ -208,11 +208,11 @@ class Map < ActiveRecord::Base
   end
 
   def next_map_position
-    Map.find(:first,:conditions=>{
+    Map.where(
       :asset_size=> asset_size,
       :asset_shape_id=> asset_shape_id,
       :row_order => row_order+1
-      })
+    ).first
   end
 
   def self.horizontal_to_vertical(well_position,plate_size,plate_shape=nil)
@@ -228,28 +228,28 @@ class Map < ActiveRecord::Base
   end
 
   def next_vertical_map_position
-    Map.find(:first,:conditions=>{
+    Map.where(
       :asset_size=> asset_size,
       :asset_shape_id=> asset_shape_id,
       :column_order => column_order+1
-      })
+    ).first
   end
 
   def self.map_96wells
-    Map.all(:conditions => {:asset_size => 96})
+    Map.where(:asset_size => 96)
   end
 
   def self.map_384wells
-    Map.all(:conditions => {:asset_size => 384})
+    Map.where(:asset_size => 384)
   end
 
   def self.snp_map_id_to_pipelines_map_id(snp_map_id,plate_size)
     # We're only going to be getting standard plates in through SNP
-    Map.find(:first,:conditions=>{
+    Map.where(
       :asset_size  => plate_size,
       :row_order   => snp_map_id.to_i+1,
       :asset_shape => AssetShape.default_id
-    }).id
+    ).pluck(:id).first
   end
 
   def self.pipelines_map_id_to_snp_map_id(pipelines_map_id)

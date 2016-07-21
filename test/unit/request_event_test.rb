@@ -64,7 +64,7 @@ class RequestEventTest < ActiveSupport::TestCase
         end
 
         should 'set a current_to stamp on old events' do
-          old_event = @request.request_events.find(:first,:order=>'id ASC')
+          old_event = @request.request_events.order('id ASC').first
           assert old_event.current_to.present?
           new_event = @request.current_request_event
           assert new_event.current_to.nil?

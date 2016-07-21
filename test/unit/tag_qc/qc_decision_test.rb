@@ -5,7 +5,7 @@
 require "test_helper"
 
 class QcDecisionTest < ActiveSupport::TestCase
-  context "A Qc Decision" do
+  context "QcDecision" do
 
 
     should belong_to :user
