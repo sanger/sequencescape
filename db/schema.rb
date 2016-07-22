@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160519124121) do
+ActiveRecord::Schema.define(:version => 20160722100506) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1369,6 +1369,7 @@ ActiveRecord::Schema.define(:version => 20160519124121) do
     t.string   "donor_id"
   end
 
+  add_index "sample_metadata", ["sample_ebi_accession_number"], :name => "index_sample_metadata_on_sample_ebi_accession_number"
   add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"
   add_index "sample_metadata", ["supplier_name"], :name => "index_sample_metadata_on_supplier_name"
 

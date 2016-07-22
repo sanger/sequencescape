@@ -81,8 +81,21 @@ class Sample < ActiveRecord::Base
 
   scope :with_name, ->(*names) { where(:name => names.flatten) }
 
+
   scope :for_search_query, ->(query,with_includes) {
-    where(['name LIKE ? OR id=?', "%#{query}%", query ])
+
+    # Note: This search is performed in two stages so that we can make best use of our indicies
+    # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
+    # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
+    # problem rails side, and perform two queries instead.
+
+    # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
+
+    md=Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact',left:"#{query}%",exact:query).pluck(:sample_id)
+
+    # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
+    # of numbers seems to massively increase the query length.
+    where('name LIKE :wild OR id IN (:sm_ids) OR id = :query',wild:"%#{query}%",sm_ids:md,query:query)
   }
 
   scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }

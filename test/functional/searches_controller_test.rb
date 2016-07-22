@@ -30,6 +30,9 @@ class SearchesControllerTest < ActionController::TestCase
         @asset_group_to_find      =FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
         @asset_group_to_not_find  =FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
 
+        @sample_with_supplier_name = FactoryGirl.create :sample, sample_metadata_attributes: { supplier_name: "FindMe" }
+        @sample_with_accession_number = FactoryGirl.create :sample, sample_metadata_attributes: { sample_ebi_accession_number: "FindMe" }
+
       end
       context "#index" do
 
@@ -59,6 +62,14 @@ class SearchesControllerTest < ActionController::TestCase
 
             should "contain a link to the sample that was found" do
               assert_link_to sample_path(@sample)
+            end
+
+            should "contain a link to the sample that was found by supplier name" do
+              assert_link_to sample_path(@sample_with_supplier_name)
+            end
+
+            should "contain a link to the sample that was found by sample_ebi_accession_number" do
+              assert_link_to sample_path(@sample_with_accession_number)
             end
 
             should 'contain a link to the asset that was found' do
