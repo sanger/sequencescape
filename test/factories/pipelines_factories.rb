@@ -42,7 +42,7 @@ FactoryGirl.define do
 
       plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
 
-     
+
 
       after(:build) do |child_plate, evaluator|
         child_plate.parents << evaluator.parent
@@ -379,6 +379,17 @@ previous_pipeline_id  nil
 
   factory :plate_transfer_task do |t|
     purpose_id { Purpose.find_by_name('PacBio Sheared').id }
+  end
+
+  factory :sample_tube_without_barcode, :class => Tube do |tube|
+    name                {|a| FactoryGirl.generate :asset_name }
+    value               ""
+    descriptors         []
+    descriptor_fields   []
+    qc_state            ""
+    resource            nil
+    barcode             nil
+    purpose             { Tube::Purpose.standard_sample_tube }
   end
 
   factory :empty_sample_tube, :class => SampleTube do |sample_tube|

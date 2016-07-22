@@ -60,11 +60,16 @@ class SequenomQcPlatesController < ApplicationController
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                               LabelPrinter::Label::SequenomPlate,
                                               plates: new_plates, count: 3)
-        print_job.execute
 
         # and redirect to a fresh page with an appropriate flash[:notice]
+
         first_plate    = new_plates.first
-        flash[:notice] = "Sequenom #{first_plate.plate_prefix} Plate #{first_plate.name} successfully created and labels printed."
+
+        if print_job.execute
+          flash[:notice] = "Sequenom #{first_plate.plate_prefix} Plate #{first_plate.name} successfully created and labels printed."
+        else
+          flash[:error] = print_job.errors.full_messages.join('; ')
+        end
 
         format.html { redirect_to new_sequenom_qc_plate_path }
       end

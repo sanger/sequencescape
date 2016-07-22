@@ -28,7 +28,8 @@ Feature: Sample manifest
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "5"
-    When Pmb is up and running
+    When Pmb has the required label templates
+    And Pmb is up and running
     And I press "Create manifest and print labels"
     Then I should see "Your 5 label(s) have been sent to printer xyz"
     Then I should see "Manifest_"

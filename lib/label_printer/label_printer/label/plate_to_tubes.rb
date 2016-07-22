@@ -1,18 +1,18 @@
 module LabelPrinter
-	module Label
+  module Label
 
-		class PlateToTubes <BaseTube
+    class PlateToTubes <BaseTube
 
-			attr_reader :tubes
+      attr_reader :tubes
 
-			def initialize(options)
-				@tubes = options[:sample_tubes]
-			end
+      def initialize(options)
+        @tubes = options[:sample_tubes]
+      end
 
-			def top_line(tube)
-				tube.tube_name
-			end
+      def top_line(tube)
+        tube.tube_name
+      end
 
-		end
-	end
+    end
+  end
 end

@@ -1,29 +1,29 @@
 
 module LabelPrinter
-	module Label
+  module Label
 
-		class PlateCreator < BasePlate
+    class PlateCreator < BasePlate
 
-			attr_reader :plates, :plate_purpose, :user_login
+      attr_reader :plates, :plate_purpose, :user_login
 
-			def initialize(options)
-				@plates = options[:plates]
-				@plate_purpose = options[:plate_purpose]
-				@user_login = options[:user_login]
-			end
+      def initialize(options)
+        @plates = options[:plates]
+        @plate_purpose = options[:plate_purpose]
+        @user_login = options[:user_login]
+      end
 
-			def top_right(plate)
-				plate_purpose.name.to_s
-			end
+      def top_right(plate)
+        plate_purpose.name.to_s
+      end
 
-			def bottom_right(plate)
-				"#{user_login} #{plate.find_study_abbreviation_from_parent}"
-			end
+      def bottom_right(plate)
+        "#{user_login} #{plate.find_study_abbreviation_from_parent}"
+      end
 
-			def top_far_right(plate)
-				"#{plate.parent.try(:barcode)}"
-			end
+      def top_far_right(plate)
+        "#{plate.parent.try(:barcode)}"
+      end
 
-		end
-	end
+    end
+  end
 end

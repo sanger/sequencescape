@@ -1,24 +1,24 @@
 module LabelPrinter
-	module Label
+  module Label
 
-		class SampleManifestTube <BaseTube
+    class SampleManifestTube <BaseTube
 
-			attr_reader :sample_manifest
+      attr_reader :sample_manifest, :only_first_label
 
-			def initialize(options)
-				@sample_manifest = options[:sample_manifest]
-				@only_first_label = options[:only_first_label]
-			end
+      def initialize(options)
+        @sample_manifest = options[:sample_manifest]
+        @only_first_label = options[:only_first_label]
+      end
 
-			def top_line(tube)
-				sample_manifest.study.abbreviation
-			end
+      def top_line(tube=nil)
+        sample_manifest.study.abbreviation
+      end
 
-			def tubes
-				return [sample_manifest.samples.first.assets.first] if @only_first_label
-				sample_manifest.samples.map {|sample| sample.assets.first}
-			end
+      def tubes
+        return [sample_manifest.printables.first] if only_first_label
+        sample_manifest.printables
+      end
 
-		end
-	end
+    end
+  end
 end

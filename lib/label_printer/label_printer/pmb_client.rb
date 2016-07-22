@@ -9,12 +9,12 @@ module LabelPrinter
 
   class PmbClient
 
-		def self.base_url
+    def self.base_url
       configatron.pmb_api
     end
 
     def self.print_job_url
-    	"#{base_url}/print_jobs"
+      "#{base_url}/print_jobs"
     end
 
     def self.label_templates_filter_url
@@ -22,13 +22,17 @@ module LabelPrinter
     end
 
     def self.headers
-    	{content_type: "application/vnd.api+json", accept: "application/vnd.api+json"}
+      {content_type: "application/vnd.api+json", accept: "application/vnd.api+json"}
     end
 
     def self.print(attributes)
       RestClient.post print_job_url, {"data"=>{"attributes"=>attributes}}.to_json, headers
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), e.response
+    rescue RestClient::InternalServerError => e
+      raise PmbException.new(e), "Something went wrong in PrintMyBarcode"
+    rescue RestClient::ServiceUnavailable => e
+      raise PmbException.new(e), "PrintMyBarcode is too busy. Please try again later"
     rescue Errno::ECONNREFUSED => e
       raise PmbException.new(e), "PrintMyBarcode service is down"
     end
@@ -40,6 +44,6 @@ module LabelPrinter
     rescue Errno::ECONNREFUSED => e
       raise PmbException.new(e), "PrintMyBarcode service is down"
     end
-	end
+  end
 
 end

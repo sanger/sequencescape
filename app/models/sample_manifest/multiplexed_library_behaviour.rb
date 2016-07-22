@@ -13,7 +13,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
   class Core
 
-    attr_reader :mx_tube
+    #If mx_tube not found
+    MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)
 
     def initialize(manifest)
       @manifest = manifest
@@ -41,7 +42,11 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def multiplexed_library_tube
-      @mx_tube || raise("Mx tube not found")
+      @mx_tube || raise(MxLibraryTubeException.new, "Mx tube not found")
+    end
+
+    def printables
+      multiplexed_library_tube
     end
 
     def updated_by!(user, samples)

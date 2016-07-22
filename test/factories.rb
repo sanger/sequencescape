@@ -769,7 +769,7 @@ end
   end
 
   factory(:barcode_printer) do
-    name 'd304bc'
+    sequence(:name)   { |i| "a#{i}bc" }
     barcode_printer_type_id 2
   end
 end

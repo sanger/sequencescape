@@ -199,6 +199,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     When I follow "Print plate labels"
     Then I should see "99999"
     When I select "xyz" from "Print to"
-    When Pmb is up and running
+    When Pmb has the required label templates
+    And Pmb is up and running
     And I press "Print labels"
     Then I should see "Your 1 label(s) have been sent to printer xyz"

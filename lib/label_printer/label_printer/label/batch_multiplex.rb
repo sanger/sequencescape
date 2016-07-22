@@ -1,28 +1,28 @@
 module LabelPrinter
-	module Label
+  module Label
 
-		class BatchMultiplex < BaseTube
+    class BatchMultiplex < BaseTube
 
-			attr_reader :count, :printable, :batch
+      attr_reader :count, :printable, :batch
 
-			def initialize(options)
-				@count = options[:count].to_i
-				@printable = options[:printable]
-				@batch = options[:batch]
-			end
+      def initialize(options)
+        @count = options[:count].to_i
+        @printable = options[:printable]
+        @batch = options[:batch]
+      end
 
-			def top_line(tube)
-				"(p) #{tube.name}"
-			end
+      def top_line(tube)
+        "(p) #{tube.name}"
+      end
 
-			def tubes
-				if batch.multiplexed?
-					ids = printable.select{|id, check| check == 'on'}.keys
-					Asset.find ids
-				end
-			end
+      def tubes
+        if batch.multiplexed?
+          ids = printable.select{|id, check| check == 'on'}.keys
+          Asset.find ids
+        end
+      end
 
-		end
+    end
 
-	end
+  end
 end

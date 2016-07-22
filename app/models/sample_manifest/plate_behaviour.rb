@@ -81,6 +81,10 @@ module SampleManifest::PlateBehaviour
     def details(&block)
       @details.map(&block.method(:call))
     end
+
+    def printables
+      plates
+    end
   end
 
   class Core < Base
@@ -118,6 +122,10 @@ module SampleManifest::PlateBehaviour
           :sample_id => sample.sanger_sample_id
         })
       end
+    end
+
+    def printables
+      samples.map { |s| s.primary_receptacle.plate }.uniq
     end
   end
 

@@ -2,10 +2,29 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-When /^I print the labels in the asset group$/ do
+require 'webmock/test_unit'
+
+When /^I print the following labels in the asset group$/ do |table|
+
+  label_bitmaps = {}
+  table.hashes.each do |h|
+    field, value = ["Field", "Value"].map { |k| h[k] }
+    label_bitmaps[field] = Regexp.new(value)
+  end
+
+  stub_request(:post, LabelPrinter::PmbClient.print_job_url)
+              .with(headers: LabelPrinter::PmbClient.headers)
+
   step(%Q{I follow "Print labels"})
   step(%Q{I select "xyz" from "Barcode Printer"})
   step(%Q{I press "Print"})
+
+  assert_requested(:post, LabelPrinter::PmbClient.print_job_url,
+    headers:  LabelPrinter::PmbClient.headers, times: 1) do |req|
+    h_body = JSON.parse(req.body)
+    all_label_bitmaps = h_body["data"]["attributes"]["labels"]["body"].first["main_label"]
+    label_bitmaps.all? {|k, v| v.match all_label_bitmaps[k]}
+  end
 end
 
 Given /^I have an asset group "([^"]*)" which is part of "([^"]*)"$/ do |asset_group_name, study_name|
@@ -25,25 +44,3 @@ Given /^the asset "([^\"]*)" has a sanger_sample_id of "([^\"]*)"$/ do |asset_id
   asset.aliquots.create!(:sample => Sample.create!(:name => "Sample_123456", :sanger_sample_id => sanger_sample_id))
 end
 
-Then /^the last printed label should contains:$/ do |table|
-# decoding the soap
-  label = FakeBarcodeService.instance.last_printed_label!
-  label_xml = Nokogiri(label.join(""))
-  items = label_xml.xpath("/env:Envelope/env:Body//labels/item")
-  assert_equal 1,(items.size())
-  item = items.first
-  table.hashes.each do |h|
-    field,value = ["Field", "Value"].map { |k| h[k] }
-    nodes = item.xpath(field)
-    assert_equal(1, nodes.size)
-    node= nodes.first
-    node_value = if href=node['href']
-    refs = label_xml.xpath("//#{field}[@id='#{href.sub('#','')}']")
-    refs.first.content
-    else
-      node.content
-    end
-    #we assert to display an error message, but the true test is the regexp
-    assert_equal(value, node_value) unless node_value =~ /^#{value}$/
-  end
-end

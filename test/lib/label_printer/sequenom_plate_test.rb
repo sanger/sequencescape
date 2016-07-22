@@ -1,24 +1,37 @@
 require 'test_helper'
+require_relative 'shared_tests'
 
 class SequenomPlateTest < ActiveSupport::TestCase
 
-	attr_reader :sequenom_label, :label, :plate
+  include LabelPrinterTests::SharedPlateTests
 
-	def setup
-		@plate = create :sequenom_qc_plate, barcode: "7777", name: 'QC134443_9168137_163993_160200_20160617'
-		options = {plates: [plate], count: 1}
-		@sequenom_label = LabelPrinter::Label::SequenomPlate.new(options)
-	end
+  attr_reader :plate_label, :label, :plate1, :purpose, :barcode1, :top, :bottom
 
-	test 'should have plates' do
-		assert sequenom_label.plates
-	end
+  def setup
+    @barcode1 = "7777"
+    @plate1 = create :sequenom_qc_plate, barcode: barcode1, name: 'QC134443_9168137_163993_160200_20160617'
+    @top = "134443  9168137"
+    @bottom = "163993  160200 "
+    options = {plates: [plate1], count: 1}
+    @purpose = "Sequenom"
+    @plate_label = LabelPrinter::Label::SequenomPlate.new(options)
+    @label = {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
+            bottom_left: "#{plate1.sanger_human_barcode}",
+            top_right: "#{top}",
+            bottom_right: "#{bottom}",
+            top_far_right: "#{purpose}",
+            barcode: "#{plate1.ean13_barcode}"}
+  end
 
-	test 'should return the right values' do
-		assert_equal "#{plate.label_text_top}", sequenom_label.top_right(plate)
-		assert_equal "#{plate.label_text_bottom}", sequenom_label.bottom_right(plate)
-		assert_equal "#{plate.plate_purpose.name}", sequenom_label.top_far_right(plate)
-	end
+  test 'should have assets' do
+    assert plate_label.assets
+  end
+
+  test 'should return the right values' do
+    assert_equal "#{top}", plate_label.top_right(plate1)
+    assert_equal "#{bottom}", plate_label.bottom_right(plate1)
+    assert_equal "#{purpose}", plate_label.top_far_right(plate1)
+  end
 
 
 end

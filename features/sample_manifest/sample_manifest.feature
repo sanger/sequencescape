@@ -32,6 +32,7 @@ Feature: Sample manifest
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     And I check "Print only the first label"
+    And Pmb has the required label templates
     And Pmb is up and running
     When I press "Create manifest and print labels"
     And I should see "Your 1 label(s) have been sent to printer xyz"
@@ -46,6 +47,7 @@ Feature: Sample manifest
     And I select "default layout" from "Template"
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
+    And Pmb has the required label templates
     And Pmb is up and running
     When I press "Create manifest and print labels"
     And I should see "Your 4 label(s) have been sent to printer xyz"

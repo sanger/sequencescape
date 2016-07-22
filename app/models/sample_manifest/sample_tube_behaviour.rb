@@ -54,6 +54,10 @@ module SampleManifest::SampleTubeBehaviour
       yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
     end
 
+    def printables
+      samples.map {|sample| sample.assets.first}
+    end
+
   end
 
   # There is no reason for this to need a rapid version as it should be reasonably

@@ -1,19 +1,19 @@
 
 module LabelPrinter
-	module Label
+  module Label
 
-		class AssetTube < BaseTube
+    class AssetTube < BaseTube
 
-			attr_reader :tubes
+      attr_reader :tubes
 
-			def initialize(tubes)
-				@tubes = tubes
-			end
+      def initialize(tubes)
+        @tubes = tubes
+      end
 
-			def top_line(tube)
-				tube.name_for_label.to_s
-			end
+      def top_line(tube)
+        tube.name_for_label.to_s
+      end
 
-		end
-	end
+    end
+  end
 end

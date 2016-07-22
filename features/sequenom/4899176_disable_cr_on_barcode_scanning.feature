@@ -48,6 +48,8 @@ Feature: Disable form submission on carriage return on Sequenom plate creation p
     And I fill in "Number of Plates" with "1"
     And select "<plate_type>" from "Plate Type"
     And select "xyz" from "Barcode Printer"
+    And Pmb has the required label templates
+    And Pmb is up and running
     When I press "Create new Plate"
     And I should see "Sequenom <plate_type> Plate <plate_type><plate_1_human>_<plate_2_human>_<plate_3_human>_<plate_4_human>_20100804 successfully created"
     And I should see "labels printed"

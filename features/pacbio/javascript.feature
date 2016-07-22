@@ -59,7 +59,8 @@ Feature: Push samples through the PacBio pipeline with javascript
     Then I should see "Batch released!"
     When I follow "Print plate labels"
     Then I should see "99999"
-    When Pmb is up and running
+    When Pmb has the required label templates
+    And Pmb is up and running
     And I press "Print labels"
     Then I should see "Your 1 label(s) have been sent to printer xyz"
 
@@ -67,6 +68,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given I have a PacBio Library Prep batch
     When I follow "Print labels"
     When I select "xyz" from "Print to"
-    When Pmb is up and running
+    When Pmb has the required label templates
+    And Pmb is up and running
     And I press "Print labels"
     Then I should see "Your 2 label(s) have been sent to printer xyz"

@@ -36,6 +36,7 @@ Feature: Printing new plate barcodes
     """
     When I select "Stock Plate" from "Plate purpose"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -46,6 +47,7 @@ Feature: Printing new plate barcodes
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -69,6 +71,7 @@ Feature: Printing new plate barcodes
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -98,6 +101,7 @@ Feature: Printing new plate barcodes
     When I select "Pico Standard" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -107,6 +111,7 @@ Feature: Printing new plate barcodes
     When I select "Stock Plate" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -116,6 +121,7 @@ Feature: Printing new plate barcodes
     When I select "Working dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -125,6 +131,7 @@ Feature: Printing new plate barcodes
     When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -134,6 +141,7 @@ Feature: Printing new plate barcodes
     When I select "Pico Assay Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
@@ -143,6 +151,7 @@ Feature: Printing new plate barcodes
     When I select "Gel Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
+    And Pmb has the required label templates
     And Pmb is up and running
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"

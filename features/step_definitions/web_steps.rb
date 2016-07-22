@@ -13,7 +13,8 @@ require 'uri'
 require 'cgi'
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
 require 'webmock/cucumber'
-WebMock.allow_net_connect!
+# WebMock.allow_net_connect!
+WebMock.disable_net_connect!(allow_localhost: true)
 
 module WithinHelpers
   def with_scope(locator)
@@ -300,16 +301,21 @@ Then /^Pmb is down$/ do
     .to_raise(Errno::ECONNREFUSED)
 end
 
-Then /^Pmb is up and running$/ do
+Then /^Pmb has the required label templates$/ do
+
+  body = "{\"data\":[{\"id\":\"1\"}]}"
+
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}ss_plate_label_template")
     .with(headers: LabelPrinter::PmbClient.headers)
-    .to_return(status: 200, body: "{\"data\":[{\"id\":\"1\",\"type\":\"label_templates\",\"attributes\":{\"name\":\"ss_plate_label_template\"},\"relationships\":{\"label_type\":{\"data\":{\"id\":\"1\",\"type\":\"label_types\"}},\"labels\":{\"data\":[{\"id\":\"1\",\"type\":\"labels\"},{\"id\":\"2\",\"type\":\"labels\"},{\"id\":\"3\",\"type\":\"labels\"}]}}}]}", headers: {content_type: "application/vnd.api+json", accept: "application/vnd.api+json"})
+    .to_return(status: 200, body: body)
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}ss_tube_label_template")
     .with(headers: LabelPrinter::PmbClient.headers)
-    .to_return(status: 200, body: "{\"data\":[{\"id\":\"1\",\"type\":\"label_templates\",\"attributes\":{\"name\":\"ss_tube_label_template\"},\"relationships\":{\"label_type\":{\"data\":{\"id\":\"1\",\"type\":\"label_types\"}},\"labels\":{\"data\":[{\"id\":\"1\",\"type\":\"labels\"},{\"id\":\"2\",\"type\":\"labels\"},{\"id\":\"3\",\"type\":\"labels\"}]}}}]}", headers: {content_type: "application/vnd.api+json", accept: "application/vnd.api+json"})
+    .to_return(status: 200, body: body)
+end
 
-  stub_request(:post, "#{LabelPrinter::PmbClient.print_job_url}")
+Then /^Pmb is up and running$/ do
+  stub_request(:post, LabelPrinter::PmbClient.print_job_url)
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_return(status: 200, headers: LabelPrinter::PmbClient.headers)
 end
