@@ -309,6 +309,12 @@ class StudyTest < ActiveSupport::TestCase
         assert @study.study_metadata.update_attributes!(:dac_policy=>'https://www.example.com')
         assert_equal 'https://www.example.com', @study.study_metadata.dac_policy
       end
+
+      should 'require a data access group' do
+        @study.study_metadata.data_access_group = ''
+        assert !@study.valid?
+        assert_includes @study.errors['study_metadata.data_access_group'], "can't be blank"
+      end
     end
 
     context 'policy text' do
@@ -333,6 +339,17 @@ class StudyTest < ActiveSupport::TestCase
         end
       end
 
+    end
+
+    context 'non-managed study' do
+      setup do
+        @study = build :study
+      end
+
+      should 'should not require a data access group' do
+        @study.study_metadata.data_access_group = ''
+        assert @study.valid?
+      end
     end
 
     context 'study name' do

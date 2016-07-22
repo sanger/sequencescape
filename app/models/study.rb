@@ -269,6 +269,7 @@ class Study < ActiveRecord::Base
     end
 
     attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
+    attribute(:data_access_group, :if => :managed?, :required => true)
 
     # SNP information
     attribute(:snp_study_id, :integer => true)
