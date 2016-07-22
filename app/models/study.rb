@@ -394,6 +394,7 @@ class Study < ActiveRecord::Base
       return nil if self.snp_study_id.nil?
       self.class.all(:conditions => { :snp_parent_study_id => self.snp_study_id }, :include => :study).map(&:study)
     end
+
   end
 
   # We only need to validate the field if we are enforcing data release

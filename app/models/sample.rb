@@ -237,6 +237,7 @@ class Sample < ActiveRecord::Base
 
   def accession_service
     services = studies.group_by {|s| s.accession_service.priority }
+    return UnsuitableAccessionService.new([]) if services.empty?
     highest_priority = services.keys.max
     suitable_study = services[highest_priority].detect {|study| study.send_samples_to_service? }
     return suitable_study.accession_service if suitable_study

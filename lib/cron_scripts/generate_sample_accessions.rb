@@ -29,7 +29,7 @@ class ::Sample
   }
 
   scope :with_required_data, ->() {
-    includes(:sample_metadata, { :studies => :study_metadata })
+    select('samples.*').preload(:sample_metadata, { :studies => :study_metadata })
   }
 end
 

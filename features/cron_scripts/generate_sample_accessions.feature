@@ -23,6 +23,7 @@ Feature: Generate Sample Accessions
 
     Given study "Study 4491710" has a registered sample "Sample4491710"
       And an accession number is required for study "Study 4491710"
+      And study "Study 4491710" has an accession number
 
     Given I am the owner of sample "Sample4491710"
       And the sample "Sample4491710" has the Taxon ID "99999"

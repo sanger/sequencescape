@@ -152,25 +152,3 @@ Feature: Creating new requests from an asset
       | Multiplexed library tube | Illumina-B Single ended hi seq sequencing | 150                         | 400                       |
       | Multiplexed library tube | Illumina-B Paired end sequencing          | 150                         | 400                       |
       | Multiplexed library tube | Illumina-B HiSeq Paired end sequencing    | 150                         | 400                       |
-
-  @library_tube @multiplexed_library_tube @accession @foo
-  Scenario Outline: Requesting more sequencing of a library where the study needs accession numbers
-    Given user "John Smith" is a manager of "Study testing new request"
-      And study "Study testing new request" has an accession number
-      And an accession number is required for study "Study testing new request"
-      And the asset "<asset type> for testing new request" belongs to study "Study testing new request"
-
-    Given I am on the new request page for "<asset type> for testing new request"
-
-    When I select "Illumina-B HiSeq Paired end sequencing" from "Request type"
-     And I fill in the request fields with sensible values for "Illumina-B HiSeq Paired end sequencing"
-     And I select "Study testing new request" from "Study"
-     And I select "Project testing new request" from "Project"
-     And I press "Create"
-    Then I should see "Created request"
-
-    Scenarios:
-      | asset type               |
-      | Library tube             |
-      | Multiplexed library tube |
-
