@@ -34,6 +34,7 @@ class DataReleaseTest < ActiveSupport::TestCase
             setup do
               @study.study_metadata.data_release_study_type.name           = 'genotyping or cytogenetics'
               @study.study_metadata.data_release_strategy                  = 'managed'
+              @study.study_metadata.data_access_group                      = 'dag'
               @study.study_metadata.data_release_timing                    = 'never'
               @study.study_metadata.data_release_prevention_reason         = 'legal'
               @study.study_metadata.data_release_prevention_approval       = 'Yes'

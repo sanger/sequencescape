@@ -46,6 +46,7 @@ FactoryGirl.define do
     reference_genome            { ReferenceGenome.find_by_name("") }
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
+    data_access_group 'something'
   end
 
   factory  :study  do
