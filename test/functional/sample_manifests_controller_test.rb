@@ -15,6 +15,11 @@ class SampleManifestsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @user       = create :user
       @controller.stubs(:current_user).returns(@user)
+
+      SampleManifestExcel.configure do |config|
+        config.folder = File.join("test","data", "sample_manifest_excel")
+        config.load!
+      end
     end
 
     context '#show' do

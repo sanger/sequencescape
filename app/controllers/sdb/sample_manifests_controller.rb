@@ -60,10 +60,6 @@ class Sdb::SampleManifestsController < Sdb::BaseController
              :only_first_label => (params[:sample_manifest][:only_first_label].to_i == 1) }
   end
 
-  def template_manifest_options(params)
-    params[:sample_manifest].merge(:user => current_user, :rapid_generation => true).except!(:only_first_label, :barcode_printer)
-  end
-
   def create
 
     @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest], 
@@ -85,33 +81,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
       redirect_to new_sample_manifest_path
 
-
     end
 
-    # template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
-
-
-    # ActiveRecord::Base.transaction do
-    #   @sample_manifest = template.create!(template_manifest_options(params))
-
-    #   @sample_manifest.generate
-    #   template.generate(@sample_manifest)
-    # end
-    
-    # printer_options = printer_options(params)
-    # barcode_printer=printer_options[:barcode_printer]
-
-    # unless barcode_printer.nil?
-    #   @sample_manifest.print_labels(barcode_printer, printer_options)
-    # end
-
-    # if !@sample_manifest.manifest_errors.empty?
-    #   flash[:error] = @sample_manifest.manifest_errors.join(", ")
-    #   @sample_manifest.destroy
-    #   redirect_to new_sample_manifest_path
-    # else
-    #   redirect_to sample_manifest_path(@sample_manifest)
-    # end
   end
 
   # Show the manifest

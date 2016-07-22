@@ -6,7 +6,6 @@ class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
-  include SampleManifest::TemplateBehaviour
   include SampleManifest::SampleTubeBehaviour
   include SampleManifest::MultiplexedLibraryBehaviour
   include SampleManifest::CoreBehaviour
@@ -31,13 +30,13 @@ class SampleManifest < ActiveRecord::Base
   has_uploaded_document :uploaded, {:differentiator => "uploaded"}
   has_uploaded_document :generated, {:differentiator => "generated"}
 
+  attr_accessor :override
+  attr_reader :manifest_errors
+
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
-
-  attr_accessor :override
-  attr_reader :manifest_errors
 
   # Needed for the UI to work!
   def barcode_printer ; end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160714070943) do
+ActiveRecord::Schema.define(:version => 20160721144535) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1282,14 +1282,6 @@ ActiveRecord::Schema.define(:version => 20160714070943) do
 
   add_index "roles_users", ["role_id"], :name => "index_roles_users_on_role_id"
   add_index "roles_users", ["user_id"], :name => "index_roles_users_on_user_id"
-
-  create_table "sample_manifest_templates", :force => true do |t|
-    t.string "name"
-    t.string "asset_type"
-    t.string "path"
-    t.string "default_values"
-    t.string "cell_map"
-  end
 
   create_table "sample_manifests", :force => true do |t|
     t.datetime "created_at"
