@@ -30,6 +30,9 @@ class SearchesControllerTest < ActionController::TestCase
         @asset_group_to_find      =FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
         @asset_group_to_not_find  =FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
 
+        @submission = FactoryGirl.create :submission, name: 'FindMe'
+        @ignore_submission = FactoryGirl.create :submission, name: 'IgnoreMeSub'
+
         @sample_with_supplier_name = FactoryGirl.create :sample, sample_metadata_attributes: { supplier_name: "FindMe" }
         @sample_with_accession_number = FactoryGirl.create :sample, sample_metadata_attributes: { sample_ebi_accession_number: "FindMe" }
 
@@ -58,6 +61,15 @@ class SearchesControllerTest < ActionController::TestCase
 
             should "not contain a link to the study that was not found" do
               deny_link_to study_path(@study2)
+            end
+
+
+            should "contain a link to the submission that was found" do
+              assert_link_to submission_path(@submission)
+            end
+
+            should "not contain a link to the submission that was not found" do
+              deny_link_to submission_path(@ignore_submission)
             end
 
             should "contain a link to the sample that was found" do

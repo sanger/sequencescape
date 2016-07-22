@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160722100506) do
+ActiveRecord::Schema.define(:version => 20160722130737) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1633,6 +1633,7 @@ ActiveRecord::Schema.define(:version => 20160722100506) do
     t.integer  "priority",                   :limit => 1,  :default => 0, :null => false
   end
 
+  add_index "submissions", ["name"], :name => "index_submissions_on_name"
   add_index "submissions", ["state"], :name => "index_submissions_on_state"
   add_index "submissions", ["study_id_to_delete"], :name => "index_submissions_on_project_id"
 
