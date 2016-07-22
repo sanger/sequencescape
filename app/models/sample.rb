@@ -331,8 +331,6 @@ class Sample < ActiveRecord::Base
 
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
-      # ena_required_fields.validates_presence_of :sample_common_name
-      # ena_required_fields.validates_presence_of :sample_taxon_id
       ena_required_fields.validates_presence_of :service_specific_fields
     end
 
