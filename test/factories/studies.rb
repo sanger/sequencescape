@@ -26,10 +26,10 @@ FactoryGirl.define do
   end
 
   factory(:managed_study, :parent => :study) do
-    name 'Study: Manages'
+    name 'Study: Managed'
     state 'active'
     after(:create) do |study|
-      study.study_metadata.update_attributes!(:data_release_strategy=> 'managed')
+      study.study_metadata.update_attributes!(:data_access_group=>'dag',:data_release_strategy=> 'managed')
     end
   end
   # These require property definitions to be properly setup
