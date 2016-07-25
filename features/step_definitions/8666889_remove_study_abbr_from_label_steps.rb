@@ -3,6 +3,7 @@
 #Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 require 'webmock/test_unit'
+WebMock.disable_net_connect!(allow_localhost: true)
 
 When /^I print the following labels$/ do |table|
 

@@ -13,7 +13,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
   class Core
 
-    #If mx_tube not found
+    #for #multiplexed_library_tube
     MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)
 
     def initialize(manifest)

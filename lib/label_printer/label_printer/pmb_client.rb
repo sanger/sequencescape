@@ -28,7 +28,7 @@ module LabelPrinter
     def self.print(attributes)
       RestClient.post print_job_url, {"data"=>{"attributes"=>attributes}}.to_json, headers
     rescue RestClient::UnprocessableEntity => e
-      raise PmbException.new(e), e.response
+      raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
       raise PmbException.new(e), "Something went wrong in PrintMyBarcode"
     rescue RestClient::ServiceUnavailable => e
@@ -40,10 +40,27 @@ module LabelPrinter
     def self.get_label_template_by_name(name)
       JSON.parse(RestClient.get "#{label_templates_filter_url}#{name}", headers)
     rescue RestClient::UnprocessableEntity => e
-      raise PmbException.new(e), e.response
+      raise PmbException.new(e), pretty_errors(e.response)
+    rescue RestClient::InternalServerError => e
+      raise PmbException.new(e), "Something went wrong in PrintMyBarcode"
+    rescue RestClient::ServiceUnavailable => e
+      raise PmbException.new(e), "PrintMyBarcode is too busy. Please try again later"
     rescue Errno::ECONNREFUSED => e
       raise PmbException.new(e), "PrintMyBarcode service is down"
     end
+
+    def self.pretty_errors(errors)
+      if errors.present?
+        [].tap do |error_list|
+          JSON.parse(errors)['errors'].each do |k, v|
+            error_list << "%{attribute} %{message}" % {attribute: k.capitalize+":", message: v.join(", ")}
+          end
+        end
+        .join("; ")
+      end
+    end
+
+
   end
 
 end

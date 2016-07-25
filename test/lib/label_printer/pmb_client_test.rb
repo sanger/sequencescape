@@ -57,5 +57,11 @@ class PmbClientTest < ActiveSupport::TestCase
     assert_equal 'test_template', LabelPrinter::PmbClient.get_label_template_by_name('test_template')['data'][0]['attributes']['name']
   end
 
+  test "should return pretty errors" do
+    errors = "{\"errors\":{\"printer\":[\"Something is wrong\",\"Something else is wrong\"],\"labels\":[\"Something is wrong\"]}}"
+    pretty_errors = 'Printer: Something is wrong, Something else is wrong; Labels: Something is wrong'
+    assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
+  end
+
 
 end

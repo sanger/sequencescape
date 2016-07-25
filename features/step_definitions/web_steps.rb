@@ -13,7 +13,6 @@ require 'uri'
 require 'cgi'
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
 require 'webmock/cucumber'
-# WebMock.allow_net_connect!
 WebMock.disable_net_connect!(allow_localhost: true)
 
 module WithinHelpers

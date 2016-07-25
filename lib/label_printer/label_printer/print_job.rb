@@ -24,7 +24,7 @@ module LabelPrinter
       rescue LabelPrinter::PmbException => exception
         errors.add(:pmb, exception)
         return false
-      rescue ActiveRecord::RecordNotFound => exception
+      rescue BarcodePrinter::BarcodePrinterException => exception
         errors.add(:printer, exception)
         return false
       rescue SampleManifest::MultiplexedLibraryBehaviour::Core::MxLibraryTubeException => exception
@@ -58,7 +58,7 @@ module LabelPrinter
     end
 
     def find_printer
-      BarcodePrinter.find_by_name(printer_name) or raise ActiveRecord::RecordNotFound, "Could not find barcode printer '#{printer_name.inspect}'"
+      BarcodePrinter.find_by_name(printer_name) or raise BarcodePrinter::BarcodePrinterException.new, "Could not find barcode printer #{printer_name.inspect}"
     end
 
     def success

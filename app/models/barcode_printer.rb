@@ -10,6 +10,9 @@ class BarcodePrinter < ActiveRecord::Base
   scope :include_barcode_printer_type, -> { includes(:barcode_printer_type) }
   scope :alphabetical,  -> { order('name ASC') }
 
+  #for labels printing, if printer is not registered in ss
+  BarcodePrinterException = Class.new(ActiveRecord::RecordNotFound)
+
   def service_url
     configatron.barcode_service_url
   end
