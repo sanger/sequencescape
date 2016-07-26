@@ -12,6 +12,8 @@ class BulkSubmissionsController < ApplicationController
 
   def new
     # default action - shows file upload form
+
+    @submission_template_groups = SubmissionTemplate.visible.include_product_line.group_by {|t| t.product_line.try(:name)||'General' }
     @bulk_submission = BulkSubmission.new
   end
 
