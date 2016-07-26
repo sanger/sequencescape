@@ -19,8 +19,12 @@ class AccessionService
     attr_accessor :original_filename
   end
 
+  # When samples belong to multiple studies, the submission service with the highest priority will be selected
   class_attribute :priority, :instance_writer => false
+  # When true, allows the accessioning of samples prior to accessioning of the study
   class_attribute :no_study_accession_needed, :instance_writer => false
+  # Indicates that the class reflects a real accessioning service. Set to false for dummy services. This allow
+  # scripts like the accessioning cron to break out prematurely for dummy services
   class_attribute :operational, :instance_writer => false
 
   self.priority = 0
