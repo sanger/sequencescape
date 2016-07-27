@@ -44,7 +44,7 @@
       <%= content_tag(:div, select_tag(:priority, options_for_select(
         Submission::Priorities.options,
         @asset.requests.last.try(:priority)
-      ),:class => 'form-control',),:class=>'col-md-5') %>
+      ),:class => 'form-control'),:class=>'col-md-5') %>
     </div>
     <div class="form-group col-xs-12">
       <%= label_tag(:count, 'Number of requests to generate', :class=>'col-md-4') %>
