@@ -21,7 +21,7 @@ class Product < ActiveRecord::Base
     where(:product_criteria => {:deprecated_at=>nil,:stage=>ProductCriteria::STAGE_STOCK})
   }
 
-  scope :alphabetical, ->() { order('name ASC') }
+  scope :alphabetical, ->() { order(:name) }
 
   def stock_criteria
     product_criteria.active.stock.first

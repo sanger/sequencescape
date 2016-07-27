@@ -18,6 +18,7 @@ class BulkSubmissionsController < ApplicationController
   end
 
   def create
+    @submission_template_groups = SubmissionTemplate.visible.include_product_line.group_by {|t| t.product_line.try(:name)||'General' }
     begin
       @bulk_submission = BulkSubmission.new(:spreadsheet => params.fetch(:bulk_submission, {})[:spreadsheet])
       if @bulk_submission.valid?
