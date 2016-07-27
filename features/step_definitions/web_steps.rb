@@ -292,10 +292,10 @@ When /^I refresh the page$/ do
 end
 
 Then /^Pmb is down$/ do
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}ss_plate_label_template")
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_plate_label_template")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_raise(Errno::ECONNREFUSED)
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}ss_tube_label_template")
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_tube_label_template")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_raise(Errno::ECONNREFUSED)
 end
@@ -304,11 +304,11 @@ Then /^Pmb has the required label templates$/ do
 
   body = "{\"data\":[{\"id\":\"1\"}]}"
 
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}ss_plate_label_template")
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_plate_label_template")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_return(status: 200, body: body)
 
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}ss_tube_label_template")
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_tube_label_template")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_return(status: 200, body: body)
 end
