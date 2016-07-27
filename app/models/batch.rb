@@ -20,7 +20,7 @@ class Batch < ActiveRecord::Base
   has_many :assets, :through => :requests, :source => :target_asset
   has_many :source_assets, :through => :requests, :source => :asset
 
-  has_many :submission, through: :requests, uniq: true
+  has_many :submissions, through: :requests, uniq: true
   has_many :orders, through: :submissions, uniq: true
   has_many :aliquots, through: :source_assets
   has_many :studies, through: :orders, uniq: true
