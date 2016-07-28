@@ -9,7 +9,7 @@ class Tag2Layout < ActiveRecord::Base
   include Uuid::Uuidable
 
   attr_writer :layout_template
-  attr_reader :column
+  serialize :target_well_locations, Array
   ##
   # This class provides two benefits
   # 1) We can enforce uniqueness of tag2_layouts/submissions at the database level
@@ -53,8 +53,8 @@ class Tag2Layout < ActiveRecord::Base
 
   def layout_tag2_into_wells
     applicable_wells = plate.wells.include_aliquots
-    if attributes["column"]
-      applicable_wells = applicable_wells.in_plate_column(attributes["column"], plate.size)
+    if attributes["target_well_locations"]
+      applicable_wells = applicable_wells.select{|w| attributes["target_well_locations"].include?(w.map.name)}
     end
     applicable_wells.each {|w| w.assign_tag2(tag) }
   end
