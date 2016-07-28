@@ -59,6 +59,8 @@ class SampleManifest < ActiveRecord::Base
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
+  delegate :printables, to: :core_behaviour
+
   def truncate_errors
     if self.last_errors && self.last_errors.join.length > LIMIT_ERROR_LENGTH
 
@@ -110,20 +112,6 @@ class SampleManifest < ActiveRecord::Base
       core_behaviour.generate
     end
     return nil
-  end
-
-  def print_labels(barcode_printer, options={})
-    return false if barcode_printer.nil?
-    core_behaviour.print_labels do |printables, prefix, *args|
-      unless printables.empty?
-        printables.each { |printable| printable.study = self.study.abbreviation }
-        printables = [printables.first] if options[:only_first_label]==true
-        barcode_printer.print_labels(printables, prefix, *args)
-      end
-    end
-    true
-  rescue SOAP::FaultError => exception
-    false
   end
 
   def create_sample(sanger_sample_id)

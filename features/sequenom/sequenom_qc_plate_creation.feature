@@ -29,12 +29,12 @@ Feature: Sequenom QC Plate Creation
       And I fill in "Number of Plates" with "<number_of_plates>"
       And select "<plate_type>" from "Plate Type"
       And select "xyz" from "Barcode Printer"
-
+      And Pmb has the required label templates
+      And Pmb is up and running
 
 
     When I press "Create new Plate"
-    Then exactly <number_of_plates> barcodes different should have been sent to print
-      And all pending delayed jobs are processed
+    Then all pending delayed jobs are processed
     Then I should see "Sequenom <plate_type> Plate <plate_type><plate_1_human>_<plate_2_human>_<plate_3_human>_<plate_4_human>_20100804 successfully created"
       And I should see "labels printed"
       And I should be on the new Sequenom QC Plate page
@@ -103,10 +103,11 @@ Feature: Sequenom QC Plate Creation
 
   Scenario Outline: Source Plate Gender checking
     Given the plate barcode webservice returns "<barcodes>"
-
     Given I am a "<user_role>" user logged in as "<user_name>"
       And I have a source plate which contains samples which have no gender information
       And I am on the new Sequenom QC Plate page
+      And Pmb has the required label templates
+      And Pmb is up and running
       And I <see_or_check_bypass> "Bypass Source Plate Gender Checks?"
     When I try to create a Sequenom QC plate from the input plate
     Then I <positive_result> see "Sequenom QC Plate QC125054____20100804 successfully created"
