@@ -402,6 +402,7 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step(%Q{I fill in "Study name" with "#{study_name}"})
   step(%Q{I select "Not suitable for alignment" from "Reference genome"})
   step(%Q{I fill in "Study description" with "some description"})
+  step(%Q{I fill in "Data access group" with "some nonsense"})
   step(%Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"})
   step(%Q{I press "Create"})
 end

@@ -404,7 +404,7 @@ class Study < ActiveRecord::Base
 
   # We only need to validate the field if we are enforcing data release
   def validating_ena_required_fields_with_enforce_data_release=(state)
-    validating_ena_required_fields_without_enforce_data_release = state if enforce_data_release
+    self.validating_ena_required_fields_without_enforce_data_release = state if enforce_data_release
   end
   alias_method_chain(:validating_ena_required_fields=, :enforce_data_release)
 
