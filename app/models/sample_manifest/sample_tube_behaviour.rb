@@ -35,18 +35,6 @@ module SampleManifest::SampleTubeBehaviour
       end
     end
 
-    def print_labels(&block)
-      printables = self.samples.map do |sample|
-        sample_tube = sample.assets.first
-        PrintBarcode::Label.new(
-          :number => sample_tube.barcode,
-          :study  => sample.sanger_sample_id,
-          :prefix => sample_tube.prefix, :suffix => ""
-        )
-      end
-      yield(printables, 'NT')
-    end
-
     def updated_by!(user, samples)
       # Does nothing at the moment
     end
@@ -75,6 +63,10 @@ module SampleManifest::SampleTubeBehaviour
       manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
       return if primary_barcode == manifest_barcode
       yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
+    end
+
+    def printables
+      samples.map {|sample| sample.assets.first}
     end
 
   end

@@ -245,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20160721144535) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "label_template_name"
   end
 
   add_index "barcode_printer_types", ["name"], :name => "index_barcode_printer_types_on_name"

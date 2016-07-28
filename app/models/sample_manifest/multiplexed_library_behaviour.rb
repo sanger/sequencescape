@@ -12,6 +12,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   class Core
+
+    #for #multiplexed_library_tube
+    MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)
+
     def initialize(manifest)
       @manifest = manifest
     end
@@ -37,18 +41,12 @@ module SampleManifest::MultiplexedLibraryBehaviour
       end
     end
 
-    def print_labels(&block)
-      label = [self.samples.first,self.samples.last].map(&:sanger_sample_id).join('-')
-      printables = [PrintBarcode::Label.new(
-          :number => multiplexed_library_tube.barcode,
-          :study  => label,
-          :prefix => multiplexed_library_tube.prefix, :suffix => ""
-        )]
-      yield(printables, 'NT')
+    def multiplexed_library_tube
+      @mx_tube || raise(MxLibraryTubeException.new, "Mx tube not found")
     end
 
-    def multiplexed_library_tube
-      @mx_tube || raise("Mx tube not found")
+    def printables
+      multiplexed_library_tube
     end
 
     def updated_by!(user, samples)

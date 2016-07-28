@@ -27,6 +27,11 @@ class Tube < Aliquot::Receptacle
     'tube'
   end
 
+  def barcode!
+    self.barcode ||= AssetBarcode.new_barcode
+    save!
+  end
+
   has_many :submissions, :through => :requests_as_target, :uniq =>true
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
