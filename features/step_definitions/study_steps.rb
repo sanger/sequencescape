@@ -11,6 +11,15 @@ Given /^I have a study called "([^\"]*)"$/ do |study|
   FactoryGirl.create :study, :name => study
 end
 
+Given /^I have a study called "([^\"]*)" that requires ethical approval and has HMDMC approval number "(.*?)"$/ do |study, number|
+  study = FactoryGirl.create :study, :name => study
+  study.study_metadata.contains_human_dna = "Yes"
+  study.study_metadata.contaminated_human_dna = "No"
+  study.study_metadata.commercially_available = "No"
+  study.study_metadata.hmdmc_approval_number = number
+  study.save
+end
+
 Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|
   proj = Study.find_by_name(study)
   status == "active" ? proj.activate! : proj.deactivate!
