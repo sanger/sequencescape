@@ -56,19 +56,19 @@ class SampleManifestsControllerTest < ActionController::TestCase
         LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
 
         RestClient.expects(:post)
-        post :create, sample_manifest: {template: "1",
+        post :create, sample_manifest: {template: "plate_default",
                                        study_id: study.id,
                                        supplier_id: supplier.id,
                                        count: "3",
-                                       barcode_printer: barcode_printer.id,
+                                       barcode_printer: barcode_printer.name,
                                        only_first_label: "0",
                                        asset_type: ""}
         RestClient.expects(:post)
-        post :create, sample_manifest: {template: "3",
+        post :create, sample_manifest: {template: "tube_default",
                                        study_id: study.id,
                                        supplier_id: supplier.id,
                                        count: "3",
-                                       barcode_printer: barcode_printer.id,
+                                       barcode_printer: barcode_printer.name,
                                        only_first_label: "0",
                                        asset_type: ""}
       end

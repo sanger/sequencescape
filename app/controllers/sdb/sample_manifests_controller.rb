@@ -49,15 +49,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @study_id         = params[:study_id] || ""
     @studies          = Study.alphabetical
     @suppliers        = Supplier.alphabetical
-    @barcode_printers = @sample_manifest.applicable_barcode_printers
+    @barcode_printers = @sample_manifest.applicable_barcode_printers.collect(&:name)
     @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:type]).to_a
-  end
-
-  def printer_options(params)
-    barcode_printer_id = params[:sample_manifest][:barcode_printer]
-    barcode_printer  = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
-    return { :barcode_printer => barcode_printer,
-             :only_first_label => (params[:sample_manifest][:only_first_label].to_i == 1) }
   end
 
   def create
@@ -67,29 +60,11 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
     if @sample_manifest_generator.execute 
 
-      @sample_manifest.generate
-      template.generate(@sample_manifest)
-
-      printer_options = printer_options(params)
-      barcode_printer=printer_options[:barcode_printer]
-      only_first_label = printer_options[:only_first_label]
-
-      unless barcode_printer.nil?
-        print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                               LabelPrinter::Label::SampleManifestRedirect,
-                                               only_first_label: printer_options[:only_first_label], sample_manifest: @sample_manifest)
-        if print_job.execute
-          flash[:notice] = print_job.success
-        else
-          flash[:error] = print_job.errors.full_messages.join('; ')
-        end
-      end
-
+      flash.update(@sample_manifest_generator.print_job_message)
       redirect_to sample_manifest_path(@sample_manifest_generator.sample_manifest)
     else
 
       flash[:error] = @sample_manifest_generator.errors.full_messages.join(", ")
-
       redirect_to new_sample_manifest_path
 
     end

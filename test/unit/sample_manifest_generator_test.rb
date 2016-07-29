@@ -2,7 +2,7 @@ require "test_helper"
 
 class SampleManifestGeneratorTest < ActiveSupport::TestCase
 
-  attr_reader :generator, :attributes, :study, :supplier, :user, :configuration
+  attr_reader :generator, :attributes, :study, :supplier, :user, :configuration, :barcode_printer
 
   def stub_barcode_service
     barcode = mock("barcode")
@@ -20,6 +20,7 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
     @user = create(:user)
     @study = create(:study)
     @supplier = create(:supplier)
+    @barcode_printer = create(:barcode_printer)
     @attributes = { "template": "plate_full", "study_id": study.id, "supplier_id": supplier.id,
                     "count": "4", "asset_type": "plate"}.with_indifferent_access
     @configuration = SampleManifestExcel.configuration
@@ -87,6 +88,31 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
     @generator = SampleManifestGenerator.new(attributes.except(:asset_type).merge(template: 'tube_full'), user, configuration)
     generator.execute
     assert_equal configuration.manifest_types.find_by('tube_full').asset_type, generator.sample_manifest.asset_type
+  end
+
+  test "should print labels if barcode printer is present" do
+    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+    @generator = SampleManifestGenerator.new(attributes.merge(barcode_printer: barcode_printer.name,
+                                       only_first_label: "0"), user, configuration)
+
+    RestClient.expects(:post)
+    assert generator.print_job_required?
+    generator.execute
+    assert generator.print_job_message.has_key?(:notice)
+  end
+
+  test "print job should not be valid with invalid printer name" do
+    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+    @generator = SampleManifestGenerator.new(attributes.merge(barcode_printer: "dodgy_printer",
+                                       only_first_label: "0"), user, configuration)
+    assert generator.print_job_required?
+    generator.execute
+    assert generator.print_job_message.has_key?(:error)
+  end
+
+  test "should not have a print job if printer name has not been provided" do
+    @generator = SampleManifestGenerator.new(attributes, user, configuration)
+    refute generator.print_job_required?
   end
 
   def teardown
