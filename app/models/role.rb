@@ -37,26 +37,19 @@ class Role < ActiveRecord::Base
       base.extend(ClassMethods)
       base.instance_eval do
         has_many :roles, :as => :authorizable
+        has_many :users, :through => :roles
 
         scope :with_related_users_included, -> { includes(:roles => :users ) }
-        scope :of_interest_to, ->(user) { joins(:users).where(:users=>{:id=>user.id}) }
+        scope :of_interest_to, ->(user) { joins(:users).where(:users=>{:id=>user}).distinct }
       end
     end
 
     module ClassMethods
-      def joins_through_to_users
-        [
-          "INNER JOIN roles rj_r ON rj_r.authorizable_type IN (#{[self,*self.descendants].map{|c|"'#{c.name}'"}.join(',')}) AND rj_r.authorizable_id=#{table_name}.id",
-          "INNER JOIN roles_users rj_ru ON rj_r.id=rj_ru.role_id",
-          "INNER JOIN users rj_u ON rj_u.id=rj_ru.user_id"
-        ]
-      end
-      private :joins_through_to_users
 
       def role_relation(name, role_name)
         scope name.to_sym, ->(user) {
-          joins(joins_through_to_users).
-          where(['rj_r.name=? AND rj_u.id=?', role_name.to_s, user.id ])
+          joins(:roles,:users).
+          where(roles:{name:role_name.to_s},users:{id:user.id})
         }
       end
 

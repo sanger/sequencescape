@@ -25,7 +25,7 @@ module Submission::FlexibleRequestGraph
 
     def initialize(order,source_assets, multiplexing_assets)
       @order = order
-      @source_assets_qc_metrics = source_assets.map {|asset| Doublet.new(asset,[asset.latest_stock_metric(product)]) }
+      @source_assets_qc_metrics = source_assets.map {|asset| Doublet.new(asset,asset.latest_stock_metrics(product)) }
       @multiplexing_assets = multiplexing_assets
       @preplexed = multiplexing_assets.present?
       @built = false

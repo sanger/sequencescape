@@ -7,10 +7,34 @@ require "tecan_file_generation"
 require 'aasm'
 
 class Batch < ActiveRecord::Base
-  include Api::BatchIO::Extensions
-  include Api::Messages::FlowcellIO::Extensions
 
   self.per_page = 500
+
+  belongs_to :user, :foreign_key => "user_id"
+  belongs_to :assignee, :class_name => "User", :foreign_key => "assignee_id"
+
+  has_many :failures, :as => :failable
+  has_many :messengers, :as => :target, :inverse_of => :target
+  has_many :batch_requests, ->() { includes(:request) }, :inverse_of => :batch
+  has_many :requests, ->() {
+    order('batch_requests.position ASC, requests.id ASC').select('requests.*, batch_requests.position').distinct
+  }, :through => :batch_requests, :inverse_of => :batch
+  has_many :assets, :through => :requests, :source => :target_asset
+  has_many :source_assets,  ->() { distinct }, :through => :requests, source: :asset
+  has_many :submissions,  ->() { distinct }, :through => :requests
+  has_many :orders,  ->() { distinct }, :through => :submissions
+  has_many :studies,  ->() { distinct }, :through => :orders
+  has_many :projects,  ->() { distinct }, :through => :orders
+  has_many :aliquots,  ->() { distinct }, :through => :source_assets
+  has_many :samples,  ->() { distinct }, :through => :assets
+
+  def study
+    self.studies.first
+  end
+
+
+  include Api::BatchIO::Extensions
+  include Api::Messages::FlowcellIO::Extensions
   include AASM
   include SequencingQcBatch
   include Commentable
@@ -48,12 +72,6 @@ class Batch < ActiveRecord::Base
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
   include ::Batch::TecanBehaviour
-
-  belongs_to :user, :foreign_key => "user_id"
-  belongs_to :assignee, :class_name => "User", :foreign_key => "assignee_id"
-
-  has_many :failures, :as => :failable
-  has_many :messengers, :as => :target, :inverse_of => :target
 
   # Named scope for search by query string behavior
  scope :for_search_query, ->(query,with_includes) {
@@ -143,15 +161,15 @@ class Batch < ActiveRecord::Base
   end
 
   def underrun
-    self.has_limit? ? (self.item_limit - self.batch_requests.size) : 0
+    has_limit? ? (item_limit - batch_requests.size) : 0
   end
 
   def control
-    self.requests.detect { |request| request.try(:asset).try(:resource?) }
+    requests.detect { |request| request.try(:asset).try(:resource?) }
   end
 
   def has_control?
-    !self.control.nil?
+    control.present?
   end
 
   # Sets the position of the requests in the batch to their index in the array.
@@ -180,11 +198,11 @@ class Batch < ActiveRecord::Base
   end
 
   def assigned_user
-    self.assignee.try(:login) || ''
+    assignee.try(:login) || ''
   end
 
   def start_requests
-    self.requests.with_assets_for_starting_requests.not_failed.map(&:start!)
+    requests.with_assets_for_starting_requests.not_failed.map(&:start!)
   end
 
   def input_group
@@ -192,11 +210,11 @@ class Batch < ActiveRecord::Base
   end
 
   def input_plate_group
-    requests.map(&:asset).select(&:present?).group_by(&:plate)
+    source_assets.group_by(&:plate)
   end
 
   def input_group_sorted_by_map_id
-    requests.map(&:asset).select(&:present?).sort_by(&:map_id).group_by(&:parent)
+    source_assets.sort_by(&:map_id).group_by(&:parent)
   end
 
   def output_group
@@ -207,6 +225,7 @@ class Batch < ActiveRecord::Base
     pipeline.group_requests requests.with_target, :by_target => true, :group_by_holder_only => true
   end
 
+  # This looks odd. Why would a request have the same asset as target asset? Why are we filtering them out here?
   def output_plate_group
     requests.select { |r| r.target_asset != r.asset}.map(&:target_asset).select(&:present?).group_by(&:plate)
   end
@@ -287,14 +306,6 @@ class Batch < ActiveRecord::Base
 
   def multiplexed_items_with_unique_library_ids
     requests.map { |r| r.target_asset.children }.flatten.uniq
-  end
-
-  def assets
-    requests.map(&:target_asset)
-  end
-
-  def source_assets
-    requests.map(&:asset)
   end
 
   # Source Labware returns the physical pieces of lawbare (ie. a plate for wells, but stubes for tubes)
@@ -415,18 +426,6 @@ class Batch < ActiveRecord::Base
     return true
   end
 
-  def study
-    self.studies.first
-  end
-
-  #TODO has_many :orders, :finder_sql => ...
-  has_many :submissions,  ->() { distinct }, :through => :requests
-  has_many :orders,  ->() { distinct }, :through => :submissions
-  has_many :studies,  ->() { distinct }, :through => :orders
-  has_many :projects,  ->() { distinct }, :through => :orders
-  has_many :source_assets,  ->() { distinct }, :through => :requests
-  has_many :aliquots,  ->() { distinct }, :through => :source_assets
-  has_many :samples,  ->() { distinct }, :through => :aliquots
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(self.requests.for_studies(study))

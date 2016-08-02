@@ -53,6 +53,8 @@ class Submission < ActiveRecord::Base
 
   scope :latest_first, -> { order('id DESC') }
 
+  scope :for_search_query, ->(query,with_includes) { where(name:query) }
+
   before_destroy :building?, :empty_of_orders?
 
   def empty_of_orders?

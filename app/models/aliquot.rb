@@ -9,6 +9,8 @@ class Aliquot < ActiveRecord::Base
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
 
+  TAG_COUNT_NAMES = ['Untagged','Single','Dual']
+
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
   class Receptacle < Asset
@@ -99,6 +101,10 @@ class Aliquot < ActiveRecord::Base
       return 2 if most_tagged_aliquot.tag2_id != Aliquot::UNASSIGNED_TAG
       return 1 if most_tagged_aliquot.tag_id != Aliquot::UNASSIGNED_TAG
       0
+    end
+
+    def tag_count_name
+      TAG_COUNT_NAMES[tag_count]
     end
 
     def primary_aliquot_if_unique

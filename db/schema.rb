@@ -1370,8 +1370,9 @@ ActiveRecord::Schema.define(version: 20160802085015) do
     t.string   "donor_id",                    limit: 255
   end
 
-  add_index "sample_metadata", ["sample_id"], name: "index_sample_metadata_on_sample_id", using: :btree
-  add_index "sample_metadata", ["supplier_name"], name: "index_sample_metadata_on_supplier_name", using: :btree
+  add_index "sample_metadata", ["sample_ebi_accession_number"], :name => "index_sample_metadata_on_sample_ebi_accession_number"
+  add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"
+  add_index "sample_metadata", ["supplier_name"], :name => "index_sample_metadata_on_supplier_name"
 
   create_table "sample_registrars", force: :cascade do |t|
     t.integer "study_id",       limit: 4
@@ -1633,8 +1634,9 @@ ActiveRecord::Schema.define(version: 20160802085015) do
     t.integer  "priority",                   limit: 1,     default: 0, null: false
   end
 
-  add_index "submissions", ["state"], name: "index_submissions_on_state", using: :btree
-  add_index "submissions", ["study_id_to_delete"], name: "index_submissions_on_project_id", using: :btree
+  add_index "submissions", ["name"], :name => "index_submissions_on_name"
+  add_index "submissions", ["state"], :name => "index_submissions_on_state"
+  add_index "submissions", ["study_id_to_delete"], :name => "index_submissions_on_project_id"
 
   create_table "submitted_assets", force: :cascade do |t|
     t.integer  "order_id",   limit: 4
