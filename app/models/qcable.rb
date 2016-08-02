@@ -46,20 +46,18 @@ class Qcable < ActiveRecord::Base
       if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
         { :query => 'FALSE' }
       else
-        { :query => '(wam_asset.barcode=? AND wam_asset.barcode_prefix_id=?)', :conditions => [ barcode_number, barcode_prefix.id ] }
+        { :query => '(wam_asset.barcode=? AND wam_asset.barcode_prefix_id=?)', :parameters => [ barcode_number, barcode_prefix.id ] }
       end
-    end.inject({ :query => ['FALSE'], :conditions => [nil], :joins=>['LEFT JOIN assets AS wam_asset ON qcables.asset_id = wam_asset.id'] }) do |building, current|
+    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins=>['LEFT JOIN assets AS wam_asset ON qcables.asset_id = wam_asset.id'] }) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]
-        building[:conditions] << current[:conditions]
+        building[:parameters] << current[:parameters]
       end
     end
 
-    {
-      :conditions => [ query_details[:query].join(' OR '), *query_details[:conditions].flatten.compact ],
-      :joins => query_details[:joins].compact.uniq
-    }
+    where([ query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact ]).
+    joins(query_details[:joins].compact.uniq)
   }
 
   def stamp_index

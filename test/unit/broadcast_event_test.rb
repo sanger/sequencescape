@@ -6,30 +6,51 @@ require "test_helper"
 
 class BroadcastEventTest < ActiveSupport::TestCase
 
+  # This level of mocking is painful. It probably calls for splitting the test up, and testing templates
+  # separately from the actual json generation.
+  class TestSeed
+    include ActiveModel::Model
+    include ActiveModel::AttributeMethods
+    # include ActiveRecord::AttributeMethods::Read
+    define_attribute_methods :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
 
-  # TestSeed    = Struct.new(:uuid,:friendly_name,:subject_type,:single_relation,:many_relation,:dynamic_relation,:id,:data_method_a)
+    attr_accessor :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
 
-  # class TestSeed
-  #   extend ActiveModel::Naming
-  #   include ActiveModel::Conversion
-  #   # def self.base_class; BroadcastEvent; end
-  #   # def destroyed?; false; end
-  #   # def new_record?; false; end
-  #   def self.primary_key; :id; end
-  # end
+    def self.primary_key; :id; end
 
-  # class TestSeed
-  #   include ActiveModel::Model
-  #   include ActiveModel::AttributeMethods
-  #   define_attribute_methods :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
-  #   attr_accessor :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
-  #   def self.primary_key; :id; end
+    def attributes
+      {
+        'uuid' => @uuid,
+        'friendly_name' => @friendly_name,
+        'subject_type' => @subject_type,
+        'single_relation' => @single_relation,
+        'many_relation' => @many_relation,
+        'dynamic_relation' => @dynamic_relation,
+        'id' => @id,
+        'data_method_a' => @data_method_a
+      }
+    end
 
-  #   def _read_attribute(attr_name)
-  #     binding.pry
-  #   end
+    def marked_for_destruction?
+      false
+    end
 
-  # end
+    def destroyed?
+      false
+    end
+
+    def new_record?
+      false
+    end
+
+    def _read_attribute(attribute)
+      attributes[attribute]
+    end
+    def self.base_class
+      self
+    end
+
+  end
 
 
   TestSubject = Struct.new(:uuid,:friendly_name,:subject_type)
@@ -56,7 +77,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
     set_event_type 'example_event'
 
-    seed_class Asset
+    seed_class TestSeed
 
     # The seed itself can be a subject
     seed_subject :seed
@@ -102,9 +123,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
         @user = create :user, :email => 'example@example.com'
         @time = DateTime.parse("2012-03-11 10:22:42")
         # :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
-        @seed = create :asset
-
-        TestSeed.new(
+        @seed = TestSeed.new(
           uuid:'004',
           friendly_name:'seed_subject',
           subject_type:'seed_type',
@@ -163,7 +182,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
           "event" => {
           "uuid" => @event.uuid,
           "event_type" => "example_event",
-          "occured_at" => "2012-03-11T10:22:42+00:00",
+          "occured_at" => "2012-03-11T10:22:42.000+00:00",
           "user_identifier" => "example@example.com",
           "subjects" => [
             {

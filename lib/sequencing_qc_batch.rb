@@ -44,7 +44,7 @@ module SequencingQcBatch
     end
 
     def qc_assets_update(evaluation)
-      b = Batch.find(evaluation["identifier"], :include => [:requests])
+      b = Batch.includes(:requests).find(evaluation["identifier"])
       # Checks if batch.qc_state is not qc_manual, then change it
       # so that it appears in the Manual QC pipeline
       if b.qc_state == "qc_pending" || b.qc_state == "qc_submitted"
@@ -52,7 +52,7 @@ module SequencingQcBatch
       end
 
 
-      br = b.batch_requests.first(:conditions => {:position => evaluation["location"]})
+      br = b.batch_requests.find_by(:position => evaluation["location"])
 
       result = evaluation["result"]
       unless result.nil? || br.request.target_asset.nil? # nil e.g. controls without source/target asset
@@ -144,7 +144,7 @@ module SequencingQcBatch
   end
 
   def qc_pipeline_workflow_id
-    pipeline = Pipeline.first(:conditions => {:name => "quality control", :automated => true})
+    pipeline = Pipeline.find_by!(:name => "quality control", :automated => true)
     pipeline.workflow.id
   end
 
@@ -234,7 +234,7 @@ module SequencingQcBatch
   private
 
     def assets_qc_tasks_results
-      auto_qc_pipeline = Pipeline.first(:conditions => {:name => "quality control", :automated => true})
+      auto_qc_pipeline = Pipeline.firind_by!(:name => "quality control", :automated => true)
       qc_workflow = LabInterface::Workflow.find_by_pipeline_id auto_qc_pipeline.id
       qc_tasks = qc_workflow.tasks
       results = []

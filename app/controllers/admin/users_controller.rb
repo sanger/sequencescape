@@ -15,10 +15,10 @@ class Admin::UsersController < ApplicationController
 
   def edit
     @user_roles = @user.roles.select{|r| r.name == "administrator" || r.name == "manager" || r.name == "internal"}
-    @all_roles = Role.all(:select => "distinct `name`")
+    @all_roles = Role.select(:name).uniq
     @users_roles = @user.study_and_project_roles.sort_by(&:name)
-    @studies = Study.all(:order => :id)
-    @projects = Project.all(:order => :id)
+    @studies = Study.order(:id)
+    @projects = Project.order(:id)
 
     respond_to do |format|
       format.js

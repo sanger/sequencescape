@@ -8,7 +8,8 @@ module Asset::Stock
   module CanCreateStockAsset
     def self.extended(base)
       base.class_eval do
-        has_one_as_child(:stock_asset, ->() { where(:sti_type => stock_asset_type.name) } )
+        stock_asset_type_name = stock_asset_type.name
+        has_one_as_child(:stock_asset, ->() { where(:sti_type => stock_asset_type_name) } )
 
         stock_asset_factory(:create_stock_asset!, :create!)
         stock_asset_factory(:new_stock_asset, :new)

@@ -30,8 +30,8 @@ class Project < ActiveRecord::Base
   aasm :column => :state do
 
     state :pending, :initial => true
-    state :active, :enter => :mark_active
-    state :inactive, :enter => :mark_deactive
+    state :active
+    state :inactive
 
     event :reset do
       transitions :to => :pending, :from => [:inactive, :active]
@@ -48,11 +48,9 @@ class Project < ActiveRecord::Base
   end
 
   scope :in_assets, ->(assets) {
-    select('DISTINCT projects.*').
-    joins([
-      'LEFT JOIN aliquots ON aliquots.project_id = projects.id',
-    ]).
-    where(['aliquots.receptacle_id IN (?)',assets.map(&:id)])
+    select('projects.*').uniq.
+    joins(:aliquots).
+    where(aliquots:{receptacle_id: assets})
   }
 
   has_many :roles, :as => :authorizable
@@ -60,6 +58,7 @@ class Project < ActiveRecord::Base
   has_many :studies, ->() { distinct }, :class_name => "Study", :through => :orders, :source => :study
   has_many :submissions,  ->() { distinct }, :through => :orders, :source => :submission
   has_many :sample_manifests
+  has_many :aliquots
 
   validates_presence_of :name, :state
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"

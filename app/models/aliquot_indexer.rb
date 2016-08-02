@@ -9,7 +9,7 @@ class AliquotIndexer
   module AliquotScopes
     def self.included(base)
       base.class_eval do
-        scope :sorted_for_indexing, -> { joins([:tag,:tag2]).order('tag2s_aliquots.map_id ASC, tags.map_id ASC') }
+        scope :sorted_for_indexing, -> { joins([:tag,:tag2]).reorder('tag2s_aliquots.map_id ASC, tags.map_id ASC') }
       end
     end
   end
@@ -38,7 +38,7 @@ class AliquotIndexer
   end
 
   def aliquots
-    @aliquots ||= lane.aliquots.reject {|a| a.untagged? }
+    @aliquots ||= lane.aliquots.sorted_for_indexing.reject {|a| a.untagged? }
   end
 
   def next_index

@@ -31,7 +31,7 @@ class Pipeline < ActiveRecord::Base
   belongs_to :next_pipeline,     :class_name => 'Pipeline'
   belongs_to :previous_pipeline, :class_name => 'Pipeline'
 
-  has_one :workflow, :class_name => "LabInterface::Workflow", :foreign_key => :pipeline_id
+  has_one :workflow, :class_name => "LabInterface::Workflow", inverse_of: :pipeline
 
   has_many :controls
   has_many :pipeline_request_information_types
@@ -59,11 +59,9 @@ class Pipeline < ActiveRecord::Base
   scope :inactive,           -> { where( :active => false ) }
 
   scope :for_request_type, ->(rt) {
-     {
-       :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.pipeline_id = pipelines.id' ],
-       :conditions => ['prt.request_type_id = ?', rt.id]
-     }
-   }
+    joins(:pipelines_request_types).
+    where(pipelines_request_types:{ request_type_id: rt } )
+  }
 
   def request_types_including_controls
     [control_request_type].compact + request_types

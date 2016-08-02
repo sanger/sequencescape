@@ -70,8 +70,7 @@ end
 
 Given /^user "([^\"]*)" is an? "([^\"]*)" of study "([^\"]*)"$/ do |login, role_name, study|
   proj = Study.find_by_name(study)
-  role = Role.find(:first, :conditions =>
-      ['name=? and authorizable_type = ? and authorizable_id = ?', role_name, "Study", proj.id])
+  role = Role.find_by(name:role_name,authorizable_type:'Study',authorizable_id:proj.id)
   if role.nil?
     role = FactoryGirl.create :role, :name => role_name, :authorizable_type => 'Study',
       :authorizable_id => proj.id, :created_at => Time.now, :updated_at => Time.now

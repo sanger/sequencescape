@@ -9,7 +9,7 @@ class TasksController < ApplicationController
   before_filter :find_tasks_by_id, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @tasks = Task.find(:all)
+    @tasks = Task.all
 
     respond_to do |format|
       format.html

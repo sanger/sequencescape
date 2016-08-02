@@ -93,7 +93,7 @@ before_filter :evil_parameter_hack!
   end
 
   def sort
-    @projects = Project.find(:all).sort_by { |project| project.name }
+    @projects = Project.all.sort_by { |project| project.name }
     if params[:sort] == "date"
       @projects = @projects.sort_by { |project| project.created_at}
     elsif params[:sort] == "owner"

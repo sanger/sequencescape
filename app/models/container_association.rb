@@ -84,7 +84,7 @@ class ContainerAssociation < ActiveRecord::Base
     def contained_by(container_name, &block)
       class_name = container_name.to_s.singularize.capitalize
       has_one :container_association, :foreign_key => :content_id
-      has_one :container, :class_name => class_name, :through => :container_association
+      has_one :container, :through => :container_association
       has_one(container_name, :through => :container_association, :source => :container, &block)
 
       #delegate :location, :to => :container

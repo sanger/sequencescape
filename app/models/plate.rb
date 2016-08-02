@@ -81,21 +81,17 @@ class Plate < Asset
 
   # About 10x faster than going through the wells
   def submission_ids
-    @siat ||=  container_associations.find(
-      :all,
-      :select => 'DISTINCT requests.submission_id',
-      :joins  => 'LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id',
-      :conditions => ['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)',Request::Statemachine::INACTIVE]
-    ).map(&:submission_id)
+    @siat ||=  container_associations.
+      joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id').
+      where.not(requests:{submission_id:nil}).where.not(requests:{state: Request::Statemachine::INACTIVE}).
+      uniq.pluck(:submission_id)
   end
 
   def submission_ids_as_source
-    @sias ||= container_associations.find(
-      :all,
-      :select => 'DISTINCT requests.submission_id',
-      :joins  => 'LEFT JOIN requests ON requests.asset_id = container_associations.content_id',
-      :conditions => ['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)',Request::Statemachine::INACTIVE]
-    ).map(&:submission_id)
+    @sias ||= container_associations.
+      joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id').
+      where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)',Request::Statemachine::INACTIVE]).
+      uniq.pluck(:submission_id)
   end
 
   def all_submission_ids
@@ -113,23 +109,19 @@ class Plate < Asset
   end
 
   def submissions
-    s = Submission.find(:all,
-      :select => 'DISTINCT submissions.*',
-      :joins => [
+    s = Submission.select('submissions.*',).uniq.
+      joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ],
-      :conditions => ['caplp.container_id = ?',self.id]
-    )
+      ]).
+      where(['caplp.container_id = ?',self.id])
     return s unless s.blank?
-    Submission.find(:all,
-      :select => 'DISTINCT submissions.*',
-      :joins => [
+    Submission.select('submissions.*',).uniq.
+      joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ],
-      :conditions => ['caplp.container_id = ?',self.id]
-    )
+      ]).
+      where(['caplp.container_id = ?',self.id])
   end
 
    def barcode_dilution_factor_created_at_hash
@@ -300,29 +292,29 @@ class Plate < Asset
     includes(:events,:asset_audits)
   }
 
-
+  # TODO: Make these more railsy
   scope :with_sample,    ->(sample) {
-    {
-      :select => "distinct assets.*",
-      :joins => "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id
-  LEFT JOIN assets AS wswells ON wswells.id = content_id
-  LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id",
-      :conditions => ["wsaliquots.sample_id IN(?)", Array(sample)]
-    }
+
+      select("assets.*").uniq.
+      joins([
+        "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id",
+        "LEFT JOIN assets AS wswells ON wswells.id = content_id",
+        "LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id"
+      ]).
+      where(["wsaliquots.sample_id IN(?)", Array(sample)])
+
   }
 
  scope :with_requests, ->(requests) {
-    {
-      :select     => "DISTINCT assets.*",
-      :joins      => [
+
+   select("assets.*").uniq.
+   joins([
         "INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id",
         "INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id"
-      ],
-      :conditions => [
-        'wrr.id IN (?)',
-        requests.map(&:id)
-      ]
-    }
+    ]).where([
+      'wrr.id IN (?)',
+      requests.map(&:id)
+    ])
   }
 
   scope :output_by_batch, ->(batch) {
@@ -344,13 +336,13 @@ class Plate < Asset
       where(:container_associations=>{:content_id=> wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
-  has_many :descendant_plates, ->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})}, :class_name => "Plate", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
-  has_many :descendant_lanes, ->() { where(:assets=>{:sti_type=>"Lane"}) }, :class_name => "Lane", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_plates, :class_name => "Plate", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_lanes,  :class_name => "Lane", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
   has_many :tag_layouts
 
   scope :with_descendants_owned_by, ->(user) {
     joins(:descendant_plates => :plate_owner).
-    where(:plate_owners=>{:user_id=>user.id}).
+    where(:plate_owners=>{:user_id=>user}).
     uniq
   }
 
@@ -687,8 +679,8 @@ class Plate < Asset
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
-    return [self] if self.plate_purpose_id == ancestor_purpose_id
-    ancestors.find(:all,:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
+    return [self] if plate_purpose_id == ancestor_purpose_id
+    ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
   end
 
   def child_dilution_plates_filtered_by_type(parent_model)
@@ -835,14 +827,12 @@ class Plate < Asset
   end
 
   def team
-    ProductLine.find(:first,
-      :joins => [
+    ProductLine.joins([
         'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
         'INNER JOIN requests ON requests.request_type_id = request_types.id',
         'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
         'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
-      ],
-      :conditions => ['ca.container_id = ?',self.id]).try(:name)||'UNKNOWN'
+      ]).where(['ca.container_id = ?',self.id]).first.try(:name)||'UNKNOWN'
   end
 
   # Barcode is stored as a string, jet in a number of places is treated as

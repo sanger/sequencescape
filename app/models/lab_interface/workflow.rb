@@ -7,7 +7,7 @@ class LabInterface::Workflow < ActiveRecord::Base
   has_many :tasks, ->() { order('sorted')}, :dependent => :destroy, :foreign_key => :pipeline_workflow_id
   has_many :families
 
-  belongs_to :pipeline
+  belongs_to :pipeline, inverse_of: :workflow
   validates_uniqueness_of :pipeline_id, :message => 'only one workflow per pipeline!'
 
   validates_uniqueness_of :name
@@ -45,7 +45,7 @@ class LabInterface::Workflow < ActiveRecord::Base
         new_workflow.tasks = tasks.map do |task|
           new_task = task.dup
           new_task.descriptors = task.descriptors.map do |descriptor|
-            Descriptor.create descriptor.attributes
+            descriptor.dup
           end
           new_task
         end
@@ -54,7 +54,7 @@ class LabInterface::Workflow < ActiveRecord::Base
 
         #copy of the pipeline
         unless skip_pipeline
-          new_workflow.build_pipeline(self.pipeline.attributes.merge(:workflow => new_workflow))
+          new_workflow.pipeline = pipeline.dup
           new_workflow.pipeline.request_types = self.pipeline.request_types
           new_workflow.pipeline.name += suffix
           new_workflow.pipeline.save!

@@ -180,7 +180,7 @@ re_request = RequestType.create!(
     :product_line => ProductLine.find_by_name('Illumina-A'),
     :target_purpose => Purpose.find_by_name('Standard MX')
   ) do |rt|
-    rt.acceptable_plate_purposes << PlatePurpose.find_by_name!('Lib PCR-XP')
+    rt.acceptable_plate_purposes << Purpose.find_by!(name:'Lib PCR-XP')
      RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
   end
 
@@ -202,7 +202,7 @@ re_request = RequestType.create!(
           :pooling_behaviour => 'PlateRow',
           :pooling_options   => {:pool_count=>8}
         )
-      rt.acceptable_plate_purposes << PlatePurpose.find_by_name!("PF Cherrypicked")
+      rt.acceptable_plate_purposes << Purpose.find_by!(name:"PF Cherrypicked")
       RequestType::Validator.create!(
         :request_type   => rt,
         :request_option => 'library_type',
@@ -228,7 +228,7 @@ re_request = RequestType.create!(
     :workflow           => Submission::Workflow.find_by_key!('short_read_sequencing'),
     :product_line       => ProductLine.find_by_name!('Illumina-HTP')
     ) do |rt|
-      rt.acceptable_plate_purposes << PlatePurpose.find_by_name!("PF Cherrypicked")
+      rt.acceptable_plate_purposes << Purpose.find_by!(name:"PF Cherrypicked")
     end
 
     RequestType.create!(

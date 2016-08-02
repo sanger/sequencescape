@@ -84,6 +84,9 @@ group :default do
   gem 'therubyrhino'
 
   gem 'uglifier', '>= 1.0.3'
+
+  gem 'axlsx'
+  gem 'roo'
 end
 
 group :warehouse do

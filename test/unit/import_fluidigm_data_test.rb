@@ -3,7 +3,7 @@
 #Copyright (C) 2013,2015 Genome Research Ltd.
 
 require "test_helper"
-
+require 'csv'
 class ImportFluidigmDataTest < ActiveSupport::TestCase
     def create_fluidigm_file
       @XY = 'M'

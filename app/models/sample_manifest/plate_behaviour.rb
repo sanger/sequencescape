@@ -123,7 +123,7 @@ module SampleManifest::PlateBehaviour
 
     def details(&block)
       samples.each do |sample|
-        well = sample.wells.first(:include => [ :container, :map ])
+        well = sample.wells.includes([ :container, :map ]).first
         yield({
           :barcode   => well.plate.sanger_human_barcode,
           :position  => well.map.description,

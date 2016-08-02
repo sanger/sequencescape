@@ -44,7 +44,7 @@ class Admin::StudiesController < ApplicationController
     end
 
     if params[:filter][:by] == "not approved" || params[:filter][:by] == "all"
-      @studies = Study.find(:all, :conditions => filter_conditions, :order => :name ).select { |p| p.name.include? params[:q] }
+      @studies = Study.where(filter_conditions).alphabetical.select { |p| p.name.include? params[:q] }
     end
 
     unless params[:filter].nil?
@@ -59,7 +59,7 @@ class Admin::StudiesController < ApplicationController
     when "closed"
       @studies = @studies.reject { |p| p.active? }
     end
-    @request_types = RequestType.all.sort_by{|r| r.name}
+    @request_types = RequestType.order(:name)
     render :partial => "filtered_studies"
   end
 
@@ -72,6 +72,7 @@ class Admin::StudiesController < ApplicationController
     params[:study].delete(:uploaded_data)
 
     ActiveRecord::Base.transaction do
+      params[:study].delete(:ethically_approved) unless current_user.data_access_coordinator?
       @study.update_attributes!(params[:study])
       flash[:notice] = "Your study has been updated"
       redirect_to :controller => "admin/studies", :action => "update", :id => @study.id
@@ -83,7 +84,7 @@ class Admin::StudiesController < ApplicationController
   end
 
   def sort
-    @studies = Study.find(:all).sort_by { |study| study.name }
+    @studies = Study.all.sort_by { |study| study.name }
     if params[:sort] == "date"
       @studies = @studies.sort_by { |study| study.created_at}
     elsif params[:sort] == "owner"

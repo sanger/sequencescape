@@ -48,7 +48,7 @@ module Tasks::CherrypickHandler
         redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
         return
       end
-      @plate = Plate::Metadata.find(:first, :include=>:plate, :conditions=>{:fluidigm_barcode=> @fluidigm_barcode }).try(:plate)
+      @plate = Plate::Metadata.includes(:plate).where(fluidigm_barcode: @fluidigm_barcode).try(:plate)
     end
 
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])

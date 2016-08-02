@@ -29,7 +29,7 @@ class DataReleaseStudyType < ActiveRecord::Base
   end
 
   def self.default
-    first(:conditions => { :is_default => true })
+    find_by(is_default: true)
   end
 
   module Associations

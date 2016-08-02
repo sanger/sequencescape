@@ -1,14 +1,12 @@
 namespace :working do
   task :setup => :environment do
-
+    ActiveRecord::Base.transaction do
   class PlateBarcode < ActiveResource::Base
    self.site = configatron.plate_barcode_service
    def self.create
      if @barcode.nil?
-       @barcode = Plate.first(
-         :conditions => 'barcode is not null and barcode!="9999999" and length(barcode)=7',
-         :order => 'barcode desc'
-       ).try(:barcode).to_i
+       @barcode = Plate.where.not(barcode:nil).where.not(barcode:"9999999").where('length(barcode)=7').
+       order(barcode: :desc).first.try(:barcode).to_i
        @barcode = 9000000 if @barcode.zero? and not Plate.count.zero?
      end
      OpenStruct.new(:barcode => (@barcode += 1))
@@ -86,7 +84,7 @@ namespace :working do
    qcc =  QcableCreator.create!(:lot=>lot,:user=>user,:count=>30)
    qcc.qcables.each {|qcable| qcable.update_attributes!(:state=>'available'); qcable.asset.update_attributes!(:location=>locations[:htp]) ;puts "Tag Plate: #{qcable.asset.ean13_barcode}"}
 
-
+ end
  end
 end
 

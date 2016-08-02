@@ -37,7 +37,7 @@ CHANGES (from most recent to oldest)
   def index
     if current_user.permit? 'admin'
       # show all projects
-      @projects = Project.find(:all)
+      @projects = Project.all
     else
       @projects = current_user.is_show_for_what(Project)
     end

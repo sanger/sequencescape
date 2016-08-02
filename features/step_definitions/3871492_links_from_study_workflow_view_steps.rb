@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 Given /^study "([^"]+)" has a registered sample "([^"]+)"$/ do |study_name,sample_name|
-  study  = Study.first(:conditions => { :name => study_name }) or raise "No study defined with name '#{ study_name }'"
+  study  = Study.find_by!(name:study_name)
   sample = study.samples.create!(:name => sample_name)
   st = SampleTube.create!.tap { |sample_tube| sample_tube.aliquots.create!(:sample => sample, :study=> study) }
 
@@ -16,13 +16,13 @@ Given /^study "([^"]+)" has a registered sample "([^"]+)"$/ do |study_name,sampl
 end
 
 Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_name,request_type,table|
-  study        = Study.first(:conditions => { :name => study_name }) or raise "No study defined with name '#{ study_name }'"
-  request_type = RequestType.first(:conditions => { :name => request_type }) or raise "No request type defined with name '#{ request_type }'"
+  study        = Study.find_by!( :name => study_name )
+  request_type = RequestType.find_by!( :name => request_type )
 
   table.hashes.each do |row|
     state, asset_name, sample_name = row['state'], row['asset'], row['sample']
-    asset  = Asset.first(:conditions => { :name => asset_name }) or raise "No asset defined with name '#{ asset_name }'"
-    sample = Sample.first(:conditions => { :name => sample_name }) or raise "No sample defined with name '#{ sample_name }'"
+    asset  = Asset.find_by!({:name => asset_name })
+    sample = Sample.find_by!({:name => sample_name })
 
     if asset.respond_to?(:aliquots)
       asset.aliquots.each do |aliquot|

@@ -91,7 +91,7 @@ module Request::Statistics
   # Returns a hash that maps from the RequestType to the information about the number of requests in various
   # states.  This is effectively summary data that can be displayed in a tabular format for the user.
   def progress_statistics
-    counters  = self.all(:select => 'request_type_id, state, count(distinct requests.id) as total', :group => 'request_type_id, state', :include=>:request_type)
+    counters  = select('request_type_id, state, count(distinct requests.id) as total').group('request_type_id, state').includes(:request_type)
     tabulated = Hash.new { |h,k| h[k] = Counter.new }
     tabulated.tap do
       counters.each do |request_type_state_count|
@@ -100,22 +100,12 @@ module Request::Statistics
     end
   end
 
-  def asset_statistics(options = {})
-    counters = self.all(options.merge(:select => 'asset_id,request_type_id,state, count(*) as total', :group => 'asset_id, request_type_id, state', :include=>:request_type))
+  def asset_statistics(wheres)
+    counters = select('asset_id,request_type_id,state, count(*) as total').group('asset_id, request_type_id, state').includes(:request_type).where(wheres)
     tabulated = Hash.new { |h,k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |asset_request_type_state_count|
         tabulated[asset_request_type_state_count.asset_id.to_i][asset_request_type_state_count.request_type_id.to_i][asset_request_type_state_count.state] = asset_request_type_state_count.total.to_i
-      end
-    end
-  end
-
-  def sample_statistics(options = {})
-    counters = self.join_asset.all(options.merge(:select => 'sample_id,request_type_id,state,count(*) as total', :group => 'sample_id, request_type_id, state', :include=>:request_type))
-    tabulated = Hash.new { |h,k| h[k] = Summary.new }
-    tabulated.tap do
-      counters.each do |sample_request_type_state_count|
-        tabulated[sample_request_type_state_count.sample_id.to_i][sample_request_type_state_count.request_type_id.to_i][sample_request_type_state_count.state] = sample_request_type_state_count.total.to_i
       end
     end
   end

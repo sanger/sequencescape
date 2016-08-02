@@ -105,8 +105,8 @@ class QcReportTest < ActiveSupport::TestCase
       should 'generate qc_metrics per sample which needs them' do
         assert_equal 2, QcMetric.count - @qc_metric_count
         assert_equal 2, @qc_report.qc_metrics.count
-        assert_include @qc_report.qc_metrics.map(&:asset), @unreported_sample
-        assert_include @qc_report.qc_metrics.map(&:asset), @other_reported_sample
+        assert_includes @qc_report.qc_metrics.map(&:asset), @unreported_sample
+        assert_includes @qc_report.qc_metrics.map(&:asset), @other_reported_sample
       end
 
     end

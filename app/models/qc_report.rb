@@ -172,3 +172,5 @@ class QcReport < ActiveRecord::Base
   end
 
 end
+
+require_relative 'qc_report/file'

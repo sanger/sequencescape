@@ -98,7 +98,7 @@ class Studies::AssetGroupsController < ApplicationController
       redirect_to study_asset_group_path(@study)
       return
     else
-      @assets = Asset.find(:all, :conditions => ['name like ?', "%#{query}%"] )
+      @assets = Asset.where(['name like ?', "%#{query}%"])
     end
     @asset_group = AssetGroup.find(params[:id])
     respond_to do |format|

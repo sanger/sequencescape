@@ -3,6 +3,7 @@
 #Copyright (C) 2013,2015,2016 Genome Research Ltd.
 
 require "test_helper"
+require 'csv'
 
 class FluidigmFileTest < ActiveSupport::TestCase
 

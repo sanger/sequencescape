@@ -85,7 +85,6 @@ class AmqpObserver < ActiveRecord::Observer
       else                                   yield(record,       record)
       end
     end
-    private :determine_record_to_broadcast
 
     # A simple buffer class that will only retain the most recent version of any object pushed
     # into it.  Assumes that equality is what you want for checking for things, which works fine

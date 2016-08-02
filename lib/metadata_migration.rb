@@ -7,8 +7,8 @@ class MetadataMigration < ActiveRecord::Migration
       self.table_name =('property_definitions')
       has_many :properties, :class_name => 'MetadataMigration::Property', :foreign_key => :property_definition_id, :dependent => :destroy
 
-     scope :for_class, ->(c) { { :conditions => { :relates_to => c } } }
-     scope :for_keys, ->(keys) { { :conditions => { :key => keys } } }
+     scope :for_class, ->(c) { where(:relates_to => c )  }
+     scope :for_keys, ->(keys) { where(:key => keys) }
 
       # It's more efficient to delete all of the properties and then delete the definition.
       def self.delete_for(relates_to, keys)
@@ -31,9 +31,7 @@ class MetadataMigration < ActiveRecord::Migration
       [ :id, self.reference_id ].include?(name.to_sym)
     end.inject({}) do |hash,p|
       returning(hash) do
-        hash[ p ] = Property::Definition.first(
-          :conditions => { :relates_to => self.reference_class_name, :key => p.to_s }
-        ) or raise StandardError, "Cannot find property definition for '#{ p }'"
+        hash[ p ] = Property::Definition.find_by( :relates_to => self.reference_class_name, :key => p.to_s ) or raise StandardError, "Cannot find property definition for '#{ p }'"
       end
     end
   end

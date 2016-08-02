@@ -1,0 +1,698 @@
+sanger_plate_id:
+  heading: SANGER PLATE ID
+well:
+  heading: WELL
+sanger_tube_id:
+  heading: SANGER TUBE ID
+sanger_sample_id:
+  heading: SANGER SAMPLE ID
+tag_group:
+  heading: TAG GROUP
+  unlocked: true
+  validation:
+    options:
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag set name"
+      prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+  conditional_formattings:
+    empty_cell:
+tag_index:
+  heading: TAG INDEX
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag index"
+      prompt: "The index of the tag within the tag set."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Tag index"
+      error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+tag2_group:
+  heading: TAG2 GROUP (Fill in for dual Index Only)
+  unlocked: true
+  validation:
+    options:
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag set name"
+      prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+  conditional_formattings:
+    empty_cell:
+tag2_index:
+  heading: TAG2 INDEX (Fill in for dual Index Only)
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag index"
+      prompt: "The index of the tag within the tag set."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Tag index"
+      error: "Tag Index must a number of 1 or greater. It should not be greater than the size of the tag set."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+library_type:
+  heading: LIBRARY TYPE
+  unlocked: true
+  validation:
+    options:
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Library type"
+      prompt: "Provide a library type from the approved list"
+  conditional_formattings:
+    empty_cell:
+insert_size_from:
+  heading: INSERT SIZE FROM
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Insert size from"
+      prompt: "The minimum insert size in the library"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+insert_size_to:
+  heading: INSERT SIZE TO
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Insert size to"
+      prompt: "Maximum insert size in the library"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Insert size to"
+      error: "Insert size to must be a whole number, greater or equal to the insert size from"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+supplier_sample_name:
+  heading: SUPPLIER SAMPLE NAME
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "20"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Supplier Sample Name"
+      prompt: "Please enter a sample name up to a maximum of 20 characters in length. Only include characters A-Z, 0-9 and underscores."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Supplier Sample Name"
+      error: "Name must be a maximum of 20 characters in length."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 20
+cohort:
+  heading: COHORT
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "7"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Cohort"
+      prompt: "Please refer to the list of current cohorts to enter, or add a new abbreviation up to a maximum of 7 uppercase letters."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Cohort"
+      error: "7 uppercase characters, maximum"
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 7
+    is_number:
+volume:
+  heading: VOLUME (ul)
+  unlocked: true
+  validation:
+    options:
+      type: :decimal
+      operator: :greaterThanOrEqual
+      formula1: "0"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: ""
+      prompt: ""
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Volume"
+      error: "This value must be numeric."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_zero:
+    is_text:
+conc:
+  heading: CONC. (ng/ul)
+  unlocked: true
+  validation:
+    options:
+      type: :decimal
+      operator: :greaterThanOrEqual
+      formula1: "0"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: ""
+      prompt: ""
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Concentration"
+      error: "This value must be numeric."
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_zero:
+    is_text:
+gender:
+  heading: GENDER
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "A1:A2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Gender"
+      prompt: "Please enter gender"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "gender"
+      error: "Please enter gender"
+    range_name: :gender
+  conditional_formattings:
+    empty_cell:
+    is_error:
+country_of_origin:
+  heading: COUNTRY OF ORIGIN
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "30"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Country Of Origin"
+      prompt: "Please refer to the list of current countries to enter, or add a new description up to a maximum of 30 uppercase letters."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Country Of Origin"
+      error: "30 uppercase characters, maximum"
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 30
+geographical_region:
+  heading: GEOGRAPHICAL REGION
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "30"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Region"
+      prompt: "Please refer to the list of current regions to enter, or add a new description up to a maximum of 30 uppercase letters."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Region"
+      error: "30 uppercase characters, maximum"
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 30
+    is_number:
+ethnicity:
+  heading: ETHNICITY
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "30"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Ethnicity"
+      prompt: "Please refer to the list of current ethnicities to enter, or add a new description up to a maximum of 30 uppercase letters."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Ethnicity"
+      error: "30 uppercase characters, maximum"
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 30
+    is_number:
+dna_source:
+  heading: DNA SOURCE
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "DNA Source"
+      prompt: "Please enter a Source from the Provided List."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "DNA Source"
+      error: "You must enter a Source from the list provided."
+    :range_name: :dna_source
+  conditional_formattings:
+    empty_cell:
+    is_error:
+date_of_sample_collection:
+  heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "5"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Sample Collection Date"
+      prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Sample Collection Date"
+      error: "This must be either a combination of month and year, or a whole year, with no spaces."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 5
+date_of_dna_extraction:
+  heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "5"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Sample Collection Date"
+      prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Sample Collection Date"
+      error: "This must be either a combination of month and year, or a whole year, with no spaces."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 5
+is_sample_a_control?:
+  heading: IS SAMPLE A CONTROL?
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Is the Sample a Control?"
+      prompt: "Please Enter Y or N."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Is the Sample a Control?"
+      error: "You must enter either Y or N."
+    range_name: :yes_no
+  conditional_formattings:
+    empty_cell:
+    is_error:
+is_re_submitted_sample?:
+  heading: IS RE-SUBMITTED SAMPLE?
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Is the Sample being Resubmitted?"
+      prompt: "Please Enter Y or N."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Is the Sample being Resubmitted?"
+      error: "You must enter either Y or N."
+    :range_name: :yes_no
+  conditional_formattings:
+    empty_cell:
+    is_error:
+dna_extraction_method:
+  heading: DNA EXTRACTION METHOD
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+sample_purified?:
+  heading: SAMPLE PURIFIED?
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Has the Sample Been Purified?"
+      prompt: "Please Enter Y or N."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Has the Sample Been Purified?"
+      error: "You must enter either Y or N."
+    range_name: :yes_no
+  conditional_formattings:
+    empty_cell:
+    is_error:
+purification_method:
+  heading: PURIFICATION METHOD
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Purification Method"
+      prompt: "Please enter a Method from the Provided List."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Purification Method"
+      error: "You must enter a Method from the list provided."
+    range_name: :purification_method
+  conditional_formattings:
+    empty_cell:
+    is_error:
+concentration_determined_by:
+  heading: CONCENTRATION DETERMINED BY
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Concentration Determined By"
+      prompt: "Please enter a Method from the Provided List."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Concentration Determined By"
+      error: "You must enter a Method from the list provided."
+    range_name: :concentration_determined_by
+  conditional_formattings:
+    empty_cell:
+    is_error:
+dna_storage_conditions:
+  heading: DNA STORAGE CONDITIONS
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "DNA Storage Conditions"
+      prompt: "Please enter a Temperature from the Provided List."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "DNA Storage Conditions"
+      error: "You must enter a Temperature from the list provided, in the correct format e.g.+4C."
+    range_name: :dna_storage_conditions
+  conditional_formattings:
+    empty_cell:
+    is_error:
+mother:
+  heading: MOTHER (optional)
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "15"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Mother - Supplier Sample Name"
+      prompt: "Please enter an existing supplier sample name that relates to the mother of this individual."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Mother - Supplier Sample Name"
+      error: "Name must be a miaximum of 15 characters in length."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 15
+    is_number:
+father:
+  heading: FATHER (optional)
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "15"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Father - Supplier Sample Name"
+      prompt: "Please enter an existing supplier sample name that relates to the father of this individual."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Father - Supplier Sample Name"
+      error: "Name must be a miaximum of 15 characters in length."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 15
+    is_number:
+sibling:
+  heading: SIBLING (optional)
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "15"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Sibling - Supplier Sample Name"
+      prompt: "Please enter an existing supplier sample name that relates to the sibling of this individual."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Sibling - Supplier Sample Name"
+      error: "Name must be a miaximum of 15 characters in length."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        type: :len
+        operator: :gt
+        operand: 15
+    is_number:
+gc_content:
+  heading: GC CONTENT
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+public_name:
+  heading: PUBLIC NAME
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+taxon_id:
+  heading: TAXON ID
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+common_name:
+  heading: COMMON NAME
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+sample_description:
+  heading: SAMPLE DESCRIPTION
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+strain:
+  heading: STRAIN
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+sample_visibility:
+  heading: SAMPLE VISIBILITY
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+sample_type:
+  heading: SAMPLE TYPE
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+sample_accession_number:
+  heading: SAMPLE ACCESSION NUMBER (optional)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+donor_id:
+  heading: DONOR ID (required for EGA)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+phenotype:
+  heading: PHENOTYPE (required for EGA)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+genotype:
+  heading: GENOTYPE
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+age:
+  heading: AGE (with units)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+developmental_stage:
+  heading: Developmental stage
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+cell_type:
+  heading: Cell Type
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+disease_state:
+  heading: Disease State
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+compound:
+  heading: Compound
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+dose:
+  heading: Dose
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+immunoprecipitate:
+  heading: Immunoprecipitate
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+growth_condition:
+  heading: Growth condition
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+rnai:
+  heading: RNAi
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+rnai_2:
+  heading: RNAi
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+organism_part:
+  heading: Organism part
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+time_point:
+  heading: Time Point
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+treatment:
+  heading: Treatment
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+subject:
+  heading: Subject
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+disease:
+  heading: Disease
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+donor_id_2:
+  heading: DONOR ID (required for cancer samples)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:

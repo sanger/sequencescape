@@ -17,7 +17,6 @@ class Request < ActiveRecord::Base
   include Uuid::Uuidable
   include AASM
   include Commentable
-  include Proxyable
   include StandardNamedScopes
   include Request::Statemachine
   extend Request::Statistics
@@ -150,7 +149,7 @@ class Request < ActiveRecord::Base
 
   has_many :submission_siblings, ->() { where(:request_type_id => request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
 
-  scope :with_request_type_id, ->(id) { { :conditions => { :request_type_id => id } } }
+  scope :with_request_type_id, ->(id) { where(request_type_id: id) }
 
   scope :for_pacbio_sample_sheet, -> { includes([{:target_asset=>:map},:request_metadata]) }
 
@@ -229,7 +228,7 @@ class Request < ActiveRecord::Base
   scope :join_asset,  -> { joins(:asset)}
   scope :with_asset_location, -> { includes(:asset => :map) }
 
-  scope :siblings_of, ->(request) { { :conditions => ['asset_id = ? AND NOT id = ?', request.asset_id, request.id ] } }
+  scope :siblings_of, ->(request) { where(asset_id:request.asset_id).where.not(id:request.id) }
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
@@ -253,8 +252,8 @@ class Request < ActiveRecord::Base
     where([states.map{|s| '(state != ?)' }.join(" OR "), states].flatten)
   }
   scope :ordered, -> { order("id ASC") }
-  scope :full_inbox, -> { where(:state => ["pending","hold"]) }
-  scope :hold, -> { where(:state => "hold") }
+  scope :full_inbox, -> { where(state: ["pending","hold"]) }
+  scope :hold, -> { where(state: "hold") }
 
   scope :loaded_for_inbox_display, -> { includes([{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}])}
   scope :loaded_for_grouped_inbox_display, -> { includes([ {:submission => :orders}, :asset , :target_asset, :request_type ])}
@@ -277,8 +276,8 @@ class Request < ActiveRecord::Base
     ))
   end
 
-  scope :for_submission_id, ->(id) { { :conditions => { :submission_id => id } } }
-  scope :for_asset_id, ->(id) { { :conditions => { :asset_id => id } } }
+  scope :for_submission_id, ->(id) { where(submission_id:id)  }
+  scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
        joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
        where(['al.study_id IN (?)',ids]).uniq
@@ -306,60 +305,36 @@ class Request < ActiveRecord::Base
   def self.for_study(study)
     Request.for_study_id(study.id)
   end
-  def self.for_studies(studies)
-    for_study_ids(studies.map(&:id))
-  end
 
- scope :for_initial_study_id, ->(id) { { :conditions  => {:initial_study_id => id } }
-}
-
-
-
+  scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
   delegate :study, :study_id, :to => :asset, :allow_nil => true
 
- scope :for_workflow, ->(workflow) { joins(:workflow).where(:workflow => { :key => workflow })  }
- scope :for_request_types, ->(types) { joins(:request_type).where(:request_types => { :key => types }) }
+  scope :for_workflow, ->(workflow) { joins(:workflow).where(:workflow => { :key => workflow })  }
+  scope :for_request_types, ->(types) { joins(:request_type).where(:request_types => { :key => types }) }
 
- scope :for_search_query, ->(query,with_includes) {
-    where([ 'id=?', query ])
-  }
+  scope :for_search_query, ->(query,with_includes) {
+     where([ 'id=?', query ])
+   }
 
-  scope :find_all_target_asset, ->(target_asset_id) {
-    where(['target_asset_id = ?', "#{target_asset_id}" ])
-  }
-  scope :for_studies, ->(*studies) {
-    where(:initial_study_id => studies.map(&:id))
-  }
+   scope :find_all_target_asset, ->(target_asset_id) {
+     where(['target_asset_id = ?', "#{target_asset_id}" ])
+   }
+   scope :for_studies, ->(*studies) {
+     where(:initial_study_id => studies)
+   }
+
 
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{:asset=>:aliquots,:target_asset=>:aliquots}]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
-  #------
-  #TODO: use eager loading association
-  def self.get_holder_asset_id_map(request_ids)
-    # the alias request_id to  id is a trick to store request_id in a existing attribute of Asset.
-    rows = ContainerAssociation.find(:all, :joins => "INNER JOIN requests ON content_id = asset_id" , :select => "requests.id id, container_id", :conditions => ["requests.id IN  (?)", request_ids])
-    # now , we transform the result into a Hash : request_ids -> holder id
-    h = {}
-    rows.each do |row|
-      h[row.id] = row.container_id
-    end
 
-    return h
+  # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
+  def self.get_target_plate_ids(request_ids)
+    ContainerAssociation.joins("INNER JOIN requests ON content_id = target_asset_id").
+      where(["requests.id IN  (?)", request_ids]).uniq.pluck(:container_id)
   end
 
-  def self.get_target_holder_asset_id_map(request_ids)
-    # the alias request_id to  id is a trick to store request_id in a existing attribute of Asset.
-    rows = ContainerAssociation.find(:all, :joins => "INNER JOIN requests ON content_id = target_asset_id" , :select => "requests.id id, container_id", :conditions => ["requests.id IN  (?)", request_ids])
-    # now , we transform the result into a Hash : request_ids -> holder id
-    h = {}
-    rows.each do |row|
-      h[row.id] = row.container_id
-    end
-
-    return h
-  end
 
   # The options that are required for creation.  In other words, the truly required options that must
   # be filled in and cannot be changed if the asset we're creating is used downstream.  For example,
@@ -445,7 +420,7 @@ class Request < ActiveRecord::Base
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
-    Request.count(:conditions => "submission_id = #{submission_id} and request_type_id = #{request_type_id}")
+    Request.where(submission_id:submission_id,request_type_id: request_type_id )
   end
 
   def return_pending_to_inbox!

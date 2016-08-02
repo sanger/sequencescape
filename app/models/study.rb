@@ -147,7 +147,7 @@ class Study < ActiveRecord::Base
     where(['aliquots.receptacle_id IN (?)',assets.map(&:id)])
   }
 
-  scope :alphabetical, ->() { order('name ASC') }
+  scope :alphabetical, ->() { order(:name) }
   scope :for_listing, ->()  { select('name, id') }
 
   STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate']
@@ -379,12 +379,12 @@ class Study < ActiveRecord::Base
 
     def snp_parent_study
       return nil if self.snp_parent_study_id.nil?
-      self.class.first(:conditions => { :snp_study_id => self.snp_parent_study_id }, :include => :study).try(:study)
+      self.class.where(:snp_study_id => self.snp_parent_study_id).includes(:study).try(:study)
     end
 
     def snp_child_studies
       return nil if self.snp_study_id.nil?
-      self.class.all(:conditions => { :snp_parent_study_id => self.snp_study_id }, :include => :study).map(&:study)
+      self.class.where(:snp_parent_study_id => self.snp_study_id).includes(:study).map(&:study)
     end
   end
 
@@ -395,6 +395,7 @@ class Study < ActiveRecord::Base
   alias_method_chain(:validating_ena_required_fields=, :enforce_data_release)
 
   def warnings
+    # These studies are now invalid, but the warning should remain until existing studies are fixed.
     if study_metadata.managed? && study_metadata.data_access_group.blank?
       "No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people."
     end
@@ -436,17 +437,10 @@ class Study < ActiveRecord::Base
 
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil, &block)
-    conditions = { }
-    conditions[:conditions] = "asset_id IN (#{assets.map(&:id).join(',')})" unless assets.blank?
-    yield(self.initial_requests.asset_statistics(conditions))
+    wheres = { }
+    wheres = {asset_id: assets.map(&:id)} unless assets.blank?
+    yield(self.initial_requests.asset_statistics(wheres))
   end
-
-  #  Old code put here for reference. If I forget to remove it, please do it for me!
-  # def sample_progress(samples = nil, &block)
-  #   conditions = { }
-  #   conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
-  #   yield(self.requests.sample_statistics(conditions))
-  # end
 
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
   def sample_progress(samples = nil, &block)

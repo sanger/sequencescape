@@ -3,12 +3,12 @@
 #Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 Given /^I release the last completed batch$/ do
-  batch =Batch.find(:last, :conditions => {:state => "Completed"})
+  batch =Batch.where(state:"Completed").last
   visit release_batch_path(batch)
 end
 
 Given /^I finish the last started batch$/ do
-  batch =Batch.find(:last, :conditions => {:state => "Started"})
+  batch =Batch.where(state:"Started").last
   visit finish_batch_path(batch)
 end
 

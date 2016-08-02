@@ -18,7 +18,7 @@ class AddHistoricEvents < ActiveRecord::Migration
         sc.target.wells.each do |well|
           next if well.requests_as_target.empty? || well.requests_as_target.first.failed?
           rat = well.requests_as_target.first
-          orders << Request::LibraryCreation.find(:first,:conditions=>{:asset_id=>rat.asset_id,:submission_id=>rat.submission_id},:select=>'order_id').order_id
+          orders << Request::LibraryCreation.where(asset_id: rat.asset_id,submission_id: rat.submission_id).limit(1).pluck(:order_id).first
         end
         orders.each do |order_id|
           BroadcastEvent::LibraryStart.create!(:seed=>plate,:user=>user,:properties=>{:order_id=>order_id},:created_at=>sc.created_at)
@@ -76,7 +76,7 @@ class AddHistoricEvents < ActiveRecord::Migration
           next if BroadcastEvent::SequencingStart.find_by_seed_id_and_seed_type(batch.id,'Batch').present?
           r = batch.requests.first
           next if r.nil?
-          re = r.request_events.find(:first,:conditions=>{:to_state => 'started'},:order=>'id ASC')
+          re = r.request_events.where(to_state:'started').order(:id).first
           next if re.nil?
           time = re.current_from
           BroadcastEvent::SequencingStart.create!(:seed=>batch,:user=>batch.user,:properties=>{},:created_at=>time)

@@ -5,8 +5,7 @@
 class RequestFactory
   def self.copy_request(request)
     ActiveRecord::Base.transaction do
-
-      request.class.create!(request.attributes) do |request_copy|
+      request.class.create!(request.attributes.except('id','created_at','updated_at')) do |request_copy|
         request_copy.target_asset_id = nil
         request_copy.state           = "pending"
         request_copy.request_metadata_attributes = request.request_metadata.attributes

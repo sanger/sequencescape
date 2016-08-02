@@ -24,7 +24,7 @@ class PlateConversion < ActiveRecord::Base
 
   def convert_target
     target.convert_to(purpose)
-    AssetLink.create!(:ancestor_id => parent.id, :descendant_id => target.id) if parent.present?
+    AssetLink.create_edge(parent, target) if parent.present?
   end
 
 end

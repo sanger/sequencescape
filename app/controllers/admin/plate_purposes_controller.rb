@@ -10,7 +10,7 @@ class Admin::PlatePurposesController < ApplicationController
   before_filter :discover_plate_purpose, :only => [:show, :edit, :update, :destroy]
 
   def index
-    plate_purposes = PlatePurpose.find(:all)
+    plate_purposes = PlatePurpose.all
     @plate_purposes = plate_purposes.map{ |purpose| purpose.becomes(PlatePurpose) }
 
     respond_to do |format|

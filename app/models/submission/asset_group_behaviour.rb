@@ -54,7 +54,7 @@ module Submission::AssetGroupBehaviour
   private :create_our_asset_group
 
   def find_asset_group
-    self.asset_group = self.study.asset_groups.first(:conditions => { :name => asset_group_name }) unless asset_group_name.blank?
+    self.asset_group = study.asset_groups.find_by(:name => asset_group_name) unless asset_group_name.blank?
     true
   end
   private :find_asset_group

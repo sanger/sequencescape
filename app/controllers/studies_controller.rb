@@ -27,7 +27,7 @@ class StudiesController < ApplicationController
       ]
       @studies = studies_from_scope(@alternatives[params[:scope].to_i])
     elsif params[:project_id] && !(project = Project.find(params[:project_id])).nil?
-      @studies = project.studies(:include => [:user, :roles], :order => 'created_at desc')
+      @studies = project.studies.newest_first.includes(:user, :roles)
     else
       @studies = Study.newest_first.with_user_included.with_related_users_included
     end
@@ -165,9 +165,9 @@ class StudiesController < ApplicationController
 
   def collaborators
     @study    = Study.find(params[:id])
-    @all_roles  = Role.all(:select => " distinct `name`")
-    @roles      = Role.find(:all, :conditions => {:authorizable_id => @study.id, :authorizable_type => "Study"})
-    @users      = User.all(:order => :first_name)
+    @all_roles  = Role.select(:name).uniq
+    @roles      = Role.where(:authorizable_id => @study.id, :authorizable_type => "Study")
+    @users      = User.order(:first_name)
   end
 
   def related_studies
@@ -418,7 +418,7 @@ class StudiesController < ApplicationController
 
    def sample_manifests
      @study = Study.find(params[:id])
-     @sample_manifests = @study.sample_manifests.paginate(:page => params[:page])
+     @sample_manifests = @study.sample_manifests.paginate(page: params[:page], order: 'id DESC')
    end
 
    def suppliers

@@ -361,17 +361,15 @@ class RequestTest < ActiveSupport::TestCase
       setup do
 
         @open_states = ["pending", "started"]
-        @closed_states = ["passed", "failed", "cancelled", "aborted"]
+        @closed_states = ["passed", "failed", "cancelled"]
 
         @all_states = @open_states + @closed_states
-
-        assert_equal 6, @all_states.size
 
         @all_states.each do |state|
           create :request, :state => state
         end
 
-        assert_equal 6, Request.count
+        assert_equal @all_states.size, Request.count
       end
       context "open requests" do
         should "total right number" do
@@ -406,7 +404,7 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal true, @library_creation_request.ready?
       end
 
-      should "check a sequencing request is not ready if any of the library creation requests is not in a closed status type (passed, failed, aborted, cancelled)" do
+      should "check a sequencing request is not ready if any of the library creation requests is not in a closed status type (passed, failed, cancelled)" do
         assert_equal false, @sequencing_request.ready?
       end
 

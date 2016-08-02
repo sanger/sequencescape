@@ -128,13 +128,11 @@ class Map < ActiveRecord::Base
   end
 
  scope :for_position_on_plate, ->(position,plate_size,asset_shape) {
-    {
-      :conditions => {
+    where(
         :row_order    => position - 1,
         :asset_size     => plate_size,
         :asset_shape_id => asset_shape.id
-      }
-    }
+    )
   }
 
   scope :where_description, ->(*descriptions) { where(:description => descriptions.flatten) }
@@ -290,7 +288,7 @@ class Map < ActiveRecord::Base
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
     def walk_plate_in_column_major_order(size, asset_shape=nil, &block)
       asset_shape ||= AssetShape.default_id
-      self.all(:conditions => { :asset_size => size, :asset_shape_id => asset_shape }, :order => 'column_order ASC').each do |position|
+      where(:asset_size => size, :asset_shape_id => asset_shape).order(:column_order).each do |position|
         yield(position, position.column_order)
       end
     end
@@ -299,7 +297,7 @@ class Map < ActiveRecord::Base
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
     def walk_plate_in_row_major_order(size, asset_shape=nil, &block)
       asset_shape ||= AssetShape.default_id
-      self.all(:conditions => { :asset_size => size, :asset_shape_id => asset_shape }, :order => 'row_order ASC').each do |position|
+      where(:asset_size => size, :asset_shape_id => asset_shape).order(:row_order).each do |position|
         yield(position, position.row_order)
       end
     end

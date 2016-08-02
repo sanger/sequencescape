@@ -138,7 +138,7 @@ class WorkflowsController < ApplicationController
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
   def stage
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
 
@@ -182,7 +182,7 @@ class WorkflowsController < ApplicationController
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.requests
 
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @task = task
   end
 

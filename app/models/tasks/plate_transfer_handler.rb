@@ -19,7 +19,7 @@ module Tasks::PlateTransferHandler
   def find_or_create_target(task)
     return target_plate if target_plate.present?
     # We only eager load the request stuff if we actually need it.
-    batch_requests = @batch.requests.find(:all,:include=>includes_for_plate_creation)
+    batch_requests = @batch.requests.includes(includes_for_plate_creation)
     source_wells = batch_requests.map {|r| r.asset}
     raise InvalidBatch if unsuitable_wells?(source_wells)
 
@@ -46,7 +46,9 @@ module Tasks::PlateTransferHandler
   end
 
   def target_plate
-    transfer = TransferRequest.siblings_of(@batch.requests.first).for_submission_id(@batch.requests.first.submission_id).find(:first,:include=>{:target_asset=>:plate})
+    transfer = TransferRequest.siblings_of(@batch.requests.first).
+      for_submission_id(@batch.requests.first.submission_id).
+      includes(:target_asset=>:plate).first
     return nil unless transfer.present?
     transfer.target_asset.plate
   end

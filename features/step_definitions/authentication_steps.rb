@@ -31,7 +31,10 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |type_of_user, log
     :workflow_id => wk.id
   )
 
-  @current_user.roles << FactoryGirl.create(:role, :name => type_of_user)
+  role_names = type_of_user.split("and").collect(&:strip)
+
+  role_names.each { |name| @current_user.roles << FactoryGirl.create(:role, name: name)}
+
   # :create syntax for restful_authentication w/ aasm. Tweak as needed.
   # @current_user.activate!
 

@@ -167,8 +167,8 @@ class Uuid < ActiveRecord::Base
 
   # ids is a string of internal_ids
   def self.filter_uncreated_uuids(resource_type, resource_ids)
-    existing_uuids = all(:conditions => { :resource_type => resource_type, :resource_id => resource_ids })
-    resource_ids - existing_uuids.map(&:resource_id)
+    existing_uuids = where(resource_type: resource_type, resource_id: resource_ids)
+    resource_ids - existing_uuids.pluck(:resource_id)
   end
 
   def self.generate_all_uuids_for_class(base_class_name)

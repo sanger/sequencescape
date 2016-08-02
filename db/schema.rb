@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160519124121) do
+ActiveRecord::Schema.define(version: 20160802085015) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -797,6 +797,7 @@ ActiveRecord::Schema.define(version: 20160519124121) do
     t.integer  "user_id",    limit: 4, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "parent_id",  limit: 4
   end
 
   create_table "plate_creator_parent_purposes", force: :cascade do |t|

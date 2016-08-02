@@ -25,25 +25,15 @@ class AssetGroup < ActiveRecord::Base
   end
 
   def unaccessioned_samples
-    Sample.find(:all,
-      :joins => [
-        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-        'INNER JOIN sample_metadata ON sample_metadata.sample_id = samples.id'
-        ],
-        :conditions => ['aliquots.receptacle_id IN (?) AND sample_ebi_accession_number IS NULL',assets.map(&:id)]
-    )
+    Sample.joins(:aliquots,:sample_metadata).
+      where(aliquots:{receptacle_id:assets.map(&:id)}, sample_metadata: { sample_ebi_accession_number: nil})
   end
 
   def self.find_or_create_asset_group(new_assets_name, study)
     # Is new name set or create group
     asset_group = nil
-    if ! new_assets_name.empty?
-      asset_group = AssetGroup.find(:first,:conditions => [" name = ? ", new_assets_name ])
-      if asset_group.nil?
-        #create new asset group
-        asset_group = AssetGroup.create(:name => new_assets_name, :study => study)
-        asset_group.save
-      end
+    if new_assets_name.present?
+      asset_group = AssetGroup.create_with(study:study).find_or_create_by(:name => new_assets_name)
     end
     return asset_group
   end

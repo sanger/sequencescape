@@ -3,13 +3,11 @@
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class PicoDilutionsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+
   before_filter :login_required, :except => [:index]
 
   def index
-    pico_dilutions = DilutionPlate.with_pico_children.paginate :page => params[:page], :order => 'id DESC', :per_page => 500
+    pico_dilutions = DilutionPlate.with_pico_children.page(params[:page]).order('id DESC').per_page(500)
     pico_dilutions_hash = PicoDilutionPlate.index_to_hash(pico_dilutions)
 
     respond_to do |format|

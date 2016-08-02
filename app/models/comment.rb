@@ -18,7 +18,7 @@ class Comment < ActiveRecord::Base
     # Rails handles counts on group statements strangely (See the Comments proxy on plate)
 
     if submissions.present?
-      rids = Request.find(:all,:select=>'id',:conditions=>{:submission_id=>submissions}).map(&:id)
+      rids = Request.where(:submission_id=>submissions).pluck(:id)
       where([
         '(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',
         rids,plate.id
@@ -33,7 +33,7 @@ class Comment < ActiveRecord::Base
 
   }
 
-  scope :include_uuid, -> { where('TRUE') }
+  scope :include_uuid, -> { all }
 
   def self.counts_for(commentables)
     return 0 if commentables.empty?

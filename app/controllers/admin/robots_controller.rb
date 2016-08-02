@@ -9,7 +9,7 @@ class Admin::RobotsController < ApplicationController
   before_filter :find_robot_by_id, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @robots = Robot.find(:all)
+    @robots = Robot.all
 
     respond_to do |format|
       format.html

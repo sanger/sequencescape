@@ -13,7 +13,7 @@ module Commentable
             conditions[:id]=ids
           end
 
-          count(:group => :commentable_id, :conditions => conditions)
+          group(:commentable_id).where(conditions).count
         end
       end
       def self.get_comment_count(ids=nil)

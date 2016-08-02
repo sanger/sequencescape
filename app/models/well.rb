@@ -194,7 +194,7 @@ class Well < Aliquot::Receptacle
 
   def update_gender_markers!(gender_markers, resource)
     if self.well_attribute.gender_markers == gender_markers
-      gender_marker_event = self.events.find_by_family('update_gender_markers', :order => 'id desc')
+      gender_marker_event = self.events.where(family:'update_gender_markers').order('id desc').first
       if gender_marker_event.blank?
         self.events.update_gender_markers!(resource)
       elsif resource == 'SNP'  && gender_marker_event.content != resource

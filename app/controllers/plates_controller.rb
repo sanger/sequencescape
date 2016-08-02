@@ -9,7 +9,7 @@ class PlatesController < ApplicationController
   before_filter :login_required, :except => [:upload_pico_results, :fluidigm_file]
 
   def new
-    @plate_creators   = Plate::Creator.order('name ASC')
+    @plate_creators   = Plate::Creator.order(:name)
     @barcode_printers = BarcodePrinterType.find_by(name: "96 Well Plate").barcode_printers
     @barcode_printers = BarcodePrinter.order("name asc") if @barcode_printers.blank?
 

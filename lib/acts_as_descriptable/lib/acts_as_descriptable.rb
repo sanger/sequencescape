@@ -21,13 +21,13 @@ module ActiveRecord # :nodoc:
           end
           conditions.gsub!(/ or $/, "")
           logger.info "Searching for: " + conditions
-          self.find(:all, :conditions => conditions)
+          self.where(conditions)
         end
 
         def find_descriptors
           logger.info "Finding all descriptors"
           response = []
-          self.find(:all).each do |object|
+          self.find_each do |object|
             object.descriptors.each do |descriptor|
               response.push descriptor
             end

@@ -11,8 +11,8 @@ class BatchRequest < ActiveRecord::Base
   belongs_to :batch
   belongs_to :request, :inverse_of => :batch_request
 
-  scope :ordered, -> { order('position ASC') }
-  scope :at_position, ->(position) { { :conditions => { :position => position } } }
+  scope :ordered, -> { order(:position) }
+  scope :at_position, ->(position) { where(position: position) }
 
   # Ensure that any requests that are added have a position that is unique and incremental in the batch,
   # unless we're moving them around in the batch, in which case we assume it'll be valid.
@@ -31,7 +31,9 @@ class BatchRequest < ActiveRecord::Base
 
   # Each request can only belong to one batch.
   validates_uniqueness_of :request_id, :message => '%{value} is already in a batch.'
-  before_validation(:if => :requires_position?) { |record| record.position ||= (record.batch.batch_requests.map(&:position).compact.max || 0) + 1 }
+  before_validation(:if => :requires_position?, :unless=>:position?) do |record|
+    record.position = (record.batch.batch_requests.map(&:position).compact.max || 0) + 1
+  end
 
   def move_to_position!(position)
     update_attributes!(:sorting_requests_within_batch => true, :position => position)

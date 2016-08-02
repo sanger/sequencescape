@@ -58,9 +58,9 @@ class SubmissionsController < ApplicationController
     # Disable cache of this page
     self.expires_now
 
-    @building = Submission.building.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
-    @pending = Submission.pending.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
-    @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
+    @building = Submission.building.order(created_at: :desc).where(:user_id => current_user.id)
+    @pending = Submission.pending.order(created_at: :desc).where(:user_id => current_user.id)
+    @ready = Submission.ready.order(created_at: :desc).limit(10).where(:user_id => current_user.id)
   end
 
   def cancel

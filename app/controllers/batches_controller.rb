@@ -219,18 +219,18 @@ class BatchesController < ApplicationController
 
   def pending
     @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.pending.all(:order => "id DESC", :include => [:requests, :user, :pipeline])
+    @batches = @pipeline.batches.pending.order(id: :desc).includes([:requests, :user, :pipeline])
   end
 
   def started
     @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.started.all(:order => "id DESC", :include => [:requests, :user, :pipeline])
+    @batches = @pipeline.batches.started.order(id: :desc).includes([:requests, :user, :pipeline])
   end
 
   def released
     @pipeline = Pipeline.find(params[:id])
 
-    @batches = @pipeline.batches.released.all(:order => "id DESC", :include => [:user ])
+    @batches = @pipeline.batches.released.order(id: :desc).includes([:requests, :user, :pipeline])
     respond_to do |format|
       format.html
       format.xml { render :layout => false }
@@ -239,12 +239,12 @@ class BatchesController < ApplicationController
 
   def completed
     @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.completed.all(:order => "id DESC", :include => [:requests, :user, :pipeline])
+    @batches = @pipeline.batches.completed.order(id: :desc).includes([:requests, :user, :pipeline])
   end
 
   def failed
     @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.failed.all(:order => "id DESC", :include => [:requests, :user, :pipeline])
+    @batches = @pipeline.batches.failed.order(id: :desc).includes([:requests, :user, :pipeline])
   end
 
   def fail

@@ -8,7 +8,7 @@ class SequenomQcPlatesController < ApplicationController
   before_filter :evil_parameter_hack!
   def new
     @barcode_printers  = BarcodePrinterType.find_by_name("384 Well Plate").barcode_printers
-    @barcode_printers  = BarcodePrinter.find(:all, :order => "name asc") if @barcode_printers.blank?
+    @barcode_printers  = BarcodePrinter.order(:name) if @barcode_printers.blank?
     @input_plate_names = input_plate_names()
   end
 

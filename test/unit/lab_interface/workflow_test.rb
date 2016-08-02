@@ -30,8 +30,8 @@ class LabInterface::WorkflowTest < ActiveSupport::TestCase
         @workflow.deep_copy
       end
 
-       should "change LabInterface::Workflow.count by 1" do
-         assert_equal 1,  LabInterface::Workflow.count  - @labinterface_workflow_count, "Expected LabInterface::Workflow.count to change by 1"
+      should "change LabInterface::Workflow.count by 1" do
+        assert_equal 1,  LabInterface::Workflow.count  - @labinterface_workflow_count, "Expected LabInterface::Workflow.count to change by 1"
       end
 
        should "change Task.count by 1" do

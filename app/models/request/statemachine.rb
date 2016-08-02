@@ -10,7 +10,7 @@ module Request::Statemachine
   COMPLETED_STATE = [ 'passed', 'failed' ]
   OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
   ACTIVE = QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
-  INACTIVE = QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
+  INACTIVE = QUOTA_EXEMPTED  = [ 'failed', 'cancelled' ]
 
   module ClassMethods
     def redefine_aasm(options={},&block)
@@ -131,10 +131,9 @@ module Request::Statemachine
 
      scope :started,          -> { where(:state => "started") }
      scope :cancelled,        -> { where(:state => "cancelled") }
-     scope :aborted,          -> { where(:state => "aborted") }
 
      scope :opened,           -> { where(:state => OPENED_STATE) }
-     scope :closed,           -> { where(:state => ["passed", "failed", "cancelled", "aborted"]) }
+     scope :closed,           -> { where(:state => ["passed", "failed", "cancelled"]) }
 
     end
   end

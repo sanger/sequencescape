@@ -36,13 +36,13 @@ class Lot < ActiveRecord::Base
 
  scope :include_lot_type, -> { includes(:lot_type) }
  scope :include_template, -> { includes(:template) }
- scope :with_lot_number,  ->(lot_number) { {:conditions=>{:lot_number=>lot_number} } }
+ scope :with_lot_number,  ->(lot_number) { where(lot_number: lot_number) }
 
  scope :with_qc_asset, ->(qc_asset) {
-    return { :conditions => 'FALSE' } if qc_asset.nil?
+    return none if qc_asset.nil?
     sibling = qc_asset.transfers_as_destination.first.source
 
-    includes(:qcables).where(['qcables.asset_id IN(?) AND qcables.state != ?',[qc_asset.id,sibling.id],'exhausted' ])
+    includes(:qcables).where(qcables:{asset_id:qc_asset, state: 'exhausted'})
   }
 
   private

@@ -18,9 +18,9 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "have begin in pending then change to started" do
-      assert_equal @batch.aasm_current_state, :pending
+      assert_equal @batch.state, :pending
       @batch.start!(create(:user))
-      assert_equal @batch.aasm_current_state, :started
+      assert_equal @batch.state, :started
       assert_equal @batch.started?, true
     end
 
@@ -122,10 +122,10 @@ end
     end
 
     should "have initially have a pending status for batch requests" do
-      assert_equal :pending, @batch.requests.first.aasm_current_state
+      assert_equal :pending, @batch.requests.first.state
       @batch.start!(create(:user))
-      assert_equal :started, @batch.aasm_current_state
-      assert_equal :started, @batch.requests(true).first.aasm_current_state
+      assert_equal :started, @batch.state
+      assert_equal :started, @batch.requests(true).first.state
     end
 
     context "#remove_request_ids" do
@@ -136,8 +136,8 @@ end
             @batch.remove_request_ids([ @request2.id],'Reason','Comment')
           end
           should "leave 2 requests behind" do
-            assert_not_nil @batch.requests.find(@request2)
-            assert_not_nil @batch.requests.find(@request1)
+            assert_not_nil @batch.requests.find(@request2.id)
+            assert_not_nil @batch.requests.find(@request1.id)
             assert_equal @batch_requests_count, @batch.requests.count
           end
         end
@@ -148,7 +148,6 @@ end
       setup do
         @asset_count =  Asset.count
         @requests    = (1..4).map { |_| create(:request, :request_type => @pipeline.request_types.last) }
-        @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
         @batch       = @pipeline.batches.create!(:requests => @requests)
       end
 
@@ -231,8 +230,8 @@ end
       end
 
       should "return correct studies" do
-        assert @batch.requests.for_studies(@study1).include?(@request1)
-        assert @batch.requests.for_studies(@study2).include?(@request2)
+        assert_includes @batch.requests.for_studies(@study1), @request1
+        assert_includes @batch.requests.for_studies(@study2), @request2
         assert @batch.requests.for_studies(@study3).all.empty?
       end
     end
@@ -305,7 +304,6 @@ end
       setup do
         @asset_count =  Asset.count
         @requests = (1..4).map { |_| create(:request, :request_type => @pipeline.request_types.last) }
-        @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
         @batch = @pipeline.batches.create!(:requests => @requests)
       end
 
@@ -319,12 +317,12 @@ end
       end
 
       should "have the good number of request associated" do
-        assert_equal @request_ids.size , @batch.batch_requests.count
+        assert_equal @requests.size , @batch.batch_requests.count
       end
 
       should "have request position corresponding to the request creation order" do
         @batch.batch_requests.each do |br|
-          assert_equal @request_ids[br.position-1].id ,  br.request_id
+          assert_equal @requests[br.position-1].id ,  br.request_id
         end
       end
     end
@@ -490,7 +488,8 @@ end
       should "reorder requests by increasing request.position if it's > 3" do
         create :batch_request, :batch => @batch, :position => 6
         create :batch_request, :batch => @batch, :position => 8
-        v = @batch.shift_item_positions(4,1)
+        @batch.shift_item_positions(4,1)
+        v = @batch.ordered_requests
         # assert_equal 3, v[2].id # make sure that requests are the same
         # assert_equal 4, v[3].id # make sure that requests are the same
         assert_equal 9, v[3].position # make sure that requests.position was increased properly

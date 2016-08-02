@@ -7,11 +7,9 @@ module ApplicationHelper
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
     Rails.cache.fetch("#{identifier}-#{differential}") do
-      custom_text = CustomText.first(
-        :conditions => {
-          :identifier   => identifier,
-          :differential => differential
-        }
+      custom_text = CustomText.find_by(
+        :identifier   => identifier,
+        :differential => differential
       )
 
       #.debug

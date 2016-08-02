@@ -82,10 +82,9 @@ class Asset < ActiveRecord::Base
   scope :position_name, ->(*args) {
     joins(:map).where(["description = ? AND asset_size = ?", args[0], args[1]])
   }
-  scope :get_by_type, ->(*args) { {:conditions => { :sti_type => args[0]} } }
   scope :for_summary, -> { includes([:map,:barcode_prefix]) }
 
-  scope :of_type, ->(*args) { { :conditions => { :sti_type => args.map { |t| [t, *t.descendants] }.flatten.map(&:name) } } }
+  scope :of_type, ->(*args) {  where(:sti_type => args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
   scope :recent_first, -> { order('id DESC') }
 
@@ -131,12 +130,15 @@ class Asset < ActiveRecord::Base
 
     search <<')'
 
-    {
-      :conditions => [ search, arguments ]
-    }.tap {|cond| cond.merge!(:include => :requests, :order => 'requests.pipeline_id ASC') if with_includes }
+    if with_includes
+      where(search, arguments)
+    else
+      where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
+    end
+
   }
 
- scope :with_name, ->(*names) { { :conditions => { :name => names.flatten } } }
+ scope :with_name, ->(*names) {  where(name: names.flatten) }
 
   extend EventfulRecord
   has_many_events do
@@ -209,7 +211,7 @@ class Asset < ActiveRecord::Base
   has_one :creation_request, :class_name => 'Request', :foreign_key => :target_asset_id
 
   def label
-    self.sti_type || 'Unknown'
+    sti_type || 'Unknown'
   end
 
   def label=(new_type)
@@ -217,15 +219,15 @@ class Asset < ActiveRecord::Base
   end
 
   def request_types
-    RequestType.find(:all, :conditions => {:asset_type => label})
+    RequestType.where(:asset_type => label)
   end
 
   def scanned_in_date
-    self.scanned_into_lab_event.try(:content) || ''
+    scanned_into_lab_event.try(:content) || ''
   end
 
   def moved_to_2D_tube_date
-    self.moved_to_2d_tube_event.try(:content) || ''
+    moved_to_2d_tube_event.try(:content) || ''
   end
 
   def create_asset_group_wells(user, params)
@@ -400,25 +402,23 @@ class Asset < ActiveRecord::Base
         if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
           { :query => 'FALSE' }
         else
-          { :query => '(barcode=? AND barcode_prefix_id=?)', :conditions => [ barcode_number, barcode_prefix.id ] }
+          { :query => '(barcode=? AND barcode_prefix_id=?)', :parameters => [ barcode_number, barcode_prefix.id ] }
         end
       when /^\d{10}$/ # A Fluidigm barcode
-        { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query=>'(pmmb.fluidigm_barcode=?)', :conditions => source_barcode.to_s }
+        { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query=>'(pmmb.fluidigm_barcode=?)', :parameters => source_barcode.to_s }
       else
         { :query => 'FALSE' }
       end
-    end.inject({ :query => ['FALSE'], :conditions => [nil], :joins=>[] }) do |building, current|
+    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins=>[] }) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]
-        building[:conditions] << current[:conditions]
+        building[:parameters] << current[:parameters]
       end
     end
 
-    {
-      :conditions => [ query_details[:query].join(' OR '), *query_details[:conditions].flatten.compact ],
-      :joins => query_details[:joins].compact.uniq
-    }
+      where([ query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact ]).
+      joins(query_details[:joins].compact.uniq)
   }
 
 
@@ -427,12 +427,12 @@ class Asset < ActiveRecord::Base
     if destination_asset
       source_asset_ids = destination_asset.parents.map(&:id)
       unless source_asset_ids.empty?
-        { :conditions => ["id IN (?)",source_asset_ids ] }
+         where(id:source_asset_ids)
       else
-        { :conditions => 'FALSE' }
+        none
       end
     else
-      { :conditions => 'FALSE' }
+      none
     end
   }
 

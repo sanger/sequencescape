@@ -302,7 +302,7 @@ Given /^there are no samples$/ do
   # To bypass all the callbacks
   # That trigger when they die
   Sample.delete_all
-  Uuid.find(:all,:conditions=>{:resource_type=>'Sample'}).each(&:destroy)
+  Uuid.where(:resource_type=>'Sample').each(&:destroy)
 end
 
 Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|

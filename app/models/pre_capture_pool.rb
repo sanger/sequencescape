@@ -61,14 +61,14 @@ class PreCapturePool < ActiveRecord::Base
     def build!
       ActiveRecord::Base.transaction do
         return if poolable_type.nil?
-        submission.requests.find(:all, {
-          :joins => ['JOIN orders ON orders.id = requests.order_id','JOIN assets ON assets.id = requests.asset_id','JOIN maps ON maps.id = assets.map_id'],
-          :conditions=>['request_type_id = ?', library_creation_type ],
-          :order=>'maps.column_order ASC, id ASC'
-        }).group_by {|r| r.order.pre_cap_group||"o#{r.order_id}"}.each do |_,requests|
-          plex   = requests.first.order.request_options['pre_capture_plex_level'].to_i
-          offset.times { requests.map!{|r| submission.next_requests(r) }}
-          pool(requests, plex)
+        submission.requests.
+          joins(['JOIN orders ON orders.id = requests.order_id','JOIN assets ON assets.id = requests.asset_id','JOIN maps ON maps.id = assets.map_id']).
+          where(request_type_id: library_creation_type).
+          order('maps.column_order ASC, id ASC').
+          group_by {|r| r.order.pre_cap_group||"o#{r.order_id}" }.each do |_,requests|
+            plex   = requests.first.order.request_options['pre_capture_plex_level'].to_i
+            offset.times { requests.map!{|r| submission.next_requests(r) }}
+            pool(requests, plex)
         end
       end
     end

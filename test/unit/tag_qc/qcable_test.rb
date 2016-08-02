@@ -36,7 +36,8 @@ class QcableTest < ActiveSupport::TestCase
       end
 
       should "create an asset of the given purpose" do
-        @qcable       = create :qcable, :lot => @mock_lot
+        factory_attributes = attributes_for :qcable, lot: @mock_lot
+        @qcable       = Qcable.create!(factory_attributes)
         assert_equal 'created', @qcable.state
       end
 
@@ -44,14 +45,18 @@ class QcableTest < ActiveSupport::TestCase
 
     context "#qcable pre-pending" do
       setup do
-        @mock_purpose = build :purpose,:default_state=>'pending'
+        @mock_purpose = build :tube_purpose, :default_state=>'pending'
         @template     = FactoryGirl.build(:tag2_layout_template)
-        @mock_lot     = create :tag2_lot
-        @mock_lot.expects(:target_purpose).returns(@mock_purpose).twice
+        @lot_type     = create :tag2_lot_type, target_purpose: @mock_purpose
+        @mock_lot     = create :tag2_lot, lot_type: @lot_type
       end
 
       should "create an asset of the given purpose" do
-        @qcable       = create :qcable, :lot => @mock_lot
+        # We can't use factory girl directly here, as it results in the initial state being
+        # set BEFORE the lot is assigned.
+        factory_attributes = attributes_for :qcable, lot: @mock_lot
+        @qcable       = Qcable.create!(factory_attributes)
+        assert_equal @mock_purpose, @qcable.asset.purpose
         assert_equal 'pending', @qcable.state
       end
 

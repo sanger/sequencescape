@@ -202,8 +202,8 @@ class Api::Base
   def self.lookup_associated_record_from(json_attributes, &block)
     attributes = convert_json_attributes_to_attributes(json_attributes)
     return unless attributes.key?(self.lookup_by)
-    conditions = { self.lookup_by => attributes[self.lookup_by] }
-    yield(self.association.to_s.classify.constantize.first(:conditions => conditions))
+    search_parameters = { self.lookup_by => attributes[self.lookup_by] }
+    yield(self.association.to_s.classify.constantize.where(search_parameters))
   end
 
   # Contains the mapping from the ActiveRecord attribute to the key in the JSON hash when listing objects

@@ -72,6 +72,7 @@ class Batch < ActiveRecord::Base
   scope :in_progress_for_ui, -> { where(:state => 'started',   :production_state => nil   ).latest_first }
 
   scope :latest_first,       -> { order('created_at DESC') }
+  scope :most_recent,     ->(number) { latest_first.limit(number) }
 
   delegate :size, :to => :requests
 
@@ -176,8 +177,6 @@ class Batch < ActiveRecord::Base
         batch_request.move_to_position!(batch_request.position + number)
       end
     end
-
-    ordered_requests
   end
 
   def assigned_user
@@ -213,7 +212,7 @@ class Batch < ActiveRecord::Base
   end
 
   def output_plates
-    holder_ids = Request.get_target_holder_asset_id_map(request_ids).values
+    holder_ids = Request.get_target_plate_ids
     Plate.find(holder_ids, :group => :barcode)
   end
 
@@ -353,7 +352,7 @@ class Batch < ActiveRecord::Base
 
   def return_request_to_inbox(request, current_user=nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{self.id} returned to inbox unstarted at #{Time.now()}", current_user) unless current_user.nil?
+      request.add_comment("Used to belong to Batch #{self.id} returned to inbox unstarted at #{Time.now}", current_user) unless current_user.nil?
       request.return_pending_to_inbox!
     end
   end
@@ -371,20 +370,21 @@ class Batch < ActiveRecord::Base
         self.return_request_to_inbox(request, current_user)
       end
 
-      if self.requests.last.submission_id.present?
-        requests = Request.where(submission_id: self.requests.last.submission_id,
-          :conditions => ['state = ? AND request_type_id NOT IN (?)', 'pending', self.pipeline.request_type_ids])
-        requests.each do |request|
-          request.asset_id = nil
-          request.save!
-        end
+      if requests.last.submission_id.present?
+        Request.where(submission_id: requests.last.submission_id,state: 'pending').
+          where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
+            request.asset_id = nil
+            request.save!
+          end
       end
     end
   end
 
   def parent_of_purpose(name)
     return nil if requests.empty?
-    requests.first.asset.ancestors.find(:first,:joins=>'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id',:conditions=>{:plate_purposes=>{:name=>name}})
+    requests.first.asset.ancestors.joins(
+      'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id').
+      where(:plate_purposes=>{:name=>name})
   end
 
   def swap(current_user, batch_info = {})
@@ -427,11 +427,6 @@ class Batch < ActiveRecord::Base
   has_many :source_assets,  ->() { distinct }, :through => :requests
   has_many :aliquots,  ->() { distinct }, :through => :source_assets
   has_many :samples,  ->() { distinct }, :through => :aliquots
-
-  def requests_by_study(*args)
-    self.requests.for_studies(*args).all
-  end
-  deprecate :requests_by_study
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(self.requests.for_studies(study))
@@ -494,7 +489,7 @@ class Batch < ActiveRecord::Base
   end
 
   def request_count
-    BatchRequest.count(:conditions => ["batch_id = ?", self.id ])
+    requests.count
   end
 
   def pulldown_batch_report

@@ -5,7 +5,7 @@
 
 module SharedBehaviour::Immutable
 
-  MUTABLE = ['deprecated_at']
+  MUTABLE = ['deprecated_at','updated_at']
 
   def self.included(base)
     base.class_eval do

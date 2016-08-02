@@ -8,13 +8,13 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
 
   def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
-    tube.requests_as_target.all(not_terminated).each do |request|
+    tube.requests_as_target.where.not(state:terminated_states).each do |request|
       request.transition_to(state)
     end
     outer_requests_for(tube).each do |request|
       request.customer_accepts_responsibility! if customer_accepts_responsibility
       request.transition_to(state)
-    end if ['cancelled','failed','aborted'].include?(state)
+    end if terminated_states.include?(state)
   end
 
   def outer_requests_for(tube)
@@ -23,10 +23,10 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
     end.uniq
   end
 
-  def not_terminated
-    {:conditions=>[ 'state NOT IN (?)',['cancelled','failed','aborted']]}
+  def terminated_states
+    ['cancelled','failed']
   end
-  private :not_terminated
+  private :terminated_states
 
   def pool_id(tube)
     tube.requests_as_target.first.submission_id

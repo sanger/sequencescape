@@ -4,21 +4,20 @@
 
 class DilutionPlate < Plate
 
+  has_many :pico_descendants, ->() { where(:sti_type=>[PicoAssayPlate,PicoAssayAPlate,PicoAssayBPlate].map(&:name)) },
+    :through => :links_as_ancestor, :source => :descendant
+
   # We have to put the asset_links.direct condition on here, rather than go through :links_as_parent as it seems that
   # rails doesn't cope with conditions on has_many_through relationships where the relationship itself also have conditions
   scope :with_pico_children,  -> {
     joins(:pico_descendants).
-    select('DISTINCT `assets`.*').
-    where(:asset_links=>{:direct =>true})
+    select('`assets`.*').
+    where(:asset_links=>{:direct =>true}).
+    uniq
   }
 
-  has_many :pico_descendants,
-    :through => :links_as_ancestor,
-    :conditions => { :sti_type=>[PicoAssayPlate,PicoAssayAPlate,PicoAssayBPlate].map(&:name) },
-    :source => :descendant
-
   def pico_children
-    pico_descendants.find(:all,:conditions=>['asset_links.direct = ?',true])
+    pico_descendants.where(['asset_links.direct = ?',true])
   end
 
   def to_pico_hash

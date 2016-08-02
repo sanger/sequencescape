@@ -8,7 +8,7 @@ class Pulldown::InitialDownstreamPlatePurpose < IlluminaHtp::InitialDownstreamPl
 
   def stock_wells(plate,contents)
     return plate.parents.map {|parent| parent.wells}.flatten unless contents.present?
-    Well.find(:all, :joins => :requests, :conditions => {:requests => {:target_asset_id => plate.wells.located_at(contents).map(&:id)}})
+    Well.joins(:requests).where(:requests => {:target_asset_id => plate.wells.located_at(contents).pluck(:id)})
   end
 
   def supports_multiple_submissions?; true; end

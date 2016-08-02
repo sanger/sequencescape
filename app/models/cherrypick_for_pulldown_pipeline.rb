@@ -34,7 +34,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
   end
 
   def all_request_from_submissions_filtered_by_request_type(submissions, request_type)
-    Request.where(submission_id: submissions.map(&:id), :conditions => ["request_type_id = #{request_type.id}"])
+    Request.where(submission_id: submissions, request_type_id: request_type )
   end
   private :all_request_from_submissions_filtered_by_request_type
 

@@ -11,8 +11,8 @@ class Robot < ActiveRecord::Base
   has_one :max_plates_property, ->() { where(:key => 'max_plates') }, :class_name => 'RobotProperty'
 
  scope :with_machine_barcode, ->(barcode) {
-    barcode_number = Barcode.number_to_human(barcode)
-    { :conditions => [ 'barcode=? AND ?', barcode_number, Barcode.prefix_from_barcode(barcode)==prefix ] }
+    return none unless Barcode.prefix_from_barcode(barcode) == prefix
+    where(barcode: Barcode.number_to_human(barcode))
   }
 
   scope :include_properties, -> { includes(:robot_properties) }

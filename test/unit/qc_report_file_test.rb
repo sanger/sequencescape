@@ -4,6 +4,7 @@
 
 require "test_helper"
 require 'timecop'
+require 'csv'
 
 class QcReport::FileTest < ActiveSupport::TestCase
   context "QcReport File" do
@@ -92,7 +93,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should "not adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['passed','failed'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:qc_decision)
+        assert_equal ['passed','failed'], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
       end
 
       teardown do
@@ -125,7 +126,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should "adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['passed','manually_passed'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:qc_decision)
+        assert_equal ['passed','manually_passed'], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 
       teardown do

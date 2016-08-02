@@ -23,10 +23,6 @@ class TagGroupsTaskTest < TaskTestBase
     should "not have at least one entry in tag_groups" do
       assert @object.tag_groups.present?
     end
-
-    should "assign tag_groups" do
-      assert_equal @object.tag_groups, TagGroup.all
-    end
   end
 
   context 'with a task' do

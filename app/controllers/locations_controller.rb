@@ -9,7 +9,7 @@ class LocationsController < ApplicationController
   before_filter :find_location_by_id, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @locations = Location.find(:all)
+    @locations = Location.all
 
     respond_to do |format|
       format.html

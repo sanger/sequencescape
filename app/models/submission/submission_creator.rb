@@ -193,10 +193,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   def find_samples_from_text(sample_text)
     names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
-    samples = Sample.all(
-      :include => :assets,
-      :conditions => [ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ]
-    )
+    samples = Sample.includes(:assets).where([ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ])
 
     name_set  = Set.new(names)
     found_set = Set.new(samples.map { |s| [ s.name, s.sanger_sample_id ] }.flatten)

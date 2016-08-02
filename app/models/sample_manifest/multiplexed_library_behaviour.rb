@@ -81,7 +81,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     # Chances are we're going to use the same tag group multiple times. This avoids the need to poll
     # the database each time, allowing us just to retrieve the list of tags in one go.
     def tag_group_cache(name)
-      @tag_group_cache ||= Hash.new {|h,new_name| h[new_name] = TagGroup.include_tags.find(:first,:conditions => {:name=>new_name}) }
+      @tag_group_cache ||= Hash.new {|h,new_name| h[new_name] = TagGroup.include_tags.where( name:new_name ).first }
       @tag_group_cache[name]
     end
 

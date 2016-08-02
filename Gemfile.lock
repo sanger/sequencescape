@@ -81,6 +81,10 @@ GEM
     autoprefixer-rails (6.1.2)
       execjs
       json
+    axlsx (2.0.0)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (= 0.9.9)
     bootstrap-sass (3.3.6)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -168,6 +172,7 @@ GEM
     gmetric (0.1.3)
     gyoku (1.3.1)
       builder (>= 2.1.2)
+    htmlentities (4.3.4)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httpi (2.4.1)
@@ -271,6 +276,10 @@ GEM
     rgl (0.5.1)
       algorithms (~> 0.6.1)
       stream (~> 0.5.0)
+    roo (1.13.2)
+      nokogiri
+      rubyzip
+      spreadsheet (> 0.6.4)
     ruby-debug (0.10.6)
       columnize (>= 0.1)
       linecache (~> 1.3.1)
@@ -365,6 +374,7 @@ DEPENDENCIES
   activerecord-oracle_enhanced-adapter (~> 1.4.0)
   activeresource
   acts-as-dag
+  axlsx
   bootstrap-sass
   bullet
   bunny (~> 0.7)
@@ -410,6 +420,7 @@ DEPENDENCIES
   rdoc
   rest-client
   rgl
+  roo
   ruby-debug
   ruby-oci8
   ruby_walk (>= 0.0.3)!
@@ -429,3 +440,6 @@ DEPENDENCIES
   uuidtools
   will_paginate
   will_paginate-bootstrap
+
+BUNDLED WITH
+   1.11.2

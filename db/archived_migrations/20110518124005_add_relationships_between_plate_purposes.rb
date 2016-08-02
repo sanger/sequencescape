@@ -26,13 +26,13 @@ class AddRelationshipsBetweenPlatePurposes < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       # All of the PlatePurpose names specified in the keys of RELATIONSHIPS have complicated relationships.
       # The others are simply maps to themselves.
-      PlatePurpose.all(:conditions => [ 'name NOT IN (?)', RELATIONSHIPS.keys ]).each do |purpose|
+      PlatePurpose.where.not(name: RELATIONSHIPS.keys).each do |purpose|
         purpose.child_relationships.create!(:child => purpose)
       end
 
       # Here are the complicated ones:
-      PlatePurpose.all(:conditions => { :name => RELATIONSHIPS.keys }).each do |purpose|
-        PlatePurpose.all(:conditions => { :name => RELATIONSHIPS[purpose.name] }).each do |child|
+      PlatePurpose.where(:name => RELATIONSHIPS.keys).each do |purpose|
+        PlatePurpose.where(:name => RELATIONSHIPS[purpose.name]).each do |child|
           purpose.child_relationships.create!(:child => child)
         end
       end

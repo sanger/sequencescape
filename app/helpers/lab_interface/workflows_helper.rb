@@ -36,10 +36,10 @@ module LabInterface::WorkflowsHelper
   end
 
   def batch_tag_index
-    @tag_hash ||= Hash[Tag.find(:all,
-      :joins=>'INNER JOIN aliquots ON aliquots.tag_id = tags.id',
-      :select=>'tags.map_id, aliquots.receptacle_id AS receptacle_id',
-      :conditions=>['aliquots.receptacle_id IN (?)',@batch.requests.map(&:asset_id).uniq]).map do |tag|
+    @tag_hash ||= Hash[
+      Tag.joins('INNER JOIN aliquots ON aliquots.tag_id = tags.id').
+        select('tags.map_id, aliquots.receptacle_id AS receptacle_id').
+        where(aliquots: {receptacle_id: @batch.requests.map(&:asset_id).uniq }).map do |tag|
       [tag.receptacle_id,tag.map_id]
     end].tap {|th| th.default = '-' }
   end

@@ -9,7 +9,7 @@ class TagGroupsController < ApplicationController
   before_filter :admin_login_required, :only => [:new, :edit, :create, :update]
 
   def index
-    @tag_groups = TagGroup.find(:all)
+    @tag_groups = TagGroup.all
 
     respond_to do |format|
       format.html

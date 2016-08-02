@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   validates_presence_of :login
   validates_confirmation_of :password, :if => :password_required?
 
-  scope :with_login, ->(*logins) { { :conditions => { :login => logins.flatten } } }
+  scope :with_login, ->(*logins) { where(login:logins.flatten) }
   scope :all_administrators, -> { joins(:roles).where(:roles=>{:name=>'administrator'}) }
 
   acts_as_authorized_user
@@ -169,6 +169,10 @@ class User < ActiveRecord::Base
 
   def owner?(item)
     self.has_role? 'owner', item
+  end
+
+  def data_access_coordinator?
+    self.has_role? 'data_access_coordinator'
   end
 
   def manager_or_administrator?

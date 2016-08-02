@@ -208,7 +208,7 @@ class Sample < ActiveRecord::Base
     return [] if asset_group_id == '0'
 
     study = Study.find(study_id)
-    asset_group_assets = AssetGroupAsset.find(:all, :conditions => [" asset_group_id = ? ", asset_group_id])
+    asset_group_assets = AssetGroupAsset.where(asset_group_id: asset_group_id)
     return study.submissions.that_submitted_asset_id(asset_group_assets.first.asset_id).all
   end
 

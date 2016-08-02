@@ -23,10 +23,9 @@ class LocationAssociation < ActiveRecord::Base
         has_one :location, :through => :location_association
         delegate :location_id, :to => :location_association, :allow_nil => true
 
-       scope :located_in, ->(location) { {
-          :joins => 'INNER JOIN `location_associations` ON `assets`.id=`location_associations`.`locatable_id`',
-          :conditions => [ '`location_associations`.`location_id`=?', location.id ]
-        } }
+       scope :located_in, ->(location) {
+          joins(:location_association).where(location_associations:{location_id:location})
+        }
 
         # TODO:  not optimal
         def location_id=(l_id)

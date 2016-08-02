@@ -71,8 +71,7 @@ module Batch::PipelineBehaviour
   def last_completed_task
     unless self.events_for_completed_tasks.empty?
       completed_tasks = self.tasks_for_completed_task_events(self.events_for_completed_tasks)
-      tasks = self.pipeline.workflow.tasks
-      tasks.sort!{ |a, b| b.sorted <=> a.sorted }
+      tasks = pipeline.workflow.tasks.order(:sorted)
       tasks.each do |task|
         if completed_tasks.include?(task)
           return task

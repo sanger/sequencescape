@@ -53,8 +53,8 @@ class SamplesController < ApplicationController
   end
 
   def show
-    @sample  = Sample.find(params[:id], :include => :assets)
-    @studies = Study.all(:conditions => ["state = ? OR state = ?", "pending", "active"], :order => :name)
+    @sample  = Sample.includes(:assets).find(params[:id])
+    @studies = Study.where(state:["pending", "active"]).alphabetical
 
     respond_to do |format|
       format.html
@@ -131,7 +131,7 @@ class SamplesController < ApplicationController
   def remove_from_study
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
-    StudySample.find(:first, :conditions=>{:study_id=>params[:study_id],:sample_id=>params[:id]}).destroy
+    StudySample.find_by(:study_id=>params[:study_id],:sample_id=>params[:id]}).destroy
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end

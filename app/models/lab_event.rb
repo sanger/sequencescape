@@ -10,9 +10,9 @@ class LabEvent < ActiveRecord::Base
 
   before_validation :unescape_for_descriptors
 
- scope :with_descriptor, ->(k,v) { { :conditions => [ 'descriptors LIKE ?', "%#{k.to_s}: #{v.to_s}%" ] } }
+ scope :with_descriptor, ->(k,v) { where([ 'descriptors LIKE ?', "%#{k.to_s}: #{v.to_s}%" ]) }
 
- scope :barcode_code, ->(*args) { {:conditions => ["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]] }}
+ scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
 
 
   def unescape_for_descriptors
