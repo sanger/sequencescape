@@ -56,7 +56,7 @@ class Pipeline < ActiveRecord::Base
   scope :internally_managed, -> { where( :externally_managed => false ) }
   scope :active,             -> { where( :active => true  ) }
   scope :inactive,           -> { where( :active => false ) }
-  scope :alphabetical,       -> { order('name ASC') }
+  scope :alphabetical,       -> { order( :name ) }
 
   scope :for_request_type, ->(rt) {
      {

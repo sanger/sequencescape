@@ -165,7 +165,6 @@ GEM
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     jrjackson (0.3.7)
-    jruby-openssl (0.9.16-java)
     json (1.8.3)
     json (1.8.3-java)
     launchy (2.4.3)
@@ -360,7 +359,6 @@ DEPENDENCIES
   jquery-tablesorter
   jquery-ui-rails
   jrjackson
-  jruby-openssl
   json
   launchy
   mime-types

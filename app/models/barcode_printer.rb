@@ -8,7 +8,7 @@ class BarcodePrinter < ActiveRecord::Base
   belongs_to :barcode_printer_type
   validates_presence_of :barcode_printer_type
   scope :include_barcode_printer_type, -> { includes(:barcode_printer_type) }
-  scope :alphabetical,  -> { order('name ASC') }
+  scope :alphabetical,  -> { order(:name) }
 
   #for labels printing, if printer is not registered in ss
   BarcodePrinterException = Class.new(ActiveRecord::RecordNotFound)

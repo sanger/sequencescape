@@ -11,7 +11,7 @@ class AssetsController < ApplicationController
     @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.order('name ASC').paginate(:page => params[:page])
+      @assets = @study.assets_through_aliquots.order(:name).paginate(:page => params[:page])
     end
 
     respond_to do |format|

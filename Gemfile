@@ -24,7 +24,6 @@ group :default do
   gem "will_paginate-bootstrap"
   gem 'net-ldap'
   gem 'carrierwave'
-  gem 'jruby-openssl', :platforms => :jruby
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
   gem 'dynamic_form'

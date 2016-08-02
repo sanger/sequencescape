@@ -169,4 +169,5 @@ class Tube < Aliquot::Receptacle
     barcode  ||= AssetBarcode.new_barcode
     create!(attributes.merge(:barcode => barcode), &block)
   end
+
 end
