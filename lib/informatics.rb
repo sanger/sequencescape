@@ -21,7 +21,7 @@ module Informatics
     end
 
     def global_searchable_classes
-       [ Project, Study, Sample, Asset, AssetGroup, Request, Supplier ]
+       [ Project, Study, Sample, Asset, AssetGroup, Request, Supplier, Submission ]
     end
 
     def search_options

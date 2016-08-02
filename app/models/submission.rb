@@ -53,6 +53,8 @@ class Submission < ActiveRecord::Base
 
   scope :latest_first, -> { order('id DESC') }
 
+  scope :for_search_query, ->(query,with_includes) { where(name:query) }
+
   before_destroy :building?, :empty_of_orders?
 
   def empty_of_orders?
@@ -228,7 +230,7 @@ class Submission < ActiveRecord::Base
     if next_request_type_id.nil?
       next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
     end
-    all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
+    all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).order(id: :asc)
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
     if request.request_type.for_multiplexing?
@@ -250,7 +252,7 @@ class Submission < ActiveRecord::Base
       raise RuntimeError, "Mismatched multiplier information for submission #{id}" if multipliers.size != 1
       # Now we can take the group of requests from next_possible_requests that tie up.
       divergence_ratio = multipliers.first
-      index = sibling_requests.index(request)
+      index = sibling_requests.map(&:id).index(request.id)
       next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
     end
   end

@@ -82,8 +82,9 @@ class Order < ActiveRecord::Base
   def cross_compatible?; false; end
 
   def no_consent_withdrawl
-    return true unless all_samples.detect(&:consent_withdrawn?)
-    errors.add(:samples,"in this submission have had patient consent withdrawn.")
+    return true unless all_samples.any?(&:consent_withdrawn?)
+    withdrawn_samples = all_samples.select(&:consent_withdrawn?).map(&:friendly_name)
+    errors.add(:samples,"in this submission have had patient consent withdrawn: #{withdrawn_samples.to_sentence}")
     false
   end
   private :no_consent_withdrawl

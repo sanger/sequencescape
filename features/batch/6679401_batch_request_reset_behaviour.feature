@@ -19,20 +19,6 @@ Feature: Resetting batches and their requests across the various pipelines
 
     Then the 5 requests should be in the "<pipeline>" pipeline inbox
 
-    @wip
-    Scenarios: Library creation pipelines
-      | pipeline                          | workflow            | link       |
-      | Illumina-C Library preparation    | Next-gen sequencing | Tag Groups |
-      | Illumina-B MX Library Preparation | Next-gen sequencing | Tag Groups |
-
-    @wip
-    Scenarios: Sequencing pipelines
-      | pipeline                                 | workflow            | link                    |
-      | Cluster formation SE                     | Next-gen sequencing | Specify Dilution Volume |
-      | Cluster formation PE                     | Next-gen sequencing | Specify Dilution Volume |
-      | Cluster formation PE (no controls)       | Next-gen sequencing | Specify Dilution Volume |
-      | HiSeq Cluster formation PE (no controls) | Next-gen sequencing | Specify Dilution Volume |
-
     Scenarios: Genotyping pipelines
       | pipeline               | workflow              | link                  |
       | DNA QC                 | Microarray genotyping | QC result             |

@@ -76,7 +76,7 @@ class Project < ActiveRecord::Base
   scope :approved,     ->()     { where(approved: true) }
   scope :unapproved,   ->()     { where(approved: false) }
   scope :valid,        ->()     { active.approved }
-  scope :alphabetical, ->()     { order('name ASC') }
+  scope :alphabetical, ->()     { order(:name) }
   scope :for_user,     ->(user) { joins({:roles=>:user_role_bindings}).where(:roles_users=>{:user_id=>user}) }
 
   scope :with_unallocated_manager, ->() {

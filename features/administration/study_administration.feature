@@ -30,14 +30,27 @@ Feature: Study administration
     Given I am visiting study "Study B" homepage
     When I follow "Manage"
     Then I should see "Manage Study Study B"
-    And the checkbox labeled "HMDMC approved" should not be checked
+    And the field labeled "HMDMC approved" should be disabled
     And the field labeled "HMDMC approval number" should contain ""
+    When I fill in "HMDMC approval number" with "XX/XXX"
+    And I press "Update"
+    Then I should see "Your study has been updated"
+    And the field labeled "HMDMC approval number" should contain "XX/XXX"
+    When I press "Update"
+    Then I should see "Your study has been updated"
+
+  @javascript
+  Scenario: Data access coordinator edits study properties
+    Given I am an "data_access_coordinator and administrator" user logged in as "xyz1"
+    Given I am visiting study "Study B" homepage
+    When I follow "Manage"
+    Then I should see "Manage Study Study B"
+    And the field labeled "HMDMC approved" should not be disabled
+    And the checkbox labeled "HMDMC approved" should not be checked
     When I check "HMDMC approved"
-    And I fill in "HMDMC approval number" with "XX/XXX"
     And I press "Update"
     Then I should see "Your study has been updated"
     And the checkbox labeled "HMDMC approved" should be checked
-    And the field labeled "HMDMC approval number" should contain "XX/XXX"
     When I press "Update"
     Then I should see "Your study has been updated"
 
