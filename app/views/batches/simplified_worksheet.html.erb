@@ -23,9 +23,10 @@
       <tr>
     <% end %>
         <th>Lane</th>
-        <th>Library ID</th>
-        <th>Sample</th>
+        <th>Library Barcode</th>
+        <th>Library Name</th>
         <th>Dilution Volume</th>
+        <th>Library Types</th>
         <th>Number of Cycles</th>
       </tr>
     </thead>
@@ -34,9 +35,10 @@
       <% if request.asset %>
         <tr>
           <td width="20%">Lane <%= request.position %></td>
-          <td><strong><%= request.asset.barcode unless request.asset.resource? %></strong></td>
+          <td><strong><%= request.asset.sanger_human_barcode unless request.asset.resource? %></strong></td>
           <td><strong><%= h(request.asset.display_name) %></strong></td>
           <td><%= request.concentration %></td>
+          <td><%= request.asset.library_types.join(',') %></td>
           <td><%= request.value_for("Read length") unless request.asset.resource? %></td>
         </tr>
       <% end %>

@@ -120,6 +120,11 @@ class Aliquot < ActiveRecord::Base
       end
     end
 
+    # Library types are still just a string on aliquot.
+    def library_types
+      aliquots.map(&:library_type).uniq
+    end
+
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots
     has_many :samples, :through => :aliquots

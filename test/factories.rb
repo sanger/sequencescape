@@ -585,7 +585,7 @@ FactoryGirl.define do
   end
   factory(:library_tube, :parent => :empty_library_tube) do
     after(:create) do |library_tube|
-      library_tube.aliquots.create!(:sample => create(:sample))
+      library_tube.aliquots.create!(:sample => create(:sample),:library_type=>'Standard')
     end
   end
 
