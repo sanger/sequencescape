@@ -51,6 +51,8 @@ class Aliquot < ActiveRecord::Base
     scope :include_creation_batches, -> { includes(:creation_batches)}
     scope :include_source_batches, -> { includes(:source_batches)}
 
+    scope :for_study_and_request_type, ->(study,request_type) { joins(:aliquots,:requests).where(aliquots:{study_id:study}).where(requests:{request_type_id:request_type}) }
+
     # This is a lambda as otherwise the scope selects Aliquot::Receptacles
     scope :with_aliquots, -> { joins(:aliquots) }
 
