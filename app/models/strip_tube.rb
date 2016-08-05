@@ -7,7 +7,8 @@
 # Unlike normal plates they can be kept in a rack.
 # Strip tubes don't get a barcode assigned upfront.
 class StripTube < Plate
-  contained_by :asset_rack
+
+  has_many :submissions, through: :well_requests_as_target
 
   self.prefix = 'LS'
 

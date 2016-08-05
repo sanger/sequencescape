@@ -10,7 +10,6 @@ class Well < Aliquot::Receptacle
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
   include Tag::Associations
-  include AssetRack::WellAssociations::AssetRackAssociation
   include Api::Messages::FluidigmPlateIO::WellExtensions
 
   class Link < ActiveRecord::Base

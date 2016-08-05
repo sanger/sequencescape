@@ -2,37 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 FactoryGirl.define do
-  sequence :asset_rack_name do |n|
-    "TestRack#{n}"
-  end
 
-  factory :asset_rack do
-    purpose  { |_| create :asset_rack_purpose }
-    name     { FactoryGirl.generate :asset_rack_name }
-    size 12
-  end
-
-  factory :full_asset_rack, :parent => :asset_rack do
-    after(:create) do |rack|
-      rack.strip_tubes << create(:strip_tube)
-    end
-  end
-
-  factory :fuller_asset_rack, :parent => :asset_rack do
-    after(:create) do |rack|
-      2.times do |column_index|
-        rack.strip_tubes << create(:strip_tube,:map=>Map.find_by(:asset_size=>96,:asset_shape_id=>AssetShape.default,:row_order=>column_index))
-      end
-    end
-  end
-
-  factory :asset_rack_purpose, :class => AssetRack::Purpose do
-    name               { FactoryGirl.generate :purpose_name }
-    size               "12"
-    asset_shape        AssetShape.find_by_name('StripTubeRack')
-    barcode_for_tecan  'ean13_barcode'
-    target_type         'AssetRack'
-  end
 
   factory :strip_tube_purpose, :class => PlatePurpose do
     name               { FactoryGirl.generate :purpose_name }
@@ -50,13 +20,4 @@ FactoryGirl.define do
     end
   end
 
-  factory(:asset_rack_creation) do
-    user   { |target| target.association(:user) }
-    parent { |target| target.association(:full_plate) }
-
-    after(:build) do |asser_rack_creation|
-      asser_rack_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || create(:parent_plate_purpose)
-      asser_rack_creation.child_purpose        = Purpose.find_by_name('Asset rack purpose')  || create(:child_plate_purpose)
-    end
-  end
 end

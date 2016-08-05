@@ -41,4 +41,4 @@ end
 Map.create!(FluidigmHelper.map_configuration_for(6,16,AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,AssetShape.find_by_name('Fluidigm192').id))
 
 AssetShape.find_by_name('StripTubeColumn').generate_map(8)
-AssetShape.find_by_name('StripTubeRack'  ).generate_map(12)
+
