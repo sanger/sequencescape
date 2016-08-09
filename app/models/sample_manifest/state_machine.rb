@@ -15,7 +15,7 @@ module SampleManifest::StateMachine
   end
 
   def configure_state_machine
-    aasm :column => :state do
+    aasm :column => :state, :whiny_persistence => true do
 
       state :pending, :initial => true
       state :processing

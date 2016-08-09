@@ -14,7 +14,7 @@ class WellAttribute < ActiveRecord::Base
     gender_markers.try(:to_s)
   end
 
-  aasm column: :pico_pass do
+  aasm column: :pico_pass, :whiny_persistence => true do
 
 
     state :ungraded, :initial => true

@@ -129,16 +129,7 @@ FactoryGirl.define do
     key                 ""
   end
 
-  factory :pipeline_event do |e|
-    description           ""
-    descriptors           ""
-    descriptor_fields     []
-    eventful_id           nil
-    eventful_type         ""
-    filename              ""
-    data                  ""
-    message               ""
-    user_id               nil
+  factory :lab_event do |e|
   end
 
   factory :family do |f|
@@ -270,8 +261,8 @@ previous_pipeline_id  nil
   end
 
   factory :batch_request do |br|
-    batch                {|batch| batch.association(:batch)}
-    request              {|request| request.association(:request)}
+    batch
+    request
   end
 
   factory :delayed_message do |dm|

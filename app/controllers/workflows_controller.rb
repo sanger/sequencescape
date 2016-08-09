@@ -227,12 +227,13 @@ class WorkflowsController < ApplicationController
   end
 
   def eventify_batch(batch, task)
-    event = batch.lab_events.create({})
-    event.description = "Complete"
+    event = batch.lab_events.build(
+      description:"Complete",
+      user: current_user,
+      batch: batch
+    )
     event.add_descriptor Descriptor.new({ :name => 'task_id', :value => task.id })
     event.add_descriptor Descriptor.new({ :name => 'task', :value => task.name })
-    event.batch = batch
-    event.user  = current_user
-    event.save
+    event.save!
   end
 end

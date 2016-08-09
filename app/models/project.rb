@@ -27,7 +27,7 @@ class Project < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  aasm :column => :state do
+  aasm :column => :state, :whiny_persistence => true do
 
     state :pending, :initial => true
     state :active

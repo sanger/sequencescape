@@ -36,11 +36,4 @@ class PacBioSamplePrepRequest < CustomerRequest
     target_asset.requests_as_target.where_is_a?(TransferRequest).last
   end
 
-  class Initial < TransferRequest
-    include TransferRequest::InitialTransfer::Behaviour
-    def outer_request
-      asset.requests.detect{|r| r.is_a?(PacBioSamplePrepRequest)}
-    end
-  end
-
 end

@@ -142,17 +142,6 @@ class StudiesController < ApplicationController
     redirect_to study_path(@study)
   end
 
-  def assembly
-    @study = Study.find(params[:id])
-    if params[:assembly]
-      unless @study.add_reference(params)
-        flash[:error] = "Failed to attach reference sequence"
-      else
-        redirect_to study_path(@study)
-      end
-    end
-  end
-
   def properties
     @study = Study.find(params[:id])
 
@@ -233,16 +222,6 @@ class StudiesController < ApplicationController
       flash[:notice] = "You are now following the '#{@study.name}' study."
     end
     redirect_to study_workflow_path(@study, current_user.workflow)
-  end
-
-  def choice
-    if params[:id]
-      kind = params[:id]
-      @curated_references = Sequence.curated_sequences
-      render :partial => "studies/sequences/" +kind.downcase
-    else
-      render :nothing => true
-    end
   end
 
   def close

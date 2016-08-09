@@ -43,60 +43,6 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
     end
 
-    context "#new_sample" do
-      setup do
-        @event_count =  Event.count
-        admin = create :role, :name => "administrator"
-        user1 = create :user, :login => "abc123"
-        user1.roles << admin
-        @sample = create(:sample, :name => "NewSample")
-      end
-
-      context "project is blank" do
-        setup do
-          EventFactory.new_sample(@sample, [], @user)
-        end
-
-       should "change Event.count by 1" do
-         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
-      end
-
-        context "send an email to one recipient" do
-          should 'Have sent an email' do
-            last_mail = ActionMailer::Base.deliveries.last
-            assert /Sample/ === last_mail.subject
-            assert last_mail.bcc.include?("abc123@example.com")
-            assert /New 'NewSample' registered by south/, last_mail.body
-          end
-        end
-
-      end
-
-      context "project is not blank" do
-        setup do
-          ActionMailer::Base.deliveries.clear
-          @event_count =  Event.count
-          EventFactory.new_sample(@sample, @project, @user)
-        end
-
-
-         should "change Event.count by 2" do
-           assert_equal 2,  Event.count  - @event_count, "Expected Event.count to change by 2"
-        end
-
-        context "send 2 emails each to one recipient" do
-          should 'Have sent a 2 emails' do
-            assert_equal 2, ActionMailer::Base.deliveries.count
-            assert ActionMailer::Base.deliveries.detect {|d| /Sample/ === d.subject }
-            assert ActionMailer::Base.deliveries.detect {|d| /Project/ === d.subject }
-            assert ActionMailer::Base.deliveries.all? {|d| d.bcc.include?("abc123@example.com") }
-            assert ActionMailer::Base.deliveries.detect  {|d| /New 'NewSample' registered by south/ === d.body }
-            assert ActionMailer::Base.deliveries.detect  {|d| /This sample was assigned to the 'hello world' project./ === d.body }
-          end
-        end
-      end
-    end
-
     context "#project_approved" do
       setup do
         @event_count =  Event.count

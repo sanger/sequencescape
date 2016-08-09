@@ -14,8 +14,10 @@ class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline
   # For a batch to be valid for completion in this pipeline it must have had the tags assigned to the
   # target assets of the requests.
   def validation_of_batch_for_completion(batch)
-    batch.errors.add(:base,'This batch appears to have not been properly tagged') if batch.requests.any? do |r|
-      r.target_asset.aliquots.map(&:tag).compact.size != r.target_asset.aliquots.size
+    return true unless batch.requests.any? do |r|
+      r.target_asset.aliquots.any? {|a| a.tag.nil? }
     end
+    batch.errors.add(:base,'This batch appears to have not been properly tagged')
+    # raise ActiveRecord::RecordInvalid, batch
   end
 end

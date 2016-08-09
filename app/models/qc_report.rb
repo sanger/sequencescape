@@ -25,7 +25,7 @@ class QcReport < ActiveRecord::Base
         # When adding new states, please make sure you update the config/locals/en.yml file
         # with decriptions.
 
-        aasm :column => :state do
+        aasm :column => :state, :whiny_persistence => true do
 
         # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
         state :queued, :initial => true

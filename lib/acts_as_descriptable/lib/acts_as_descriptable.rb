@@ -103,6 +103,12 @@ module ActiveRecord # :nodoc:
             read_descriptor_hash.fetch(key, '')
           end
 
+          # I'm going to unpick this completely soon
+          # but need to work out exactly what's used
+          def descriptor_value_allow_nil(key)
+            read_descriptor_hash[key]
+          end
+
           def add_descriptor(descriptor)
             write_attribute(:descriptors,       read_descriptor_hash.merge(descriptor.name => descriptor.value))
             write_attribute(:descriptor_fields, read_descriptor_fields.push(descriptor.name))
@@ -114,7 +120,7 @@ module ActiveRecord # :nodoc:
           private :read_descriptor_hash
 
           def read_descriptor_fields
-            read_attribute(:descriptor_fields) || []
+            descriptor_fields || []
           end
           private :read_descriptor_fields
         end

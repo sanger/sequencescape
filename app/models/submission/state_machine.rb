@@ -78,7 +78,7 @@ module Submission::StateMachine
 
   def configure_state_machine
 
-    aasm :column => :state do
+    aasm :column => :state, :whiny_persistence => true do
 
       state :building,    :initial => true,               :exit => :valid_for_leaving_building_state
       state :pending,     :enter => :complete_building

@@ -15,8 +15,19 @@ module Request::Statemachine
   module ClassMethods
     def redefine_aasm(options={},&block)
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
-      AASM::StateMachine[self][:default].events.keys.each {|event| undef_method(event); undef_method(:"#{event}!"); undef_method(:"may_#{event}?") }
-      AASM::StateMachine[self] = {}
+      old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
+      if old_machine
+        old_machine.events.keys.each do |event|
+          undef_method(event);
+          undef_method(:"#{event}!");
+          undef_method(:"may_#{event}?")
+        end
+        old_machine.states.each do |state|
+          undef_method(:"#{state}?")
+        end
+      end
+      # Wipe out the inherited state machine. Can't use unregister.
+      AASM::StateMachineStore.register(self,true)
       aasm(options,&block)
     end
 
@@ -38,7 +49,7 @@ module Request::Statemachine
       extend ClassMethods
 
       ## State machine
-      aasm :column => :state do
+      aasm :column => :state, :whiny_persistence => true do
 
         state :pending,   :initial => true
         state :started,   :after_enter => :on_started

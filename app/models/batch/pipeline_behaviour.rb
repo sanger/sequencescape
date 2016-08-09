@@ -46,38 +46,23 @@ module Batch::PipelineBehaviour
   end
   alias_method(:has_limit?, :has_item_limit?)
 
-  def events_for_completed_tasks
-    self.lab_events.select{ |le| le.description == "Complete" }
+  def complete_events
+    @efct ||= if lab_events.loaded
+      lab_events.select{ |le| le.description == "Complete" }
+    else
+      lab_events.where(description:"Complete")
+    end
   end
 
-  def tasks_for_completed_task_events(events)
-    completed_tasks = []
-    events.each do |event|
-      task_id = event.descriptors.detect{ |d| d.name == "task_id" }
-      if task_id
-        begin
-          task = Task.find(task_id.value)
-        rescue ActiveRecord::RecordNotFound
-          return []
-        end
-        unless task.nil?
-          completed_tasks << task
-        end
-      end
-    end
-    completed_tasks
+  def completed_task_ids
+    complete_events.map do |event|
+      event.descriptor_value_allow_nil('task_id')
+    end.compact
   end
 
   def last_completed_task
-    unless self.events_for_completed_tasks.empty?
-      completed_tasks = self.tasks_for_completed_task_events(self.events_for_completed_tasks)
-      tasks = pipeline.workflow.tasks.order(:sorted)
-      tasks.each do |task|
-        if completed_tasks.include?(task)
-          return task
-        end
-      end
-      return nil
+    unless complete_events.empty?
+      pipeline.workflow.tasks.order(:sorted).where(id:completed_task_ids).last
     end
   end
 

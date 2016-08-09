@@ -17,7 +17,7 @@ class Request::Multiplexing < CustomerRequest
   end
 
 
-  redefine_aasm :column => :state do
+  redefine_aasm :column => :state, :whiny_persistence => true do
       state :pending, :initial => true
       state :started
       state :passed

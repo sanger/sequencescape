@@ -8,8 +8,8 @@ class BatchRequest < ActiveRecord::Base
   self.per_page = 500
   include Uuid::Uuidable
 
-  belongs_to :batch
-  belongs_to :request, :inverse_of => :batch_request
+  belongs_to :batch, inverse_of: :batch_requests
+  belongs_to :request, inverse_of: :batch_request
 
   scope :ordered, -> { order(:position) }
   scope :at_position, ->(position) { where(position: position) }

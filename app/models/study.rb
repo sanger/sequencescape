@@ -31,7 +31,7 @@ class Study < ActiveRecord::Base
 
   acts_as_authorizable
 
-  aasm :column => :state do
+  aasm :column => :state, :whiny_persistence => true do
 
     state :pending, :initial => true
     state :active, :enter => :mark_active
@@ -462,16 +462,10 @@ class Study < ActiveRecord::Base
     #TODO[mb14] optimize if needed
     study.orders.any? { |o| o.submission.nil?  || o.submission.unprocessed?}
   end
-  ### TODO - Everything below should be treated as legacy until cleaned
 
   # Used by EventfulMailer
   def study
     self
-  end
-
-  # Checks if a user is following THIS study
-  def followed_by?(user)
-    user.following? self
   end
 
   # Returns the study owner (user) if exists or nil
@@ -485,50 +479,6 @@ class Study < ActiveRecord::Base
 
   def locale
     self.funding_source
-  end
-
-  def total_requested(ended)
-    count = 0
-    ended_items(ended).each do |item|
-      count = count + item.total_requested
-    end
-    count
-  end
-
-
-  def ended_items(ended)
-    i = []
-    self.samples.each do |sample|
-      if sample.matches_end? ended
-        sample.items.each do |item|
-          i.push item
-        end
-      end
-    end
-    i
-  end
-
-  def add_reference(params = {})
-    #if the assembly is a curated one from titan
-    if params[:assembly][:reference]
-      @reference = Sequence.find(params[:assembly][:reference])
-      self.add_reference_descriptors(@reference)
-      return true
-    #if it isn't (i.e. instead it's a file uploaded by the user)
-    elsif params[:assembly][:kind] == "None"
-      return true
-    elsif params[:assembly][:kind] == ""
-      return true
-    else
-      @sequence = Sequence.new(params[:assembly])
-      @sequence.name = self.id.to_s
-      @sequence.set_prefix(self.class.to_s.downcase)
-      if @sequence.save
-        self.add_reference_descriptors(@sequence)
-      else
-        return false
-      end
-    end
   end
 
   scope :awaiting_ethical_approval, ->() {
@@ -604,12 +554,10 @@ class Study < ActiveRecord::Base
   end
 
   def accession_service
-    if data_release_strategy == "open"
-      EraAccessionService.new
-    elsif data_release_strategy == "managed"
-      EgaAccessionService.new
-    else
-      NoAccessionService.new(self)
+    case data_release_strategy
+    when "open" then EraAccessionService.new
+    when "managed" then EgaAccessionService.new
+    else NoAccessionService.new(self)
     end
   end
 
@@ -621,120 +569,15 @@ class Study < ActiveRecord::Base
   end
 
   def mailing_list_of_managers
-    receiver = self.managers.map(&:email).compact.uniq
+    receiver = self.managers.pluck(:email).compact.uniq
     receiver =  User.all_administrators_emails if receiver.empty?
     return receiver
-  end
-
-  # return true if yes, false if not , and nil if we don't know
-  def affiliated_with?(object)
-    case
-    when object.is_a?(Asset) && !object.is_a?(SampleTube)
-      #special case, no study assing we propagate to aliquot
-      nil
-    when object.respond_to?(:study_id)
-      self.id == object.study_id
-    when object.respond_to?(:studies)
-      object.studies.include?(self)
-    else
-      nil
-    end
-  end
-
-  #TODO rename, as it's not supposed to return a boolean but nil,[] or an object
-  def decide_if_object_should_be_taken(study_from, sample, object)
-    case study_from.affiliated_with?(object)
-    when true
-      case object
-      when Aliquot
-        object.sample == sample ? object : nil
-      else
-        object
-      end
-    when false then nil # we skip the object and its dependencies
-    else [] # don't return the object but check it's dependencies
-    end
-  end
-  private :decide_if_object_should_be_taken
-
-  # return the list of objects which haven't been successfully saved
-  # that's the caller responsibilitie to wrap the call in a transaction if needed
-  def take_sample(sample, study_from, user, asset_group)
-    errors = []
-    assets_to_move = sample.assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
-
-    raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
-    helper = ->(object) { decide_if_object_should_be_taken(study_from, sample, object) }
-    objects_to_move =
-      sample.walk_objects(
-        :sample     => [:receptacles, :study_samples],
-        :request    => :item,
-        :"aliquot::receptacle" => :aliquots,
-        :asset      => [ :requests, :parents, :children ],
-        :well       => :plate,
-        :spikedbuffer => :skip_super,
-        &helper
-    )
-
-    Study.transaction do
-      #we duplicate each submission and reassign moved requests to it
-      objects_to_move.each do |object|
-        take_object(object, user, study_from)
-        begin
-          object.save!
-        rescue StandardError => ex
-          errors << ex.message
-        end
-      end
-
-      if asset_group
-        assets_to_move.each do |asset|
-          asset_groups = asset.asset_groups.reject { |ag| ag.study == study_from }
-          asset_groups << asset_group
-          asset.asset_groups = asset_groups
-          asset.save
-        end
-      end
-    end
-    if errors.present?
-      errors.each { |error | sample.errors.add("Move:", error) }
-      false
-    else
-      true
-    end
   end
 
   alias_attribute :friendly_name, :name
 
   def subject_type
     'study'
-  end
-
-  private
-  # beware , this method change the study of an object but doesn't look at some
-  #  eventual dependencies.
-  def take_object(object, user, study_from)
-    # we don't check if the object is related to study from. because this can change
-    # if the object is  related through and we have just changed the association
-    # (example asset and via Request)
-    case
-    when object.is_a?(Request)
-      # We shouldn't do study= because it's deprecated
-      # However we need to update the initial_study
-      # to do as if it was set this way initialy
-      object.initial_study = self
-    when object.respond_to?(:study=)
-      object.study = self
-    end
-
-    if object.respond_to?(:events)
-      object.events.create(
-        :message => (study_from ? "#{object.class.name} #{object.id} is moved from Study  #{study_from.id} to Study #{self.id}" :  "#{object.class.name} #{object.id} is moved to Study #{self.id}"),
-        :created_by => user.login,
-        :content => "#{object.class.name} moved by #{user.login}",
-        :of_interest_to => "administrators"
-      )
-    end
   end
 
 end

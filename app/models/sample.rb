@@ -456,17 +456,6 @@ class Sample < ActiveRecord::Base
     nil
   end
 
-  def affiliated_with?(object)
-    case
-    when object.respond_to?(:sample_id)
-      self.id == object.sample_id
-    when object.respond_to?(:sample_ids)
-      object.sample_ids.include?(self.id)
-    else
-      nil
-    end
-  end
-
   def withdraw_consent
     self.update_attribute(:consent_withdrawn, true)
   end

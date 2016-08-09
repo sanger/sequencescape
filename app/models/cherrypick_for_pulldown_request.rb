@@ -4,7 +4,7 @@
 
 class CherrypickForPulldownRequest < TransferRequest
 
-  redefine_aasm :column => :state do
+  redefine_aasm :column => :state, :whiny_persistence => true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has less states.
     state :pending, :initial => true

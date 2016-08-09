@@ -18,9 +18,9 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "have begin in pending then change to started" do
-      assert_equal @batch.state, :pending
+      assert_equal @batch.state, 'pending'
       @batch.start!(create(:user))
-      assert_equal @batch.state, :started
+      assert_equal @batch.state, 'started'
       assert_equal @batch.started?, true
     end
 
@@ -122,10 +122,10 @@ end
     end
 
     should "have initially have a pending status for batch requests" do
-      assert_equal :pending, @batch.requests.first.state
+      assert_equal 'pending', @batch.requests.first.state
       @batch.start!(create(:user))
-      assert_equal :started, @batch.state
-      assert_equal :started, @batch.requests(true).first.state
+      assert_equal 'started', @batch.state
+      assert_equal 'started', @batch.requests(true).first.state
     end
 
     context "#remove_request_ids" do
@@ -225,8 +225,9 @@ end
       setup do
         @study2 = create :study
         @study3 = create :study
-        @request1 = create :request, :request_type => @pipeline.request_types.last, :study => @study1, :batch => @batch
-        @request2 = create :request, :request_type => @pipeline.request_types.last, :study => @study2, :batch => @batch
+        @request1 = create :request, :request_type => @pipeline.request_types.last, :study => @study1
+        @request2 = create :request, :request_type => @pipeline.request_types.last, :study => @study2
+        @batch.requests << @request1 << @request2
       end
 
       should "return correct studies" do
@@ -922,40 +923,22 @@ end
         @batch.requests << @library_prep_pipeline.request_types.last.create!(:state => 'started')
         @batch.requests << @library_prep_pipeline.request_types.last.create!(:state => 'started')
 
-        @desc1 = mock("Descriptor")
-        @desc1.stubs(:name).returns("task_id")
-        @desc1.stubs(:value).returns("#{@task1.id}")
-        @desc1.stubs(:task_id).returns(nil)
+        # NO idea why descriptors are added twice here, or why the descriptors
+        # implementation appears to be so complicated. I've converted this from
+        # mocks to use factories instead, I'm keeping the duplicate tasks
+        # until I can work out why they were added.
+        @event1 = create :lab_event, description: "Complete", batch: @batch
+        @event1.add_new_descriptor "task_id", "#{@task1.id}"
+        @event1.add_new_descriptor "task_id", "#{@task1.id}"
 
-        @desc2 = mock("Descriptor")
-        @desc2.stubs(:name).returns("task_id")
-        @desc2.stubs(:value).returns("#{@task1.id}")
-        @desc2.stubs(:task_id).returns(nil)
+        @event2 = create :lab_event, description: "Complete", batch: @batch
+        @event2.add_new_descriptor "task_id", "#{@task2.id}"
+        @event2.add_new_descriptor "task_id", "#{@task2.id}"
 
-        @event1 = mock("LabEvent1")
-        @event1.stubs(:description).returns("Complete")
-        @event1.stubs(:descriptors).returns([@desc1, @desc2])
-
-        @desc3 = mock("Descriptor")
-        @desc3.stubs(:name).returns("task_id")
-        @desc3.stubs(:value).returns("#{@task2.id}")
-        @desc3.stubs(:task_id).returns(nil)
-
-        @desc4 = mock("Descriptor")
-        @desc4.stubs(:name).returns("task_id")
-        @desc4.stubs(:value).returns("#{@task2.id}")
-        @desc4.stubs(:task_id).returns(nil)
-
-        @event2 = mock("LabEvent2")
-        @event2.stubs(:description).returns("Complete")
-        @event2.stubs(:descriptors).returns([@desc3, @desc4])
-
-        @batch.stubs(:lab_events).returns([@event1, @event2])
+        @batch.lab_events = [@event1, @event2]
       end
 
       should "return the last task the batch completed" do
-        assert ! @batch.events_for_completed_tasks.empty?
-        assert ! @batch.tasks_for_completed_task_events(@batch.events_for_completed_tasks).empty?
         assert_equal 2, @batch.lab_events.size
         assert_equal @task2, @batch.last_completed_task
       end

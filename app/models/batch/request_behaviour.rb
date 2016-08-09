@@ -5,8 +5,8 @@
 module Batch::RequestBehaviour
   def self.included(base)
     base.class_eval do
-      has_one :batch_request, :inverse_of => :request, :dependent => :destroy
-      has_one :batch, :through => :batch_request
+      has_one :batch_request, inverse_of: :request, dependent: :destroy
+      has_one :batch, through: :batch_request, inverse_of: :requests
 
       scope :include_for_batch_view, -> { includes(:batch_request,:asset,:target_asset,:request_metadata,:comments)}
 
@@ -17,9 +17,9 @@ module Batch::RequestBehaviour
 
       # Identifies all requests that are not part of a batch.
       scope :unbatched, ->() {
-        joins('LEFT OUTER JOIN batch_requests ubr ON `requests`.`id`=`ubr`.`request_id`').
+        includes(:batch_request).
         readonly(false).
-        where('`ubr`.`request_id` IS NULL')
+        where(batc_requests:{request_id: nil})
       }
 
       delegate :position, :to=>:batch_request, :allow_nil=>true
@@ -36,8 +36,6 @@ module Batch::RequestBehaviour
       self.batch_request.destroy if self.batch_request.present?
       self.save!
     end
-    #self.detach
-    #self.batches -= [ batch ]
   end
 
   def create_batch_request!(*args)

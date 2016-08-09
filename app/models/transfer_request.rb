@@ -6,7 +6,7 @@
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
 
-  redefine_aasm :column => :state do
+  redefine_aasm :column => :state, :whiny_persistence => true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
     state :pending, :initial => true

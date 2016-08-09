@@ -62,47 +62,6 @@ class EventFactory
     EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content, "No Milestone").deliver
   end
 
-  ################################
-  # Sample related notifications #
-  ################################
-
-  # Creates an event and sends an email when a new sample is created
-  def self.new_sample(sample, project, user)
-    content = "New '#{sample.name}' registered by #{user.login}"
-
-    # Create Sample centric event
-    sample_event = Event.create(
-      :eventful_id => sample.id,
-      :eventful_type => "Sample",
-      :message => "Sample registered",
-      :created_by => user.login,
-      :content => content,
-      :of_interest_to => "users"
-    )
-
-    recipients = User.all_administrators_emails
-
-    if project.blank?
-      EventfulMailer.confirm_sample_event(recipients.reject(&:blank?), sample_event.eventful, sample_event.message, sample_event.content, "No Milestone").deliver
-    else
-      # Create project centric event
-      content = "New '#{sample.name}' registered by #{user.login}: #{sample.name}. This sample was assigned to the '#{project.name}' project."
-
-      project_event = Event.create(
-        :eventful_id => project.id,
-        :eventful_type => "Project",
-        :message => "Sample #{sample.name} registered",
-        :created_by => user.login,
-        :content => content,
-        :of_interest_to => "administrators"
-      )
-
-      EventfulMailer.confirm_event(recipients.reject(&:blank?), project_event.eventful, project_event.message, project_event.content, "No Milestone").deliver
-    end
-
-    sample_event
-  end
-
   def self.project_refund_request(project, user, reference)
     content = "Refund request by #{user.login}. Reference #{reference}"
 

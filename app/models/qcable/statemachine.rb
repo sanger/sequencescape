@@ -23,7 +23,7 @@ module Qcable::Statemachine
       extend ClassMethods
 
       ## State machine
-      aasm :column => :state do
+      aasm :column => :state, :whiny_persistence => true do
 
         state :created
         state :pending,        :enter => :on_stamp
@@ -41,7 +41,7 @@ module Qcable::Statemachine
           transitions :to => :pending, :from => [ :created ]
         end
 
-        event :destroy do
+        event :destroy_labware do
           transitions :to => :destroyed, :from => [:pending,:available], :allow_automated? => true
         end
 

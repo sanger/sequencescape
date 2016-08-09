@@ -15,10 +15,8 @@ class Batch < ActiveRecord::Base
 
   has_many :failures, :as => :failable
   has_many :messengers, :as => :target, :inverse_of => :target
-  has_many :batch_requests, ->() { includes(:request) }, :inverse_of => :batch
-  has_many :requests, ->() {
-    order('batch_requests.position ASC, requests.id ASC').select('requests.*, batch_requests.position').distinct
-  }, :through => :batch_requests, :inverse_of => :batch
+  has_many :batch_requests, ->() { includes(:request).order(:position) }, :inverse_of => :batch
+  has_many :requests, ->() { distinct }, :through => :batch_requests, :inverse_of => :batch
   has_many :assets, :through => :requests, :source => :target_asset
   has_many :source_assets,  ->() { distinct }, :through => :requests, source: :asset
   has_many :submissions,  ->() { distinct }, :through => :requests

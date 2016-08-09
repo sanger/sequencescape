@@ -6,7 +6,8 @@ module Batch::StateMachineBehaviour
   def self.included(base)
     base.class_eval do
       include AASM
-      aasm :column => :state do
+      aasm :column => :state, :whiny_persistence => true do
+
         state :pending, :initial => true
         state :started, :enter => :start_requests
         state :completed
