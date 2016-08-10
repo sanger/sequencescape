@@ -3,8 +3,8 @@
 #Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Sdb::SampleManifestsController < Sdb::BaseController
-  before_filter :set_sample_manifest_id, :only => [:show, :generated]
-  before_filter :validate_type,    :only => [:new, :create]
+  before_action :set_sample_manifest_id, :only => [:show, :generated]
+  before_action :validate_type,    :only => [:new, :create]
 
   LIMIT_ERROR_LENGTH = 10000
 

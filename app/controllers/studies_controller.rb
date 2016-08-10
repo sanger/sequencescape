@@ -7,14 +7,14 @@ require "rexml/document"
 class StudiesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
   include REXML
   include Informatics::Globals
   include XmlCacheHelper::ControllerHelper
 
-  before_filter :login_required
-  before_filter :admin_login_required, :only => [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
-  before_filter :manager_login_required, :only => [ :close, :open, :related_studies, :relate_study, :unrelate_study]
+  before_action :login_required
+  before_action :admin_login_required, :only => [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
+  before_action :manager_login_required, :only => [ :close, :open, :related_studies, :relate_study, :unrelate_study]
 
   around_filter :rescue_validation, :only => [:close, :open]
 

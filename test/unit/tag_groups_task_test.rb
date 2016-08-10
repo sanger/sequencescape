@@ -35,7 +35,7 @@ class TagGroupsTaskTest < TaskTestBase
       should 'call render_tag_groups_task on workflow' do
         @controller  = DummyWorkflowController.new
         @user = create :user
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
         @controller.batch = @batch
         @workflow = create :lab_workflow_for_pipeline
         params = {:batch_id => @batch.id, :workflow_id => @workflow.id}

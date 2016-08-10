@@ -6,9 +6,9 @@
 class SubmissionsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
 
-  before_filter :lab_manager_login_required, :only => [:change_priority]
+  before_action :lab_manager_login_required, :only => [:change_priority]
 
   after_filter :set_cache_disabled!, :only => [:new, :index]
 
@@ -29,6 +29,7 @@ class SubmissionsController < ApplicationController
         },
         :layout => false
     else
+      p @presenter.order.errors
       render :partial => 'order_errors', :layout => false, :status => 422
     end
 

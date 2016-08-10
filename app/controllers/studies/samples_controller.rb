@@ -5,11 +5,11 @@
 class Studies::SamplesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
 
   def index
     @study = Study.find(params[:study_id])
-    @samples = @study.samples.all(:order => "created_at ASC")
+    @samples = @study.samples.order(:created_at)
 
     respond_to do |format|
       format.html

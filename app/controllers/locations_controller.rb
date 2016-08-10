@@ -5,8 +5,8 @@
 class LocationsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :find_location_by_id, :only => [:show, :edit, :update, :destroy]
+  before_action :evil_parameter_hack!
+  before_action :find_location_by_id, :only => [:show, :edit, :update, :destroy]
 
   def index
     @locations = Location.all

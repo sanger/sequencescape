@@ -98,10 +98,9 @@ class User < ActiveRecord::Base
   end
 
   def projects
-    # We use where(true) to get a scope. In Later versions of rails all is a scope
-    return Project.where(true) if self.is_administrator?
+    return Project.all if self.is_administrator?
     atuhorized = authorized_projects
-    return Project.where(true) if ( (atuhorized.blank?) && (privileged?) )
+    return Project.all if ( (atuhorized.blank?) && (privileged?) )
     atuhorized
   end
 
@@ -110,11 +109,11 @@ class User < ActiveRecord::Base
   end
 
   def sorted_project_names_and_ids
-    projects.alphabetical.map{|p| [p.name, p.id] }
+    projects.alphabetical.pluck(:name,:id)
   end
 
   def sorted_valid_project_names_and_ids
-    valid_projects.map{|p| [p.name, p.id] }
+    valid_projects.pluck(:name,:id)
   end
 
   def valid_projects
@@ -123,7 +122,7 @@ class User < ActiveRecord::Base
 
 
   def sorted_study_names_and_ids
-    interesting_studies.alphabetical.map{|p| [p.name, p.id] }
+    interesting_studies.alphabetical.pluck(:name,:id)
   end
 
   def workflow_name

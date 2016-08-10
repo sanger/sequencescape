@@ -5,7 +5,7 @@
 class SequenomController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
   EmptyBarcode = Class.new(StandardError)
 
   # An instance of this class does the work of updating a Plate with the step performed.
@@ -30,8 +30,8 @@ class SequenomController < ApplicationController
     end
   end
 
-  before_filter :login_required
-  before_filter :find_plate_from_id, :only => [ :show, :update ]
+  before_action :login_required
+  before_action :find_plate_from_id, :only => [ :show, :update ]
 
   def index
     # Do nothing, fall through to the view
@@ -75,7 +75,7 @@ private
   # an instance variable or redirecting to the sequenom_root_path on error.  The block passed
   # should take two parameters (the barcode and the human version of that barcode) and return the
   # value that can be used by +model_class.find_by_barcode+.  +filter_options+ are exactly as
-  # would be specified for a +before_filter+.
+  # would be specified for a +before_action+.
   def self.find_by_barcode_filter(model_class, filter_options, &block)
     name                        = model_class.name.underscore
     filter_name                 = :"find_#{ name }_from_barcode"
@@ -113,7 +113,7 @@ private
       end
     end
 
-    before_filter(filter_name, filter_options)
+    before_action(filter_name, filter_options)
   end
 
   find_by_barcode_filter(User,  :only => [ :update, :quick_update ]) { |barcode,human_barcode| human_barcode }

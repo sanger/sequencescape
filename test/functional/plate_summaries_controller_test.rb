@@ -12,7 +12,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user       = create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
 
     context "with some plates" do

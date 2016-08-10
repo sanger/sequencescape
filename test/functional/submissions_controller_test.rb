@@ -8,26 +8,27 @@ require 'submissions_controller'
 class SubmissionsControllerTest < ActionController::TestCase
   context "Submissions controller" do
     setup do
-      @user =FactoryGirl.create :user
+      @user = create :user
       @controller = SubmissionsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
 
-      @plate =FactoryGirl.create :plate, :barcode => 123456
+      session[:user] = @user
+
+      @plate = build :plate, :barcode => 123456
       [
         'A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12',
         'B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12',
         'C1','C2','C3'
       ].each do |location|
-        well =FactoryGirl.create :well_with_sample_and_without_plate, :map => Map.find_by_description(location)
+        well = build :well_with_sample_and_without_plate, :map => Map.find_by_description(location)
         @plate.wells << well
       end
-     FactoryGirl.create(:well, :map => Map.find_by_description('C5'), :plate=>@plate)
-      @study =FactoryGirl.create :study, :name => 'A study'
-      @project =FactoryGirl.create :project, :name => 'A project'
-      @submission_template = SubmissionTemplate.find_by_name('Cherrypicking for pulldown')
+      build(:well, :map => Map.find_by_description('C5'), :plate=>@plate)
+      @plate.save
+      @study = create :study, :name => 'A study'
+      @project = create :project, :name => 'A project'
+      @submission_template = SubmissionTemplate.find_by_name!('Cherrypicking for pulldown')
     end
 
     context "when a submission exists" do
@@ -64,13 +65,14 @@ class SubmissionsControllerTest < ActionController::TestCase
     context "by sample name and working dilution" do
 
       setup do
-        @wd_plate =FactoryGirl.create :working_dilution_plate, :barcode=> 123457
+        @order_count = Order.count
+        @wd_plate = create :working_dilution_plate, :barcode=> 123457
         [
           'A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12',
           'B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12',
           'C1','C2','C3'
         ].each do |location|
-        well =FactoryGirl.create :empty_well, :map => Map.find_by_description(location)
+        well = create :empty_well, :map => Map.find_by_description(location)
           well.aliquots.create(:sample => @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
@@ -96,7 +98,8 @@ class SubmissionsControllerTest < ActionController::TestCase
       end
 
       should "used the working dilution plate" do
-        assert_equal @wd_plate, Order.first.assets.first.plate
+        assert_equal 1, Order.count - @order_count
+        assert_equal @wd_plate, Order.last.assets.first.plate
       end
 
     end
@@ -104,11 +107,12 @@ class SubmissionsControllerTest < ActionController::TestCase
     context "by plate barcode" do
 
       setup do
+         @order_count = Order.count
         post :create, plate_submission('DN123456P')
       end
 
       should "create the appropriate orders" do
-        assert Order.first.present?, "No order was created!"
+        assert_equal 1, Order.count - @order_count
         assert_equal 27, Order.first.assets.count
       end
 

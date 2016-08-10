@@ -10,7 +10,7 @@ class RobotsControllerTest < ActionController::TestCase
   context "Robots" do
     setup do
       @user =FactoryGirl.create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user
       @robot  =FactoryGirl.create :robot
     end
     should_require_login

@@ -5,8 +5,7 @@
 require "test_helper"
 require 'requests_controller'
 
-# Re-raise errors caught by the controller.
-class RequestsController; def rescue_action(e) raise e end; end
+
 
 class RequestsControllerTest < ActionController::TestCase
   context "Request controller" do
@@ -21,8 +20,7 @@ class RequestsControllerTest < ActionController::TestCase
 
     context "#cancel" do
       setup do
-        @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
       end
 
       should "cancel request" do
@@ -47,9 +45,7 @@ class RequestsControllerTest < ActionController::TestCase
 
     context "#copy" do
       setup do
-        @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
-        #@request_initial=FactoryGirl.create :request, :user => @user, :request_type =>FactoryGirl.create(:request_type), :study =>FactoryGirl.create(:study, :name => "ReqCon2"), :workflow =>FactoryGirl.create(:submission_workflow)
+        session[:user] = @user.id
       end
 
       should "when quotas is copied and redirect" do
@@ -92,7 +88,7 @@ class RequestsControllerTest < ActionController::TestCase
       context "when logged in" do
         setup do
           @controller.stubs(:logged_in?).returns(@user)
-          @controller.stubs(:current_user).returns(@user)
+          session[:user] = @user.id
 
           put :update, :id => @our_request.id, :request => @params
         end
@@ -108,7 +104,7 @@ class RequestsControllerTest < ActionController::TestCase
     context "#update rejected" do
       setup do
         @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
 
         @project = FactoryGirl.create(:project_with_order, :name => 'Prj1')
          @reqwest=FactoryGirl.create :request, :user => @user, :request_type =>FactoryGirl.create(:request_type), :study =>FactoryGirl.create(:study, :name => "ReqCon XXX"),

@@ -4,8 +4,7 @@
 
 require "test_helper"
 
-# Re-raise errors caught by the controller.
-class Requests::CommentsController; def rescue_action(e) raise e end; end
+
 
 class Requests::CommentsControllerTest < ActionController::TestCase
   context "Requests controller" do
@@ -14,7 +13,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user = create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
 
     should_require_login

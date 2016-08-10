@@ -4,8 +4,7 @@
 
 require "test_helper"
 
-# Re-raise errors caught by the controller.
-class SearchesController; def rescue_action(e) raise e end; end
+
 
 class SearchesControllerTest < ActionController::TestCase
   context "Searches controller" do
@@ -21,7 +20,7 @@ class SearchesControllerTest < ActionController::TestCase
       setup do
         @user =FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
 
         @study                    =FactoryGirl.create :study, :name => "FindMeStudy"
         @study2                   =FactoryGirl.create :study, :name => "Another study"

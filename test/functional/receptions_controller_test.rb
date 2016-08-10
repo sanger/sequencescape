@@ -11,7 +11,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user =FactoryGirl.create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @plate =FactoryGirl.create :plate
       @sample_tube =FactoryGirl.create :sample_tube
       @location =FactoryGirl.create :location

@@ -5,8 +5,8 @@
 class PicoSetResultsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :login_required, :except => [:create]
+  before_action :evil_parameter_hack!
+  before_action :login_required, :except => [:create]
 
   # TODO This should be an update method not create
   # TODO Refactor. Create an object for pico_set_result

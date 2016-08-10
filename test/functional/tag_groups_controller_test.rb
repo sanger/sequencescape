@@ -5,8 +5,7 @@
 require "test_helper"
 require 'tag_groups_controller'
 
-# Re-raise errors caught by the controller.
-class TagGroupsController; def rescue_action(e) raise e end; end
+
 
 class TagGroupsControllerTest < ActionController::TestCase
   context "tag groups" do
@@ -16,7 +15,7 @@ class TagGroupsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @user =FactoryGirl.create :admin
       @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @tag_group =FactoryGirl.create :tag_group
     end
     should_require_login

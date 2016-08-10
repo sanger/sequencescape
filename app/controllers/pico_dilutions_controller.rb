@@ -4,7 +4,7 @@
 
 class PicoDilutionsController < ApplicationController
 
-  before_filter :login_required, :except => [:index]
+  before_action :login_required, :except => [:index]
 
   def index
     pico_dilutions = DilutionPlate.with_pico_children.page(params[:page]).order('id DESC').per_page(500)

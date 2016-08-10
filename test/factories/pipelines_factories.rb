@@ -70,35 +70,35 @@ FactoryGirl.define do
   end
 
   factory :dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
   factory :gel_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Gel Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Gel Dilution') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
   factory :pico_assay_a_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Pico Assay A') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay A') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
   factory :pico_assay_b_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Pico Assay B') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay B') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
   factory :pico_assay_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
   factory :pico_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Pico Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Dilution') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
   factory :sequenom_qc_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Sequenom') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Sequenom') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
   factory :working_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Working Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by_name!('Working Dilution') }
     barcode             {|a| FactoryGirl.generate :barcode_number }
   end
 

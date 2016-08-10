@@ -9,6 +9,8 @@ class AssetsControllerTest < ActionController::TestCase
     @controller = AssetsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    @user = create :admin, api_key: 'abc'
+    session[:user] = @user.id
   end
 
   should_require_login
@@ -16,9 +18,7 @@ class AssetsControllerTest < ActionController::TestCase
   context "#create a new asset with JSON input" do
     setup do
       @asset_count =  Asset.count
-      @user =FactoryGirl.create :user
-      @user.is_administrator
-      @controller.stubs(:current_user).returns(@user)
+
       @barcode  = FactoryGirl.generate :barcode
 
       @json_data = json_new_asset(@barcode)
@@ -37,17 +37,13 @@ class AssetsControllerTest < ActionController::TestCase
   context "create request with JSON input" do
     setup do
       @submission_count =  Submission.count
-      @asset =FactoryGirl.create(:sample_tube)
+      @asset = create(:sample_tube)
       @sample = @asset.primary_aliquot.sample
 
-      @user =FactoryGirl.create :user
-      @user.is_administrator
-      @controller.stubs(:current_user).returns(@user)
-
-      @study =FactoryGirl.create :study
-      @project =FactoryGirl.create :project, :enforce_quotas => true
-      @request_type =FactoryGirl.create :request_type
-      @workflow =FactoryGirl.create :submission_workflow
+      @study = create :study
+      @project = create :project, :enforce_quotas => true
+      @request_type = create :request_type
+      @workflow = create :submission_workflow
       @json_data = valid_json_create_request(@asset,@request_type,@study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'

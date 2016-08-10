@@ -14,7 +14,7 @@ class LocationsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @location  =FactoryGirl.create :location
       @user =FactoryGirl.create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
     should_require_login
 

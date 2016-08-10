@@ -5,8 +5,7 @@
 require "test_helper"
 require 'events_controller'
 
-# Re-raise errors caught by the controller.
-class EventsController; def rescue_action(e) raise e end; end
+
 
 class EventsControllerTest < ActionController::TestCase
   context "EventsController" do

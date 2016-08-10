@@ -5,10 +5,10 @@
 class Studies::WorkflowsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :discover_study, :discover_workflow
+  before_action :evil_parameter_hack!
+  before_action :discover_study, :discover_workflow
 
-  before_filter :setup_tabs, :only => [ :show, :show_summary ]
+  before_action :setup_tabs, :only => [ :show, :show_summary ]
 
   def setup_tabs
     @total_requests = compute_total_request(@study)
@@ -81,7 +81,7 @@ class Studies::WorkflowsController < ApplicationController
         render :partial => "summary"
       else
         @request_type = @request_types[@summary - @basic_tabs.size]
-        @assets_to_detail = @study.requests.request_type(@request_type).with_asset.all(:include =>:asset).map(&:asset).uniq
+        @assets_to_detail = @study.requests.request_type(@request_type).with_asset.includes(:asset).map(&:asset).uniq
 
         unless @assets_to_detail.empty?
           render :partial => "summary_for_request_type"

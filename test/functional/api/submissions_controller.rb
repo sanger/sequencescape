@@ -13,7 +13,7 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @user =FactoryGirl.create :user
       @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
 
     context "#create" do

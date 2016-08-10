@@ -16,7 +16,7 @@ class WorkflowsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
 
       @user =FactoryGirl.create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @pipeline_user =FactoryGirl.create :pipeline_admin, :login => @user.login
 
     end
@@ -132,7 +132,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
 
         @user       =FactoryGirl.create :admin
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
         @batch_events_size = @batch.lab_events.size
       end
 

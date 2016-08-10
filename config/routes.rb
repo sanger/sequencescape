@@ -569,7 +569,7 @@ Sequencescape::Application.routes.draw do
 
   end
 
-  namespace :sdb, as:'' do
+  scope '/sdb', module: 'sdb' do
     resources :sample_manifests do
       collection do
         post :upload

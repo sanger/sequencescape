@@ -5,9 +5,9 @@
 class Admin::UsersController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :admin_login_required
-  before_filter :setup_user, :only => [:edit, :show, :grant_user_role, :remove_user_role]
+  before_action :evil_parameter_hack!
+  before_action :admin_login_required
+  before_action :setup_user, :only => [:edit, :show, :grant_user_role, :remove_user_role]
 
   def index
     @users = User.all(:order => "login ASC")
@@ -108,7 +108,7 @@ class Admin::UsersController < ApplicationController
 
   def filter
     if params[:q]
-      @users = User.all(:order => "login ASC" ).select{ |p| p.name.downcase.include?(params[:q].downcase) || p.login.downcase.include?(params[:q].downcase) }
+      @users = User.order(:login).where('name LIKE :query OR login LIKE :query',{query: params[:q].downcase})
     end
 
     render :partial => "users", :locals => {:users => @users}
@@ -116,7 +116,7 @@ class Admin::UsersController < ApplicationController
 
   private
   def setup_user
-    @user = User.find(params[:id], :include => [:roles])
+    @user = User.includes(:roles).find(params[:id])
   end
 
 end

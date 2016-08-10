@@ -5,60 +5,36 @@ require 'lib/event_factory'
 class RequestsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
 
-  before_filter :admin_login_required, :only => [ :describe, :undescribe, :destroy ]
-  before_filter :set_permitted_params, :only => [ :update ]
+  before_action :admin_login_required, :only => [ :describe, :undescribe, :destroy ]
+  before_action :set_permitted_params, :only => [ :update ]
 
   def set_permitted_params
     @parameters = params[:request].reject{|k,v| !['request_metadata_attributes'].include?(k.to_s)}
   end
   attr_reader :parameters
- # before_filter :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
+ # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   def index
-    @no_filter_params, @study, @item, query_options = true, nil, nil, { :order => 'created_at DESC' }
+    @study, @item = nil, nil
 
     # Ok, here we pick the initial source for the Requests.  They either come from Request (as in all Requests), or they
     # are limited by the Asset / Item.
-    request_source = Request
-    if params[:item_id]
-      @no_filter_params = false
-      @item             = Item.find(params[:item_id])
-      request_source    = @item.requests
-    elsif params[:asset_id]
-      @no_filter_params = false
-      @item             = Asset.find(params[:asset_id])
-      request_source    = @item.requests
-    end
+    request_source = Request.order(created_at: :desc).includes(:asset,:request_type).where(search_params).paginate(per_page: 200).page(params[:page])
 
-    # Now we can change the source for the Requests based on filtering parameters.
-    if params[:request_type_id]
-      @no_filter_params = false
-      @request_type     = RequestType.find(params[:request_type_id])
-      request_source    = request_source.request_type(params[:request_type_id])
-    elsif params[:request_type] and params[:workflow]
-      @no_filter_params = false
-      request_source    = request_source.for_request_types(params[:request_type]).for_workflow(params[:workflow])
-      query_options[ :include ] = :user
-    end
-    if params[:study_id]
-      @no_filter_params = false
-      @study            = Study.find(params[:study_id])
-      request_source    = request_source.for_initial_study_id(params[:study_id])
-    end
-    if params[:state]
-      @no_filter_params = false
-      request_source    = request_source.for_state(params[:state])
+    @item                   = Item.find(params[:item_id]) if params[:item_id]
+    @item  ||= @asset_id    = Asset.find(params[:asset_id]) if params[:asset_id]
+    @request_type           = RequestType.find(params[:request_type_id]) if params[:request_type_id]
+    @study                  = Study.find(params[:study_id]) if params[:study_id]
+
+    # Deprecated?: It would be great if we could remove this
+    if params[:request_type] and params[:workflow]
+      request_source    = request_source.for_request_types(params[:request_type]).for_workflow(params[:workflow]).includes(:user)
     end
 
     # Now, here we go: find all of the requests!
-    @requests =
-      if @no_filter_params
-        Request.paginate(:page => params[:page], :order => 'created_at DESC')
-      else
-        request_source.all(query_options)
-      end
+    @requests = request_source
 
     respond_to do |format|
       format.html
@@ -234,7 +210,7 @@ class RequestsController < ApplicationController
     end
   end
 
-  before_filter :find_request, :only => [ :filter_change_decision, :change_decision ]
+  before_action :find_request, :only => [ :filter_change_decision, :change_decision ]
 
   def find_request
     @request  = Request.find(params[:id])
@@ -255,5 +231,10 @@ class RequestsController < ApplicationController
       flash[:error] = "Failed! Please, read the list of problem below."
       @change_decision = exception.object
       render(:action => :filter_change_decision)
+  end
+
+  def search_params
+    permitted = params.permit(:asset_id,:item_id,:state,:request_type_id,:workflow_id)
+    permitted[:initial_study_id] = params[:study_id] if params[:study_id]
   end
 end

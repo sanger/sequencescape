@@ -5,8 +5,7 @@
 require "test_helper"
 require 'studies/workflows_controller'
 
-# Re-raise errors caught by the controller.
-class Studies::WorkflowsController; def rescue_action(e) raise e end; end
+
 
 class Studies::WorkflowsControllerTest < ActionController::TestCase
   context "Studies controller" do
@@ -17,7 +16,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
 
       @workflow = create :submission_workflow
       @user     = create :user, :login => "someone", :workflow_id => @workflow.id
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @study    = create :study
     end
 
@@ -25,7 +24,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
 
      context "#show" do
         setup do
-          @controller.stubs(:current_user).returns(@user)
+          session[:user] = @user.id
           get :show, :id => @workflow.id, :study_id => @study.id
         end
         should respond_with :success

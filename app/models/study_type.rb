@@ -10,10 +10,7 @@ class StudyType < ActiveRecord::Base
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of study type already present in database"
 
-
-  def for_select_dropdown
-    valid_for_creation? ? [self.name, self.id] : nil
-  end
+  scope :for_selection, ->() { order(:name).where(valid_for_creation: true) }
 
   def self.include?(studytype_name)
     study_type = StudyType.find_by_name(studytype_name)

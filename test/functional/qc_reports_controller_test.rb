@@ -5,8 +5,7 @@
 require "test_helper"
 require 'qc_reports_controller'
 
-# Re-raise errors caught by the controller.
-class QcReportsController; def rescue_action(e) raise e end; end
+
 
 class QcReportsControllerTest < ActionController::TestCase
   context "QcReports controller" do
@@ -17,8 +16,7 @@ class QcReportsControllerTest < ActionController::TestCase
       @request.env["HTTP_REFERER"] = '/'
 
       @user     = create :user
-      @controller.stubs(:current_user).returns(@user)
-
+      session[:user] = @user.id
       @study  = create :study
       @product = create :product
       @product_criteria = create :product_criteria, :product => @product

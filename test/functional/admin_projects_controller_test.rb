@@ -5,8 +5,7 @@
 require "test_helper"
 require 'admin/projects_controller'
 
-# Re-raise errors caught by the controller.
-class Admin::ProjectsController; def rescue_action(e) raise e end; end
+
 
 class Admin::ProjectsControllerTest < ActionController::TestCase
 
@@ -27,7 +26,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         role.users << @user
         @request_type =FactoryGirl.create :request_type
         @other_request_type =FactoryGirl.create :request_type
-        session[:user] = @user
+        session[:user] = @user.id
         @emails = ActionMailer::Base.deliveries
         @emails.clear
       end

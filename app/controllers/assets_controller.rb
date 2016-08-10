@@ -6,9 +6,9 @@
 class AssetsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
   include BarcodePrintersController::Print
-   before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
+   before_action :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
   def index
     @assets_without_requests = []
@@ -239,7 +239,7 @@ class AssetsController < ApplicationController
   def show_plate
   end
 
-  before_filter :prepare_asset, :only => [ :new_request, :create_request ]
+  before_action :prepare_asset, :only => [ :new_request, :create_request ]
 
   def prepare_asset
     @asset = Asset.find(params[:id])

@@ -5,12 +5,12 @@
 class SamplesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
   #require 'curb'
 
-  before_filter :admin_login_required, :only => [ :administer, :destroy ]
+  before_action :admin_login_required, :only => [ :administer, :destroy ]
 
   def index
     @samples = Sample.order('created_at DESC').page(params[:page])
@@ -24,7 +24,7 @@ class SamplesController < ApplicationController
   def new
     @sample = Sample.new
     @workflows  = Submission::Workflow.all
-    @studies   = Study.all.sort_by {|p| p.name }
+    @studies   = Study.alphabetical
   end
 
   def create
@@ -131,7 +131,7 @@ class SamplesController < ApplicationController
   def remove_from_study
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
-    StudySample.find_by(:study_id=>params[:study_id],:sample_id=>params[:id]}).destroy
+    StudySample.find_by(:study_id=>params[:study_id],:sample_id=>params[:id]).destroy
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end

@@ -69,7 +69,7 @@ class BatchesControllerTest < ActionController::TestCase
 
     context "with a user logged in" do
       setup do
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
       end
 
       context "routing" do

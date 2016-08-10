@@ -18,7 +18,7 @@ class AssignTagsTaskTest < TaskTestBase
       @controller  = TestWorkflowsController.new
       @workflow = create :lab_workflow_for_pipeline
       @user = create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @pipeline       = create :pipeline
       @batch          = create :batch, :pipeline => @pipeline
       @controller.batch = @batch

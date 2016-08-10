@@ -10,7 +10,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
   context "#PlateTemplates controller" do
     setup do
       @user =FactoryGirl.create(:slf_manager)
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
     should_require_login
 

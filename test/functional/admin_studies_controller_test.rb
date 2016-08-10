@@ -3,10 +3,7 @@
 #Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require "test_helper"
-require 'samples_controller'
-
-# Re-raise errors caught by the controller.
-class Admin::StudiesController; def rescue_action(e) raise e end; end
+require 'admin/studies_controller'
 
 class Admin::StudiesControllerTest < ActionController::TestCase
   context "Studies controller" do
@@ -23,8 +20,7 @@ class Admin::StudiesControllerTest < ActionController::TestCase
         @user     =FactoryGirl.create :admin
         @study  =FactoryGirl.create :study
         @request_type =FactoryGirl.create :request_type
-        @controller.stubs(:current_user).returns(@user)
-        @controller.stubs(:logged_in?).returns(@user)
+        session[:user] = @user.id
         @emails = ActionMailer::Base.deliveries
         @emails.clear
       end

@@ -147,8 +147,6 @@ class Study < ActiveRecord::Base
     where(['aliquots.receptacle_id IN (?)',assets.map(&:id)])
   }
 
-  scope :for_listing, ->()  { select('name, id') }
-
   STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate']
 
   def each_well_for_qc_report_in_batches(exclude_existing,product_criteria)

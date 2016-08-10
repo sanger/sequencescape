@@ -5,8 +5,8 @@
 class WorkflowsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+  before_action :evil_parameter_hack!
+  before_action :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
@@ -149,7 +149,7 @@ class WorkflowsController < ApplicationController
       unless params[:next_stage].nil?
 
         eager_loading = @task.included_for_do_task
-        @batch ||= Batch.find(params[:batch_id], :include => eager_loading )
+        @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
         unless @batch.editable?
           flash[:error] = "You cannot make changes to a completed batch."
           redirect_to :back

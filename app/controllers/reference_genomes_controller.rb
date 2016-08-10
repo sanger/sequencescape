@@ -5,11 +5,11 @@
 class ReferenceGenomesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :admin_login_required, :only => [:new, :create, :edit, :update, :destroy]
+  before_action :evil_parameter_hack!
+  before_action :admin_login_required, :only => [:new, :create, :edit, :update, :destroy]
 
   def index
-    @reference_genomes = ReferenceGenome.all(:order => "name ASC")
+    @reference_genomes = ReferenceGenome.alphabetical
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @reference_genomes }

@@ -28,16 +28,15 @@ module Sanger
         end
 
         def should_require_login(*actions)
+          params = actions.pop if actions.last.is_a?(Hash)
           actions << :index if actions.empty?
           actions.each do |action|
             context "#{action}" do
               context "when logged in" do
                 setup do
                   session[:user] = create(:user)
-                  # @controller.stubs(:logged_in?).returns(true)
-                  # @controller.stubs(:current_user).returns(create(:user))
                   begin
-                    get action
+                    get action, params
                   rescue AbstractController::ActionNotFound
                      flunk "Testing for an unknown action: #{action}"
                   rescue ActiveRecord::RecordNotFound
@@ -59,23 +58,13 @@ module Sanger
                   session[:user] = nil
 
                   begin
-                    get action
+                    get action, params
                   rescue AbstractController::ActionNotFound
                     flunk "Testing for an unknown action: #{action}"
                   end
                 end
                 should redirect_to("login page"){login_path}
               end
-              # TODO - Include API passthrough checking
-              # context "when requesting XML" do
-              #   setup do
-              #     @request.accept = "application/xml"
-              #     get action
-              #   end
-              #   should "not redirect" do
-              #     assert ! (300..307).to_a.include?(@response.code)
-              #   end
-              # end
             end
           end
         end

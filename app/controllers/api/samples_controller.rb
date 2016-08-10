@@ -5,8 +5,8 @@
 class Api::SamplesController < Api::BaseController
   self.model_class = Sample
 
-  before_filter :prepare_object, :only => [ :show, :update, :destroy ]
-  before_filter :prepare_list_context, :only => [ :index ]
+  before_action :prepare_object, :only => [ :show, :update, :destroy ]
+  before_action :prepare_list_context, :only => [ :index ]
 
   def next_sanger_sample_id
     respond_to do |format|

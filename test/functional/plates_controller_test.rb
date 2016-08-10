@@ -17,7 +17,7 @@ class PlatesControllerTest < ActionController::TestCase
       ['Pico Assay A', 'Pico Assay B'].map do |s|
         PlatePurpose.find_by_name!(s)
       end.map do |p|
-       FactoryGirl.create :plate_creator_purpose, { :plate_purpose => p, :plate_creator =>  @pico_assay_plate_creator }
+        create :plate_creator_purpose, { :plate_purpose => p, :plate_creator =>  @pico_assay_plate_creator }
       end
       @dilution_plates_creator     =FactoryGirl.create :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Working dilution')
 
@@ -46,7 +46,7 @@ class PlatesControllerTest < ActionController::TestCase
       setup do
         @user =FactoryGirl.create :user, :barcode => 'ID100I'
         @user.is_administrator
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
 
         @parent_plate  =FactoryGirl.create :plate, :barcode => "5678"
         @parent_plate2 =FactoryGirl.create :plate, :barcode => "1234"

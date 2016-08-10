@@ -5,8 +5,7 @@
 require "test_helper"
 require 'projects_controller'
 
-# Re-raise errors caught by the controller.
-class ProjectsController; def rescue_action(e) raise e end; end
+
 
 class ProjectsControllerTest < ActionController::TestCase
   context "ProjectsController" do
@@ -28,7 +27,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
       @user.has_role('owner')
       @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
 
     context "#new" do
@@ -115,7 +114,7 @@ class ProjectsControllerTest < ActionController::TestCase
         @user =FactoryGirl.create :user
         @user.has_role('owner')
         @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
 
         @json_data = <<-END_OF_JSON_DATA
           {

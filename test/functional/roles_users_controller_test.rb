@@ -5,8 +5,7 @@
 require "test_helper"
 require 'samples_controller'
 
-# Re-raise errors caught by the controller.
-class Admin::Roles::UsersController; def rescue_action(e) raise e end; end
+
 
 class Admin::Roles::UsersControllerTest < ActionController::TestCase
   context "Admin::Roles::UsersControllercontroller" do

@@ -5,8 +5,8 @@
 class Studies::DocumentsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :get_study_id
+  before_action :evil_parameter_hack!
+  before_action :get_study_id
 
   def index
     @study = Study.find(params[:study_id])

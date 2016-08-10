@@ -5,9 +5,9 @@
 class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :admin_login_required
-  before_filter :discover_bait_library_type, :only => [:edit, :update, :destroy]
+  before_action :evil_parameter_hack!
+  before_action :admin_login_required
+  before_action :discover_bait_library_type, :only => [:edit, :update, :destroy]
   def new
     @bait_library_type = BaitLibraryType.new
   end

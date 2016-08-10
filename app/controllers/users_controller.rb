@@ -5,10 +5,10 @@
 class UsersController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
 
-  before_filter :validate_user, :except => [:index, :projects, :study_reports]
-  before_filter :find_user, :except => [:index]
+  before_action :validate_user, :except => [:index, :projects, :study_reports]
+  before_action :find_user, :except => [:index]
 
   def index
     @users = User.all

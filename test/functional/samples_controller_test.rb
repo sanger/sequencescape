@@ -5,8 +5,7 @@
 require "test_helper"
 require 'samples_controller'
 
-# Re-raise errors caught by the controller.
-class SamplesController; def rescue_action(e) raise e end; end
+
 
 class SamplesControllerTest < ActionController::TestCase
   context "Samples controller" do
@@ -36,7 +35,7 @@ class SamplesControllerTest < ActionController::TestCase
       setup do
         @user =FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
       end
 
       context "#add_to_study" do

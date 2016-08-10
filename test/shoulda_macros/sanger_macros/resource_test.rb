@@ -82,7 +82,7 @@ module Sanger
                 end
 
                 # All our things need a user to be logged in
-                @controller.stubs(:current_user).returns(@user)
+                session[:user] = @user.id
                 @controller.stubs(:logged_in?).returns(@user)
               end
               if actions.include?('index')

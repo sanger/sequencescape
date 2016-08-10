@@ -13,7 +13,7 @@ class TasksControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user       =FactoryGirl.create :admin
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @pipeline =FactoryGirl.create :pipeline, :name => "Normal pipeline"
       @workflow = @pipeline.workflow
       @task =FactoryGirl.create :task, :workflow => @workflow, :name => "A new task name"

@@ -10,10 +10,7 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
       @controller = Admin::ProgramsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user     =FactoryGirl.create :admin
-      @controller.stubs(:current_user).returns(@user)
-      @controller.stubs(:logged_in?).returns(@user)
-
+      session[:user] = @user = create :user
     end
 
     should_require_login

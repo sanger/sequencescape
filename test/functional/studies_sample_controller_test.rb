@@ -5,9 +5,6 @@
 require "test_helper"
 require 'studies/workflows_controller'
 
-# Re-raise errors caught by the controller.
-class Studies::SamplesController; def rescue_action(e) raise e end; end
-
 class Studies::SamplesControllerTest < ActionController::TestCase
   context "Studies controller" do
     setup do
@@ -15,9 +12,9 @@ class Studies::SamplesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @user     =FactoryGirl.create :user
-      @controller.stubs(:current_user).returns(@user)
-      @workflow =FactoryGirl.create :submission_workflow
+      @user     = create :user
+      session[:user] = @user.id
+      @workflow = create :submission_workflow
     end
 
     should_require_login(:index)

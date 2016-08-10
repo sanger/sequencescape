@@ -2,8 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.
 class Admin::ProgramsController < ApplicationController
-  before_filter :admin_login_required
-  before_filter :discover_program, :only => [:show, :edit, :update, :destroy]
+  before_action :admin_login_required
+  before_action :discover_program, :only => [:show, :edit, :update, :destroy]
 
   def index
     @programs = Program.all

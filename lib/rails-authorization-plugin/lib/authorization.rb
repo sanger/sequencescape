@@ -29,7 +29,7 @@ module Authorization
     module ControllerClassMethods
 
       # Allow class-level authorization check.
-      # permit is used in a before_filter fashion and passes arguments to the before_filter.
+      # permit is used in a before_action fashion and passes arguments to the before_action.
       def permit( authorization_expression, *args )
         filter_keys = [ :only, :except ]
         filter_args, eval_args = {}, {}
@@ -37,7 +37,7 @@ module Authorization
           filter_args.merge!( args.last.reject {|k,v| not filter_keys.include? k } )
           eval_args.merge!( args.last.reject {|k,v| filter_keys.include? k } )
         end
-        before_filter( filter_args ) do |controller|
+        before_action( filter_args ) do |controller|
           controller.permit( authorization_expression, eval_args )
         end
       end

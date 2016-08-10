@@ -11,7 +11,7 @@ module AuthenticatedSystem
 
     # Accesses the current user from the session.
     def current_user
-      @current_user ||= (session[:user] && User.find_by_id(session[:user])) || :false
+      @current_user ||= (session[:user] && User.find_by(id:session[:user])) || :false
     end
 
     # Store the given user in the session.
@@ -40,15 +40,15 @@ module AuthenticatedSystem
     #
     # To require logins for all actions, use this in your controllers:
     #
-    #   before_filter :login_required
+    #   before_action :login_required
     #
     # To require logins for specific actions, use this in your controllers:
     #
-    #   before_filter :login_required, :only => [ :edit, :update ]
+    #   before_action :login_required, :only => [ :edit, :update ]
     #
     # To skip this in a subclassed controller:
     #
-    #   skip_before_filter :login_required
+    #   skip_before_action :login_required
     #
     def login_required
       username, passwd = get_auth_data
@@ -187,7 +187,7 @@ module AuthenticatedSystem
       base.send :helper_method, :current_user, :logged_in?
     end
 
-    # When called with before_filter :login_from_cookie will check for an :auth_token
+    # When called with before_action :login_from_cookie will check for an :auth_token
     # cookie and log the user back in if apropriate
     def login_from_cookie
       return unless cookies[:auth_token] && !logged_in?

@@ -5,8 +5,8 @@
 class PlateTemplatesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :slf_manager_login_required
+  before_action :evil_parameter_hack!
+  before_action :slf_manager_login_required
   def index
     @patterns = PlateTemplate.paginate(:per_page => 50, :page => params[:page])
   end

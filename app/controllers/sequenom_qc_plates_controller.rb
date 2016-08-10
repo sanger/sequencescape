@@ -5,7 +5,7 @@
 class SequenomQcPlatesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
   def new
     @barcode_printers  = BarcodePrinterType.find_by_name("384 Well Plate").barcode_printers
     @barcode_printers  = BarcodePrinter.order(:name) if @barcode_printers.blank?

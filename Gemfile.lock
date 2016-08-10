@@ -204,8 +204,8 @@ GEM
     metaclass (0.0.4)
     method_source (0.8.2)
     mime-types (2.99)
-    mini_portile2 (2.0.0)
-    minitest (5.8.3)
+    mini_portile2 (2.1.0)
+    minitest (5.9.0)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
     multi_json (1.11.2)
@@ -213,10 +213,12 @@ GEM
     mysql (2.9.1)
     net-ldap (0.12.1)
     netrc (0.11.0)
-    nokogiri (1.6.7)
-      mini_portile2 (~> 2.0.0.rc2)
-    nokogiri (1.6.7-java)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
+    nokogiri (1.6.8-java)
     nori (2.6.0)
+    pkg-config (1.1.7)
     poltergeist (1.8.1)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -232,8 +234,8 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
-    puma (2.16.0)
-    puma (2.16.0-java)
+    puma (3.6.0)
+    puma (3.6.0-java)
     rack (1.6.4)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
@@ -256,7 +258,7 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
-    rails-html-sanitizer (1.0.2)
+    rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
@@ -442,4 +444,4 @@ DEPENDENCIES
   will_paginate-bootstrap
 
 BUNDLED WITH
-   1.11.2
+   1.12.5

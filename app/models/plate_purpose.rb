@@ -222,3 +222,39 @@ class PlatePurpose < Purpose
   def supports_multiple_submissions?; false; end
 
 end
+
+# Ensure rails eager loading behaves as intended
+# We should consider renaming our classes to make this easier to maintain
+require_relative 'dilution_plate_purpose'
+require_relative 'pico_assay_plate_purpose'
+require_relative 'pulldown_aliquot_plate_purpose'
+require_relative 'pulldown_enrichment_four_plate_purpose'
+require_relative 'pulldown_enrichment_one_plate_purpose'
+require_relative 'pulldown_enrichment_three_plate_purpose'
+require_relative 'pulldown_enrichment_two_plate_purpose'
+require_relative 'pulldown_pcr_plate_purpose'
+require_relative 'pulldown_plate_purpose'
+require_relative 'pulldown_qpcr_plate_purpose'
+require_relative 'pulldown_run_of_robot_plate_purpose'
+require_relative 'pulldown_sequence_capture_plate_purpose'
+require_relative 'pulldown_sonication_plate_purpose'
+require_relative 'qc_plate_purpose'
+require_relative 'qcable_library_plate_purpose'
+require_relative 'qcable_plate_purpose'
+require_relative 'working_dilution_plate_purpose'
+require_relative 'illumina_c/al_libs_tagged_purpose'
+require_relative 'illumina_c/lib_pcr_purpose'
+require_relative 'illumina_c/lib_pcr_xp_purpose'
+require_relative 'illumina_c/stock_purpose'
+require_relative 'illumina_htp/downstream_plate_purpose'
+require_relative 'illumina_htp/final_plate_purpose'
+require_relative 'illumina_htp/library_complete_on_qc_purpose'
+require_relative 'illumina_htp/normalized_plate_purpose'
+require_relative 'illumina_htp/pooled_plate_purpose'
+require_relative 'illumina_htp/post_shear_qc_plate_purpose'
+require_relative 'illumina_htp/stock_plate_purpose'
+require_relative 'plate_purpose/initial_purpose'
+require_relative 'pulldown/initial_plate_purpose'
+require_relative 'pulldown/library_plate_purpose'
+require_relative 'pulldown/stock_plate_purpose'
+

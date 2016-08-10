@@ -5,12 +5,12 @@
 class BatchesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
-  before_filter :login_required, :except => [:released, :evaluations_counter, :qc_criteria]
-  before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :assign_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
-  before_filter :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
+  before_action :login_required, :except => [:released, :evaluations_counter, :qc_criteria]
+  before_action :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :assign_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
+  before_action :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
     if params[:request_id]

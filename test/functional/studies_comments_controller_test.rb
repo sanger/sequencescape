@@ -4,8 +4,7 @@
 
 require "test_helper"
 
-# Re-raise errors caught by the controller.
-class Studies::CommentsController; def rescue_action(e) raise e end; end
+
 
 class Studies::CommentsControllerTest < ActionController::TestCase
   context "Studies controller" do

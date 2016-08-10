@@ -5,24 +5,24 @@
 require "test_helper"
 require 'admin/roles_controller'
 
-# Re-raise errors caught by the controller.
-class Admin::RolesController; def rescue_action(e) raise e end; end
-
 class Admin::RolesControllerTest < ActionController::TestCase
   context "Roles controller" do
     setup do
       @controller = Admin::RolesController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-
-      @user =FactoryGirl.create :user
-      @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
-
     end
 
     should_require_login
 
-    resource_test('role', :with_prefix => 'admin_', :ignore_actions =>['create','destroy','update','edit'], :formats => ['html'])
+    context "with user" do
+
+      setup do
+        session[:user] = @user = create :user
+      end
+
+      resource_test('role', :with_prefix => 'admin_', :ignore_actions =>['create','destroy','update','edit'], :formats => ['html'])
+    end
+
   end
 end

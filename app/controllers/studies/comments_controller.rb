@@ -5,11 +5,11 @@
 class Studies::CommentsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :discover_study
+  before_action :evil_parameter_hack!
+  before_action :discover_study
 
   def index
-    @comments = @study.comments.all(:order => "created_at ASC")
+    @comments = @study.comments.order(:create_at)
   end
 
   def create

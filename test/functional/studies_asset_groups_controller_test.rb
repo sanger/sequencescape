@@ -4,8 +4,7 @@
 
 require "test_helper"
 
-# Re-raise errors caught by the controller.
-class Studies::AssetGroupsController; def rescue_action(e) raise e end; end
+
 
 class Studies::AssetGroupsControllerTest < ActionController::TestCase
 
@@ -20,7 +19,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user =FactoryGirl.create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @controller.stubs(:logged_in?).returns(@user)
       @study =FactoryGirl.create :study
       @asset_group =FactoryGirl.create :asset_group

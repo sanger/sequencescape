@@ -3,7 +3,7 @@
 #Copyright (C) 2016 Genome Research Ltd.
 class PlateSummariesController < ApplicationController
 
-  before_filter :login_required
+  before_action :login_required
 
   def index
     @plates = Plate.source_plates.with_descendants_owned_by(current_user).order("assets.id desc").page(params[:page])
@@ -24,4 +24,4 @@ class PlateSummariesController < ApplicationController
     end
   end
 end
-  
+

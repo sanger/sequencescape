@@ -5,9 +5,6 @@
 require "test_helper"
 require 'samples_controller'
 
-# Re-raise errors caught by the controller.
-class Admin::UsersController; def rescue_action(e) raise e end; end
-
 class Admin::UsersControllerTest < ActionController::TestCase
   context "Admin Users controller" do
     setup do
@@ -24,7 +21,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
         :actions => ['show','edit','index'],
         :formats => ['html'],
         :defaults => {:login =>"abc1234"},
-        :user => -> { user = FactoryGirl.create(:user) ; user.is_administrator ; user },
+        :user => -> { FactoryGirl.create(:admin) },
 
         # Setup needed because 'edit' assumes presence of at least one Study and Project
         :setup => -> { FactoryGirl.create(:study) ; FactoryGirl.create(:project) }
@@ -35,8 +32,8 @@ class Admin::UsersControllerTest < ActionController::TestCase
       setup do
         @user = FactoryGirl.create :user
         @admin = FactoryGirl.create :admin
-        @controller.stubs(:current_user).returns(@admin)
-        @controller.stubs(:logged_in?).returns(@admin)
+
+        session[:user] = @admin
 
         @user_to_find = FactoryGirl.create :user, :first_name => "Some", :last_name => "Body", :login => "sb1"
         @another_user = FactoryGirl.create :user, :first_name => "No", :last_name =>"One", :login => "no1"

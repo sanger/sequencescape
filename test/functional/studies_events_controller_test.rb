@@ -4,8 +4,7 @@
 
 require "test_helper"
 
-# Re-raise errors caught by the controller.
-class Studies::EventsController; def rescue_action(e) raise e end; end
+
 
 class Studies::EventsControllerTest < ActionController::TestCase
   context "Studies controller" do
@@ -14,16 +13,15 @@ class Studies::EventsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @user     =FactoryGirl.create :user
-      @controller.stubs(:current_user).returns(@user)
-      @study  =FactoryGirl.create :study
+      @user     = create :user
+      session[:user] = @user.id
+      @study  = create :study
     end
 
     should_require_login(:index)
 
      context "#index" do
         setup do
-          @controller.stubs(:current_user).returns(create(:user))
           get :index, :study_id => @study.id
         end
         should respond_with :success

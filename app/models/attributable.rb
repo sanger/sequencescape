@@ -109,11 +109,12 @@ module Attributable
       def self.extended(base)
         base.class_eval do
           include InstanceMethods
+          scope :for_selection, ->() { order(:name) }
         end
       end
 
       def for_select_association
-        all(:order => 'name ASC').map(&:for_select_dropdown).compact
+        for_selection.pluck(:name,:id)
       end
 
       def default

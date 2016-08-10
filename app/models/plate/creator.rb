@@ -70,7 +70,7 @@ class Plate::Creator < ActiveRecord::Base
     # Because then you get multiple matches.  So we take the first match, which is just not right.
     scanned_barcodes.map do |scanned|
       plate =
-        Plate.with_machine_barcode(scanned).first(:include => [ :location, { :wells => :aliquots } ]) or
+        Plate.with_machine_barcode(scanned).includes(:location, { :wells => :aliquots }).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
       unless can_create_plates?(plate, plate_purposes)
         raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]"

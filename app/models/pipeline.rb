@@ -244,7 +244,7 @@ class Pipeline < ActiveRecord::Base
 
   def extract_requests_from_input_params(params ={})
     if (request_ids = params["request"]).present?
-      requests.inputs(true).find(selected_values_from(request_ids).map(&:first), :order => 'id ASC')
+      requests.inputs(true).order(:id).find(selected_values_from(request_ids).map(&:first))
     elsif (selected_groups = params["request_group"]).present?
       grouping_parser.all(selected_values_from(selected_groups))
     else

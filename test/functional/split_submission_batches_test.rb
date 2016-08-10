@@ -16,7 +16,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @plate_purpose = PlatePurpose.find_by_name('Stock plate')
       @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
       @project =FactoryGirl.create :project
       @study =FactoryGirl.create :study
       @asset1 =FactoryGirl.create :sample_tube

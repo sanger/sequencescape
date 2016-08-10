@@ -5,8 +5,8 @@
 class ReceptionsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :find_asset_by_id, :only => [:print, :snp_register]
+  before_action :evil_parameter_hack!
+  before_action :find_asset_by_id, :only => [:print, :snp_register]
 
   def index
     @num_text_boxes = 10

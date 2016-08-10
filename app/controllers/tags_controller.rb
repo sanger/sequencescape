@@ -5,10 +5,10 @@
 class TagsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :admin_login_required, :only => [:edit, :update]
-  before_filter :find_tag_group
-  before_filter :find_tag_by_id, :only => [:show, :edit, :update]
+  before_action :evil_parameter_hack!
+  before_action :admin_login_required, :only => [:edit, :update]
+  before_action :find_tag_group
+  before_action :find_tag_by_id, :only => [:show, :edit, :update]
 
   def show
     respond_to do |format|

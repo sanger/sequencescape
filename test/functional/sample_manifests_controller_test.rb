@@ -14,7 +14,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user       = create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
 
     context '#show' do
@@ -39,5 +39,5 @@ class SampleManifestsControllerTest < ActionController::TestCase
     end
 
   end
-  
+
 end

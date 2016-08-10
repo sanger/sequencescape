@@ -12,7 +12,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @user =FactoryGirl.create :user,  :barcode => "ID41440E"
       @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
 
       @batch   =FactoryGirl.create :batch, :barcode => "6262"
       @robot   =FactoryGirl.create :robot, :barcode => "1"

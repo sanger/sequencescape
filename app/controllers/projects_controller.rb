@@ -5,18 +5,18 @@ require 'lib/event_factory'
 class ProjectsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
-  before_filter :login_required
-  before_filter :set_variables_for_project, :only => [:show, :edit, :update, :destroy, :studies]
- #TODO: before_filter :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
+  before_action :evil_parameter_hack!
+  before_action :login_required
+  before_action :set_variables_for_project, :only => [:show, :edit, :update, :destroy, :studies]
+ #TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
     @projects = Project.alphabetical.page(params[:page])
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml => Project.all(:order => 'name ASC') }
-      format.json  { render :json => Project.all(:order => 'name ASC') }
+      format.xml  { render :xml => Project.alphabetical }
+      format.json  { render :json => Project.alphabetical }
     end
   end
 

@@ -20,7 +20,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
       setup do
         @user =FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
       end
 
       context "#index" do
@@ -55,7 +55,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "with attached file" do
           setup do
-            @controller.stubs(:current_user).returns(@user)
+            session[:user] = @user.id
             post :spreadsheet, :study_id => @study, :file => Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls','')
           end
 

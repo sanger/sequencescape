@@ -171,7 +171,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
     samples.map do |sample|
-      sample.wells.all(:include => :plate).detect { |well| well.plate.present? and (well.plate.plate_purpose_id == plate_purpose.id) } or
+      # Prioritise the newest well
+      sample.wells.on_plate_purpose(plate_purpose).order(id: :desc).first or
         raise InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}"
     end
   end
@@ -191,6 +192,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
+
     names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
     samples = Sample.includes(:assets).where([ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ])

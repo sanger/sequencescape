@@ -5,15 +5,15 @@
 
 class QcReportsController < ApplicationController
 
-  before_filter :login_required
-  before_filter :check_required, :only => :create
+  before_action :login_required
+  before_action :check_required, :only => :create
 
   def index
     # Build a conditions hash of acceptable parameters, ignoring those that are blank
 
-    @qc_reports = QcReport.for_report_page(conditions).paginate(:page => params[:page],:include => [:study,:product])
+    @qc_reports = QcReport.for_report_page(conditions).page(params[:page]).includes(:study,:product)
     @qc_report = QcReport.new(:exclude_existing => true,:study_id => params[:study_id])
-    @studies = Study.alphabetical.for_listing.all.map {|s| [s.name,s.id] }
+    @studies = Study.alphabetical.pluck(:name,:id)
     @states = QcReport.available_states.map {|s| [s.humanize,s] }
 
     @all_products = Product.alphabetical.all.map {|product| [product.display_name,product.id]}

@@ -4,8 +4,7 @@
 
 require "test_helper"
 
-# Re-raise errors caught by the controller.
-class AdminController; def rescue_action(e) raise e end; end
+
 
 class AdminControllerTest < ActionController::TestCase
   context "Admin controller" do
@@ -16,12 +15,12 @@ class AdminControllerTest < ActionController::TestCase
     end
 
     should_require_login
+
     context "admin frontpage" do
       setup do
-        @user     =FactoryGirl.create :admin
-        @controller.stubs(:current_user).returns(@user)
-        @controller.stubs(:logged_in?).returns(@user)
+        session[:user] = @user = create :admin
       end
+
       context "#index" do
         setup do
           get :index

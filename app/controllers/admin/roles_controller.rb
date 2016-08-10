@@ -5,7 +5,7 @@
 class Admin::RolesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_filter :evil_parameter_hack!
+  before_action :evil_parameter_hack!
 
   def index
     @roles  = Role.group(:name).pluck(:name)
