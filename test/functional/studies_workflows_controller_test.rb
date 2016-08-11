@@ -8,14 +8,14 @@ require 'studies/workflows_controller'
 
 
 class Studies::WorkflowsControllerTest < ActionController::TestCase
-  context "Studies controller" do
+  context "Studies::Workflows controller" do
     setup do
       @controller = Studies::WorkflowsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
       @workflow = create :submission_workflow
-      @user     = create :user, :login => "someone", :workflow_id => @workflow.id
+      @user     = create :user, :workflow_id => @workflow.id
       session[:user] = @user.id
       @study    = create :study
     end
@@ -23,10 +23,11 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
     should_require_login(:show)
 
      context "#show" do
+
         setup do
-          session[:user] = @user.id
           get :show, :id => @workflow.id, :study_id => @study.id
         end
+
         should respond_with :success
         should render_template :show
       end

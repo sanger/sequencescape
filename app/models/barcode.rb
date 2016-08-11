@@ -221,7 +221,7 @@ class Barcode
       weight = weight == 1 ? 3 : 1
     end
 
-    (10 -ean) % 10
+    (10 - ean) % 10
 
   end
 end

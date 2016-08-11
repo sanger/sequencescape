@@ -2,8 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require File.join(File.dirname(__FILE__), %w[.. test_helper])
-require 'workflows_controller'
+require "test_helper"
 
 ActionController::TestCase.send(:include, AuthenticatedTestHelper)
 

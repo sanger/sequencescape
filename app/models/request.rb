@@ -249,7 +249,7 @@ class Request < ActiveRecord::Base
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
   scope :excluding_states, ->(states) {
-    where([states.map{|s| '(state != ?)' }.join(" OR "), states].flatten)
+    where.not(state: states)
   }
   scope :ordered, -> { order("id ASC") }
   scope :full_inbox, -> { where(state: ["pending","hold"]) }
@@ -258,8 +258,8 @@ class Request < ActiveRecord::Base
   scope :loaded_for_inbox_display, -> { includes([{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}])}
   scope :loaded_for_grouped_inbox_display, -> { includes([ {:submission => :orders}, :asset , :target_asset, :request_type ])}
 
-  scope :ordered_for_ungrouped_inbox, -> { order('id DESC') }
-  scope :ordered_for_submission_grouped_inbox, -> { order('submission_id DESC, id ASC') }
+  scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
+  scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
 
   scope :group_conditions, ->(conditions, variables) {
     where([ conditions.join(' OR '), *variables ])

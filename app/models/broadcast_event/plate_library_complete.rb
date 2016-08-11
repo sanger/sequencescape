@@ -21,7 +21,7 @@ class BroadcastEvent::PlateLibraryComplete < BroadcastEvent
   has_subjects(:sample) { |plate,e| plate.samples_in_order_by_target(e.properties[:order_id]) }
 
   def order
-    @order ||= Order.find(properties[:order_id],:include=>[:study,:project,:submission])
+    @order ||= Order.includes(:study,:project,:submission).find(properties[:order_id])
   end
 
   has_metadata(:library_type) {|_,e| e.order.request_options['library_type'] }

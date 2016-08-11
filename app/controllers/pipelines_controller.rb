@@ -130,7 +130,7 @@ class PipelinesController < ApplicationController
   end
 
   def batches
-    @batches = @pipeline.batches.paginate :page => params[:page], :order => 'id DESC'
+    @batches = @pipeline.batches.order(id: :desc).page(params[:page])
   end
 
   # to modify when next_request will be ready

@@ -22,7 +22,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
       end
       unless task.plate_purpose_options(@batch).include?(@plate.purpose)
         flash[:error] = "Invalid target plate, wrong plate purpose"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
         return
       end
     end

@@ -26,7 +26,7 @@
         <td><label for="bed_barcodes_<%= bed_label %>" >SCRC <%= bed_label %></label></td>
         <td><%= text_field_tag "bed_barcodes[#{bed_label}]", display_hash_value(params, :bed_barcodes, "#{bed_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'bed_barcodes_#{bed_label}','plate_barcodes_#{plate_label}')" %></td>
         <td><label for="plate_barcodes_<%= plate_label %>"><%= plate_label %></label></td>
-        <% if count +1 >= @all_labels.last.size %>
+        <% if count + 1 >= @all_labels.last.size %>
           <%   next_field = "destination_bed_barcodes_1" %>
         <% else %>
          <%   next_field = "bed_barcodes_#{bed_label.to_i + 1}" %>
@@ -34,7 +34,7 @@
         <td><%= text_field_tag "plate_barcodes[#{plate_label}]", display_hash_value(params, :plate_barcodes, "#{plate_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'plate_barcodes_#{plate_label}','#{next_field}')" %></td>
         <td><%= select_tag("source_plate_types[#{plate_label}]", options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name))) %></td>
       </tr>
-    <% count = count +1 %>
+    <% count = count + 1 %>
     <% end %>
   <% end %>
   <% if @all_labels.first.nil? -%>
@@ -45,7 +45,7 @@
       <td><label for="destination_bed_barcodes_<%= bed_label %>" >DEST <%=bed_label%></label></td>
       <td><%= text_field_tag "destination_bed_barcodes[#{bed_label}]", display_hash_value(params, :destination_bed_barcodes, "#{bed_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'destination_bed_barcodes_#{bed_label}','destination_plate_barcodes_#{destination_label}')" %></td>
       <td><label for="destination_plate_barcodes_<%= destination_label %>" ><%=destination_label%></label></td>
-      <% if count +1 >= @all_labels.first.size %>
+      <% if count + 1 >= @all_labels.first.size %>
         <%   next_field = "verify_button" %>
       <% else %>
        <%   next_field = "destination_bed_barcodes_#{bed_label.to_i +1}" %>

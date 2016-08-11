@@ -26,7 +26,6 @@ class ProjectsControllerTest < ActionController::TestCase
       @user =FactoryGirl.create :user
 
       @user.has_role('owner')
-      @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
     end
 
@@ -111,9 +110,8 @@ class ProjectsControllerTest < ActionController::TestCase
   context "POST '/create'" do
     context "with JSON data" do
       setup do
-        @user =FactoryGirl.create :user
+        @user = FactoryGirl.create :user, api_key: 'abc'
         @user.has_role('owner')
-        @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
 
         @json_data = <<-END_OF_JSON_DATA

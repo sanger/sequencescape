@@ -86,9 +86,9 @@ namespace :test do
     task :warnings do |t|
       warnings = []
       # RUBYOPT added by Bundler causes significant startup cost, so we empty it
-      super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)' \
-        +' -and \( -name "*.rb" -or -name "*.rake" \)' \
-        +' -exec ruby -c {} \; ) 2>&1'
+      super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)'+
+        ' -and \( -name "*.rb" -or -name "*.rake" \)'+
+        ' -exec ruby -c {} \; ) 2>&1'
       pipe = IO.popen("#{super_find_cmd}")
       pipe.each do |line| # From the perspective of the new pseudo terminal
         unless(line !~ /Syntax OK/)

@@ -12,8 +12,7 @@ class BatchesControllerTest < ActionController::TestCase
       @controller = BatchesController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user       =FactoryGirl.create :admin
-      @pipeline_user =FactoryGirl.create :pipeline_admin, :login => @user.login
+      @user       = create :admin
     end
     should_require_login
 
@@ -72,43 +71,36 @@ class BatchesControllerTest < ActionController::TestCase
         session[:user] = @user.id
       end
 
-      context "routing" do
-        should "map '/batches/auto_qc" do
-          assert_routing({ :method => 'post', :path => '/batches/auto_qc'}, { :controller => 'batches', :action => 'auto_qc'})
-        end
-        # Add more tests here
-      end
-
       context "actions" do
         setup do
-          @pipeline_next =FactoryGirl.create :pipeline, :name => 'Next pipeline'
-          @pipeline =FactoryGirl.create :pipeline, :name => 'New Pipeline', :automated => false, :next_pipeline_id => @pipeline_next.id
-          @pipeline_qc_manual =FactoryGirl.create :pipeline, :name => 'Manual quality control', :automated => false, :next_pipeline_id => @pipeline_next.id
-          @pipeline_qc =FactoryGirl.create :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_qc_manual.id
+          @pipeline_next = create :pipeline, :name => 'Next pipeline'
+          @pipeline = create :pipeline, :name => 'New Pipeline', :automated => false, :next_pipeline_id => @pipeline_next.id
+          @pipeline_qc_manual = create :pipeline, :name => 'Manual quality control', :automated => false, :next_pipeline_id => @pipeline_next.id
+          @pipeline_qc = create :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_qc_manual.id
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2
           @ws_two.update_attributes!(:locale => 'External')
 
-          @batch_one =FactoryGirl.create(:batch, :pipeline => @pipeline)
-          @batch_two =FactoryGirl.create(:batch, :pipeline => @pipeline_qc)
+          @batch_one = create(:batch, :pipeline => @pipeline)
+          @batch_two = create(:batch, :pipeline => @pipeline_qc)
 
-          @sample   =FactoryGirl.create :sample_tube
-          @library1 =FactoryGirl.create :empty_library_tube
+          @sample   = create :sample_tube
+          @library1 = create :empty_library_tube
           @library1.parents << @sample
-          @library2 =FactoryGirl.create :empty_library_tube
+          @library2 = create :empty_library_tube
           @library2.parents << @sample
 
           @library1.update_attributes(:location=>@pipeline.location)
           @library2.update_attributes(:location=>@pipeline.location)
 
-          @target_one =FactoryGirl.create(:sample_tube)
-          @target_two =FactoryGirl.create(:sample_tube)
+          @target_one = create(:sample_tube)
+          @target_two = create(:sample_tube)
 
           # todo add a control_request_type to pipeline...
-          @request_one = @pipeline.request_types.first.create!(:asset => @library1, :target_asset => @target_one, :project =>FactoryGirl.create(:project))
+          @request_one = @pipeline.request_types.first.create!(:asset => @library1, :target_asset => @target_one, :project => create(:project))
           @batch_one.batch_requests.create!(:request => @request_one, :position => 1)
-          @request_two = @pipeline.request_types.first.create!(:asset => @library2, :target_asset => @target_two, :project =>FactoryGirl.create(:project))
+          @request_two = @pipeline.request_types.first.create!(:asset => @library2, :target_asset => @target_two, :project => create(:project))
           @batch_one.batch_requests.create!(:request => @request_two, :position => 2)
           @batch_one.reload
         end
@@ -147,9 +139,11 @@ class BatchesControllerTest < ActionController::TestCase
 
 
         should "#update" do
-          #try to reach the else on edit method.
-          put :update, :id => @batch_one.id, :batch => {:pipeline_id => '2324242' }
+          @pipeline_user = create :pipeline_admin, :login => 'ur1', :first_name => 'Ursula', :last_name => 'Robinson'
+          put :update, :id => @batch_one.id, :batch => {:assignee_id => @pipeline_user.id }
           assert_redirected_to batch_path(assigns(:batch))
+          assert_equal assigns(:batch).assignee, @pipeline_user
+          assert_includes flash[:notice], "Assigned to Ursula Robinson (ur1)"
         end
 
         should "redirect on update without param" do
@@ -242,7 +236,7 @@ class BatchesControllerTest < ActionController::TestCase
               post :fail_items, :id => @batch_one.id, :failure => { :reason => "", :comment => "" }
             end
             should "not allow failing a batch/items without specifying a reason and set the flash" do
-              assert /Please specify a failure reason for this batch/ === @controller.session[:flash][:error]
+              assert_includes flash[:error], 'Please specify a failure reason for this batch'
               assert_redirected_to :action => :fail, :id => @batch_one.id
             end
           end

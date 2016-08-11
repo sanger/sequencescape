@@ -128,7 +128,7 @@ class Asset < ActiveRecord::Base
       arguments.merge!({:barcode => number, :prefix_id => prefix_id})
     end
 
-    search <<')'
+    search << ')'
 
     if with_includes
       where(search, arguments)

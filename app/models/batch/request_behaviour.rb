@@ -19,7 +19,7 @@ module Batch::RequestBehaviour
       scope :unbatched, ->() {
         includes(:batch_request).
         readonly(false).
-        where(batc_requests:{request_id: nil})
+        where(batch_requests:{request_id: nil})
       }
 
       delegate :position, :to=>:batch_request, :allow_nil=>true

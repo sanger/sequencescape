@@ -18,7 +18,7 @@
 <% add :menu, "Asset groups" => study_asset_groups_path(@study) -%>
 <% add :menu, "Projects" => projects_study_path(@study) -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) || current_user.owner?(@study) || current_user.lab? %>
-  <% add :menu, "Print Labels" => printing_study_asset_group_path(@study) -%>
+  <% add :menu, "Print Labels" => printing_study_asset_groups_path(@study) -%>
 <% end %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Contacts" => collaborators_study_path(@study) -%>

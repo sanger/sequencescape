@@ -117,7 +117,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       setup do
         @assetgroup_count =  AssetGroup.count
         @study_count =  Study.count
-        put :update, :study_id => @study.id, :id => @asset_group.id, :name=>"update name"
+        put :update, :study_id => @study.id, :id => @asset_group.id, asset_group: { :name=>"update name" }
       end
 
       should set_flash.to( /updated/)
@@ -133,7 +133,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       should respond_with :redirect
 
       should "set name" do
-        assert "update name", AssetGroup.find(@asset_group.id).name
+        assert_equal "update name", AssetGroup.find(@asset_group.id).name
       end
     end
 

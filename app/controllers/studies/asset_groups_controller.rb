@@ -95,7 +95,7 @@ class Studies::AssetGroupsController < ApplicationController
       #We should not blame the user, we should instead help.
       # - By returning the X most recent ones together with an explanation.
       flash[:error] = "Search too wide. Please make your query more specific."
-      redirect_to study_asset_group_path(@study)
+      redirect_to study_asset_groups_path(@study)
       return
     else
       @assets = Asset.where(['name like ?', "%#{query}%"])

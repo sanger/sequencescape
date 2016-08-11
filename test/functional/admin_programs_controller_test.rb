@@ -10,7 +10,7 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
       @controller = Admin::ProgramsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      session[:user] = @user = create :user
+      session[:user] = @user = create :admin
     end
 
     should_require_login

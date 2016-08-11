@@ -88,7 +88,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -107,7 +107,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -126,7 +126,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -144,7 +144,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -162,7 +162,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -180,7 +180,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -198,7 +198,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -216,7 +216,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -234,7 +234,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "redirect and set the flash to error" do
             assert_response :redirect
-            assert_not_nil @controller.session[:flash][:error].include?("Error")
+            assert_not_nil flash[:error].include?("Error")
             assert_equal @before_event_count+ 1, Event.count
           end
         end
@@ -294,7 +294,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         should "redirect and set the flash to error" do
           assert_response :redirect
-          assert_not_nil @controller.session[:flash][:error].include?("Invalid")
+          assert_not_nil flash[:error].include?("Invalid")
         end
 
       end
@@ -307,7 +307,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         should "redirect and set the flash to error" do
           assert_response :redirect
-          assert_not_nil @controller.session[:flash][:error].include?("Invalid")
+          assert_not_nil flash[:error].include?("Invalid")
         end
 
       end
@@ -320,7 +320,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         should "redirect and set the flash to error" do
           assert_response :redirect
-          assert_not_nil @controller.session[:flash][:error].include?("Invalid")
+          assert_not_nil flash[:error].include?("Invalid")
         end
 
       end
@@ -333,7 +333,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         should "redirect and set the flash to error" do
           assert_response :redirect
-          assert_not_nil @controller.session[:flash][:error].include?("Invalid")
+          assert_not_nil flash[:error].include?("Invalid")
         end
 
       end

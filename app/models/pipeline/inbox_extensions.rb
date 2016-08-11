@@ -5,7 +5,7 @@
 module Pipeline::InboxExtensions
   def inbox(show_held_requests = true, current_page = 1, action = nil)
 
-    requests = proxy_association.scoped
+    requests = proxy_association.scope
     pipeline = proxy_association.owner
     # Build a list of methods to invoke to build the correct request list
     actions = [ :unbatched ]

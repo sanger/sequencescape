@@ -5,11 +5,12 @@
 class BatchesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
   before_action :login_required, :except => [:released, :evaluations_counter, :qc_criteria]
-  before_action :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :assign_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
+  before_action :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
   before_action :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
@@ -21,8 +22,8 @@ class BatchesController < ApplicationController
       assigned_batches = Batch.where(assignee_id: @user.id)
       @batches = (@user.batches + assigned_batches).sort_by {|batch| batch.id}.reverse
     else
-      # not reachable !!! if not login redirect to login
-      @batches = Batch.all
+      # Can end up here with XML. And it causes pain.
+      @batches = Batch.order(id: :asc).paginate(per_page:10,page:params[:page])
     end
     respond_to do |format|
       format.html
@@ -58,9 +59,17 @@ class BatchesController < ApplicationController
   end
 
   def update
+
+    if batch_parameters[:assignee_id]
+      user = User.find(batch_parameters[:assignee_id])
+      assigned_message = "Assigned to #{user.name} (#{user.login})."
+    else
+      assigned_message = ""
+    end
+
     respond_to do |format|
-      if @batch.update_attributes(params[:batch])
-        flash[:notice] = 'Batch was successfully updated.'
+      if @batch.update(batch_parameters)
+        flash[:notice] = "Batch was successfully updated. #{assigned_message}"
         format.html { redirect_to batch_url(@batch) }
         format.xml  { head :ok }
       else
@@ -68,6 +77,10 @@ class BatchesController < ApplicationController
         format.xml  { render :xml => @batch.errors.to_xml }
       end
     end
+  end
+
+  def batch_parameters
+    @bp ||= params.require(:batch).permit(:assignee_id)
   end
 
   def hide_from_inbox(requests)
@@ -310,18 +323,6 @@ class BatchesController < ApplicationController
 
   def save
     redirect_to :action => :show, :id => @batch.id
-  end
-
-  def assign_batch
-    @user = User.find(params[:assignee][:id])
-    @batch.assignee_id = @user.id
-    if @batch.save
-      flash[:notice] = "Batch assigned to #{@user.login}"
-      redirect_to :action => "edit", :id => @batch.id
-    else
-      flash[:notice] = "Could not assign batch"
-      redirect_to :action => "edit", :id => @batch.id
-    end
   end
 
   def control

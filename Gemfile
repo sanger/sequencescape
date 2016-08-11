@@ -16,6 +16,10 @@ group :default do
   # Fixing things proper means actually updating formtastic
   # gem "formtastic-bootstrap"
 
+  # Caching, primarily of batch.xml Can be removed once our xml interfaces are retired.
+  gem 'actionpack-page_caching'
+
+
   gem "activerecord-jdbc-adapter", :platforms => :jruby
   gem "activeresource", require: 'active_resource'
   gem "jdbc-mysql", :platforms => :jruby

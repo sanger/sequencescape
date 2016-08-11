@@ -23,7 +23,8 @@ module Qcable::Statemachine
       extend ClassMethods
 
       ## State machine
-      aasm :column => :state, :whiny_persistence => true do
+      ## namespace: true as destroyed clashes with rails, but we can't easily rename the state
+      aasm column: :state, whiny_persistence: true, namespace: true, name: 'qc_state' do
 
         state :created
         state :pending,        :enter => :on_stamp

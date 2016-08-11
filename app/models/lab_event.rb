@@ -25,7 +25,7 @@ class LabEvent < ActiveRecord::Base
   def self.find_by_barcode(barcode)
     batch_id = 0
 
-    search = "%Chip Barcode: " + barcode +"%"
+    search = "%Chip Barcode: #{barcode}%"
     requests = self.barcode_code(search)
     batch = requests.map(&:batch_id).uniq
     batch_id = batch[0] unless batch.size != 1

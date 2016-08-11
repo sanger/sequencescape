@@ -4,7 +4,7 @@
 
 module Tasks::DnaQcHandler
   def render_dna_qc_task(task, params)
-    @batch = Batch.find(params[:batch_id], :include => [{ :requests => :request_metadata }, :pipeline, :lab_events])
+    @batch = Batch.includes({ :requests => :request_metadata }, :pipeline, :lab_events).find(params[:batch_id])
     @batch.start!(current_user) if @batch.pending?
     @rits = @batch.pipeline.request_information_types
 
@@ -20,7 +20,7 @@ module Tasks::DnaQcHandler
     # we try and force it here.
     ]).sort_by {|r| r.source_well.map.column_order }
 
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @task = task # @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0

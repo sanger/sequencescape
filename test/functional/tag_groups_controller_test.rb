@@ -14,7 +14,6 @@ class TagGroupsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user =FactoryGirl.create :admin
-      @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
       @tag_group =FactoryGirl.create :tag_group
     end
@@ -91,7 +90,7 @@ class TagGroupsControllerTest < ActionController::TestCase
       setup do
         @taggroup_count =  TagGroup.count
         @tag_count =  Tag.count
-        put :update, :id => @tag_group.id, :name=>"update name"
+        put :update, :id => @tag_group.id, tag_group: {name: "update name"}
       end
       should set_flash.to( /updated/)
       should "change TagGroup.count by 0" do
@@ -102,7 +101,7 @@ class TagGroupsControllerTest < ActionController::TestCase
       end
       should respond_with :redirect
       should "set name" do
-        assert "update name", TagGroup.find(@tag_group.id).name
+        assert_equal "update name", TagGroup.find(@tag_group.id).name
       end
     end
   end

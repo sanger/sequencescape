@@ -160,6 +160,8 @@ Sequencescape::Application.routes.draw do
         post :add
         get :print
         post :print_labels
+      end
+      collection do
         get :printing
       end
     end

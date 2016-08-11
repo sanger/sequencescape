@@ -6,13 +6,8 @@ require "test_helper"
 
 # Re-raise errors caught by the controller.
 class AuthenticationController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
 
   before_action :login_required, :except => :open
-
-  def rescue_action(e) raise e end
 
   def restricted
     data = {:parent => {:child => "open"}}
@@ -35,14 +30,14 @@ end
 
 class AuthenticationControllerTest < ActionController::TestCase
 
-  def skip_routing
-    Rails.application.routes.draw do
-      get 'authentication/open'
-      get 'authentication/restricted'
-      match '/login' => 'sessions#login', :as => :login, :via => [:get,:post]
-      match '/logout' => 'sessions#logout', :as => :logout, :via => [:get,:post]
-    end
-  end
+  # def skip_routing
+  #   Rails.application.routes.draw do
+  #     get 'authentication/open'
+  #     get 'authentication/restricted'
+  #     match '/login' => 'sessions#login', :as => :login, :via => [:get,:post]
+  #     match '/logout' => 'sessions#logout', :as => :logout, :via => [:get,:post]
+  #   end
+  # end
 
 
   context "Authenticated pages" do
@@ -51,7 +46,7 @@ class AuthenticationControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @request.host = "www.example.com"
-      skip_routing
+      #skip_routing
     end
 
     context "with configatron disable_api_authentication set to true" do

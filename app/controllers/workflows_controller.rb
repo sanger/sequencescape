@@ -137,6 +137,7 @@ class WorkflowsController < ApplicationController
   # 4: Some tasks rely on parameters passed in from the previous task. This isn't ideal, but it might
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
+  # 6: GET should be Idempotent. doing a task should be a POST
   def stage
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
@@ -171,7 +172,7 @@ class WorkflowsController < ApplicationController
         redirect_to finish_batch_url(@batch)
       else
         if @batch.nil? || @task.included_for_render_task != eager_loading
-          @batch = Batch.find(params[:batch_id], :include => @task.included_for_render_task )
+          @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])
         end
         @task.render_task(self, params)
       end

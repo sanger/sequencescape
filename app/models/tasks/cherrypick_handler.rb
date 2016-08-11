@@ -11,7 +11,7 @@ module Tasks::CherrypickHandler
 
   def render_cherrypick_task(task, params)
     unless flash[:error].blank?
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
       return
     end
 
@@ -21,13 +21,13 @@ module Tasks::CherrypickHandler
     end
     if plate_template.nil?
       flash[:error] = "Please select a template"
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
       return
     end
 
     setup_input_params_for_pass_through
 
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+    @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @requests = @batch.ordered_requests
 
     @plate = nil
@@ -39,13 +39,13 @@ module Tasks::CherrypickHandler
       @plate = Plate.find_by_barcode(plate_barcode_id)
       if @plate.nil?
         flash[:error] = "Invalid plate barcode"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
         return
       end
     elsif @fluidigm_plate.present?
       if @fluidigm_plate.size > 10
         flash[:error] = "Invalid fluidigm barcode"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
         return
       end
       @plate = Plate::Metadata.includes(:plate).where(fluidigm_barcode: @fluidigm_barcode).try(:plate)
@@ -54,7 +54,7 @@ module Tasks::CherrypickHandler
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
     flash.now[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
 
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     if @spreadsheet_layout
       @map_info = @spreadsheet_layout
     elsif @plate.present?
@@ -119,8 +119,8 @@ module Tasks::CherrypickHandler
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
-      wells = Hash[Well.find(@batch.requests.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
-      request_and_well = Hash[@batch.requests.all(:include => :request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
+      wells = Hash[Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).map { |w| [w.id,w] }]
+      request_and_well = Hash[@batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
       used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
 
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.

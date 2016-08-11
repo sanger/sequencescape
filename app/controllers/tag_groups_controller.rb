@@ -3,9 +3,7 @@
 #Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class TagGroupsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
+
   before_action :admin_login_required, :only => [:new, :edit, :create, :update]
 
   def index
@@ -38,8 +36,8 @@ class TagGroupsController < ApplicationController
   end
 
   def create
-    @tag_group = TagGroup.new(params[:tag_group])
-    @tags = @tag_group.create_tags(params[:tags])
+    @tag_group = TagGroup.new(tag_group_params)
+    @tags = @tag_group.tags.build(tag_params)
 
     respond_to do |format|
       if @tag_group.save
@@ -55,12 +53,25 @@ class TagGroupsController < ApplicationController
     @tag_group = TagGroup.find(params[:id])
 
     respond_to do |format|
-      if @tag_group.update_attributes(params[:tag_group])
+      if @tag_group.update_attributes(tag_group_params)
         flash[:notice] = 'Tag Group was successfully updated.'
         format.html { redirect_to(@tag_group) }
       else
         format.html { render :action => "edit" }
       end
+    end
+  end
+
+  def tag_group_params
+    params.require(:tag_group).permit(:name)
+  end
+
+  # Permits oligo and mapi_id, filters out any unfilled fields
+  def tag_params
+    params.fetch(:tags,[]).reject do |index,attributes|
+      attributes[:oligo].blank?
+    end.map do |index,attributes|
+      attributes.permit(:map_id,:oligo)
     end
   end
 

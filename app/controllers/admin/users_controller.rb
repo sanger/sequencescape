@@ -10,7 +10,7 @@ class Admin::UsersController < ApplicationController
   before_action :setup_user, :only => [:edit, :show, :grant_user_role, :remove_user_role]
 
   def index
-    @users = User.all(:order => "login ASC")
+    @users = User.order(:login)
   end
 
   def edit
@@ -108,7 +108,7 @@ class Admin::UsersController < ApplicationController
 
   def filter
     if params[:q]
-      @users = User.order(:login).where('name LIKE :query OR login LIKE :query',{query: params[:q].downcase})
+      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',{query: "%#{params[:q].downcase}%"})
     end
 
     render :partial => "users", :locals => {:users => @users}

@@ -169,7 +169,7 @@ class Task < ActiveRecord::Base
   end
 
   def find_batch(batch_id)
-    Batch.find(batch_id, :include => [:requests, :pipeline, :lab_events])
+    Batch.includes(:requests, :pipeline, :lab_events).find(batch_id)
   end
 
   def find_batch_requests(batch_id)

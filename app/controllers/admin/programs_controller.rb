@@ -20,7 +20,7 @@ class Admin::ProgramsController < ApplicationController
   end
 
   def create
-    @program = Program.new(params[:program])
+    @program = Program.new(program_params)
 
     respond_to do |format|
       if @program.save
@@ -34,7 +34,7 @@ class Admin::ProgramsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @program.update_attributes(params[:program])
+      if @program.update_attributes(program_params)
         flash[:notice] = 'Program was successfully updated.'
         format.html { redirect_to(admin_programs_path) }
       else
@@ -44,7 +44,12 @@ class Admin::ProgramsController < ApplicationController
   end
 
   private
+
   def discover_program
     @program = Program.find(params[:id])
+  end
+
+  def program_params
+    params.require(:program).permit(:name)
   end
 end
