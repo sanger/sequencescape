@@ -34,6 +34,8 @@ class User < ActiveRecord::Base
   before_create { |record| record.workflow ||= Submission::Workflow.default_workflow }
 
   validates_presence_of :login
+  validates_uniqueness_of :login
+
   validates_confirmation_of :password, :if => :password_required?
 
   scope :with_login, ->(*logins) { where(login:logins.flatten) }
@@ -41,7 +43,7 @@ class User < ActiveRecord::Base
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where('last_name IS NOT NULL').joins(:roles).where(:roles=>{:name=>'owner'}).order('last_name ASC').uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(:roles=>{:name=>'owner'}).order(:last_name).uniq }
 
   attr_accessor :password
 

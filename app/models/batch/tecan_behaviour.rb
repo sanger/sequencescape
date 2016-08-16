@@ -25,6 +25,7 @@ module Batch::TecanBehaviour
        "source" => {},
        "destination" => {}
     }
+
     requests.includes([{:asset=>:plate},{:target_asset=>:plate}]).where(:state=>"passed").each do |request|
 
       destination_barcode = request.target_asset.plate.barcode

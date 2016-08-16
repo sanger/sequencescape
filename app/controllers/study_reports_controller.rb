@@ -9,8 +9,8 @@ class StudyReportsController < ApplicationController
   before_action :login_required
 
   def index
-    @study_reports = StudyReport.paginate(:page => params[:page], :order => "id desc")
-    @studies = Study.all(:order => "name ASC")
+    @study_reports = StudyReport.order(id: :desc).page(params[:page])
+    @studies = Study.alphabetical
   end
 
   def new

@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'action_dispatch/xml_params_parser'
 
 Bundler.require(:default, Rails.env)
 
@@ -59,17 +60,7 @@ module Sequencescape
     config.autoload_paths += %W{ #{Rails.root}/lib }
     config.autoload_paths += %W{ #{Rails.root}/lib/sample_manifest_excel }
 
-
-
-    # config.middleware.use "Api::EndpointHandler"
-    # config.middleware.use "Api::RootService"
-
-    # UPDATE ? - Is this old rails code or custom code?
-    # if %w(development test sandbox production cucumber).include? Rails.env
-    #   config.load_paths += Dir["#{Rails.root}/vendor/gems/**"].map do |dir|
-    #     File.directory?(lib = "#{dir}/lib") ? lib : dir
-    #   end
-    # end
+    config.middleware.insert_after ActionDispatch::ParamsParser, ActionDispatch::XmlParamsParser
 
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.

@@ -162,14 +162,12 @@ module Api
     # Not ideal but at least this allows us to pick up the appropriate model from the URL.
     def determine_model_from_parts(*parts)
       (1..parts.length).to_a.reverse.each do |n|
-        begin
-          model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
-          return yield(model_name.join('/').classify.constantize, remainder)
-        rescue NameError => exception
-          # Re-raise No Method Errors as it means something is wrong
-          raise exception if exception.is_a?(NoMethodError)
-          # Nope, try again
-        end
+        model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
+        model_constant = constant = model_name.join('/').classify
+        # Check if the model exists, or roll on. This used to rescue NameError
+        # but that made it a pain to debug any errors in the API.
+        next unless (model_constant.constantize)
+        return yield(model_constant.constantize, remainder)
       end
       raise StandardError, "Cannot route #{parts.join('/').inspect}"
     end

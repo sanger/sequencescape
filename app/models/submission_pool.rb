@@ -62,7 +62,7 @@ class SubmissionPool < ActiveRecord::Base
 
     select('submissions.*, MIN(our.id) AS outer_request_id').
     joins([
-      'LEFT JOIN requests as our ON our.submission_id = submissions.id',
+      'LEFT JOIN requests AS our ON our.submission_id = submissions.id',
       'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
     ]).
     where([
@@ -78,7 +78,7 @@ class SubmissionPool < ActiveRecord::Base
         # Horrid hack due to the behaviour of count with a group_by
         # We can't use uniq alone, as the outer_request_id makes
         # the vairous rows unique.
-        s = super
+        s = super(:id)
         return s if s.is_a?(Numeric)
         s.length
       end

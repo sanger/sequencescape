@@ -70,7 +70,7 @@ class Project < ActiveRecord::Base
   # Allow us to pass in nil or '' if we don't want to filter state.
   # State is required so we don't need to look up an actual null state
   scope :in_state, ->(state) {
-    state.present? ? where(state:state) : where(true)
+    state.present? ? where(state:state) : all
   }
 
   scope :approved,     ->()     { where(approved: true) }

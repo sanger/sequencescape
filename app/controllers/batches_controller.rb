@@ -117,11 +117,11 @@ class BatchesController < ApplicationController
 
       requests = @pipeline.extract_requests_from_input_params(params)
 
-      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
-      return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
-
-      return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
       return cancel_requests(requests) if params[:action_on_requests] == "cancel_requests"
+
+      return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
+      return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
+      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
 
       @batch = @pipeline.batches.create!(:requests => requests, :user => current_user)
 

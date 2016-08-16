@@ -26,3 +26,5 @@ class IlluminaHtp::FinalPlatePurpose < PlatePurpose
   end
   private :nudge_pre_pcr_wells
 end
+
+require_relative 'transferable_plate_purpose'

@@ -2,12 +2,11 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 # This class doesn't inherit from either library creation class because most of the behaviour is unwanted.
 # For example, we don't know the read length etc. when the request is created
 class ExternalLibraryCreationRequest < SystemRequest
 
-  aasm :column => :state, :whiny_persistence => true do
+  redefine_aasm :column => :state, :whiny_persistence => true do
     # We have a vastly simplified two state state machine. Requests are passed once the manifest is processed
     state :pending, :initial => true
     state :passed, :enter => :on_passed

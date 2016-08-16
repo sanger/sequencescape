@@ -17,11 +17,11 @@ Given /^user "(.*)" has a workflow "(.*)"$/ do |login, workflow_name|
   user.save
 end
 
-Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |type_of_user, login|
+Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
   wk = Submission::Workflow.where(:key => 'short_read_sequencing').first or
     raise 'Cannot find Next-gen sequencing workflow'
 
-  @current_user = User.create!(
+  @current_user = FactoryGirl.create(:user,
     :login => login,
     :first_name => "John",
     :last_name => "Doe",
@@ -31,12 +31,7 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |type_of_user, log
     :workflow_id => wk.id
   )
 
-  role_names = type_of_user.split("and").collect(&:strip)
-
-  role_names.each { |name| @current_user.roles << FactoryGirl.create(:role, name: name)}
-
-  # :create syntax for restful_authentication w/ aasm. Tweak as needed.
-  # @current_user.activate!
+  @current_user.roles << FactoryGirl.create(:role, name: role_name)
 
   visit "/login"
   fill_in("login", :with => login)

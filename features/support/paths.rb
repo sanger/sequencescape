@@ -74,7 +74,7 @@ module NavigationHelpers
 
     when /the show accession page for study named "([^\"]+)"/
       study_name = $1
-      study = Study.first(:conditions => { :name => study_name }) or raise StandardError, "study '#{ study_name }' does not exist"
+      study = Study.find_by!( :name => study_name )
       study_show_accession_path(study)
 
     when /the page for editing the last request/
@@ -83,22 +83,21 @@ module NavigationHelpers
 
     when /the update page for sample "([^\"]+)"/
       sample_name = $1
-      sample      = Sample.first(:conditions => { :name => sample_name }) or raise StandardError, "Sample '#{ sample_name }' does not exist"
+      sample      = Sample.find_by!( :name => sample_name )
       sample_path(sample)
 
     when /the study workflow page for "([^\"]+)"/, /the workflow page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by!( :name => study_name )
       study_workflow_path(study, @current_user.workflow)
 
     when /the study named "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or
-                    raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by!( :name => study_name )
       study_path(study)
 
     when /the edit page for the last batch/
-      batch = Batch.last or raise StandardError, "Cannot find the last batch"
+      batch = Batch.last!
       edit_batch_path(batch)
     when /the new plate page/
       new_plate_path
@@ -107,12 +106,12 @@ module NavigationHelpers
 
     when /the show page for library tube "([^\"]+)"/
       tube_name = $1
-      library_tube = LibraryTube.find_by_name(tube_name) or raise StandardError, "Cannot find library tube #{ tube_name.inspect }"
+      library_tube = LibraryTube.find_by_name!(tube_name)
       asset_path(library_tube)
 
     when /^the show page for asset "([^\"]+)"$/
       asset_name = $1
-      asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
+      asset = Asset.find_by_name!(asset_name)
       asset_path(asset)
 
     when /^the show page for asset "([^\"]+)" within "([^\"]+)"$/
@@ -159,7 +158,7 @@ module NavigationHelpers
 
     when /the sample error page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by( :name => study_name ) or raise StandardError, "No study defined with name '#{ study_name }'"
       study_sample_registration_index_path(study)
 
     when /the Submissions Inbox page/
@@ -210,18 +209,18 @@ module NavigationHelpers
 
     when /the asset group "([^"]+)" page for study "([^"]+)"$/
       asset_group_name, study_name = $1, $2
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(:name => study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
       asset_group = study.asset_groups.find_by_name(asset_group_name) or raise StandardError, "No asset group defined with name '#{asset_group_name}'"
       study_asset_group_path(study, asset_group)
 
     when /the samples page for study "([^"]+)"$/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(:name => study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
       study_samples_path(study)
 
     when /the show page for pipeline "([^"]+)"/
       pipeline_name = $1
-      pipeline = Pipeline.first(:conditions => {:name => pipeline_name}) or raise StandardError, "No Pipeline defined with name '#{ pipeline_name} '"
+      pipeline = Pipeline.find_by(:name => pipeline_name) or raise StandardError, "No Pipeline defined with name '#{ pipeline_name} '"
       pipeline_path(pipeline)
 
     when /the show page for batch "(\d+)"/

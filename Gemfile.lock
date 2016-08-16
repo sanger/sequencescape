@@ -43,6 +43,8 @@ GEM
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
     actionpack-page_caching (1.0.2)
       actionpack (>= 4.0.0, < 5)
+    actionpack-xml_parser (1.0.2)
+      actionpack (>= 4.0.0, < 5)
     actionview (4.2.5)
       activesupport (= 4.2.5)
       builder (~> 3.1)
@@ -375,6 +377,7 @@ PLATFORMS
 DEPENDENCIES
   aasm
   actionpack-page_caching
+  actionpack-xml_parser
   activerecord-jdbc-adapter
   activerecord-oracle_enhanced-adapter (~> 1.4.0)
   activeresource

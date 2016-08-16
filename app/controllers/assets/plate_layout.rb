@@ -27,7 +27,7 @@ class AssetsController < ApplicationController
     end
 
     def cell_name_for_well_at(row, column)
-      Map.find_by_location_id_and_asset_size(((row * self.width) + column +1 ), self.size).description
+      Map.find_by_location_id_and_asset_size(((row * self.width) + column + 1 ), self.size).description
     end
 
     def location_for_well_at(row, column)

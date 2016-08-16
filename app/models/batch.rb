@@ -15,7 +15,7 @@ class Batch < ActiveRecord::Base
 
   has_many :failures, :as => :failable
   has_many :messengers, :as => :target, :inverse_of => :target
-  has_many :batch_requests, ->() { includes(:request).order(:position) }, :inverse_of => :batch
+  has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, :inverse_of => :batch
   has_many :requests, ->() { distinct }, :through => :batch_requests, :inverse_of => :batch
   has_many :assets, :through => :requests, :source => :target_asset
   has_many :source_assets,  ->() { distinct }, :through => :requests, source: :asset
@@ -229,8 +229,8 @@ class Batch < ActiveRecord::Base
   end
 
   def output_plates
-    holder_ids = Request.get_target_plate_ids
-    Plate.find(holder_ids, :group => :barcode)
+    holder_ids = Request.get_target_plate_ids(request_ids)
+    Plate.find(holder_ids)
   end
 
   def first_output_plate

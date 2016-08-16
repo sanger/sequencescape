@@ -9,16 +9,10 @@ group :default do
   gem "rest-client" # curb substitute.
   gem "formtastic"
 
-  # By default formtastic applies styles which clash with bootstrap.
-  # The configuration provides no means of overriding this
-  # Fixing it means monkey patches, or extensive re-implementation
-  # formtastic-bootstrap is essentially these cludgy fixes in a gem
-  # Fixing things proper means actually updating formtastic
-  # gem "formtastic-bootstrap"
-
   # Caching, primarily of batch.xml Can be removed once our xml interfaces are retired.
   gem 'actionpack-page_caching'
-
+  # Legacy support for parsing XML into params
+  gem 'actionpack-xml_parser'
 
   gem "activerecord-jdbc-adapter", :platforms => :jruby
   gem "activeresource", require: 'active_resource'

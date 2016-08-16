@@ -89,16 +89,7 @@ Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |nam
   end
 end
 
-When /^I check request_group "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
-  #TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
-  # do give the pipelin name
-  request_number = request_number.to_i
-  pipeline = Pipeline.find_by_name(pipeline_name)
 
-  request_group = pipeline.get_input_request_groups.to_a[request_number-1].first
-  check("request_group_#{request_group.join(", ").gsub(/[^a-z0-9]+/, '_')}")
-
-end
 Given /^I have a freezer called "([^\"]*)"$/ do |location_name|
   FactoryGirl.create :location, :name => location_name
 end

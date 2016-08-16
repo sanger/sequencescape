@@ -22,7 +22,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   end
 
   def association_details_for(request)
-    association_class = request.target.class.reflections[@association].klass
+    association_class = request.target.class.reflections[@association.to_s].klass
     association_io    = ::Core::Io::Registry.instance.lookup_for_class(association_class)
     yield(association_io)
   end

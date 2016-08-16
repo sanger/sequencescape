@@ -122,7 +122,7 @@ Given /^H12 on (the plate .+) is empty$/ do |plate|
 end
 
 def work_pipeline_for(submissions, name, template=nil)
-  final_plate_type = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find #{name.inspect} plate type"
+  final_plate_type = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template       ||= TransferTemplate.find_by_name('Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
 
   source_plates = submissions.map { |submission| submission.requests.first.asset.plate }.uniq
@@ -146,7 +146,10 @@ end
 def finalise_pipeline_for(plate)
   plate.purpose.connect_requests(plate,'qc_complete')
   plate.wells.each do |well|
-    well.requests_as_target.each {|r| r.update_attributes!(:state=>'qc_complete')}
+    well.requests_as_target.each do |r|
+      target_state = r.library_creation? ? 'passed' : 'qc_complete'
+      r.update_attributes!(:state=>target_state)
+    end
   end
 end
 

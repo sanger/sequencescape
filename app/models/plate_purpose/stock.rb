@@ -15,7 +15,7 @@ module PlatePurpose::Stock
   def state_of(plate)
     # If there are no wells with aliquots we're pending
     ids_of_wells_with_aliquots = plate.wells.with_aliquots.pluck(:id)
-    return UNREADY_STATE if wells_with_aliquots.empty?
+    return UNREADY_STATE if ids_of_wells_with_aliquots.empty?
 
     # All of the wells with aliquots must have requests for us to be considered passed
     well_requests = Request::LibraryCreation.where(asset_id: ids_of_wells_with_aliquots)

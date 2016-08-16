@@ -10,7 +10,7 @@ module Plate::Iterations
     # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
     # tables to find all of the child plates of our parent that have the same plate purpose, numbering
     # those rows to give the iteration number for each plate.
-    iteration_of_plate = connection.select_one(%Q{
+    iteration_of_plate = self.class.connection.select_one(%Q{
       SELECT iteration
       FROM (
         SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration

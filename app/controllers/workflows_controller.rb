@@ -109,7 +109,7 @@ class WorkflowsController < ApplicationController
   end
 
   def destroy
-    @workflow.destroy
+    flash[:error] = "Sorry. The ability to delete workflows has been removed."
 
     respond_to do |format|
       format.html { redirect_to workflows_url }

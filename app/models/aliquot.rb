@@ -39,10 +39,10 @@ class Aliquot < ActiveRecord::Base
     # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
     # one aliquot.
     has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle
-    has_one :primary_aliquot, ->() { order('created_at ASC').readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
+    has_one :primary_aliquot, ->() { order(:created_at).readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
 
     # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
-    has_one :most_tagged_aliquot, ->() { order('tag2_id DESC, tag_id DESC').readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
+    has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
 
     # Named scopes for the future
     scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }

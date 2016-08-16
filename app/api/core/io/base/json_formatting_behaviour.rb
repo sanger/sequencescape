@@ -35,7 +35,7 @@ module Core::Io::Base::JsonFormattingBehaviour
     # need to determine the I/O class that deals with it and hand off the error handling to it.
     association, *association_parts = attribute.to_s.split('.')
     return attribute.to_s if association_parts.empty?
-    reflection = model_for_input.reflections[association.to_sym]
+    reflection = model_for_input.reflections[association]
     return attribute.to_s if reflection.nil?
 
     # TODO: 'association' here should really be garnered from the appropriate endpoint

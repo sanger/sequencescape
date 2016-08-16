@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - jruby-9.0.5.0
+  - jruby-9.1.2.0
 sudo: false
 cache: bundler
 bundler_args: --without warehouse development deployment

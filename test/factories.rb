@@ -471,18 +471,21 @@ FactoryGirl.define do
     user    {|user| user.association(:user)}
   end
 
+  sequence :login do |i|
+    "abc#{i}"
+  end
+
   factory  :user  do
     first_name        "fn"
     last_name         "ln"
-    login             "abc123"
+    login
     email             {|a| "#{a.login}@example.com".downcase }
-    roles             []
     workflow          {|workflow| workflow.association(:submission_workflow)}
     api_key           "123456789"
   end
 
   factory  :admin, :class => "User"  do
-    login                 "abc123"
+    login
     email                 {|a| "#{a.login}@example.com".downcase }
     roles                 {|role| [role.association(:admin_role)]}
     password              "password"
@@ -491,21 +494,21 @@ FactoryGirl.define do
   end
 
   factory  :manager, :class => "User"  do
-    login             "gr9"
+    login
     email             {|a| "#{a.login}@example.com".downcase }
     roles             {|role| [role.association(:manager_role)]}
     workflow          {|workflow| workflow.association(:submission_workflow)}
   end
 
   factory  :owner, :class => "User"  do
-    login             "abc123"
+    login
     email             {|a| "#{a.login}@example.com".downcase}
     roles             {|role| [role.association(:owner_role)]}
     workflow          {|workflow| workflow.association(:submission_workflow)}
   end
 
   factory  :data_access_coordinator, :class => "User"  do
-    login                 "abc123"
+    login
     email                 {|a| "#{a.login}@example.com".downcase }
     roles                 {|role| [role.association(:data_access_coordinator_role)]}
     workflow              {|workflow| workflow.association(:submission_workflow)}

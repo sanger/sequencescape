@@ -69,13 +69,13 @@ class Map < ActiveRecord::Base
 
     def self.vertical_position_to_description(well_position, length)
       desc_letter = (((well_position-1)%length) + 65).chr
-      desc_number = ((well_position-1)/length) +1
+      desc_number = ((well_position-1)/length) + 1
       (desc_letter+(desc_number.to_s))
     end
 
     def self.horizontal_position_to_description(well_position, width)
       desc_letter = (((well_position-1)/width) + 65).chr
-      desc_number = ((well_position-1)%width) +1
+      desc_number = ((well_position-1)%width) + 1
       (desc_letter+(desc_number.to_s))
     end
 

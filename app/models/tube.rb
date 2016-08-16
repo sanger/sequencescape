@@ -166,3 +166,9 @@ class Tube < Aliquot::Receptacle
   end
 
 end
+
+# Force rails loading of subclasses
+require_relative 'qcable_tube_purpose'
+require_relative 'illumina_c/qc_pool_purpose'
+require_relative 'illumina_htp/mx_tube_purpose'
+require_relative 'illumina_htp/stock_tube_purpose'

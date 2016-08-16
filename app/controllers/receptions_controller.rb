@@ -77,25 +77,25 @@ class ReceptionsController < ApplicationController
 
   def confirm_reception
     ActiveRecord::Base.transaction do
-      location = Location.find(params[:asset][:location_id])
+      location = Location.find(params[:location_id])
       assets = params[:asset_id]
       @errors = []
       asset_count  = 0
 
       assets.each do |index,asset_id|
-        begin
-          @asset = Asset.find(asset_id)
-          @asset.update_attributes(params[:asset])
+        asset = Asset.find_by(id: asset_id)
+        if asset.nil?
+          @errors << "Asset not found with asset ID #{asset_id}"
+        else
+          asset.update_attributes(location:location)
           asset_count += 1
-          @asset.events.create_scanned_into_lab!(location)
-        rescue
-          @errors << "Sample not found with asset ID #{asset_id}"
+          asset.events.create_scanned_into_lab!(location)
         end
       end
 
       if @errors.size > 0
         respond_to do |format|
-          flash[:error] = "Assets not found"
+          flash[:error] = "Could not update some locations: #{errors.join(';')}"
           format.html { render :action => "reception" }
           format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
           format.json { render :json => @errors, :status => :unprocessable_entity }

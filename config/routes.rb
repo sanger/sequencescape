@@ -77,6 +77,10 @@ Sequencescape::Application.routes.draw do
       get :gwl_file
     end
 
+    collection do
+      post :print_barcodes
+    end
+
   end
   resources :uuids, :only => [ :show ]
 
@@ -389,7 +393,13 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :workflows
+  resources :workflows, except: :delete do
+    member do
+      # Yes, this is every bit as horrible as it looks.
+      patch 'stage/:id' => 'workflows#stage'
+      get   'stage/:id' => 'workflows#stage'
+    end
+  end
 
   resources :tasks
   resources :asset_audits
@@ -460,6 +470,7 @@ Sequencescape::Application.routes.draw do
       get :reception
       get :snp_import
       get :receive_snp_barcode
+      post :receive_barcode
     end
   end
 

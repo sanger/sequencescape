@@ -41,7 +41,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     # structure for an update_attributes! call.
     initial_structure = {}
     read_write.each do |json, attribute|
-      steps       = attribute.split('.').map(&:to_sym)
+      steps       = attribute.split('.')
       trunk, leaf = steps[0..-2], steps.last
 
       # This bit ends up with the 'path' for the inner bit of the attribute (i.e. if the attribute
@@ -120,7 +120,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
   module AssociationHandling
     def association_class(association, object)
-      object.try(association).try(:class) || model_for_input.reflections[association.to_sym].klass
+      object.try(association).try(:class) || model_for_input.reflections[association.to_s].klass
     end
     private :association_class
 

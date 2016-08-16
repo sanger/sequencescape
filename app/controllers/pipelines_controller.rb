@@ -50,7 +50,10 @@ class PipelinesController < ApplicationController
         @assets_comment_count = Comment.counts_for(requests.map(&:asset))
       else
         @requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
-        @requests_comment_count = Comment.counts_for(@requests)
+        # We convert to an array here as otherwise tails tries to be smart
+        # and use the scope. Not only does it fail, but we may as well cache
+        # the result now anyway.
+        @requests_comment_count = Comment.counts_for(@requests.to_a)
         @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
       end
     end

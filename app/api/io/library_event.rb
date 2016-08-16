@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2016 Genome Research Ltd.
 class Io::LibraryEvent < ::Core::Io::Base
-  set_model_for_input(::BroadcastEvent::LibraryEvent)
+  set_model_for_input(LibraryEvent)
   set_json_root(:library_event)
 
   define_attribute_and_json_mapping(%Q{

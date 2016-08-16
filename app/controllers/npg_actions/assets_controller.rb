@@ -3,20 +3,15 @@
 #Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class NpgActions::AssetsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
+
   before_action :login_required, :except => [ :pass, :fail ]
   before_action :find_asset, :only => [ :pass, :fail ]
   before_action :find_request, :only => [ :pass, :fail ]
-
-  rescue_from(ActiveRecord::RecordNotFound, :with => :rescue_error)
-
   before_action :npg_action_invalid?, :only => [ :pass, :fail ]
-
-
   before_action :xml_valid?, :only => [:pass, :fail]
 
+
+  rescue_from(ActiveRecord::RecordNotFound, :with => :rescue_error)
 
   XmlInvalid = Class.new(StandardError)
   rescue_from(XmlInvalid, :with => :rescue_error)
@@ -56,7 +51,7 @@ class NpgActions::AssetsController < ApplicationController
   construct_action_for_qc_state("pass")
   construct_action_for_qc_state("fail")
 
-private
+  private
 
   def find_asset
     @asset ||= Asset.find(params[:asset_id])

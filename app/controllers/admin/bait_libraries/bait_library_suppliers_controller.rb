@@ -3,13 +3,10 @@
 #Copyright (C) 2015 Genome Research Ltd.
 
 class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
-  include SharedBehaviour::Named
 
   before_action :admin_login_required
   before_action :discover_bait_library_supplier, :only => [:edit, :update, :destroy]
+
   def new
     @bait_library_supplier = BaitLibrary::Supplier.new
   end
@@ -18,7 +15,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
   end
 
   def create
-    @bait_library_supplier = BaitLibrary::Supplier.new(params[:bait_library_supplier])
+    @bait_library_supplier = BaitLibrary::Supplier.new(bait_library_supplier_params)
 
     respond_to do |format|
       if @bait_library_supplier.save
@@ -32,7 +29,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
 
   def update
     respond_to do |format|
-      if @bait_library_supplier.update_attributes(params[:bait_library_supplier])
+      if @bait_library_supplier.update_attributes(bait_library_supplier_params)
         flash[:notice] = 'Supplier was successfully updated.'
         format.html { redirect_to(admin_bait_libraries_path) }
       else
@@ -56,7 +53,13 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
       end
     end
   end
+
   private
+
+  def bait_library_supplier_params
+    params.require(:bait_library_supplier).permit(:name)
+  end
+
   def discover_bait_library_supplier
     @bait_library_supplier = BaitLibrary::Supplier.find(params[:id])
   end

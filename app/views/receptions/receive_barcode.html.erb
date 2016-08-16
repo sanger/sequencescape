@@ -18,13 +18,14 @@
       <br />
       <strong>I have placed the above barcoded Samples in the reception fridge in the following lab:</strong>
       <br /><br />
-      <%= form_for @asset, :as => :asset, :url => confirm_reception_receptions_path do |f| %>
-        <%= f.label :location_id, 'Freezers', :style => "display:none" %>
-        <%= f.collection_select :location_id, Location.all, :id, :name %>
+      <%# This is a pretty grim abuse of the rails form generation. %>
+      <%= form_tag confirm_reception_receptions_path do %>
+        <%= label_tag :location_id, 'Freezers', :style => "display:none" %>
+        <%= select_tag :location_id, options_for_select(Location.pluck(:name,:id)) %>
         <% @assets.each_with_index do |asset,index| %>
           <%= hidden_field_tag "asset_id[#{index}]", asset.id %>
         <% end %>
-        <%= f.submit 'Confirm' %> or <%= link_to 'cancel', :action => 'reception' %>
+        <%= submit_tag 'Confirm' %> or <%= link_to 'cancel', :action => 'reception' %>
       <% end %>
     </div>
   </div>

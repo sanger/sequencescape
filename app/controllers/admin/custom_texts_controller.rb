@@ -9,7 +9,7 @@ class Admin::CustomTextsController < ApplicationController
   before_action :admin_login_required
 
   def index
-    @custom_texts = CustomText.find :all
+    @custom_texts = CustomText.all
 
     respond_to do |format|
       format.html

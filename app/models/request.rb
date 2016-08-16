@@ -136,8 +136,6 @@ class Request < ActiveRecord::Base
   delegate :billable?, :to => :request_type, :allow_nil => true
   belongs_to :workflow, :class_name => "Submission::Workflow"
 
-  scope :for_billing, -> { includes([ :initial_project, :request_type, { :target_asset => :aliquots }]) }
-
   belongs_to :user
   belongs_to :request_purpose
   validates_presence_of :request_purpose
@@ -147,20 +145,19 @@ class Request < ActiveRecord::Base
 
   belongs_to :order, :inverse_of => :requests
 
-  has_many :submission_siblings, ->() { where(:request_type_id => request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
-
-  scope :with_request_type_id, ->(id) { where(request_type_id: id) }
-
-  scope :for_pacbio_sample_sheet, -> { includes([{:target_asset=>:map},:request_metadata]) }
-
+  # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
   has_many :qc_metric_requests
   has_many :qc_metrics, :through => :qc_metric_requests
+  has_many :request_events, ->() { order(:current_from) }
+
+  scope :with_request_type_id, ->(id) { where(request_type_id: id) }
+  scope :for_pacbio_sample_sheet, -> { includes([{:target_asset=>:map},:request_metadata]) }
+  scope :for_billing, -> { includes([ :initial_project, :request_type, { :target_asset => :aliquots }]) }
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
 
-  has_many :request_events, ->() { order('current_from ASC') }
 
   def current_request_event
     request_events.current.last
@@ -221,7 +218,7 @@ class Request < ActiveRecord::Base
   scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
- scope :full_inbox, -> { where(:state => ["pending","hold"]) }
+  scope :full_inbox, -> { where(:state => ["pending","hold"]) }
 
   scope :with_asset,  -> { where('asset_id is not null')}
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)')}
@@ -255,8 +252,10 @@ class Request < ActiveRecord::Base
   scope :full_inbox, -> { where(state: ["pending","hold"]) }
   scope :hold, -> { where(state: "hold") }
 
-  scope :loaded_for_inbox_display, -> { includes([{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}])}
-  scope :loaded_for_grouped_inbox_display, -> { includes([ {:submission => :orders}, :asset , :target_asset, :request_type ])}
+  # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
+  # https://github.com/rails/rails/issues/15185
+  scope :loaded_for_inbox_display, -> { preload([{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}])}
+  scope :loaded_for_grouped_inbox_display, -> { preload([ {:submission => :orders}, :asset , :target_asset, :request_type ])}
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
@@ -267,13 +266,14 @@ class Request < ActiveRecord::Base
 
   def self.group_requests(finder_method, options = {})
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
+    groupings = options.delete(:group)||{}
 
-    send(finder_method, options.slice(:group).merge(
-      :select  => "requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
-      :joins   => "INNER JOIN container_associations tca ON tca.content_id=#{target}",
-      :readonly => false,
-      :include => :request_metadata
-    ))
+    select("requests.*, tca.container_id AS container_id, tca.content_id AS content_id").
+    joins("INNER JOIN container_associations tca ON tca.content_id=#{target}").
+    readonly(false).
+    preload(:request_metadata).
+    group(groupings).
+    send(finder_method)
   end
 
   scope :for_submission_id, ->(id) { where(submission_id:id)  }
@@ -292,13 +292,23 @@ class Request < ActiveRecord::Base
   # its explicit.
   # We select MIN submission_id, this isn't ideal, but struggling to think of an alternative without
   # complete restructuring.
+  # Yuck. We also need to select asset_id and target asset_id explicity in Rails 4.
+  # Need to completely re-think this.
   scope :for_group_by, ->(attributes) {
-    attributes << 'requests.request_type_id'
+    attributes[:requests] = :request_type_id
     # SELECT and GROUP BY do NOT scrub their input. While there shouldn't be any user provided input
     # comming in here, lets cautious!
-    scrubbed_atts = attributes.map {|a| a.gsub(/[^\w\.]/,'')}
+    scrubbed_atts = attributes.map {|k,v| "#{k.to_s.gsub(/[^\w\.]/,'')}.#{v.to_s.gsub(/[^\w\.]/,'')}"}.join(', ')
     group(scrubbed_atts).
-    select('MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MAX(priority) AS max_priority, hl.container_id AS container_id, count(DISTINCT requests.id) AS request_count').
+    select([
+      'MIN(requests.id) AS id',
+      'MIN(requests.submission_id) AS submission_id',
+      'MAX(requests.priority) AS max_priority',
+      'hl.container_id AS container_id',
+      'count(DISTINCT requests.id) AS request_count',
+      'MIN(requests.asset_id) AS asset_id',
+      'MIN(requests.target_asset_id) AS target_asset_id'
+    ]).
     select(scrubbed_atts)
   }
 
@@ -487,9 +497,9 @@ class Request < ActiveRecord::Base
     # Does not need anything here
   end
 
-  def submission_siblings
-    submission.requests.with_request_type_id(request_type_id)
-  end
+  # def submission_siblings
+  #   submission.requests.with_request_type_id(request_type_id)
+  # end
 
   # The date at which the submission was made. In most cases this will be similar to the request's created_at
   # timestamp. We go via submission to ensure that copied requests bear the original timestamp.

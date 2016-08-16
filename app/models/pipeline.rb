@@ -120,10 +120,6 @@ class Pipeline < ActiveRecord::Base
     request.remove_unused_assets
   end
 
-  def get_input_request_groups(show_held_requests=true)
-    group_requests( inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)))
-  end
-
   def grouped_requests(show_held_requests=true)
     inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)).for_group_by(grouping_attributes)
   end
@@ -132,20 +128,6 @@ class Pipeline < ActiveRecord::Base
     custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
   end
   private :inbox_scope_on
-
-  def hash_to_group_key(hash)
-    if hash.is_a? Array
-      group  = hash
-    else
-      group = []
-      [:parent, :submission, :study].each do |s|
-        if  self.send("group_by_#{s}?")
-          group << hash[s]
-        end
-      end
-    end
-    group.map {|e| e.to_i}
-  end
 
   def grouping_function(option = {})
     return ->(r) { [r.container_id] } if option[:group_by_holder_only]
@@ -160,9 +142,9 @@ class Pipeline < ActiveRecord::Base
   private :grouping_function
 
   def grouping_attributes
-    [].tap do |group_key|
-      group_key << 'hl.container_id' if group_by_parent?
-      group_key << 'requests.submission_id' if group_by_submission?
+    {}.tap do |group_key|
+      group_key[:hl] = :container_id if group_by_parent?
+      group_key[:requests] = :submission_id if group_by_submission?
     end
   end
   private :grouping_attributes
@@ -170,17 +152,6 @@ class Pipeline < ActiveRecord::Base
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})
     requests.group_requests(:all, option).group_by(&grouping_function(option))
-  end
-
-  def group_key_to_hash(group)
-    group  = group.dup # we don't want to modify the original group
-    hash = {}
-    [:parent, :submission, :study].each do |s|
-      if  self.send("group_by_#{s}?")
-        hash[s] = group.shift
-      end
-    end
-    hash
   end
 
   def finish_batch(batch, user)
@@ -231,9 +202,8 @@ class Pipeline < ActiveRecord::Base
     false
   end
 
-  def grouping_parser(option = {})
-    grouper_class = option[:group_by_holder_only] ? GrouperByHolderOnly : GrouperForPipeline
-    grouper_class.new(self)
+  def grouping_parser
+    GrouperForPipeline.new(self)
   end
   private :grouping_parser
 

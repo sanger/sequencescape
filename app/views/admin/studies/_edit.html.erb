@@ -15,7 +15,7 @@
           <%= form_group do %>
             <%= form.label :state, "State", :class=>'col-md-4' %>
             <div class='col-md-8'>
-              <%= form.select :state, Study.aasm_states_for_select, {}, {:class=>'form-control'} %>
+              <%= form.select :state, Study.aasm.states_for_select, {}, {:class=>'form-control'} %>
             </div>
           <% end %>
         <% end %>

@@ -182,14 +182,14 @@ module Attributable
     end
 
     def get_scoped_selection
-      @scope.inject(@owner.reflections[@name.to_sym].klass){|k,v| k.send(v.to_sym) }
+      @scope.inject(@owner.reflections[@name.to_s].klass){|k,v| k.send(v.to_sym) }
     end
     private :get_scoped_selection
 
     def configure(target)
       target.class_eval(%Q{
         def #{assignable_attribute_name}=(value)
-          record = self.class.reflections[:#{@name}].klass.find_by_#{@method}(value) or
+          record = self.class.reflections['#{@name}'].klass.find_by_#{@method}(value) or
             raise ActiveRecord::RecordNotFound, "Could not find #{@name} with #{@method} \#{value.inspect}"
           send(:#{@name}=, record)
         end

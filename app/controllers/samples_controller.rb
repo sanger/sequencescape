@@ -13,7 +13,7 @@ class SamplesController < ApplicationController
   before_action :admin_login_required, :only => [ :administer, :destroy ]
 
   def index
-    @samples = Sample.order('created_at DESC').page(params[:page])
+    @samples = Sample.order(created_at: :desc).page(params[:page])
     respond_to do |format|
       format.html
       format.xml
