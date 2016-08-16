@@ -15,8 +15,25 @@ class DownloadTest < ActiveSupport::TestCase
     barcode.stubs(:barcode).returns(23)
     PlateBarcode.stubs(:create).returns(barcode)
 
-    
+  end
 
+  test "should not be valid without a sample manifest" do
+    download = SampleManifestExcel::Download.new(nil, 
+      SampleManifestExcel.configuration.columns.plate_full.dup, 
+      SampleManifestExcel.configuration.ranges.dup)
+    refute download.valid?
+  end
+
+  test "should not be valid without some columns" do
+    download = SampleManifestExcel::Download.new(create(:sample_manifest), nil,
+      SampleManifestExcel.configuration.ranges.dup)
+    refute download.valid?
+  end
+
+  test "should not be valid without some ranges" do
+    download = SampleManifestExcel::Download.new(create(:sample_manifest),
+      SampleManifestExcel.configuration.columns.plate_full.dup, nil)
+    refute download.valid?
   end
 
   context "Plate download" do

@@ -59,7 +59,7 @@ class WorksheetTest < ActiveSupport::TestCase
 	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook, 
 	    	columns: SampleManifestExcel.configuration.columns.plate_full.dup, 
 	    	sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup, 
-	    	password: '1111')
+	    	password: '1111', first_row: 1)
 	  	save_file
 	  end
 

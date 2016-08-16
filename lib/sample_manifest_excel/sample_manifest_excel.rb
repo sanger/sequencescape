@@ -20,6 +20,7 @@ module SampleManifestExcel
   require_relative "sample_manifest_excel/range_list"
   require_relative "sample_manifest_excel/worksheet"
   require_relative "sample_manifest_excel/download"
+  require_relative "sample_manifest_excel/upload"
 
   module Helpers
     def load_file(folder, filename)
@@ -28,6 +29,9 @@ module SampleManifestExcel
   end
 
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
+
+  mattr_accessor :first_row
+  self.first_row = 10
 
   class << self
     attr_writer :configuration
