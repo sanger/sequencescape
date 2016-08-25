@@ -171,7 +171,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :plates, :controller => "studies/plates", :expect => :destroy do
+    resources :plates, :controller => "studies/plates", :except => :destroy do
 
       collection do
         post :view_wells

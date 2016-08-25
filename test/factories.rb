@@ -552,7 +552,7 @@ FactoryGirl.define do
 
   factory  :multiplexed_library_tube  do
     name    {|a| FactoryGirl.generate :asset_name }
-    
+    purpose { Tube::Purpose.standard_mx_tube }
   end
 
   factory  :pulldown_multiplexed_library_tube  do
