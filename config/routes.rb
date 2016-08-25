@@ -171,7 +171,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :plates, :controller => "studies/plates", :excpet => :destroy do
+    resources :plates, :controller => "studies/plates", :expect => :destroy do
 
       collection do
         post :view_wells
@@ -599,6 +599,8 @@ Sequencescape::Application.routes.draw do
   resources :labwhere_receptions, :only => [:index, :create]
 
   resources :qc_files, only: [:show]
+
+  match 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here, via: 'post'
 
   match '/:controller(/:action(/:id))'
 

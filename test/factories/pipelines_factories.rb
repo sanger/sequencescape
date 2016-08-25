@@ -34,20 +34,7 @@ FactoryGirl.define do
       plate_purpose {|pp| pp.association(:source_plate_purpose)}
     end
 
-    factory :plate_with_wells do
-      size 96
-      after(:create) do |plate|
-        plate.wells.import(
-          [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1' ].map do |location|
-            map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-            create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
-          end
-        )
-      end
-    end
-
-
-
+    
     
     factory :child_plate do
 
@@ -66,17 +53,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :lib_pcr_xp_request, :parent => :request_without_assets do
-    request_type { |rt|    rt.association(:lib_pcr_xp_request_type)}
-    asset        { |asset| asset.association(:well)  }
-    target_asset { |asset| asset.association(:empty_library_tube) }
-  end
-
-  factory  :lib_pcr_xp_request_type, :parent => :request_type  do
-    asset_type     'Well'
-    request_class CustomerRequest
-    key "Illumina_Lib_PCR_XP_Lib_Pool"
-  end
+  
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
   end
