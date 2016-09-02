@@ -14,7 +14,7 @@ class Submission::SubmissionPresenter < Submission::PresenterSkeleton
   end
 
   def template_name
-    submission.orders.first.template_name
+    order.template_name
   end
 
   def order

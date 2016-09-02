@@ -13,8 +13,11 @@ FactoryGirl.define do
     sample
     study
     project
-    tag
-    tag2    {|t| t.association(:tag) }
+
+    factory :tagged_aliqout do
+      tag
+      tag2    {|t| t.association(:tag) }
+    end
   end
 
   factory  :event  do
