@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160902111156) do
+ActiveRecord::Schema.define(:version => 20160902122416) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1613,29 +1613,20 @@ ActiveRecord::Schema.define(:version => 20160902111156) do
   end
 
   create_table "submissions", :force => true do |t|
-    t.integer  "study_id_to_delete"
-    t.integer  "workflow_id_to_delete"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "state",                      :limit => 20
+    t.string   "state",                  :limit => 20
     t.string   "message"
     t.integer  "user_id"
-    t.text     "item_options_to_delete"
     t.text     "request_types"
     t.text     "request_options"
-    t.text     "comments_to_delete"
-    t.integer  "project_id_to_delete"
-    t.string   "sti_type_to_delete"
-    t.string   "template_name_to_delete"
-    t.integer  "asset_group_id_to_delete"
-    t.string   "asset_group_name_to_delete"
     t.string   "name"
-    t.integer  "priority",                   :limit => 1,  :default => 0, :null => false
+    t.integer  "priority",               :limit => 1,  :default => 0, :null => false
+    t.integer  "submission_template_id"
   end
 
   add_index "submissions", ["name"], :name => "index_submissions_on_name"
   add_index "submissions", ["state"], :name => "index_submissions_on_state"
-  add_index "submissions", ["study_id_to_delete"], :name => "index_submissions_on_project_id"
 
   create_table "submitted_assets", :force => true do |t|
     t.integer  "order_id"
