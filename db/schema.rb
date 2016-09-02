@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160722130737) do
+ActiveRecord::Schema.define(:version => 20160902111156) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1643,6 +1643,8 @@ ActiveRecord::Schema.define(:version => 20160722130737) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "submitted_assets", ["asset_id"], :name => "index_submitted_assets_on_asset_id"
 
   create_table "suppliers", :force => true do |t|
     t.string   "name"
