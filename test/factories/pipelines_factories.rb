@@ -396,10 +396,12 @@ previous_pipeline_id  nil
 
     transient do
       sample { create(:sample) }
+      study { create(:study) }
+      project { create(:project) }
     end
 
     after(:create) do |sample_tube,evaluator|
-      create_list(:aliquot,1,sample: evaluator.sample, receptacle: sample_tube)
+      create_list(:aliquot,1,sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study,project: evaluator.project)
     end
   end
 

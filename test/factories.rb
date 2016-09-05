@@ -14,7 +14,7 @@ FactoryGirl.define do
     study
     project
 
-    factory :tagged_aliqout do
+    factory :tagged_aliquot do
       tag
       tag2    {|t| t.association(:tag) }
     end
