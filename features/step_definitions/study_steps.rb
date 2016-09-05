@@ -8,7 +8,7 @@ Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_n
 end
 
 Given /^I have a study called "([^\"]*)"$/ do |study|
-  FactoryGirl.create :study, :name => study
+  FactoryGirl.create :study, :name => study, state: "pending"
 end
 
 Given /^I have a study called "([^\"]*)" that requires ethical approval and has HMDMC approval number "(.*?)"$/ do |study, number|
@@ -24,6 +24,10 @@ Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|
   proj = Study.find_by_name(study)
   status == "active" ? proj.activate! : proj.deactivate!
   proj.save
+end
+
+Given /^a study "(.*?)" is pending$/  do |study|
+  Study.find_by_name(study).reset!
 end
 
 Given /^I have an "([^\"]*)" study called "([^\"]*)"$/ do |status, study|

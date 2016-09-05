@@ -185,9 +185,9 @@ module ApplicationHelper
 
   def study_state(state)
     if state == "active"
-      return "<span style='color:green;'>#{state}</span>"
+      return "<span style='color:green;'>#{state}</span>".html_safe
     else
-      return "<span style='color:red;'>#{state}</span>"
+      return "<span style='color:red;'>#{state}</span>".html_safe
     end
   end
 

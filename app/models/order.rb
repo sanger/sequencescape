@@ -27,6 +27,7 @@ class Order < ActiveRecord::Base
   # Required at initial construction time ...
   belongs_to :study
   validates :study, :presence => true, :unless => :cross_study_allowed
+  validate :study_is_active, on: :create
 
   belongs_to :project
   validates :project, :presence => true, :unless => :cross_project_allowed
@@ -382,6 +383,12 @@ class Order < ActiveRecord::Base
 
   def generate_broadcast_event
     BroadcastEvent::OrderMade.create!(:seed=>self,:user=>user)
+  end
+
+  def study_is_active
+    if study.present? && !study.active?
+      errors.add(:study, "is not active")
+    end
   end
 end
 

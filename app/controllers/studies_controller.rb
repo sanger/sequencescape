@@ -244,9 +244,11 @@ class StudiesController < ApplicationController
 
   def close
      @study = Study.find(params[:id])
+     comment = params[:comment]
+     @study.comments.create(:description => comment, :user_id => current_user.id)
      @study.deactivate!
      @study.save
-     flash[:notice] = "This study has been deactivated"
+     flash[:notice] = "This study has been deactivated: #{comment}"
      redirect_to study_path(@study)
    end
 
