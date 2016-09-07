@@ -33,7 +33,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def export
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.generated_document.current_data,
-              :filename => "manifest_#{@manifest.id}.xls",
+              :filename => "manifest_#{@manifest.id}.xlsx",
               :type => 'application/excel')
   end
 
@@ -45,20 +45,21 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def new
-    @sample_manifest  = SampleManifest.new(:asset_type => params[:type])
+    @asset_type = params[:type] || 'plate'
+    @sample_manifest  = SampleManifest.new(:asset_type => @asset_type)
     @study_id         = params[:study_id] || ""
     @studies          = Study.alphabetical
     @suppliers        = Supplier.alphabetical
     @barcode_printers = @sample_manifest.applicable_barcode_printers.collect(&:name)
-    @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:type]).to_a
+    @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(@asset_type).to_a
   end
 
   def create
 
-    @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest], 
+    @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest],
                                   current_user, SampleManifestExcel.configuration)
 
-    if @sample_manifest_generator.execute 
+    if @sample_manifest_generator.execute
 
       flash.update(@sample_manifest_generator.print_job_message)
       redirect_to sample_manifest_path(@sample_manifest_generator.sample_manifest)

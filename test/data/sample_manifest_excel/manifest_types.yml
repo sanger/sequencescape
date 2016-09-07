@@ -40,7 +40,7 @@ plate_default:
 plate_full:
   heading: "Full Plate"
   asset_type: "plate"
-  columns: 
+  columns:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
@@ -215,7 +215,7 @@ tube_full:
 tube_rnachip:
   heading: "RNA/ChIP Tube"
   asset_type: "1dtube"
-  columns:  
+  columns:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_sample_name
@@ -245,6 +245,13 @@ tube_multiplexed_library:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
+    - :tag_group
+    - :tag_index
+    - :tag2_group
+    - :tag2_index
+    - :library_type
+    - :insert_size_from
+    - :insert_size_to
     - :supplier_sample_name
     - :cohort
     - :volume
@@ -277,17 +284,10 @@ tube_multiplexed_library:
     - :sample_accession_number
     - :donor_id
     - :phenotype
-    - :tag_group
-    - :tag_index
-    - :tag2_group
-    - :tag2_index
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
 test:
   heading: "Test"
   asset_type: "plate"
-  columns: 
+  columns:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
