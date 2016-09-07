@@ -5,10 +5,11 @@ module SampleManifestExcel
 
     include Enumerable
     include Comparable
-
-    attr_reader :columns
+    include ActiveModel::Validations
 
     delegate :values, :keys, to: :columns
+
+    validates_presence_of :columns
 
     ##
     # To create a column_list a hash with details of all columns is required. Each key is
@@ -18,7 +19,7 @@ module SampleManifestExcel
     # Each conditional formatting for the column is combined with its conditional formatting in the list.
     # If the column is not valid an error is returned.
     def initialize(columns = {}, conditional_formattings = {})
-      create_columns(columns, conditional_formattings)
+      create_columns(columns || {}, conditional_formattings)
       yield self if block_given?
     end
 
@@ -31,13 +32,21 @@ module SampleManifestExcel
     ##
     # Extracts headings from all columns
     def headings
-      columns.values.collect(&:heading)
+      columns_by_heading.keys
     end
 
     ##
     # Finds a column by by it's key either by string or symbol.
     def find_by(key)
-      columns[key] || columns[key.to_s]
+      find_by_name(key) || find_by_heading(key)
+    end
+
+    def find_by_name(key)
+      columns_by_name[key] || columns_by_name[key.to_s]
+    end
+
+    def find_by_heading(key)
+      columns_by_heading[key]
     end
 
     ##
@@ -55,7 +64,8 @@ module SampleManifestExcel
     # Adds column to a column list, assigns a number to a column
     def add(column)
       return unless column.valid?
-      columns[column.name] = column.set_number(next_number)
+      columns_by_name[column.name] = column.set_number(next_number)
+      columns_by_heading[column.heading] = column
     end
 
     ##
@@ -72,12 +82,22 @@ module SampleManifestExcel
     end
 
     # Defaults to an empty hash
+    def columns_by_name
+      @columns_by_name ||= {}
+    end
+
+    def columns_by_heading
+      @columns_by_heading ||= {}
+    end
+
     def columns
-      @columns ||= {}
+      columns_by_name
     end
 
     def copy(key, column)
-      columns[key] = column.dup
+      dupped = column.dup
+      columns_by_name[key] = dupped
+      columns_by_heading[dupped.heading] = dupped
     end
 
     ##
@@ -100,21 +120,28 @@ module SampleManifestExcel
   private
 
     def reset!
-      @columns = {}
+      @columns_by_name = {}
+      @columns_by_heading = {}
     end
 
+    # You can add a hash of columns, a hash of attributes or an array of columns.
+    # If it is a hash of columns there is an assumption that a copy is being created.
     def create_columns(columns, conditional_formattings)
       columns.each do |k,v|
         begin
           if v.kind_of?(Hash)
             add SampleManifestExcel::Column.new(SampleManifestExcel::Column.build_arguments(v, k, conditional_formattings))
           else
-            copy k, v
+            if k.is_a?(SampleManifestExcel::Column)
+              add k
+            else
+              copy k, v
+            end
           end
         rescue TypeError => e 
           puts "column can't be created for #{k}: #{e.message}"
         end
-      end
+      end 
     end
 
   end

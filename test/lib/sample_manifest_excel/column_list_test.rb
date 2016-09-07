@@ -18,6 +18,13 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal yaml.length, column_list.count
   end
 
+  test "should create a list of columns when passed a bunch of columns" do
+    columns = build_list(:column, 5)
+    column_list = SampleManifestExcel::ColumnList.new(build_list(:column, 5))
+    assert_equal columns.length, column_list.count
+    assert column_list.all? { |k, column| column_list.find_by(column.name).present? }
+  end
+
   test "columns should have conditional formattings" do
     assert_equal yaml[:gender][:conditional_formattings].length, column_list.find_by(:gender).conditional_formattings.count
     assert_equal yaml[:sibling][:conditional_formattings].length, column_list.find_by(:sibling).conditional_formattings.count
@@ -27,8 +34,12 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal yaml.values.collect { |column| column[:heading] }, column_list.headings
   end
 
-  test "#find_by returns correct column" do
-    assert column_list.find_by(yaml.keys.first)
+  test "#find_by_name returns correct column" do
+    assert column_list.find_by_name(yaml.keys.first)
+  end
+
+  test "#find_by_heading should return correct column" do
+    assert column_list.find_by_heading(yaml[yaml.keys.first][:heading])
   end
 
   test "each column should have a number" do
@@ -84,6 +95,11 @@ class ColumnListTest < ActiveSupport::TestCase
     dupped = column_list.dup
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
     refute dupped.any? { |k, column| column.updated? }
+  end
+
+  test "should only be valid with some columns" do
+    assert SampleManifestExcel::ColumnList.new(yaml, conditional_formattings).valid?
+    refute SampleManifestExcel::ColumnList.new(nil, conditional_formattings).valid?
   end
 
 end

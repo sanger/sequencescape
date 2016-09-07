@@ -21,9 +21,8 @@ module SampleManifestExcel
 
     def initialize(attributes = {})
       create_attributes(attributes)
-
-      # @attribute = Attributes.find(name) if valid?
     end
+
 
     ##
     # If argument is a validation object copy it otherwise
@@ -62,12 +61,6 @@ module SampleManifestExcel
     def unlocked?
       unlocked
     end
-
-    ##
-    # Some columns relate to a specific value. If that is null we return the column value.
-    # def attribute_value(sample)
-    #   attribute.value(sample) || value
-    # end
 
     def attribute_value(detail)
       detail[attribute] || value
