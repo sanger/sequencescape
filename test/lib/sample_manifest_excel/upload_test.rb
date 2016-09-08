@@ -2,7 +2,7 @@ require "test_helper"
 
 class UploadTest < ActiveSupport::TestCase
 
-  context "Headings" do
+  context "Columns" do
 
     attr_reader :column_list, :dodgy_column
 
@@ -14,15 +14,25 @@ class UploadTest < ActiveSupport::TestCase
     should "be valid if all of the headings relate to a column" do
       heading_names = column_list.headings.reverse
       heading_names.shift
-      headings = SampleManifestExcel::Upload::Headings.new(heading_names, column_list)
-      assert_equal heading_names.length, headings.count
+      columns = SampleManifestExcel::Upload::Columns.new(heading_names, column_list)
+      assert_equal heading_names.length, columns.count
       (1..heading_names.length).each do |i|
-        assert headings.find(i)
+        assert columns.find(i+1)
       end
+      assert columns.valid?
     end
 
     should "should be invalid if any of the headings do not relate to a column" do
+      heading_names = column_list.headings << dodgy_column.heading
+      columns = SampleManifestExcel::Upload::Columns.new(heading_names, column_list)
+      refute columns.valid?
+      assert_match dodgy_column.heading, columns.errors.full_messages.to_s
     end
+  end
+
+  context "Row" do
+
+    
   end
     
 end
