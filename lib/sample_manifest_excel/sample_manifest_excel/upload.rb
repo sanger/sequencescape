@@ -1,5 +1,5 @@
 module SampleManifestExcel
-  class Upload
+  module Upload
     
   end
 end
