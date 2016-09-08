@@ -86,7 +86,7 @@ private
 
   def attributes
     params.except(:template, :barcode_printer, :only_first_label)
-    .merge(user: user, rapid_generation: true, 
+    .merge(user: user, rapid_generation: true,
       asset_type: params[:asset_type] || configuration.manifest_types.find_by(params[:template]).asset_type)
   end
 
