@@ -34,6 +34,6 @@ Then /^the asset group with the name from the last order UUID value contains the
   #TODO[mb14] rename
   order  = Order.last or raise StandardError, "There are no order!"
   asset_group = AssetGroup.find_by_name(order.uuid) or raise StandardError, "Could not find the asset group for the last submission"
-  assets      = Sample.all(:conditions => { :name => table.raw.map(&:first) }).map(&:assets).flatten
+  assets      = Sample.where(:name => table.raw.map(&:first)).map(&:assets).flatten
   assert_equal(assets.map(&:id), asset_group.assets.map(&:id), "Assets in the asset group are not correct")
 end

@@ -82,7 +82,7 @@ end
 
 def change_request_state(state, targets, direction, request_class)
   association = (direction == 'to') ? :requests_as_target : :requests_as_source
-  Request.update_all("state=#{state.inspect}", [ 'id IN (?)', Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id) ])
+  Request.where(id:Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id) ).update_all(state: state)
 end
 
 {

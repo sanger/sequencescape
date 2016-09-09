@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 
-class PooledCherrypickRequest < Request
+class PooledCherrypickRequest < CustomerRequest
 
   # Returns a list of attributes that must match for any given pool.
   # We don't want to place any restrictions on Cherrypicking (Yet).

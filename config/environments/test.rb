@@ -16,7 +16,7 @@ Sequencescape::Application.configure do
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
-  config.eager_load = false
+  config.eager_load = true
 
   # we don't need :debug unless we're debugging tests
   config.log_level = :error

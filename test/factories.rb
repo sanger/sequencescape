@@ -49,8 +49,11 @@ FactoryGirl.define do
     contaminated_human_dna      'No'
     contains_human_dna          'No'
     commercially_available      'No'
-    study_type
-    data_release_study_type
+    # Study type is implemented poorly. But I'm in the middle of the rails 4
+    # upgrade at the moment, so I need to get things working before I change them.
+    study_type                  { StudyType.find_by_name('Not specified') }
+    # This is probably a bit grim as well
+    data_release_study_type     { DataReleaseStudyType.find_by_name('genomic sequencing') }
     reference_genome            { ReferenceGenome.find_by_name!("") }
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'

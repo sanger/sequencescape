@@ -7,7 +7,7 @@ Given /^the workflow named "([^\"]+)" exists$/ do |name|
 end
 
 Given /^I am the owner of sample "([^\"]+)"$/ do |name|
-  sample = Sample.first(:conditions => { :name => name }) or raise StandardError, "Sample '#{ name }' does not exist"
+  sample = Sample.find_by!(name: name)
   @current_user.is_owner_of(sample)
 end
 
@@ -17,7 +17,7 @@ Given /^I have no associated workflow$/ do
 end
 
 Given /^I have an associated workflow "([^\"]+)"$/ do |name|
-  workflow = Submission::Workflow.first(:conditions => { :name => name }) or raise StandardError, "Workflow '#{ name }' does not exist"
+  workflow = Submission::Workflow.find_by!(name: name) or raise StandardError, "Workflow '#{ name }' does not exist"
   @current_user.update_attribute(:workflow_id, workflow.id)
   @current_user.reload
 end

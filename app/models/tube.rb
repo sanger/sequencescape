@@ -54,85 +54,6 @@ class Tube < Aliquot::Receptacle
 
   alias_method :friendly_name, :sanger_human_barcode
 
-  # Base class for the all tube purposes
-  class Purpose < ::Purpose
-    # TODO: change to purpose_id
-    has_many :tubes, :foreign_key => :plate_purpose_id
-
-    # def default_state(_=nil)
-    #   self[:default_state]
-    # end
-
-    # Tubes of the general types have no stock plate!
-    def stock_plate(_)
-      nil
-    end
-
-    def library_source_plates(_)
-      []
-    end
-
-    def created_with_request_options(tube)
-      tube.creation_request.try(:request_options_for_creation) || {}
-    end
-
-    def create!(*args, &block)
-      target_class.create_with_barcode!(*args, &block).tap { |t| tubes << t }
-    end
-
-    def sibling_tubes(tube)
-      nil
-    end
-
-    # Define some simple helper methods
-    class << self
-      [ 'stock', 'standard' ].each do |purpose_type|
-        [ 'sample', 'library', 'MX' ].each do |tube_type|
-          name = "#{purpose_type} #{tube_type}"
-
-          line = __LINE__ + 1
-          class_eval(%Q{
-            def #{name.downcase.gsub(/\W+/, '_')}_tube
-              find_by_name('#{name.humanize}') or raise "Cannot find #{name} tube"
-            end
-          }, __FILE__, line)
-        end
-      end
-    end
-  end
-
-  class StockMx < Tube::Purpose
-    def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility=false)
-      tube.requests_as_target.opened.each do |request|
-        request.transition_to(state)
-      end
-    end
-
-    def pool_id(tube)
-      tube.submission.try(:id)
-    end
-
-    def name_for_child_tube(tube)
-      tube.name
-    end
-  end
-
-  class StandardMx < Tube::Purpose
-    def created_with_request_options(tube)
-      tube.parent.try(:created_with_request_options)||{}
-    end
-
-    # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the
-    # state is anything but "started" or "pending" then the pulldown library creation request should also be
-    # set to the same state
-    def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility=false)
-      update_all_requests = ![ 'started', 'pending' ].include?(state)
-      tube.requests_as_target.opened.for_billing.each do |request|
-        request.transition_to(state) if update_all_requests or request.is_a?(TransferRequest)
-      end
-    end
-  end
-
   def self.delegate_to_purpose(*methods)
     methods.each do |method|
       class_eval(%Q{def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end})
@@ -166,9 +87,3 @@ class Tube < Aliquot::Receptacle
   end
 
 end
-
-# Force rails loading of subclasses
-require_relative 'qcable_tube_purpose'
-require_relative 'illumina_c/qc_pool_purpose'
-require_relative 'illumina_htp/mx_tube_purpose'
-require_relative 'illumina_htp/stock_tube_purpose'

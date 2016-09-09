@@ -17,7 +17,7 @@ class BaitLibraryLayout < ActiveRecord::Base
 
   # The layout of the bait libraries is recorded so that we can see what happened.  It is serialized in a compact
   # form that maps the bait library to the wells it was put into, but can be accessed in the reverse.
-  serialize :layout
+  serialize :layout, Hash
   validates_unassigned :layout
 
   def well_layout
@@ -30,8 +30,9 @@ class BaitLibraryLayout < ActiveRecord::Base
 
   # Records the assignment of the bait library to a particular well
   def record_bait_library_assignment(well, bait_library)
-    self.layout ||= Hash.new { |h,k| h[k] = [] }
-    self.layout[bait_library.name].push(well.map.description)
+    # Note: The serialization of the hash prevents the use of a block
+    # to set default values etc.
+    (self.layout[bait_library.name]||=[]).push(well.map.description)
   end
   private :record_bait_library_assignment
 
@@ -49,7 +50,7 @@ class BaitLibraryLayout < ActiveRecord::Base
 
     # Bulk update the aliquots with the appropriate bait libraries
     bait_libraries_to_aliquot_ids.each do |bait_library_id, aliquot_ids|
-      Aliquot.update_all("bait_library_id=#{bait_library_id}", [ 'id IN (?)', aliquot_ids ])
+      Aliquot.where(id:aliquot_ids).update_all(bait_library_id: bait_library_id)
     end
   end
   private :layout_bait_libraries_on_plate

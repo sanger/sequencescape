@@ -89,5 +89,5 @@ end
 # inheritance
 
 ['al_libs_tagged','lib_pcr','lib_pcr_xp','mx_tube','qc_pool','stock'].each do |type|
-  require "#{Rails.root.to_s}/app/models/illumina_c/#{type}_purpose"
+  require_dependency "app/models/illumina_c/#{type}_purpose"
 end

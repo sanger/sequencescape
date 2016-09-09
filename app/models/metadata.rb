@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require 'app/models/attributable'
+require_dependency 'attributable'
 
 module Metadata
   def has_metadata(options = {}, &block)
@@ -97,7 +97,6 @@ private
   end
 
   def construct_metadata_class(table_name, as_class, &block)
-    # Build the new metadata model
     metadata = Class.new( self == as_class ? Base : as_class::Metadata)
     metadata.instance_eval(&block) if block_given?
 

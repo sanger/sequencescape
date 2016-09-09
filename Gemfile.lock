@@ -119,7 +119,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
-    columnize (0.9.0)
     configatron (4.5.0)
     cucumber (1.3.20)
       builder (>= 2.1.2)
@@ -134,12 +133,6 @@ GEM
       nokogiri (~> 1.5)
       rails (>= 3, < 5)
     database_cleaner (1.5.1)
-    debugger (1.6.8)
-      columnize (>= 0.3.1)
-      debugger-linecache (~> 1.2.0)
-      debugger-ruby_core_source (~> 1.3.5)
-    debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.3.8)
     delayed_job (4.1.1)
       activesupport (>= 3.0, < 5.0)
     delayed_job_active_record (4.1.0)
@@ -200,7 +193,6 @@ GEM
     launchy (2.4.3-java)
       addressable (~> 2.3)
       spoon (~> 0.0.1)
-    linecache (1.3.1-java)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
@@ -286,11 +278,6 @@ GEM
       nokogiri
       rubyzip
       spreadsheet (> 0.6.4)
-    ruby-debug (0.10.6)
-      columnize (>= 0.1)
-      linecache (~> 1.3.1)
-      ruby-debug-base (~> 0.10.6.0)
-    ruby-debug-base (0.10.6-java)
     ruby-oci8 (1.0.7)
     ruby-ole (1.2.11.8)
     ruby_parser (3.7.2)
@@ -394,7 +381,6 @@ DEPENDENCIES
   cucumber
   cucumber-rails
   database_cleaner
-  debugger
   delayed_job_active_record
   dynamic_form
   exception_notification
@@ -429,7 +415,6 @@ DEPENDENCIES
   rest-client
   rgl
   roo
-  ruby-debug
   ruby-oci8
   ruby_walk (>= 0.0.3)!
   rubyzip (~> 0.9)

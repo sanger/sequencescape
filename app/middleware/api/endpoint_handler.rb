@@ -163,11 +163,15 @@ module Api
     def determine_model_from_parts(*parts)
       (1..parts.length).to_a.reverse.each do |n|
         model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
-        model_constant = constant = model_name.join('/').classify
-        # Check if the model exists, or roll on. This used to rescue NameError
-        # but that made it a pain to debug any errors in the API.
-        next unless (model_constant.constantize)
-        return yield(model_constant.constantize, remainder)
+        model_constant = model_name.join('/').classify
+        begin
+          constant = model_constant.constantize
+        rescue NameError
+          # Using const_defined? disrupts rails eager loading 'magic'
+          constant = nil
+        end
+        next unless constant
+        return yield(constant, remainder)
       end
       raise StandardError, "Cannot route #{parts.join('/').inspect}"
     end

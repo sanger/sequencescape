@@ -23,7 +23,7 @@ class BatchesController < ApplicationController
       @batches = (@user.batches + assigned_batches).sort_by {|batch| batch.id}.reverse
     else
       # Can end up here with XML. And it causes pain.
-      @batches = Batch.order(id: :asc).paginate(per_page:10,page:params[:page])
+      @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
     end
     respond_to do |format|
       format.html

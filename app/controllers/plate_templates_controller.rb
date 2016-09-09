@@ -8,7 +8,7 @@ class PlateTemplatesController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :slf_manager_login_required
   def index
-    @patterns = PlateTemplate.paginate(:per_page => 50, :page => params[:page])
+    @patterns = PlateTemplate.per_page(50).page(params[:page])
   end
 
   def new

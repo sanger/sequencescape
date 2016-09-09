@@ -99,19 +99,18 @@ class Transfer < ActiveRecord::Base
             # basically looking for all of the plates.
             if states.sort != ALL_STATES.sort
 
-              query_conditions, join_options = 'transfer_requests_as_target.state IN (?)', [
+              join_options = [
                 "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
 
-              query_conditions = 'transfer_requests_as_target.state IN (?)'
 
-              joins(join_options).where([ query_conditions, states ])
+              joins(join_options).where(transfer_requests_as_target:{state:states})
             else
               all
             end
           }
          scope :without_finished_tubes, ->(purpose) {
-            where.not(plate_purpose_id:purpose,state:'passed')
+            where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'",purpose.map(&:id)])
           }
         end
       end
@@ -207,3 +206,14 @@ class Transfer < ActiveRecord::Base
   end
   private :should_well_not_be_transferred?
 end
+
+require_dependency 'transfer/between_plate_and_tubes'
+require_dependency 'transfer/between_plates'
+require_dependency 'transfer/between_plates_by_submission'
+require_dependency 'transfer/between_specific_tubes'
+require_dependency 'transfer/between_tubes_by_submission'
+require_dependency 'transfer/from_plate_to_specific_tubes'
+require_dependency 'transfer/from_plate_to_specific_tubes_by_pool'
+require_dependency 'transfer/from_plate_to_tube'
+require_dependency 'transfer/from_plate_to_tube_by_multiplex'
+require_dependency 'transfer/from_plate_to_tube_by_submission'

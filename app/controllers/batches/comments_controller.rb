@@ -9,7 +9,7 @@ class Batches::CommentsController < ApplicationController
   before_action :discover_batch
 
   def index
-    @comments = @batch.comments.all(:order => "created_at ASC")
+    @comments = @batch.comments.order(created_at: :asc)
   end
 
   def create

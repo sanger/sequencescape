@@ -25,7 +25,8 @@ module ValidationStateGuard
       attr_accessor #{guard.inspect}
       alias_method(#{guard.inspect}?, #{guard.inspect})
       private #{guard.inspect}, #{guard.inspect}?
-      protected #{guard.inspect}=
+      # This used to be protected, looks like rails attribute assignment implementation changed.
+      public #{guard.inspect}=
 
       # Do not remove the 'true' from this otherwise the return value is false, which will fail the save!
       after_save { |record| record.send(#{guard.inspect}=, false) ; true }

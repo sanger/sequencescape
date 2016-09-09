@@ -3,10 +3,8 @@
 #Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
 class PicoSetResultsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
-  before_action :login_required, :except => [:create]
+
+  before_action :login_required, except: :create
 
   # TODO This should be an update method not create
   # TODO Refactor. Create an object for pico_set_result
@@ -23,8 +21,8 @@ class PicoSetResultsController < ApplicationController
     respond_to do |format|
       if pico_assay_plate.nil?
         message[:error] = "Barcode #{pico_set_result[:assay_barcode]} not found"
-        format.xml  { render :xml  => message.to_xml, :status => :not_found }
-        format.json { render :json => message.to_json, :status => :not_found }
+        format.xml  { render xml: message.to_xml, status: :not_found }
+        format.json { render json: message.to_json, status: :not_found }
       else
         # create method call using pico_assay_plate[:state] and use send for 2 method calls
         if pico_assay_plate.upload_pico_results(pico_set_result[:state], pico_set_result[:failure_reason], pico_set_result[:wells])

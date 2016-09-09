@@ -15,7 +15,7 @@ class AssetsController < ApplicationController
     @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.order(:name).paginate(:page => params[:page])
+      @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
     end
 
     respond_to do |format|
@@ -329,7 +329,7 @@ class AssetsController < ApplicationController
   def lookup
     if params[:asset] && params[:asset][:barcode]
       id = params[:asset][:barcode][3,7]
-      @assets = Asset.where(barcode: id).paginate(:per_page => 50, :page => params[:page])
+      @assets = Asset.where(barcode: id).limit(50).page(params[:page])
 
       if @assets.size == 1
         redirect_to @assets.first

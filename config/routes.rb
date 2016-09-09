@@ -75,10 +75,13 @@ Sequencescape::Application.routes.draw do
       get :filtered
       post :swap
       get :gwl_file
+      post :fail_items
+      post :create_training_batch
     end
 
     collection do
       post :print_barcodes
+      post :print_plate_barcodes
     end
 
   end
@@ -203,7 +206,7 @@ Sequencescape::Application.routes.draw do
 
   end
 
-  get 'bulk_submissions' => 'bulk_submissions#new'
+  resources :bulk_submissions, only: [:index, :new, :create]
 
   resources :submissions do
     collection do
@@ -456,12 +459,7 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :pico_set_results do
-    collection do
-      post :upload_pico_results
-      post :create
-    end
-  end
+  resources :pico_set_results, only: :create
 
   resources :receptions, :only => [:index] do
     collection do

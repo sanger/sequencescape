@@ -1981,7 +1981,6 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :superceeded_by_id => -2,
   :submission_parameters=>
    {:request_types=>
      ["illumina_a_pulldown_sc", "illumina_a_hiseq_v4_paired_end_sequencing"],
@@ -1991,7 +1990,6 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :superceeded_by_id => -2,
   :submission_parameters=>
    {:request_types=>
      ["illumina_a_pulldown_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
@@ -2001,7 +1999,6 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :superceeded_by_id => -2,
   :submission_parameters=>
    {:request_types=>
      ["illumina_a_shared",
@@ -2013,7 +2010,6 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :superceeded_by_id => -2,
   :submission_parameters=>
    {:request_types=>
      ["illumina_a_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
@@ -2092,7 +2088,6 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :superceeded_by_id => -2,
   :submission_parameters=>
    {:request_types=>
      ["illumina_a_pulldown_wgs", "illumina_a_hiseq_v4_paired_end_sequencing"],

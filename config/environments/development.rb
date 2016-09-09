@@ -23,7 +23,7 @@ Sequencescape::Application.configure do
   # config.action_controller.consider_all_requests_local = true
   # config.action_view.debug_rjs                         = true
   config.action_controller.perform_caching             = false
-  config.eager_load = false
+  config.eager_load = true
 
   # Temp whilst API / access is finalised
   config.action_controller.allow_forgery_protection    = false

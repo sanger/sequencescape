@@ -36,7 +36,7 @@ before_action :evil_parameter_hack!
   end
 
   def edit
-    @request_types = RequestType.all(:order => "name ASC")
+    @request_types = RequestType.order(name: :asc)
     if params[:id] != "0"
       @project = Project.find(params[:id])
       render :partial => "edit", :locals => { :project => @project }

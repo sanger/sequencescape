@@ -25,7 +25,7 @@ class Admin::StudiesController < ApplicationController
   end
 
   def edit
-    @request_types = RequestType.all(:order => "name ASC")
+    @request_types = RequestType.order(name: :asc)
     if params[:id] != "0"
       @study = Study.find(params[:id])
 	  flash.now[:warning] = @study.warnings if @study.warnings.present?

@@ -10,7 +10,7 @@ class GelsController < ApplicationController
 
   def index
     # TODO: if a plate has a working dilution plate and it has a gel dilution plate, display:
-    @gel_plates = GelDilutionPlate.paginate(:page => params[:page], :order => 'id DESC')
+    @gel_plates = GelDilutionPlate.page(params[:page]).order(id: :desc)
     @plates     = @gel_plates.map(&:stock_plate).compact
   end
 

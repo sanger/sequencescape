@@ -42,7 +42,7 @@ class Lot < ActiveRecord::Base
     return none if qc_asset.nil?
     sibling = qc_asset.transfers_as_destination.first.source
 
-    includes(:qcables).where(qcables:{asset_id:qc_asset, state: 'exhausted'})
+    includes(:qcables).where(qcables:{asset_id:[sibling,qc_asset]}).where.not(qcables:{state: 'exhausted'})
   }
 
   private

@@ -32,7 +32,7 @@ Given /^the last sample has been updated by a manifest$/ do
   sample.update_attributes!(:updated_by_manifest => true)
 end
 
-Then /^study "([^"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
+Then /^study "([^\"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
   study = Study.find_by_name(study_name)
   assert_equal number_of_samples.to_i, study.samples.size
 end
@@ -51,16 +51,16 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   # raise StandardError, "Only works for plate manifests!" if Plate.count == 0
 
   index = 0
-  Plate.all(:order => 'id ASC').each do |plate|
+  Plate.order(:id).each do |plate|
     sequence_sanger_sample_ids_for(plate) do |well_index|
       "sample_#{index+well_index}"
     end
     index += plate.size
   end
-  SampleTube.all(:order => 'id ASC').each_with_index do |tube, idx|
+  SampleTube.order(:id).each_with_index do |tube, idx|
     tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
   end
-  LibraryTube.all(:order => 'id ASC').each_with_index do |tube, idx|
+  LibraryTube.order(:id).each_with_index do |tube, idx|
     tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
   end
 end

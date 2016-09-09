@@ -392,22 +392,22 @@ class StudiesController < ApplicationController
 
    def projects
      @study = Study.find(params[:id])
-     @projects = @study.projects.paginate :page => params[:page]
+     @projects = @study.projects.page(params[:page])
    end
 
    def sample_manifests
      @study = Study.find(params[:id])
-     @sample_manifests = @study.sample_manifests.paginate(page: params[:page], order: 'id DESC')
+     @sample_manifests = @study.sample_manifests.page(params[:page]).order(id: :desc)
    end
 
    def suppliers
      @study = Study.find(params[:id])
-     @suppliers = @study.suppliers.paginate(:page => params[:page])
+     @suppliers = @study.suppliers.page(params[:page])
    end
 
    def study_reports
      @study = Study.find(params[:id])
-     @study_reports = StudyReport.for_study(@study).paginate(:page => params[:page], :order => 'id DESC')
+     @study_reports = StudyReport.for_study(@study).page(params[:page]).order(id: :desc)
    end
 
 

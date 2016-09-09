@@ -118,5 +118,5 @@ end
 
 
 ['initial_downstream_plate','initial_plate','library_plate','stock_plate'].each do |type|
-  require "#{Rails.root.to_s}/app/models/pulldown/#{type}_purpose"
+  require_dependency "app/models/pulldown/#{type}_purpose"
 end

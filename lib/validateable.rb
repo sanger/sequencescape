@@ -13,7 +13,7 @@ module Validateable
 
   def self.append_features(base)
     super
-    base.send(:include, ActiveRecord::Validations)
+    base.send(:include, ActiveModel::Validations)
     base.extend ClassMethods
   end
 

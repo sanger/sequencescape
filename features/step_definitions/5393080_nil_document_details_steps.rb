@@ -3,6 +3,6 @@
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Then /^I should not find any nil documents$/ do
-  documents = Document.all(:conditions => 'filename IS NULL')
+  documents = Document.where(filename: nil)
   assert(documents.empty?, "Found nil documents: #{documents.inspect}")
 end

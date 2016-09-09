@@ -35,11 +35,11 @@ class UsersController < ApplicationController
   end
 
   def projects
-    @projects = @user.projects.paginate :page => params[:page]
+    @projects = @user.projects.page(params[:page])
   end
 
   def study_reports
-    @study_reports = StudyReport.for_user(@user).paginate(:page => params[:page], :order => "id desc")
+    @study_reports = StudyReport.for_user(@user).page(params[:page]).order(id: :desc)
   end
 
   private

@@ -100,8 +100,6 @@ group :development do
   gem "flay", :require => false
   gem "flog", :require => false
   gem "bullet", :require => false
-  gem "debugger", :platforms => :mri
-  gem "ruby-debug", :platforms => :jruby
   gem 'pry'
   gem 'rdoc', :require => false
 end
