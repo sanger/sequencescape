@@ -35,6 +35,10 @@ module SampleManifestExcel
       columns_by_heading.keys
     end
 
+    def column_values
+      values.collect(&:value)
+    end
+
     ##
     # Finds a column by by it's key either by string or symbol.
     def find_by(key)

@@ -34,6 +34,13 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal yaml.values.collect { |column| column[:heading] }, column_list.headings
   end
 
+  test "#values should return all of the values for the column list" do
+    sanger_sample_id_column = build(:sanger_sample_id_column)
+    column_list.add(sanger_sample_id_column)
+    assert_equal column_list.count, column_list.column_values.length
+    assert_equal sanger_sample_id_column.value, column_list.column_values.last
+  end
+
   test "#find_by_name returns correct column" do
     assert column_list.find_by_name(yaml.keys.first)
   end

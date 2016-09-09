@@ -2,12 +2,17 @@ require "test_helper"
 
 class UploadTest < ActiveSupport::TestCase
 
+  attr_reader :column_list
+
+  def setup
+    @column_list = build(:column_list_with_sanger_sample_id)
+  end
+
   context "Columns" do
 
-    attr_reader :column_list, :dodgy_column
+    attr_reader :dodgy_column
 
     setup do
-      @column_list = build(:column_list)
       @dodgy_column = build(:column)
     end
 
@@ -32,6 +37,29 @@ class UploadTest < ActiveSupport::TestCase
 
   context "Row" do
 
+    attr_reader :row, :columns, :sample
+
+    setup do
+      @columns = SampleManifestExcel::Upload::Columns.new(column_list.headings, column_list)
+      @sample = create(:sample)
+    end
+
+    should "not be valid without a valid row number" do
+      assert SampleManifestExcel::Upload::Row.new(1, column_list.column_values, columns).valid?
+      refute SampleManifestExcel::Upload::Row.new(nil, column_list.column_values, columns).valid?
+      refute SampleManifestExcel::Upload::Row.new("nil", column_list.column_values, columns).valid?
+    end
+
+    should "not be valid without some data" do
+      refute SampleManifestExcel::Upload::Row.new(1, nil, columns).valid?
+    end
+
+    should "not be valid without some columns" do
+      refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values, nil).valid?
+    end
+
+    should "not be valid without an associated sample" do
+    end
     
   end
     
