@@ -25,9 +25,12 @@ class LibPoolNormTubeGenerator
   end
 
   def lib_pool_tubes
-    plate.wells.map(&:requests).flatten.select do |r|
+    @lib_pool_tubes ||= plate.wells.map(&:requests).flatten.select do |r|
       r.request_type.key=='Illumina_Lib_PCR_XP_Lib_Pool'
-    end.map(&:target_asset).uniq
+    end
+    .map(&:target_asset)
+    .uniq
+    .reject { |tube| tube.state == "failed" || tube.state == "qc_complete"  || tube.state == "cancelled" }
   end
 
   def destination_tubes
@@ -43,7 +46,6 @@ class LibPoolNormTubeGenerator
           end
           
           @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.sanger_human_barcode}_qc_completed_tubes")
-
           Location.find_by_name("Cluster formation freezer").set_locations(destination_tubes)
         end
         true
@@ -62,10 +64,8 @@ private
   end
 
   def pass_and_complete(tube)
-    unless tube.state == "qc_complete"
-      StateChange.create(user: user, target: tube, target_state: "passed")
-      StateChange.create(user: user, target: tube, target_state: "qc_complete")
-    end
+    StateChange.create(user: user, target: tube, target_state: "passed")
+    StateChange.create(user: user, target: tube, target_state: "qc_complete")
   end
 
   def check_state
