@@ -9,6 +9,8 @@ class Aliquot < ActiveRecord::Base
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
 
+  TAG_COUNT_NAMES = ['Untagged','Single','Dual']
+
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
   class Receptacle < Asset
@@ -48,6 +50,8 @@ class Aliquot < ActiveRecord::Base
     scope :for_summary, -> { includes(:map,:samples,:studies,:projects) }
     scope :include_creation_batches, -> { includes(:creation_batches)}
     scope :include_source_batches, -> { includes(:source_batches)}
+
+    scope :for_study_and_request_type, ->(study,request_type) { joins(:aliquots,:requests).where(aliquots:{study_id:study}).where(requests:{request_type_id:request_type}) }
 
     # This is a lambda as otherwise the scope selects Aliquot::Receptacles
     scope :with_aliquots, -> { joins(:aliquots) }
@@ -99,6 +103,10 @@ class Aliquot < ActiveRecord::Base
       return 2 if most_tagged_aliquot.tag2_id != Aliquot::UNASSIGNED_TAG
       return 1 if most_tagged_aliquot.tag_id != Aliquot::UNASSIGNED_TAG
       0
+    end
+
+    def tag_count_name
+      TAG_COUNT_NAMES[tag_count]
     end
 
     def primary_aliquot_if_unique

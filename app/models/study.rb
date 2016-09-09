@@ -155,7 +155,6 @@ class Study < ActiveRecord::Base
     where(['aliquots.receptacle_id IN (?)',assets.map(&:id)])
   }
 
-  scope :alphabetical, ->() { order('name ASC') }
   scope :for_listing, ->()  { select('name, id') }
 
   STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate']
