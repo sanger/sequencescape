@@ -37,16 +37,18 @@ class UploadTest < ActiveSupport::TestCase
 
   context "Row" do
 
-    attr_reader :row, :columns, :sample
+    attr_reader :row, :columns, :sample, :valid_values
 
     setup do
       @columns = SampleManifestExcel::Upload::Columns.new(column_list.headings, column_list)
       @sample = create(:sample)
+      @valid_values = column_list.column_values
+      valid_values[column_list.find_by_name(:sanger_sample_id).number-1] = sample.id
     end
 
     should "not be valid without a valid row number" do
-      assert SampleManifestExcel::Upload::Row.new(1, column_list.column_values, columns).valid?
-      refute SampleManifestExcel::Upload::Row.new(nil, column_list.column_values, columns).valid?
+      assert SampleManifestExcel::Upload::Row.new(1, valid_values, columns).valid?
+      refute SampleManifestExcel::Upload::Row.new(nil, valid_values, columns).valid?
       refute SampleManifestExcel::Upload::Row.new("nil", column_list.column_values, columns).valid?
     end
 
@@ -55,10 +57,11 @@ class UploadTest < ActiveSupport::TestCase
     end
 
     should "not be valid without some columns" do
-      refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values, nil).valid?
+      refute SampleManifestExcel::Upload::Row.new(1, valid_values, nil).valid?
     end
 
     should "not be valid without an associated sample" do
+      refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values, columns).valid?
     end
     
   end
