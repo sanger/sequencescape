@@ -295,6 +295,6 @@ class Well < Aliquot::Receptacle
   end
 
   def source_plate
-    plate.source_plate
+    plate && plate.source_plate
   end
 end
