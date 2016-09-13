@@ -1,7 +1,7 @@
 class AddHiseq4000Pipelines < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do
-      pl = SequencingPipeline.create!(
+      SequencingPipeline.create!(
         name: 'HiSeq 4000 PE',
         asset_type: 'Lane',
         automated: false,
@@ -17,10 +17,10 @@ class AddHiseq4000Pipelines < ActiveRecord::Migration
         pipeline.build_workflow(name: 'HiSeq 4000 PE').tap do |wf|
           build_tasks_for(wf, true)
         end
+        add_information_types_to(pipeline)
       end
-      add_information_types_to(pl)
 
-     plb =  SequencingPipeline.create!(
+      SequencingPipeline.create!(
         name: 'HiSeq 4000 SE',
         asset_type: 'Lane',
         automated: false,
@@ -36,8 +36,8 @@ class AddHiseq4000Pipelines < ActiveRecord::Migration
         pipeline.build_workflow(name: 'HiSeq 4000 SE').tap do |wf|
           build_tasks_for(wf)
         end
+        add_information_types_to(pipeline)
       end
-      add_information_types_to(plb)
     end
   end
 
