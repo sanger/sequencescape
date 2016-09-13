@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160804125227) do
+ActiveRecord::Schema.define(:version => 20160908141215) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(:version => 20160804125227) do
     t.integer  "tag2_id",          :default => -1, :null => false
   end
 
+  add_index "aliquots", ["library_id"], :name => "index_aliquots_on_library_id"
   add_index "aliquots", ["receptacle_id", "tag_id", "tag2_id"], :name => "aliquot_tags_and_tag2s_are_unique_within_receptacle", :unique => true
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
   add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
