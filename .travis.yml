@@ -6,6 +6,9 @@ cache: bundler
 bundler_args: --without warehouse development deployment
 before_install:
   - export TZ=Europe/London
+script:
+ - "bundle exec rake test"
+ - "bundle exec cucumber -r features"
 before_script:
   - "bundle exec rake db:create RAILS_ENV=test"
   - "bundle exec rake db:test:load"
