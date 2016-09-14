@@ -337,12 +337,29 @@ previous_pipeline_id  nil
     descendant_id   {|asset| asset.association(:asset)}
   end
 
+  # Converts i to base 4, then substitutes in ATCG to
+  # generate unique tags in sequence
+  sequence :oligo do |i|
+    i.to_s(4).gsub('0','A').gsub('1','T').gsub('2','C').gsub('3','G')
+  end
+
   factory :tag do |t|
-    oligo "AAA"
+    tag_group
+    oligo
   end
 
   factory :tag_group do |t|
     name "taggroup"
+
+    transient do
+      tag_count 0
+    end
+
+    after(:create) do |tag_group, evaluator|
+      evaluator.tag_count.times do |i|
+        tag_group.tags << create(:tag, map_id: i, tag_group: tag_group)
+      end
+    end
   end
 
   factory :assign_tags_task do |t|

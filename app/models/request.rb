@@ -390,11 +390,7 @@ class Request < ActiveRecord::Base
 
   # This is used for the default next or previous request check.  It means that if the caller does not specify a
   # block then we can use this one in its place.
-  PERMISSABLE_NEXT_REQUESTS = Object.new.tap do |permission|
-    def permission.call(request)
-      request.pending? or request.blocked?
-    end
-  end
+  PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   def next_requests(pipeline, &block)
     #TODO remove pipeline parameters
@@ -403,6 +399,7 @@ class Request < ActiveRecord::Base
     #return [] if next_pipeline.nil?
 
     block ||= PERMISSABLE_NEXT_REQUESTS
+
     eligible_requests = if target_asset.present?
                           target_asset.requests
                         else

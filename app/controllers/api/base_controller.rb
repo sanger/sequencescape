@@ -38,9 +38,9 @@ class Api::BaseController < ApplicationController
   end
 
   def index
-    options = { :order => 'id DESC' }.merge(@context_options || {})
+    sort_order = @context_order || {id: :desc}
 
-    results = @context.paginate({ :page => params[:page] || 1, :total_entries => 100000000, :per_page => 500 }.merge(options))
+    results = @context.order(sort_order).paginate(page: params[:page], total_entries: 100000000, per_page: 500)
 
     respond_to do |format|
       format.json { render :json => results }

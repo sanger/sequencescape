@@ -9,7 +9,7 @@ class Api::AliquotsController < Api::BaseController
   before_action :prepare_list_context, :only => [ :index ]
 
   def prepare_list_context
-    @context, @context_options = ::Aliquot.including_associations_for_json, { :order => 'updated_at DESC' }
+    @context, @context_order = ::Aliquot.including_associations_for_json, { updated_at: :desc}
   end
 
 end

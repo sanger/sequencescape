@@ -83,7 +83,7 @@ module ModelExtensions::Order
   class NonNilHash
     def initialize(key_style_operation = :symbolize_keys)
       @key_style_operation = key_style_operation
-      @store = {}
+      @store = ActiveSupport::HashWithIndifferentAccess.new
     end
 
     def deep_merge(hash)
@@ -112,7 +112,7 @@ module ModelExtensions::Order
 
     def node_and_leaf(*keys, &block)
       leaf = keys.pop
-      node = keys.inject(@store) { |h,k| h[k] ||= {} }
+      node = keys.inject(@store) { |h,k| h[k] ||= ActiveSupport::HashWithIndifferentAccess.new }
       yield(node, leaf)
     end
     private :node_and_leaf

@@ -11,6 +11,6 @@ class Api::StudySamplesController < Api::BaseController
 private
 
   def prepare_list_context
-    @context, @context_options = ::StudySample.including_associations_for_json, { :order => 'id DESC' }
+    @context = ::StudySample.including_associations_for_json
   end
 end

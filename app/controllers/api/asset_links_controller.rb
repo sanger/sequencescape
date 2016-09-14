@@ -9,6 +9,6 @@ class Api::AssetLinksController < Api::BaseController
   before_action :prepare_list_context, :only => [ :index ]
 
   def prepare_list_context
-    @context, @context_options = ::AssetLink.including_associations_for_json, { :order => 'id DESC' }
+    @context = ::AssetLink.including_associations_for_json
   end
 end

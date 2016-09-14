@@ -757,7 +757,7 @@ FactoryGirl.define do
   factory(:asset_audit)  do
     message "Some message"
     key "some_key"
-    created_by  {|user| user.association(:user).login}
+    created_by 'abc123'
     witnessed_by "jane"
     asset  {|asset| asset.association(:asset)}
   end

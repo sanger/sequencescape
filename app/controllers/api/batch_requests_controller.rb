@@ -11,6 +11,6 @@ class Api::BatchRequestsController < Api::BaseController
 private
 
   def prepare_list_context
-    @context, @context_options = ::BatchRequest.including_associations_for_json, { :order => 'id DESC' }
+    @context = ::BatchRequest.including_associations_for_json
   end
 end

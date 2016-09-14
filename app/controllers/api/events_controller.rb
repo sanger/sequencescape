@@ -11,6 +11,6 @@ class Api::EventsController < Api::BaseController
 private
 
   def prepare_list_context
-    @context, @context_options = ::Event.including_associations_for_json, { :order => 'id DESC' }
+    @context = ::Event.including_associations_for_json
   end
 end

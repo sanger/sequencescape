@@ -77,6 +77,7 @@ Sequencescape::Application.routes.draw do
       get :gwl_file
       post :fail_items
       post :create_training_batch
+      post :reset_batch
     end
 
     collection do
@@ -399,8 +400,12 @@ Sequencescape::Application.routes.draw do
   resources :workflows, except: :delete do
     member do
       # Yes, this is every bit as horrible as it looks.
+      # HTTP Verbs! Gotta catch em all!
+      # workflows/stage controller need substantial
+      # reworking.
       patch 'stage/:id' => 'workflows#stage'
       get   'stage/:id' => 'workflows#stage'
+      post 'stage/:id' => 'workflows#stage'
     end
   end
 
