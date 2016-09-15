@@ -41,13 +41,6 @@ class SampleManifestsControllerTest < ActionController::TestCase
         get :new, type: "plate"
         assert_response :success
       end
-
-      should "have 'plate' as default asset type" do
-        get :new
-        assert_equal 'plate', assigns(:asset_type)
-        get :new, type: "1dtube"
-        assert_equal '1dtube', assigns(:asset_type)
-      end
     end
 
     context '#create' do

@@ -45,7 +45,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def new
-    @asset_type = params[:type] || 'plate'
+    @asset_type = params[:type]
     @sample_manifest  = SampleManifest.new(:asset_type => @asset_type)
     @study_id         = params[:study_id] || ""
     @studies          = Study.alphabetical
