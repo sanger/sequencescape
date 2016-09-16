@@ -3,14 +3,14 @@
 #Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
 
 <div id="commentBox">
-  <div id='left'>
+  <div class="col-md-9">
     <%= comment.description %>
   </div>
-  <div id='right'>
+  <div  class="col-md-3">
     Added by <%= comment.user.try(:login)||"Unknown user" %> <%= comment.created_at.to_formatted_s(:short)%> &nbsp;
-    <% if (current_user.id == comment.user.try(:id)) || current_user.administrator? %>
-      <%= link_to image_tag("delete.png", :alt => "Delete", :title => "Delete"), :update => "study_annotations_#{study.id}",
-          :url => { :action => "destroy", :id => comment.id }, :method => :delete, :remote => true  %>
+    <% if (current_user == comment.user) || current_user.administrator? %>
+      <%= button_to 'Remove', study_comment_path(comment.commentable,comment), form:{ data: { :update => "#study_annotations_#{commentable.id}" }, class:'remote-form'}, :method => :delete, :remote => true, :class=>'btn btn-danger' %>
     <% end %>
   </div>
 </div>
+

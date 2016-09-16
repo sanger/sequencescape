@@ -5,7 +5,7 @@
 <% add :title, I18n.t("studies.about") -%>
 <% add :back_menu,I18n.t("navigation.menu.back_to_asset") => asset_path(@asset) -%>
 
-<h1><%= @asset.label %> <%= h(@asset.display_name) %> : Comments</h1>
+<%= page_title("#{@asset.label} #{@asset.display_name}",'Comments') %>
 <div class='subtitle'>
   Study <%= @asset.id %>
 </div>
@@ -13,7 +13,10 @@
 <%= render :partial => "list", :locals => {:asset => @asset } %>
 
 <div>
-  <p>Type your comment:</p>
-  <%= form_tag(:url => asset_comments_path(@asset), :remote => true, :update => "asset_annotations_#{@asset.id}") %>
-  <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
+  <%= form_tag(asset_comments_path(@asset), data: { update: "#asset_annotations_#{@asset.id}", remote: true }, class:'remote-form') do %>
+    <label for='comment'>Type your comment</label>
+    <div class="input-group">
+      <%= text_field_tag "comment", '',  class:'form-control' %><span class="input-group-btn"><%= submit_tag 'Add comment', class: 'btn btn-success' %></span>
+    </div>
+  <% end %>
 </div>
