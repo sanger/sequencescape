@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160908141215) do
+ActiveRecord::Schema.define(:version => 20160914150756) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -501,6 +501,14 @@ ActiveRecord::Schema.define(:version => 20160908141215) do
   add_index "external_properties", ["propertied_id", "propertied_type"], :name => "ep_pi_pt"
   add_index "external_properties", ["propertied_type", "key"], :name => "index_external_properties_on_propertied_type_and_key"
   add_index "external_properties", ["value"], :name => "index_external_properties_on_value"
+
+  create_table "extraction_attributes", :force => true do |t|
+    t.integer  "target_id"
+    t.string   "created_by"
+    t.string   "attributes_update"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
 
   create_table "faculty_sponsors", :force => true do |t|
     t.string   "name"

@@ -21,6 +21,7 @@ class Plate < Asset
   extend QcFile::Associations
   has_qc_files
 
+
   # Contained associations all look up through wells (Wells in turn delegate to aliquots)
   has_many :contained_samples, :through => :wells, :source => :samples
   has_many :conatined_aliquots, :through => :wells, :source => :aliquots
@@ -37,6 +38,8 @@ class Plate < Asset
   has_many :stock_requests, :through => :stock_well_associations, :source => :requests, :uniq => true
   has_many :stock_well_associations, :through => :wells, :source => :stock_wells, :uniq => true
   has_many :stock_orders, :through => :stock_requests, :source => :order, :uniq => true
+
+  has_many :extraction_attributes, :foreign_key => 'target_id'
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
