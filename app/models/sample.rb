@@ -401,7 +401,7 @@ class Sample < ActiveRecord::Base
     def reference_genome_name=(reference_genome_name)
       return unless reference_genome_name.present?
       @reference_genome_set_by_name = reference_genome_name
-      self.reference_genome = ReferenceGenome.find_by_name(reference_genome_name)
+      self.reference_genome = ReferenceGenome.find_by(name:reference_genome_name)
     end
 
     # If we set a reference genome via its name, we want to validate that we found it.

@@ -349,7 +349,7 @@ previous_pipeline_id  nil
   end
 
   factory :tag_group do |t|
-    name "taggroup"
+    name  { generate :tag_group_name }
 
     transient do
       tag_count 0

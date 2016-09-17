@@ -14,7 +14,7 @@ FactoryGirl.define do
     study
     project
     tag
-    tag2    {|t| t.association(:tag) }
+    association :tag2, factory: :tag
   end
 
   factory  :event  do
@@ -27,8 +27,8 @@ FactoryGirl.define do
   end
 
   factory  :item  do
-    name              {|a| FactoryGirl.generate :item_name }
-    version           {|a| FactoryGirl.generate :item_version }
+    name              {|a| generate :item_name }
+    version           {|a| generate :item_version }
     workflow          {|workflow| workflow.association(:submission_workflow)}
     count             nil
     closed            false
@@ -60,7 +60,7 @@ FactoryGirl.define do
   end
 
   factory  :study  do
-    name                 { |a| FactoryGirl.generate :study_name }
+    name                 { |a| generate :study_name }
     user
     blocked              false
     state                "pending"
@@ -74,7 +74,7 @@ FactoryGirl.define do
   end
 
   factory  :budget_division  do
-    name { |a| FactoryGirl.generate :budget_division_name }
+    name { |a| generate :budget_division_name }
   end
 
   factory  :project_metadata, :class => Project::Metadata  do
@@ -84,7 +84,7 @@ FactoryGirl.define do
   end
 
   factory  :project  do
-    name                { |p| FactoryGirl.generate :project_name }
+    name                { |p| generate :project_name }
     enforce_quotas      false
     approved            true
     state               "active"
@@ -106,7 +106,7 @@ FactoryGirl.define do
   end
 
   factory  :submission_workflow, :class => Submission::Workflow  do
-    name         {|a| FactoryGirl.generate :item_name }
+    name         {|a| generate :item_name }
     item_label  "library"
   end
 
@@ -265,13 +265,18 @@ FactoryGirl.define do
   end
 
   factory  :request_without_assets, :parent => :request_with_submission  do
-    item              {|item|       item.association(:item)}
-    project           {|pr|         pr.association(:project)}
-    request_type      {|rt|         rt.association(:request_type)}
-    request_purpose   {|rp|         rp.association(:request_purpose)}
+
+    transient do
+      user_login { 'abc123' }
+    end
+
+    item
+    project
+    request_type
+    request_purpose
     state             'pending'
-    study             {|study|      study.association(:study)}
-    user              {|user|       user.association(:user)}
+    study
+    association :user, factory: :user, login: "abc123"
     workflow          {|workflow|   workflow.association(:submission_workflow)}
   end
 
@@ -302,11 +307,11 @@ FactoryGirl.define do
   end
 
   factory  :request_without_item, :class => "Request"  do
-    study         {|pr| pr.association(:study)}
-    project         {|pr| pr.association(:project)}
-    user            {|user|     user.association(:user)}
-    request_type    {|request_type| request_type.association(:request_type)}
-    request_purpose { |rt| rt.association(:request_purpose) }
+    study
+    project
+    user
+    request_type
+    request_purpose
     workflow        {|workflow| workflow.association(:submission_workflow)}
     state           'pending'
     after(:build) { |request| request.submission = FactoryHelp::submission(:study => request.initial_study,
@@ -320,11 +325,11 @@ FactoryGirl.define do
   end
 
   factory  :request_without_project, :class => Request  do
-    study         {|pr| pr.association(:study)}
-    item            {|item| item.association(:item)}
-    user            {|user|     user.association(:user)}
-    request_type    {|request_type| request_type.association(:request_type)}
-  request_purpose { |rt| rt.association(:request_purpose) }
+    study
+    item
+    user
+    request_type
+    request_purpose
     workflow        {|workflow| workflow.association(:submission_workflow)}
     state           'pending'
   end
@@ -337,12 +342,12 @@ FactoryGirl.define do
 
   factory :pooled_cherrypick_request do
     asset      {|asset| asset.association(:well_with_sample_and_without_plate)}
-    request_purpose { |rt| rt.association(:request_purpose) }
+    request_purpose
   end
 
   factory  :request_type  do
-    name           { FactoryGirl.generate :request_type_name }
-    key            { FactoryGirl.generate :request_type_key }
+    name           { generate :request_type_name }
+    key            { generate :request_type_key }
     deprecated     false
     asset_type     'SampleTube'
     request_class  Request
@@ -379,8 +384,8 @@ FactoryGirl.define do
 
   factory  :library_creation_request_type, :class => RequestType  do
     request_purpose { |rt| rt.association(:request_purpose) }
-    name           { FactoryGirl.generate :request_type_name }
-    key            { FactoryGirl.generate :request_type_key }
+    name           { generate :request_type_name }
+    key            { generate :request_type_key }
     asset_type     "SampleTube"
     target_asset_type "LibraryTube"
     request_class  LibraryCreationRequest
@@ -393,8 +398,8 @@ FactoryGirl.define do
   end
 
   factory  :sequencing_request_type, :class => RequestType  do
-    name           { FactoryGirl.generate :request_type_name }
-    key            { FactoryGirl.generate :request_type_key }
+    name           { generate :request_type_name }
+    key            { generate :request_type_key }
     request_purpose { |rt| rt.association(:request_purpose) }
     asset_type     "LibraryTube"
     request_class  SequencingRequest
@@ -416,8 +421,8 @@ FactoryGirl.define do
   end
 
   factory  :multiplexed_library_creation_request_type, :class => RequestType  do
-    name           { FactoryGirl.generate :request_type_name }
-    key            { FactoryGirl.generate :request_type_key }
+    name           { generate :request_type_name }
+    key            { generate :request_type_key }
     request_purpose { |rt| rt.association(:request_purpose) }
     request_class      MultiplexedLibraryCreationRequest
     asset_type         "SampleTube"
@@ -431,9 +436,9 @@ FactoryGirl.define do
   end
 
   factory  :plate_based_multiplexed_library_creation_request_type, :class => RequestType  do
-    name           { FactoryGirl.generate :request_type_name }
-    key            { FactoryGirl.generate :request_type_key }
-    request_purpose { |rt| rt.association(:request_purpose) }
+    name           { generate :request_type_name }
+    key            { generate :request_type_key }
+    request_purpose
     request_class      MultiplexedLibraryCreationRequest
     asset_type         "Well"
     order              1
@@ -446,7 +451,7 @@ FactoryGirl.define do
   end
 
   factory  :sample  do
-    name            {|a| FactoryGirl.generate :sample_name }
+    name            {|a| generate :sample_name }
 
     factory :sample_with_well do
       sequence(:sanger_sample_id) {|n| n.to_s }
@@ -476,6 +481,10 @@ FactoryGirl.define do
 
   sequence :login do |i|
     "abc#{i}"
+  end
+
+  sequence :tag_group_name do |i|
+    "tag_group_#{i}"
   end
 
   factory  :user  do
@@ -551,7 +560,7 @@ FactoryGirl.define do
   end
 
   factory  :asset_group  do
-    name     {|a| FactoryGirl.generate :asset_group_name}
+    name     {|a| generate :asset_group_name}
     study    {|study| study.association(:study)}
     assets   []
   end
@@ -565,36 +574,36 @@ FactoryGirl.define do
   end
 
   factory  :multiplexed_library_tube  do
-    name    {|a| FactoryGirl.generate :asset_name }
+    name    {|a| generate :asset_name }
     purpose { Tube::Purpose.standard_mx_tube }
   end
 
   factory  :pulldown_multiplexed_library_tube  do
-    name                {|a| FactoryGirl.generate :asset_name }
+    name                {|a| generate :asset_name }
     public_name   "ABC"
   end
 
   factory  :stock_multiplexed_library_tube  do
-    name    {|a| FactoryGirl.generate :asset_name }
+    name    {|a| generate :asset_name }
     purpose { Tube::Purpose.stock_mx_tube }
   end
 
   factory :new_stock_multiplexed_library_tube, :class=>StockMultiplexedLibraryTube do |t|
-    name    {|a| FactoryGirl.generate :asset_name }
+    name    {|a| generate :asset_name }
     purpose { |a| a.association(:new_stock_tube_purpose) }
   end
 
   factory(:new_stock_tube_purpose, :class=>IlluminaHtp::StockTubePurpose) do |p|
-    name { FactoryGirl.generate :purpose_name }
+    name { generate :purpose_name }
   end
 
   factory(:request_purpose) do |rp|
-    rp.key { FactoryGirl.generate :purpose_name }
+    rp.key { generate :purpose_name }
   end
 
   factory(:empty_library_tube, :class => LibraryTube)  do
     qc_state ''
-    name     {|_| FactoryGirl.generate :asset_name }
+    name     {|_| generate :asset_name }
     purpose  { Tube::Purpose.standard_library_tube }
   end
   factory(:library_tube, :parent => :empty_library_tube) do
@@ -675,17 +684,17 @@ FactoryGirl.define do
   end
 
   factory  :stock_library_tube  do
-    name     {|a| FactoryGirl.generate :asset_name }
+    name     {|a| generate :asset_name }
     purpose  { Tube::Purpose.stock_library_tube }
   end
 
   factory  :stock_sample_tube  do
-    name     {|a| FactoryGirl.generate :asset_name }
+    name     {|a| generate :asset_name }
     purpose  { Tube::Purpose.stock_sample_tube }
   end
 
   factory(:empty_lane, :class => Lane)  do
-    name                {|l| FactoryGirl.generate :asset_name }
+    name                {|l| generate :asset_name }
     external_release    nil
   end
 
@@ -693,7 +702,7 @@ FactoryGirl.define do
   end
 
   factory  :spiked_buffer  do
-    name { |a| FactoryGirl.generate :asset_name }
+    name { |a| generate :asset_name }
     volume 50
   end
 
@@ -763,7 +772,7 @@ FactoryGirl.define do
   end
 
   factory(:faculty_sponsor) do
-    name  {|a| FactoryGirl.generate :faculty_sponsor_name }
+    name  {|a| generate :faculty_sponsor_name }
   end
 
   factory(:pooling_method, :class=> 'RequestType::PoolingMethod')  do
