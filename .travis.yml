@@ -4,12 +4,13 @@ rvm:
 sudo: false
 cache: bundler
 bundler_args: --without warehouse development deployment
+env: "CUCUMBER_FORMAT=progress"
 before_install:
   - export TZ=Europe/London
 before_script:
   - "bundle exec rake db:create RAILS_ENV=test"
   - "bundle exec rake db:test:load"
-  - export CUCUMBER_FORMAT=progress
+  - "RAILS_ENV=test rake db:seed"
 script:
   - "bundle exec rake test"
   - "bundle exec cucumber -r features"
