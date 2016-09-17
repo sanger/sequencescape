@@ -40,7 +40,11 @@ class SequenomQcPlatesController < ApplicationController
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
         errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k=>v) }
-        if sequenom_qc_plate.save and valid and sequenom_qc_plate.add_event_to_stock_plates(user_barcode)
+
+        saved = sequenom_qc_plate.save
+        sequenom_qc_plate.connect_input_plates(input_plate_names.values.reject(&:blank?))
+
+        if saved and valid and sequenom_qc_plate.add_event_to_stock_plates(user_barcode)
           new_plates << sequenom_qc_plate
         else
           # If saving any of our new plates fails then catch that plate, for errors
@@ -75,7 +79,7 @@ class SequenomQcPlatesController < ApplicationController
   end
 
   def index
-    @sequenom_qc_plates = SequenomQcPlate.paginate(:page => params[:page], :order => "created_at desc")
+    @sequenom_qc_plates = SequenomQcPlate.page(params[:page]).order(created_at: :desc)
   end
 
   private

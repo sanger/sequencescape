@@ -51,7 +51,7 @@ end
 Then /^the (library tube) "([^\"]+)" should have (\d+) "([^\"]+)" requests$/ do |asset_model, asset_name, count, request_type_name|
   asset        = asset_model.gsub(/\s+/, '_').classify.constantize.find_by_name(asset_name) or raise StandardError, "Could not find #{asset_model} #{asset_name.inspect}"
   request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Could not find request type #{request_type_name.inspect}"
-  assert_equal(count.to_i, asset.requests.count(:conditions => { :request_type_id => request_type.id }), "Number of #{request_type_name.inspect} requests incorrect")
+  assert_equal(count.to_i, asset.requests.where(:request_type_id => request_type.id).count, "Number of #{request_type_name.inspect} requests incorrect")
 end
 
 def submission_in_state(state, attributes = {})

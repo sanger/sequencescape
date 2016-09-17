@@ -33,10 +33,11 @@ group :default do
 
   gem 'sanger_barcode', '~>0.2',
     :github => 'sanger/sanger_barcode', :branch => 'ruby-1.9'
-  # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
-  # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
-  # gem code).
-  gem "acts-as-dag"
+
+  # We pull down a slightly later version as there are commits on head
+  # which we depend on, but don't have an official release yet.
+  # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
+  gem "acts-as-dag", github:'resgraph/acts-as-dag', branch:'5e185dddff6563ee9ee92611555cd9d9a519d280'
 
   # Better table alterations
   # gem "alter_table",

@@ -25,8 +25,9 @@ Given /^I have created a sequenom plate$/ do
     :user_barcode      => '2470000100730'
   )
   seq_plate.compute_and_set_name(input_plate_names)
-  seq_plate.save!
 
+  seq_plate.save!
+  seq_plate.connect_input_plates(input_plate_names.values)
 
   step(%Q{1 pending delayed jobs are processed})
 

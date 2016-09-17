@@ -9,7 +9,6 @@ class AssetLink < ActiveRecord::Base
   acts_as_dag_links :node_class_name => 'Asset'
 
   # Enables the bulk creation of the asset links defined by the pairs passed as edges.
-  # Basically we should be moving away from these and this enables us to ignore them.
   class BuilderJob < Struct.new(:links)
 
     # For memory resons we need to limit transaction size to 10 links at a time

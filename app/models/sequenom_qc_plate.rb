@@ -11,11 +11,8 @@ class SequenomQcPlate < Plate
   attr_accessor :user_barcode
 
   validates_presence_of :name
-  #validate :source_plates_genders_valid?, :if => :do_gender_checks?
-  #validate :user_barcode_exist?
 
   after_create :populate_wells_from_source_plates
-  #after_create :add_event_to_stock_plates
 
   def print_labels(barcode_printer, number_of_barcodes = 3)
     BarcodePrinter.print(self.barcode_labels(number_of_barcodes.to_i), barcode_printer.name, prefix, "long", label_text_top, label_text_bottom)
@@ -62,29 +59,31 @@ class SequenomQcPlate < Plate
     # Only do this if this is a new_record or we'll
     # be doing it every time we pull it from the db.
     if new_record?
+
+      input_plate_barcodes = input_plate_names.values.reject(&:blank?)
       #validate input_plate_names
       if do_gender_checks? and !source_plates_genders_valid?(input_plate_names)
         return false
       end
 
-      return false unless at_least_one_source_plate?(input_plate_names) and input_plates_exist?(input_plate_names)
+      return false unless at_least_one_source_plate?(input_plate_barcodes) and input_plates_exist?(input_plate_names)
 
       # Plate name e.g. QC1234_1235_1236_1237_20100801
       self.name = "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
       self.plate_purpose = PlatePurpose.find_by_name("Sequenom")
       self.barcode = PlateBarcode.create.barcode
-      connect_input_plates(input_plate_names)
     end
     true
   end
+
+  def connect_input_plates(input_plate_barcodes)
+    self.parents = Plate.with_machine_barcode(input_plate_barcodes)
+  end
+
   protected
 
   def source_barcodes
     [label_match[2], label_match[3], label_match[4], label_match[5]]
-  end
-
-  def connect_input_plates(input_plate_names)
-    self.parents = Plate.with_machine_barcode(input_plate_names.values.reject(&:blank?)).all
   end
 
   def destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
@@ -159,9 +158,11 @@ class SequenomQcPlate < Plate
     true
   end
 
-  def at_least_one_source_plate?(input_plate_names)
-    !if input_plate_names.values.select {|v| !v.blank? }.size == 0
+  def at_least_one_source_plate?(input_plate_barcodes)
+    if input_plate_barcodes.empty?
       errors.add(:base,"At least one source input plate barcode must be entered.")
+    else
+      true
     end
   end
 
@@ -195,7 +196,6 @@ end
       unless source_plate.contains_gendered_samples?
         errors.add(:base,"Failed to create Sequenom QC Plate - Source Plate: #{source_plate_barcode} lacks gender information")
         return false
-        # errors.add(input_plate_names[source_plate_number], "Source Plate: #{source_plate_barcode} lacks gender information")
       end
     end
     true

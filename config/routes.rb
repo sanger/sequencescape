@@ -16,6 +16,7 @@ Sequencescape::Application.routes.draw do
 
     member do
       get :history
+      put :add_to_study
     end
 
     collection do

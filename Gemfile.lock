@@ -1,4 +1,13 @@
 GIT
+  remote: git://github.com/resgraph/acts-as-dag.git
+  revision: 5e185dddff6563ee9ee92611555cd9d9a519d280
+  branch: 5e185dddff6563ee9ee92611555cd9d9a519d280
+  specs:
+    acts-as-dag (4.0.0)
+      activemodel
+      activerecord (>= 4.0.0)
+
+GIT
   remote: git://github.com/sanger/irods_reader.git
   revision: 14db88aa7783118d2d4a8351c5028d07e6ee5644
   specs:
@@ -74,9 +83,6 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    acts-as-dag (4.0.0)
-      activemodel
-      activerecord (~> 4.0, >= 4.0.0)
     addressable (2.3.8)
     algorithms (0.6.1)
     algorithms (0.6.1-java)
@@ -368,7 +374,7 @@ DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-oracle_enhanced-adapter (~> 1.4.0)
   activeresource
-  acts-as-dag
+  acts-as-dag!
   axlsx
   bootstrap-sass
   bullet
@@ -435,4 +441,4 @@ DEPENDENCIES
   will_paginate-bootstrap
 
 BUNDLED WITH
-   1.12.5
+   1.13.0

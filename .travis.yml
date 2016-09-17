@@ -3,9 +3,6 @@ rvm:
   - jruby-9.1.2.0
 sudo: false
 cache: bundler
-env:
-  -"SUITE='rake test'"
-  -"SUITE='cucumber -r features'"
 bundler_args: --without warehouse development deployment
 before_install:
   - export TZ=Europe/London
@@ -14,4 +11,5 @@ before_script:
   - "bundle exec rake db:test:load"
   - export CUCUMBER_FORMAT=progress
 script:
-  - "bundle exec $SUITE"
+  - "bundle exec rake test"
+  - "bundle exec cucumber -r features"
