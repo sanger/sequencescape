@@ -64,7 +64,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context "where asset exists" do
         setup do
           @asset_count =  Asset.count
-          post :confirm_reception, :asset_id => { "0" => @plate.id }, :asset => { :location_id => @location.id }
+          post :confirm_reception, :asset_id => { "0" => @plate.id }, :location_id => @location.id
         end
 
         should "change Asset.count by 0" do
@@ -75,7 +75,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context "where asset doesnt exist" do
         setup do
           @asset_count =  Asset.count
-          post :confirm_reception, :asset_id => { "0" => 999999 }, :asset => { :location_id => @location.id }
+          post :confirm_reception, :asset_id => { "0" => 999999 }, :location_id => @location.id
         end
 
         should "change Asset.count by 0" do
@@ -87,7 +87,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context "create an event" do
         setup do
           @event_count =  Event.count
-          post :confirm_reception, :asset_id => { "0" => @sample_tube.id }, :asset => { :location_id => @location.id }
+          post :confirm_reception, :asset_id => { "0" => @sample_tube.id }, :location_id => @location.id
         end
 
         should "change Event.count by 1" do

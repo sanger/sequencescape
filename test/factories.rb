@@ -282,7 +282,7 @@ FactoryGirl.define do
     request_purpose
     state             'pending'
     study
-    association :user, factory: :user, login: "abc123"
+    user              {|user| User.find_by(login:user_login)||create(:user, login: user_login) }
     workflow          {|workflow|   workflow.association(:submission_workflow)}
   end
 
