@@ -16,7 +16,6 @@ end
 
 app = ActiveResource::Connection.new("http://#{configatron.site_url}")
 accession_needed.each do |sample_id|
-  puts "#{sample_id}"
   sample = Sample.find(sample_id)
   next if sample.nil?
   if sample.ebi_accession_number

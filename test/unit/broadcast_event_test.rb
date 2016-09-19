@@ -182,7 +182,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
           "event" => {
           "uuid" => @event.uuid,
           "event_type" => "example_event",
-          "occured_at" => "2012-03-11T10:22:42.000+00:00",
+          "occured_at" => "2012-03-11T10:22:42+00:00",
           "user_identifier" => "example@example.com",
           "subjects" => [
             {

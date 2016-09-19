@@ -95,7 +95,7 @@ class ReceptionsController < ApplicationController
 
       if @errors.size > 0
         respond_to do |format|
-          flash[:error] = "Could not update some locations: #{errors.join(';')}"
+          flash[:error] = "Could not update some locations: #{@errors.join(';')}"
           format.html { render :action => "reception" }
           format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
           format.json { render :json => @errors, :status => :unprocessable_entity }

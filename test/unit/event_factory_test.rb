@@ -9,7 +9,7 @@ class EventFactoryTest < ActiveSupport::TestCase
   context "An EventFactory" do
     setup do
       @user = create :user, :login => "south", :email => "south@example.com"
-      @bad_user = create :user, :login => "south", :email => ""
+      @bad_user = create :user, :login => "bad_south", :email => ""
       @project = create :project, :name => "hello world"
       #@project = create :project, :name => "hello world", :user => @user
       role = create :owner_role, :authorizable => @project

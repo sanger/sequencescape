@@ -29,7 +29,6 @@ class SubmissionsController < ApplicationController
         },
         :layout => false
     else
-      p @presenter.order.errors
       render :partial => 'order_errors', :layout => false, :status => 422
     end
 

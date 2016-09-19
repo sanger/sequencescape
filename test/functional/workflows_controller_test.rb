@@ -16,7 +16,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
       @user =FactoryGirl.create :user
       session[:user] = @user.id
-      @pipeline_user =FactoryGirl.create :pipeline_admin, :login => @user.login
+      @pipeline_user = FactoryGirl.create :pipeline_admin
 
     end
     should_require_login
@@ -91,8 +91,8 @@ class WorkflowsControllerTest < ActionController::TestCase
             delete :destroy, :id => LabInterface::Workflow.first.id
           end
 
-          should "destroy a workflow" do
-            assert_equal @old_count-1, LabInterface::Workflow.count
+          should "not destroy a workflow" do
+            assert_equal @old_count, LabInterface::Workflow.count
             assert_redirected_to workflows_path
           end
         end
