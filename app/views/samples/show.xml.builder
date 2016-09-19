@@ -22,20 +22,15 @@ xml.sample(api_data) {
         xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
         if (attribute.to_field_info.display_name == "Reference Genome") && (value.blank?)
           xml.value(nil)
-        else 
+        else
           xml.value(value)
         end
       }
     end
   }
 
-  unless @sample.assets.empty?
-    xml.assets {
-      @sample.assets.each do |asset|
-        xml.asset(:id => asset.id, :href => asset_path(asset))
-      end
-    }
-  end
+  # REMOVED: assets section from xml
+
   if @sample.studies.size > 0
     xml.study_id @sample.studies.first.id
   end

@@ -41,8 +41,11 @@ class Lot < ActiveRecord::Base
  scope :with_qc_asset, ->(qc_asset) {
     return { :conditions => 'FALSE' } if qc_asset.nil?
     sibling = qc_asset.transfers_as_destination.first.source
+    tag2_siblings = Tag2Layout.where(:plate_id => qc_asset.id).map(&:source_id)
 
-    includes(:qcables).where(['qcables.asset_id IN(?) AND qcables.state != ?',[qc_asset.id,sibling.id],'exhausted' ])
+    asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
+
+    includes(:qcables).where(['qcables.asset_id IN(?) AND qcables.state != ?',asset_ids,'exhausted' ])
   }
 
   private
