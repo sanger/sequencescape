@@ -11,6 +11,7 @@ before_script:
   - "RAILS_ENV=test bundle exec rake db:create"
   - "bundle exec rake db:test:load"
   - "RAILS_ENV=test bundle exec rake db:seed"
+  - "RAILS_ENV=test bundle exec rake db:views:schema_load"
 script:
   - "bundle exec rake test"
   - "bundle exec cucumber -r features"
