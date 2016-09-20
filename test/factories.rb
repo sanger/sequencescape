@@ -206,7 +206,7 @@ FactoryGirl.define do
 
   # Bait libraries
   factory(:request_metadata_for_bait_pulldown, :parent => :request_metadata)  do
-    bait_library_id  {|bait_library| bait_library.association(:bait_library).id}
+    bait_library_id {|bl| create(:bait_library).id }
   end
   # set default  metadata factories to every request types which have been defined yet
   RequestType.all.each do |rt|
@@ -234,7 +234,7 @@ FactoryGirl.define do
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
       next if request.request_type.nil?
-      request.request_metadata = build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
+      request.request_metadata_attributes = attributes_for(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
       request.sti_type = request.request_type.request_class_name
     end
 
@@ -634,7 +634,7 @@ FactoryGirl.define do
   end
 
   factory(:library_creation_request_for_testing_sequencing_requests, :class => Request::LibraryCreation)  do
-    request_type { |target| RequestType.find_by_name('Library creation') or raise StandardError, "Could not find 'Library creation' request type" }
+    request_type { |target| RequestType.find_by_name!('Library creation') }
     request_purpose { |rp| rp.association(:request_purpose) }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -644,8 +644,8 @@ FactoryGirl.define do
     end
   end
 
-  factory(:library_creation_request, :parent => :request) do
-    sti_type      { RequestType.find_by_name('Library creation').request_class_name }
+  factory(:library_creation_request, :parent => :request, class: LibraryCreationRequest) do
+    # sti_type      { RequestType.find_by_name('Library creation').request_class_name }
     asset         { |asset| asset.association(:sample_tube) }
     request_type  { |type|  RequestType.find_by_name!('Library creation')}
     after(:create) do |request|

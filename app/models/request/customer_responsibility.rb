@@ -6,7 +6,6 @@ module Request::CustomerResponsibility
   def self.included(base)
     base::Metadata.class_eval do
       attribute(:customer_accepts_responsibility, :boolean => true)
-
       validate :customer_can_accept_responsibility?, :if => :customer_accepts_responsibility_changed?, :on => :update
 
       def customer_can_accept_responsibility?
