@@ -25,6 +25,10 @@ class BarcodePrinter < ActiveRecord::Base
     self.barcode_printer_type.printer_type_id
   end
 
+  def plate384_printer?
+    self.barcode_printer_type.name == "384 Well Plate"
+  end
+
   def self.verify(number)
     service.verify(number)
   end
