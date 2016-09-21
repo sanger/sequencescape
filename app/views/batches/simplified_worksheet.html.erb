@@ -32,14 +32,16 @@
     </thead>
     <tbody>
     <% @batch.ordered_requests.each do |request| -%>
-      <% if request.asset %>
+      <% asset = request.asset %>
+      <% if asset %>
+        <% no_barcode = !asset.respond_to?(:sanger_human_barcode) %>
         <tr>
           <td width="20%">Lane <%= request.position %></td>
-          <td><strong><%= request.asset.sanger_human_barcode unless request.asset.resource? %></strong></td>
-          <td><strong><%= h(request.asset.display_name) %></strong></td>
+          <td><strong><%= asset.sanger_human_barcode unless asset.resource? || no_barcode %></strong></td>
+          <td><strong><%= h(asset.display_name) %></strong></td>
           <td><%= request.concentration %></td>
-          <td><%= request.asset.library_types.join(',') %></td>
-          <td><%= request.value_for("Read length") unless request.asset.resource? %></td>
+          <td><%= asset.library_types.join(',') %></td>
+          <td><%= request.value_for("Read length") unless asset.resource? %></td>
         </tr>
       <% end %>
     <% end -%>
