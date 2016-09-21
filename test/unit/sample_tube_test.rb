@@ -4,11 +4,11 @@
 
 
 require "test_helper"
+require "timecop"
 
 class SampleTubeTest < ActiveSupport::TestCase
 
   context 'A Sample tube' do
-
     setup do
       AssetBarcode.expects :new_barcode
     end

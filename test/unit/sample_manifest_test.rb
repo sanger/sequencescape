@@ -65,6 +65,31 @@ class SampleManifestTest < ActiveSupport::TestCase
       end
     end
 
+    context 'for a sample tube' do
+      [1,2].each do |count|
+        context "#{count} tubes(s)" do
+          setup do
+            @initial_samples       = Sample.count
+            @initial_sample_tubes = SampleTube.count
+            @initial_in_study      = @study.samples.count
+            @initial_messenger_count = Messenger.count
+
+            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type=>'1dtube'
+            @manifest.generate
+          end
+
+          should "create #{count} tubes(s) and #{count} samples in the right study" do
+            assert_equal (count), Sample.count                 - @initial_samples
+            # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+            assert_equal (count), SampleTube.count            - @initial_sample_tubes
+            assert_equal (count), @study.samples.count         - @initial_in_study
+            assert_equal count, Messenger.count - @initial_messenger_count
+          end
+
+        end
+      end
+    end
+
     context 'converts to a spreadsheet' do
       setup do
         @manifest = create :sample_manifest, :study => @study, :count => 1
