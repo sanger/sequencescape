@@ -87,7 +87,7 @@ class Tube < Aliquot::Receptacle
     # Define some simple helper methods
     class << self
       [ 'stock', 'standard' ].each do |purpose_type|
-        [ 'sample', 'library', 'MX' ].each do |tube_type|
+        [ 'library', 'MX' ].each do |tube_type|
           name = "#{purpose_type} #{tube_type}"
 
           line = __LINE__ + 1
@@ -97,6 +97,9 @@ class Tube < Aliquot::Receptacle
             end
           }, __FILE__, line)
         end
+      end
+      def standard_sample_tube
+        find_by_name('Standard sample') or raise "Cannot find standard sample tube"
       end
     end
   end
