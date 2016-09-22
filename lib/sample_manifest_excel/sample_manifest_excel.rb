@@ -8,6 +8,7 @@ module SampleManifestExcel
   require_relative "sample_manifest_excel/null_validation"
   require_relative "sample_manifest_excel/attributes"
   require_relative "sample_manifest_excel/cell"
+  require_relative "sample_manifest_excel/list"
   require_relative "sample_manifest_excel/conditional_formatting_default"
   require_relative "sample_manifest_excel/conditional_formatting_default_list"
   require_relative "sample_manifest_excel/manifest_type_list"

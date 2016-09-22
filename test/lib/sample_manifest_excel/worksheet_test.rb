@@ -88,7 +88,7 @@ class WorksheetTest < ActiveSupport::TestCase
 	  end
 
 	  should "unlock cells for all columns which are unlocked" do
-	  	worksheet.columns.values.select(&:unlocked?).each do |column|
+	  	worksheet.columns.select(&:unlocked?).each do |column|
 	  		assert_equal worksheet.styles[:unlocked].reference, worksheet.axlsx_worksheet[column.range.first_cell.reference].style
 	  		assert_equal worksheet.styles[:unlocked].reference, worksheet.axlsx_worksheet[column.range.last_cell.reference].style
 	  	end
@@ -100,14 +100,14 @@ class WorksheetTest < ActiveSupport::TestCase
 
 	  should "should add the attributes for each details" do
 	    [sample_manifest.details_array.first, sample_manifest.details_array.last].each do |detail|
-	      worksheet.columns.each do |k, column|
+	      worksheet.columns.each do |column|
 	        assert_equal column.attribute_value(detail), spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail)+10, column.number)
 	      end
 	    end
 	  end
 
 	  should "update all of the columns" do
-	  	assert worksheet.columns.values.all? { |column| column.updated? }
+	  	assert worksheet.columns.all? { |column| column.updated? }
 	  end
 
 	  should "panes should be frozen correctly" do

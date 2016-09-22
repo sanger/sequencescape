@@ -22,86 +22,72 @@ class ColumnListTest < ActiveSupport::TestCase
     columns = build_list(:column, 5)
     column_list = SampleManifestExcel::ColumnList.new(build_list(:column, 5))
     assert_equal columns.length, column_list.count
-    assert column_list.all? { |k, column| column_list.find_by(column.name).present? }
+    assert column_list.all? { |column| column_list.find_by(:name, column.name).present? }
   end
 
   test "columns should have conditional formattings" do
-    assert_equal yaml[:gender][:conditional_formattings].length, column_list.find_by(:gender).conditional_formattings.count
-    assert_equal yaml[:sibling][:conditional_formattings].length, column_list.find_by(:sibling).conditional_formattings.count
+    assert_equal yaml[:gender][:conditional_formattings].length, column_list.find_by(:name, :gender).conditional_formattings.count
+    assert_equal yaml[:sibling][:conditional_formattings].length, column_list.find_by(:name, :sibling).conditional_formattings.count
   end
 
   test "#headings should return headings" do
     assert_equal yaml.values.collect { |column| column[:heading] }, column_list.headings
   end
 
-  test "#values should return all of the values for the column list" do
+  test "#column_values should return all of the values for the column list" do
     sanger_sample_id_column = build(:sanger_sample_id_column)
     column_list.add(sanger_sample_id_column)
     assert_equal column_list.count, column_list.column_values.length
     assert_equal sanger_sample_id_column.value, column_list.column_values.last
   end
 
-  test "#find_by_name returns correct column" do
-    assert column_list.find_by_name(yaml.keys.first)
-  end
-
-  test "#find_by_heading should return correct column" do
-    assert column_list.find_by_heading(yaml[yaml.keys.first][:heading])
-  end
-
   test "each column should have a number" do
-    column_list.each_with_index do |(k,v), i|
-      assert_equal i+1,column_list.find_by(k).number
+    column_list.each_with_index do |column, i|
+      assert_equal column, column_list.find_by(:number, i+1)
     end
   end
 
   test "#extract should return correct list of columns" do
-    names = column_list.keys[0..5]
+    names = column_list.names[0..5]
     list = column_list.extract(names)
     assert_equal yaml.length, column_list.count
     assert_equal names.length, list.count
     names.each_with_index do |name, i|
-      assert_equal i+1, list.find_by(name).number
+      assert_equal i+1, list.find_by(:name, name).number
     end
   end
 
   test "#extract should not affect original list of columns" do
     column_number = column_list.values[4].number
-    names = column_list.keys[0..2] + column_list.keys[4..5]
+    names = column_list.names[0..2] + column_list.names[4..5]
     list = column_list.extract(names)
     assert_equal column_number, column_list.values[4].number
   end
 
-  test "#add adds column to column list" do
-    list = SampleManifestExcel::ColumnList.new
-    column = SampleManifestExcel::Column.new(name: :plate_id, heading: "Plate ID")
-    list.add(column)
-    assert_equal 1, list.count
-    assert_equal 1, list.find_by(:plate_id).number
+  test "#extract should be able to extract columns by any key" do
+    new_list = column_list.extract(column_list.headings)
+    assert_equal column_list.count, new_list.count
   end
 
-  test "#add_with_dup should add dupped column" do
-    list = SampleManifestExcel::ColumnList.new
-    column = SampleManifestExcel::Column.new(name: :plate_id, heading: "Plate ID")
-    list.add_with_dup(column)
-    refute_equal column, list.find_by(:plate_id)
+  test "#extract with invalid key should provide a descriptive error message" do
+    bad_column = build(:column)
+    new_list = column_list.extract(column_list.headings << bad_column.heading)
+    refute new_list.valid?
+    assert_match bad_column.heading, new_list.errors.full_messages.to_s
   end
 
   test "#update should update columns" do
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    assert column_list.all? { |k, column| column.updated? }
-  end
-
-  test "should be comparable" do
-    assert_equal column_list, SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
-    yaml.shift
-    refute_equal column_list, SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
+    assert column_list.all? { |column| column.updated? }
   end
 
   test "should duplicate correctly" do
+    n = column_list.count
     dupped = column_list.dup
+    assert_equal n, column_list.count
+    assert_equal n, dupped.count
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    refute dupped.any? { |k, column| column.updated? }
+    refute dupped.any? { |column| column.updated? }
   end
 
   test "should only be valid with some columns" do

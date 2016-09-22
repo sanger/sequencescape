@@ -58,6 +58,7 @@ module SampleManifestExcel
       # It will:
       # - create a list of keys
       # - create a struct class based on the name
+      # - creates a method which returns a list of keys for the items in each key
       def list_for(*args)
         options = args.extract_options!
 
@@ -73,6 +74,14 @@ module SampleManifestExcel
           @model ||= _model.constantize
         end
 
+        options[:keys].each do |key|
+          define_method "#{key.to_s.pluralize}" do
+            items.fetch(key).keys
+          end
+        end
+
+        alias_method args.first, :values
+
         unless const_defined?(_list_model)
           _list_model_const = Object.const_set(_list_model, Struct.new(*options[:keys]) do
             def fetch(key)
@@ -87,14 +96,6 @@ module SampleManifestExcel
           define_method :list_model do
             _list_model_const
           end
-
-          options[:keys].each do |key|
-            define_method "#{key.to_s.pluralize}" do
-              items.fetch(key).keys
-            end
-          end
-
-
         end
         
       end
@@ -131,6 +132,8 @@ module SampleManifestExcel
       end
     end
 
+
+
     ##
     # Uses dup
     # It is up to the list item class to decide on the parameters for dup
@@ -145,9 +148,18 @@ module SampleManifestExcel
       items.fetch(key).fetch(value.to_s, nil)
     end
 
+    def find(value)
+      keys.each do |key|
+        item = find_by(key, value)
+        return item if item.present?
+      end
+      nil
+    end
+
     ##
     # Empty the struct and start again. This is very destructive.
     def reset!
+      @values = []
       @items = create_list
     end
 

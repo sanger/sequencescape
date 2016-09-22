@@ -33,6 +33,7 @@ class ListTest < ActiveSupport::TestCase
 
   test "list should have correct number of items" do
     assert_equal 3, my_list.count
+    assert_equal 3, my_list.list_items.count
   end
 
   test "each key should have the correct number of items" do
@@ -41,16 +42,26 @@ class ListTest < ActiveSupport::TestCase
     assert_equal 3, my_list.items.attr_c.count
   end
 
-  test "it should be possible to find each attribute for each key" do
+  test "it should be possible to find an item by a defined key" do
     assert_equal item_1, my_list.find_by(:attr_a, "a")
     assert_equal item_2, my_list.find_by(:attr_b, "f")
     assert_equal item_2, my_list.find_by(:attr_b, :f)
     assert_equal item_3, my_list.find_by(:attr_c, "k")
   end
 
+  test "it should be possible to find an attribute using any key" do
+    assert_equal item_1, my_list.find("a")
+    assert_equal item_2, my_list.find("f")
+    assert_equal item_2, my_list.find(:f)
+    assert_equal item_3, my_list.find("k")
+    refute my_list.find("z")
+
+  end
+
   test "#reset should create a new list of items" do
     items = my_list.items
     my_list.reset!
+    assert my_list.values.empty?
     refute_equal items, my_list.items
     assert my_list.items.attr_a.empty?
     assert my_list.items.attr_b.empty?
