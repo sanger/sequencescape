@@ -34,6 +34,8 @@ FactoryGirl.define do
       plate_purpose {|pp| pp.association(:source_plate_purpose)}
     end
 
+    
+    
     factory :child_plate do
 
       transient do
@@ -50,6 +52,8 @@ FactoryGirl.define do
       end
     end
   end
+
+  
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
   end

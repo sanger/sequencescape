@@ -6,6 +6,9 @@ require "test_helper"
 
 
 class EventFactoryTest < ActiveSupport::TestCase
+
+  attr_reader :emails
+
   context "An EventFactory" do
     setup do
       @user = create :user, :login => "south", :email => "south@example.com"
@@ -16,6 +19,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       role.users << @user << @bad_user
       @request_type = create :request_type, :key => "library_creation", :name => "Library creation"
       @request = create :request, :request_type => @request_type, :user => @user, :project => @project
+      @emails = ActionMailer::Base.deliveries
+      @emails.clear
     end
 
     context "#new_project" do
@@ -27,11 +32,17 @@ class EventFactoryTest < ActiveSupport::TestCase
         EventFactory.new_project(@project, @user)
       end
 
-     should "change Event.count by 1" do
-       assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
-     end
+      should "change Event.count by 1" do
+        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+      end
 
       context "send 1 email to 1 recipient" do
+
+        should "send email" do
+          assert_equal 1, emails.count
+          assert_match "Project #{@project.id}: Project registered\n\nProject registered by south", emails.first.parts.first.body.to_s
+        end
+
         should have_sent_email.
           with_subject(/Project/).
           bcc("abc123@example.com").
@@ -63,7 +74,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           should have_sent_email.
             with_subject(/Sample/).
             bcc("abc123@example.com").
-            with_body(/New 'NewSample' registered by south/)
+            with_body(/registered by south/)
         end
       end
 
@@ -74,8 +85,13 @@ class EventFactoryTest < ActiveSupport::TestCase
         end
 
 
-         should "change Event.count by 2" do
-           assert_equal 2,  Event.count  - @event_count, "Expected Event.count to change by 2"
+        should "change Event.count by 2" do
+          assert_equal 2,  Event.count  - @event_count, "Expected Event.count to change by 2"
+        end
+
+        should "send email" do
+          assert_equal 1, emails.count
+          assert_match "New 'NewSample' registered by south: NewSample. This sample was assigned to the 'hello world' project.", HTMLEntities.new.decode(emails.first.parts.first.body.to_s)
         end
 
         context "send 2 emails each to one recipient" do
@@ -83,14 +99,14 @@ class EventFactoryTest < ActiveSupport::TestCase
             with_subject(/Sample/).
             bcc("abc123@example.com").
             # && email.bcc.size == 1 \
-            with_body(/New 'NewSample' registered by south/)
+            with_body(/registered by south/)
 
 
           should have_sent_email.
             with_subject(/Project/).
             bcc("abc123@example.com").
             # && email.bcc.size == 1 \
-            with_body(/New 'NewSample' registered by south: NewSample. This sample was assigned to the 'hello world' project./)
+            with_body(/This sample was assigned/)
 
           should_not have_sent_email.bcc("")
         end
@@ -100,7 +116,7 @@ class EventFactoryTest < ActiveSupport::TestCase
     context "#project_approved" do
       setup do
         @event_count =  Event.count
-        ::ActionMailer::Base.deliveries = [] # reset the queue
+        # ::ActionMailer::Base.deliveries = [] # reset the queue
         role = create :manager_role, :authorizable => @project
         role.users << @user
         admin = create :role, :name => "administrator"
@@ -111,6 +127,11 @@ class EventFactoryTest < ActiveSupport::TestCase
 
       should "change Event.count by 1" do
         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+      end
+
+      should "send email" do
+        assert_equal 1, emails.count
+        assert_match "Project approved\n\nProject approved by south", emails.first.parts.first.body.to_s
       end
 
       context "send email to project manager" do
@@ -170,8 +191,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
 
-       should "change Event.count by 1" do
-         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+      should "change Event.count by 1" do
+        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
       end
 
       context ": send email to project manager" do
@@ -181,7 +202,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           bcc("south@example.com").
           with_body(/Project approved/)
 
-       should_not have_sent_email.bcc("")
+      should_not have_sent_email.bcc("")
       end
 
       context "send no email to adminstrator nor to approver" do
