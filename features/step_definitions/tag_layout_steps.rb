@@ -7,7 +7,7 @@ Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
-  FactoryGirl.create(:tag2_layout_template, :name => name)
+  FactoryGirl.create(:tag2_layout_template, :name => name, oligo: 'AAA')
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'

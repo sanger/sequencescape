@@ -26,12 +26,15 @@ Then /^the user "([^"]*)" roles should look like:$/ do |user, role_table|
 end
 
 Given /^user "([^"]*)" exists with barcode "([^"]*)"$/ do |user_name, barcode|
-  FactoryGirl.create :user, :barcode => barcode, :login => user_name
+  if User.find_by(login:login)
+    User.find_by(login:login).update_attributes!(:barcode => barcode)
+  else
+    FactoryGirl.create :user, :barcode => barcode, :login => user_name
+  end
 end
 
 Given /^the user with login "([^\"]+)" exists$/ do |login|
-  FactoryGirl.create(:user, :login => login)
-
+  User.find_by(login:login)||FactoryGirl.create(:user, :login => login)
 end
 
 

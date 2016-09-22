@@ -787,8 +787,11 @@ FactoryGirl.define do
   end
 
 factory :tag2_layout_template do |itlt|
+  transient do
+    oligo { generate :oligo }
+  end
   name 'Tag 2 layout template'
-  tag {|tag| tag.association :tag }
+  tag {|tag| tag.association :tag, oligo: oligo }
 end
 
   factory(:messenger_creator)  do
