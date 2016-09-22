@@ -1,9 +1,13 @@
 FactoryGirl.define do
   factory :plate_with_wells, parent: :plate do
     size 96
-    after(:create) do |plate|
+    transient do
+      well_count 8
+    end
+
+    after(:create) do |plate,evaluator|
       plate.wells.import(
-        [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1' ].map do |location|
+        (1..12).map {|c| ('A'..'H').map {|r| "#{rc}"}}.flatten.slice(0,evaluator.well_count).map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
         end
@@ -14,9 +18,14 @@ FactoryGirl.define do
   factory :lib_pcr_xp_plate, parent: :plate do
     size 96
     plate_purpose { |_| PlatePurpose.find_by_name('Lib PCR-XP') }
-    after(:create) do |plate|
+
+    transient do
+      well_count 8
+    end
+
+    after(:create) do |plate,evaluator|
       plate.wells.import(
-        [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1' ].map do |location|
+        (1..12).map {|c| ('A'..'H').map {|r| "#{rc}"}}.flatten.slice(0,evaluator.well_count).map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
         end
@@ -31,7 +40,7 @@ FactoryGirl.define do
 
     plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
 
-   
+
 
     after(:build) do |child_plate, evaluator|
       child_plate.parents << evaluator.parent
@@ -57,7 +66,7 @@ FactoryGirl.define do
 
   factory :lib_pcr_xp_tube, class: LibraryTube do
     name    {|a| FactoryGirl.generate :asset_name }
-    purpose { create(:illumina_htp_mx_tube_purpose)  } 
+    purpose { create(:illumina_htp_mx_tube_purpose)  }
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end
 

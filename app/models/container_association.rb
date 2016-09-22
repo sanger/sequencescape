@@ -3,8 +3,7 @@
 #Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class ContainerAssociation < ActiveRecord::Base
-  #We don't define the class, so will get an error if being used directly
-  # in fact , the class need to be definend otherwise, eager loading through doesn't work
+
   belongs_to :container , :class_name => "Asset"
   belongs_to :content , :class_name => "Asset"
 
@@ -13,11 +12,11 @@ class ContainerAssociation < ActiveRecord::Base
   # it were not for inserts/updates being performed.  I'm disabling this as it should be caught
   # in tests and we've not seen it in production.
   #
-#  # We check if the parent has already been saved. if not the saving will not work.
-#  before_save do |content|
-#    container = content.container
-#    raise RuntimeError, "Container should be saved before saving #{self.inspect}" if container && container.new_record?
-#  end
+  #  # We check if the parent has already been saved. if not the saving will not work.
+  #  before_save do |content|
+  #    container = content.container
+  #    raise RuntimeError, "Container should be saved before saving #{self.inspect}" if container && container.new_record?
+  #  end
 
   module Extension
     def contains(content_name, options = {}, &block)
@@ -64,7 +63,7 @@ class ContainerAssociation < ActiveRecord::Base
         class_eval(&block) if block_given?
       end
 
-	  self.class_eval do
+      self.class_eval do
         def maps
           Map.where_plate_size(size).where_plate_shape(asset_shape)
         end

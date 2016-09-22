@@ -32,6 +32,12 @@ class Well < Aliquot::Receptacle
     end
   end
 
+  def subject_type
+    'well'
+  end
+
+  self.stock_message_template = 'WellStockResourceIO'
+
   has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
 
   # hams_many due to eager loading requirement and can't have a has one through a has_many

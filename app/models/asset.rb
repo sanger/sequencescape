@@ -67,7 +67,9 @@ class Asset < ActiveRecord::Base
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
 
- scope :requests_as_source_is_a?, ->(t) { { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *t.descendants ].map(&:name) } } } }
+  has_many :messengers, as: :target, inverse_of: :target
+
+  scope :requests_as_source_is_a?, ->(t) { { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *t.descendants ].map(&:name) } } } }
 
   extend ContainerAssociation::Extension
 
@@ -549,11 +551,12 @@ class Asset < ActiveRecord::Base
   end
 
   # Generates a message to broadcast the tube to the stock warehouse
-  # tables. Raises an exception if no template is configured for a give
+  # tables  (unless one already exists). Raises an exception if no template is configured for a give
   # asset. In most cases this is because the asset is not a stock
   def register_stock!
     raise StandardError, "No stock template configured for #{self.class.name}. If #{self.class.name} is a stock, set stock_template on the class." if stock_message_template.nil?
-    Messenger.create!(target:self,template:stock_message_template,root:'stock_resource')
+    self.messengers.where(template:stock_message_template,root:'stock_resource').exists? or
+      Messenger.create!(target:self,template:stock_message_template,root:'stock_resource')
   end
 
 end

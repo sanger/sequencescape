@@ -10,19 +10,46 @@
 # They specify both a template (under Api::Messages) and a root
 class MessengerCreator < ActiveRecord::Base
 
+  class SelfFinder
+    def initialize(base)
+      @base = base
+    end
+    def each_target
+      yield @base
+    end
+  end
+
+  class WellFinder
+    def initialize(base)
+      @base = base
+    end
+    def each_target
+      @base.wells.map {|w| yield w }
+    end
+  end
+
   belongs_to :purpose
   validates_presence_of :purpose, :root, :template
 
   validate :template_exists?
 
-  def create!(target)
-    Messenger.create!(:target=>target, :root=>root, :template=>template)
+  def create!(base)
+    finder.new(base).each_target do |target|
+      Messenger.create!(:target=>target, :root=>root, :template=>template)
+    end
   end
 
   private
 
   def template_exists?
     true
+  end
+
+  # Returns an appropriate finder class.
+  def finder
+    "MessengerCreator::#{target_finder_class}".constantize
+  rescue NameError
+    raise(StandardError, "Unknown finder: #{finder_class_name}")
   end
 
 end

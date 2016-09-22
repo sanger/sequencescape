@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160921085248) do
+ActiveRecord::Schema.define(:version => 20160922114427) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -675,11 +675,12 @@ ActiveRecord::Schema.define(:version => 20160921085248) do
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
   create_table "messenger_creators", :force => true do |t|
-    t.string   "template",   :null => false
-    t.string   "root",       :null => false
-    t.integer  "purpose_id", :null => false
+    t.string   "template",                                      :null => false
+    t.string   "root",                                          :null => false
+    t.integer  "purpose_id",                                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "target_finder_class", :default => "SelfFinder", :null => false
   end
 
   add_index "messenger_creators", ["purpose_id"], :name => "fk_messenger_creators_to_plate_purposes"

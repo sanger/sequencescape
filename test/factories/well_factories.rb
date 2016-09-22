@@ -3,29 +3,23 @@
 #Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 FactoryGirl.define do
-  factory :empty_well, :class => Well do |well|
+
+  factory :well do |a|
     value               ""
     qc_state            ""
-    resource            nil
-    barcode             nil
-    well_attribute      {|wa| wa.association(:well_attribute)}
-  end
+    well_attribute
 
-  factory :well, :parent => :empty_well do |a|
-    # TODO: This should probably set an aliquot but test code (current) relies on it being empty
-  end
+    # Empty well inherits from well and behaves identically
+    factory :empty_well
 
-  factory :nameless_well, :class => Well do |well|
-    value               ""
-    qc_state            ""
-    resource            nil
-    barcode             nil
-    well_attribute      {|wa| wa.association(:well_attribute)}
   end
 
   factory :well_attribute do |w|
     concentration       23.2
     current_volume      15
+    gel_pass            "Pass"
+    pico_pass           "Pass"
+    sequenom_count      2
   end
 
   factory :well_with_sample_and_without_plate, :parent => :empty_well do |well|
