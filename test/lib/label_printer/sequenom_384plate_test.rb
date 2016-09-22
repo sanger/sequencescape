@@ -1,7 +1,7 @@
 require 'test_helper'
 require_relative 'shared_tests'
 
-class SequenomPlateTest < ActiveSupport::TestCase
+class Sequenom384PlateTest < ActiveSupport::TestCase
 
   include LabelPrinterTests::SharedPlateTests
 
@@ -14,12 +14,11 @@ class SequenomPlateTest < ActiveSupport::TestCase
     @bottom = "163993  160200 "
     options = {plates: [plate1], count: 1}
     @purpose = "Sequenom"
-    @plate_label = LabelPrinter::Label::SequenomPlate.new(options)
+    @plate_label = LabelPrinter::Label::Sequenom384Plate.new(options)
     @label = {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
             bottom_left: "#{plate1.sanger_human_barcode}",
             top_right: "#{top}",
             bottom_right: "#{bottom}",
-            top_far_right: "#{purpose}",
             barcode: "#{plate1.ean13_barcode}"}
   end
 
@@ -30,8 +29,7 @@ class SequenomPlateTest < ActiveSupport::TestCase
   test 'should return the right values' do
     assert_equal "#{top}", plate_label.top_right(plate1)
     assert_equal "#{bottom}", plate_label.bottom_right(plate1)
-    assert_equal "#{purpose}", plate_label.top_far_right(plate1)
+    refute plate_label.top_far_right(plate1)
   end
-
 
 end
