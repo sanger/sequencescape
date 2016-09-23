@@ -4,9 +4,10 @@ rvm:
 sudo: false
 cache: bundler
 bundler_args: --without warehouse development deployment
-env: "CUCUMBER_FORMAT=progress TZ=Europe/London"
+env:
+  - "CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake test'"
+  - "CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='cucumber'"
 before_script:
   - "RAILS_ENV=test bundle exec rake db:drop db:setup"
 script:
-  - "bundle exec rake test"
-  - "bundle exec cucumber -r features"
+  - "bundle exec $SUITE"
