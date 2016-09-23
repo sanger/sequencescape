@@ -11,8 +11,8 @@ module Submission::RequestOptionsBehaviour
   end
 
   def request_options=(options)
-    super if options.is_a?(ActiveSupport::HashWithIndifferentAccess)
-    super(options.nested_under_indifferent_access)
+    return super(options.nested_under_indifferent_access) if options.is_a?(Hash)
+    super
   end
 
   def check_request_options
