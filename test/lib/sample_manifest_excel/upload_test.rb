@@ -32,13 +32,12 @@ class UploadTest < ActiveSupport::TestCase
 
   context "Row" do
 
-    attr_reader :row, :sample, :valid_values, :sanger_sample_id_column
+    attr_reader :row, :sample, :valid_values
 
     setup do
-      @sample = create(:sample)
+      @sample = create(:sample_with_well)
       @valid_values = column_list.column_values
-      @sanger_sample_id_column = column_list.find_by(:name, :sanger_sample_id)
-      valid_values[sanger_sample_id_column.number-1] = sample.id
+      valid_values[column_list.find_by(:name, :sanger_sample_id).number-1] = sample.id
     end
 
     should "not be valid without a valid row number" do
@@ -55,14 +54,26 @@ class UploadTest < ActiveSupport::TestCase
       refute SampleManifestExcel::Upload::Row.new(1, valid_values, nil).valid?
     end
 
-    should "not be valid without a sanger sample id column" do
-      assert SampleManifestExcel::Upload::Row.new(1, valid_values, column_list, nil)
-    end
-
     should "not be valid without an associated sample" do
       refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values, column_list).valid?
     end
-    
+
+    should "not be valid unless the sample has a primary receptacle" do
+      valid_values[column_list.find_by(:name, :sanger_sample_id).number-1] = create(:sample).id
+      refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+    end
+
+    context "sample container" do
+
+      context "for plate should only be valid if barcode and location match" do
+        
+      end
+
+      context "for tube should only be valid if barcodes match" do
+      end
+
+    end
+
   end
     
 end

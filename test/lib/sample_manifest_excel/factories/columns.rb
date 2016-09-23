@@ -17,6 +17,32 @@ FactoryGirl.define do
 
     end
 
+    factory :sanger_plate_id_column do
+
+      name      { :sanger_plate_id }
+      heading   { "SANGER PLATE ID" }
+      value     { number }
+      attribute { :barcode }
+
+    end
+
+    factory :sanger_tube_id_column do
+
+      name      { :sanger_tube_id }
+      heading   { "SANGER TUBE ID" }
+      value     { number }
+      attribute { :barcode }
+
+    end
+
+    factory :well_column do
+
+      name      { :well }
+      heading   { "WELL" }
+      value     { number }
+      attribute { :position }
+    end
+
   end
 
 end

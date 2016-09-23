@@ -41,6 +41,14 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal sanger_sample_id_column.value, column_list.column_values.last
   end
 
+  # test "#column_values with inserts should return all of the values for the column list along with the inserts" do
+  #   names = column_list.names
+  #   replacements = { names.first => "first", names.last => "last" }
+  #   values = column_list.column_values(replacements)
+  #   assert_equal "first", values.first
+  #   assert_equal "last", values.last
+  # end
+
   test "each column should have a number" do
     column_list.each_with_index do |column, i|
       assert_equal column, column_list.find_by(:number, i+1)

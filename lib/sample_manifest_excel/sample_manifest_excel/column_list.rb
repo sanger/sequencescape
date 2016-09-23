@@ -24,7 +24,7 @@ module SampleManifestExcel
       yield self if block_given?
     end
 
-    def column_values
+    def column_values(replacements = {})
       columns.collect(&:value)
     end
 
