@@ -7,7 +7,7 @@ FactoryGirl.define do
 
     after(:create) do |plate,evaluator|
       plate.wells.import(
-        (1..12).map {|c| ('A'..'H').map {|r| "#{rc}"}}.flatten.slice(0,evaluator.well_count).map do |location|
+        (1..12).map {|c| ('A'..'H').map {|r| "#{r}#{c}"}}.flatten.slice(0,evaluator.well_count).map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
         end
