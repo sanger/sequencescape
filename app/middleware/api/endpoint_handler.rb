@@ -39,7 +39,7 @@ module Api
               file.rewind
               request.body.rewind
               uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/')|| []
-              uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+              uuid = Uuid.find_by(external_id:uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
               handle_request(:instance, request, action, parts) do |request|
                 request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
                 request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
@@ -91,7 +91,7 @@ module Api
         send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_requested=>true) do
           report("file") do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-            uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+            uuid = Uuid.find_by(external_id:uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
 
             file_through = return_file(request, action, parts) do |request|
               request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
@@ -107,7 +107,7 @@ module Api
         send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_attatched=> false, :file_requested=>false) do
           report("instance") do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-            uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+            uuid = Uuid.find_by(external_id:uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
             handle_request(:instance, request, action, parts) do |request|
               request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
               request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
