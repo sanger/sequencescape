@@ -327,7 +327,7 @@ class WellTest < ActiveSupport::TestCase
   context "can be rendered as a stock resource" do
     setup do
       Timecop.freeze(DateTime.parse("2012-03-11 10:22:42")) do
-        @well = create :well, map: Map.find_by_description!('A1'), plate: create(:plate,barcode:'12345')
+        @well = create :well, map: Map.find_by_description!('A1'), plate: create(:plate,barcode:'12345'), well_attribute: create(:complete_well_attribute)
         @study = create :study
         @sample = create :sample
         @aliquot = create :aliquot, study: @study, sample: @sample, receptacle: @well
