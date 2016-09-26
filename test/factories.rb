@@ -486,7 +486,7 @@ FactoryGirl.define do
   end
 
   sequence :login do |i|
-    "abc#{i}"
+    "user_abc#{i}"
   end
 
   sequence :tag_group_name do |i|
