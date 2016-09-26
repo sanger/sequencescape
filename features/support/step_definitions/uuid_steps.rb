@@ -166,6 +166,7 @@ Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_R
 end
 
 Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created will be "([^\"]+)"$/ do |model,uuid_value|
+  model_class = model.gsub(/\s+/, '_').classify.constantize
   root_class = model_class.base_class
   next_id = root_class.maximum(:id) + 1
   Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(:validate => false)
