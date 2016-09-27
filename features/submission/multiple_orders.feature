@@ -84,7 +84,7 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
-     Then the HTTP response should be "200 OK"
+    Then the HTTP response should be "200 OK"
     Given all pending delayed jobs are processed
     Then the submission with UUID "11111111-2222-3333-4444-555555555555" should have <number> "<type>" requests
     Examples:

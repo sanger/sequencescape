@@ -178,7 +178,8 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
     next_id = query.first['Auto_increment']
   end
 
-  Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(:validate => false)
+  p Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value)
+  p uuid.save(:validate => false)
 end
 
 Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|

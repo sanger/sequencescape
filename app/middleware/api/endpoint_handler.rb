@@ -87,11 +87,16 @@ module Api
         end
       end
 
+      def error(uuid)
+        p Uuid.last(5)
+        raise ActiveRecord::RecordNotFound, "UUID #{uuid} does not exist"
+      end
+
       def file_action(action, http_method)
         send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_requested=>true) do
           report("file") do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-            uuid = Uuid.find_by(external_id:uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+            uuid = Uuid.find_by(external_id:uuid_in_url) or error(uuid_in_url)
 
             file_through = return_file(request, action, parts) do |request|
               request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
