@@ -179,7 +179,7 @@ Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
 end
 
 Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
-  Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+  Plate.find_by!(name:name)
 end
 
 Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
@@ -187,7 +187,7 @@ Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
 end
 
 Transform /^the study "([^\"]+)"$/ do |name|
-  Study.find_by_name(name) or raise StandardError, "Could not find the study #{name.inspect}"
+  Study.find_by!(name:name)
 end
 
 Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|
