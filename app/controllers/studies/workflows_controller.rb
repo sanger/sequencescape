@@ -11,7 +11,8 @@ class Studies::WorkflowsController < ApplicationController
     @total_requests = compute_total_request(@study)
     @cache          = { :total => @total_requests }
 
-    @request_types  = @workflow.request_types.all(:order => "`order` ASC").reject { |r| @total_requests[r].zero? }
+    # Request types are already loaded, so we sort in ruby
+    @request_types  = @workflow.request_types.sort_by(&:order).reject { |r| @total_requests[r].zero? }
 
     @basic_tabs = ["Summary", "Sample progress", "Assets progress"]
     @summaries = @basic_tabs + @request_types.map(&:name)
@@ -78,8 +79,14 @@ class Studies::WorkflowsController < ApplicationController
         render :partial => "summary"
       else
         @request_type = @request_types[@summary - @basic_tabs.size]
-        @assets_to_detail = @study.requests.request_type(@request_type).with_asset.all(:include =>:asset).map(&:asset).uniq
-
+        # The include here doesn't load ALL the requests, only those matching the given request type. Ideally we'd just grab the counts,
+        # but unfortunately we need to have at least the request id available for linking to in cases where we have
+        # only one request in a particular state.
+        @assets_to_detail = Aliquot::Receptacle.for_study_and_request_type(@study,@request_type).includes(:requests).paginate(page_params)
+        # Example group by count which would allow us to do returned_hash[[asset_id,state]] to get the count for a particular asset/state
+        # Unfortunately this doesn't let us grab the request id. We could use some custom SQL to achieve this, but we'll see how
+        # effective the above is before trying that.
+        # Aliquot::Receptacle.for_study_and_request_type(@study,@request_type).where(id:@assets_to_detail.map(&:id)).group('assets.id','requests.state').count
         unless @assets_to_detail.empty?
           render :partial => "summary_for_request_type"
         else
@@ -128,6 +135,6 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   def discover_workflow
-    @workflow = Submission::Workflow.find(params[:id])
+    @workflow = Submission::Workflow.includes(:request_types).find(params[:id])
   end
 end

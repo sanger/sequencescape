@@ -15,6 +15,21 @@ FactoryGirl.define do
     project
     tag
     tag2    {|t| t.association(:tag) }
+
+    factory :untagged_aliquot do
+      tag  nil
+      tag2 nil
+    end
+
+    factory :single_tagged_aliquot do
+      tag2  nil
+    end
+
+    factory :dual_tagged_aliquot do
+    end
+  end
+
+  factory :aliquot_receptacle, class: Aliquot::Receptacle do
   end
 
   factory  :event  do
@@ -35,7 +50,7 @@ FactoryGirl.define do
   end
 
   factory  :study_metadata, :class => Study::Metadata  do
-    faculty_sponsor             { |faculty_sponsor| faculty_sponsor.association(:faculty_sponsor)}
+    faculty_sponsor
     study_description           'Some study on something'
     program                     { Program.find_by_name("General") }
     contaminated_human_dna      'No'
@@ -436,6 +451,13 @@ FactoryGirl.define do
 
   factory  :sample  do
     name            {|a| FactoryGirl.generate :sample_name }
+
+    factory :sample_with_well do
+      sequence(:sanger_sample_id) {|n| n.to_s }
+      wells { [ FactoryGirl.create(:well_with_sample_and_plate)]}
+      assets { [ wells.first.plate ] }
+    end
+
   end
 
   factory  :sample_submission  do
@@ -489,6 +511,13 @@ FactoryGirl.define do
     workflow          {|workflow| workflow.association(:submission_workflow)}
   end
 
+  factory  :data_access_coordinator, :class => "User"  do
+    login                 "abc123"
+    email                 {|a| "#{a.login}@example.com".downcase }
+    roles                 {|role| [role.association(:data_access_coordinator_role)]}
+    workflow              {|workflow| workflow.association(:submission_workflow)}
+  end
+
   factory  :role  do
     sequence(:name)   { |i| "Role #{ i }" }
     authorizable       nil
@@ -504,6 +533,10 @@ FactoryGirl.define do
 
   factory  :manager_role, :class => 'Role'  do
     name            "manager"
+  end
+
+  factory  :data_access_coordinator_role, :class => 'Role'  do
+    name            "data_access_coordinator"
   end
 
   factory  :owner_role, :class => 'Role'  do
@@ -567,7 +600,7 @@ FactoryGirl.define do
   end
   factory(:library_tube, :parent => :empty_library_tube) do
     after(:create) do |library_tube|
-      library_tube.aliquots.create!(:sample => create(:sample))
+      library_tube.aliquots.create!(:sample => create(:sample),:library_type=>'Standard')
     end
   end
 
@@ -680,7 +713,18 @@ FactoryGirl.define do
     count     1
 
     factory :sample_manifest_with_samples do
-      samples { FactoryGirl.create_list(:sample, 5)}
+      samples { FactoryGirl.create_list(:sample_with_well, 5)}
+    end
+  end
+
+  factory :tube_sample_manifest, class: SampleManifest do
+    study     {|wa| wa.association(:study)}
+    supplier  {|wa| wa.association(:supplier)}
+    asset_type "1dtube"
+    count     1
+
+    factory :tube_sample_manifest_with_samples do
+      samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
     end
   end
 

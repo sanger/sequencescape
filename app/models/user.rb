@@ -127,7 +127,7 @@ class User < ActiveRecord::Base
   end
 
   def workflow_name
-    self.workflow and self.workflow.name
+    workflow && workflow.name
   end
 
   def has_preference_for(key)
@@ -135,44 +135,44 @@ class User < ActiveRecord::Base
   end
 
   def privileged?(item=nil)
-    privileged = false
-    privileged = true if manager_or_administrator?
-    unless item.nil?
-      privileged = true if self.owner?(item)
-    end
-    privileged
+    manager_or_administrator? || owner?(item)
   end
 
   def internal?
-    self.has_role? 'internal'
+    has_role? 'internal'
   end
 
   def qa_manager?
-    self.has_role? 'qa_manager'
+    has_role? 'qa_manager'
   end
 
   def lab_manager?
-    self.has_role? 'lab_manager'
+    has_role? 'lab_manager'
   end
 
   def slf_manager?
-    self.has_role? 'slf_manager'
+    has_role? 'slf_manager'
   end
 
   def slf_gel?
-    self.has_role? 'slf_gel'
+    has_role? 'slf_gel'
   end
 
   def lab?
-    self.has_role? 'lab'
+    has_role? 'lab'
   end
 
   def owner?(item)
-    self.has_role? 'owner', item
+    return false if item.nil?
+    has_role? 'owner', item
+  end
+
+  def data_access_coordinator?
+    has_role? 'data_access_coordinator'
   end
 
   def manager_or_administrator?
-    self.is_administrator? || self.is_manager?
+    is_administrator? || is_manager?
   end
 
   def manager?
@@ -185,7 +185,7 @@ class User < ActiveRecord::Base
 
   # returns emails of all admins
   def self.all_administrators_emails
-    self.all_administrators.map(&:email).compact.uniq
+    all_administrators.pluck(:email).compact.uniq
   end
 
   # Encrypts some data with the salt.

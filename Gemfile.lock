@@ -69,6 +69,10 @@ GEM
     autoprefixer-rails (6.0.3)
       execjs
       json
+    axlsx (2.0.0)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (= 0.9.9)
     bootstrap-sass (3.3.5.1)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.3.0)
@@ -154,6 +158,7 @@ GEM
     gyoku (1.3.1)
       builder (>= 2.1.2)
     hike (1.2.3)
+    htmlentities (4.3.4)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httpi (2.4.1)
@@ -169,7 +174,6 @@ GEM
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     jrjackson (0.3.7)
-    jruby-openssl (0.9.16-java)
     json (1.8.3)
     json (1.8.3-java)
     launchy (2.4.3)
@@ -211,8 +215,8 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
-    puma (2.16.0)
-    puma (2.16.0-java)
+    puma (3.4.0)
+    puma (3.4.0-java)
     rack (1.4.7)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
@@ -247,6 +251,10 @@ GEM
     rgl (0.5.1)
       algorithms (~> 0.6.1)
       stream (~> 0.5.0)
+    roo (1.13.2)
+      nokogiri
+      rubyzip
+      spreadsheet (> 0.6.4)
     ruby-debug (0.10.6)
       columnize (>= 0.1)
       linecache (~> 1.3.1)
@@ -335,6 +343,7 @@ DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-oracle_enhanced-adapter (~> 1.4.0)
   acts-as-dag (~> 3.0.0)
+  axlsx
   bootstrap-sass
   bullet
   bunny (~> 0.7)
@@ -361,7 +370,6 @@ DEPENDENCIES
   jquery-tablesorter
   jquery-ui-rails
   jrjackson
-  jruby-openssl
   json
   launchy
   mime-types
@@ -379,6 +387,7 @@ DEPENDENCIES
   rdoc
   rest-client
   rgl
+  roo
   ruby-debug
   ruby-oci8
   ruby_walk (>= 0.0.3)!

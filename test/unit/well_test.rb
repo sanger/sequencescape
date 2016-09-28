@@ -349,7 +349,7 @@ class WellTest < ActiveSupport::TestCase
       end
 
       should 'report appropriate metrics' do
-        assert_equal @expected_metric, @well.latest_stock_metric(@our_product_criteria.product)
+        assert_equal [@expected_metric], @well.latest_stock_metrics(@our_product_criteria.product)
       end
     end
   end

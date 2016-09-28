@@ -6,6 +6,10 @@ require 'formtastic'
 
 class BulkSubmissionsController < ApplicationController
 
+  before_filter :find_submission_template_groups, only: [:new,:create]
+
+  DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'
+
   def index
     redirect_to :action => "new"
   end
@@ -31,6 +35,12 @@ class BulkSubmissionsController < ApplicationController
       @bulk_submission.errors.add(:base,exception.message)
       render :action => "new"
     end
+  end
+
+  private
+
+  def find_submission_template_groups
+    @submission_template_groups = SubmissionTemplate.visible.include_product_line.group_by {|t| t.product_line.try(:name)||DEFAULT_SUBMISSION_TEMPLATE_GROUP}
   end
 
 end

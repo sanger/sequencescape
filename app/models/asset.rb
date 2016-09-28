@@ -441,7 +441,7 @@ class Asset < ActiveRecord::Base
       return
     elsif source_barcode.size == 13 && Barcode.check_EAN(source_barcode)
       with_machine_barcode(source_barcode).first
-    elsif match = /\A(\w{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
+    elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
       find_by_barcode_and_barcode_prefix_id(match[2],prefix.id)
     elsif /\A[0-9]{1,7}\z/.match(source_barcode) # Just a number
@@ -529,8 +529,8 @@ class Asset < ActiveRecord::Base
   end
 
   # We only support wells for the time being
-  def latest_stock_metric(product,*args)
-    nil
+  def latest_stock_metrics(product,*args)
+    []
   end
 
   def contained_samples; []; end

@@ -328,15 +328,16 @@ class Well < Aliquot::Receptacle
     plate.stock_plate?
   end
 
-  def latest_stock_metric(product)
-    raise StandardError, 'Too many stock wells to report metrics' if stock_wells.count > 1
+  def latest_stock_metrics(product)
     # If we don't have any stock wells, use ourself. If it is a stock well, we'll find our
     # qc metric. If its not a stock well, then a metric won't be present anyway
-    stock_well = stock_wells.first || self
-    stock_well.qc_metrics.for_product(product).most_recent_first.first
+    metric_wells = stock_wells.empty? ? [self] : stock_wells
+    metric_wells.map do |stock_well|
+      stock_well.qc_metrics.for_product(product).most_recent_first.first
+    end.compact.uniq
   end
 
   def source_plate
-    plate.source_plate
+    plate && plate.source_plate
   end
 end

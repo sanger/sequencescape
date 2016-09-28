@@ -21,6 +21,14 @@ Then /^the checkbox labeled "([^"]+)" should be checked$/ do |label|
   step %Q{the "#{ label }" checkbox should be checked}
 end
 
+Then /^the field labeled "([^\"]*)" should be disabled$/ do |label|
+  find_field(label, disabled: true)
+end
+
+Then /^the field labeled "([^\"]*)" should not be disabled$/ do |label|
+  find_field(label)
+end
+
 Then /^option "([^"]*)" in the menu labeled "([^"]*)" should be selected$/ do |arg1, arg2|
   pending # express the regexp above with the code you wish you had
 end
