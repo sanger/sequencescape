@@ -25,6 +25,9 @@ module SampleManifestExcel
     end
 
     def column_values(replacements = {})
+      replacements.each do |k, v|
+        find(k).value = v
+      end
       columns.collect(&:value)
     end
 

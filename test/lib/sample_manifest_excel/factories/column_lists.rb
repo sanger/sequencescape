@@ -10,7 +10,7 @@ FactoryGirl.define do
 
     end
 
-    factory :column_list_for_plates do
+    factory :column_list_for_plate do
 
       initialize_with { new(build_list(:column, 5)
                           .push(build(:sanger_sample_id_column))
@@ -21,7 +21,7 @@ FactoryGirl.define do
 
     end
 
-    factory :column_list_for_tubes do
+    factory :column_list_for_tube do
 
       initialize_with { new(build_list(:column, 5)
                           .push(build(:sanger_sample_id_column))

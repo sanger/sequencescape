@@ -5,7 +5,7 @@ class UploadTest < ActiveSupport::TestCase
   attr_reader :column_list
 
   def setup
-    @column_list = build(:column_list_with_sanger_sample_id)
+    @column_list = build(:column_list_for_plate)
   end
 
   test "should be valid if all of the headings relate to a column" do
@@ -36,7 +36,9 @@ class UploadTest < ActiveSupport::TestCase
 
     setup do
       @sample = create(:sample_with_well)
-      @valid_values = column_list.column_values
+      @valid_values = column_list.column_values(
+                        sanger_sample_id: sample.id
+                        )
       valid_values[column_list.find_by(:name, :sanger_sample_id).number-1] = sample.id
     end
 
@@ -66,10 +68,16 @@ class UploadTest < ActiveSupport::TestCase
     context "sample container" do
 
       context "for plate should only be valid if barcode and location match" do
-        
+        valid_values = column_list.column_values(sanger_sample_id: sample.id, sanger_plate_id: sample.primary_receptacle.plate.sanger_human_barcode)
+        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+
+        valid_values = column_list.column_values(sanger_sample_id: sample.id, well: sample.primary_receptacle.map.description)
+        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
       end
 
       context "for tube should only be valid if barcodes match" do
+        column_list = build(:column_list_for_tube)
+        
       end
 
     end
