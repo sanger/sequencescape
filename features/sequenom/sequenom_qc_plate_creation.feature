@@ -7,7 +7,7 @@ Feature: Sequenom QC Plate Creation
   So if you're not specifically testing the number of labels printed limit it to 1 for speed reasons.
 
   Background:
-    Given the "96 Well Plate" barcode printer "xyz" exists
+    Given the "384 Well Plate" barcode printer "xyz" exists
       And today's date is "4 Aug 2010"
       And user "jack" exists with barcode "ID100I"
 
