@@ -102,6 +102,13 @@ Then /^plate "([^"]*)" should have a child plate of type "([^"]*)"$/ do |machine
   assert plate.child.is_a?(plate_type.constantize)
 end
 
+Then(/^output all plates for debugging purposes$/) do
+  Plate.all.each do |plate|
+    p plate
+    p plate.uuid
+  end
+end
+
 Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type, machine_barcode|
   plate_type.constantize.create!(
     :barcode =>Barcode.number_to_human("#{machine_barcode}"),

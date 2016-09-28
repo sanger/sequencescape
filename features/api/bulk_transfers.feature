@@ -16,6 +16,7 @@ Feature: Conduct multiple transfers through the API
   @read
   Scenario: Reading the JSON for a bulk transfer between two plates
     Given a source transfer plate called "Source plate A" exists
+      Then output all plates for debugging purposes
       And the UUID for the plate "Source plate A" is "11111111-2222-3333-4444-000000000001"
       And a source transfer plate called "Source plate B" exists
       And the UUID for the plate "Source plate B" is "11111111-2222-3333-4444-000000000002"
@@ -55,7 +56,7 @@ Feature: Conduct multiple transfers through the API
       }
       """
     Then the HTTP response should be "201 Created"
-
+    Then output all plates for debugging purposes
     Then the transfers from the plate "Source plate A" to the plate "Destination plate A" should be:
       | source | destination |
       | A1     | A1          |

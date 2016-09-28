@@ -179,7 +179,7 @@ Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
 end
 
 Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
-  Plate.find_by!(name:name)
+  Plate.find_by(name:name) || raise(ActiveRecord::RecordNotFound, "Could not find Plate names #{name} in #{Plate.all.pluck(:name)}")
 end
 
 Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
