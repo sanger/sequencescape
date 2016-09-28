@@ -103,10 +103,10 @@ Then /^plate "([^"]*)" should have a child plate of type "([^"]*)"$/ do |machine
 end
 
 Then(/^output all plates for debugging purposes$/) do
-  Plate.all.each do |plate|
-    p plate
-    p plate.uuid
-  end
+  puts "ALL PLATES:"
+  p Plate.all.to_a
+  puts "ALL ASSETS:"
+  p Asset.all.to_a
 end
 
 Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type, machine_barcode|
