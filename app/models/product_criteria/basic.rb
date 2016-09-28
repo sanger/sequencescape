@@ -74,12 +74,15 @@ class ProductCriteria::Basic
     @well_or_metric.plate.try(:sanger_human_barcode) || "Unknown"
   end
 
+  # We sort in Ruby here as we've loaded the wells in bulk. Performing this selection in
+  # the database is actually more tricky than it sounds as your trying to load the latest
+  # record from multiple different wells simultaneously.
   def most_recent_concentration_from_target_well_by_updating_date
     @target_wells.sort_by {|w| w.well_attribute.updated_at }.last.get_concentration if @target_wells
   end
 
   def concentration_from_normalization
-    most_recent_concentration_from_target_well_by_updating_date || "Unknown"
+    most_recent_concentration_from_target_well_by_updating_date
   end
 
   SUPPORTED_SAMPLE.each do |attribute|
