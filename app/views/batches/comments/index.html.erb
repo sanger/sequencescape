@@ -12,9 +12,12 @@
 
 <div class='info'>
   <%= render :partial => "list", :locals => {:batch => @batch } %>
-    <div>
-      <p>Type your comment:</p>
-      <%= form_tag(:url => batch_comments_path(@batch), :update => "batch_annotations_#{@batch.id}", :remote => true) %>
-      <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
-    </div>
+  <div>
+    <%= form_tag(batch_comments_path(@batch), data: { update: "#batch_annotations_#{@batch.id}", remote: true }, class:'remote-form') do %>
+      <label for='comment'>Type your comment</label>
+      <div class="input-group">
+        <%= text_field_tag "comment", '',  class:'form-control' %><span class="input-group-btn"><%= submit_tag 'Add comment', class: 'btn btn-success' %></span>
+      </div>
+    <% end %>
+  </div>
 </div>

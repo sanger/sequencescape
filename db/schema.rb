@@ -1695,6 +1695,7 @@ ActiveRecord::Schema.define(:version => 20160914150756) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "source_id"
+    t.text     "target_well_locations"
   end
 
   create_table "tag_groups", :force => true do |t|

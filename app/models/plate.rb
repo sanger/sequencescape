@@ -64,7 +64,7 @@ class Plate < Asset
   end
 
   def source_plate
-    self.purpose.source_plate(self)
+    purpose && purpose.source_plate(self)
   end
 
   SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
