@@ -13,10 +13,28 @@ class ExtractionAttribute < ActiveRecord::Base
 
   serialize :attributes_update
 
-  after_create :update_performed
+  before_save :update_performed
+
+  VALID_WELL_ATTRIBUTES = ['measured_volume']
+
   def update_performed
-    #puts attributes_update
-    #target.update_attributes(attrs)
+
+    attributes_update["wells"].each do |w|
+      if w["sanger_sample_name"] || w["sanger_sample_id"]
+        sample = Sample.find_by_name(w["sanger_sample_name"]) || Sample.find_by_sanger_sample_id(w["sanger_sample_id"])
+        well = target.wells.located_at(w["location"]).first
+        if well.aliquots.select{|a| a.sample == sample}.empty?
+          well.aliquots.create!({
+            :sample => sample
+            })
+        end
+        w_attrs=w.keep_if{|k,v| VALID_WELL_ATTRIBUTES.include?(k)}
+        unless w_attrs.blank?
+          well.well_attribute.update_attributes!(w_attrs)
+        end
+      end
+    end
+    self.attributes_update = nil
   end
   private :update_performed
 
