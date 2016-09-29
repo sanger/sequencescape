@@ -12,8 +12,10 @@ FactoryGirl.define do
   end
 
   factory :lib_pcr_xp_plate, parent: :plate do
+
     size 96
     plate_purpose { |_| PlatePurpose.find_by_name('Lib PCR-XP') }
+
     after(:create) do |plate|
       plate.wells.import(
         [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1' ].map do |location|
@@ -26,14 +28,12 @@ FactoryGirl.define do
 
   factory :lib_pcr_xp_child_plate, parent: :plate do
     transient do
-      parent { create(:lib_pcr_xp_plate)}
+      parent { create(:lib_pcr_xp_plate) }
     end
 
     plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
 
-   
-
-    after(:build) do |child_plate, evaluator|
+    after(:create) do |child_plate, evaluator|
       child_plate.parents << evaluator.parent
       child_plate.purpose.source_purpose = evaluator.parent.purpose
     end
@@ -57,12 +57,12 @@ FactoryGirl.define do
 
   factory :lib_pcr_xp_tube, class: LibraryTube do
     name    {|a| FactoryGirl.generate :asset_name }
-    purpose { create(:illumina_htp_mx_tube_purpose)  } 
+    purpose { create(:illumina_htp_mx_tube_purpose)  }
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end
 
   factory :lib_pcr_xp_well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |well|
-    map { |map| map.association(:map) }
+    map
     plate { |plate| plate.association(:lib_pcr_xp_child_plate) }
   end
 end

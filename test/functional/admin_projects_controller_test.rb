@@ -62,7 +62,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
         should "send an email" do
           assert_equal 1, emails.count
-          assert_match "Project #{@project.id}: Project approved\n\nProject approved by abc123", emails.first.parts.first.body.to_s
+          assert_match "Project #{@project.id}: Project approved\n\nProject approved by #{@user.login}", emails.first.parts.first.body.to_s
         end
 
         should 'Have sent an email' do
