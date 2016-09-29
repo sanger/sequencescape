@@ -9,7 +9,7 @@ class QcableTest < ActiveSupport::TestCase
   context "A Qcable" do
 
     setup do
-      PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => (FactoryGirl.generate :barcode)))
+      PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => (FactoryGirl.generate :sanger_barcode)))
     end
 
     should belong_to :lot

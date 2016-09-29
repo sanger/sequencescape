@@ -3,24 +3,15 @@
 #Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 FactoryGirl.define do
-  factory :empty_well, :class => Well do |well|
+  factory :well do |well|
     value               ""
     qc_state            ""
     resource            nil
     barcode             nil
-    well_attribute      {|wa| wa.association(:well_attribute)}
-  end
+    well_attribute
 
-  factory :well, :parent => :empty_well do |a|
-    # TODO: This should probably set an aliquot but test code (current) relies on it being empty
-  end
-
-  factory :nameless_well, :class => Well do |well|
-    value               ""
-    qc_state            ""
-    resource            nil
-    barcode             nil
-    well_attribute      {|wa| wa.association(:well_attribute)}
+    # For compatibility.
+    factory :empty_well
   end
 
   factory :well_attribute do |w|
@@ -41,13 +32,13 @@ FactoryGirl.define do
   end
 
   factory :well_with_sample_and_plate, :parent => :well_with_sample_and_without_plate do |well|
-    map { |map| map.association(:map) }
-    plate { |plate| plate.association(:plate) }
+    map
+    plate
   end
 
   factory :cross_pooled_well, :parent => :empty_well do |well|
-    map { |map| map.association(:map) }
-    plate { |plate| plate.association(:plate) }
+    map
+    plate
     after(:build) do |well|
       als = 2.times.map {
         {

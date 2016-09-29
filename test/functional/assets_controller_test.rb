@@ -19,7 +19,7 @@ class AssetsControllerTest < ActionController::TestCase
     setup do
       @asset_count =  Asset.count
 
-      @barcode  = FactoryGirl.generate :barcode
+      @barcode  = FactoryGirl.generate :sanger_barcode
 
       @json_data = json_new_asset(@barcode)
 

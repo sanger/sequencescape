@@ -48,11 +48,11 @@ FactoryGirl.define do
   end
 
   factory  :item  do
-    name              {|a| generate :item_name }
-    version           {|a| generate :item_version }
-    workflow          {|workflow| workflow.association(:submission_workflow)}
-    count             nil
-    closed            false
+    name               {|a| generate :item_name }
+    sequence(:version) {|a| a }
+    workflow           {|workflow| workflow.association(:submission_workflow)}
+    count              nil
+    closed             false
   end
 
   factory :study_type do
@@ -114,7 +114,7 @@ FactoryGirl.define do
   end
 
   factory :program do
-    name { generate :program_name }
+    sequence(:name) {|n| "Program#{n}" }
   end
 
   factory  :project_with_order , :parent => :project  do
@@ -122,8 +122,8 @@ FactoryGirl.define do
   end
 
   factory  :study_sample  do
-    study       {|study| study.association(:study)}
-    sample      {|sample| sample.association(:sample)}
+    study
+    sample
   end
 
   factory  :submission_workflow, :class => Submission::Workflow  do
@@ -394,7 +394,7 @@ FactoryGirl.define do
   end
 
   factory  :library_types_request_type  do
-    library_type  {|library_type| library_type.association(:library_type)}
+    library_type
     is_default true
   end
 
@@ -515,62 +515,50 @@ FactoryGirl.define do
     email             {|a| "#{a.login}@example.com".downcase }
     workflow          {|workflow| workflow.association(:submission_workflow)}
     api_key           "123456789"
-  end
 
-  factory  :admin, :class => "User"  do
-    login
-    email                 {|a| "#{a.login}@example.com".downcase }
-    roles                 {|role| [role.association(:admin_role)]}
-    password              "password"
-    password_confirmation "password"
-    workflow              {|workflow| workflow.association(:submission_workflow)}
-  end
+    factory  :admin do
+      roles                 {|role| [role.association(:admin_role)]}
+      password              "password"
+      password_confirmation "password"
+    end
 
-  factory  :manager, :class => "User"  do
-    login
-    email             {|a| "#{a.login}@example.com".downcase }
-    roles             {|role| [role.association(:manager_role)]}
-    workflow          {|workflow| workflow.association(:submission_workflow)}
-  end
+    factory  :manager do
+      roles             {|role| [role.association(:manager_role)]}
+    end
 
-  factory  :owner, :class => "User"  do
-    login
-    email             {|a| "#{a.login}@example.com".downcase}
-    roles             {|role| [role.association(:owner_role)]}
-    workflow          {|workflow| workflow.association(:submission_workflow)}
-  end
+    factory  :owner do
+      roles             {|role| [role.association(:owner_role)]}
+    end
 
-  factory  :data_access_coordinator, :class => "User"  do
-    login
-    email                 {|a| "#{a.login}@example.com".downcase }
-    roles                 {|role| [role.association(:data_access_coordinator_role)]}
-    workflow              {|workflow| workflow.association(:submission_workflow)}
+    factory  :data_access_coordinator do
+      roles                 {|role| [role.association(:data_access_coordinator_role)]}
+    end
   end
 
   factory  :role  do
     sequence(:name)   { |i| "Role #{ i }" }
     authorizable       nil
-  end
 
-  factory  :admin_role, :class => "Role"  do
-    name            "administrator"
-  end
+    factory  :admin_role do
+      name            "administrator"
+    end
 
-  factory  :public_role  do
-    name          'public'
-  end
+    factory  :public_role  do
+      name          'public'
+    end
 
-  factory  :manager_role, :class => 'Role'  do
-    name            "manager"
-  end
+    factory  :manager_role do
+      name            "manager"
+    end
 
-  factory  :data_access_coordinator_role, :class => 'Role'  do
-    name            "data_access_coordinator"
-  end
+    factory  :data_access_coordinator_role do
+      name            "data_access_coordinator"
+    end
 
-  factory  :owner_role, :class => 'Role'  do
-    name            "owner"
-    authorizable    { |i| i.association(:project) }
+    factory  :owner_role do
+      name            "owner"
+      authorizable    { |i| i.association(:project) }
+    end
   end
 
   factory  :custom_text  do
@@ -582,13 +570,13 @@ FactoryGirl.define do
 
   factory  :asset_group  do
     name     {|a| generate :asset_group_name}
-    study    {|study| study.association(:study)}
+    study
     assets   []
   end
 
   factory  :asset_group_asset  do
-    asset         {|asset| asset.association(:asset)}
-    asset_group   {|asset_group| asset_group.association(:asset_group)}
+    asset
+    asset_group
   end
 
   factory  :fragment  do
@@ -607,19 +595,18 @@ FactoryGirl.define do
   factory  :stock_multiplexed_library_tube  do
     name    {|a| generate :asset_name }
     purpose { Tube::Purpose.stock_mx_tube }
-  end
 
-  factory :new_stock_multiplexed_library_tube, :class=>StockMultiplexedLibraryTube do |t|
-    name    {|a| generate :asset_name }
-    purpose { |a| a.association(:new_stock_tube_purpose) }
+    factory :new_stock_multiplexed_library_tube do |t|
+      purpose { |a| a.association(:new_stock_tube_purpose) }
+    end
   end
 
   factory(:new_stock_tube_purpose, :class=>IlluminaHtp::StockTubePurpose) do |p|
     name { generate :purpose_name }
   end
 
-  factory(:request_purpose) do |rp|
-    rp.key { generate :purpose_name }
+  factory(:request_purpose) do
+    key { generate :purpose_name }
   end
 
   factory(:empty_library_tube, :class => LibraryTube)  do
@@ -736,41 +723,41 @@ FactoryGirl.define do
   end
 
   factory :sample_manifest do
-    study     {|wa| wa.association(:study)}
-    supplier  {|wa| wa.association(:supplier)}
+    study
+    supplier
     asset_type "plate"
     count     1
 
     factory :sample_manifest_with_samples do
       samples { FactoryGirl.create_list(:sample_with_well, 5)}
     end
-  end
 
-  factory :tube_sample_manifest, class: SampleManifest do
-    study     {|wa| wa.association(:study)}
-    supplier  {|wa| wa.association(:supplier)}
-    asset_type "1dtube"
-    count     1
+    factory :tube_sample_manifest do
+      asset_type "1dtube"
 
-    factory :tube_sample_manifest_with_samples do
-      samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
+      factory :tube_sample_manifest_with_samples do
+        samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
+      end
     end
   end
+
 
   factory  :db_file  do
     data "blahblahblah"
   end
 
-  factory  :pending_study_report, :class => 'StudyReport'  do
-    study    {|wa| wa.association(:study)}
-  end
+  factory :study_report do
 
-  factory  :completed_study_report, :class => 'StudyReport' do
-    study      {|wa| wa.association(:study)}
-    report_filename   "progress_report.csv"
-    after(:build) { |study_report_file|
-      create :db_file, :owner => study_report_file, :data => Tempfile.open("progress_report.csv").read
-    }
+    study
+
+    factory  :pending_study_report
+
+    factory  :completed_study_report do
+      report_filename   "progress_report.csv"
+      after(:build) { |study_report_file|
+        create :db_file, :owner => study_report_file, :data => Tempfile.open("progress_report.csv").read
+      }
+    end
   end
 
   # SLF user stuff
@@ -789,7 +776,7 @@ FactoryGirl.define do
     key "some_key"
     created_by 'abc123'
     witnessed_by "jane"
-    asset  {|asset| asset.association(:asset)}
+    asset
   end
 
   factory(:faculty_sponsor) do
@@ -801,13 +788,13 @@ FactoryGirl.define do
     pooling_options({:pool_count => 8 })
   end
 
-factory :tag2_layout_template do |itlt|
-  transient do
-    oligo { generate :oligo }
+  factory :tag2_layout_template do |itlt|
+    transient do
+      oligo { generate :oligo }
+    end
+    name 'Tag 2 layout template'
+    tag {|tag| tag.association :tag, oligo: oligo }
   end
-  name 'Tag 2 layout template'
-  tag {|tag| tag.association :tag, oligo: oligo }
-end
 
   factory(:messenger_creator)  do
     root 'a_plate'

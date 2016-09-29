@@ -2,23 +2,23 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 FactoryGirl.define do
-  factory :product_catalogue do |pc|
-    pc.name      { |x| FactoryGirl.generate :product_catalogue_name }
+  factory :product_catalogue do
+    name      { |x| FactoryGirl.generate :product_catalogue_name }
+
+    factory :single_product_catalogue do
+      selection_behaviour 'SingleProduct'
+    end
   end
 
-  factory :single_product_catalogue, :parent => :product_catalogue do |pc|
-    pc.selection_behaviour 'SingleProduct'
+  factory :product do
+    name            { FactoryGirl.generate :product_name }
+    deprecated_at   nil
   end
 
-  factory :product do |product|
-    product.name            { FactoryGirl.generate :product_name }
-    product.deprecated_at   nil
-  end
-
-  factory :product_criteria do |pc|
-    pc.product       {|product| product.association(:product) }
-    pc.stage         'stock'
-    pc.behaviour     'Basic'
-    pc.configuration { {:total_micrograms=>{:greater_than=>50},:sanger_sample_id=>{}} }
+  factory :product_criteria do
+    product
+    stage         'stock'
+    behaviour     'Basic'
+    configuration { {:total_micrograms=>{:greater_than=>50},:sanger_sample_id=>{}} }
   end
 end

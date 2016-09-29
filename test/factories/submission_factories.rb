@@ -4,28 +4,27 @@
 FactoryGirl.define do
   factory :submission__ do |submission|
     #raise "call FactoryHelp::submission instead "
-  end
-
-  factory :submission_without_order , :class => Submission do |submission|
-      submission.user                  {|user| user.association(:user)}
+    factory :submission_without_order do
+      user
+    end
   end
 
   #TODO move in a separate file
   #easier to keep it here at the moment because we are moving stuff between both
   factory :order do |order|
-    study                 {|study| study.association(:study)}
+    study
     workflow              {|workflow| workflow.association(:submission_workflow)}
-    project               {|project| project.association(:project)}
-    user                  {|user| user.association(:user)}
+    project
+    user
     item_options          {}
     request_options       {}
     assets                []
     request_types         { [ create(:request_type).id ] }
-  end
 
+    factory :order_with_submission do
+      after(:build) { |o| o.create_submission(:user_id => o.user_id) }
+    end
 
-  factory :order_with_submission, :parent => :order do |order|
-    after(:build) { |o| o.create_submission(:user_id => o.user_id) }
   end
 end
 

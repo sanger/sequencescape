@@ -21,7 +21,7 @@ class AddLibaryTypesTable < ActiveRecord::Migration
       t.timestamps
 
       t.add_index(:request_type_id)
-      t.add_indes(:library_type_id)
+      t.add_index(:library_type_id)
     end
 
     add_constraint('library_types_request_types','request_types')

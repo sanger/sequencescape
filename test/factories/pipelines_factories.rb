@@ -17,7 +17,7 @@ FactoryGirl.define do
     value               ""
     qc_state            ""
     resource            nil
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
     barcode_prefix      {|b| b.association(:barcode_prefix)}
   end
 
@@ -28,14 +28,14 @@ FactoryGirl.define do
     qc_state            ""
     resource            nil
     sti_type            "Plate"
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
 
     factory :source_plate do
       plate_purpose {|pp| pp.association(:source_plate_purpose)}
     end
 
-    
-    
+
+
     factory :child_plate do
 
       transient do
@@ -50,8 +50,6 @@ FactoryGirl.define do
       end
     end
   end
-
-  
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
   end
@@ -70,46 +68,46 @@ FactoryGirl.define do
     qc_state            ""
     resource            nil
     sti_type            "ControlPlate"
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
 
   factory :dilution_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
   factory :gel_dilution_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Gel Dilution') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
   factory :pico_assay_a_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay A') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
   factory :pico_assay_b_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay B') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
   factory :pico_assay_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
   factory :pico_dilution_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Pico Dilution') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
   factory :sequenom_qc_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Sequenom') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
   factory :working_dilution_plate do
     plate_purpose { |_| PlatePurpose.find_by_name!('Working Dilution') }
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
   end
 
   factory :batch do |b|
     item_limit            4
-    user                  {|user| user.association(:user)}
-    pipeline              {|pipeline| pipeline.association(:pipeline)}
+    user
+    pipeline
     state                 "pending"
     qc_pipeline_id        ""
     qc_state              "qc_pending"
@@ -119,14 +117,14 @@ FactoryGirl.define do
 
   factory :control do |c|
     name                  "New control"
-    pipeline              {|pipeline| pipeline.association(:pipeline)}
+    pipeline
   end
 
   factory :descriptor do |d|
     name                "Desc name"
     value               ""
     selection           ""
-    task                {|task| task.association(:task)}
+    task
     kind                ""
     required            0
     sorter              nil
@@ -165,12 +163,12 @@ FactoryGirl.define do
     end
   end
 
-  factory :sequencing_pipeline, :class => SequencingPipeline do |p|
-name                  {|a| FactoryGirl.generate :pipeline_name }
-automated             false
-active                true
-next_pipeline_id      nil
-previous_pipeline_id  nil
+  factory :sequencing_pipeline do
+    name                  {|a| FactoryGirl.generate :pipeline_name }
+    automated             false
+    active                true
+    next_pipeline_id      nil
+    previous_pipeline_id  nil
     location              {|location| location.association(:location)}
     after(:build)          do |pipeline|
       pipeline.request_types << create(:request_type )
@@ -185,7 +183,7 @@ previous_pipeline_id  nil
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location              {|location| location.association(:location)}
+    location
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type )
@@ -366,25 +364,25 @@ previous_pipeline_id  nil
     end
   end
 
-  factory :assign_tags_task do |t|
+  factory :assign_tags_task do
   end
 
-  factory :assign_tubes_to_multiplexed_wells_task do |t|
+  factory :assign_tubes_to_multiplexed_wells_task do
   end
 
-  factory :multiplexed_cherrypicking_task do |t|
+  factory :multiplexed_cherrypicking_task do
   end
 
-  factory :attach_infinium_barcode_task do |t|
+  factory :attach_infinium_barcode_task do
   end
 
-  factory :tag_groups_task do |t|
+  factory :tag_groups_task do
   end
 
-  factory :gel_qc_task do |t|
+  factory :gel_qc_task do
   end
 
-  factory :strip_tube_creation_task do |t|
+  factory :strip_tube_creation_task do
   end
 
   factory :plate_transfer_task do |t|
@@ -398,7 +396,7 @@ previous_pipeline_id  nil
     descriptor_fields   []
     qc_state            ""
     resource            nil
-    barcode             {|a| FactoryGirl.generate :barcode_number }
+    barcode
     purpose             { Tube::Purpose.standard_sample_tube }
   end
   factory :sample_tube, :parent => :empty_sample_tube do |sample_tube|

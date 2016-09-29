@@ -10,11 +10,11 @@ FactoryGirl.define do
     "Asset #{n}"
   end
 
-  sequence :barcode do |n|
+  sequence :sanger_barcode do |n|
     "DN#{n}"
   end
 
-  sequence :barcode_number do |n|
+  sequence :barcode do |n|
     "#{n}"
   end
 
@@ -30,20 +30,12 @@ FactoryGirl.define do
     "Item #{n}"
   end
 
-  sequence :item_version do |n|
-    n
-  end
-
   sequence :keys do |n|
     "Key #{n}"
   end
 
   sequence :lab_workflow_name do |n|
     "Lab Workflow #{n}"
-  end
-
-  sequence :library_type_id do |n|
-    n
   end
 
   sequence :pipeline_name do |n|
