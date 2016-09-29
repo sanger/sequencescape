@@ -1,4 +1,3 @@
-require 'exception_notifier'
 
 class LibPoolNormTubeGenerator
 
@@ -58,7 +57,6 @@ class LibPoolNormTubeGenerator
         true
       rescue => e
         p e.message
-        ExceptionNotifier.notify_exception(e)
         false
       end
     end
