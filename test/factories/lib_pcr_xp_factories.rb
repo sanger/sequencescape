@@ -1,4 +1,5 @@
 FactoryGirl.define do
+
   factory :plate_with_wells, parent: :plate do
     size 96
     after(:create) do |plate|
@@ -31,7 +32,7 @@ FactoryGirl.define do
 
     plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
 
-   
+
 
     after(:build) do |child_plate, evaluator|
       child_plate.parents << evaluator.parent
@@ -57,7 +58,7 @@ FactoryGirl.define do
 
   factory :lib_pcr_xp_tube, class: LibraryTube do
     name    {|a| FactoryGirl.generate :asset_name }
-    purpose { create(:illumina_htp_mx_tube_purpose)  } 
+    purpose { create(:illumina_htp_mx_tube_purpose)  }
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end
 

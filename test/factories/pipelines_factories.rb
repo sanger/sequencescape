@@ -27,15 +27,15 @@ FactoryGirl.define do
     value               ""
     qc_state            ""
     resource            nil
-    sti_type            "Plate"
     barcode             {|a| FactoryGirl.generate :barcode_number }
+    size 96
 
     factory :source_plate do
       plate_purpose {|pp| pp.association(:source_plate_purpose)}
     end
 
-    
-    
+
+
     factory :child_plate do
 
       transient do
@@ -44,16 +44,31 @@ FactoryGirl.define do
 
       plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
 
-     
+
 
       after(:build) do |child_plate, evaluator|
         child_plate.parents << evaluator.parent
         child_plate.purpose.source_purpose = evaluator.parent.purpose
       end
     end
+
+
+    factory :plate_with_untagged_wells do
+
+      transient do
+        sample_count 8
+      end
+
+      after(:create) do |plate,evaluator|
+        (0...evaluator.sample_count).map do |vertical_index|
+          map = Map.where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).where(column_order:vertical_index).first or raise StandardError
+          create(:untagged_well, map: map, plate:plate)
+        end
+      end
+    end
   end
 
-  
+
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
   end
@@ -358,6 +373,16 @@ previous_pipeline_id  nil
 
   factory :tag_group do |t|
     name "taggroup"
+
+    transient do
+      tag_count 0
+    end
+
+    after(:build) do |tag_group,evaluator|
+      evaluator.tag_count.times do |i|
+        create(:tag,tag_group:tag_group,map_id:i+1)
+      end
+    end
   end
 
   factory :assign_tags_task do |t|
