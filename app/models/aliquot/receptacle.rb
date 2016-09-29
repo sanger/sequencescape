@@ -81,16 +81,7 @@ class Aliquot::Receptacle < Asset
   end
   deprecate :tags
 
-  def tag_count
-    # Find the most highly tagged aliquot
-    return 2 if most_tagged_aliquot.tag2_id != Aliquot::UNASSIGNED_TAG
-    return 1 if most_tagged_aliquot.tag_id != Aliquot::UNASSIGNED_TAG
-    0
-  end
-
-  def tag_count_name
-    Aliquot::TAG_COUNT_NAMES[tag_count]
-  end
+  delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
   def primary_aliquot_if_unique
     primary_aliquot if aliquots.count == 1
@@ -109,6 +100,11 @@ class Aliquot::Receptacle < Asset
       aliquot.tag2 = tag
       aliquot.save!
     end
+  end
+
+  # Library types are still just a string on aliquot.
+  def library_types
+    aliquots.pluck(:library_type).uniq
   end
 
   has_many :studies, :through => :aliquots

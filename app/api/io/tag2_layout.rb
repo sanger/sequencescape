@@ -10,6 +10,7 @@ class ::Io::Tag2Layout < ::Core::Io::Base
   define_attribute_and_json_mapping(%Q{
                    user <=> user
                   plate <=> plate
+  target_well_locations <=> target_well_locations
                  source <=> source
 
                tag.name  => tag.name

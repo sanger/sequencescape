@@ -6,7 +6,7 @@
 <% add :back_menu,I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 <% add :admin_option, "Administer studies" => studies_path -%>
 
-<h1><%= @study.name %> : Comments</h1>
+<%= page_title @study.name, 'Comments' %>
 <div class='subtitle'>
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>
@@ -14,8 +14,11 @@
 <%= render :partial => "list", :locals => {:study => @study } %>
 <% if current_user.privileged? @study %>
   <div>
-    <p>Type your comment:</p>
-    <%= form_tag(:url => study_comments_path(@study), :update => "study_annotations_#{@study.id}", :remote => true) %>
-    <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
+    <%= form_tag(study_comments_path(@study), data: { update: "#study_annotations_#{@study.id}", remote: true }, class:'remote-form') do %>
+      <label for='comment'>Type your comment</label>
+      <div class="input-group">
+        <%= text_field_tag "comment", '',  class:'form-control' %><span class="input-group-btn"><%= submit_tag 'Add comment', class: 'btn btn-success' %></span>
+      </div>
+    <% end %>
   </div>
 <% end %>

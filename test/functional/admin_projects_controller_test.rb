@@ -9,6 +9,8 @@ require 'admin/projects_controller'
 
 class Admin::ProjectsControllerTest < ActionController::TestCase
 
+  attr_reader :emails
+
   context "Projects controller" do
     setup do
       @controller = Admin::ProjectsController.new
@@ -37,7 +39,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not send an email" do
-          assert_equal [], @emails
+          assert_equal [], emails
         end
 
         should redirect_to("admin projects") { "/admin/projects/#{@project.id}" }
@@ -56,6 +58,11 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
         should "change Event.count by 1" do
           assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+        end
+
+        should "send an email" do
+          assert_equal 1, emails.count
+          assert_match "Project #{@project.id}: Project approved\n\nProject approved by abc123", emails.first.parts.first.body.to_s
         end
 
         should 'Have sent an email' do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160802085015) do
+ActiveRecord::Schema.define(:version => 20160914100113) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20160802085015) do
     t.integer  "tag2_id",          limit: 4,   default: -1, null: false
   end
 
+  add_index "aliquots", ["library_id"], :name => "index_aliquots_on_library_id"
   add_index "aliquots", ["receptacle_id", "tag_id", "tag2_id"], name: "aliquot_tags_and_tag2s_are_unique_within_receptacle", unique: true, using: :btree
   add_index "aliquots", ["sample_id"], name: "index_aliquots_on_sample_id", using: :btree
   add_index "aliquots", ["study_id"], name: "index_aliquots_on_study_id", using: :btree
@@ -1686,7 +1687,8 @@ ActiveRecord::Schema.define(version: 20160802085015) do
     t.integer  "user_id",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "source_id",  limit: 4
+    t.integer  "source_id"
+    t.text     "target_well_locations"
   end
 
   create_table "tag_groups", force: :cascade do |t|

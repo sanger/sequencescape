@@ -6,16 +6,20 @@ require "test_helper"
 
 
 class EventFactoryTest < ActiveSupport::TestCase
+
+  attr_reader :emails
+
   context "An EventFactory" do
     setup do
       @user = create :user, :login => "south", :email => "south@example.com"
       @bad_user = create :user, :login => "bad_south", :email => ""
       @project = create :project, :name => "hello world"
-      #@project = create :project, :name => "hello world", :user => @user
       role = create :owner_role, :authorizable => @project
       role.users << @user << @bad_user
       @request_type = create :request_type, :key => "library_creation", :name => "Library creation"
       @request = create :request, :request_type => @request_type, :user => @user, :project => @project
+      @emails = ActionMailer::Base.deliveries
+      @emails.clear
     end
 
     context "#new_project" do
@@ -33,7 +37,13 @@ class EventFactoryTest < ActiveSupport::TestCase
 
       context "send 1 email to 1 recipient" do
 
+        should "send email" do
+          assert_equal 1, emails.count
+          assert_match "Project #{@project.id}: Project registered\n\nProject registered by south", emails.first.parts.first.body.to_s
+        end
+
         should 'Have sent an email' do
+          assert_equal 1, emails.count
           last_mail = ActionMailer::Base.deliveries.last
           assert /Project/ === last_mail.subject
           assert last_mail.bcc.include?("abc123@example.com")
@@ -46,7 +56,6 @@ class EventFactoryTest < ActiveSupport::TestCase
     context "#project_approved" do
       setup do
         @event_count =  Event.count
-        ::ActionMailer::Base.deliveries = [] # reset the queue
         role = create :manager_role, :authorizable => @project
         role.users << @user
         admin = create :role, :name => "administrator"
@@ -54,6 +63,12 @@ class EventFactoryTest < ActiveSupport::TestCase
         user1.roles << admin
         EventFactory.project_approved(@project, @user)
       end
+
+      should "send email" do
+        assert_equal 1, emails.count
+        assert_match "Project approved\n\nProject approved by south", emails.first.parts.first.body.to_s
+      end
+
 
       should "change Event.count by 1" do
         assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"

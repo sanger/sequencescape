@@ -54,15 +54,30 @@ class Aliquot < ActiveRecord::Base
   # would result in sample dropouts. (presumably because << triggers save not save!)
 
   def untagged?
-    self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG
+    tag_id.nil? or tag_id == UNASSIGNED_TAG
   end
 
   def no_tag2?
-    self.tag2_id.nil? or self.tag2_id == UNASSIGNED_TAG
+    tag2_id.nil? or tag2_id == UNASSIGNED_TAG
   end
 
   def tagged?
     !self.untagged?
+  end
+
+  def dual_tagged?
+    !no_tag2?
+  end
+
+  def tag_count
+    # Find the most highly tagged aliquot
+    return 2 if dual_tagged?
+    return 1 if tagged?
+    0
+  end
+
+  def tag_count_name
+    TAG_COUNT_NAMES[tag_count]
   end
 
   def tag_with_unassigned_behaviour
