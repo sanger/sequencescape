@@ -17,10 +17,6 @@ class SequenomQcPlate < Plate
   after_create :populate_wells_from_source_plates
   #after_create :add_event_to_stock_plates
 
-  def print_labels(barcode_printer, number_of_barcodes = 3)
-    BarcodePrinter.print(self.barcode_labels(number_of_barcodes.to_i), barcode_printer.name, prefix, "long", label_text_top, label_text_bottom)
-  end
-
   def source_plates
     return [] if self.parents.empty?
     ordered_source_plates = []
@@ -77,6 +73,15 @@ class SequenomQcPlate < Plate
     end
     true
   end
+
+  def label_text_top
+    "#{plate_label(2)} #{plate_label(3)}"
+  end
+
+  def label_text_bottom
+    "#{plate_label(4)} #{plate_label(5)}"
+  end
+
   protected
 
   def source_barcodes
@@ -201,24 +206,10 @@ end
     true
   end
 
-  def barcode_labels(number_of_barcodes)
-    (1..number_of_barcodes).map do |plate_number|
-      PrintBarcode::Label.new(:number => self.barcode, :prefix => prefix, :suffix => plate_purpose.name)
-    end
-  end
-
   # Create a match object for the input plate names from this
   # sequenom plate's name.
   def label_match
     @label_match ||= name.match(/^([^\d]+)(\d+)?_(\d+)?_(\d+)?_(\d+)?_(\d+)$/)
-  end
-
-  def label_text_top
-    "#{plate_label(2)} #{plate_label(3)}"
-  end
-
-  def label_text_bottom
-    "#{plate_label(4)} #{plate_label(5)}"
   end
 
   # This is the date format used by show when the plate was created

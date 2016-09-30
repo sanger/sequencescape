@@ -24,24 +24,4 @@ class Equipment < ActiveRecord::Base
     Barcode.calculate_checksum(prefix, barcode_number)
   end
 
-  def printables
-    [PrintBarcode::Label.new({
-      :number => barcode_number,
-      :study => name,
-      :suffix => suffix,
-      :prefix => prefix,
-      :type => "custom-labels",
-      :label_description =>  name })]
-  end
-
-  def print(barcode_printer)
-    begin
-      unless printables.empty?
-        barcode_printer.print_labels(printables)
-      end
-    rescue
-      return false
-    end
-    true
-  end
 end

@@ -1,4 +1,4 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class ColumnTest < ActiveSupport::TestCase
 
@@ -10,7 +10,7 @@ class ColumnTest < ActiveSupport::TestCase
   end
 
   def options
-    { heading: "PUBLIC NAME", name: :public_name, value: "a value", type: :string, value: 10, number: 125,
+    { heading: "PUBLIC NAME", name: :public_name, value: "a value", type: :string, value: 10, number: 125, attribute: :barcode,
       validation: FactoryGirl.attributes_for(:validation),
       conditional_formattings: {simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula)}
     }
@@ -46,11 +46,18 @@ class ColumnTest < ActiveSupport::TestCase
     refute_equal SampleManifestExcel::Column.new(options), SampleManifestExcel::Column.new(options.merge(heading: "SOME OTHER NAME"))
   end
 
+  # test "should have an attribute value" do
+  #   sample = build(:sample_with_well)
+  #   assert_equal options[:value], SampleManifestExcel::Column.new(options).attribute_value(sample)
+  #   assert_equal  SampleManifestExcel::Attributes.find(:sanger_sample_id).value(sample), SampleManifestExcel::Column.new(options.merge({name: :sanger_sample_id})).attribute_value(sample)
+  #   refute  SampleManifestExcel::Column.new(options.except(:value)).attribute_value(sample)
+  # end
+
   test "should have an attribute value" do
-    sample = build(:sample_with_well)
-    assert_equal options[:value], SampleManifestExcel::Column.new(options).attribute_value(sample)
-    assert_equal  SampleManifestExcel::Attributes.find(:sanger_sample_id).value(sample), SampleManifestExcel::Column.new(options.merge({name: :sanger_sample_id})).attribute_value(sample)
-    refute  SampleManifestExcel::Column.new(options.except(:value)).attribute_value(sample)
+    detail = {barcode: 'barcode', sanger_id: 'sanger_id', position: 'position'}
+    assert_equal detail[:barcode], SampleManifestExcel::Column.new(options).attribute_value(detail)
+    assert_equal options[:value], SampleManifestExcel::Column.new(options.except(:attribute)).attribute_value(detail)
+    refute  SampleManifestExcel::Column.new(options.except(:value, :attribute)).attribute_value(detail)
   end
 
   test "should have a number" do

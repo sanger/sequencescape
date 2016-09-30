@@ -15,6 +15,11 @@ class SampleManifestsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @user       = create :user
       @controller.stubs(:current_user).returns(@user)
+
+      SampleManifestExcel.configure do |config|
+        config.folder = File.join("test","data", "sample_manifest_excel")
+        config.load!
+      end
     end
 
     context '#show' do
@@ -38,6 +43,38 @@ class SampleManifestsControllerTest < ActionController::TestCase
       end
     end
 
+    context '#create' do
+      should "send print request" do
+        barcode = mock("barcode")
+        barcode.stubs(:barcode).returns(23)
+        PlateBarcode.stubs(:create).returns(barcode)
+        study = create :study
+        supplier = Supplier.new(name: 'test')
+        supplier.save
+
+        barcode_printer = create :barcode_printer
+        LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+
+        RestClient.expects(:post)
+        post :create, sample_manifest: {template: "plate_default",
+                                       study_id: study.id,
+                                       supplier_id: supplier.id,
+                                       count: "3",
+                                       barcode_printer: barcode_printer.name,
+                                       only_first_label: "0",
+                                       asset_type: ""}
+        RestClient.expects(:post)
+        post :create, sample_manifest: {template: "tube_default",
+                                       study_id: study.id,
+                                       supplier_id: supplier.id,
+                                       count: "3",
+                                       barcode_printer: barcode_printer.name,
+                                       only_first_label: "0",
+                                       asset_type: ""}
+      end
+
+    end
+
   end
-  
+
 end
