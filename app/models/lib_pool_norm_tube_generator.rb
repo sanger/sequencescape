@@ -1,3 +1,4 @@
+
 class LibPoolNormTubeGenerator
 
   include ActiveModel::Validations
@@ -21,7 +22,11 @@ class LibPoolNormTubeGenerator
   end
 
   def plate=(barcode)
-    @plate = Plate.find_from_machine_barcode(barcode)
+    @plate = set_plate(barcode)
+  end
+
+  def set_plate(barcode)
+    Plate.with_machine_barcode(barcode).includes(wells: {requests: [:request_type, :target_asset]}).first
   end
 
   def lib_pool_tubes
@@ -42,6 +47,7 @@ class LibPoolNormTubeGenerator
       begin
         ActiveRecord::Base.transaction do |t|
           lib_pool_tubes.each do |tube|
+            pass_and_complete(tube)
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
           
@@ -49,7 +55,8 @@ class LibPoolNormTubeGenerator
           Location.find_by_name("Cluster formation freezer").set_locations(destination_tubes)
         end
         true
-      rescue
+      rescue => e
+        p e.message
         false
       end
     end
