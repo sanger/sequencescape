@@ -26,7 +26,6 @@ Feature: Conduct multiple transfers through the API
       Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
       Given the UUID of the next bulk transfer created will be "00000000-1111-2222-3333-444444444444"
-      Then output all plates for debugging purposes
       When I make an authorised POST with the following JSON to the API path "/bulk_transfers":
       """
       {
@@ -54,7 +53,6 @@ Feature: Conduct multiple transfers through the API
       }
       """
     Then the HTTP response should be "201 Created"
-    Then output all plates for debugging purposes
     Then the transfers from the plate "Source plate A" to the plate "Destination plate A" should be:
       | source | destination |
       | A1     | A1          |
