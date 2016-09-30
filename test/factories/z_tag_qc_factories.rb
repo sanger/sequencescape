@@ -52,8 +52,13 @@ FactoryGirl.define do
   end
 
   factory :qcable do |qcable|
-    lot
-    qcable_creator
+    # Note: We don't use the automatic association building here as
+    # we rely on attributes_for, which doesn't seem to handle it well.
+    # Incidentally we use attributes_for here as factory_girl instantiates
+    # the object before setting attributes, which messes up the state machine
+    # callbacks.
+    lot { create :lot }
+    qcable_creator { create :qcable_creator}
 
     factory :qcable_with_asset do |qcable|
       state  'created'
