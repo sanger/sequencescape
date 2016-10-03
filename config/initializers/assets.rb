@@ -13,4 +13,4 @@ Rails.application.config.assets.precompile += [
   'pipeline.js',
   'sample_move.js',
   'submissions.js'
-])
+]
