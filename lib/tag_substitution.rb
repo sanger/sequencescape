@@ -33,7 +33,7 @@ class TagSubstitution
     validates_presence_of :original_tag_id, if: :substitute_tag_id
     validates_presence_of :original_tag2_id, if: :substitute_tag2_id
 
-    validates_presence_of :matching_aliquots, message: "Could not find appropriate aliquots"
+    validates_presence_of :matching_aliquots, message: 'could not be found'
 
     validates_presence_of :original_tag_id, unless: :original_tag2_id
     validates_presence_of :original_tag2_id, unless: :original_tag_id
