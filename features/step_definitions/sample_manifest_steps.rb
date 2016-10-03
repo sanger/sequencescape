@@ -146,11 +146,11 @@ end
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   step(%Q{I follow "Create manifest for plates"})
 	step(%Q{I select "#{study_name}" from "Study"})
-  step(%Q{I select "default layout" from "Template"})
+  step(%Q{I select "Default Plate" from "Template"})
 	step(%Q{I select "Test supplier name" from "Supplier"})
 	step(%Q{I select "xyz" from "Barcode printer"})
 	step(%Q{I fill in the field labeled "Plates required" with "1"})
-  step(%Q{I select "default layout" from "Template"})
+  step(%Q{I select "Default Plate" from "Template"})
 	step(%Q{I press "Create manifest and print labels"})
 	step %Q{I should see "Manifest_"}
 	step %Q{I should see "Download Blank Manifest"}
@@ -184,19 +184,19 @@ end
 
 Then /^the last created sample manifest should be:$/ do |table|
   offset = 9
-  Tempfile.open('testfile.xls') do |tempfile|
+  Tempfile.open(['testfile', '.xlsx']) do |tempfile|
     tempfile.binmode
     tempfile.write(SampleManifest.last.generated_document.current_data)
     tempfile.flush
     tempfile.open
 
-    spreadsheet = Spreadsheet.open(tempfile.path)
-    @worksheet   =spreadsheet.worksheets.first
+    spreadsheet = Roo::Spreadsheet.open(tempfile.path)
+    @worksheet   =spreadsheet.sheet(0)
   end
 
   table.rows.each_with_index do |row,index|
     expected = [ Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1] ]
-    got      = [ @worksheet[offset+index,0], @worksheet[offset+index,1] ]
+    got      = [ @worksheet.cell(offset+index+1,1), @worksheet.cell(offset+index+1,2) ]
     assert_equal(expected, got, "Unexpected manifest row #{index}")
   end
 end
@@ -252,4 +252,11 @@ end
 
 Then /^library_id should be set as required$/ do
   pending # express the regexp above with the code you wish you had
+end
+
+Given(/^the configuration exists for creating sample manifest Excel spreadsheets$/) do
+  SampleManifestExcel.configure do |config|
+    config.folder = File.join("test","data", "sample_manifest_excel")
+    config.load!
+  end
 end

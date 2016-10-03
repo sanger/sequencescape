@@ -1,4 +1,4 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class AcceptanceTest < ActiveSupport::TestCase
 
@@ -11,7 +11,12 @@ class AcceptanceTest < ActiveSupport::TestCase
       config.load!
     end
 
-    @sample_manifest = create(:sample_manifest_with_samples)
+    barcode = mock("barcode")
+    barcode.stubs(:barcode).returns(23)
+    PlateBarcode.stubs(:create).returns(barcode)
+
+    @sample_manifest = create :sample_manifest, rapid_generation: true
+    sample_manifest.generate
 
     @download = SampleManifestExcel::Download.new(sample_manifest, 
         SampleManifestExcel.configuration.columns.test.dup, 

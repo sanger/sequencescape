@@ -1,4 +1,4 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class FormulaTest < ActiveSupport::TestCase
 
@@ -24,11 +24,11 @@ class FormulaTest < ActiveSupport::TestCase
   end
 
   test "should produce the correct output for the ISERROR formula" do
-    assert_equal "ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0)", formula.update(references.merge(type: :is_error, operator: ">", operand: 999)).to_s
+    assert_equal "AND(NOT(ISBLANK(#{references[:first_cell_reference]})),ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0))", formula.update(references.merge(type: :is_error, operator: ">", operand: 999)).to_s
   end
 
   test "should produce the correct output irrespective of the format of type" do
-    assert_equal "ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0)", formula.update(references.merge(type: "is_error", operator: ">", operand: 999)).to_s
+    assert_equal "AND(NOT(ISBLANK(#{references[:first_cell_reference]})),ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0))", formula.update(references.merge(type: "is_error", operator: ">", operand: 999)).to_s
   end
 
   test "should be comparable" do
