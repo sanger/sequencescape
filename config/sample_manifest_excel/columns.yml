@@ -1,16 +1,21 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
+  attribute: :barcode
 well:
   heading: WELL
+  attribute: :position
 sanger_tube_id:
   heading: SANGER TUBE ID
+  attribute: :barcode
 sanger_sample_id:
   heading: SANGER SAMPLE ID
+  attribute: :sample_id
 tag_group:
   heading: TAG GROUP
   unlocked: true
   validation:
     options:
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Tag set name"
@@ -42,6 +47,7 @@ tag2_group:
   unlocked: true
   validation:
     options:
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Tag set name"
@@ -73,6 +79,7 @@ library_type:
   unlocked: true
   validation:
     options:
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Library type"
@@ -135,8 +142,7 @@ supplier_sample_name:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 20
 cohort:
   heading: COHORT
@@ -149,7 +155,7 @@ cohort:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Cohort"
-      prompt: "Please refer to the list of current cohorts to enter, or add a new abbreviation up to a maximum of 7 uppercase letters."
+      prompt: "Please add an abbreviation up to a maximum of 7 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Cohort"
@@ -158,8 +164,7 @@ cohort:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 7
     is_number:
 volume:
@@ -233,7 +238,7 @@ country_of_origin:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Country Of Origin"
-      prompt: "Please refer to the list of current countries to enter, or add a new description up to a maximum of 30 uppercase letters."
+      prompt: "Please add a description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Country Of Origin"
@@ -242,8 +247,7 @@ country_of_origin:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 30
 geographical_region:
   heading: GEOGRAPHICAL REGION
@@ -256,7 +260,7 @@ geographical_region:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Region"
-      prompt: "Please refer to the list of current regions to enter, or add a new description up to a maximum of 30 uppercase letters."
+      prompt: "Please add a description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Region"
@@ -265,8 +269,7 @@ geographical_region:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 30
     is_number:
 ethnicity:
@@ -280,7 +283,7 @@ ethnicity:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Ethnicity"
-      prompt: "Please refer to the list of current ethnicities to enter, or add a new description up to a maximum of 30 uppercase letters."
+      prompt: "Please add a description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Ethnicity"
@@ -289,8 +292,7 @@ ethnicity:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 30
     is_number:
 dna_source:
@@ -333,8 +335,7 @@ date_of_sample_collection:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 5
 date_of_dna_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
@@ -356,8 +357,7 @@ date_of_dna_extraction:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 5
 is_sample_a_control?:
   heading: IS SAMPLE A CONTROL?
@@ -504,8 +504,7 @@ mother:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 15
     is_number:
 father:
@@ -528,8 +527,7 @@ father:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 15
     is_number:
 sibling:
@@ -552,8 +550,7 @@ sibling:
     empty_cell:
     len:
       formula:
-        type: :len
-        operator: :gt
+        operator: ">"
         operand: 15
     is_number:
 gc_content:
@@ -606,6 +603,7 @@ donor_id:
   unlocked: true
   conditional_formattings:
     empty_cell:
+  attribute: :sample_id
 phenotype:
   heading: PHENOTYPE (required for EGA)
   unlocked: true
@@ -696,3 +694,4 @@ donor_id_2:
   unlocked: true
   conditional_formattings:
     empty_cell:
+  attribute: :sample_id

@@ -9,6 +9,7 @@ Feature: Sample manifest
 
   Background:
     Given I am an "External" user logged in as "john"
+    And the configuration exists for creating sample manifest Excel spreadsheets
     And the "1D Tube" barcode printer "xyz" exists
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
@@ -24,11 +25,14 @@ Feature: Sample manifest
     When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default tube layout" from "Template"
+    And I select "Default Tube" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "5"
-    When I press "Create manifest and print labels"
+    When Pmb has the required label templates
+    And Pmb is up and running
+    And I press "Create manifest and print labels"
+    Then I should see "Your 5 label(s) have been sent to printer xyz"
     Then I should see "Manifest_"
     Then I should see "Download Blank Manifest"
     Given 3 pending delayed jobs are processed

@@ -1,4 +1,4 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class WorksheetTest < ActiveSupport::TestCase
 
@@ -13,7 +13,12 @@ class WorksheetTest < ActiveSupport::TestCase
 			config.load!
 		end
 
-	  @sample_manifest = create(:sample_manifest_with_samples)
+		barcode = mock("barcode")
+    barcode.stubs(:barcode).returns(23)
+    PlateBarcode.stubs(:create).returns(barcode)
+
+	  @sample_manifest = create :sample_manifest, rapid_generation: true
+	  sample_manifest.generate
 	end
 
 	context "type" do
@@ -33,14 +38,14 @@ class WorksheetTest < ActiveSupport::TestCase
 		end
 
 		should "be Tubes for a tube based manifest" do
-			sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: "1dtube")
+			sample_manifest = create(:tube_sample_manifest, asset_type: "1dtube")
 			column_list = SampleManifestExcel.configuration.columns.tube_full.dup
 			worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
 			assert_equal "Tubes", worksheet.type
 		end
 
 		should "be Tubes for a multiplexed library tube" do
-			sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: "multiplexedlibrary")
+			sample_manifest = create(:tube_sample_manifest, asset_type: "multiplexed_library")
 			column_list = SampleManifestExcel.configuration.columns.tube_full.dup
 			worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
 			assert_equal "Tubes", worksheet.type
@@ -60,6 +65,10 @@ class WorksheetTest < ActiveSupport::TestCase
 
 		should "should have a axlsx worksheet" do
 	  	assert worksheet.axlsx_worksheet
+	  end
+
+	  should "last row should be correct" do
+	  	assert_equal spreadsheet.sheet(0).last_row, worksheet.last_row
 	  end
 
 	  should "should add title and description" do
@@ -85,14 +94,14 @@ class WorksheetTest < ActiveSupport::TestCase
 	  	end
 	  end
 
-	  should "should add all of the samples" do
-	    assert_equal sample_manifest.samples.count+9, spreadsheet.sheet(0).last_row
+	  should "should add all of the details" do
+	    assert_equal sample_manifest.details_array.count+9, spreadsheet.sheet(0).last_row
 	  end
 
-	  should "should add the attributes for each sample" do
-	    [sample_manifest.samples.first, sample_manifest.samples.last].each do |sample|
+	  should "should add the attributes for each details" do
+	    [sample_manifest.details_array.first, sample_manifest.details_array.last].each do |detail|
 	      worksheet.columns.each do |k, column|
-	        assert_equal column.attribute_value(sample), spreadsheet.sheet(0).cell(sample_manifest.samples.index(sample)+10, column.number)
+	        assert_equal column.attribute_value(detail), spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail)+10, column.number)
 	      end
 	    end
 	  end
