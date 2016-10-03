@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160914100113) do
+ActiveRecord::Schema.define(:version => 20161003085523) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(:version => 20160914100113) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
-    t.integer  "tag2_id",          :default => -1, :null => false
+    t.integer  "tag2_id",          :default => -1
   end
 
   add_index "aliquots", ["library_id"], :name => "index_aliquots_on_library_id"
