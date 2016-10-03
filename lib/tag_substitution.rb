@@ -58,10 +58,11 @@ class TagSubstitution
     end
 
     def substitute_tags
-      tags_hash = {}
-      tags_hash[:tag_id]  = substitute_tag_id if original_tag_id
-      tags_hash[:tag2_id] = substitute_tag2_id if original_tag2_id
-      Aliquot.where(id:matching_aliquots).update_all(tags_hash)
+      Aliquot.where(id:matching_aliquots).find_each do |aliquot|
+        aliquot.tag_id = substitute_tag_id if original_tag_id
+        aliquot.tag2_id = substitute_tag2_id if original_tag2_id
+        aliquot.save!
+      end
     end
 
     private
