@@ -38,10 +38,14 @@ class TagSubstitution
     validates_presence_of :original_tag_id, unless: :original_tag2_id
     validates_presence_of :original_tag2_id, unless: :original_tag_id
 
-    def initialize(sample_id:nil,library_id:nil,original_tag_id:nil,substitute_tag_id:nil,original_tag2_id:nil,substitute_tag2_id:nil)
-      @sample_id, @library_id = sample_id, library_id
-      @original_tag_id, @substitute_tag_id = original_tag_id, substitute_tag_id
-      @original_tag2_id, @substitute_tag2_id = original_tag2_id, substitute_tag2_id
+    def initialize(attributes)
+      @sample_id  = attributes.delete(:sample_id)
+      @library_id = attributes.delete(:library_id)
+      @original_tag_id = attributes.delete(:original_tag_id)
+      @substitute_tag_id = attributes.delete(:substitute_tag_id)
+      @original_tag2_id = attributes.delete(:original_tag2_id)
+      @substitute_tag2_id = attributes.delete(:substitute_tag2_id)
+      @other_attributes = attributes
     end
 
     def matching_aliquots
@@ -61,6 +65,7 @@ class TagSubstitution
       Aliquot.where(id:matching_aliquots).find_each do |aliquot|
         aliquot.tag_id = substitute_tag_id if original_tag_id
         aliquot.tag2_id = substitute_tag2_id if original_tag2_id
+        aliquot.update_attributes(@other_attributes)
         aliquot.save!
       end
     end
