@@ -68,6 +68,8 @@ class FakeAccessionService < FakeSinatraService
   end
 end
 
+require 'rest_client'
+
 RestClient::Resource.class_eval do |klass|
   alias_method :original_post, :post
   def post(payload)
