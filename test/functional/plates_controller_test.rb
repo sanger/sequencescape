@@ -260,7 +260,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               should "add a child to the parent plate" do
                 assert Plate.find(@parent_plate.id).children.first.is_a?(Plate)
-                assert_equal PicoAssayPlatePurpose.find_by_name("Pico Assay A"), Plate.find(@parent_plate.id).children.first.plate_purpose
+                assert_equal PlatePurpose.find_by_name("Pico Assay A"), Plate.find(@parent_plate.id).children.first.plate_purpose
               end
 
               should respond_with :redirect
@@ -302,7 +302,7 @@ class PlatesControllerTest < ActionController::TestCase
             should "have child plates" do
               [@parent_plate, @parent_plate2, @parent_plate3].each do  |plate|
                 assert Plate.find(plate.id).children.first.is_a?(Plate)
-                assert_equal PicoAssayPlatePurpose.find_by_name("Pico Assay A"), Plate.find(plate.id).children.first.plate_purpose
+                assert_equal PlatePurpose.find_by_name("Pico Assay A"), Plate.find(plate.id).children.first.plate_purpose
               end
             end
             should respond_with :redirect

@@ -17,7 +17,7 @@ class RequestPurpose < ActiveRecord::Base
   has_many :request_types
 
   def self.standard
-    self.find_by_key(STANDARD_PURPOSE)
+    self.find_by_key!(STANDARD_PURPOSE)
   end
 
 end
