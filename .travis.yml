@@ -6,7 +6,7 @@ cache: bundler
 bundler_args: --without warehouse development deployment
 env:
   - "CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake test'"
-  - "CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='cucumber'"
+  - "JRUBY_OPTS='' CUCUMBER_FORMAT=TravisFormatter TZ=Europe/London SUITE='cucumber'"
 before_script:
   - "RAILS_ENV=test bundle exec rake db:setup"
 script:

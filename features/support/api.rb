@@ -38,6 +38,7 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
     can(:update, TestSampleEndpoint::Instance)
   end
 end
+
 module ::Core::Endpoint::BasicHandler::EndpointLookup
   [ :object, :class ].each do |name|
     line = __LINE__ + 1
