@@ -82,6 +82,9 @@ group :default do
 
   gem 'axlsx'
   gem 'roo'
+
+  # Used in XML generation.
+  gem 'builder'
 end
 
 group :warehouse do
