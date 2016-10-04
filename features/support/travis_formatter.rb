@@ -5,7 +5,7 @@ class TravisFormatter
   end
 
   def before_feature(feature)
-    io.puts "Feature: #{feature.name}"
+    io.print "\nFeature: #{feature.name}"
   end
 
   def after_step(step)
@@ -14,7 +14,7 @@ class TravisFormatter
     elsif step.status == :skipped
       # Do nothing
     else
-      io.puts "FAILED: #{step.name}"
+      io.print "\nFAILED: #{step.name}"
       if step.exception
         io.puts step.exception.message
         io.puts step.exception.backtrace

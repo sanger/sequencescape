@@ -193,8 +193,13 @@ Then /^the wells with the following UUIDs should all be related to the same plat
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
-  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  plate_purpose = PlatePurpose.find_by_name!(name)
   plate_purpose.create!(:name => plate_name)
+end
+
+Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name,barcode|
+  plate_purpose = PlatePurpose.find_by_name!(name)
+  plate_purpose.create!(name: plate_name,barcode:barcode)
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, plate_name, parent_name|
