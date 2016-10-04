@@ -52,12 +52,12 @@ plate_purposes = <<-EOS
 - name: Sequenom
   qc_display: false
   id: 13
-  type: QcPlatePurpose
+  type: PlatePurpose
   size: 384
 - name: Gel Dilution
   qc_display: false
   id: 14
-  type: WorkingDilutionPlatePurpose
+  type: PlatePurpose
   target_type: GelDilutionPlate
 - name: Infinium 15k
   qc_display: false
@@ -76,7 +76,7 @@ plate_purposes = <<-EOS
 - name: Pico Assay A
   qc_display: false
   id: 19
-  type: PicoAssayPlatePurpose
+  type: PlatePurpose
   target_type: PicoAssayAPlate
 - name: Normalisation
   qc_display: true
@@ -198,7 +198,7 @@ plate_purposes = <<-EOS
 - name: Pulldown
   qc_display: true
   id: 56
-  type: PulldownPlatePurpose
+  type: PlatePurpose
   cherrypickable_target: true
 - name: Dilution Plates
   qc_display: true
@@ -207,76 +207,76 @@ plate_purposes = <<-EOS
 - name: Pico Assay Plates
   qc_display: true
   id: 58
-  type: PicoAssayPlatePurpose
+  type: PlatePurpose
 - name: Pico Assay B
   qc_display: false
   id: 59
-  type: PicoAssayPlatePurpose
+  type: PlatePurpose
   target_type: PicoAssayBPlate
 - name: Gel Dilution Plates
   qc_display: true
   id: 60
-  type: WorkingDilutionPlatePurpose
+  type: PlatePurpose
 - name: Pulldown Aliquot
   qc_display: false
   pulldown_display: true
   id: 74
-  type: PulldownAliquotPlatePurpose
+  type: PlatePurpose
   target_type: PulldownAliquotPlate
 - name: Sonication
   qc_display: false
   pulldown_display: true
   id: 75
-  type: PulldownSonicationPlatePurpose
+  type: PlatePurpose
   target_type: PulldownSonicationPlate
 - name: Run of Robot
   qc_display: false
   pulldown_display: true
   id: 76
-  type: PulldownRunOfRobotPlatePurpose
+  type: PlatePurpose
   target_type: PulldownRunOfRobotPlate
 - name: EnRichment 1
   qc_display: false
   pulldown_display: true
   id: 77
-  type: PulldownEnrichmentOnePlatePurpose
+  type: PlatePurpose
   target_type: PulldownEnrichmentOnePlate
 - name: EnRichment 2
   qc_display: false
   pulldown_display: true
   id: 78
-  type: PulldownEnrichmentTwoPlatePurpose
+  type: PlatePurpose
   target_type: PulldownEnrichmentTwoPlate
 - name: EnRichment 3
   qc_display: false
   pulldown_display: true
   id: 79
-  type: PulldownEnrichmentThreePlatePurpose
+  type: PlatePurpose
   target_type: PulldownEnrichmentThreePlate
 - name: EnRichment 4
   qc_display: false
   pulldown_display: true
   id: 80
-  type: PulldownEnrichmentFourPlatePurpose
+  type: PlatePurpose
   target_type: PulldownEnrichmentFourPlate
 - name: Sequence Capture
   qc_display: false
   pulldown_display: true
   id: 81
-  type: PulldownSequenceCapturePlatePurpose
+  type: PlatePurpose
   target_type: PulldownSequenceCapturePlate
   cherrypickable_target: true
 - name: Pulldown PCR
   qc_display: false
   pulldown_display: true
   id: 82
-  type: PulldownPcrPlatePurpose
+  type: PlatePurpose
   target_type: PulldownPcrPlate
 - name: Pulldown qPCR
   qc_display: false
   pulldown_display: true
   id: 83
-  type: PulldownQpcrPlatePurpose
+  type: PlatePurpose
   target_type: PulldownQpcrPlate
 - name: Pre-Extracted Plate
   qc_display: false
