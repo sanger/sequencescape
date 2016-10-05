@@ -24,7 +24,8 @@ module IlluminaC::PlatePurposes
 
   BRANCHES = [
     ['ILC Stock','ILC AL Libs','ILC Lib PCR','ILC Lib PCR-XP','ILC Lib Pool Norm'],
-    ['ILC Stock','ILC AL Libs Tagged','ILC Lib Pool Norm']
+    ['ILC Stock','ILC AL Libs Tagged','ILC Lib Pool Norm'],
+    ['ILC Stock','ILC Lib Chromium','ILC Lib Pool Norm'],
   ]
 
   STOCK_PLATE_PURPOSE = 'ILC Stock'
@@ -37,15 +38,18 @@ module IlluminaC::PlatePurposes
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
     'ILC Stock'  => 'illumina_c_pcr',
-    'ILC Stock'  => 'illumina_c_nopcr'
-
+    'ILC Stock'  => 'illumina_c_nopcr',
+    'ILC Stock'  => 'illumina_c_pcr_no_pool',
+    'ILC Stock'  => 'illumina_c_no_pcr_no_pool',
+    'ILC Stock'  => 'illumina_c_chromium_library'
   }
 
   OUTPUT_PLATE_PURPOSES = []
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
     [ 'ILC Stock',   'ILC AL Libs',        :initial ],
-    [ 'ILC Stock',   'ILC AL Libs Tagged', :initial ]
+    [ 'ILC Stock',   'ILC AL Libs Tagged', :initial ],
+    [ 'ILC Stock',   'ILC Lib Chromium',   :initial ]
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -55,6 +59,7 @@ module IlluminaC::PlatePurposes
     'ILC Lib PCR'        => IlluminaC::LibPcrPurpose,
     'ILC Lib PCR-XP'     => IlluminaC::LibPcrXpPurpose,
     'ILC AL Libs Tagged' => IlluminaC::AlLibsTaggedPurpose,
+    'ILC Lib Chromium'   => IlluminaC::AlLibsTaggedPurpose,
     'ILC Lib Pool Norm'  => IlluminaC::MxTubePurpose
   }
 

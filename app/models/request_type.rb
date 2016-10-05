@@ -25,9 +25,9 @@ class RequestType < ActiveRecord::Base
   has_many :requests, :inverse_of => :request_type
   has_many :pipelines_request_types, :inverse_of => :request_type
   has_many :pipelines, :through => :pipelines_request_types
-  has_many :library_types_request_types, :inverse_of=> :request_type
+  has_many :library_types_request_types, :inverse_of=> :request_type, dependent: :destroy
   has_many :library_types, :through => :library_types_request_types
-  has_many :request_type_validators, :class_name => 'RequestType::Validator'
+  has_many :request_type_validators, :class_name => 'RequestType::Validator', dependent: :destroy
 
   belongs_to :pooling_method, :class_name => 'RequestType::PoolingMethod'
   has_many :request_type_extended_validators, :class_name => 'ExtendedValidator::RequestTypeExtendedValidator'

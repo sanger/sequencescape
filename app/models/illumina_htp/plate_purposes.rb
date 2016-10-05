@@ -256,7 +256,6 @@ module IlluminaHtp::PlatePurposes
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
       end
     end
-    private :create_plate_purpose
 
     def create_tube_purpose(tube_purpose_name, options = {})
       purpose = purpose_for(tube_purpose_name)
