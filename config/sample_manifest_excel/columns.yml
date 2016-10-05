@@ -15,6 +15,7 @@ tag_group:
   unlocked: true
   validation:
     options:
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Tag set name"
@@ -46,6 +47,7 @@ tag2_group:
   unlocked: true
   validation:
     options:
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Tag set name"
@@ -77,6 +79,7 @@ library_type:
   unlocked: true
   validation:
     options:
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Library type"
@@ -152,7 +155,7 @@ cohort:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Cohort"
-      prompt: "Please refer to the list of current cohorts to enter, or add a new abbreviation up to a maximum of 7 uppercase letters."
+      prompt: "Please add an abbreviation up to a maximum of 7 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Cohort"
@@ -235,7 +238,7 @@ country_of_origin:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Country Of Origin"
-      prompt: "Please refer to the list of current countries to enter, or add a new description up to a maximum of 30 uppercase letters."
+      prompt: "Please add a description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Country Of Origin"
@@ -257,7 +260,7 @@ geographical_region:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Region"
-      prompt: "Please refer to the list of current regions to enter, or add a new description up to a maximum of 30 uppercase letters."
+      prompt: "Please add a description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Region"
@@ -280,7 +283,7 @@ ethnicity:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Ethnicity"
-      prompt: "Please refer to the list of current ethnicities to enter, or add a new description up to a maximum of 30 uppercase letters."
+      prompt: "Please add a description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Ethnicity"

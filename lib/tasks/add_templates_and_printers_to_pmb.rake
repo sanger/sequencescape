@@ -62,11 +62,11 @@ namespace :pmb do
           label_type_id = JSON.parse(res)["data"]["id"]
         end
 
-        def sqsc_plate_label_template
+        def sqsc_96plate_label_template
           label_type_id = get_label_type_id("Plate")
           {"data" =>
             {"attributes" =>
-              {"name" => "sqsc_plate_label_template",
+              {"name" => "sqsc_96plate_label_template",
                 "label_type_id" => label_type_id,
                 "labels_attributes" => [
                   {"name" => "main_label",
@@ -89,11 +89,35 @@ namespace :pmb do
           }
         end
 
-        def sqsc_tube_label_template
+        def sqsc_384plate_label_template
+          label_type_id = get_label_type_id("Plate")
+          {"data" =>
+            {"attributes" =>
+              {"name" =>  "sqsc_384plate_label_template",
+                "label_type_id" =>  label_type_id,
+                "labels_attributes" =>  [
+                  {"name" =>  "main_label",
+                    "bitmaps_attributes" =>  [
+                      {"x_origin" =>  "0140", "y_origin" =>  "0035", "field_name" =>  "top_left", "horizontal_magnification" =>  "05", "vertical_magnification" =>  "1", "font" =>  "G", "space_adjustment" =>  "03", "rotational_angles" =>  "00"},
+                      {"x_origin" =>  "0140", "y_origin" =>  "0070", "field_name" =>  "bottom_left", "horizontal_magnification" =>  "05", "vertical_magnification" =>  "1", "font" =>  "G", "space_adjustment" =>  "03", "rotational_angles" =>  "00"},
+                      {"x_origin" =>  "0610", "y_origin" =>  "0035", "field_name" =>  "top_right", "horizontal_magnification" =>  "05", "vertical_magnification" =>  "1", "font" =>  "G", "space_adjustment" =>  "00", "rotational_angles" =>  "00"},
+                      {"x_origin" =>  "0610", "y_origin" =>  "0070", "field_name" =>  "bottom_right", "horizontal_magnification" =>  "05", "vertical_magnification" =>  "1", "font" =>  "G", "space_adjustment" =>  "00", "rotational_angles" =>  "00"}
+                    ],
+                    "barcodes_attributes"  =>   [
+                      {"x_origin" =>  "0330", "y_origin" =>  "0010", "field_name" =>  "barcode", "barcode_type" =>  "5", "one_module_width" =>  "02", "height" =>  "0070", "rotational_angle" =>  nil, "one_cell_width" =>  nil, "type_of_check_digit" =>  "2", "bar_height" =>  nil, "no_of_columns" =>  nil}
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        end
+
+        def sqsc_1dtube_label_template
           label_type_id = get_label_type_id("Tube")
           {"data" =>
             {"attributes" =>
-              {"name" => "sqsc_tube_label_template",
+              {"name" => "sqsc_1dtube_label_template",
                 "label_type_id" =>  label_type_id,
                 "labels_attributes" => [
                   {"name" =>  "main_label",
@@ -129,25 +153,57 @@ namespace :pmb do
         end
 
         def execute
-          label_template_plate_name = 'sqsc_plate_label_template'
-          label_template_tube_name = 'sqsc_tube_label_template'
+          label_template_96plate_name = 'sqsc_96plate_label_template'
+          label_template_1dtube_name = 'sqsc_1dtube_label_template'
+          label_template_384plate_name = 'sqsc_384plate_label_template'
           label_templates = get_label_templates
-          result = [label_template_plate_name, label_template_tube_name] - label_templates.keys
-          unless result.empty?
+          unregistered_templates = [label_template_96plate_name, label_template_1dtube_name, label_template_384plate_name] - label_templates.keys
+          unless unregistered_templates.empty?
             get_label_types
-            result.each {|name| create_label_template(name)}
+            unregistered_templates.each {|name| create_label_template(name)}
           end
           type_tube = BarcodePrinterType1DTube.first
-          type_tube.label_template_name = label_template_tube_name
+          type_tube.label_template_name = label_template_1dtube_name
           type_tube.save!
           type_plate = BarcodePrinterType96Plate.first
-          type_plate.label_template_name = label_template_plate_name
+          type_plate.label_template_name = label_template_96plate_name
+          type_plate.save!
+          type_plate = BarcodePrinterType384Plate.first
+          type_plate.label_template_name = label_template_384plate_name
           type_plate.save!
         end
       end
     end
 
     LabelTemplateCreator.execute
+
+  end
+
+  task :add_printers => :environment do
+
+    def register_printer(name)
+      RestClient.post(printer_url, {"data" => {"attributes" => {"name" => name}}}, LabelPrinter::PmbClient.headers)
+    end
+
+    def get_pmb_printers_names
+      res = RestClient.get(printer_url, LabelPrinter::PmbClient.headers)
+      names = JSON.parse(res)["data"].map {|printer| printer["attributes"]["name"]}
+    end
+
+    def printer_url
+      "#{LabelPrinter::PmbClient.base_url}/printers"
+    end
+
+    def add_printers
+      sqsc_printers_names = BarcodePrinter.all.map {|p| p.name}
+      pmb_printers_names = get_pmb_printers_names
+      unregistered_printers = sqsc_printers_names - pmb_printers_names
+      unless unregistered_printers.empty?
+        unregistered_printers.each {|name| register_printer(name)}
+      end
+    end
+
+    add_printers
 
   end
 end

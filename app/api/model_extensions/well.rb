@@ -5,7 +5,7 @@
 module ModelExtensions::Well
   def self.included(base)
     base.class_eval do
-      scope :for_api_plate_json, -> { includes(
+      scope :for_api_plate_json, -> { preload(
               :map,
               :transfer_requests, # Should be :transfer_requests_as_target
               # :uuid_object is included elsewhere, and trying to also include it here

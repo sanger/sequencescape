@@ -111,7 +111,7 @@ class Request < ActiveRecord::Base
 
   }
 
-  scope :in_order, ->(order) { were(order_id:order) }
+  scope :in_order, ->(order) { where(order_id:order) }
 
   scope :for_event_notification_by_order, ->(order) {
     customer_requests.in_order(order).where(state:'passed')

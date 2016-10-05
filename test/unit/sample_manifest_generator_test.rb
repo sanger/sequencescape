@@ -90,6 +90,12 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
     assert_equal configuration.manifest_types.find_by('tube_full').asset_type, generator.sample_manifest.asset_type
   end
 
+  test "if asset type is empty sample manifest should still have an asset_type" do
+    @generator = SampleManifestGenerator.new(attributes.merge(template: 'tube_full', asset_type: ''), user, configuration)
+    generator.execute
+    assert_equal configuration.manifest_types.find_by('tube_full').asset_type, generator.sample_manifest.asset_type
+  end
+
   test "should print labels if barcode printer is present" do
     LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
     @generator = SampleManifestGenerator.new(attributes.merge(barcode_printer: barcode_printer.name,
@@ -117,5 +123,5 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
 
   def teardown
     SampleManifestExcel.reset!
-  end  
+  end
 end

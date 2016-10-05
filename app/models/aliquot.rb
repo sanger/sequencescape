@@ -51,6 +51,8 @@ class Aliquot < ActiveRecord::Base
     scope :include_creation_batches, -> { includes(:creation_batches)}
     scope :include_source_batches, -> { includes(:source_batches)}
 
+    scope :for_study_and_request_type, ->(study,request_type) { joins(:aliquots,:requests).where(aliquots:{study_id:study}).where(requests:{request_type_id:request_type}) }
+
     # This is a lambda as otherwise the scope selects Aliquot::Receptacles
     scope :with_aliquots, -> { joins(:aliquots) }
 
@@ -96,16 +98,7 @@ class Aliquot < ActiveRecord::Base
     end
     deprecate :tags
 
-    def tag_count
-      # Find the most highly tagged aliquot
-      return 2 if most_tagged_aliquot.tag2_id != Aliquot::UNASSIGNED_TAG
-      return 1 if most_tagged_aliquot.tag_id != Aliquot::UNASSIGNED_TAG
-      0
-    end
-
-    def tag_count_name
-      TAG_COUNT_NAMES[tag_count]
-    end
+    delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
     def primary_aliquot_if_unique
       primary_aliquot if aliquots.count == 1
@@ -124,6 +117,11 @@ class Aliquot < ActiveRecord::Base
         aliquot.tag2 = tag
         aliquot.save!
       end
+    end
+
+    # Library types are still just a string on aliquot.
+    def library_types
+      aliquots.map(&:library_type).uniq
     end
 
     has_many :studies, :through => :aliquots
@@ -193,15 +191,30 @@ class Aliquot < ActiveRecord::Base
   # would result in sample dropouts. (presumably because << triggers save not save!)
 
   def untagged?
-    self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG
+    tag_id.nil? or tag_id == UNASSIGNED_TAG
   end
 
   def no_tag2?
-    self.tag2_id.nil? or self.tag2_id == UNASSIGNED_TAG
+    tag2_id.nil? or tag2_id == UNASSIGNED_TAG
   end
 
   def tagged?
     !self.untagged?
+  end
+
+  def dual_tagged?
+    !no_tag2?
+  end
+
+  def tag_count
+    # Find the most highly tagged aliquot
+    return 2 if dual_tagged?
+    return 1 if tagged?
+    0
+  end
+
+  def tag_count_name
+    TAG_COUNT_NAMES[tag_count]
   end
 
   def tag_with_unassigned_behaviour
