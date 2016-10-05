@@ -103,4 +103,8 @@ class ColumnListTest < ActiveSupport::TestCase
     refute SampleManifestExcel::ColumnList.new(nil, conditional_formattings).valid?
   end
 
+  test "#find_by_or_null should return a null object if none exists for key and value" do
+    assert_equal -1, column_list.find_by_or_null(:name, :bad_value).number
+  end
+
 end

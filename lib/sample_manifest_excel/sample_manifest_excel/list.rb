@@ -96,6 +96,7 @@ module SampleManifestExcel
           define_method :list_model do
             _list_model_const
           end
+
         end
         
       end

@@ -43,6 +43,56 @@ FactoryGirl.define do
       attribute { :position }
     end
 
+    factory :tag_group_column do
+
+      name      { :tag_group }
+      heading   { "TAG GROUP"}
+      value     { "Tag Group #{number}"}
+    end
+
+    factory :tag_index_column do
+
+      name      { :tag_index }
+      heading   { "TAG INDEX" }
+      value     { "Tag Index #{number}"}
+    end
+
+    factory :tag2_group_column do
+
+      name      { :tag2_group }
+      heading   { "TAG2 GROUP (Fill in for dual Index Only)" }
+      value     { "Tag2 Group #{number}" }
+    end
+
+    factory :tag2_index_column do
+
+      name      { :tag2_index }
+      heading   { "TAG2 INDEX (Fill in for dual Index Only)" }
+      value     { "Tag2 Index #{number}"}
+    end
+
+    factory :library_type_column do
+
+      name      { :library_type }
+      heading   { "LIBRARY TYPE"}
+      value     { "LIBRARY TYPE #{number}" }
+
+    end
+
+    factory :insert_size_from_column do
+
+      name      { :insert_size_from }
+      heading   { "INSERT SIZE FROM" }
+      value     { number }
+    end
+
+    factory :insert_size_to_column do
+
+      name      { :insert_size_to }
+      heading   { "INSERT SIZE TO" }
+      value     { number }
+    end
+
   end
 
 end

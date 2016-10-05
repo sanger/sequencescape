@@ -37,9 +37,22 @@ class UploadTest < ActiveSupport::TestCase
     setup do
       @sample = create(:sample_with_well)
       @valid_values = column_list.column_values(
-                        sanger_sample_id: sample.id
+                        sanger_sample_id: sample.id,
+                        sanger_plate_id: sample.wells.first.plate.sanger_human_barcode,
+                        well: sample.wells.first.map.description
                         )
-      valid_values[column_list.find_by(:name, :sanger_sample_id).number-1] = sample.id
+    end
+
+    should "#value should return value for specified key" do
+      assert_equal sample.id, SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).value(:sanger_sample_id)
+    end
+
+    should "#at should return value at specified index (offset by 1)" do
+      assert_equal sample.id, SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).at(column_list.find_by(:name, :sanger_sample_id).number)
+    end
+
+    should "#first? should be true if this is the first row" do
+      SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).first?
     end
 
     should "not be valid without a valid row number" do
@@ -56,36 +69,42 @@ class UploadTest < ActiveSupport::TestCase
       refute SampleManifestExcel::Upload::Row.new(1, valid_values, nil).valid?
     end
 
-    # should "not be valid without an associated sample" do
-    #   refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values, column_list).valid?
-    # end
-
-    should "not be valid unless the sample has a primary receptacle" do
-      valid_values[column_list.find_by(:name, :sanger_sample_id).number-1] = create(:sample).id
-      refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+    should "not be valid without an associated sample" do
+      column_list = build(:column_list_for_plate)
+      refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values, column_list).valid?
     end
 
-    # context "sample container" do
+    should "not be valid unless the sample has a primary receptacle" do
+      refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values(
+                                                  sanger_sample_id: create(:sample).id
+                                                  ), column_list).valid?
+    end
 
-    #   should "for plate should only be valid if barcode and location match" do
-    #     valid_values = column_list.column_values(sanger_sample_id: sample.id, sanger_plate_id: sample.primary_receptacle.plate.sanger_human_barcode)
-    #     refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+    context "sample container" do
 
-    #     valid_values = column_list.column_values(sanger_sample_id: sample.id, well: sample.primary_receptacle.map.description)
-    #     refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
-    #   end
+      should "for plate should only be valid if barcode and location match" do
+        column_list = build(:column_list_for_plate)
+        valid_values = column_list.column_values(sanger_sample_id: sample.id, sanger_plate_id: sample.wells.first.plate.sanger_human_barcode)
+        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
 
-    #   should "for tube should only be valid if barcodes match" do
-    #     column_list = build(:column_list_for_tube)
-    #     valid_values = column_list.column_values(sanger_sample_id: sample.id, sanger_tube_id: sample.primary_receptacle.plate.sanger_human_barcode)
-    #     assert SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+        column_list = build(:column_list_for_plate)
+        valid_values = column_list.column_values(sanger_sample_id: sample.id, well: sample.wells.first.map.description)
+        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+      end
 
-    #     valid_values = column_list.column_values(sanger_sample_id: sample.id)
-    #     refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+      should "for tube should only be valid if barcodes match" do
+        tube = create(:sample_tube)
+        column_list = build(:column_list_for_tube)
+        valid_values = column_list.column_values(sanger_sample_id: tube.sample.id, sanger_tube_id: tube.sample.assets.first.sanger_human_barcode)
+        assert SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
 
-    #   end
+        column_list = build(:column_list_for_tube)
+        valid_values = column_list.column_values(sanger_sample_id: tube.sample.id)
+        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
 
-    # end
+      end
+
+    end
 
   end
     

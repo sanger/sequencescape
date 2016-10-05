@@ -350,10 +350,22 @@ previous_pipeline_id  nil
 
   factory :tag do |t|
     oligo "AAA"
+    sequence(:map_id) { |n| n }
   end
 
   factory :tag_group do |t|
-    name "taggroup"
+    sequence(:name) { |n| "Tag Group #{n}"}
+
+    factory :tag_group_with_tags do
+
+      transient do
+        tags_count 5
+      end
+
+      after(:create) do |tag_group, evaluator|
+        create_list(:tag, evaluator.tags_count, tag_group: tag_group)
+      end
+    end
   end
 
   factory :assign_tags_task do |t|

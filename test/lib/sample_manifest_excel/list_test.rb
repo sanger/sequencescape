@@ -55,7 +55,6 @@ class ListTest < ActiveSupport::TestCase
     assert_equal item_2, my_list.find(:f)
     assert_equal item_3, my_list.find("k")
     refute my_list.find("z")
-
   end
 
   test "#reset should create a new list of items" do
