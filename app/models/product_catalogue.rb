@@ -11,6 +11,17 @@
 
 class ProductCatalogue < ActiveRecord::Base
 
+  # Specify the behaviour classes that may be used to select a product
+  # The behaviours take the catalogue and submission parameters and
+  # return a product
+  # Ensures:
+  # - Classes get loaded properly
+  # - Ruby Class loading can't be exploited to instantiate global classes
+  include HasBehaviour
+  has_behaviour LibraryDriven, behaviour_name: 'LibraryDriven'
+  has_behaviour Manual, behaviour_name: 'Manual'
+  has_behaviour SingleProduct, behaviour_name: 'SingleProduct'
+
   UndefinedBehaviour = Class.new(StandardError)
 
   has_many :submission_templates, :inverse_of => :product_catalogue
@@ -19,7 +30,7 @@ class ProductCatalogue < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :selection_behaviour
-  validate :selection_behaviour_exists?, :if => :selection_behaviour?
+  validates :selection_behaviour, inclusion: {in: registered_behaviours }
 
   class << self
     def construct!(arguments)
@@ -49,20 +60,9 @@ class ProductCatalogue < ActiveRecord::Base
 
   private
 
-  def selection_behaviour_exists?
-    # We can't use const_defined? here as it doesn't trigger rails autoloading.
-    # We could probably use the autoloading API more directly, but it doesn't
-    # seem to be intended to be used outside of Rails itself.
-    ProductCatalogue.const_get(selection_behaviour)
-    true
-  rescue NameError
-    errors.add(:selection_behaviour,"#{selection_behaviour} is not recognized")
-    false
-  end
-
   def selection_class
-    raise UndefinedBehaviour, "No selection behaviour names #{selection_behaviour}" unless selection_behaviour_exists?
-    ProductCatalogue.const_get(selection_behaviour)
+    self.class.with_behaviour(selection_behaviour) ||
+     raise(UndefinedBehaviour, "No selection behaviour names #{selection_behaviour}")
   end
 
 end

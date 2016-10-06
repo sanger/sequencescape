@@ -33,6 +33,14 @@ class ProductCatalogueTest < ActiveSupport::TestCase
       end
     end
 
+    context 'with global constants for behaviour' do
+      should 'reject behaviours'do
+        assert_raise(ActiveRecord::RecordInvalid) do
+          create :product_catalogue, :selection_behaviour => 'File'
+        end
+      end
+    end
+
   end
 
   context 'ProductCatalogue::construct!' do

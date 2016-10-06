@@ -13,11 +13,15 @@ class ProductCriteria < ActiveRecord::Base
   # as a single record may define multiple criteria.
   self.table_name=('product_criteria')
 
+  include HasBehaviour
+  has_behaviour Advanced, behaviour_name: 'Advanced'
+  has_behaviour Basic, behaviour_name: 'Basic'
+
   belongs_to :product
   validates_presence_of :product, :stage, :behaviour
 
   validates_uniqueness_of :stage, :scope => [:product_id,:deprecated_at]
-  validate :behaviour_exists?, :if => :behaviour?
+  validates :behaviour, inclusion: {in: registered_behaviours }
 
   serialize :configuration
 
@@ -33,25 +37,14 @@ class ProductCriteria < ActiveRecord::Base
 
 
   def assess(asset)
-    ProductCriteria.const_get(behaviour).new(configuration,asset)
+    self.class.with_behaviour(behaviour).new(configuration,asset)
   end
 
   def headers
-    ProductCriteria.const_get(behaviour).headers(configuration)
+    self.class.with_behaviour(behaviour).headers(configuration)
   end
 
   private
-
-  def behaviour_exists?
-    # We can't use const_defined? here as it doesn't trigger rails autoloading.
-    # We could probably use the autoloading API more directly, but it doesn't
-    # seem to be intended to be used outside of Rails itself.
-    ProductCriteria.const_get(behaviour)
-    true
-  rescue NameError
-    errors.add(:behaviour,"#{behaviour} is not recognized")
-    false
-  end
 
   def set_version_number
     v = product.product_criteria.for_stage(stage).count + 1
