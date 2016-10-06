@@ -69,9 +69,24 @@ module IlluminaC::Helper
       end
     end
 
+    def library_request_type
+      @library_request_type ||= RequestType.find_by_key!(type)
+    end
+
+    def cherrypick_request_type
+      RequestType.find_by_key!('cherrypick_for_illumina_c')
+    end
+
+    def multiplexing_request_type
+      RequestType.find_by_key!('illumina_c_multiplexing')
+    end
+
     def request_type_ids(cherrypick,sequencing)
-      ids = cherrypick ? [[RequestType.find_by_key!('cherrypick_for_illumina_c').id]] : []
-      ids << [RequestType.find_by_key!(type).id] << [sequencing.id]
+      ids = []
+      ids << [cherrypick_request_type.id] if cherrypick
+      ids << [library_request_type.id]
+      ids << [multiplexing_request_type.id] unless library_request_type.for_multiplexing?
+      ids << [sequencing.id]
     end
 
     def skip_cherrypick=(skip)
