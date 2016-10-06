@@ -801,4 +801,10 @@ FactoryGirl.define do
     template 'FluidigmPlateIO'
     purpose {|purpose| purpose.association(:plate_purpose)}
   end
+
+  factory(:barcode_printer) do
+    sequence(:name)   { |i| "a#{i}bc" }
+    #plate: barcode_printer_type_id 2, tube: barcode_printer_type_id 1
+    barcode_printer_type_id 2
+  end
 end

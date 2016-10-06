@@ -72,6 +72,10 @@ class Barcode
       self
     end
 
+    def barcode!
+      barcode
+    end
+
   end
 
   InvalidBarcode = Class.new(StandardError)

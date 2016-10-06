@@ -5,7 +5,7 @@ class TravisFormatter
   end
 
   def before_feature(feature)
-    io.print "\nFeature: #{feature.name}"
+    io.print "\nFeature: #{feature.short_name}"
   end
 
   def after_step(step)

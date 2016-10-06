@@ -306,11 +306,13 @@ Sequencescape::Application.routes.draw do
 
     end
 
-    resources :roles, only: [:index,:show,:new,:create]
-
-    scope :module => :roles do
+    resources :roles, only: [:index,:show,:new,:create] do
       resources :users, only: :index
     end
+
+    # scope :module => :roles do
+    #   resources :users, only: :index
+    # end
 
     resources :robots do
       resources :robot_properties

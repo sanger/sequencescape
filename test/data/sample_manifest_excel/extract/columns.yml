@@ -1,9 +1,12 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
+  attribute: :barcode
 well:
   heading: WELL
+  attribute: :position
 sanger_sample_id:
   heading: SANGER SAMPLE ID
+  attribute: :sample_id
 supplier_sample_name:
   heading: SUPPLIER SAMPLE NAME
   unlocked: true
@@ -127,3 +130,4 @@ donor_id:
   unlocked: true
   conditional_formattings:
     empty_cell:
+  attribute: :sample_id

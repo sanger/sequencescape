@@ -4,11 +4,10 @@
 
 
 class AssetsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  include BarcodePrintersController::Print
-   before_action :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
+  before_action :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
   def index
     @assets_without_requests = []
@@ -227,13 +226,30 @@ class AssetsController < ApplicationController
     end
   end
 
-  def print_labels
-    print_asset_labels(new_asset_url, new_asset_url)
+def print_labels
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: params[:printables])
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
+
+    redirect_to new_asset_url
   end
 
   def print_assets
-    params[:printables]={@asset =>1}
-    return print_asset_labels(asset_url(@asset), asset_url(@asset))
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: @asset)
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
+    redirect_to asset_url(@asset)
+
   end
 
   def show_plate

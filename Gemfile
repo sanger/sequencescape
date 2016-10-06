@@ -30,9 +30,6 @@ group :default do
 
   gem 'puma'
 
-  gem 'sanger_barcode', '~>0.2',
-    :github => 'sanger/sanger_barcode', :branch => 'ruby-1.9'
-
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
   # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
@@ -85,6 +82,9 @@ group :default do
 
   gem 'axlsx'
   gem 'roo'
+
+  # Used in XML generation.
+  gem 'builder'
 end
 
 group :warehouse do
@@ -129,6 +129,7 @@ group :cucumber do
   gem "cucumber", :require => false
   gem "cucumber-rails", :require => false
   gem "poltergeist"
+  gem "webmock"
 end
 
 group :deployment do

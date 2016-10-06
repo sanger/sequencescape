@@ -246,6 +246,7 @@ ActiveRecord::Schema.define(:version => 20160914100113) do
     t.string   "type",            limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "label_template_name"
   end
 
   add_index "barcode_printer_types", ["name"], name: "index_barcode_printer_types_on_name", using: :btree
@@ -1285,15 +1286,7 @@ ActiveRecord::Schema.define(:version => 20160914100113) do
   add_index "roles_users", ["role_id"], name: "index_roles_users_on_role_id", using: :btree
   add_index "roles_users", ["user_id"], name: "index_roles_users_on_user_id", using: :btree
 
-  create_table "sample_manifest_templates", force: :cascade do |t|
-    t.string "name",           limit: 255
-    t.string "asset_type",     limit: 255
-    t.string "path",           limit: 255
-    t.string "default_values", limit: 255
-    t.string "cell_map",       limit: 255
-  end
-
-  create_table "sample_manifests", force: :cascade do |t|
+  create_table "sample_manifests", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "study_id",    limit: 4
@@ -1305,6 +1298,7 @@ ActiveRecord::Schema.define(:version => 20160914100113) do
     t.string   "state",       limit: 255
     t.text     "barcodes",    limit: 65535
     t.integer  "user_id",     limit: 4
+    t.string   "password"  
   end
 
   add_index "sample_manifests", ["asset_type"], name: "index_sample_manifests_on_asset_type", using: :btree

@@ -6,7 +6,7 @@ class Studies::AssetGroupsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  include BarcodePrintersController::Print
+
   def index
     @study      = Study.find(params[:study_id])
     @asset_groups = @study.asset_groups
@@ -143,6 +143,16 @@ class Studies::AssetGroupsController < ApplicationController
   def print_labels
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
-    print_asset_labels(study_asset_groups_path(@study), print_study_asset_group_path(@study, @asset_group))
+
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: params[:printables])
+    if print_job.execute
+      flash[:notice] = print_job.success
+      redirect_to study_asset_groups_path(@study)
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+      redirect_to print_study_asset_group_path(@study, @asset_group)
+    end
   end
 end

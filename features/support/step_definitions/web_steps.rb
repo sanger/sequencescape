@@ -12,6 +12,8 @@
 require 'uri'
 require 'cgi'
 require_relative "../paths"
+require 'webmock/cucumber'
+WebMock.disable_net_connect!(allow_localhost: true)
 
 module WithinHelpers
   def with_scope(locator)
@@ -287,4 +289,39 @@ end
 
 When /^I refresh the page$/ do
   visit page.driver.browser.current_url
+end
+
+Then /^Pmb is down$/ do
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template")
+    .with(headers: LabelPrinter::PmbClient.headers)
+    .to_raise(Errno::ECONNREFUSED)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_1dtube_label_template")
+    .with(headers: LabelPrinter::PmbClient.headers)
+    .to_raise(Errno::ECONNREFUSED)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template")
+    .with(headers: LabelPrinter::PmbClient.headers)
+    .to_raise(Errno::ECONNREFUSED)
+end
+
+Then /^Pmb has the required label templates$/ do
+
+  body = "{\"data\":[{\"id\":\"1\"}]}"
+
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template")
+    .with(headers: LabelPrinter::PmbClient.headers)
+    .to_return(status: 200, body: body)
+
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_1dtube_label_template")
+    .with(headers: LabelPrinter::PmbClient.headers)
+    .to_return(status: 200, body: body)
+
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template")
+    .with(headers: LabelPrinter::PmbClient.headers)
+    .to_return(status: 200, body: body)
+end
+
+Then /^Pmb is up and running$/ do
+  stub_request(:post, LabelPrinter::PmbClient.print_job_url)
+    .with(headers: LabelPrinter::PmbClient.headers)
+    .to_return(status: 200, headers: LabelPrinter::PmbClient.headers)
 end

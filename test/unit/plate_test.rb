@@ -436,6 +436,18 @@ end
     end
   end
 
+  context "tubes are created from plate" do
+    should "send print request" do
+      plate = create :plate
+      10.times {plate.add_and_save_well(create :well_with_sample_and_without_plate)}
+      barcode_printer = create :barcode_printer
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+
+      RestClient.expects(:post)
+
+      plate.create_sample_tubes_and_print_barcodes(barcode_printer)
+    end
+  end
 
 end
 
