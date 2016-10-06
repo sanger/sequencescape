@@ -6,16 +6,21 @@ module IlluminaC::Helper
 
   require 'hiseq_2500_helper'
 
-  ACCEPTABLE_REQUEST_TYPES = ['illumina_c_pcr','illumina_c_nopcr', 'illumina_c_multiplexing']
+  ACCEPTABLE_REQUEST_TYPES = ['illumina_c_pcr','illumina_c_nopcr', 'illumina_c_multiplexing','illumina_c_chromium_library']
   ACCEPTABLE_SEQUENCING_REQUESTS = [
     'illumina_c_single_ended_sequencing',
     'illumina_c_paired_end_sequencing',
     'illumina_c_hiseq_paired_end_sequencing',
     'illumina_c_single_ended_hi_seq_sequencing',
     'illumina_c_miseq_sequencing',
+    'illumina_c_hiseq_v4_paired_end_sequencing',
+    'illumina_c_hiseq_v4_single_end_sequencing',
     'illumina_c_hiseq_2500_paired_end_sequencing',
-    'illumina_c_hiseq_2500_single_end_sequencing'
+    'illumina_c_hiseq_2500_single_end_sequencing',
+    'illumina_c_hiseq_4000_paired_end_sequencing',
+    'illumina_c_hiseq_4000_single_end_sequencing'
   ]
+
   PIPELINE = 'Illumina-C'
   class TemplateConstructor
 
@@ -27,8 +32,8 @@ module IlluminaC::Helper
     #   :role => The role that will be printed on barcodes
     #   :type => 'illumina_c_pcr'||'illumina_c_nopcr'
     # }
-    attr_accessor :name, :type, :role, :skip_cherrypick
-    attr_reader :sequencing
+    attr_accessor :name, :type, :role, :catalogue
+    attr_reader :sequencing, :cherrypick_options
 
     def initialize(params)
       self.name = params[:name]
@@ -36,6 +41,7 @@ module IlluminaC::Helper
       self.role = params[:role]
       self.skip_cherrypick = params[:skip_cherrypick]
       self.sequencing = params[:sequencing]||ACCEPTABLE_SEQUENCING_REQUESTS
+      self.catalogue = params[:catalogue]
     end
 
     def sequencing=(sequencing_array)
@@ -45,7 +51,7 @@ module IlluminaC::Helper
     end
 
     def validate!
-      [:name,:type,:role].each do |value|
+      [:name,:type,:role,:catalogue].each do |value|
         raise "Must provide a #{value}" if send(value).nil?
       end
       raise "Request Type should be #{ACCEPTABLE_REQUEST_TYPES.join(', ')}" unless ACCEPTABLE_REQUEST_TYPES.include?(type)
@@ -53,7 +59,7 @@ module IlluminaC::Helper
     end
 
     def name_for(cherrypick,sequencing_request_type)
-      "#{PIPELINE} #{cherrypick ? "Cherrypicked - " : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ",'')}"
+      "#{PIPELINE} - #{cherrypick ? "Cherrypicked - " : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ",'')}"
     end
 
     def build!
@@ -63,17 +69,13 @@ module IlluminaC::Helper
       end
     end
 
-    def cherrypick_id
-      RequestType.find_by_key!()
-    end
-
     def request_type_ids(cherrypick,sequencing)
-      ids = cherrypick ? [[RequestType.find_by_key('cherrypick_for_illumina_c').id]] : []
-      ids << [RequestType.find_by_key(type).id] << [sequencing.id]
+      ids = cherrypick ? [[RequestType.find_by_key!('cherrypick_for_illumina_c').id]] : []
+      ids << [RequestType.find_by_key!(type).id] << [sequencing.id]
     end
 
-    def cherrypick_options
-      [!skip_cherrypick,false].uniq
+    def skip_cherrypick=(skip)
+      @cherrypick_options = skip ? [false] : [true,false]
     end
 
     def each_submission_template
@@ -84,33 +86,19 @@ module IlluminaC::Helper
             :submission_class_name => 'LinearSubmission',
             :submission_parameters => submission_parameters(cherrypick,sequencing_request_type),
             :product_line_id => ProductLine.find_by_name(PIPELINE),
+            :product_catalogue => catalogue
           })
         end
       end
     end
 
     def submission_parameters(cherrypick,sequencing)
-      sp = {
+      {
         :request_type_ids_list => request_type_ids(cherrypick,sequencing),
         :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
         :order_role_id => Order::OrderRole.find_or_create_by_role(role).id,
         :info_differential => Submission::Workflow.find_by_key('short_read_sequencing').id
       }
-      return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key) || type == 'illumina_c_multiplexing'
-    end
-
-    def sizes_for(sequencing)
-      {
-        'illumina_c_hiseq_2500_single_end_sequencing' => ["50"],
-        'illumina_c_hiseq_2500_paired_end_sequencing' => ["75", "100"],
-        'illumina_c_single_ended_hi_seq_sequencing' => ["50"],
-        'illumina_c_hiseq_paired_end_sequencing' => ["50", "75", "100"],
-        'illumina_c_miseq_sequencing' => ["25", "50", "130", "150", "250"]
-      }[sequencing.key] || raise("No settings fo3 #{sequencing.key}")
-    end
-
-    def library_types
-      RequestType.find_by_key(self.type).library_types.map(&:name)
     end
 
     def update!
