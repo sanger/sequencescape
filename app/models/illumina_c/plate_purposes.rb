@@ -10,7 +10,8 @@ module IlluminaC::PlatePurposes
       'ILC AL Libs',
       'ILC Lib PCR',
       'ILC Lib PCR-XP',
-      'ILC AL Libs Tagged'
+      'ILC AL Libs Tagged',
+      'ILC Lib Chromium'
     ]
   ]
 
