@@ -334,6 +334,7 @@ DEPENDENCIES
   acts-as-dag (~> 3.0.0)
   axlsx
   bootstrap-sass
+  builder
   bullet
   bunny (~> 0.7)
   cancan
