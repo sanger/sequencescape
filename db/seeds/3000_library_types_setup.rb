@@ -105,8 +105,6 @@ library_types = LibraryType.create!([
   end
 end
 
-
-
 libs_ribozero = ["Ribozero RNA-seq (Bacterial)", "Ribozero RNA-seq (HMR)"].map do |name|
   LibraryType.create!(:name=> name)
 end
@@ -117,6 +115,8 @@ libs_ribozero.each do |lib|
     LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=> lib, :is_default => false)
   end
 end
+
+RequestType.find_by_key('illumina_c_chromium_library').library_types = LibraryType.create!(['Chromium genome','Chromium exome','Chromium single cell'].map {|name| {name: name}})
 
 # PCR Free Hiseq X10 RequestTypeValidator
 lt = LibraryType.find_or_create_by_name!("HiSeqX PCR free")
