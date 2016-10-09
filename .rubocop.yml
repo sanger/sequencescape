@@ -20,3 +20,9 @@ Rails:
 Lint/AmbiguousRegexpLiteral:
   Exclude:
     - features/support/step_definitions/**/*
+# These steps are explicitly designed for debugging. In general usage, they wont
+# be used.
+Lint/Debugger:
+  Exclude:
+    - 'features/support/step_definitions/debug_steps.rb'
+    - 'features/support/developing.rb'

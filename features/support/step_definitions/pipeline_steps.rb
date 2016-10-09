@@ -101,15 +101,6 @@ When /^I fill in the plate barcode$/ do
 #  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
 end
 
-When /^pipeline debug$/ do
-  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
-  puts "Plate #{Plate.last.id} -- #{Plate.last.container}"
-  puts Pipeline.find_by_name("DNA QC").location_id
-  puts Pipeline.find_by_name("DNA QC").requests.ready_in_storage.pipeline_pending.size
-  save_and_open_page
-  debugger
-end
-
 Then /^I have added some output plates$/ do
   batch = Batch.last
   well = FactoryGirl.create :well

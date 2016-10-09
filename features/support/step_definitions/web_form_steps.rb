@@ -36,12 +36,7 @@ Then /^option "([^"]*)" in the menu labeled "([^"]*)" should be selected$/ do |a
 end
 
 When /^I press exactly "([^\"]*)"$/ do |button|
-  begin
-    click_button(/\A#{button}\z/)
-  rescue
-    save_and_open_page
-    raise
-  end
+  click_button(/\A#{button}\z/)
 end
 
 Then /^the field "([^\"]*)" should be empty$/ do |field|
