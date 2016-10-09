@@ -6,15 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 8
-Lint/AmbiguousOperator:
-  Exclude:
-    - 'app/models/submission/order_presenter.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/hash_attributes.rb'
-    - 'script/dbconsole'
-    - 'test/functional/studies_asset_groups_controller_test.rb'
-    - 'test/unit/batch_test.rb'
-
 # Offense count: 954
 #Lint/AmbiguousRegexpLiteral:
 #  Enabled: false

@@ -14,7 +14,7 @@ class OrderPresenter
     :comments,
   ]
 
-  attr_accessor *ATTRIBUTES
+  attr_accessor(*ATTRIBUTES)
 
   def initialize(order)
     @target_order = order
