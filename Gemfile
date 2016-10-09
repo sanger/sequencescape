@@ -102,6 +102,7 @@ group :development do
   gem "bullet", :require => false
   gem 'pry'
   gem 'rdoc', :require => false
+  gem 'rubocop', require: false
 end
 
 group :test do
@@ -116,6 +117,7 @@ group :test do
   # gem 'parallel_tests', :require => false
   gem 'rgl', :require => false
   gem 'simplecov', require: false
+  gem 'rspec', require: false
 end
 
 group :cucumber do
@@ -138,4 +140,3 @@ group :deployment do
   gem "gmetric", "~>0.1.3"
   gem "exception_notification"
 end
-

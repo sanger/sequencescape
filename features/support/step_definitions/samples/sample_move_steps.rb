@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)"$/ do |sample_name, study_from_name, study_to_name|
   step %Q{I move sample "#{sample_name}" from study "#{study_from_name}" to "#{study_to_name}", to asset group "new asset group" and submission ""}
