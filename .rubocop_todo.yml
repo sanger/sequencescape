@@ -30,28 +30,6 @@ Lint/AssignmentInCondition:
 Lint/BlockAlignment:
   Enabled: false
 
-# Offense count: 16
-# Cop supports --auto-correct.
-# Configuration parameters: AlignWith, SupportedStyles, AutoCorrect.
-# SupportedStyles: start_of_line, def
-Lint/DefEndAlignment:
-  Exclude:
-    - 'app/controllers/assets_controller.rb'
-    - 'app/controllers/studies_controller.rb'
-    - 'app/controllers/submissions_controller.rb'
-    - 'app/models/attributable.rb'
-    - 'app/models/event/asset_set_qc_state_event.rb'
-    - 'app/models/event/sequenom_loading.rb'
-    - 'app/models/plate.rb'
-    - 'app/models/plate/iterations.rb'
-    - 'app/models/study_report.rb'
-    - 'lib/libxml_helper.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/range_list.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/ranges_worksheet.rb'
-    - 'lib/submission_serializer.rb'
-    - 'test/lib/sample_manifest_excel/worksheet_test.rb'
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Lint/DeprecatedClassMethods:

@@ -227,28 +227,28 @@ class StudiesController < ApplicationController
   end
 
   def close
-     @study = Study.find(params[:id])
-     @study.deactivate!
-     @study.save
-     flash[:notice] = "This study has been deactivated"
-     redirect_to study_path(@study)
-   end
+    @study = Study.find(params[:id])
+    @study.deactivate!
+    @study.save
+    flash[:notice] = "This study has been deactivated"
+    redirect_to study_path(@study)
+  end
 
-   def open
-     @study = Study.find(params[:id])
-     @study.activate!
-     @study.save
-     flash[:notice] = "This study has been activated"
-     redirect_to study_path(@study)
-   end
+  def open
+    @study = Study.find(params[:id])
+    @study.activate!
+    @study.save
+    flash[:notice] = "This study has been activated"
+    redirect_to study_path(@study)
+  end
 
-   def show_accession
+  def show_accession
     @study = Study.find(params[:id])
     respond_to do |format|
       xml_text =@study.accession_service.accession_study_xml(@study)
       format.xml  { render(:text => xml_text) }
     end
-   end
+  end
 
    def show_policy_accession
     @study = Study.find(params[:id])

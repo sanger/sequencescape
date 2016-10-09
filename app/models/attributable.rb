@@ -54,10 +54,10 @@ module Attributable
   end
 
   def association_value_pairs
-     self.class.association_details.inject({}) do |hash, attribute|
-       hash.tap { hash[attribute] = attribute.from(self) }
-     end
-   end
+    self.class.association_details.inject({}) do |hash, attribute|
+      hash.tap { hash[attribute] = attribute.from(self) }
+    end
+  end
 
   def field_infos
     self.class.attribute_details.map do |detail|

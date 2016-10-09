@@ -42,7 +42,7 @@ class XML::Node
   end
 
   # alias for inner_xml
- def inner_html
+  def inner_html
     inner_xml
   end
 

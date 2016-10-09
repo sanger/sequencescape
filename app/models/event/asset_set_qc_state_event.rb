@@ -15,7 +15,7 @@ class Event::AssetSetQcStateEvent < Event
           :message => reason
         )
       end
-     end
+    end
 
     constructor_for_event_type('passed')
     constructor_for_event_type('failed')

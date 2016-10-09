@@ -228,7 +228,7 @@ class AssetsController < ApplicationController
     end
   end
 
-def print_labels
+  def print_labels
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                           LabelPrinter::Label::AssetRedirect,
                                           printables: params[:printables])

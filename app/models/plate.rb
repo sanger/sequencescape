@@ -126,7 +126,7 @@ class Plate < Asset
       where(['caplp.container_id = ?',self.id])
   end
 
-   def barcode_dilution_factor_created_at_hash
+  def barcode_dilution_factor_created_at_hash
     return {} if barcode.blank?
     {
       :barcode    => generate_machine_barcode,

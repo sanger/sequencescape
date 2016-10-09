@@ -6,8 +6,8 @@
 
 
 class SubmissionsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :lab_manager_login_required, :only => [:change_priority]
@@ -87,7 +87,7 @@ class SubmissionsController < ApplicationController
     @presenter = Submission::SubmissionPresenter.new(current_user, :id => params[:id])
   end
 
- def study
+  def study
     @study       = Study.find(params[:id])
     @submissions = @study.submissions
   end
