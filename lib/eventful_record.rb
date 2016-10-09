@@ -7,11 +7,11 @@ module EventfulRecord
     has_many(:events, ->() { order('created_at') }, :as => :eventful, :dependent => :destroy) do
       def self.event_constructor(name, event_class, event_class_method)
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def #{name}(*args)
             #{event_class.name}.#{event_class_method}(self.proxy_association.owner, *args).tap { |event| self << event unless event.eventful.present? }
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
 
       class_eval(&block) if block.present?

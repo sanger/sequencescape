@@ -9,7 +9,7 @@ class Io::Tube < Io::Asset
   set_json_root(:tube)
   set_eager_loading { |model| model.include_aliquots_for_api.include_scanned_into_lab_event }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                                   state  => state
                             purpose.name => purpose.name
                             purpose.uuid => purpose.uuid
@@ -35,5 +35,5 @@ class Io::Tube < Io::Asset
                 two_dimensional_barcode  => barcode.two_dimensional
                           ean13_barcode  => barcode.ean13
                            barcode_type  => barcode.type
-  })
+  ")
 end

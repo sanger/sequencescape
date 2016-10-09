@@ -14,13 +14,13 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
 
   [ :create, :update, :delete ].each do |action|
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def #{action}(request, path)
         nested_action(request, path, request.target.send(@association)) do
           super
         end
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def association_details_for(request)

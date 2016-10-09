@@ -237,7 +237,7 @@ module ApplicationHelper
     if item.failures.empty?
       ""
     else
-      %Q{<span style="color:red;">FAILED</span>}
+      '<span style="color:red;">FAILED</span>'
     end
   end
 

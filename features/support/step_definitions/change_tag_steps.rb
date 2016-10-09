@@ -45,12 +45,12 @@ When /^I change the tags of the library tubes:$/ do |table|
 
   step "I am on the tag changing page"
   step(%Q{I fill in "change_tags_library_tube_ids" with "#{library_tubes.map(&:id).join('\n')}"})
-  step %Q{I press "Submit"}
+  step 'I press "Submit"'
   # assign the correct tag
   tube_to_tags.each do|tube_id, tag_name|
     step %Q{I select "#{tag_name}" from "change_tags_library_tubes[#{tube_id}]"}
   end
-  step %Q{I press "Submit"}
+  step 'I press "Submit"'
   #done
 end
 

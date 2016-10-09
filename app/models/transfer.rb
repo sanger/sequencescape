@@ -36,7 +36,7 @@ class Transfer < ActiveRecord::Base
 
     def self.state_helper(names)
       Array(names).each do |name|
-        module_eval(%Q{def #{name}? ; state == #{name.to_s.inspect} ; end})
+        module_eval("def #{name}? ; state == #{name.to_s.inspect} ; end")
       end
     end
 

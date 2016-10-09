@@ -20,6 +20,6 @@ Then /^debug the javascript$/ do
 end
 
 Then /^stop$/ do
-  step %q{show me the page}
-  step %q{launch the debugger}
+  step 'show me the page'
+  step 'launch the debugger'
 end

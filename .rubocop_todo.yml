@@ -1696,11 +1696,6 @@ Style/UnlessElse:
 Style/UnneededInterpolation:
   Enabled: false
 
-# Offense count: 441
-# Cop supports --auto-correct.
-Style/UnneededPercentQ:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/VariableInterpolation:

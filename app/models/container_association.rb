@@ -35,7 +35,7 @@ class ContainerAssociation < ActiveRecord::Base
         # the DB can choose to ignore the ordering. To get round this we perform one query in the correct order and
         # then limit it, rather than doing these two steps together.
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def import(records)
             ActiveRecord::Base.transaction do
               records.map(&:save!)
@@ -43,7 +43,7 @@ class ContainerAssociation < ActiveRecord::Base
               post_import(records.map { |r| [proxy_association.owner.id, r['id']] })
             end
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
 
         def attach(records)
           ActiveRecord::Base.transaction do

@@ -101,11 +101,11 @@ module Core
 
     [ :before, :after ].each do |filter|
       line = __LINE__ + 1
-      class_eval(%Q{
+      class_eval("
         def self.#{filter}_all_actions(&block)
           self.#{filter}(%r{^(/.*)?$}, &block)
         end
-      }, __FILE__, line)
+      ", __FILE__, line)
     end
 
     def command

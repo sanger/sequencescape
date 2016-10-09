@@ -9,7 +9,7 @@ class Io::Sample < Core::Io::Base
   set_json_root(:sample)
   set_eager_loading { |model| model.include_sample_metadata.include_studies }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                                            name  => sanger.name
                                sanger_sample_id  => sanger.sample_id
                  sample_metadata.is_resubmitted <=> sanger.resubmitted
@@ -80,5 +80,5 @@ class Io::Sample < Core::Io::Base
 
                             library_information <=  library_information
 
-  })
+  ")
 end

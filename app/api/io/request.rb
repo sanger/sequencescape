@@ -14,7 +14,7 @@ class Io::Request < ::Core::Io::Base
       include_source_asset.include_target_asset
   end
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                                request_type.name  => type
     request_metadata.fragment_size_required_from  => fragment_size.from
       request_metadata.fragment_size_required_to  => fragment_size.to
@@ -31,5 +31,5 @@ class Io::Request < ::Core::Io::Base
                   target_asset.sti_type.tableize  => target_asset.type
                                target_asset.name  => target_asset.name
                            target_asset.aliquots  => target_asset.aliquots
-  })
+  ")
 end

@@ -53,7 +53,7 @@ end
 
 Then /^I should not be on the login page$/ do
   # assert_no_tag :tag => :title, :child => "Sequencescape : Login"
-  %Q{I should not see "Sequencescape : Login" within "title"}
+  'I should not see "Sequencescape : Login" within "title"'
 end
 
 Then /^I should be logged in as "([^\"]*)"$/ do |login|

@@ -23,7 +23,7 @@ class MessengerTest < ActiveSupport::TestCase
       end
 
       should 'render the json' do
-        assert_equal %Q{{"example":{"example":"hash"},"lims":"SQSCP"}}, @messenger.to_json
+        assert_equal '{"example":{"example":"hash"},"lims":"SQSCP"}', @messenger.to_json
       end
 
     end

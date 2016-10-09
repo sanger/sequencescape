@@ -60,7 +60,7 @@ module Request::Statistics
     end
 
     [ :started, :passed, :failed, :cancelled ].each do |direct_type|
-      class_eval(%Q{def #{direct_type} ; self[#{direct_type.to_s.inspect}] ; end})
+      class_eval("def #{direct_type} ; self[#{direct_type.to_s.inspect}] ; end")
     end
 
     def progress
@@ -78,11 +78,11 @@ module Request::Statistics
 
     def self.summary_counter(name)
       line = __LINE__ + 1
-      class_eval(%Q{
+      class_eval("
         def #{name}
           @counters.values.map(&#{name.to_sym.inspect}).sum
         end
-      }, __FILE__, line)
+      ", __FILE__, line)
     end
 
     [ :started, :passed, :failed, :cancelled, :completed, :pending ].each do |name|

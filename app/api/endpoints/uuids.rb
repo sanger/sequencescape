@@ -53,13 +53,13 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     def self.attribute_delegate(*names)
       names.each do |name|
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def #{name}
             return nil unless lookup.respond_to?(:fetch)
             lookup[#{name.to_s.inspect}]
           end
           protected #{name.to_sym.inspect}
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
     end
 

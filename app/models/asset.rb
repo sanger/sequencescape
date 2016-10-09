@@ -306,12 +306,12 @@ class Asset < ActiveRecord::Base
 
   QC_STATES.reject { |k,v| k.nil? }.each do |state, qc_state|
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def qc_#{qc_state}
         self.qc_state = #{state.inspect}
         self.save!
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def compatible_qc_state

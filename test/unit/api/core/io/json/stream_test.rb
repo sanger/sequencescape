@@ -113,12 +113,12 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
 
       should 'hash' do
         @value = { 'a' => 'b' }
-        @expected = %Q{{"a":"b"}}
+        @expected = '{"a":"b"}'
       end
 
       should 'array' do
         @value = ['a','b']
-        @expected = %Q{["a","b"]}
+        @expected = '["a","b"]'
       end
 
       should 'symbol' do

@@ -39,12 +39,12 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
 
   def declare_action(name, options)
     line = __LINE__ + 1
-    singleton_class.class_eval(%Q{
+    singleton_class.class_eval("
       def _#{name}(request, response)
         object = @handler.call(self, request, response)
         yield(owner_for(request, object), object)
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
   private :declare_action
 

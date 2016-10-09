@@ -26,7 +26,7 @@ Given /^project "([^\"]*)" has enforced quotas$/ do |name|
 end
 
 Given /^last submission is processed$/ do
-  step(%Q{1 pending delayed jobs are processed})
+  step("1 pending delayed jobs are processed")
 end
 
 Given /^the project "([^\"]+)" has an active study called "([^\"]+)"$/ do |project_name, study_name|

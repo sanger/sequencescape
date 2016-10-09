@@ -20,7 +20,7 @@ class ::Io::Order < ::Core::Io::Base
   set_json_root(:order)
   set_eager_loading { |model| model.include_study.include_project.include_assets }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                                           study <=  study
                                      study.name  => study.name
 
@@ -36,5 +36,5 @@ class ::Io::Order < ::Core::Io::Base
                      request_options_structured <=> request_options
 
                                            user <=  user
-  })
+  ")
 end

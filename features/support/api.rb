@@ -44,13 +44,13 @@ end
 module ::Core::Endpoint::BasicHandler::EndpointLookup
   [ :object, :class ].each do |name|
     line = __LINE__ + 1
-    module_eval(%Q{
+    module_eval("
       def endpoint_for_#{name}_with_object_service(target, *args, &block)
         return ::TestSampleEndpoint if ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api? and (target.is_a?(::Sample) or target == ::Sample)
         endpoint_for_#{name}_without_object_service(target, *args, &block)
       end
       alias_method_chain(:endpoint_for_#{name}, :object_service)
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def self.testing_api?

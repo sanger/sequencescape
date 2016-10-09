@@ -66,7 +66,7 @@ class FakeBarcodeService < FakeSinatraService
     post('/plate_barcode_service/plate_barcodes.xml') do
       barcode = FakeBarcodeService.instance.next_barcode!
       headers('Content-Type' => 'text/xml')
-      body(%Q{<plate_barcode><id>42</id><name>Barcode #{barcode}</name><barcode>#{barcode}</barcode></plate_barcode>})
+      body("<plate_barcode><id>42</id><name>Barcode #{barcode}</name><barcode>#{barcode}</barcode></plate_barcode>")
     end
   end
 end

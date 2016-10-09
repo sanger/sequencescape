@@ -33,7 +33,7 @@ private
     # do this through the initialization of our model because we use the ActiveRecord::Base#becomes method in
     # our code, which would create a new default instance.
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
 
       def #{association_name}_with_initialization
         #{association_name}_without_initialization ||
@@ -66,7 +66,7 @@ private
 
       before_validation { |record| record.#{association_name } }
 
-    }, __FILE__, line)
+    ", __FILE__, line)
 
     def self.required_tags
       @required_tags ||= Hash.new {|h,k| h[k] = Array.new }
@@ -106,11 +106,11 @@ private
 
     # Ensure that it is correctly associated back to the owner model and that the table name
     # is correctly set.
-    metadata.instance_eval %Q{
+    metadata.instance_eval "
       self.table_name =('#{table_name}')
       belongs_to :#{as_name}, :class_name => #{ self.name.inspect }, :validate => false, :autosave => false
       belongs_to :owner, :foreign_key => :#{as_name}_id, :class_name => #{self.name.inspect}, :validate => false, :autosave => false, :inverse_of => :#{as_name}_metadata
-    }
+    "
 
     # Finally give it a name!
     const_set(:Metadata, metadata)

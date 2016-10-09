@@ -29,12 +29,12 @@ class TransferTemplate < ActiveRecord::Base
 
   def self.transfer_constructor(name)
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def #{name}(attributes)
         attributes.merge!(:transfers => self.transfers) unless self.transfers.blank?
         transfer_class.#{name}(attributes)
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   transfer_constructor(:create!)

@@ -28,7 +28,7 @@ end
 
 
 Then /^there should be no submissions to be processed$/ do
-  step %Q{there should be no delayed jobs to be processed}
+  step "there should be no delayed jobs to be processed"
 end
 
 Then /^the submission with UUID "([^\"]+)" is ready$/ do |uuid|
@@ -158,9 +158,9 @@ Given /^the sample tubes are part of submission "([^\"]*)"$/ do |submission_uuid
 end
 
 Then /^I create the order and submit the submission/ do
-  step %q{I choose "build_submission_yes"}
-  step %q{I press "Create Order"}
-  step %q{I press "Submit"}
+  step 'I choose "build_submission_yes"'
+  step 'I press "Create Order"'
+  step 'I press "Submit"'
 end
 
 

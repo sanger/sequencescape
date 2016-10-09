@@ -36,7 +36,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     common_keys = read_only.map(&:first) & read_write.map(&:first)
     read_only.delete_if { |k,_| common_keys.include?(k) }
     code.concat(read_only.map do |json, _|
-      %Q{process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }}
+      "process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }"
     end)
 
     # Now the harder bit: for attribute we need to work out how we would fill in the attribute

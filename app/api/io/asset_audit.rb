@@ -44,11 +44,11 @@ class ::Io::AssetAudit < ::Core::Io::Base
 
 
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
        message  <=> message
            key  <=> key
     created_by  <=> created_by
     asset_uuid  <=> asset
   witnessed_by  <=> witnessed_by
-  })
+  ")
 end

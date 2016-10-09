@@ -9,7 +9,7 @@ class ::Io::Batch < ::Core::Io::Base
   set_json_root(:batch)
   set_eager_loading { |model| model.include_user.include_requests.include_pipeline }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                state  => state
     production_state  => production_state
             qc_state  => qc_state
@@ -17,5 +17,5 @@ class ::Io::Batch < ::Core::Io::Base
           user.login  => user.login
 
             requests <=> requests
-  })
+  ")
 end

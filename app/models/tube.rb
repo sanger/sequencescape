@@ -63,7 +63,7 @@ class Tube < Aliquot::Receptacle
 
   def self.delegate_to_purpose(*methods)
     methods.each do |method|
-      class_eval(%Q{def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end})
+      class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end")
     end
   end
 

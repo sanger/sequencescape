@@ -18,9 +18,9 @@ When /^I print the following labels in the asset group$/ do |table|
   stub_request(:post, LabelPrinter::PmbClient.print_job_url)
               .with(headers: LabelPrinter::PmbClient.headers)
 
-  step(%Q{I follow "Print labels"})
-  step(%Q{I select "xyz" from "Barcode Printer"})
-  step(%Q{I press "Print"})
+  step('I follow "Print labels"')
+  step('I select "xyz" from "Barcode Printer"')
+  step('I press "Print"')
 
   assert_requested(:post, LabelPrinter::PmbClient.print_job_url,
     headers:  LabelPrinter::PmbClient.headers, times: 1) do |req|

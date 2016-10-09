@@ -17,14 +17,14 @@ class Endpoints::Studies < Core::Endpoint::Base
     has_many(:sample_manifests, :json => 'sample_manifests', :to => 'sample_manifests') do
       def self.constructor(name, method)
         line = __LINE__ + 1
-        instance_eval(%Q{
+        instance_eval("
           bind_action(:create, :as => #{name.to_sym.inspect}, :to => #{name.to_s.inspect}) do |_, request, response|
             ActiveRecord::Base.transaction do
               manifest = request.target.#{method}(request.attributes)
               request.io.eager_loading_for(manifest.class).include_uuid.find(manifest.id)
             end
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
 
       constructor(:create_for_plates, :create_for_plate!)

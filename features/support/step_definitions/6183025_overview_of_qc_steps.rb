@@ -11,10 +11,10 @@ end
 Then /^I create a "([^"]*)" from plate "([^"]*)"$/ do |plate_types, source_plate|
   step(%Q{I fill in "Source plates" with "#{source_plate}"})
   step(%Q{I select "#{plate_types}" from "Plate purpose"})
-  step(%Q{I select "xyz" from "Barcode printer"})
-  step(%Q{I fill in "User barcode" with "2470000100730"})
-  step(%Q{I press "Submit"})
-  step(%Q{the plate barcode webservice returns "77777"})
+  step('I select "xyz" from "Barcode printer"')
+  step('I fill in "User barcode" with "2470000100730"')
+  step('I press "Submit"')
+  step('the plate barcode webservice returns "77777"')
 end
 
 Given /^plate "([^"]*)" has had pico analysis results uploaded$/ do |barcode|

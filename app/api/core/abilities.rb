@@ -70,11 +70,11 @@ module Core::Abilities
     module ClassMethods
       def recorder_helper(name)
         line = __LINE__ + 1
-        singleton_class.class_eval(%Q{
+        singleton_class.class_eval("
           def #{name}(&block)
             record(@#{name} ||= Recorder.new, &block)
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
 
       def record(recorder, &block)

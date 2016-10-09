@@ -15,7 +15,7 @@ module ViewsSchema
       yield(name,definition)
     end
   rescue ActiveRecord::StatementInvalid => exception
-      puts %Q{\e[1;31m
+      puts "\e[1;31m
 ==============================================================
 *                          WARNING!                          *
 *        The attempt to dump the view schema failed.         *
@@ -31,15 +31,15 @@ module ViewsSchema
 *      Downstream users should be notified of potential      *
 *                        disruption.                         *
 ==============================================================
-\e[0m}
+\e[0m"
       raise exception
   end
 
   def self.all_views
-    ActiveRecord::Base.connection.execute(%Q{
+    ActiveRecord::Base.connection.execute("
       SELECT TABLE_NAME AS name
       FROM INFORMATION_SCHEMA.VIEWS
-      WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.connection.current_database}';}
+      WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.connection.current_database}';"
     ).map do |v|
       # Behaviour depends on ruby version, so we need to work out what we have
       v.is_a?(Hash) ? v['name'] : v.first

@@ -9,10 +9,10 @@ class ::Io::Submission < ::Core::Io::Base
   set_json_root(:submission)
   set_eager_loading { |model| model.include_orders }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
      state  => state
     orders <=> orders
 
       user <=  user
-  })
+  ")
 end

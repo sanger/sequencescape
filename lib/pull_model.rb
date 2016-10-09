@@ -58,9 +58,9 @@ class ScriptRenderer < Renderer
   def render_object(objects)
     objects.map do |object|
       att = object_to_hash(object)
-        %Q{
+        "
             #{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save(validate: false)
-          }
+          "
     end
   end
 end

@@ -90,7 +90,7 @@ class RequestType < ActiveRecord::Base
     target_method = options[:method] || name
 
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def #{name}(attributes = nil, &block)
         raise RequestType::DeprecatedError if self.deprecated
         attributes ||= {}
@@ -102,7 +102,7 @@ class RequestType < ActiveRecord::Base
           requests << request
         end
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   request_constructor(:create!)

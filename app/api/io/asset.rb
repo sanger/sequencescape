@@ -9,8 +9,8 @@ class Io::Asset < Core::Io::Base
   set_json_root(:asset)
   set_eager_loading { |model| model.include_barcode_prefix }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                          name  => name
                      qc_state  => qc_state
-  })
+  ")
 end

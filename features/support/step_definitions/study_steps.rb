@@ -358,12 +358,12 @@ end
 
 When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
  step %Q{I am on the workflow page for study "#{study_name}"}
- step(%Q{I follow "Generate Accession Number"})
+ step('I follow "Generate Accession Number"')
 end
 
 When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
  step %Q{I am on the workflow page for study "#{study_name}"}
- step(%Q{I follow "Update EBI Study data"})
+ step('I follow "Update EBI Study data"')
 end
 
 Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
@@ -372,7 +372,7 @@ Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
 end
 
 Given /^the study "([^\"]+)" has a valid dac$/ do |study_name|
-  step(%Q{user "dac" exists})
+  step('user "dac" exists')
   step(%Q{user "dac" is an "Data Access Contact" of study "#{study_name}"})
 end
 
@@ -407,13 +407,13 @@ Given /^study "([^"]*)" has an ENA project ID of "([^"]*)"$/ do |study_name, ena
 end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
-  step(%Q{I am on the homepage})
-  step(%Q{I follow "Create Study"})
+  step("I am on the homepage")
+  step('I follow "Create Study"')
   step(%Q{I fill in "Study name" with "#{study_name}"})
-  step(%Q{I select "Not suitable for alignment" from "Reference genome"})
-  step(%Q{I fill in "Study description" with "some description"})
+  step('I select "Not suitable for alignment" from "Reference genome"')
+  step('I fill in "Study description" with "some description"')
   step(%Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"})
-  step(%Q{I press "Create"})
+  step('I press "Create"')
 end
 
 

@@ -57,7 +57,7 @@ module DelegateValidation
 
       args.each do |attribute|
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def #{attribute}_before_type_cast
             #{options[:to]}.#{attribute} #{default}
           end
@@ -69,7 +69,7 @@ module DelegateValidation
           def #{attribute}_needs_checking?
             #{attribute}_before_type_cast.present? or include_unset_values?
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
     end
   end

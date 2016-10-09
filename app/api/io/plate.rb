@@ -9,7 +9,7 @@ class Io::Plate < Io::Asset
   set_json_root(:plate)
   set_eager_loading { |model| model.include_plate_purpose }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                                            size <=> size
                              plate_purpose.name  => plate_purpose.name
                          plate_purpose.lifespan  => plate_purpose.lifespan
@@ -35,5 +35,5 @@ class Io::Plate < Io::Asset
                          two_dimensional_barcode  => barcode.two_dimensional
                                    ean13_barcode  => barcode.ean13
                                     barcode_type  => barcode.type
-  })
+  ")
 end

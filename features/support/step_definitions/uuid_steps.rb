@@ -201,7 +201,7 @@ end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (\d+)$/ do |count, model, id|
   (0...count.to_i).each do |index|
-    step(%Q{the #{model.singularize} exists with ID #{id.to_i+index}})
+    step("the #{model.singularize} exists with ID #{id.to_i+index}")
   end
 end
 

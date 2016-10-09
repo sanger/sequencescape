@@ -14,7 +14,7 @@ class QcFile < ActiveRecord::Base
 
     def has_qc_files
       line = __LINE__ + 1
-      class_eval(%Q{
+      class_eval("
         has_many(:qc_files, {:as => :asset, :dependent => :destroy })
 
         def add_qc_file(file, filename=nil)
@@ -26,7 +26,7 @@ class QcFile < ActiveRecord::Base
         def update_concentrations_from(parser)
           true
         end
-      }, __FILE__, line)
+      ", __FILE__, line)
     end
   end
 

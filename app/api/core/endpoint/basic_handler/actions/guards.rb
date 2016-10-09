@@ -9,11 +9,11 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
     def initialize(method = nil, &block)
       if method.present?
         line = __LINE__ + 1
-        singleton_class.class_eval(%Q{
+        singleton_class.class_eval("
           def execute(object)
             object.#{method}
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       elsif block_given?
         singleton_class.send(:define_method, :execute, &block)
       else

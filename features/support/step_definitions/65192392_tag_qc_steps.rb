@@ -59,18 +59,18 @@ end
 Given /^I am set up for testing qcable ordering$/ do
   lot = Lot.find_by_lot_number('1234567890')
   user = User.last
-  step %Q{the plate barcode webservice returns "1000001..1000009"}
-  step %Q{a robot exists}
+  step 'the plate barcode webservice returns "1000001..1000009"'
+  step "a robot exists"
   qccreate = QcableCreator.create!(:lot=>lot,:user=>user,:count=>6)
 
-  step %Q{all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"}
+  step 'all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"'
 
   sqc_a = Stamp::StampQcable.new(:bed=>'1',:order=>1,:qcable=>qccreate.qcables[0])
   sqc_b = Stamp::StampQcable.new(:bed=>'2',:order=>2,:qcable=>qccreate.qcables[4])
   stamp_a = Stamp.create!(:user=>user,:tip_lot=>'1234556',:stamp_qcables => [sqc_a,sqc_b],:lot=>lot, :robot=>Robot.last)
 
 
-  step %Q{all of this is happening at exactly "23-Oct-2010 23:20:00+01:00"}
+  step 'all of this is happening at exactly "23-Oct-2010 23:20:00+01:00"'
 
   sqc_c = Stamp::StampQcable.new(:bed=>'5',:order=>1,:qcable=>qccreate.qcables[3])
   sqc_d = Stamp::StampQcable.new(:bed=>'3',:order=>2,:qcable=>qccreate.qcables[2])
@@ -82,15 +82,15 @@ Given /^I have a qcable$/ do
   lot = Lot.find_by_lot_number('1234567890')
   user = User.last
   step %{the UUID of the next plate created will be "55555555-6666-7777-8888-000000000004"}
-  step %Q{the plate barcode webservice returns "1000001"}
+  step 'the plate barcode webservice returns "1000001"'
   QcableCreator.create!(:lot=>lot,:user=>user,:count=>1)
 end
 
 Given /^I have two qcables$/ do
   lot = Lot.find_by_lot_number('1234567890')
   user = User.last
-  step %Q{the plate barcode webservice returns "1000001"}
-  step %Q{the plate barcode webservice returns "1000002"}
+  step 'the plate barcode webservice returns "1000001"'
+  step 'the plate barcode webservice returns "1000002"'
   QcableCreator.create!(:lot=>lot,:user=>user,:count=>2)
 end
 
@@ -109,8 +109,8 @@ Given /^I have a qc library created$/ do
   lot = Lot.find_by_lot_number('1234567890')
   lot_b = Lot.find_by_lot_number('1234567891')
   user = User.last
-  step %Q{the plate barcode webservice returns "1000001"}
-  step %Q{the plate barcode webservice returns "1000002"}
+  step 'the plate barcode webservice returns "1000001"'
+  step 'the plate barcode webservice returns "1000002"'
   qca = QcableCreator.create!(:lot=>lot,:user=>user,:count=>1)
   qcb = QcableCreator.create!(:lot=>lot_b,:user=>user,:count=>1)
 

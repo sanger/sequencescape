@@ -300,20 +300,20 @@ module Attributable
       end
 
       unless save_blank_value
-        model.class_eval(%Q{
+        model.class_eval("
           before_validation do |record|
             value = record.#{name}
             record.#{name}= nil if value and value.blank?
           end
-        })
+        ")
       end
 
       unless (condition = conditions[:if]).nil?
-        model.class_eval(%Q{
+        model.class_eval("
           before_validation do |record|
             record.#{name}= nil unless record.#{condition}
           end
-        })
+        ")
       end
     end
 

@@ -8,7 +8,7 @@ class Io::Aliquot < Core::Io::Base
   set_model_for_input(::Aliquot)
   set_json_root(:aliquot)
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                 sample  => sample
 
               tag.name  => tag.name
@@ -20,5 +20,5 @@ class Io::Aliquot < Core::Io::Base
 
       insert_size.from  => insert_size.from
         insert_size.to  => insert_size.to
-  })
+  ")
 end

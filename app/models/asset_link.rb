@@ -66,7 +66,7 @@ class AssetLink < ActiveRecord::Base
         plural_name = name.to_s.pluralize.to_sym
         has_many(plural_name, scope, :through => :links_as_child, :source => :ancestor)
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
 
           def #{name}
             #{plural_name}.first
@@ -82,7 +82,7 @@ class AssetLink < ActiveRecord::Base
           def has_#{name}?
             #{name}.present?
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
     end
   end

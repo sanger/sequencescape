@@ -18,7 +18,7 @@ When /^I print the following labels$/ do |table|
   stub_request(:post, LabelPrinter::PmbClient.print_job_url)
               .with(headers: LabelPrinter::PmbClient.headers)
 
-  step(%Q{I press "Print labels"})
+  step('I press "Print labels"')
 
   assert_requested(:post, LabelPrinter::PmbClient.print_job_url,
     headers:  LabelPrinter::PmbClient.headers, times: 1) do |req|
@@ -45,7 +45,7 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
     :assets => sample_tubes,
     :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"76", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
     )
-  step(%Q{1 pending delayed jobs are processed})
+  step("1 pending delayed jobs are processed")
 
 end
 

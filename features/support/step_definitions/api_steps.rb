@@ -248,7 +248,7 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   begin
   assert_equal(match[1].to_i, page.driver.status_code)
   rescue MiniTest::Assertion => e
-    step %Q{show me the HTTP response body}
+    step "show me the HTTP response body"
     raise e
   end
 

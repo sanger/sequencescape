@@ -9,14 +9,14 @@ module ActiveRecord::StringSanitizer
     base.instance_eval do
       def squishify(*names)
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           before_save do |record|
             names.each do |name|
               value = record.send(name)
               record.send(name.to_s + '=', value.squish) if value.is_a? String
             end
           end
-          }, __FILE__, line)
+          ", __FILE__, line)
       end
     end
   end

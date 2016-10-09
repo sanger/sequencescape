@@ -9,9 +9,9 @@ class ::Io::SpecificTubeCreation < ::Core::Io::Base
   set_json_root(:specific_tube_creation)
   set_eager_loading { |model| model.include_parent }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                    user <=> user
                  parent <=> parent
      set_child_purposes <=  child_purposes
-  })
+  ")
 end
