@@ -49,7 +49,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           last_mail = ActionMailer::Base.deliveries.last
           assert_match(/Project/,last_mail.subject)
           assert last_mail.bcc.include?("abc123@example.com")
-          assert_match(/Project registered/, last_mail.body)
+          assert_match(/Project registered/, last_mail.text_part.body.to_s)
           assert_equal 1, last_mail.bcc.size
         end
       end
@@ -82,7 +82,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           assert_match(/Project approved/, last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
           assert !last_mail.bcc.include?("")
-          assert_match(/Project approved/, last_mail.body)
+          assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
     end
@@ -113,7 +113,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           assert last_mail.bcc.include?("south@example.com")
           assert last_mail.bcc.include?("west@example.com")
           assert !last_mail.bcc.include?("")
-          assert_match(/Project approved/, last_mail.body)
+          assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
 
@@ -145,7 +145,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           assert_match(/Project approved/,last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
           assert !last_mail.bcc.include?("")
-          assert_match(/Project approved/, last_mail.body)
+          assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
 

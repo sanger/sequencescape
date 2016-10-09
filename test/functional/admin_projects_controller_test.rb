@@ -71,7 +71,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
           last_mail = ActionMailer::Base.deliveries.last
           assert_match(/[TEST].*Project/, last_mail.subject)
           assert last_mail.bcc.include? "project.owner@example.com"
-          assert_match(/Project approved by/, last_mail.body)
+          assert_match(/Project approved by/, last_mail.text_part.body.to_s)
         end
       end
     end
