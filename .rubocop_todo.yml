@@ -183,11 +183,6 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/ShadowingOuterLocalVariable:
   Enabled: false
 
-# Offense count: 23
-# Cop supports --auto-correct.
-Lint/StringConversionInInterpolation:
-  Enabled: false
-
 # Offense count: 1
 Lint/UnderscorePrefixedVariableName:
   Exclude:

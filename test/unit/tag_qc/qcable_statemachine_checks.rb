@@ -28,7 +28,7 @@ module QcableStatemachineChecks
           end
 
           acceptable_states.map(&:to_s).each do |state|
-            should "transition from #{state} to #{end_state.to_s}" do
+            should "transition from #{state} to #{end_state}" do
               @qcable.state = state
               @qcable.send(:"#{name}")
               assert_equal end_state.to_s, @qcable.state

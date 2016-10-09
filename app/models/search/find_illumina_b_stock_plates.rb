@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 
-require "#{Rails.root.to_s}/app/models/illumina_b/plate_purposes"
+require "#{Rails.root}/app/models/illumina_b/plate_purposes"
 
 class Search::FindIlluminaBStockPlates < Search::FindIlluminaBPlates
   def illumina_b_plate_purposes

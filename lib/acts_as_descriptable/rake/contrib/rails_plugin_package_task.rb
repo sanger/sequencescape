@@ -212,7 +212,7 @@ module Rake
           x_links << "<a href=\"#{link}\">#{link}</a>&nbsp;"
         end
       else
-        x_links = "<a href=\"#{@extra_links.to_s}\">#{@extra_links.to_s}</a>"
+        x_links = "<a href=\"#{@extra_links}\">#{@extra_links}</a>"
       end
       return x_links
     end

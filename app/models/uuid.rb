@@ -79,7 +79,7 @@ class Uuid < ActiveRecord::Base
           SELECT r.id AS id
           FROM #{self.quoted_table_name} r
           LEFT OUTER JOIN #{Uuid.quoted_table_name} u
-          ON r.id=u.resource_id AND u.resource_type="#{self.to_s}"
+          ON r.id=u.resource_id AND u.resource_type="#{self}"
           WHERE u.id IS NULL
         }).map { |r| block.call(r['id']) }
       end

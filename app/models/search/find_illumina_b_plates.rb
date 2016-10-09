@@ -7,7 +7,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 
-require "#{Rails.root.to_s}/app/models/illumina_b/plate_purposes"
+require "#{Rails.root}/app/models/illumina_b/plate_purposes"
 # Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 class Search::FindIlluminaBPlates < Search
   def scope(criteria)

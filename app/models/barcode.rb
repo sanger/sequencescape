@@ -171,7 +171,7 @@ class Barcode
     prefix, number, check = self.split_barcode(code)
     human_prefix = self.prefix_to_human(prefix)
     if calculate_barcode(human_prefix, number.to_i) == code.to_i
-      bcode = "#{human_prefix}#{number.to_s}#{check.chr}"
+      bcode = "#{human_prefix}#{number}#{check.chr}"
     end
     bcode
   end

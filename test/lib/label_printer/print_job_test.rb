@@ -15,7 +15,7 @@ class PrintJobTest < ActiveSupport::TestCase
                   [{main_label:
                     {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
                     bottom_left: "#{plate.sanger_human_barcode}",
-                    top_right: "#{plate_purpose.name.to_s}",
+                    top_right: "#{plate_purpose.name}",
                     bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
                     top_far_right: "#{plate.parent.try(:barcode)}",
                     barcode: "#{plate.ean13_barcode}"}}]
