@@ -29,7 +29,6 @@ Then /^I should see an error "([^\"]*)"$/ do |msg|
   assert_contain msg
 end
 
-# TODO[xxx]: This is incredibly slow!
 Then /^the following samples should be in the sample registration fields:$/ do |table|
   number = table.rows.count
   approved_heads = table.headers
