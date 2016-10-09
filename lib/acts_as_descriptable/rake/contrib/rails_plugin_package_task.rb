@@ -52,7 +52,7 @@
 #      p.verbose = true
 #    end
 #    task :rails_plugin=>:clobber
-#    
+#
 #    desc "Publish Ruby on Rails plug-in on RubyForge"
 #    task :release_plugin=>:rails_plugin do |task|
 #      pub = Rake::SshDirPublisher.new("#{RubyForgeConfig[:user_name]}@rubyforge.org",
@@ -70,21 +70,21 @@ module Rake
   # that recurses through your _package_files_, generates compliant index.html for
   # each folder (that contains a file), and creates a directory structure that you
   # can publish as a set for your plugin.
-  # 
+  #
   # Noteworthy attributes:
-  # 
+  #
   # [package_dir]  Directory to store the package. Default 'pkg/rails_plugin'
-  #   
+  #
   # [package_dir]  Files to include in the plugin.
-  #   
+  #
   # [extra_links]  Links to put on every generated index page. Can be a hash, e.g.
   #                {"Home"=>"http://roxml.rubyforge.org"}, an array of strings or
   #                a single string.
-  #                  
+  #
   # [plugin_files]  Files to be placed in the root folder of the plug-in, e.g.
   #                 init.rb. All files that are in the root of _package_dir_
   #                 will also be placed in the root of the plug-in.
-  #                   
+  #
   class RailsPluginPackageTask < TaskLib
     # Name of plug-in or application
     attr_accessor :name
@@ -119,7 +119,7 @@ module Rake
       @folders = {}
       @verbose = false
     end
-    
+
     # Define the rails_plugin task
     def define
       desc "Create Ruby on Rails plug-in package"
@@ -130,7 +130,7 @@ module Rake
           cp(fn, @dest,:verbose=>false)
           add_file(File.basename(fn))
         end
-        
+
         @package_files.each do |fn|
           puts ". #{fn}" if verbose
           f = File.join(@dest, fn)
@@ -147,10 +147,10 @@ module Rake
             add_file(fn)
           end
         end
-        
+
         generate_index_files()
       end
-      
+
       desc 'Remove package files'
       task :clobber_package do
         @dest = "#@package_dir"
@@ -170,7 +170,7 @@ module Rake
           index.write("<body>\n")
           index.write("<h2>#{title}</h2>\n")
           extra_links = create_extra_links()
-          index.write("<p>#{extra_links}</p>\n") if extra_links          
+          index.write("<p>#{extra_links}</p>\n") if extra_links
           files.each { |fn|
             puts("  - Adding #{fn}") if @verbose
             index.write("&nbsp;&nbsp;<a href=\"#{fn}\">#{fn}</a><br/>\n")
@@ -181,7 +181,7 @@ module Rake
         end
       end
     end
-            
+
   private
     # Add a file to the folders hash
     def add_file(filename)
@@ -198,7 +198,7 @@ module Rake
       folder = @folders[dir] || @folders[dir]=[]
       folder << fn
     end
-    
+
     # Create the anchor tag for extra links
     def create_extra_links
       return nil unless @extra_links
@@ -210,7 +210,7 @@ module Rake
       elsif (@extra_links.class==Array)
         @extra_links.each do |link|
           x_links << "<a href=\"#{link}\">#{link}</a>&nbsp;"
-        end      
+        end
       else
         x_links = "<a href=\"#{@extra_links.to_s}\">#{@extra_links.to_s}</a>"
       end

@@ -56,9 +56,9 @@ class WorksheetTest < ActiveSupport::TestCase
 	context "data worksheet" do
 
 		setup do
-	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook, 
-	    	columns: SampleManifestExcel.configuration.columns.plate_full.dup, 
-	    	sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup, 
+	    @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook,
+	    	columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+	    	sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup,
 	    	password: '1111')
 	  	save_file
 	  end

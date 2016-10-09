@@ -46,5 +46,5 @@ class ManifestTypeListTest < ActiveSupport::TestCase
     yaml.shift
     refute_equal SampleManifestExcel::ManifestTypeList.new(yaml), manifest_type_list
   end
-  
+
 end

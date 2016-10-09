@@ -1,5 +1,5 @@
 module SampleManifestExcel
-  
+
   class Configuration
 
     include SampleManifestExcel::Helpers
@@ -71,7 +71,7 @@ module SampleManifestExcel
           self.manifest_types[key] = extract
         end
       end
-      
+
       def manifest_types
         @manifest_types ||= {}
       end

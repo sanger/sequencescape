@@ -5,7 +5,7 @@ module SampleManifestExcel
   class NullRange
 
     ##
-    # Always returns A1:A10. 
+    # Always returns A1:A10.
     def reference
       "A1:A10"
     end

@@ -9,5 +9,5 @@ namespace :test do
   end
 
   desc "Run one Rcov report for the all files of the project"
-  task :rcov => ["test:aggregate:clean", "test:aggregate:on", "test:units:rcov", "test:functionals:rcov"] 
+  task :rcov => ["test:aggregate:clean", "test:aggregate:on", "test:units:rcov", "test:functionals:rcov"]
 end

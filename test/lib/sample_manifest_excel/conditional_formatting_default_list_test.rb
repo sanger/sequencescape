@@ -14,7 +14,7 @@ class ConditionalFormattingDefaultListTest < ActiveSupport::TestCase
 
   test "should have the correct number of defaults" do
     assert_equal rules.length, defaults.count
-    
+
   end
 
   test "#find_by should return the correct default" do

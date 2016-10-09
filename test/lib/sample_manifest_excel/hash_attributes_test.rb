@@ -8,7 +8,7 @@ class HashAttributesTest < ActiveSupport::TestCase
 
     include SampleManifestExcel::HashAttributes
 
-    set_attributes :gosling_a, :gosling_b, :gosling_c, :gosling_d, defaults: { gosling_d: "Consuela"} 
+    set_attributes :gosling_a, :gosling_b, :gosling_c, :gosling_d, defaults: { gosling_d: "Consuela"}
 
     attr_reader :gosling_e
 

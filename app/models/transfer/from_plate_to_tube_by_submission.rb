@@ -20,6 +20,6 @@ class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
   end
   private :locate_mx_library_tube_for
 
- 
+
 
 end

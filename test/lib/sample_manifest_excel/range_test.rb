@@ -59,8 +59,8 @@ class RangeTest < ActiveSupport::TestCase
     end
 
     should "#references should return first_cell reference, reference, fixed_reference and absolute_reference" do
-      assert_equal({first_cell_reference: range.first_cell_reference, 
-        reference: range.reference, fixed_reference: range.fixed_reference, 
+      assert_equal({first_cell_reference: range.first_cell_reference,
+        reference: range.reference, fixed_reference: range.fixed_reference,
         absolute_reference: range.absolute_reference}, range.references)
     end
 

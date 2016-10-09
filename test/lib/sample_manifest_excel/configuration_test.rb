@@ -78,5 +78,5 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
 
   end
-  
+
 end

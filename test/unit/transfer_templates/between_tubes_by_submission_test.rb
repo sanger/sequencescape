@@ -32,7 +32,7 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
 
       @tube_a.purpose.child_relationships.create!(:child => @final_tube.purpose, :transfer_request_type => RequestType.transfer)
 
-      
+
     end
 
     context "with one tube per submission" do

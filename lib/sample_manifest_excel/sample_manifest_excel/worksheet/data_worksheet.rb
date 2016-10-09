@@ -54,7 +54,7 @@ module SampleManifestExcel
       def add_columns
         columns.update(first_row, last_row, ranges, axlsx_worksheet)
         add_row columns.headings, styles[:wrap_text].reference
-        sample_manifest.details_array.each do |detail| 
+        sample_manifest.details_array.each do |detail|
           create_row(detail)
         end
 

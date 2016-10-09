@@ -5,11 +5,11 @@ class LibPoolNormTubeGenerator
   attr_accessor :plate
   attr_reader :user, :asset_group, :study
 
-  validates_presence_of :plate, message: "Barcode does not relate to any existing plate" 
+  validates_presence_of :plate, message: "Barcode does not relate to any existing plate"
   validates_presence_of :user, :study
 
   validate :check_state, :check_plate_purpose, if: Proc.new { |g| g.plate.present? }
-  
+
   def initialize(barcode, user, study)
     self.plate = barcode
     @user = user
@@ -44,7 +44,7 @@ class LibPoolNormTubeGenerator
           lib_pool_tubes.each do |tube|
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
-          
+
           @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.sanger_human_barcode}_qc_completed_tubes")
           Location.find_by_name("Cluster formation freezer").set_locations(destination_tubes)
         end

@@ -87,7 +87,7 @@ module SampleManifestExcel
     end
 
     def <=>(other)
-      return unless other.is_a?(self.class) 
+      return unless other.is_a?(self.class)
       columns <=> other.columns
     end
 
@@ -111,7 +111,7 @@ module SampleManifestExcel
           else
             copy k, v
           end
-        rescue TypeError => e 
+        rescue TypeError => e
           puts "column can't be created for #{k}: #{e.message}"
         end
       end

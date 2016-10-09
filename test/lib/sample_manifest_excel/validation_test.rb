@@ -34,7 +34,7 @@ class ValidationTest < ActiveSupport::TestCase
 
     should "should not add a range" do
       validation.update(range: range)
-      refute_equal range.absolute_reference, validation.formula1 
+      refute_equal range.absolute_reference, validation.formula1
     end
 
   end

@@ -10,7 +10,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
     plate.stubs(:state).returns("qc_complete")
     plate
   end
-  
+
   def setup
     @plate = valid_plate
     @user = create(:admin)
