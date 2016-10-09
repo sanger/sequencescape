@@ -5,8 +5,9 @@ sudo: false
 cache: bundler
 bundler_args: --without warehouse development deployment
 env:
-  - "CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake test'"
+  - "TZ=Europe/London SUITE='rake test'"
   - "JRUBY_OPTS='' CUCUMBER_FORMAT=TravisFormatter TZ=Europe/London SUITE='cucumber'"
+  - "SUITE='rubocop -R'"
 before_script:
   - "RAILS_ENV=test bundle exec rake db:setup"
 script:
