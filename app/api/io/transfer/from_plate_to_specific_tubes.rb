@@ -16,4 +16,3 @@ class ::Io::Transfer::FromPlateToSpecificTubes < ::Core::Io::Base
        transfers  => transfers
   })
 end
-

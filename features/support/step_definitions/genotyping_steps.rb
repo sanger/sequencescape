@@ -222,4 +222,3 @@ Given /^the internal QC plates are created$/ do
   step(%Q{I press "Create new Plate"})
   step(%Q{all pending delayed jobs are processed})
 end
-

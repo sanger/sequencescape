@@ -7,5 +7,3 @@ Study.find_each do |study|
   # delayed job
   study_report.perform
 end
-
-

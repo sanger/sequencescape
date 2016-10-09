@@ -34,4 +34,3 @@ Then /^the tubes of the last tube creation are children of the parent plate$/ do
   assert(!tube_creation.children.empty?, "There are no children in the tube creation")
   assert(tube_creation.children.all?(&tube_creation.parent.children.method(:include?)), "Children of the last tube creation are not children of the parent")
 end
-

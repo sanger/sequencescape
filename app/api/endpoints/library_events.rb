@@ -13,4 +13,3 @@ class ::Endpoints::LibraryEvents < ::Core::Endpoint::Base
     belongs_to(:user, :json => 'user')
   end
 end
-

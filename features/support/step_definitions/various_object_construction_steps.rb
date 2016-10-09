@@ -23,4 +23,3 @@ end
 Given /^an (item) named "([^\"]+)" exists$/ do |type,name|
   FactoryGirl.create(type.gsub(/[^a-z0-9]+/, '_').to_sym, :name => name)
 end
-

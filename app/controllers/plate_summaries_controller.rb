@@ -25,4 +25,3 @@ class PlateSummariesController < ApplicationController
     end
   end
 end
-

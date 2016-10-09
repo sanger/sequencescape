@@ -122,6 +122,3 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
     end
   end
 end
-
-
-

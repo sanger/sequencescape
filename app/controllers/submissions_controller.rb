@@ -107,4 +107,3 @@ class SubmissionsController < ApplicationController
   end
   ##################################################         End of AJAX ROUTES
 end
-

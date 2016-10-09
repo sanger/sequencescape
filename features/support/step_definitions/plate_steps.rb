@@ -261,7 +261,3 @@ Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |b
   plate = Plate.find_by_barcode!(barcode)
   assert_equal label, plate.role
 end
-
-
-
-

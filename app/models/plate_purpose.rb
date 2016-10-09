@@ -259,4 +259,3 @@ require_dependency 'plate_purpose/initial_purpose'
 require_dependency 'pulldown/initial_plate_purpose'
 require_dependency 'pulldown/library_plate_purpose'
 require_dependency 'pulldown/stock_plate_purpose'
-

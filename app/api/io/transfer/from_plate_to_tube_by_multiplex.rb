@@ -15,4 +15,3 @@ class ::Io::Transfer::FromPlateToTubeByMultiplex < ::Core::Io::Base
        transfers  => transfers
   })
 end
-

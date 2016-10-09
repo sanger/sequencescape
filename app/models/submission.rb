@@ -297,4 +297,3 @@ class Array
     (inject([]) { |a,v|  a+[v,separator] })[0...-1]
   end
 end
-

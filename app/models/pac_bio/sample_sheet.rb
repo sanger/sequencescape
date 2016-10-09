@@ -95,4 +95,3 @@ class PacBio::SampleSheet
   end
 
 end
-

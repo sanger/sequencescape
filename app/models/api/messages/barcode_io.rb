@@ -17,5 +17,3 @@ class Api::Messages::BarcodeIO < Api::Base
   map_attribute_to_json_attribute(:created_at)
 
 end
-
-

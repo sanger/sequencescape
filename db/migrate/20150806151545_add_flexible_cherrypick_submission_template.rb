@@ -30,4 +30,3 @@ class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
     end
   end
 end
-

@@ -50,4 +50,3 @@ class Transfer::FromPlateToTube < Transfer
 
 
 end
-

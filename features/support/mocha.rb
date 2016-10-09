@@ -20,4 +20,3 @@ After do
     mocha_teardown
   end
 end
-

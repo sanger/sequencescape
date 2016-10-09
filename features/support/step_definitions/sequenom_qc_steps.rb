@@ -67,4 +67,3 @@ When /^well "([^"]*)" should come from well "([^"]*)" on plate "([^"]*)"$/ do |s
     assert plate.children.map(&:id).include?(sequenom_plate.id)
   end
 end
-

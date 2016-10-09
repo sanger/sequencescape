@@ -33,4 +33,3 @@ class Endpoints::Studies < Core::Endpoint::Base
     end
   end
 end
-

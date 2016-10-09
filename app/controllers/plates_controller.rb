@@ -97,5 +97,3 @@ class PlatesController < ApplicationController
   end
 
 end
-
-

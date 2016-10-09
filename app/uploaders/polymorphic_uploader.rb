@@ -143,5 +143,3 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
 
 
 end
-
-

@@ -47,4 +47,3 @@ module Core::Initializable
     end
   end
 end
-

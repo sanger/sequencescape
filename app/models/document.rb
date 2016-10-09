@@ -60,4 +60,3 @@ class Document < ActiveRecord::Base
   end
   private :update_document_attributes
 end
-

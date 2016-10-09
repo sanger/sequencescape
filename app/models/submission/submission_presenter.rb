@@ -30,4 +30,3 @@ class Submission::SubmissionPresenter < Submission::PresenterSkeleton
   end
 
 end
-

@@ -13,4 +13,3 @@ end
 After do |scenario|
   Cucumber.wants_to_quit = !!(scenario.failed? && ENV['FAIL_FAST'])
 end
-

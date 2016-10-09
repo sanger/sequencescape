@@ -88,4 +88,3 @@ end
 require 'mocha'
 require 'minitest/unit'
 require 'mocha/mini_test'
-

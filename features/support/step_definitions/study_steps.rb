@@ -445,4 +445,3 @@ end
 Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
   Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group=>dag)
 end
-

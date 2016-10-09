@@ -24,4 +24,3 @@ module Cherrypick::VolumeByMicroLitre
   end
   private :check_inputs_to_volume_to_cherrypick_by_micro_litre!
 end
-

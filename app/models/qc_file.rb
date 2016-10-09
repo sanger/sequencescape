@@ -78,4 +78,3 @@ class QcFile < ActiveRecord::Base
     end
   end
 end
-

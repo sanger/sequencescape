@@ -77,4 +77,3 @@ class Transfer::BetweenPlates < Transfer
   end
   private :request_type_between
 end
-

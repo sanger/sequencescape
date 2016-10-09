@@ -15,4 +15,3 @@ class ::Io::Transfer::FromPlateToTubeBySubmission < ::Core::Io::Base
        transfers  => transfers
   })
 end
-

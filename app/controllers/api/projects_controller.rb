@@ -17,4 +17,3 @@ private
     @context = ::Study.find(params[:study_id]).projects unless params[:study_id].blank?
   end
 end
-

@@ -17,4 +17,3 @@ Given /^the fields of the sample_metadata for the sample called "([^"]+)" are pr
   end.compact]
   sample.update_attributes!(:sample_metadata_attributes => updates)
 end
-

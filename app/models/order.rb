@@ -388,5 +388,3 @@ class Order < ActiveRecord::Base
     BroadcastEvent::OrderMade.create!(:seed=>self,:user=>user)
   end
 end
-
-

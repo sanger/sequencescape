@@ -29,4 +29,3 @@ class AssetAudit < ActiveRecord::Base
 
 
 end
-

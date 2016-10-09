@@ -29,4 +29,3 @@ class EventfulEntryTest < ActiveSupport::TestCase
 
   end
 end
-

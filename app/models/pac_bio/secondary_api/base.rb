@@ -14,5 +14,3 @@ class PacBio::SecondaryApi::Base < ActiveResource::Base
     super.sub(/\.json/, '')
   end
 end
-
-

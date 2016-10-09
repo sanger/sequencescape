@@ -139,4 +139,3 @@ private
     end
   end
 end unless self.class.const_defined?(:FakeSinatraService)
-

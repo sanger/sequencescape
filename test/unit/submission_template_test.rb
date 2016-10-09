@@ -83,4 +83,3 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     @order.input_field_infos.detect {|ifi| ifi.display_name == field_name} || raise("#{field_name} field not found")
   end
 end
-

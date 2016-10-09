@@ -50,5 +50,3 @@ class Api::Messages::FluidigmPlateIO < Api::Base
 
 
 end
-
-

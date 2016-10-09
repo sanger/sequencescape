@@ -50,4 +50,3 @@ module Core::Endpoint::BasicHandler::EndpointLookup
   end
   private :endpoint_for_class
 end
-

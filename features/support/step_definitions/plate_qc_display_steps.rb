@@ -35,4 +35,3 @@ Given /^plate "([^"]*)" has QC results$/ do |barcode|
     )
   end
 end
-

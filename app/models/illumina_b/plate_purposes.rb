@@ -72,5 +72,3 @@ end
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
 require_dependency "app/models/illumina_b/mx_tube_purpose"
-
-

@@ -38,4 +38,3 @@ Given /^(.+) the (\w+) asset of the asset "([^\"]+)"(.*)$/ do |pre,relation, id,
   step %Q{#{pre} the asset "#{related.id}"#{post}}
 
 end
-

@@ -88,4 +88,3 @@ Then /^I should be able to (enter|edit) the following fields$/ do |action, table
     step "I should see \"#{ hash[:value] }\""
   end
 end
-

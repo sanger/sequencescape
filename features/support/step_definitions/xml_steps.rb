@@ -70,4 +70,3 @@ When /^I (POST|PUT) the following XML to "(\/[^\"]+)":$/ do |action, path, xml|
     { 'CONTENT_TYPE' => 'application/xml', 'HTTP_ACCEPT' => 'application/xml' }
   )
 end
-

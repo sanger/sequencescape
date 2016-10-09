@@ -77,4 +77,3 @@ module Tasks::SetCharacterisationDescriptorsHandler
   end
 
 end
-

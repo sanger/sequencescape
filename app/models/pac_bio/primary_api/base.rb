@@ -15,5 +15,3 @@ class PacBio::PrimaryApi::Base < ActiveResource::Base
   end
 
 end
-
-

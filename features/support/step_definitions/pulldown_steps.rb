@@ -246,5 +246,3 @@ Then /^the user (should|should not) accept responsibility for pulldown library c
     well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each {|r| assert_equal accept=='should', r.request_metadata.customer_accepts_responsibility }
   end
 end
-
-

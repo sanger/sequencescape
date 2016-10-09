@@ -361,4 +361,3 @@ class StudyTest < ActiveSupport::TestCase
 
   end
 end
-

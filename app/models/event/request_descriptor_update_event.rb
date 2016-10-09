@@ -39,4 +39,3 @@ module Event::RequestDescriptorUpdateEvent
     end
   end
 end
-

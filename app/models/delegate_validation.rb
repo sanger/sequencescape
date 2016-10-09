@@ -108,4 +108,3 @@ module DelegateValidation
 
   end
 end
-

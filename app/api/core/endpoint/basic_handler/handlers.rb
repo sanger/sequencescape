@@ -52,4 +52,3 @@ module Core::Endpoint::BasicHandler::Handlers
   end
   private :_handler_for
 end
-

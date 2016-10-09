@@ -58,4 +58,3 @@ When /^the order with UUID "([^"]*)" has been added to a submission$/ do |uuid|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
   Submission.create!(:orders => [ order ], :user => order.user )
 end
-

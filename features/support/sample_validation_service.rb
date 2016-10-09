@@ -42,4 +42,3 @@ class FakeSampleValidationService < FakeSinatraService
 end
 
 FakeSampleValidationService.install_hooks(self, '@sample_validation_service')
-

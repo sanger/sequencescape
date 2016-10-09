@@ -53,4 +53,3 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   include InitialTube
 
 end
-

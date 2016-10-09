@@ -1602,4 +1602,3 @@ end
         end
         add_4000_information_types_to(pipeline)
       end
-

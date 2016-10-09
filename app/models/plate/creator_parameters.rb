@@ -49,4 +49,3 @@ class Plate::CreatorParameters
   end
 
 end
-

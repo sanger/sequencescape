@@ -23,4 +23,3 @@ class SetLocationTask < Task
     asset.save
   end
 end
-
