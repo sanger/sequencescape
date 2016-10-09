@@ -77,7 +77,7 @@ class Tube < Aliquot::Receptacle
   end
 
   def details
-    purpose.try(:name)||'Tube'
+    purpose.try(:name) || 'Tube'
   end
 
   def transfer_request_type_from(source)
@@ -89,7 +89,7 @@ class Tube < Aliquot::Receptacle
     attributes = args.extract_options!
     barcode    = args.first || attributes[:barcode]
     raise "Barcode: #{barcode} already used!" if barcode.present? and find_by_barcode(barcode).present?
-    barcode  ||= AssetBarcode.new_barcode
+    barcode ||= AssetBarcode.new_barcode
     create!(attributes.merge(:barcode => barcode), &block)
   end
 

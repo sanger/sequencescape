@@ -13,7 +13,7 @@ class Admin::PlatePurposesController < ApplicationController
 
   def index
     plate_purposes = PlatePurpose.all
-    @plate_purposes = plate_purposes.map{ |purpose| purpose.becomes(PlatePurpose) }
+    @plate_purposes = plate_purposes.map { |purpose| purpose.becomes(PlatePurpose) }
 
     respond_to do |format|
       format.html

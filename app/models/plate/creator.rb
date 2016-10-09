@@ -10,7 +10,7 @@ class Plate::Creator < ActiveRecord::Base
   PlateCreationError = Class.new(StandardError)
 
   class PurposeRelationship < ActiveRecord::Base
-    self.table_name =('plate_creator_purposes')
+    self.table_name = ('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, :class_name => 'Plate::Creator'
@@ -18,7 +18,7 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   class ParentPurposeRelationship < ActiveRecord::Base
-    self.table_name=('plate_creator_parent_purposes')
+    self.table_name = ('plate_creator_parent_purposes')
 
     belongs_to :plate_purpose, :class_name => 'Purpose'
   end

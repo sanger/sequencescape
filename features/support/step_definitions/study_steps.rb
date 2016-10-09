@@ -38,22 +38,22 @@ Given /^study "([^\"]*)" has samples registered$/ do |study|
   user = User.find_by_login 'user'
   new_sample_group = FactoryGirl.create :sample_group, :name => "new_sample_group", :user => user, :study => proj
   samples = {
-    "0"=>{
-      "name"=>"SUPPLIER SAMPLE NAME",
-      "sample_metadata_attributes"=>{
-        "organism"=>"COHORT",
-        "gc_content"=>"Neutral",
-        "scientific_rationale"=>"GEOGRAPHICAL REGION",
-        "concentration"=>"COUNTRY OF ORIGIN"
+    "0" => {
+      "name" => "SUPPLIER SAMPLE NAME",
+      "sample_metadata_attributes" => {
+        "organism" => "COHORT",
+        "gc_content" => "Neutral",
+        "scientific_rationale" => "GEOGRAPHICAL REGION",
+        "concentration" => "COUNTRY OF ORIGIN"
       }
     },
-    "1"=>{
-      "name"=>"Sample_987654",
-      "sample_metadata_attributes"=>{
-        "organism"=>"BSP",
-        "gc_content"=>"Neutral",
-        "scientific_rationale"=>"north ",
-        "concentration"=>"123456"
+    "1" => {
+      "name" => "Sample_987654",
+      "sample_metadata_attributes" => {
+        "organism" => "BSP",
+        "gc_content" => "Neutral",
+        "scientific_rationale" => "north ",
+        "concentration" => "123456"
       }
     }
   }
@@ -151,7 +151,7 @@ end
 Given /^the study "([^\"]+)" belongs to the program "([^\"]*)"$/ do |study_name, program_name|
   study = Study.find_by_name(study_name) or raise StandardError, "There appears to be no study named '#{study_name }'"
   program = Program.find_by_name(program_name) or raise StandardError, "Program not valid: '#{program_name}'"
-  study.study_metadata.program=program
+  study.study_metadata.program = program
   study.save!
 end
 
@@ -223,7 +223,7 @@ end
 
 Given /^the study "([^\"]*)" has the following contacts$/ do |study, table|
   table.hashes.each do |hash|
-    step 'user "'+hash['login']+'" is a "'+hash['role']+'" of study "'+study+'"'
+    step 'user "' + hash['login'] + '" is a "' + hash['role'] + '" of study "' + study + '"'
   end
 end
 
@@ -329,7 +329,7 @@ Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, ab
   assert_not_nil study.abbreviation.match(Regexp.new(abbreviation_regex))
 end
 When /^I get the XML accession for the study *"([^\"]+)"$/ do |name|
-  study= Study.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  study = Study.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
   visit(url_for(:controller => 'studies', :action => 'show_accession', :id => study.id, :format => :xml))
 end
 
@@ -443,5 +443,5 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
 end
 
 Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
-  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group=>dag)
+  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group => dag)
 end

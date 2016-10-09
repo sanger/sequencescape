@@ -30,7 +30,7 @@ namespace :test do
         end
       end
       bad_methods.sort { |a,b| a[1] <=> b[1] }.each do |name, score|
-        puts "%s: %d" % [name, score+1]
+        puts "%s: %d" % [name, score + 1]
       end
       raise "#{bad_methods.size} methods have a flog complexity > #{FLOG_COMPLEXITY_THRESHOLD}" unless bad_methods.empty?
       puts "OK"
@@ -43,7 +43,7 @@ namespace :test do
       STDOUT.flush
       flay = Flay.new({:fuzzy => false, :verbose => false, :mass => (FLAY_DUPLICATION_THRESHOLD + 1)})
 
-      files =  Flay.expand_dirs_to_files(['app'])
+      files = Flay.expand_dirs_to_files(['app'])
       exclude_files = YAML.load(File.read("#{Rails.root}/config/analytics/flay_whitelist.yml"))
       check_files = files - exclude_files
       #puts files.join("\n")
@@ -86,8 +86,8 @@ namespace :test do
     task :warnings do |t|
       warnings = []
       # RUBYOPT added by Bundler causes significant startup cost, so we empty it
-      super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)'+
-        ' -and \( -name "*.rb" -or -name "*.rake" \)'+
+      super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)' +
+        ' -and \( -name "*.rb" -or -name "*.rake" \)' +
         ' -exec ruby -c {} \; ) 2>&1'
       pipe = IO.popen("#{super_find_cmd}")
       pipe.each do |line| # From the perspective of the new pseudo terminal

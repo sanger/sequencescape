@@ -60,9 +60,9 @@ module Submission::ProjectValidation
   # Hack to be able to build order
   # from pulled data
   def save_after_unmarshalling
-    @saving_without_validation=true
+    @saving_without_validation = true
     save_without_validation
-    @saving_without_validation=false
+    @saving_without_validation = false
   end
 
 

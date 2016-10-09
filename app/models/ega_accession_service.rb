@@ -34,7 +34,7 @@ class  EgaAccessionService < AccessionService
   end
 
   def submit_policy_for_user(study, user)
-    policy =  Accessionable::Policy.new(study)
+    policy = Accessionable::Policy.new(study)
     submit(user, policy)
   end
 

@@ -49,24 +49,24 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         setup do
           @plate_count =  Plate.count
-          @transferrequest_count =  TransferRequest.count
+          @transferrequest_count = TransferRequest.count
           params = { :batch_id => @batch.id }
           @task.render_task(@workflows_controller, params)
         end
 
 
          should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
         end
 
 
          should "change TransferRequest.count by 6" do
-           assert_equal 6,  TransferRequest.count  - @transferrequest_count, "Expected TransferRequest.count to change by 6"
+           assert_equal 6,  TransferRequest.count - @transferrequest_count, "Expected TransferRequest.count to change by 6"
         end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
-            assert_equal w.aliquots.map{|a| a.sample.name}, Plate.last.wells.located_at(w.map_description).first.aliquots.map{|a| a.sample.name}
+            assert_equal w.aliquots.map {|a| a.sample.name}, Plate.last.wells.located_at(w.map_description).first.aliquots.map {|a| a.sample.name}
           end
         end
 
@@ -88,7 +88,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       context 'when used subsequently' do
 
         setup do
-          @plate_count =  Plate.count
+          @plate_count = Plate.count
           params = { :batch_id => @batch.id }
           @task.render_task(@workflows_controller, params)
           @task.render_task(@workflows_controller, params)
@@ -96,7 +96,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
 
          should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
         end
 
         should 'find the existing plate' do

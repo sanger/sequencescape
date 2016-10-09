@@ -96,7 +96,7 @@ module Authorization
         def get_role( role_name, authorizable_obj )
           if authorizable_obj.is_a? Class
             Role.where(
-              :name =>role_name,
+              :name => role_name,
               :authorizable_type => authorizable_obj.to_s,
               :authorizable_id => nil
             ).first

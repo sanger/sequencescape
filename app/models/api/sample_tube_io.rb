@@ -45,7 +45,7 @@ class Api::SampleTubeIO < Api::Base
   with_association(:primary_aliquot_if_unique) do
     with_association(:sample) do
       map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-      map_attribute_to_json_attribute(:id  , 'sample_internal_id')
+      map_attribute_to_json_attribute(:id, 'sample_internal_id')
       map_attribute_to_json_attribute(:name, 'sample_name')
     end
   end

@@ -134,7 +134,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
         context "with valid api_key will not require login to restricted content" do
           setup do
-            @user =FactoryGirl.create :user
+            @user = FactoryGirl.create :user
             get :restricted, :api_key => @user.api_key
           end
           should respond_with :success
@@ -171,7 +171,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
         context "with valid api_key will not require login to restricted content" do
           setup do
-            @user =FactoryGirl.create :user
+            @user = FactoryGirl.create :user
             get :restricted, :api_key => @user.api_key
           end
           should respond_with :success
@@ -213,7 +213,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
         context "with valid api_key will not require login to restricted content" do
           setup do
-            @user =FactoryGirl.create :user
+            @user = FactoryGirl.create :user
             get :restricted, :api_key => @user.api_key
           end
           should respond_with :success

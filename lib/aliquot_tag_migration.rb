@@ -2,7 +2,7 @@
 module AliquotTagMigration
 
   class MigratableAliquots < ActiveRecord::Base
-    self.table_name=('aliquots')
+    self.table_name = ('aliquots')
 
     default_scope {
       select('aliquots.id AS id, lane.id AS lane_id, tags.map_id AS aliquot_index, aliquots.tag2_id AS tag2_id').

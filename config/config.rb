@@ -103,7 +103,7 @@ if Rails.env == 'development'
   configatron.api.authorisation_code = "development"
   configatron.api.flush_response_at = 32768
 end
-if (Rails.env == 'test')||(Rails.env == 'cucumber')
+if (Rails.env == 'test') || (Rails.env == 'cucumber')
 
   # configatron.asset_audits_url = NOT DEFINED
 

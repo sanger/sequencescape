@@ -100,16 +100,16 @@ class AssignTagsToWellsTask < Task
     tag_plate     = Plate.create!(:size => source_plate.size)
 
     source_plate.wells.each do |well|
-      library_well =  Well.create!
+      library_well = Well.create!
       RequestType.transfer.create!(:asset => well, :target_asset => library_well, :state => 'passed')
       library_plate.add_well_by_map_description(library_well, well.map_description)
       library_well.aliquots.each { |aliquot| aliquot.update_attributes!(:library => library_well) }
 
       tagged_well = Well.create!
-      well_to_tagged[well] =tagged_well
+      well_to_tagged[well] = tagged_well
       RequestType.transfer.create!(:asset => library_well, :target_asset => tagged_well, :state => 'passed')
       tag_plate.add_well_by_map_description(tagged_well, well.map_description)
-      tag_id=well_id_tag_id_map[well.id]
+      tag_id = well_id_tag_id_map[well.id]
       Tag.find(tag_id).tag!(tagged_well) if tag_id
     end
     [library_plate, tag_plate].map(&:save!)
@@ -144,7 +144,7 @@ class AssignTagsToWellsTask < Task
 
   def validate_returned_tags_are_not_repeated_in_submission!(requests, params)
     submission_to_tag = params[:tag].map do |well_id, tag_id|
-      well_requests = requests.select{|request| request.asset_id == well_id.to_i}
+      well_requests = requests.select {|request| request.asset_id == well_id.to_i}
       raise "couldnt find matching well request" if well_requests.empty? || well_requests.first.nil?
       [well_requests.first.submission_id, tag_id]
     end
@@ -163,7 +163,7 @@ class AssignTagsToWellsTask < Task
   end
 
   def find_sequencing_requests(pulldown_requests)
-    Request.where(submission_id: pulldown_requests.first.submission_id).select{ |sequencing_request| sequencing_request.is_a?(SequencingRequest) }
+    Request.where(submission_id: pulldown_requests.first.submission_id).select { |sequencing_request| sequencing_request.is_a?(SequencingRequest) }
   end
 
   def link_pulldown_indexed_libraries_to_multiplexed_library(requests)
@@ -178,7 +178,7 @@ class AssignTagsToWellsTask < Task
   end
 
   def validate_tags_not_repeated_for_submission!(requests, tags_to_wells)
-    submission_to_tag = requests.select{ |request| request.asset }.map{ |request| [request.submission_id, tags_to_wells[request.asset.map.description].map_id ] }
+    submission_to_tag = requests.select { |request| request.asset }.map { |request| [request.submission_id, tags_to_wells[request.asset.map.description].map_id ] }
     raise "Duplicate tags will be assigned to a pooled tube" if submission_to_tag != submission_to_tag.uniq
 
     nil
@@ -197,7 +197,7 @@ class AssignTagsToWellsTask < Task
     current_well = wells.first
 
     1.upto(plate.size) do |index|
-      tags_to_wells[Map::Coordinate.vertical_plate_position_to_description(index, plate.size)] = sorted_tags[(index-1) % sorted_tags.size]
+      tags_to_wells[Map::Coordinate.vertical_plate_position_to_description(index, plate.size)] = sorted_tags[(index - 1) % sorted_tags.size]
     end
 
     tags_to_wells
@@ -205,15 +205,15 @@ class AssignTagsToWellsTask < Task
 
   def find_plates_from_batch(batch_id)
     requests = find_batch_requests(batch_id)
-    plates = requests.select{ |request| request.asset.is_a?(Well) }.map{ |request| request.asset }.map{ |asset| asset.plate }.select{ |plate| plate }
+    plates = requests.select { |request| request.asset.is_a?(Well) }.map { |request| request.asset }.map { |asset| asset.plate }.select { |plate| plate }
     plates.first
   end
 
   def map_asset_ids_to_normalised_index_by_submission(requests)
     submissions_to_index = {}
     asset_ids_to_index = {}
-    requests.map{|request| request.submission_id }.uniq.each_with_index{ |submission_id, index| submissions_to_index[submission_id] = index }
-    requests.map{|request| asset_ids_to_index[request.asset_id] = submissions_to_index[request.submission_id] }
+    requests.map {|request| request.submission_id }.uniq.each_with_index { |submission_id, index| submissions_to_index[submission_id] = index }
+    requests.map {|request| asset_ids_to_index[request.asset_id] = submissions_to_index[request.submission_id] }
 
     asset_ids_to_index
   end

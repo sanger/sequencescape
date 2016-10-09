@@ -9,7 +9,7 @@ Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/
 
   plate = FactoryGirl.create(:plate)
   study.asset_groups.create!(:name => group_name).tap do |asset_group|
-    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, :plate => plate, :map => Map.map_96wells[index-1] ) }
+    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, :plate => plate, :map => Map.map_96wells[index - 1] ) }
   end
 end
 
@@ -129,7 +129,7 @@ def build_batch_for(name, count, &block)
   # in some form.
   requests = pipeline.requests.ready_in_storage.all
   raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
-  batch    = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
+  batch = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
 end
 
 def requests_for_pipeline(name, count, &block)

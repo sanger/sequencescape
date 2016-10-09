@@ -20,16 +20,16 @@ class SearchesControllerTest < ActionController::TestCase
 
     context "searching (when logged in)" do
       setup do
-        @user =FactoryGirl.create :user
+        @user = FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
 
-        @study                    =FactoryGirl.create :study, :name => "FindMeStudy"
-        @study2                   =FactoryGirl.create :study, :name => "Another study"
-        @sample                   =FactoryGirl.create :sample, :name => "FindMeSample"
-        @asset                    =FactoryGirl.create(:sample_tube, :name => 'FindMeAsset')
-        @asset_group_to_find      =FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
-        @asset_group_to_not_find  =FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
+        @study = FactoryGirl.create :study, :name => "FindMeStudy"
+        @study2 = FactoryGirl.create :study, :name => "Another study"
+        @sample = FactoryGirl.create :sample, :name => "FindMeSample"
+        @asset = FactoryGirl.create(:sample_tube, :name => 'FindMeAsset')
+        @asset_group_to_find = FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
+        @asset_group_to_not_find = FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
 
         @submission = FactoryGirl.create :submission, name: 'FindMe'
         @ignore_submission = FactoryGirl.create :submission, name: 'IgnoreMeSub'

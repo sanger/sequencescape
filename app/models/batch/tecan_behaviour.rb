@@ -22,13 +22,13 @@ module Batch::TecanBehaviour
     #return nil unless validate_for_tecan(target_barcode)
 
     data_object = {
-       "user" => user.login ,
+       "user" => user.login,
        "time" => Time.now,
        "source" => {},
        "destination" => {}
     }
 
-    requests.includes([{:asset=>:plate},{:target_asset=>:plate}]).where(:state=>"passed").each do |request|
+    requests.includes([{:asset => :plate},{:target_asset => :plate}]).where(:state => "passed").each do |request|
 
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
@@ -42,7 +42,7 @@ module Batch::TecanBehaviour
       end
 
       if data_object["source"][full_source_barcode].nil?
-        data_object["source"][full_source_barcode]  = {"name" => source_plate_name, "plate_size" => request.asset.plate.size}
+        data_object["source"][full_source_barcode] = {"name" => source_plate_name, "plate_size" => request.asset.plate.size}
       end
       if data_object["destination"][full_destination_barcode].nil?
         data_object["destination"][full_destination_barcode] = {
@@ -77,14 +77,14 @@ module Batch::TecanBehaviour
 
   def tecan_gwl_file(target_barcode,volume_required=13)
     data_object = generate_tecan_data(target_barcode)
-    gwl_data  = Sanger::Robots::Tecan::Generator.mapping(data_object,  volume_required.to_i)
+    gwl_data = Sanger::Robots::Tecan::Generator.mapping(data_object,  volume_required.to_i)
     begin
-      year= Time.now.year
-      base_directory ="#{configatron.tecan_files_location}/#{year}"
+      year = Time.now.year
+      base_directory = "#{configatron.tecan_files_location}/#{year}"
       unless File.exists?(base_directory)
         FileUtils.mkdir base_directory
       end
-      destinationbarcode =  data_object["destination"].keys.join("_")
+      destinationbarcode = data_object["destination"].keys.join("_")
       gwl_file = File.new("#{base_directory}/#{destinationbarcode}_batch_#{self.id}.gwl", "w")
       gwl_file.write(gwl_data)
       gwl_file.close

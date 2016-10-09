@@ -29,6 +29,6 @@ class Tag2LayoutTemplate < ActiveRecord::Base
   private
 
   def default_attributes
-    {:tag=>tag,:layout_template=>self}
+    {:tag => tag,:layout_template => self}
   end
 end

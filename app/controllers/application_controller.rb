@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
   end
 
   def first_param(key)
-    value  = params[key]
+    value = params[key]
     value ? value.first : nil
   end
 

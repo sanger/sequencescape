@@ -71,7 +71,7 @@ class ProjectTest < ActiveSupport::TestCase
         @request_type    = create :request_type
         @request_type_2  = create :request_type, :name => "request_type_2", :key => "request_type_2"
         @request_type_3  = create :request_type, :name => "request_type_3", :key => "request_type_3"
-        @submission       = FactoryHelp::submission :project => @project, :asset_group_name => 'to avoid asset errors'
+        @submission = FactoryHelp::submission :project => @project, :asset_group_name => 'to avoid asset errors'
         # Failed
         create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
         create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission

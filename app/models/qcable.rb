@@ -50,7 +50,7 @@ class Qcable < ActiveRecord::Base
       else
         { :query => '(wam_asset.barcode=? AND wam_asset.barcode_prefix_id=?)', :parameters => [ barcode_number, barcode_prefix.id ] }
       end
-    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins=>['LEFT JOIN assets AS wam_asset ON qcables.asset_id = wam_asset.id'] }) do |building, current|
+    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins => ['LEFT JOIN assets AS wam_asset ON qcables.asset_id = wam_asset.id'] }) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]

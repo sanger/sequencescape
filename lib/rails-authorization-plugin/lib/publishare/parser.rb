@@ -50,7 +50,7 @@ module Authorization
         parse_regex = Regexp.new(role_regex + '(' + VALID_PREPOSITIONS.join('|') + ')' + model_regex)
         str.gsub(parse_regex) do |match|
           @replacements.push " process_role_of_model('#{$2 || $3}', '#{$5}') "
-          " <#{@replacements.length-1}> "
+          " <#{@replacements.length - 1}> "
         end
       end
 

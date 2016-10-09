@@ -6,7 +6,7 @@
 
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
-  sample_tube = FactoryGirl.create(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio library prep freezer'))
+  sample_tube = FactoryGirl.create(:sample_tube, :barcode => sample_tube_barcode, :location => Location.find_by_name('PacBio library prep freezer'))
   sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by_name(asset_group_name)
   if asset_group.nil?
@@ -29,7 +29,7 @@ Given /^I have a PacBio submission$/ do
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user => User.last,
     :assets => Plate.find_by_barcode(1234567).wells.all,
-    :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "insert_size"=>"500", "sequencing_type"=>"Standard"}
+    :request_options => {:multiplier => {"1" => "1", "3" => "1"}, "insert_size" => "500", "sequencing_type" => "Standard"}
     )
   step("1 pending delayed jobs are processed")
 end
@@ -40,11 +40,11 @@ Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
 end
 
 Given /^I have a plate for PacBio$/ do
-  PlatePurpose.stock_plate_purpose.create!(:without_wells, :barcode=>1234567) do |plate|
-    plate.wells.build(:map=>Map.find_by_asset_size_and_description(96,'A1'),:aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:dup))
-    plate.wells.build(:map=>Map.find_by_asset_size_and_description(96,'B1'),:aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:dup)) if  SampleTube.find_by_barcode(222).present?
+  PlatePurpose.stock_plate_purpose.create!(:without_wells, :barcode => 1234567) do |plate|
+    plate.wells.build(:map => Map.find_by_asset_size_and_description(96,'A1'),:aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:dup))
+    plate.wells.build(:map => Map.find_by_asset_size_and_description(96,'B1'),:aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:dup)) if  SampleTube.find_by_barcode(222).present?
     plate.location = Location.find_by_name('PacBio library prep freezer')
-    AssetGroup.create!(:name=>"PacBio group", :study=>Study.find_by_name('Test study')).assets << plate.wells
+    AssetGroup.create!(:name => "PacBio group", :study => Study.find_by_name('Test study')).assets << plate.wells
   end
 end
 
@@ -67,7 +67,7 @@ end
 Given /^Well "([^\"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
   well = Plate.find_by_barcode(plate_barcode).wells.located_at(well).first
   request = Request.find_by_asset_id(well.id)
-  request.target_asset.update_attributes!(:barcode => library_tube_barcode, :name=>well.display_name)
+  request.target_asset.update_attributes!(:barcode => library_tube_barcode, :name => well.display_name)
 end
 
 Given /^I have a fast PacBio sequencing batch$/ do
@@ -150,7 +150,7 @@ Then /^the PacBio manifest for the last batch should look like:$/ do |expected_r
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
   expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
-  actual_table = CSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
+  actual_table = CSV.parse( csv_rows.map {|c| "#{c}\r\n"}.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -176,7 +176,7 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
   worksheet = page.source
   csv_rows = worksheet.split(/\r\n/)
   csv_rows.shift(2)
-  actual_table = CSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
+  actual_table = CSV.parse( csv_rows.map {|c| "#{c}\r\n"}.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -191,7 +191,7 @@ Given /^I have progressed to the Reference Sequence task$/ do
 end
 
 Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, cells|
-  assert_equal PacBioLibraryTube.find_by_barcode(barcode).pac_bio_library_tube_metadata.smrt_cells_available||0, cells.to_i
+  assert_equal PacBioLibraryTube.find_by_barcode(barcode).pac_bio_library_tube_metadata.smrt_cells_available || 0, cells.to_i
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
@@ -223,7 +223,7 @@ Then /^the PacBio manifest should be:$/ do |expected_results_table|
   pac_bio_run_file = page.source
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
-  actual_table = CSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
+  actual_table = CSV.parse( csv_rows.map {|c| "#{c}\r\n"}.join(''))
   expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
   expected_results_table.diff!(actual_table)
 end

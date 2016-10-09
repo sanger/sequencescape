@@ -117,7 +117,7 @@ end
 When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible,field, selector|
   visible = invisible != "the invisible "
   with_scope(selector) do
-    check(field,:visible=>visible)
+    check(field,:visible => visible)
   end
 end
 
@@ -177,11 +177,11 @@ Then /^I should see "(.*?)" once$/ do |text|
 end
 
 Then /^I should see "(.*?)" within the javascript$/ do |text|
-  assert all('script', :visible=>false).any? {|s| s.native.text.include?(text) }, "Didn't find #{text} in javascript"
+  assert all('script', :visible => false).any? {|s| s.native.text.include?(text) }, "Didn't find #{text} in javascript"
 end
 
 Then /^I should not see "(.*?)" within the javascript$/ do |text|
-  assert all('script', :visible=>false).none? {|s| s.native.text.include?(text) }, "Found #{text} in javascript"
+  assert all('script', :visible => false).none? {|s| s.native.text.include?(text) }, "Found #{text} in javascript"
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
@@ -264,7 +264,7 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')}
+  expected_pairs.rows_hash.each_pair {|k,v| expected_params[k] = v.split(',')}
 
   if actual_params.respond_to? :should
     actual_params.should == expected_params

@@ -14,14 +14,14 @@ class Studies::SamplesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @user     = create :user
+      @user = create :user
       session[:user] = @user.id
       @workflow = create :submission_workflow
     end
 
     should_require_login(:index)
 
-    resource_test('sample',{:parent => 'study', :actions => ['index'], :ignore_actions =>['show'], :formats => ['html']})
+    resource_test('sample',{:parent => 'study', :actions => ['index'], :ignore_actions => ['show'], :formats => ['html']})
 
   end
 end

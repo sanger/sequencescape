@@ -10,7 +10,7 @@ class Admin::RolesController < ApplicationController
   before_action :evil_parameter_hack!
 
   def index
-    @roles  = Role.group(:name).pluck(:name)
+    @roles = Role.group(:name).pluck(:name)
 
     respond_to do |format|
       format.html # index.html.erb

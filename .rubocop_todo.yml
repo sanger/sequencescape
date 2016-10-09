@@ -1465,24 +1465,6 @@ Style/SpaceAroundKeyword:
     - 'lib/validateable.rb'
     - 'test/unit/product_catalogue_test.rb'
 
-# Offense count: 5240
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Style/SpaceAroundOperators:
-  Enabled: false
-
-# Offense count: 105
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceBeforeBlockBraces:
-  Enabled: false
-
-# Offense count: 146
-# Cop supports --auto-correct.
-Style/SpaceBeforeComma:
-  Enabled: false
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Style/SpaceBeforeComment:

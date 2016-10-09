@@ -22,9 +22,9 @@ module Attributable
     base.class_eval do
       # NOTE: Do not use 'attributes' because that's an ActiveRecord internal name
       class_attribute :attribute_details, :instance_writer => false
-      self.attribute_details =  []
+      self.attribute_details = []
       class_attribute :association_details, :instance_writer => false
-      self.association_details =  []
+      self.association_details = []
     end
   end
 
@@ -184,7 +184,7 @@ module Attributable
     end
 
     def get_scoped_selection
-      @scope.inject(@owner.reflections[@name.to_s].klass){|k,v| k.send(v.to_sym) }
+      @scope.inject(@owner.reflections[@name.to_s].klass) {|k,v| k.send(v.to_sym) }
     end
     private :get_scoped_selection
 
@@ -253,7 +253,7 @@ module Attributable
     end
 
     def selection?
-      fixed_selection?||@options.key?(:selection)
+      fixed_selection? || @options.key?(:selection)
     end
 
     def method?
@@ -265,7 +265,7 @@ module Attributable
     end
 
     def minimum
-      @options[:minimum]||0
+      @options[:minimum] || 0
     end
 
     def selection_values
@@ -352,7 +352,7 @@ module Attributable
     end
 
     def selection_options(metadata)
-      self.selection_values||selection_from_metadata(metadata)||[]
+      self.selection_values || selection_from_metadata(metadata) || []
     end
 
     def to_field_info(object = nil, metadata = nil)

@@ -19,7 +19,7 @@ module PlatePurpose::BroadcastLibraryComplete
 
   def generate_events_for(plate,orders,user)
     orders.each do |order_id|
-      BroadcastEvent::PlateLibraryComplete.create!(:seed=>plate,:user=>user,:properties=>{:order_id=>order_id})
+      BroadcastEvent::PlateLibraryComplete.create!(:seed => plate,:user => user,:properties => {:order_id => order_id})
     end
   end
 

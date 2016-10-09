@@ -78,7 +78,7 @@ class Project < ActiveRecord::Base
   scope :approved,     ->()     { where(approved: true) }
   scope :unapproved,   ->()     { where(approved: false) }
   scope :valid,        ->()     { active.approved }
-  scope :for_user,     ->(user) { joins({:roles=>:user_role_bindings}).where(:roles_users=>{:user_id=>user}) }
+  scope :for_user,     ->(user) { joins({:roles => :user_role_bindings}).where(:roles_users => {:user_id => user}) }
 
   scope :with_unallocated_manager, ->() {
     roles = Role.arel_table
@@ -92,7 +92,7 @@ class Project < ActiveRecord::Base
         events << sample.billable_events
       end
     end
-    events  = events.flatten
+    events = events.flatten
   end
 
   def billable_events
@@ -130,7 +130,7 @@ class Project < ActiveRecord::Base
   end
 
   def owners
-    role = self.roles.detect{|r| r.name == "owner" }
+    role = self.roles.detect {|r| r.name == "owner" }
     unless role.nil?
       role.users
     else
@@ -144,7 +144,7 @@ class Project < ActiveRecord::Base
   end
 
   def manager
-    role = self.roles.detect{|r| r.name == "manager"}
+    role = self.roles.detect {|r| r.name == "manager"}
     unless role.nil?
       role.users.first
     else
@@ -172,7 +172,7 @@ class Project < ActiveRecord::Base
 
   alias_attribute :friendly_name, :name
 
-  delegate :project_cost_code, :to=> :project_metadata
+  delegate :project_cost_code, :to => :project_metadata
 
   PROJECT_FUNDING_MODELS = [
     '',

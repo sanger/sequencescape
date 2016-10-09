@@ -5,7 +5,7 @@ class PmbClientTest < ActiveSupport::TestCase
   attr_reader :labels
 
   def setup
-    @labels = {"header"=> {"header_text_1"=> "header_text_1","header_text_2"=> "header_text_2"},"footer"=> {"footer_text_1"=> "footer_text_1", "footer_text_2"=> "footer_text_2"},"body"=> [{"location"=> {"location"=> "location","parent_location"=> "parent_location","barcode"=> "barcode"}},{"location"=> {"location"=> "location","parent_location"=> "parent_location","barcode"=> "barcode"}}]}
+    @labels = {"header" => {"header_text_1" => "header_text_1","header_text_2" => "header_text_2"},"footer" => {"footer_text_1" => "footer_text_1", "footer_text_2" => "footer_text_2"},"body" => [{"location" => {"location" => "location","parent_location" => "parent_location","barcode" => "barcode"}},{"location" => {"location" => "location","parent_location" => "parent_location","barcode" => "barcode"}}]}
   end
 
   test "should have base url"  do
@@ -19,7 +19,7 @@ class PmbClientTest < ActiveSupport::TestCase
                   "labels" => labels}
 
     RestClient.expects(:post).with('http://localhost:9292/v1/print_jobs',
-                        {"data"=>{"attributes"=>attributes}}.to_json,
+                        {"data" => {"attributes" => attributes}}.to_json,
                         content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
     .returns(200)
 

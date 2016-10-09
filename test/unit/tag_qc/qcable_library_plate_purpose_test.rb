@@ -18,7 +18,7 @@ class QcableLibraryPlatePurposeTest < ActiveSupport::TestCase
     context "#QcableLibraryPlatePurpose" do
       should 'set library type on aliquots' do
 
-        @purpose = QcableLibraryPlatePurpose.new(:name=>'test_purpose')
+        @purpose = QcableLibraryPlatePurpose.new(:name => 'test_purpose')
 
         plate = mock('plate')
         well  = mock('well')

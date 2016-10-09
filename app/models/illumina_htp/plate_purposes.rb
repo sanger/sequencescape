@@ -79,7 +79,7 @@ module IlluminaHtp::PlatePurposes
   ]
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
-    'Cherrypicked'  => 'illumina_b_shared'
+    'Cherrypicked' => 'illumina_b_shared'
   }
 
   PF_PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
@@ -255,7 +255,7 @@ module IlluminaHtp::PlatePurposes
         :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
         :asset_shape_id => AssetShape.default.id
       )).tap do |plate_purpose|
-        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
+        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type
       end
     end
     private :create_plate_purpose

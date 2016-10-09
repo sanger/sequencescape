@@ -13,7 +13,7 @@ class Event < ActiveRecord::Base
   after_create :rescuing_update_request, :unless => :need_to_know_exceptions?
   after_create :update_request,          :if     => :need_to_know_exceptions?
 
- scope :family_pass_and_fail, -> { where(:family =>  ["pass", "fail"]).order('id DESC') }
+ scope :family_pass_and_fail, -> { where(:family => ["pass", "fail"]).order('id DESC') }
  scope :npg_events, ->(*args) { where(created_by:'npg',eventful_id:args[0]) }
 
   attr_writer :need_to_know_exceptions

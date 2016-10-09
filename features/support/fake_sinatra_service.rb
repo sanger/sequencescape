@@ -15,7 +15,7 @@ class FakeSinatraService
     if @ports.nil?
       initial_port = 16000 + (ENV['TEST_ENV_NUMBER'].to_i * 1000)  # Base it at some sane port
       initial_port += (($$ % 100) * 10)  # Use pid and use a range
-      @ports       = (1..100).to_a.shuffle.map { |p| initial_port + p }
+      @ports = (1..100).to_a.shuffle.map { |p| initial_port + p }
     end
     @ports.shift
   end

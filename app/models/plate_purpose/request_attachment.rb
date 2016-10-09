@@ -42,7 +42,7 @@ module PlatePurpose::RequestAttachment
         # connected upfront. We don't want to touch these.
         next unless upstream.target_asset.nil?
 
-        upstream.update_attributes!(:target_asset=> target_well)
+        upstream.update_attributes!(:target_asset => target_well)
         upstream.pass!
 
       end

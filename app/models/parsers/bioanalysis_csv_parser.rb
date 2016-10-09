@@ -35,9 +35,9 @@ class Parsers::BioanalysisCsvParser
     starting_line = group[0]
     ending_line = group[1]
     type = content[starting_line][0]
-    fields = content[starting_line+1]
+    fields = content[starting_line + 1]
 
-    for pos in (starting_line+2) .. (ending_line) do
+    for pos in (starting_line + 2) .. (ending_line) do
       values = content[pos]
       unless values.nil? && (values.length != fields.length)
         content_hash.merge!(Hash[fields.zip(values)])
@@ -48,11 +48,11 @@ class Parsers::BioanalysisCsvParser
 
   def build_range(range)
     if range == nil
-      range = [0, content.length-1]
+      range = [0, content.length - 1]
     else
       range = range.dup
     end
-    range.push(content.length-1) if (range.length==1)
+    range.push(content.length - 1) if (range.length == 1)
     range
   end
 
@@ -73,14 +73,14 @@ class Parsers::BioanalysisCsvParser
       if line[0].present? && line[0].match(regexp) && group.empty?
         group.push(pos)
       elsif (line.empty? && group.one? )
-        group.push(pos-1)
+        group.push(pos - 1)
       end
 
       if group.length == 2
         groups.push [group[0] + range[0], group[1] + range[0]]
         group = []
       end
-      if ((group.length ==1) && (pos==(group_contents.length-1)))
+      if ((group.length == 1) && (pos == (group_contents.length - 1)))
         groups.push [group[0] + range[0], pos + range[0]]
       end
     end
@@ -88,7 +88,7 @@ class Parsers::BioanalysisCsvParser
   end
 
   def get_group_content(group)
-    content.slice(group[0], group[1]-group[0]+1)
+    content.slice(group[0], group[1] - group[0] + 1)
   end
 
   def parse_peak_table(group)
@@ -125,7 +125,7 @@ class Parsers::BioanalysisCsvParser
       if (pos == (groups.length - 1))
         next_index = @content.length - 1
       else
-        next_index = groups[pos+1][0]-1
+        next_index = groups[pos + 1][0] - 1
       end
       [group[0], next_index]
     end.reduce({}) do |memo, group|

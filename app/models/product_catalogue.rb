@@ -46,7 +46,7 @@ class ProductCatalogue < ActiveRecord::Base
   end
 
   def product_with_criteria(criteria)
-    products.find_by(:product_product_catalogues=>{:selection_criterion=>criteria})
+    products.find_by(:product_product_catalogues => {:selection_criterion => criteria})
   end
 
   private

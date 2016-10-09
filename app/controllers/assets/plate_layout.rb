@@ -16,12 +16,12 @@ class AssetsController < ApplicationController
 
     def initialize(width, height)
       @width, @height = width, height
-      @wells = (1..@width*@height).map { |_| DEFAULT_WELL.dup }
+      @wells = (1..@width * @height).map { |_| DEFAULT_WELL.dup }
     end
 
     def set_details_for_well_at(location_id, details)
       assert_valid_location(location_id)
-      @wells[ location_id-1 ] = details
+      @wells[ location_id - 1 ] = details
     end
 
     def size
@@ -39,7 +39,7 @@ class AssetsController < ApplicationController
     def well_at(row, column)
       location_id = location_for_well_at(row, column)
       assert_valid_location(location_id)
-      @wells[ location_id-1 ]
+      @wells[ location_id - 1 ]
     end
 
     def empty_well_at?(row, column)

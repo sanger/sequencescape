@@ -107,14 +107,14 @@ module Accessionable
 
   class ArrayExpressTag < Base::Tag
     def label
-      default_tag =  "ArrayExpress-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
+      default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
       I18n.t("#{@scope}.#{ @name }.era_label", :default => default_tag)
     end
   end
 
-  class EgaTag< Base::Tag
+  class EgaTag < Base::Tag
     def label
-      default_tag =  "EGA-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
+      default_tag = "EGA-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
       I18n.t("#{@scope}.#{ @name }.era_label", :default => default_tag)
     end
   end

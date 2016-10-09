@@ -49,20 +49,20 @@ class Tag2Layout < ActiveRecord::Base
 
   def record_template_use
     plate.submissions.each do |submission|
-      TemplateSubmission.create!(:submission=>submission,:tag2_layout_template=>layout_template)
+      TemplateSubmission.create!(:submission => submission,:tag2_layout_template => layout_template)
     end
   end
 
   def layout_tag2_into_wells
     applicable_wells = plate.wells.include_aliquots
     if attributes["target_well_locations"]
-      applicable_wells = applicable_wells.select{|w| attributes["target_well_locations"].include?(w.map.description)}
+      applicable_wells = applicable_wells.select {|w| attributes["target_well_locations"].include?(w.map.description)}
     end
     applicable_wells.each {|w| w.assign_tag2(tag) }
   end
 
   def layout_template
-    @layout_template||Tag2LayoutTemplate.find_by_tag_id(tag)
+    @layout_template || Tag2LayoutTemplate.find_by_tag_id(tag)
   end
 
 end

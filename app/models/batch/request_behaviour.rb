@@ -25,7 +25,7 @@ module Batch::RequestBehaviour
         where(batch_requests:{request_id: nil})
       }
 
-      delegate :position, :to=>:batch_request, :allow_nil=>true
+      delegate :position, :to => :batch_request, :allow_nil => true
     end
   end
 

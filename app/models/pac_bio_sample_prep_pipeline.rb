@@ -26,7 +26,7 @@ class PacBioSamplePrepPipeline < Pipeline
   end
 
   def cancel_downstream_requests(request)
-    request.next_requests(self).each{ |sequencing_request| sequencing_request.cancel_from_upstream! }
+    request.next_requests(self).each { |sequencing_request| sequencing_request.cancel_from_upstream! }
   end
 
   def cancel_sequencing_requests_on_library_failure(batch)

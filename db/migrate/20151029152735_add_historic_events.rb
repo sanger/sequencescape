@@ -10,7 +10,7 @@ class AddHistoricEvents < ActiveRecord::Migration
 
     start_purpose_id = Purpose.find_by_name('Shear').id
     ActiveRecord::Base.transaction do
-      StateChange.find_each(:joins=>:target,:conditions=>{:previous_state=>'pending',:target_state=>['started','passed'],:assets=>{:plate_purpose_id=>start_purpose_id}}) do |sc|
+      StateChange.find_each(:joins => :target,:conditions => {:previous_state => 'pending',:target_state => ['started','passed'],:assets => {:plate_purpose_id => start_purpose_id}}) do |sc|
         print ','
         print sc.id
         plate = sc.target
@@ -23,7 +23,7 @@ class AddHistoricEvents < ActiveRecord::Migration
           orders << Request::LibraryCreation.where(asset_id: rat.asset_id,submission_id: rat.submission_id).limit(1).pluck(:order_id).first
         end
         orders.each do |order_id|
-          BroadcastEvent::LibraryStart.create!(:seed=>plate,:user=>user,:properties=>{:order_id=>order_id},:created_at=>sc.created_at)
+          BroadcastEvent::LibraryStart.create!(:seed => plate,:user => user,:properties => {:order_id => order_id},:created_at => sc.created_at)
         end
         print '.'
       end
@@ -34,7 +34,7 @@ class AddHistoricEvents < ActiveRecord::Migration
     mx_library_purpose_id = Purpose.where(name: ['Lib Pool Norm','Lib Pool SS-XP-Norm']).map(&:id)
 
     ActiveRecord::Base.transaction do
-      StateChange.find_each(:joins=>:target,:conditions=>{:target_state=>'passed',:assets=>{:plate_purpose_id=>mx_library_purpose_id}}) do |sc|
+      StateChange.find_each(:joins => :target,:conditions => {:target_state => 'passed',:assets => {:plate_purpose_id => mx_library_purpose_id}}) do |sc|
         print ','
         print sc.id
         tube = sc.target
@@ -42,7 +42,7 @@ class AddHistoricEvents < ActiveRecord::Migration
         user = sc.user
         orders = sc.target.requests_as_target.map(&:order_id).compact.uniq
         orders.each do |order_id|
-          BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>order_id},:created_at=>sc.created_at)
+          BroadcastEvent::LibraryComplete.create!(:seed => tube,:user => user,:properties => {:order_id => order_id},:created_at => sc.created_at)
         end
         print '.'
       end
@@ -51,7 +51,7 @@ class AddHistoricEvents < ActiveRecord::Migration
     say 'Adding Plate Library complete'
     plate_library_purpose_id = Purpose.where(name: 'Lib Norm 2')
     ActiveRecord::Base.transaction do
-      StateChange.find_each(:joins=>:target,:conditions=>{:target_state=>'passed',:assets=>{:plate_purpose_id=>plate_library_purpose_id}}) do |sc|
+      StateChange.find_each(:joins => :target,:conditions => {:target_state => 'passed',:assets => {:plate_purpose_id => plate_library_purpose_id}}) do |sc|
         print ','
         print sc.id
         plate = sc.target
@@ -64,7 +64,7 @@ class AddHistoricEvents < ActiveRecord::Migration
           orders << rat.order_id
         end
         orders.each do |order_id|
-          BroadcastEvent::PlateLibraryComplete.create!(:seed=>plate,:user=>user,:properties=>{:order_id=>order_id},:created_at=>sc.created_at)
+          BroadcastEvent::PlateLibraryComplete.create!(:seed => plate,:user => user,:properties => {:order_id => order_id},:created_at => sc.created_at)
         end
         print '.'
       end
@@ -74,14 +74,14 @@ class AddHistoricEvents < ActiveRecord::Migration
     pipeline = Pipeline.where(name: ['HiSeq X PE (no controls)','HiSeq X PE (spiked in controls)','HiSeq X PE (spiked in controls) from strip-tubes'])
     ActiveRecord::Base.transaction do
       SequencingPipeline.find_each do |pipeline|
-        pipeline.batches.find_each(:conditions=>'state != "pending" OR state != "discarded"') do |batch|
+        pipeline.batches.find_each(:conditions => 'state != "pending" OR state != "discarded"') do |batch|
           next if BroadcastEvent::SequencingStart.find_by_seed_id_and_seed_type(batch.id,'Batch').present?
           r = batch.requests.first
           next if r.nil?
           re = r.request_events.where(to_state:'started').order(:id).first
           next if re.nil?
           time = re.current_from
-          BroadcastEvent::SequencingStart.create!(:seed=>batch,:user=>batch.user,:properties=>{},:created_at=>time)
+          BroadcastEvent::SequencingStart.create!(:seed => batch,:user => batch.user,:properties => {},:created_at => time)
         end
       end
     end

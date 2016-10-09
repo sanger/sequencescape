@@ -13,9 +13,9 @@ class StudyRelation < ActiveRecord::Base
   validates_presence_of :related_study
   validates_presence_of :study_relation_type
 
-  validates_uniqueness_of :study_relation_type_id, :scope =>[:study_id, :related_study_id]
+  validates_uniqueness_of :study_relation_type_id, :scope => [:study_id, :related_study_id]
 
-  delegate :name, :reversed_name ,:to => :study_relation_type
+  delegate :name, :reversed_name,:to => :study_relation_type
 
 
   module Associations
@@ -30,7 +30,7 @@ class StudyRelation < ActiveRecord::Base
 
     # related studies
     def related_studies_for(relation_type)
-      r_id = relation_type.is_a?(StudyRelationType) ? relation_type.id  : relation_type
+      r_id = relation_type.is_a?(StudyRelationType) ? relation_type.id : relation_type
       study_relations.select { |r| r.study_relation_type_id == r_id }
     end
 
@@ -45,7 +45,7 @@ class StudyRelation < ActiveRecord::Base
 
     # reverse related studies
     def reversed_related_studies_for(relation_type)
-      r_id = relation_type.is_a?(StudyRelationType) ? relation_type.id  : relation_type
+      r_id = relation_type.is_a?(StudyRelationType) ? relation_type.id : relation_type
       reversed_study_relations.select { |r| r.study_relation_type_id == r_id }
     end
 

@@ -68,7 +68,7 @@ module SampleManifestExcel
     # Returns a number of a next column based on the number of columns
     # that already exist in the list
     def next_number
-      columns.count+1
+      columns.count + 1
     end
 
     # Defaults to an empty hash

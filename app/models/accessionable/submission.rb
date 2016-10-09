@@ -101,8 +101,8 @@ private
     attr_reader :inform_on_error, :inform_on_status, :name
     def initialize(user)
       @inform_on_error = "#{user.login}@#{configatron.default_email_domain}"
-      @inform_on_status =  inform_on_error
-      @name = user.first_name+" "+user.last_name
+      @inform_on_status = inform_on_error
+      @name = user.first_name + " " + user.last_name
     end
 
     def build(markup)

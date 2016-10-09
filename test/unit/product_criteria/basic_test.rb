@@ -14,7 +14,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
       @params = {
         :concentration              => {:greater_than => 5 },
         :total_micrograms           => {:greater_than => 10 },
-        :current_volume            => {:greater_than => 8, :less_than => 2000 },
+        :current_volume => {:greater_than => 8, :less_than => 2000 },
         :gel_pass                   => {:not_equal    => 'degraded' },
         :conflicting_gender_markers => {:less_than    => 1 }
       }

@@ -16,7 +16,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user_roles = @user.roles.select{|r| r.name == "administrator" || r.name == "manager" || r.name == "internal"}
+    @user_roles = @user.roles.select {|r| r.name == "administrator" || r.name == "manager" || r.name == "internal"}
     @all_roles = Role.select(:name).uniq
     @users_roles = @user.study_and_project_roles.sort_by(&:name)
     @studies = Study.order(:id)

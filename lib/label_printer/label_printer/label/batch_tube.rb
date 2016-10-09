@@ -10,7 +10,7 @@ module LabelPrinter
         @count = options[:count].to_i
         @printable = options[:printable]
         @batch = options[:batch]
-        @stock =options[:stock]
+        @stock = options[:stock]
       end
 
       def top_line(tube)
@@ -43,7 +43,7 @@ module LabelPrinter
       private
 
       def requests
-        request_ids = printable.select{|barcode, check| check == 'on'}.keys
+        request_ids = printable.select {|barcode, check| check == 'on'}.keys
         requests = Request.find request_ids
       end
 

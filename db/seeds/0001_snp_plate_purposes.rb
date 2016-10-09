@@ -312,7 +312,7 @@ AssetShape.create!(
 )
 
 YAML::load(plate_purposes).each do |plate_purpose|
-  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id'=>AssetShape.find_by_name('Standard').id)
+  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id' => AssetShape.find_by_name('Standard').id)
   attributes.delete('type').constantize.new(attributes) do |purpose|
     purpose.id = attributes['id']
   end.save!
@@ -366,40 +366,40 @@ ActiveRecord::Base.transaction do
   PlatePurpose.create!(:name => 'SEQCAP SC', :cherrypickable_target => false)  # Superceded by Pulldown SC/ISC below (here for transition period)
 
   PlatePurpose.create!(
-  :name=>'STA',
-  :default_state=>'pending',
-  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :name => 'STA',
+  :default_state => 'pending',
+  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
   :cherrypickable_target => true,
   :cherrypick_direction => 'column',
   :asset_shape => AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
-  :name=>'STA2',
-  :default_state=>'pending',
-  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :name => 'STA2',
+  :default_state => 'pending',
+  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
   :cherrypickable_target => true,
   :cherrypick_direction => 'column',
   :asset_shape => AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
-  :name=>'SNP Type',
-  :default_state=>'pending',
-  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :name => 'SNP Type',
+  :default_state => 'pending',
+  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
   :cherrypickable_target => true,
   :cherrypick_direction => 'column',
   :asset_shape => AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
-  :name=>'Fluidigm 96-96',
-  :default_state=>'pending',
+  :name => 'Fluidigm 96-96',
+  :default_state => 'pending',
   :cherrypickable_target => true,
   :cherrypick_direction => 'interlaced_column',
   :size => 96,
   :asset_shape => AssetShape.find_by_name('Fluidigm96')
 )
 PlatePurpose.create!(
-  :name=>'Fluidigm 192-24',
-  :default_state=>'pending',
+  :name => 'Fluidigm 192-24',
+  :default_state => 'pending',
   :cherrypickable_target => true,
   :cherrypick_direction => 'interlaced_column',
   :size => 192,
@@ -407,10 +407,10 @@ PlatePurpose.create!(
 )
 end
 PlatePurpose.create!(
-  :name=>'PacBio Sheared',
-  :target_type=>'Plate',
-  :default_state=>'pending',
-  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :name => 'PacBio Sheared',
+  :target_type => 'Plate',
+  :default_state => 'pending',
+  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
   :cherrypickable_target => false,
   :cherrypickable_source => false,
   :size => 96,

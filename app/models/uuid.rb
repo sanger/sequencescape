@@ -70,7 +70,7 @@ class Uuid < ActiveRecord::Base
       end
 
       def generate_missing_uuids
-        records_for_missing_uuids { |id| Uuid.create!(:resouce_type=>self.name, :resource_id=>id, :external_id=>Uuid.generate_uuid ) }
+        records_for_missing_uuids { |id| Uuid.create!(:resouce_type => self.name, :resource_id => id, :external_id => Uuid.generate_uuid ) }
       end
       private :generate_missing_uuids
 

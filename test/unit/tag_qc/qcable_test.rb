@@ -31,15 +31,15 @@ class QcableTest < ActiveSupport::TestCase
 
     context "#qcable" do
       setup do
-        @mock_purpose = mock('Purpose',:default_state=>'created')
+        @mock_purpose = mock('Purpose',:default_state => 'created')
         @mock_purpose.expects('create!').returns(Asset.new).once
-        @mock_lot     = create :lot
+        @mock_lot = create :lot
         @mock_lot.expects(:target_purpose).returns(@mock_purpose).twice
       end
 
       should "create an asset of the given purpose" do
         factory_attributes = attributes_for :qcable, lot: @mock_lot
-        @qcable       = Qcable.create!(factory_attributes)
+        @qcable = Qcable.create!(factory_attributes)
         assert_equal 'created', @qcable.state
       end
 
@@ -47,7 +47,7 @@ class QcableTest < ActiveSupport::TestCase
 
     context "#qcable pre-pending" do
       setup do
-        @mock_purpose = build :tube_purpose, :default_state=>'pending'
+        @mock_purpose = build :tube_purpose, :default_state => 'pending'
         @template     = FactoryGirl.build(:tag2_layout_template)
         @lot_type     = create :tag2_lot_type, target_purpose: @mock_purpose
         @mock_lot     = create :tag2_lot, lot_type: @lot_type
@@ -57,7 +57,7 @@ class QcableTest < ActiveSupport::TestCase
         # We can't use factory girl directly here, as it results in the initial state being
         # set BEFORE the lot is assigned.
         factory_attributes = attributes_for :qcable, lot: @mock_lot
-        @qcable       = Qcable.create!(factory_attributes)
+        @qcable = Qcable.create!(factory_attributes)
         assert_equal @mock_purpose, @qcable.asset.purpose
         assert_equal 'pending', @qcable.state
       end

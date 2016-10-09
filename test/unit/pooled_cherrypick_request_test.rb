@@ -20,8 +20,8 @@ class PooledCherrypickRequestTest < ActiveSupport::TestCase
 
       @target_well = create :well
 
-      @request_a = create :pooled_cherrypick_request, :asset=> @well_a, :target_asset => @target_well, :initial_study => @study
-      @request_b = create :pooled_cherrypick_request, :asset=> @well_b, :target_asset => @target_well, :initial_study => @study
+      @request_a = create :pooled_cherrypick_request, :asset => @well_a, :target_asset => @target_well, :initial_study => @study
+      @request_b = create :pooled_cherrypick_request, :asset => @well_b, :target_asset => @target_well, :initial_study => @study
     end
 
     should 'only transfer one aliquot' do

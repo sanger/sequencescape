@@ -20,7 +20,7 @@ class AddProductCriteriaTable < ActiveRecord::Migration
     end
 
     add_constraint('product_criteria','products')
-    add_constraint('qc_reports','product_criteria',:as=>'product_criteria_id')
+    add_constraint('qc_reports','product_criteria',:as => 'product_criteria_id')
   end
 
   def self.down

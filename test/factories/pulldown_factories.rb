@@ -144,7 +144,7 @@ FactoryGirl.define do
 
     after(:create) do |tag_group|
       [ 'ACGT', 'TGCA' ].each_with_index do |oligo, index|
-        tag_group.tags.create!(:map_id => index+1, :oligo => oligo)
+        tag_group.tags.create!(:map_id => index + 1, :oligo => oligo)
       end
     end
   end
@@ -187,7 +187,7 @@ FactoryGirl.define do
       plate_purpose.child_relationships.create!(:child => create(:child_plate_purpose), :transfer_request_type => RequestType.transfer)
     end
   end
-  factory(:pooling_transfer, :class=>RequestType) do |pooling_transfer|
+  factory(:pooling_transfer, :class => RequestType) do |pooling_transfer|
     asset_type 'Well'
     order 1
     request_class_name 'TransferRequest::InitialDownstream'
@@ -205,7 +205,7 @@ FactoryGirl.define do
   factory(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|
     name 'Child plate purpose'
   end
-  factory(:initial_downstream_plate_purpose, :class=>Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
+  factory(:initial_downstream_plate_purpose, :class => Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
      plate_purpose.name 'Initial Downstream plate purpose'
   end
   factory(:plate_creation) do |plate_creation|
@@ -236,16 +236,16 @@ FactoryGirl.define do
 
       # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
       stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, :barcode => '999999') { |p| p.wells = [create(:empty_well),create(:empty_well)] }
-      stock_wells  = stock_plate.wells
+      stock_wells = stock_plate.wells
 
       AssetLink.create!(:ancestor => stock_plate, :descendant => tube_creation.parent)
 
-      tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size/2).each_with_index do |pool,i|
-        submission  = Submission.create!(:user => user)
+      tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size / 2).each_with_index do |pool,i|
+        submission = Submission.create!(:user => user)
         pool.each do |well|
           RequestType.transfer.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission);
-          mock_request_type.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission, :request_metadata_attributes=>create(:request_metadata_for_library_creation).attributes);
-          Well::Link.create!(:type=>'stock', :target_well=>well, :source_well=>stock_wells[i])
+          mock_request_type.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission, :request_metadata_attributes => create(:request_metadata_for_library_creation).attributes);
+          Well::Link.create!(:type => 'stock', :target_well => well, :source_well => stock_wells[i])
         end
       end
     end
@@ -293,7 +293,7 @@ FactoryGirl.define do
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
-      request.request_metadata.bait_library                = BaitLibrary.first||create(:bait_library)
+      request.request_metadata.bait_library                = BaitLibrary.first || create(:bait_library)
     end
   end
 

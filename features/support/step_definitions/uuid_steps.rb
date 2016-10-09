@@ -76,13 +76,13 @@ end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^\"]+)" and IDs starting at (\d+)$/ do |count, model, name, id|
   (0...count.to_i).each do |index|
-    step(%Q{a #{model.singularize} called "#{name}-#{index+1}" with ID #{id.to_i+index}})
+    step(%Q{a #{model.singularize} called "#{name}-#{index + 1}" with ID #{id.to_i + index}})
   end
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^\"]+)"$/ do |count, model, name|
   (0...count.to_i).each do |index|
-    step(%Q{a #{model.singularize} called "#{name}-#{index+1}"})
+    step(%Q{a #{model.singularize} called "#{name}-#{index + 1}"})
   end
 end
 
@@ -160,10 +160,10 @@ end
 Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^\"]+)"$/ do |model,core_uuid|
   core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
-  core_uuid << "%0#{36-core_uuid.length}d"
+  core_uuid << "%0#{36 - core_uuid.length}d"
 
   model.singularize.gsub(/\s+/, '_').camelize.constantize.all.each_with_index do |object, index|
-    set_uuid_for(object, core_uuid % (index+1))
+    set_uuid_for(object, core_uuid % (index + 1))
   end
 end
 
@@ -187,10 +187,10 @@ end
 Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|
   core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
-  core_uuid << "%0#{36-core_uuid.length}d"
+  core_uuid << "%0#{36 - core_uuid.length}d"
 
   SampleManifest.find(id).samples.each_with_index do |object, index|
-    set_uuid_for(object, core_uuid % (index+1))
+    set_uuid_for(object, core_uuid % (index + 1))
   end
 end
 
@@ -201,7 +201,7 @@ end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (\d+)$/ do |count, model, id|
   (0...count.to_i).each do |index|
-    step("the #{model.singularize} exists with ID #{id.to_i+index}")
+    step("the #{model.singularize} exists with ID #{id.to_i + index}")
   end
 end
 
@@ -234,7 +234,7 @@ end
 
 Given /^there are (\d+) "([^\"]+)" requests with IDs starting at (\d+)$/ do |count, type, id|
   (0...count.to_i).each do |index|
-    step(%Q{a "#{type}" request with ID #{id.to_i+index}})
+    step(%Q{a "#{type}" request with ID #{id.to_i + index}})
   end
 end
 
@@ -258,5 +258,5 @@ end
 
 Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
   plate = Plate.find_by_name(plate_name) || Plate.find_by_barcode(plate_name)
-  set_uuid_for(plate.wells[well_id.to_i-1],uuid)
+  set_uuid_for(plate.wells[well_id.to_i - 1],uuid)
 end

@@ -88,7 +88,7 @@ module ::Core::Io::Json
       # Use length rather than size, as otherwise we perform
       # a count query. Not only is this unnecessary, but seems
       # to generate inaccurate numbers in some cases.
-      array.zip([',']*(array.length-1)).each do |value, separator|
+      array.zip([','] * (array.length - 1)).each do |value, separator|
         yield(value)
         unencoded(separator) unless separator.nil?
       end unless array.empty?

@@ -16,7 +16,7 @@ class SequenomControllerTest < ActionController::TestCase
 
   context 'when logged in' do
     setup do
-      user =FactoryGirl.create :user
+      user = FactoryGirl.create :user
       @controller.stubs(:logged_in?).returns(user)
       @controller.stubs(:current_user).returns(user)
     end
@@ -59,7 +59,7 @@ class SequenomControllerTest < ActionController::TestCase
 
       context 'when the plate barcode does exist' do
         setup do
-          @plate =FactoryGirl.create(:plate, :barcode => '99999')
+          @plate = FactoryGirl.create(:plate, :barcode => '99999')
           post :search, :plate_barcode => '1220099999705'
         end
 
@@ -86,7 +86,7 @@ class SequenomControllerTest < ActionController::TestCase
     context "PUT 'update'" do
       context 'when the plate does not exist' do
         setup do
-          user =FactoryGirl.create(:user)
+          user = FactoryGirl.create(:user)
           put :update, :id => '12345', :sequenom_step => SequenomController::STEPS.first.name, :user_barcode => user.barcode
         end
 
@@ -101,7 +101,7 @@ class SequenomControllerTest < ActionController::TestCase
 
       context 'when the user does not exist' do
         setup do
-          @plate =FactoryGirl.create(:plate)
+          @plate = FactoryGirl.create(:plate)
           post :update, :id => @plate.id, :sequenom_step => SequenomController::STEPS.first.name, :user_barcode => '2470099999680'
         end
 
@@ -116,7 +116,7 @@ class SequenomControllerTest < ActionController::TestCase
 
       context 'when the user barcode is not entered' do
         setup do
-          @plate =FactoryGirl.create(:plate)
+          @plate = FactoryGirl.create(:plate)
           post :update, :id => @plate.id, :sequenom_step => SequenomController::STEPS.first.name
         end
 
@@ -133,7 +133,7 @@ class SequenomControllerTest < ActionController::TestCase
         SequenomController::STEPS.each do |step|
           context "and marking '#{ step.name }' completed" do
             setup do
-              @plate, @user =FactoryGirl.create(:plate),FactoryGirl.create(:user, :barcode => 'ID99999D')
+              @plate, @user = FactoryGirl.create(:plate),FactoryGirl.create(:user, :barcode => 'ID99999D')
               post :update, :id => @plate.id, :sequenom_step => step.name, :user_barcode => '2470099999680'
             end
 
@@ -172,7 +172,7 @@ class SequenomControllerTest < ActionController::TestCase
 
       context 'when the plate exists' do
         setup do
-          @plate =FactoryGirl.create(:plate)
+          @plate = FactoryGirl.create(:plate)
           get :show, :id => @plate.id
         end
 

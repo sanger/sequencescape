@@ -27,7 +27,7 @@
 
 Then /^I (should|should not) see the following contacts$/ do |assertion, table|
    table.hashes.each do |hash|
-     xpath = '//div[@class="info"]/h2[text()="'+hash['role']+'" or text()="'+hash['role'].pluralize+'"]/following-sibling::ul[1]/li/a[text()="'+hash[:name]+'"]'
+     xpath = '//div[@class="info"]/h2[text()="' + hash['role'] + '" or text()="' + hash['role'].pluralize + '"]/following-sibling::ul[1]/li/a[text()="' + hash[:name] + '"]'
      if assertion == 'should'
        assert_have_xpath xpath
      else

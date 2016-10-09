@@ -119,8 +119,8 @@ class Request < ActiveRecord::Base
   }
 
 
-  scope :including_samples_from_target, ->() { includes({ :target_asset => {:aliquots  => :sample } }) }
-  scope :including_samples_from_source, ->() { includes({ :asset => {:aliquots  => :sample } }) }
+  scope :including_samples_from_target, ->() { includes({ :target_asset => {:aliquots => :sample } }) }
+  scope :including_samples_from_source, ->() { includes({ :asset => {:aliquots => :sample } }) }
 
   scope :for_order_including_submission_based_requests, ->(order) {
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
@@ -153,7 +153,7 @@ class Request < ActiveRecord::Base
   has_many :request_events, ->() { order(:current_from) }
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
-  scope :for_pacbio_sample_sheet, -> { includes([{:target_asset=>:map},:request_metadata]) }
+  scope :for_pacbio_sample_sheet, -> { includes([{:target_asset => :map},:request_metadata]) }
   scope :for_billing, -> { includes([ :initial_project, :request_type, { :target_asset => :aliquots }]) }
 
   # project is read only so we can set it everywhere
@@ -173,7 +173,7 @@ class Request < ActiveRecord::Base
 
   def submission_plate_count
     submission.requests.
-      where(:request_type_id=>request_type_id).
+      where(:request_type_id => request_type_id).
       joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id').
       count('DISTINCT(spca.container_id)')
   end
@@ -185,7 +185,7 @@ class Request < ActiveRecord::Base
 
   def project=(project)
     return unless project
-    self.project_id=project.id
+    self.project_id = project.id
   end
 
   #same as project with study
@@ -198,7 +198,7 @@ class Request < ActiveRecord::Base
 
   def study=(study)
     return unless study
-    self.study_id=study.id
+    self.study_id = study.id
   end
 
   def associated_studies
@@ -256,8 +256,8 @@ class Request < ActiveRecord::Base
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}])}
-  scope :loaded_for_grouped_inbox_display, -> { preload([ {:submission => :orders}, :asset , :target_asset, :request_type ])}
+  scope :loaded_for_inbox_display, -> { preload([{:submission => {:orders => :study}, :asset => [:scanned_into_lab_event,:studies]}])}
+  scope :loaded_for_grouped_inbox_display, -> { preload([ {:submission => :orders}, :asset, :target_asset, :request_type ])}
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
@@ -268,7 +268,7 @@ class Request < ActiveRecord::Base
 
   def self.group_requests(finder_method, options = {})
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
-    groupings = options.delete(:group)||{}
+    groupings = options.delete(:group) || {}
 
     select("requests.*, tca.container_id AS container_id, tca.content_id AS content_id").
     joins("INNER JOIN container_associations tca ON tca.content_id=#{target}").
@@ -337,7 +337,7 @@ class Request < ActiveRecord::Base
    }
 
 
-  scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{:asset=>:aliquots,:target_asset=>:aliquots}]) }
+  scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{:asset => :aliquots,:target_asset => :aliquots}]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
 
@@ -471,7 +471,7 @@ class Request < ActiveRecord::Base
   end
 
   def priority
-    submission.try(:priority)||0
+    submission.try(:priority) || 0
   end
 
   def request_type_updatable?(new_request_type)

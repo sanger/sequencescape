@@ -14,8 +14,8 @@ class LocationsControllerTest < ActionController::TestCase
       @controller = LocationsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @location  =FactoryGirl.create :location
-      @user =FactoryGirl.create :user
+      @location = FactoryGirl.create :location
+      @user = FactoryGirl.create :user
       session[:user] = @user.id
     end
     should_require_login
@@ -53,7 +53,7 @@ class LocationsControllerTest < ActionController::TestCase
       end
 
       should "render create_Location" do
-        assert_equal @old_count+1, Location.count
+        assert_equal @old_count + 1, Location.count
         assert_redirected_to location_path(assigns(:location))
       end
     end
@@ -87,7 +87,7 @@ class LocationsControllerTest < ActionController::TestCase
       end
 
       should "destroy given Locations" do
-        assert_equal @old_count-1, Location.count
+        assert_equal @old_count - 1, Location.count
         assert_redirected_to locations_path
       end
     end

@@ -41,11 +41,11 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password, :if => :password_required?
 
   scope :with_login, ->(*logins) { where(login:logins.flatten) }
-  scope :all_administrators, -> { joins(:roles).where(:roles=>{:name=>'administrator'}) }
+  scope :all_administrators, -> { joins(:roles).where(:roles => {:name => 'administrator'}) }
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(:roles=>{:name=>'owner'}).order(:last_name).uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(:roles => {:name => 'owner'}).order(:last_name).uniq }
 
   attr_accessor :password
 

@@ -22,7 +22,7 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
 
       @plate_a.wells.each do |well|
         create :library_completion, :asset => well, :target_asset => @final_tube, :submission => @submission
-        Well::Link.create( :type => 'stock', :source_well => well, :target_well=> well)
+        Well::Link.create( :type => 'stock', :source_well => well, :target_well => well)
         well.requests.each do |request|
           request.submission = @submission
           request.save
@@ -37,7 +37,7 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
 
     context "with one tube per submission" do
       should "should create transfers to the target tube" do
-        @transfer = Transfer::BetweenTubesBySubmission.create!(:user=>@user,:source=>@tube_a)
+        @transfer = Transfer::BetweenTubesBySubmission.create!(:user => @user,:source => @tube_a)
         assert_equal @final_tube, @transfer.destination
         assert_equal @final_tube, @tube_a.requests.first.target_asset
       end
@@ -49,14 +49,14 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
 
       setup do
 
-        @tube_b  = create :new_stock_multiplexed_library_tube
+        @tube_b = create :new_stock_multiplexed_library_tube
         @plate_transfer_b = create :transfer_from_plate_to_tube, :destination => @tube_b
         @plate_b = @plate_transfer_b.source
         @tube_b.purpose.child_relationships.create!(:child => @final_tube.purpose, :transfer_request_type => RequestType.transfer)
 
         @plate_b.wells.each do |well|
           create :library_completion, :asset => well, :target_asset => @final_tube, :submission => @submission
-          Well::Link.create( :type => 'stock', :source_well => well, :target_well=> well)
+          Well::Link.create( :type => 'stock', :source_well => well, :target_well => well)
           well.requests.each do |request|
             request.submission = @submission
             request.save
@@ -66,11 +66,11 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
 
       should "should create transfers to the target tube each time" do
 
-        @transfer = Transfer::BetweenTubesBySubmission.create!(:user=>@user,:source=>@tube_a)
+        @transfer = Transfer::BetweenTubesBySubmission.create!(:user => @user,:source => @tube_a)
         assert_equal @final_tube, @transfer.destination
         assert_equal @final_tube, @tube_a.requests.first.target_asset
 
-        @transfer_b = Transfer::BetweenTubesBySubmission.create!(:user=>@user,:source=>@tube_b)
+        @transfer_b = Transfer::BetweenTubesBySubmission.create!(:user => @user,:source => @tube_b)
         assert_equal @final_tube, @transfer_b.destination
         assert_equal @final_tube, @tube_b.requests.first.target_asset
       end

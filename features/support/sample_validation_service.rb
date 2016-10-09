@@ -34,7 +34,7 @@ class FakeSampleValidationService < FakeSinatraService
 
   class Service < FakeSinatraService::Base
     post('/SampleSheet/Validate') do
-      json  = { 'Success' => FakeSampleValidationService.instance.next! }
+      json = { 'Success' => FakeSampleValidationService.instance.next! }
       headers('Content-Type' => 'application/json')
       body(json.to_json)
     end

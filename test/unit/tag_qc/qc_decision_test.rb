@@ -21,7 +21,7 @@ class QcDecisionTest < ActiveSupport::TestCase
       setup do
         @lot = create :lot
         @user = create :user
-        @user.roles.create!(:name=>'qa_manager')
+        @user.roles.create!(:name => 'qa_manager')
         @user_b = create :user
         @qcable_a = create :qcable, :lot => @lot, :state => 'pending'
         @qcable_b = create :qcable, :lot => @lot, :state => 'pending'
@@ -32,9 +32,9 @@ class QcDecisionTest < ActiveSupport::TestCase
           @qcd = QcDecision.create(
             :user => @user,
             :lot  => @lot,
-            :decisions=> [
-              {:qcable=> @qcable_a, :decision=>'release'},
-              {:qcable=> @qcable_b, :decision=>'fail'}
+            :decisions => [
+              {:qcable => @qcable_a, :decision => 'release'},
+              {:qcable => @qcable_b, :decision => 'fail'}
             ]
           )
         end
@@ -56,9 +56,9 @@ class QcDecisionTest < ActiveSupport::TestCase
           QcDecision.create!(
             :user => @user,
             :lot  => @lot,
-            :decisions=> [
-              {:qcable=> @qcable_a, :decision=>'delete'},
-              {:qcable=> @qcable_b, :decision=>'fail'}
+            :decisions => [
+              {:qcable => @qcable_a, :decision => 'delete'},
+              {:qcable => @qcable_b, :decision => 'fail'}
             ]
           )
         end
@@ -69,9 +69,9 @@ class QcDecisionTest < ActiveSupport::TestCase
           QcDecision.create!(
             :user => @user_b,
             :lot  => @lot,
-            :decisions=> [
-              {:qcable=> @qcable_a, :decision=>'release'},
-              {:qcable=> @qcable_b, :decision=>'fail'}
+            :decisions => [
+              {:qcable => @qcable_a, :decision => 'release'},
+              {:qcable => @qcable_b, :decision => 'fail'}
             ]
           )
         end

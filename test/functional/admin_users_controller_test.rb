@@ -22,7 +22,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
         :ignore_actions => ['update'],
         :actions => ['show','edit','index'],
         :formats => ['html'],
-        :defaults => {:login =>"abc1234"},
+        :defaults => {:login => "abc1234"},
         :user => -> { FactoryGirl.create(:admin) },
 
         # Setup needed because 'edit' assumes presence of at least one Study and Project
@@ -38,7 +38,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
         session[:user] = @admin
 
         @user_to_find = FactoryGirl.create :user, :first_name => "Some", :last_name => "Body", :login => "sb1"
-        @another_user = FactoryGirl.create :user, :first_name => "No", :last_name =>"One", :login => "no1"
+        @another_user = FactoryGirl.create :user, :first_name => "No", :last_name => "One", :login => "no1"
 
       end
 
@@ -60,16 +60,16 @@ class Admin::UsersControllerTest < ActionController::TestCase
         post :filter, :q => "1"
 
         @users = assigns(:users)
-        assert @users.detect{ |u| u == @user_to_find }
-        assert @users.detect{ |u| u == @another_user }
+        assert @users.detect { |u| u == @user_to_find }
+        assert @users.detect { |u| u == @another_user }
       end
 
       should "find multiple users with shared characters in their names" do
         post :filter, :q => "o"
 
         @users = assigns(:users)
-        assert @users.detect{ |u| u == @user_to_find }
-        assert @users.detect{ |u| u == @another_user }
+        assert @users.detect { |u| u == @user_to_find }
+        assert @users.detect { |u| u == @another_user }
       end
     end
   end

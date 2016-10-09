@@ -7,14 +7,14 @@
 class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
 
   class OrderRole < ActiveRecord::Base
-    self.table_name=('order_roles')
+    self.table_name = ('order_roles')
   end
 
   ORDER_ROLE_PRODUCT = {
-    'PATH'    => 'PWGS',
-    'ILB PATH'    => 'PWGS',
-    'HWGS'    => 'MWGS',
-    'ILB HWGS'    => 'MWGS',
+    'PATH' => 'PWGS',
+    'ILB PATH' => 'PWGS',
+    'HWGS' => 'MWGS',
+    'ILB HWGS' => 'MWGS',
     'ILA ISC' => 'ISC',
     'ILA WGS' => 'MWGS',
     'HSqX'    => 'HSqX',
@@ -25,7 +25,7 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
   }
 
   def self.product_by_role(template)
-    role_id = (template.submission_parameters||{})[:order_role_id]
+    role_id = (template.submission_parameters || {})[:order_role_id]
     return nil if role_id.nil?
     role = OrderRole.find(role_id).role
     product_name = ORDER_ROLE_PRODUCT[role]
@@ -71,7 +71,7 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      SubmissionTemplate.update_all(:product_catalogue_id=>nil)
+      SubmissionTemplate.update_all(:product_catalogue_id => nil)
     end
   end
 end

@@ -45,7 +45,7 @@ class TaskTest < ActiveSupport::TestCase
       should "save them" do
         descriptor_count = Descriptor.count
         @task.save
-        assert_equal descriptor_count+1, Descriptor.count
+        assert_equal descriptor_count + 1, Descriptor.count
       end
 
       should "get descriptor with a default value" do
@@ -56,7 +56,7 @@ class TaskTest < ActiveSupport::TestCase
 
   context "A Task subclass" do
     setup do
-      class MyTask  < Task
+      class MyTask < Task
       end
     end
     teardown do
@@ -92,12 +92,12 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should "set subclass_attributes via attribute" do
-        @task.att= "value"
+        @task.att = "value"
         assert_equal "value", @task.get_subclass_attribute_value(:att)
       end
 
       should "get subclass_attributes via attribute" do
-        @task.att= "value"
+        @task.att = "value"
         assert_equal "value", @task.att
       end
 
@@ -119,7 +119,7 @@ class TaskTest < ActiveSupport::TestCase
       context "with a saved value" do
         setup do
           @initial_value = "initial_value"
-          @task.att= @initial_value
+          @task.att = @initial_value
           @task.save
         end
 

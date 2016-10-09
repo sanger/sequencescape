@@ -16,7 +16,7 @@ class IlluminaC::StockPurpose < PlatePurpose
   end
 
   def transition_from(state)
-    {'pending' => :cancel_before_started!, 'started'=>:cancel!}[state]
+    {'pending' => :cancel_before_started!, 'started' => :cancel!}[state]
   end
   private :transition_from
 end

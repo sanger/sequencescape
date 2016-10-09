@@ -29,7 +29,7 @@ module WTSI
 
     def initialize
       yield self
-      @license_text_compiled = @license_text%application
+      @license_text_compiled = @license_text % application
     end
 
     ##
@@ -79,7 +79,7 @@ module WTSI
     ##
     # The initial date range in string format
     def range_string
-      @rs||=[initial_range.begin,initial_range.end].uniq.join('-')
+      @rs ||= [initial_range.begin,initial_range.end].uniq.join('-')
     end
 
     private
@@ -131,7 +131,7 @@ module WTSI
         return if existing_license?
         STDOUT.print "."
         first_line = old_file.gets
-        new_file.write(first_line) if !first_line.nil? &&  first_line.match(/^#!/)
+        new_file.write(first_line) if !first_line.nil? && first_line.match(/^#!/)
         new_file.write(license_text)
         new_file.write(first_line) unless !first_line.nil? && first_line.match(/^#!/)
         old_file.each_line {|line| new_file.puts(line) }
@@ -201,7 +201,7 @@ module WTSI
     def license_dates
       [
         filetype.comment_prefix,
-        licenser.date_line%date_stamps
+        licenser.date_line % date_stamps
       ]
     end
 

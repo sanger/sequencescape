@@ -17,7 +17,7 @@ class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
           :request_options => {
             :initial_state => { flex_id => :pending}
           },
-          :request_type_ids_list=>[[flex_id]],
+          :request_type_ids_list => [[flex_id]],
           :input_field_infos => cp_ifi
         }
       )

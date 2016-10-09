@@ -12,7 +12,7 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
   context "An HTP library creation request" do
 
     should "accept the right purpose" do
-      plate = Purpose.find_by_name('Cherrypicked').create!(:barcode=>12345)
+      plate = Purpose.find_by_name('Cherrypicked').create!(:barcode => 12345)
       r = RequestType.find_by_name('Shared Library Creation').create!(
           :asset => plate.wells.first,
           :request_metadata_attributes => {
@@ -26,7 +26,7 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
 
     should "not accept the wrong purpose" do
       assert_raise ActiveRecord::RecordInvalid do
-        plate = Purpose.find_by_name('ILB_STD_INPUT').create!(:barcode=>12345)
+        plate = Purpose.find_by_name('ILB_STD_INPUT').create!(:barcode => 12345)
         r = RequestType.find_by_name('Shared Library Creation').create!(
             :asset => plate.wells.first,
             :request_metadata_attributes => {

@@ -23,7 +23,7 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
         RequestType.find_by_key(xtlb_name).library_types << lt
       end
 
-      tag_group = TagGroup.find_by_name('NEXTflex-96 barcoded adapters')||TagGroup.first
+      tag_group = TagGroup.find_by_name('NEXTflex-96 barcoded adapters') || TagGroup.first
 
       TagLayoutTemplate.create!(
         :name                => "NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)",
@@ -42,7 +42,7 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
           rt = RequestType.find_by_key(rt_name)
           lib_types = rt.library_types
           unless lib_types.nil?
-            rt.library_types = lib_types.reject{|lt| lt == hiseqlt }
+            rt.library_types = lib_types.reject {|lt| lt == hiseqlt }
           end
         end
         hiseqlt.destroy

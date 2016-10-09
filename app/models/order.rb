@@ -6,7 +6,7 @@
 
 class Order < ActiveRecord::Base
   class OrderRole < ActiveRecord::Base
-    self.table_name =('order_roles')
+    self.table_name = ('order_roles')
   end
 
   module InstanceMethods
@@ -143,7 +143,7 @@ class Order < ActiveRecord::Base
   alias_method(:json_root, :url_name)
 
   def asset_uuids
-    assets.select{ |asset| asset.present? }.map(&:uuid) if assets
+    assets.select { |asset| asset.present? }.map(&:uuid) if assets
   end
 
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
@@ -265,7 +265,7 @@ class Order < ActiveRecord::Base
       @display_name ||= attribute.display_name
       @key            = attribute.assignable_attribute_name
       @default      ||= attribute.find_default(nil,metadata)
-      @kind           = attribute.kind if @kind.nil?||attribute.required?
+      @kind           = attribute.kind if @kind.nil? || attribute.required?
       if attribute.selection?
         new_options   = attribute.selection_options(metadata)
         @options    ||= new_options if selection?
@@ -273,10 +273,10 @@ class Order < ActiveRecord::Base
       end
     end
     def kind
-      @kind||FieldInfo::TEXT
+      @kind || FieldInfo::TEXT
     end
     def selection?
-      kind==FieldInfo::SELECTION
+      kind == FieldInfo::SELECTION
     end
     def to_field_infos
       values = {
@@ -311,8 +311,8 @@ class Order < ActiveRecord::Base
     # deep. In hindsight it would probably have been easier to either:
     # a) Start from scratch
     # b) Not bother
-    mock_request = request_type.request_class.new(:request_type=>request_type)
-    request_type.request_class::Metadata.new(:request=>mock_request,:owner=>mock_request)
+    mock_request = request_type.request_class.new(:request_type => request_type)
+    request_type.request_class::Metadata.new(:request => mock_request,:owner => mock_request)
   end
 
   # Return the list of input fields to edit when creating a new submission
@@ -337,7 +337,7 @@ class Order < ActiveRecord::Base
 
   def next_request_type_id(request_type_id)
     request_type_ids = request_types.map(&:to_i)
-    request_type_ids[request_type_ids.index(request_type_id)+1]
+    request_type_ids[request_type_ids.index(request_type_id) + 1]
   end
 
 
@@ -364,7 +364,7 @@ class Order < ActiveRecord::Base
   end
 
   def collect_gigabases_expected?
-    input_field_infos.any? {|k| k.key==:gigabases_expected}
+    input_field_infos.any? {|k| k.key == :gigabases_expected}
   end
 
   def add_comment(comment_str, user)
@@ -377,7 +377,7 @@ class Order < ActiveRecord::Base
   end
 
   def friendly_name
-    asset_group.try(:name)||asset_group_name||id
+    asset_group.try(:name) || asset_group_name || id
   end
 
   def subject_type
@@ -385,6 +385,6 @@ class Order < ActiveRecord::Base
   end
 
   def generate_broadcast_event
-    BroadcastEvent::OrderMade.create!(:seed=>self,:user=>user)
+    BroadcastEvent::OrderMade.create!(:seed => self,:user => user)
   end
 end

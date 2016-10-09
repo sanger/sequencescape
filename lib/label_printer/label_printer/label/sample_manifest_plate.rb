@@ -1,7 +1,7 @@
 module LabelPrinter
   module Label
 
-    class SampleManifestPlate< BasePlate
+    class SampleManifestPlate < BasePlate
 
       attr_reader :sample_manifest, :only_first_label
 

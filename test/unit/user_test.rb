@@ -211,7 +211,7 @@ if false
 
       should "be able to have one assigned" do
         code = "code"
-        @user.swipecard_code=code
+        @user.swipecard_code = code
       end
     end
 

@@ -13,7 +13,7 @@ module Tasks::SamplePrepQcHandler
     requests = task.find_batch_requests(params[:batch_id])
 
     params[:request].each do |request_id, qc_status|
-      requests_found = requests.select{ |request| request.id == request_id.to_i }
+      requests_found = requests.select { |request| request.id == request_id.to_i }
       request = requests_found.first
       if request.nil?
         flash[:error] = "Couldnt find Request #{request_id}"

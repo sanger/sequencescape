@@ -20,7 +20,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
     context "when logged in" do
       setup do
-        @user =FactoryGirl.create :user
+        @user = FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
       end
@@ -100,7 +100,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "one sample with values given" do
           setup do
-            @sscount =  @study.samples.count
+            @sscount = @study.samples.count
             post :create, :study_id => @study,
               :sample_registrars => {
                 '1' => {
@@ -113,13 +113,13 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 1" do
-          assert_equal 1,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 1"
+          assert_equal 1,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 1"
           end
         end
 
         context "two samples with values given" do
           setup do
-            @sscount =  @study.samples.count
+            @sscount = @study.samples.count
             post :create, :study_id => @study,
               :sample_registrars => {
                 '1' => {
@@ -136,13 +136,13 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
         end
 
         context 'three samples with one ignored' do
           setup do
-            @sscount =  @study.samples.count
+            @sscount = @study.samples.count
             post :create, :study_id => @study,
               :sample_registrars => {
                 '1' => {
@@ -164,7 +164,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
 
           should 'not have registered sample 2' do
@@ -174,7 +174,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "when a 2D barcode is passed in" do
           setup do
-            @sscount =  @study.samples.count
+            @sscount = @study.samples.count
             @asset_count = Asset.count
             post :create, :study_id => @study,
                 :sample_registrars => {
@@ -194,11 +194,11 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
 
           should "change Asset.count by 2" do
-            assert_equal 2,  Asset.count  - @asset_count, "Expected Asset.count to change by 2"
+            assert_equal 2,  Asset.count - @asset_count, "Expected Asset.count to change by 2"
           end
 
           context 'sample 1' do

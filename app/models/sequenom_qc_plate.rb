@@ -6,7 +6,7 @@
 
 class SequenomQcPlate < Plate
   DEFAULT_SIZE = 384
-  self.per_page   = 50
+  self.per_page = 50
 
   attr_accessor :gender_check_bypass
   attr_accessor :plate_prefix
@@ -23,7 +23,7 @@ class SequenomQcPlate < Plate
       if plate_barcode.blank?
         ordered_source_plates << nil
       else
-        ordered_source_plates << self.parents.select{|plate| plate.barcode == plate_barcode}.first
+        ordered_source_plates << self.parents.select {|plate| plate.barcode == plate_barcode}.first
       end
     end
 
@@ -94,7 +94,7 @@ class SequenomQcPlate < Plate
 
   def destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
     row_offset, col_offset = quadrant_row_col_offset(quadrant)
-    self.find_map_by_rowcol( (row*2) + row_offset, (col*2) +col_offset )
+    self.find_map_by_rowcol( (row * 2) + row_offset, (col * 2) + col_offset )
   end
 
   # ---------------------------

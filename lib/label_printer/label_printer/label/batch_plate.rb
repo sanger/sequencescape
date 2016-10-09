@@ -21,7 +21,7 @@ module LabelPrinter
       end
 
       def plates
-        barcodes = printable.select{|barcode, check| check == 'on'}.keys
+        barcodes = printable.select {|barcode, check| check == 'on'}.keys
         batch.plate_group_barcodes.keys.select {|plate| barcodes.include?(plate.barcode)}
       end
 

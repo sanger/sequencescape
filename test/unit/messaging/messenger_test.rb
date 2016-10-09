@@ -14,12 +14,12 @@ class MessengerTest < ActiveSupport::TestCase
       @target    = Batch.new
       # @target.stubs(:class).returns(Batch)
       @template  = 'FlowcellIO'
-      @messenger = Messenger.new(:target=>@target,:template=>@template,:root=>'example')
+      @messenger = Messenger.new(:target => @target,:template => @template,:root => 'example')
     end
 
     context "to_json" do
       setup do
-        Api::Messages::FlowcellIO.expects(:to_hash).with(@target).returns({'example'=>'hash'})
+        Api::Messages::FlowcellIO.expects(:to_hash).with(@target).returns({'example' => 'hash'})
       end
 
       should 'render the json' do

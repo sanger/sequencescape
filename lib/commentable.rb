@@ -11,7 +11,7 @@ module Commentable
         def group(ids)
           conditions = {}
           if ids
-            conditions[:id]=ids
+            conditions[:id] = ids
           end
 
           group(:commentable_id).where(conditions).count
@@ -20,7 +20,7 @@ module Commentable
       def self.get_comment_count(ids=nil)
         h = Hash.new(0) # return 0 if key is not in the hash
         with_comments.group(ids).each do |commentable_id, comment_count|
-          h[commentable_id.to_i]=comment_count
+          h[commentable_id.to_i] = comment_count
         end
         h
       end

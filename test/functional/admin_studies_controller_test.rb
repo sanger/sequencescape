@@ -19,9 +19,9 @@ class Admin::StudiesControllerTest < ActionController::TestCase
 
     context "management UI" do
       setup do
-        @user     =FactoryGirl.create :admin
-        @study  =FactoryGirl.create :study
-        @request_type =FactoryGirl.create :request_type
+        @user = FactoryGirl.create :admin
+        @study = FactoryGirl.create :study
+        @request_type = FactoryGirl.create :request_type
         session[:user] = @user.id
         @emails = ActionMailer::Base.deliveries
         @emails.clear

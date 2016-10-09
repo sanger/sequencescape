@@ -31,7 +31,7 @@ module BroadcastEvent::MetadataHelpers
   module MetadatableClassMethods
     def has_metadata(key,method=nil,&block)
       return metadata_finders << SimpleMetadataFinder.new(key,method) unless method.nil?
-      return metadata_finders <<  BlockMetadataFinder.new(key,&block) unless block.nil?
+      return metadata_finders << BlockMetadataFinder.new(key,&block) unless block.nil?
       raise StandardError, "No block or method defined for #{key} on #{name}"
     end
 

@@ -41,7 +41,7 @@ class SequenomQcPlatesController < ApplicationController
 
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
-        errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k=>v) }
+        errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k => v) }
 
         saved = sequenom_qc_plate.save
         sequenom_qc_plate.connect_input_plates(input_plate_names.values.reject(&:blank?))
@@ -72,7 +72,7 @@ class SequenomQcPlatesController < ApplicationController
 
         # and redirect to a fresh page with an appropriate flash[:notice]
 
-        first_plate    = new_plates.first
+        first_plate = new_plates.first
 
         if print_job.execute
           flash[:notice] = "Sequenom #{first_plate.plate_prefix} Plate #{first_plate.name} successfully created and labels printed."

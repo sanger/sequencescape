@@ -27,7 +27,7 @@ module RequestClassDeprecator
 
         state_changes.each do |from_state,to_state|
           say "Moving #{rt.name} from #{from_state} to #{to_state}", true
-          mig =rt_requests.where(state:from_state).update_all(state:to_state)
+          mig = rt_requests.where(state:from_state).update_all(state:to_state)
           say "Moved: #{mig}", true
         end
 

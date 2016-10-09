@@ -65,7 +65,7 @@ class StudiesControllerTest < ActionController::TestCase
 
     context "#create" do
       setup do
-        @request_type_1 =FactoryGirl.create :request_type
+        @request_type_1 = FactoryGirl.create :request_type
         @program = FactoryGirl.create :program
       end
 

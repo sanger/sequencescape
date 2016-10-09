@@ -14,7 +14,7 @@ class GeneratorTest < ActiveSupport::TestCase
 
     @testcases = []
     # original
-    file = File.open(configatron.tecan_files_location+"/tecan/"+"original.gwl", "rb")
+    file = File.open(configatron.tecan_files_location + "/tecan/" + "original.gwl", "rb")
     expected_output = file.read
     data_object = {
       "user" => "xyz987",
@@ -67,9 +67,9 @@ class GeneratorTest < ActiveSupport::TestCase
         }
       }
 
-    @testcases << {:data_object =>data_object, :expected_output => expected_output}
+    @testcases << {:data_object => data_object, :expected_output => expected_output}
 
-    file = File.open(configatron.tecan_files_location+"/tecan/"+"127073.gwl", "rb")
+    file = File.open(configatron.tecan_files_location + "/tecan/" + "127073.gwl", "rb")
     expected_output = file.read
     data_object = {
         "user" => "xyz987",
@@ -79,7 +79,7 @@ class GeneratorTest < ActiveSupport::TestCase
             "name" => "ABgene 0765",
             "plate_size" => 96,
           },
-          "80785" =>{
+          "80785" => {
             "name" => "ABgene 0765",
             "plate_size" => 96,
           },
@@ -103,35 +103,35 @@ class GeneratorTest < ActiveSupport::TestCase
         }
     }
 
-    @testcases  << {:data_object =>data_object, :expected_output => expected_output}
+    @testcases << {:data_object => data_object, :expected_output => expected_output}
 
-    file = File.open(configatron.tecan_files_location+"/tecan/"+"pooled_cherrypick.gwl", "rb")
+    file = File.open(configatron.tecan_files_location + "/tecan/" + "pooled_cherrypick.gwl", "rb")
     expected_output = file.read
     data_object = {
       "user" => "xyz987",
       "time" => "Fri Nov 27 10:11:13 2009",
-      "source"=>{
-        "1220415828863"=>{
-          "name"=>"ABgene 0765",
-          "plate_size"=>96
+      "source" => {
+        "1220415828863" => {
+          "name" => "ABgene 0765",
+          "plate_size" => 96
         }
       },
-      "destination"=>{
-        "1220415928662"=>{
-          "name"=>"ABgene 0800",
-          "plate_size"=>96,
-          "mapping"=>[
-            {"src_well"=>["1220415828863", "A1"], "dst_well"=>"A1", "volume"=>13.0},
-            {"src_well"=>["1220415828863", "A2"], "dst_well"=>"A1", "volume"=>13.0},
-            {"src_well"=>["1220415828863", "A3"], "dst_well"=>"A1", "volume"=>13.0},
-            {"src_well"=>["1220415828863", "A4"], "dst_well"=>"A1", "volume"=>13.0},
-            {"src_well"=>["1220415828863", "A5"], "dst_well"=>"A1", "volume"=>13.0}
+      "destination" => {
+        "1220415928662" => {
+          "name" => "ABgene 0800",
+          "plate_size" => 96,
+          "mapping" => [
+            {"src_well" => ["1220415828863", "A1"], "dst_well" => "A1", "volume" => 13.0},
+            {"src_well" => ["1220415828863", "A2"], "dst_well" => "A1", "volume" => 13.0},
+            {"src_well" => ["1220415828863", "A3"], "dst_well" => "A1", "volume" => 13.0},
+            {"src_well" => ["1220415828863", "A4"], "dst_well" => "A1", "volume" => 13.0},
+            {"src_well" => ["1220415828863", "A5"], "dst_well" => "A1", "volume" => 13.0}
           ]
         }
       }
     }
 
-    @testcases  << {:data_object =>data_object, :expected_output => expected_output}
+    @testcases << {:data_object => data_object, :expected_output => expected_output}
 
     @testcases.each_with_index do |testcase,index|
       context ".mapping for testcase #{index}" do
@@ -182,7 +182,7 @@ class GeneratorTest < ActiveSupport::TestCase
 
     context "#barcode_to_plate_index" do
       setup do
-        @barcodes = {"1111" => "aaa", "5555" => "tttt", "4444" => "bbbb", "7777"=> "zzzz"}
+        @barcodes = {"1111" => "aaa", "5555" => "tttt", "4444" => "bbbb", "7777" => "zzzz"}
       end
       should "remap barcode ids to start at 1" do
         @plate_index_lookup = Sanger::Robots::Tecan::Generator.barcode_to_plate_index(@barcodes)

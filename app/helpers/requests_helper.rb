@@ -8,7 +8,7 @@ module RequestsHelper #:nodoc: all
 
   def request_status(request)
     state = request.state.blank? ? 'unknown' : request.state
-    content_tag(:span,state.upcase,:class=>"request-state text-#{bootstrapify(state.downcase)}")
+    content_tag(:span,state.upcase,:class => "request-state text-#{bootstrapify(state.downcase)}")
   end
 
   def read_length(request)

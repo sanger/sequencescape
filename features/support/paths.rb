@@ -174,7 +174,7 @@ module NavigationHelpers
       submission_path(submission)
 
     when /the submissions page for study "([^\"]+)"/
-      study    = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
+      study = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
       study_workflow_submissions_path(study, @current_user.workflow)
 
     when /the Qc reports homepage/
@@ -211,7 +211,7 @@ module NavigationHelpers
 
     when /the asset group "([^"]+)" page for study "([^"]+)"$/
       asset_group_name, study_name = $1, $2
-      study      = Study.find_by(:name => study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study = Study.find_by(:name => study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
       asset_group = study.asset_groups.find_by_name(asset_group_name) or raise StandardError, "No asset group defined with name '#{asset_group_name}'"
       study_asset_group_path(study, asset_group)
 

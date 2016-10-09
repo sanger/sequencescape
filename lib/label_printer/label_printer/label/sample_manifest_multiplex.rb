@@ -1,7 +1,7 @@
 module LabelPrinter
   module Label
 
-    class SampleManifestMultiplex< BaseTube
+    class SampleManifestMultiplex < BaseTube
 
       attr_reader :sample_manifest
 

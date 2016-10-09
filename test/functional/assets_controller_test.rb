@@ -19,9 +19,9 @@ class AssetsControllerTest < ActionController::TestCase
 
   context "#create a new asset with JSON input" do
     setup do
-      @asset_count =  Asset.count
+      @asset_count = Asset.count
 
-      @barcode  = FactoryGirl.generate :sanger_barcode
+      @barcode = FactoryGirl.generate :sanger_barcode
 
       @json_data = json_new_asset(@barcode)
 
@@ -32,13 +32,13 @@ class AssetsControllerTest < ActionController::TestCase
     should set_flash.to(  /Asset was successfully created/)
 
      should "change Asset.count by 1" do
-       assert_equal 1,  Asset.count  - @asset_count, "Expected Asset.count to change by 1"
+       assert_equal 1,  Asset.count - @asset_count, "Expected Asset.count to change by 1"
     end
   end
 
   context "create request with JSON input" do
     setup do
-      @submission_count =  Submission.count
+      @submission_count = Submission.count
       @asset = create(:sample_tube)
       @sample = @asset.primary_aliquot.sample
 
@@ -53,7 +53,7 @@ class AssetsControllerTest < ActionController::TestCase
     end
 
     should "change Submission.count by 1" do
-      assert_equal 1,  Submission.count  - @submission_count, "Expected Submission.count to change by 1"
+      assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
     end
     should "set a priority" do
       assert_equal(3,Submission.last.priority)
@@ -79,7 +79,7 @@ class AssetsControllerTest < ActionController::TestCase
     should "#print_labels should send print request" do
       asset = create :sample_tube
       RestClient.expects(:post)
-      post :print_labels, printables: {"#{asset.id}"=>"true"}, printer: barcode_printer.name, id: "#{asset.id}"
+      post :print_labels, printables: {"#{asset.id}" => "true"}, printer: barcode_printer.name, id: "#{asset.id}"
     end
   end
 

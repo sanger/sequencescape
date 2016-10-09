@@ -134,7 +134,7 @@ class Api::Base
 
   # Contains the mapping from the ActiveRecord attribute to the key in the JSON hash
   class_attribute :attribute_to_json_attribute_mappings, :instance_writer => false
-  self.attribute_to_json_attribute_mappings =  {}
+  self.attribute_to_json_attribute_mappings = {}
 
   # TODO[xxx]: Need to warn about 'id' not being 'internal_id'
   def self.map_attribute_to_json_attribute(attribute, json_attribute = attribute)
@@ -143,11 +143,11 @@ class Api::Base
 
   # Contains a list of resources that are related and should be exposed as URLs
   class_attribute :related_resources
-  self.related_resources =  []
+  self.related_resources = []
 
   # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
   class_attribute :associations, :instance_writer => false
-  self.associations =  {}
+  self.associations = {}
 
     # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
   class_attribute :nested_has_many_associations
@@ -191,7 +191,7 @@ class Api::Base
     association_helper.class_eval(&block)
     association_helper.singleton_class.class_eval do
       define_method(:association) { association }
-      define_method(:alias) { options[:as]||association }
+      define_method(:alias) { options[:as] || association }
     end
     self.nested_has_many_associations = Hash.new if self.nested_has_many_associations.empty?
     self.nested_has_many_associations[ association.to_sym ] = association_helper
@@ -221,7 +221,7 @@ class Api::Base
   # Additional JSON attribute handling, that cannot be done with the simple stuff, should be passed
   # done through a block
   class_attribute :extra_json_attribute_handlers, :instance_writer => false
-  self.extra_json_attribute_handlers =  []
+  self.extra_json_attribute_handlers = []
 
   def self.extra_json_attributes(&block)
     self.extra_json_attribute_handlers = Array.new if self.extra_json_attribute_handlers.empty?

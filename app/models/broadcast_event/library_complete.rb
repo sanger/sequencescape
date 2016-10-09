@@ -36,8 +36,8 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
   has_metadata(:fragment_size_to) {|_,e| e.order.request_options['fragment_size_required_to'] }
   has_metadata(:bait_library) {|_,e| e.order.request_options[:bait_library_name] }
 
-  has_metadata(:order_type) {|_,e| e.order.order_role.try(:role)||'UNKNOWN' }
+  has_metadata(:order_type) {|_,e| e.order.order_role.try(:role) || 'UNKNOWN' }
   has_metadata(:submission_template) {|_,e| e.order.template_name }
 
-  has_metadata(:team) {|tube,e| tube.team||'UNKNOWN'}
+  has_metadata(:team) {|tube,e| tube.team || 'UNKNOWN'}
 end

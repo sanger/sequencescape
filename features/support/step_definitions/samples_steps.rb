@@ -35,7 +35,7 @@ Then /^the following samples should be in the sample registration fields:$/ do |
   heads = find('table#samples_to_register').find_all('thead th').map {|th| th.text }
   rows = find('table#samples_to_register').find_all("tbody tr:nth-child(-n+#{number})")
   hashes = rows.map do |tr|
-    hash = Hash[heads.zip(tr.find_all('td').map {|td| td.first('input').try(:value)||td.first('select').try(:value) })]
+    hash = Hash[heads.zip(tr.find_all('td').map {|td| td.first('input').try(:value) || td.first('select').try(:value) })]
     hash.slice(*approved_heads)
   end
   assert_equal table.hashes, hashes
@@ -105,7 +105,7 @@ Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/
   # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
   xsd = Nokogiri::XML::Schema(File.open(schema))
   result = xsd.validate(Nokogiri(xml))
-  assert(result.length==0, result.map(&:message).join(""))
+  assert(result.length == 0, result.map(&:message).join(""))
 end
 
 Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
@@ -139,7 +139,7 @@ end
 
 Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
-  sample.update_attributes(Hash[* [attr_name, (value unless value=="empty")]])
+  sample.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
 end
 
 Then /^the sample "([^\"]+)" should exist$/ do |name|
@@ -167,7 +167,7 @@ end
 
 Given /^the sample "([^\"]+)" is in the (sample tube|well) "([^\"]+)"$/ do |sample_name, asset_type, asset_name|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  asset   = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
+  asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
   asset.aliquots.clear
   asset.aliquots.create!(:sample => sample)
 end
@@ -195,7 +195,7 @@ GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has th
 
 When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
  step %Q{I am on the show page for sample "#{sample_name}"}
- action_str = (action_type=='create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+ action_str = (action_type == 'create') ? 'Generate Accession Number' : 'Update EBI Sample data'
  step(%Q{I follow "#{action_str}"})
 end
 
@@ -253,7 +253,7 @@ end
 
 Given /^all samples have a Sanger sample ID based on "([^\"]+)"$/ do |id|
   Sample.all.each_with_index do |sample, index|
-    sample.update_attributes!(:sanger_sample_id => "#{id}#{'%02d' % (index+1)}")
+    sample.update_attributes!(:sanger_sample_id => "#{id}#{'%02d' % (index + 1)}")
   end
 end
 
@@ -303,7 +303,7 @@ Given /^there are no samples$/ do
   # To bypass all the callbacks
   # That trigger when they die
   Sample.delete_all
-  Uuid.where(:resource_type=>'Sample').each(&:destroy)
+  Uuid.where(:resource_type => 'Sample').each(&:destroy)
 end
 
 Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|

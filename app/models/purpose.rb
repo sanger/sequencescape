@@ -5,10 +5,10 @@
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 class Purpose < ActiveRecord::Base
-  self.table_name =('plate_purposes')
+  self.table_name = ('plate_purposes')
 
   class Relationship < ActiveRecord::Base
-    self.table_name =('plate_purpose_relationships')
+    self.table_name = ('plate_purpose_relationships')
     belongs_to :parent, :class_name => 'Purpose'
     belongs_to :child, :class_name => 'Purpose'
 

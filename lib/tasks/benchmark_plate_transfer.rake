@@ -4,7 +4,7 @@ namespace :benchmark do
     $stdout.puts "Preparing"
     stock = Purpose.find_by_name('Shear').create!
     sample = Sample.find_or_create_by(name:'test_sample')
-    stock.wells.each {|w| w.aliquots.create!(:sample=>sample, :study_id=>Study.find_or_create_by(name:'test_study').id)}
+    stock.wells.each {|w| w.aliquots.create!(:sample => sample, :study_id => Study.find_or_create_by(name:'test_study').id)}
     user = User.find_or_create_by(login:'test_user')
     targets = []
 
@@ -14,11 +14,11 @@ namespace :benchmark do
     end
     puts ''
 
-    all_wells = Hash[('A'..'H').map{|r| (1..12).map {|c| "#{r}#{c}"}}.flatten.map {|w| [w,w]}]
+    all_wells = Hash[('A'..'H').map {|r| (1..12).map {|c| "#{r}#{c}"}}.flatten.map {|w| [w,w]}]
 
     $stdout.puts "Warming up..."
     15.times do
-      Transfer::BetweenPlates.create!(:source=>stock,:destination=>targets.pop, :transfers=>all_wells.clone, :user=>user)
+      Transfer::BetweenPlates.create!(:source => stock,:destination => targets.pop, :transfers => all_wells.clone, :user => user)
       print '.'
     end
     puts ''
@@ -26,7 +26,7 @@ namespace :benchmark do
     start = Time.now
     $stdout.puts "Starting #{start}"
     15.times do
-      Transfer::BetweenPlates.create!(:source=>stock,:destination=>targets.pop,:transfers=>all_wells.clone, :user=>user)
+      Transfer::BetweenPlates.create!(:source => stock,:destination => targets.pop,:transfers => all_wells.clone, :user => user)
       $stdout.print '.'
     end
     $stdout.puts

@@ -11,9 +11,9 @@ class RobotsControllerTest < ActionController::TestCase
 
   context "Robots" do
     setup do
-      @user =FactoryGirl.create :user
+      @user = FactoryGirl.create :user
       session[:user] = @user
-      @robot  =FactoryGirl.create :robot
+      @robot = FactoryGirl.create :robot
     end
     should_require_login
 
@@ -36,10 +36,10 @@ class RobotsControllerTest < ActionController::TestCase
     context "#create" do
       setup do
         @count = Robot.count
-        post :create, :robot => {:name => "newrobot", :location=>"biglab" }
+        post :create, :robot => {:name => "newrobot", :location => "biglab" }
       end
       should "increase number of robots" do
-        assert_equal @count+1, Robot.count
+        assert_equal @count + 1, Robot.count
         assert_redirected_to admin_robot_path(assigns(:robot))
       end
       should set_flash.to( "Robot was successfully created.")
@@ -79,7 +79,7 @@ class RobotsControllerTest < ActionController::TestCase
         delete :destroy, :id => @robot.id
       end
       should "delete robot" do
-        assert_equal @count-1, Robot.count
+        assert_equal @count - 1, Robot.count
         assert_redirected_to admin_robots_path
       end
       should set_flash.to("Robot removed successfully")

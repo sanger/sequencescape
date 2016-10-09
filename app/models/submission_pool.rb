@@ -101,7 +101,7 @@ class SubmissionPool < ActiveRecord::Base
   end
 
   def used_tag2_layout_templates
-    tag2_layout_templates.map {|template| {"uuid"=>template.uuid,"name"=>template.name}}
+    tag2_layout_templates.map {|template| {"uuid" => template.uuid,"name" => template.name}}
   end
 
 end

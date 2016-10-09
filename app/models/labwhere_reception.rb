@@ -40,7 +40,7 @@ class LabwhereReception
     begin
 
       scan = LabWhereClient::Scan.create(
-        :location_barcode=> location_barcode,
+        :location_barcode => location_barcode,
         :user_code => user_code,
         :labware_barcodes => asset_barcodes
       )

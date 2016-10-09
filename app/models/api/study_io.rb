@@ -45,7 +45,7 @@ class Api::StudyIO < Api::Base
 
     object.roles.each do |role|
       json_attributes[role.name.downcase.gsub(/\s+/, '_')] = role.user_role_bindings.map do |user_role|
-        { :login => user_role.user.login, :email => user_role.user.email, :name  => user_role.user.name }.tap do
+        { :login => user_role.user.login, :email => user_role.user.email, :name => user_role.user.name }.tap do
           json_attributes['updated_at'] ||= user_role.updated_at
           json_attributes['updated_at']   = user_role.updated_at if json_attributes['updated_at'] < user_role.updated_at
         end
@@ -63,10 +63,10 @@ class Api::StudyIO < Api::Base
     end
     map_attribute_to_json_attribute(:prelim_id, 'prelim_id')
     map_attribute_to_json_attribute(:study_ebi_accession_number, 'accession_number')
-    map_attribute_to_json_attribute(:study_description         , 'description')
-    map_attribute_to_json_attribute(:study_abstract            , 'abstract')
+    map_attribute_to_json_attribute(:study_description, 'description')
+    map_attribute_to_json_attribute(:study_abstract, 'abstract')
     with_association(:study_type, :lookup_by => :name) do
-      map_attribute_to_json_attribute(:name                    , 'study_type')
+      map_attribute_to_json_attribute(:name, 'study_type')
     end
 
     map_attribute_to_json_attribute(:study_project_id, 'ena_project_id')
@@ -77,7 +77,7 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:contains_human_dna)
     map_attribute_to_json_attribute(:commercially_available)
     with_association(:data_release_study_type, :lookup_by => :name ) do
-      map_attribute_to_json_attribute(:name                    , 'data_release_sort_of_study')
+      map_attribute_to_json_attribute(:name, 'data_release_sort_of_study')
     end
     map_attribute_to_json_attribute(:remove_x_and_autosomes?, 'remove_x_and_autosomes')
     map_attribute_to_json_attribute(:separate_y_chromosome_data)

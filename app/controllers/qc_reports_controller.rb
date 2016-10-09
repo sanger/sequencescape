@@ -27,7 +27,7 @@ class QcReportsController < ApplicationController
     study = Study.find_by_id(params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == "1"
 
-    qc_report = QcReport.new(:study=>study, :product_criteria => @product.stock_criteria, :exclude_existing => exclude_existing)
+    qc_report = QcReport.new(:study => study, :product_criteria => @product.stock_criteria, :exclude_existing => exclude_existing)
 
     if qc_report.save
       flash[:notice] = 'Your report has been requested and will be presented on this page when complete.'
@@ -46,7 +46,7 @@ class QcReportsController < ApplicationController
   # the report identifier from the file.
   def qc_file
     qc_file = params[:qc_report_file]
-    overide_qc =  params[:overide_qc_decision] == "1"
+    overide_qc = params[:overide_qc_decision] == "1"
     file = QcReport::File.new(qc_file,overide_qc,qc_file.original_filename,qc_file.content_type)
     if file.process
       redirect_to file.qc_report

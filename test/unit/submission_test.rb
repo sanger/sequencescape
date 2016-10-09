@@ -47,7 +47,7 @@ class SubmissionTest < ActiveSupport::TestCase
 
   context "#orders compatible" do
     setup do
-      @study1 =  create :study
+      @study1 = create :study
       @study2 = create :study
 
       @project =  create :project

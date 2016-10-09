@@ -131,7 +131,7 @@ class SampleManifest < ActiveRecord::Base
   def generate_study_samples(study_samples_data)
     study_sample_fields = [:study_id, :sample_id]
     study_samples_data.each do |study_sample|
-      StudySample.create!(:study_id => study_sample.first, :sample_id=> study_sample.last)
+      StudySample.create!(:study_id => study_sample.first, :sample_id => study_sample.last)
     end
 
   end

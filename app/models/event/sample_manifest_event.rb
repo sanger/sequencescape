@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class Event::SampleManifestEvent< Event
+class Event::SampleManifestEvent < Event
   def self.created_sample!(sample, user)
     self.create!(
       :eventful => sample,

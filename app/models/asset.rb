@@ -31,7 +31,7 @@ class Asset < ActiveRecord::Base
   end
   include InstanceMethods
 
-  class VolumeError< StandardError
+  class VolumeError < StandardError
   end
 
   def summary_hash
@@ -108,7 +108,7 @@ class Asset < ActiveRecord::Base
 
   # All studies related to this asset
   def related_studies
-    (orders.map(&:study)+studies).compact.uniq
+    (orders.map(&:study) + studies).compact.uniq
   end
   # Named scope for search by query string behaviour
  scope :for_search_query, ->(query,with_includes) {
@@ -242,7 +242,7 @@ class Asset < ActiveRecord::Base
     if asset_group.study
       wells.each do |well|
         next unless well.sample
-        well.sample.studies<< asset_group.study
+        well.sample.studies << asset_group.study
         well.sample.save!
       end
     end
@@ -297,7 +297,7 @@ class Asset < ActiveRecord::Base
     nil
   end
 
-  QC_STATES =  [
+  QC_STATES = [
     [ 'passed',  'pass' ],
     [ 'failed',  'fail' ],
     [ 'pending', 'pending' ],
@@ -391,11 +391,11 @@ class Asset < ActiveRecord::Base
           { :query => '(barcode=? AND barcode_prefix_id=?)', :parameters => [ barcode_number, barcode_prefix.id ] }
         end
       when /^\d{10}$/ # A Fluidigm barcode
-        { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query=>'(pmmb.fluidigm_barcode=?)', :parameters => source_barcode.to_s }
+        { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query => '(pmmb.fluidigm_barcode=?)', :parameters => source_barcode.to_s }
       else
         { :query => 'FALSE' }
       end
-    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins=>[] }) do |building, current|
+    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins => [] }) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]
@@ -469,7 +469,7 @@ class Asset < ActiveRecord::Base
   def transfer(max_transfer_volume)
 
     transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
-    raise VolumeError, "not enough volume left" if transfer_volume <=0
+    raise VolumeError, "not enough volume left" if transfer_volume <= 0
 
     self.class.create!(:name => self.name) do |new_asset|
       new_asset.aliquots = self.aliquots.map(&:dup)

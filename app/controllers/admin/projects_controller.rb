@@ -53,7 +53,7 @@ before_action :evil_parameter_hack!
 
     by_scope = BY_SCOPES[filters[:by]]
 
-    base_scope =  Project.send(by_scope).in_state(filters[:status]).alphabetical
+    base_scope = Project.send(by_scope).in_state(filters[:status]).alphabetical
 
     # arel_table is used to generate the more complex like query
     projects = Project.arel_table

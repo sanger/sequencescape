@@ -57,7 +57,7 @@ module LabInterface::WorkflowsHelper
     if status.blank? || status == "Pass"
       status = "OK"
     end
-    select_tag("wells[#{request.id}][qc_state]", options_for_select({"Pass"=>"OK", "Fail"=>"Fail", "Weak"=>"Weak", "No Band"=>"Band Not Visible", "Degraded"=>"Degraded"}, status), html_options)
+    select_tag("wells[#{request.id}][qc_state]", options_for_select({"Pass" => "OK", "Fail" => "Fail", "Weak" => "Weak", "No Band" => "Band Not Visible", "Degraded" => "Degraded"}, status), html_options)
   end
 
   def request_types_sorted_by_total(workflow, project)

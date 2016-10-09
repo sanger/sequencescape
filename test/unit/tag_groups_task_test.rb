@@ -35,7 +35,7 @@ class TagGroupsTaskTest < TaskTestBase
 
     context '#render_task' do
       should 'call render_tag_groups_task on workflow' do
-        @controller  = DummyWorkflowController.new
+        @controller = DummyWorkflowController.new
         @user = create :user
         # session[:user] = @user.id
         @controller.batch = @batch

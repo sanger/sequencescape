@@ -71,7 +71,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal "(#{request.target_asset.tag}) #{request.target_asset.id}" , tube_label.top_line(tube)
+      assert_equal "(#{request.target_asset.tag}) #{request.target_asset.id}", tube_label.top_line(tube)
 
     end
 

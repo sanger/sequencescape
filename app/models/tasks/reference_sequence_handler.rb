@@ -6,7 +6,7 @@
 
 module Tasks::ReferenceSequenceHandler
   def render_reference_sequence_task(task, params)
-    @assets = task.find_batch_requests(params[:batch_id]).map{ |request| request.asset }.uniq
+    @assets = task.find_batch_requests(params[:batch_id]).map { |request| request.asset }.uniq
   end
 
   def do_reference_sequence_task(task, params)

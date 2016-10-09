@@ -14,8 +14,8 @@ class LabwhereReceptionsController < ApplicationController
 
   def create
     #user_barcode,location_barcode,asset_barcodes
-    input = params[:labwhere_reception]||{}
-    barcodes = input[:barcodes].try(:values)||[]
+    input = params[:labwhere_reception] || {}
+    barcodes = input[:barcodes].try(:values) || []
 
     lwr = LabwhereReception.new(input[:user_code],input[:location_barcode],input[:location_id],barcodes)
     if lwr.save

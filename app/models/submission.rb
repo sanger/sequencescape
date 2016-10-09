@@ -114,7 +114,7 @@ class Submission < ActiveRecord::Base
       order.create_submission({:user_id => order.user_id}.merge(submission_options))
       order.save! #doesn't save submission id otherwise
       study_name = order.study.try(:name)
-      order.submission.update_attributes!(:name=>study_name) if study_name
+      order.submission.update_attributes!(:name => study_name) if study_name
       order.submission.reload
       order.submission.built!
       order.submission
@@ -125,7 +125,7 @@ class Submission < ActiveRecord::Base
   def safe_to_delete?
     ActiveSupport::Deprecation.warn "Submission#safe_to_delete? may not recognise all states"
     unless self.ready?
-      requests_in_progress = self.requests.select{|r| r.state != 'pending' || r.state != 'waiting'}
+      requests_in_progress = self.requests.select {|r| r.state != 'pending' || r.state != 'waiting'}
       requests_in_progress.empty? ? true : false
     else
       return true
@@ -221,11 +221,11 @@ class Submission < ActiveRecord::Base
 
 
   def next_request_type_id(request_type_id)
-    request_type_ids[request_type_ids.index(request_type_id)+1]  if request_type_ids.present?
+    request_type_ids[request_type_ids.index(request_type_id) + 1]  if request_type_ids.present?
   end
 
   def previous_request_type_id(request_type_id)
-    request_type_ids[request_type_ids.index(request_type_id)-1]  if request_type_ids.present?
+    request_type_ids[request_type_ids.index(request_type_id) - 1]  if request_type_ids.present?
   end
 
   def obtain_next_requests_to_connect(request, next_request_type_id=nil)
@@ -242,7 +242,7 @@ class Submission < ActiveRecord::Base
       # If we get here we've got custom pooling behaviour defined.
       index = request.request_type.pool_index_for_request(request)
       number_to_return = next_possible_requests.count / request.request_type.pool_count
-      return next_possible_requests.slice(index*number_to_return,number_to_return)
+      return next_possible_requests.slice(index * number_to_return,number_to_return)
 
     else
       # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
@@ -255,7 +255,7 @@ class Submission < ActiveRecord::Base
       # Now we can take the group of requests from next_possible_requests that tie up.
       divergence_ratio = multipliers.first
       index = sibling_requests.map(&:id).index(request.id)
-      next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
+      next_possible_requests[index * divergence_ratio,[ 1, divergence_ratio ].max]
     end
   end
 
@@ -279,7 +279,7 @@ class Submission < ActiveRecord::Base
 
   def study_names
     # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    orders.map {|o| o.study.try(:name)||o.assets.map{|a| a.aliquots.map {|al| al.study.try(:name) }} }.flatten.compact.sort.uniq.join("|")
+    orders.map {|o| o.study.try(:name) || o.assets.map {|a| a.aliquots.map {|al| al.study.try(:name) }} }.flatten.compact.sort.uniq.join("|")
   end
 
  def cross_project?
@@ -294,6 +294,6 @@ end
 
 class Array
   def intersperse(separator)
-    (inject([]) { |a,v|  a+[v,separator] })[0...-1]
+    (inject([]) { |a,v|  a + [v,separator] })[0...-1]
   end
 end

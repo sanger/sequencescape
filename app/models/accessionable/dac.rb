@@ -41,7 +41,7 @@ class Accessionable::Dac < Accessionable::Base
         :email => contact[:email],
         :organisation => contact[:organisation]
         }.tap do |att|
-         att[:telephone]=tel if (tel=contact[:telephone])
+         att[:telephone] = tel if (tel = contact[:telephone])
         end)
       end
     }

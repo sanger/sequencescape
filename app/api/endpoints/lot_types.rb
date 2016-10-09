@@ -10,7 +10,7 @@ class ::Endpoints::LotTypes < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:lots, :json=>'lots', :to=>'lots') do
+    has_many(:lots, :json => 'lots', :to => 'lots') do
       action(:create) do |request,_|
         ActiveRecord::Base.transaction do
           request.target.proxy_association.owner.create!(request.attributes)

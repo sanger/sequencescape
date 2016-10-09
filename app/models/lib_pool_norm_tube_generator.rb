@@ -26,11 +26,11 @@ class LibPoolNormTubeGenerator
 
   def lib_pool_tubes
     @lib_pool_tubes ||= plate.wells.map(&:requests).flatten.select do |r|
-      r.request_type.key=='Illumina_Lib_PCR_XP_Lib_Pool'
+      r.request_type.key == 'Illumina_Lib_PCR_XP_Lib_Pool'
     end
     .map(&:target_asset)
     .uniq
-    .reject { |tube| tube.state == "failed" || tube.state == "qc_complete"  || tube.state == "cancelled" }
+    .reject { |tube| tube.state == "failed" || tube.state == "qc_complete" || tube.state == "cancelled" }
   end
 
   def destination_tubes

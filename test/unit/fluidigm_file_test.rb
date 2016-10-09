@@ -28,12 +28,12 @@ class FluidigmFileTest < ActiveSupport::TestCase
           :count   => 94
         },
         'S04' => {
-          :markers=> [ NC, XX, XX ],
-          :count=>   92
+          :markers => [ NC, XX, XX ],
+          :count => 92
         },
         'S43' => {
-          :markers=> [ XX, XX, XX ],
-          :count=>   94
+          :markers => [ XX, XX, XX ],
+          :count => 94
         }
       }
     end
@@ -58,7 +58,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
         next if @well_maps[well.description].nil?
         assert_equal @well_maps[well.description][:markers].sort, well.gender_markers.sort
         assert_equal @well_maps[well.description][:count], well.count
-        checked+=1
+        checked += 1
       end
       assert_equal @well_maps.size, checked
     end

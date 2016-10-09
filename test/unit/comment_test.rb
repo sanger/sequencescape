@@ -15,8 +15,8 @@ class CommentTest < ActiveSupport::TestCase
 
   context "while adding comments to requests" do
     setup do
-      @study =  create :study
-      @project =  create :project
+      @study = create :study
+      @project = create :project
 
       @asset = create :empty_sample_tube
       @asset.aliquots.create!(:sample => create(:sample, :studies => [@study]))
@@ -72,8 +72,8 @@ class CommentTest < ActiveSupport::TestCase
         @submission2.add_comment("My comment from submission 2", @user)
       end
       should "include that comment in all the requests of the submission" do
-        @submission.requests.all?{|r|r.comments.length == 1}
-        @submission2.requests.all?{|r|r.comments.length == 1}
+        @submission.requests.all? {|r|r.comments.length == 1}
+        @submission2.requests.all? {|r|r.comments.length == 1}
       end
     end
   end

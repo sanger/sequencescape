@@ -9,7 +9,7 @@ module Tasks::AssignTubesToWellsHandler
 
   def render_assign_tubes_to_wells_task(task, params)
     available_tubes = uniq_assets_from_requests
-    @available_tubes_options = [['',nil]] | available_tubes.map{ |t| [t.name, t.id] }
+    @available_tubes_options = [['',nil]] | available_tubes.map { |t| [t.name, t.id] }
 
     @tubes = calculate_number_of_wells_library_needs_to_use(task, params)
   end
@@ -25,7 +25,7 @@ module Tasks::AssignTubesToWellsHandler
 
       library_tubes.each do |library_tube|
         library_well_positions = all_well_positions_for_library_tube(tubes_to_well_positions, library_tube)
-        requests.select{ |request| request.asset == library_tube }.each_slice(MAX_SMRT_CELLS_PER_WELL) do |requests_for_library|
+        requests.select { |request| request.asset == library_tube }.each_slice(MAX_SMRT_CELLS_PER_WELL) do |requests_for_library|
           well_position = library_well_positions.shift
           raise "Not enough well positions to satisfy requests" if well_position.nil?
 
@@ -46,7 +46,7 @@ module Tasks::AssignTubesToWellsHandler
 
     plate ||= find_or_create_plate(task.purpose)
 
-    well_hash= Hash[plate.wells.located_at(params[:request_locations].values.uniq).map {|w| [w.map_description,w]}]
+    well_hash = Hash[plate.wells.located_at(params[:request_locations].values.uniq).map {|w| [w.map_description,w]}]
 
     problem_wells = wells_with_duplicates(params)
 
@@ -110,11 +110,11 @@ module Tasks::AssignTubesToWellsHandler
 
   def find_or_create_plate(purpose)
     first_request = @batch.requests.first
-    first_request.target_asset.try(:plate)||purpose.create!
+    first_request.target_asset.try(:plate) || purpose.create!
   end
 
   def find_target_asset_from_requests(requests)
-    requests.map{ |request| request.target_asset }.select{ |asset| ! asset.nil? }.first
+    requests.map { |request| request.target_asset }.select { |asset| ! asset.nil? }.first
   end
 
   def assign_requests_to_well(requests,well)
@@ -124,7 +124,7 @@ module Tasks::AssignTubesToWellsHandler
   end
 
   def all_well_positions_for_library_tube(tubes_to_well_positions, library_tube)
-    tubes_to_well_positions.select{ |tube_to_well| tube_to_well[0] == library_tube }.map{ |tube_to_well| tube_to_well[1] }
+    tubes_to_well_positions.select { |tube_to_well| tube_to_well[0] == library_tube }.map { |tube_to_well| tube_to_well[1] }
   end
 
   def tubes_to_wells(params)
@@ -138,15 +138,15 @@ module Tasks::AssignTubesToWellsHandler
   end
 
   def assets_from_requests
-    @afr ||= @batch.requests.map{ |request| request.asset }
+    @afr ||= @batch.requests.map { |request| request.asset }
   end
 
   def uniq_assets_from_requests
-    @uafr||=assets_from_requests.uniq
+    @uafr ||= assets_from_requests.uniq
   end
 
   def assets_from_requests_sorted_by_id
-    @asbi||=assets_from_requests.sort{ |a,b| a.id <=> b.id }
+    @asbi ||= assets_from_requests.sort { |a,b| a.id <=> b.id }
   end
 
   def calculate_number_of_wells_library_needs_to_use(task, params)
@@ -155,7 +155,7 @@ module Tasks::AssignTubesToWellsHandler
     physical_library_tubes = uniq_assets_from_requests
 
     physical_library_tubes.each do |library_tube|
-      number_of_wells = ((assets.select{ |asset| asset == library_tube }.size.to_f) / MAX_SMRT_CELLS_PER_WELL).ceil
+      number_of_wells = ((assets.select { |asset| asset == library_tube }.size.to_f) / MAX_SMRT_CELLS_PER_WELL).ceil
       next if number_of_wells == 0
       1.upto(number_of_wells) do
         tubes_for_wells << library_tube

@@ -33,7 +33,7 @@ class BatchRequest < ActiveRecord::Base
 
   # Each request can only belong to one batch.
   validates_uniqueness_of :request_id, :message => '%{value} is already in a batch.'
-  before_validation(:if => :requires_position?, :unless=>:position?) do |record|
+  before_validation(:if => :requires_position?, :unless => :position?) do |record|
     record.position = (record.batch.batch_requests.map(&:position).compact.max || 0) + 1
   end
 

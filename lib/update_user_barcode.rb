@@ -30,7 +30,7 @@ def read_user_id
       id = l.to_i
       user = f.gets.strip
 
-      user_barcode[user]=id
+      user_barcode[user] = id
       puts "#{user} => #{id}"
 
       f.gets #read a blamk lien as record separator

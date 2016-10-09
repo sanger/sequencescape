@@ -42,7 +42,7 @@ class Cherrypick::Strategy
         comparator = ->(l,r) { r.size <=> l.size }
         comparator = lambda do |left, right|
           left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
-          sorted_fill =  left_fill <=> right_fill
+          sorted_fill = left_fill <=> right_fill
           sorted_fill = right.size <=> left.size if sorted_fill.zero?
           sorted_fill
         end unless current_plate.overlap.zero?
@@ -248,7 +248,7 @@ class Cherrypick::Strategy
     last_well, species = plate.wells.in_preferred_order.reject { |w| w.aliquots.empty? }.last, []
     species = last_well.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }.uniq.sort if last_well.present?
 
-    PickPlate.new(@purpose, boundary_index+1, species)
+    PickPlate.new(@purpose, boundary_index + 1, species)
   end
   private :wrap_plate
 

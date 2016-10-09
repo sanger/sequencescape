@@ -57,7 +57,7 @@ module UiHelper
     end
 
     def get_items
-      self.summary_items.sort{ |a,b| b.timestamp <=> a.timestamp }
+      self.summary_items.sort { |a,b| b.timestamp <=> a.timestamp }
     end
 
     def add(item)

@@ -29,7 +29,7 @@ module DataRelease
   end
 
   def for_array_express?
-    (st=self.study_metadata.data_release_study_type) && st.for_array_express
+    (st = self.study_metadata.data_release_study_type) && st.for_array_express
   end
 
 end

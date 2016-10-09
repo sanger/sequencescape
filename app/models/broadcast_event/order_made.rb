@@ -42,7 +42,7 @@ class BroadcastEvent::OrderMade < BroadcastEvent
   has_metadata(:read_length) {|order,e| order.request_options[:read_length] }
   has_metadata(:bait_library) {|order,e| order.request_options[:bait_library_name] }
 
-  has_metadata(:order_type) {|order,e| order.order_role.try(:role)||'UNKNOWN' }
+  has_metadata(:order_type) {|order,e| order.order_role.try(:role) || 'UNKNOWN' }
   has_metadata(:submission_template) {|order,e| order.template_name }
 
 end

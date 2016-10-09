@@ -60,7 +60,7 @@ class ProductCriteria::Basic
   end
 
   def conflicting_gender_markers
-    (gender_markers||[]).select {|marker| conflicting_marker?(marker)}.count
+    (gender_markers || []).select {|marker| conflicting_marker?(marker)}.count
   end
 
   def metrics
@@ -170,7 +170,7 @@ class ProductCriteria::Basic
   private
 
   def comparison_for(comparison)
-    METHOD_ALIAS.fetch(comparison)||raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+    METHOD_ALIAS.fetch(comparison) || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
   end
 
 

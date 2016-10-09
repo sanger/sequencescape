@@ -73,7 +73,7 @@ class QcReport::File
   # This should ONLY be called after the headers have been read out.
   # This puts the column headers at the top of the remaining csv file
   def body_csv
-    @body_csv ||= CSV.new(@file,:headers=>:first_row, :header_converters => [:symbol] )
+    @body_csv ||= CSV.new(@file,:headers => :first_row, :header_converters => [:symbol] )
   end
 
   def each_group_of_decisions
@@ -105,9 +105,9 @@ class QcReport::File
   end
 
   def process_line(line)
-    qc_decision = (line[:qc_decision]||"").strip
-    proceed = (line[:proceed]||"").strip
-    {:qc_decision=>qc_decision, :proceed=>proceed }
+    qc_decision = (line[:qc_decision] || "").strip
+    proceed = (line[:proceed] || "").strip
+    {:qc_decision => qc_decision, :proceed => proceed }
   end
 
   def invalid(message)
@@ -135,7 +135,7 @@ class QcReport::File
     header_parser = CSV.new(@file)
     lines_read = 0
     while (row = header_parser.shift) && is_header?(row) && lines_read < MAXIMUM_HEADER_SIZE
-      headers[row[0]] = (row[1]||'').strip
+      headers[row[0]] = (row[1] || '').strip
       lines_read += 1
     end
     invalid('Please make sure there is an empty line before the column headers.') if lines_read >= MAXIMUM_HEADER_SIZE

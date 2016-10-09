@@ -5,8 +5,8 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 rt = RequestType.create!(
-  :key                =>"qc_miseq_sequencing",
-  :name               =>"MiSeq sequencing QC",
+  :key => "qc_miseq_sequencing",
+  :name => "MiSeq sequencing QC",
   :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
   :asset_type         => 'LibraryTube',
   :order              => 1,
@@ -21,4 +21,4 @@ rt = RequestType.create!(
   ) do |rt|
   Pipeline.find_by_name('MiSeq sequencing').request_types << rt
 end
-RequestType::Validator.create!(:request_type=>rt,:request_option=>'read_length',:valid_options=>[11,25])
+RequestType::Validator.create!(:request_type => rt,:request_option => 'read_length',:valid_options => [11,25])

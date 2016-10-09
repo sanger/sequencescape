@@ -8,7 +8,7 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
 
   def setup
     @user = create(:user, barcode:'ID123', swipecard_code:'02face')
-    @plate_1   = create(:plate, barcode: 1)
+    @plate_1 = create(:plate, barcode: 1)
     @plate_2 = create(:plate, barcode: 2)
     @location = create(:location)
     @labware_barcodes_in_ss = [plate_1.ean13_barcode, plate_2.ean13_barcode]
@@ -42,7 +42,7 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
 
   test 'it should not scan the labware into the location if the location is not in ss' do
     LabWhereClient::Scan.stubs(:create).returns(MockResponse.new(true,''))
-    labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', Location.last.id+1, labware_barcodes_in_ss)
+    labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', Location.last.id + 1, labware_barcodes_in_ss)
     assert_equal false, labwhere_reception.save
     assert_equal 1, labwhere_reception.errors.count
   end

@@ -12,13 +12,13 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       @controller = RobotVerificationsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user =FactoryGirl.create :user,  :barcode => "ID41440E"
+      @user = FactoryGirl.create :user,  :barcode => "ID41440E"
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
 
-      @batch   =FactoryGirl.create :batch, :barcode => "6262"
-      @robot   =FactoryGirl.create :robot, :barcode => "1"
-      @plate   =FactoryGirl.create :plate, :barcode => "142334"
+      @batch = FactoryGirl.create :batch, :barcode => "6262"
+      @robot = FactoryGirl.create :robot, :barcode => "1"
+      @plate = FactoryGirl.create :plate, :barcode => "142334"
     end
 
     context "#index" do
@@ -31,25 +31,25 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
     context "#download" do
       setup do
-        @expected_layout = [{"142334"=>1}, {"127168"=>3, "134443"=>4, "127162"=>1, "127167"=>2}]
+        @expected_layout = [{"142334" => 1}, {"127168" => 3, "134443" => 4, "127162" => 1, "127167" => 2}]
         @expected_layout[0].each do |barcode,bed_number|
           @robot.robot_properties.create(:key => "DEST#{bed_number}", :value => "5")
         end
         count = 1;
         @expected_layout[1].each do |barcode,bed_number|
           @robot.robot_properties.create(:key => "SCRC#{bed_number}", :value => bed_number)
-          @source_plate =FactoryGirl.create :plate, :barcode => barcode
-          well        =FactoryGirl.create :well, :map_id => Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
-          target_well =FactoryGirl.create :well, :map_id => Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
-          target_well.well_attribute =FactoryGirl.create :well_attribute
+          @source_plate = FactoryGirl.create :plate, :barcode => barcode
+          well = FactoryGirl.create :well, :map_id => Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
+          target_well = FactoryGirl.create :well, :map_id => Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
+          target_well.well_attribute = FactoryGirl.create :well_attribute
           @source_plate.add_and_save_well(well)
           @plate.add_and_save_well(target_well)
-          well_request =FactoryGirl.create :request, :state => "passed"
+          well_request = FactoryGirl.create :request, :state => "passed"
           well_request.asset = well
           well_request.target_asset = target_well
           well_request.save
           @batch.requests << well_request
-          count = 1+count
+          count = 1 + count
         end
         @robot.save
         @before_event_count = Event.count
@@ -70,7 +70,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
         should "be successful" do
           assert_response :success
-          assert_equal @before_event_count+ 1, Event.count
+          assert_equal @before_event_count + 1, Event.count
         end
 
       end
@@ -91,7 +91,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
 
@@ -110,7 +110,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
 
@@ -129,7 +129,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
         context "there the source plates are mixed up" do
@@ -147,7 +147,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
         context "where the source beds are mixed up" do
@@ -165,7 +165,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
         context "where 2 source beds and plates are mixed up" do
@@ -183,7 +183,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
         context "where the destination plate is missing" do
@@ -201,7 +201,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
         context "where the destination bed is missing" do
@@ -219,7 +219,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
         context "where the source and destination plates are mixed up" do
@@ -237,7 +237,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil flash[:error].include?("Error")
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
         context "where there are spaces in the input barcodes" do
@@ -254,7 +254,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
           should "be successful" do
             assert_response :success
-            assert_equal @before_event_count+ 1, Event.count
+            assert_equal @before_event_count + 1, Event.count
           end
         end
       end
@@ -263,12 +263,12 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
     context "#submission" do
       setup do
-        @well    =FactoryGirl.create :well
-        @well_request =FactoryGirl.create :request, :state => "passed"
+        @well = FactoryGirl.create :well
+        @well_request = FactoryGirl.create :request, :state => "passed"
 
-        @target_well    =FactoryGirl.create :well
+        @target_well = FactoryGirl.create :well
         @plate.add_and_save_well(@well)
-        @source_plate =FactoryGirl.create :plate, :barcode => "1234"
+        @source_plate = FactoryGirl.create :plate, :barcode => "1234"
         @source_plate.add_and_save_well(@target_well)
         @well_request.asset = @well
         @well_request.target_asset = @target_well
@@ -280,7 +280,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           post :submission, :barcodes => {:batch_barcode => "550006262686",
                                           :robot_barcode => "4880000001780",
                                           :destination_plate_barcode => "1220142334774",
-                                          :user_barcode =>"2470041440697"}
+                                          :user_barcode => "2470041440697"}
         end
         should "be successful" do
           assert_response :success
@@ -292,7 +292,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           post :submission, :barcodes => {:batch_barcode => "1111111111111",
                                           :robot_barcode => "4880000001780",
                                           :destination_plate_barcode => "1220142334774",
-                                          :user_barcode =>"2470041440697"}
+                                          :user_barcode => "2470041440697"}
         end
         should "redirect and set the flash to error" do
           assert_response :redirect
@@ -305,7 +305,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           post :submission, :barcodes => {:batch_barcode => "550006262686",
                                           :robot_barcode => "111111111111",
                                           :destination_plate_barcode => "1220142334774",
-                                          :user_barcode =>"2470041440697"}
+                                          :user_barcode => "2470041440697"}
         end
         should "redirect and set the flash to error" do
           assert_response :redirect
@@ -318,7 +318,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           post :submission, :barcodes => {:batch_barcode => "550006262686",
                                           :robot_barcode => "4880000001780",
                                           :destination_plate_barcode => "111111111111",
-                                          :user_barcode =>"2470041440697"}
+                                          :user_barcode => "2470041440697"}
         end
         should "redirect and set the flash to error" do
           assert_response :redirect
@@ -331,7 +331,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           post :submission, :barcodes => {:batch_barcode => "550006262686",
                                           :robot_barcode => "4880000001780",
                                           :destination_plate_barcode => "1220142334774",
-                                          :user_barcode =>"1111111111111"}
+                                          :user_barcode => "1111111111111"}
         end
         should "redirect and set the flash to error" do
           assert_response :redirect

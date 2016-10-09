@@ -11,7 +11,7 @@ module Core::Io::Base::JsonFormattingBehaviour
       extend ::Core::Io::Base::JsonFormattingBehaviour::Output
 
       class_attribute :attribute_to_json_field, :instance_writer => false
-      self.attribute_to_json_field =  {}
+      self.attribute_to_json_field = {}
       delegate :json_field_for, :to => 'self.class'
     end
   end

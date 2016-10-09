@@ -52,11 +52,11 @@ module AssetsHelper
   # Returns a select tag that has it's options ordered by name (assumes present of sorted_by_name function)
   # and disabled if a value has been pre-selected.
   def select_field_sorted_by_name(field, select_options_source, selected, options = {})
-    content_tag(:div, :class=>'col-md-5') do
+    content_tag(:div, :class => 'col-md-5') do
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.map { |x| [x.name, x.id] }, selected.try(:to_i)),
-        options.merge(:disabled => (selected.present? and not current_user.is_administrator?), :class=>'form-control select2')
+        options.merge(:disabled => (selected.present? and not current_user.is_administrator?), :class => 'form-control select2')
       )
     end
   end

@@ -58,7 +58,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
     setup do
       @plate = valid_plate
       Plate.stubs(:find_from_machine_barcode).returns(plate)
-      @generator =  LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study)
+      @generator = LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study)
     end
 
     should "be valid" do

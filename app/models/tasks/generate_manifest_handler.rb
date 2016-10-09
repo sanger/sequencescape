@@ -15,7 +15,7 @@ module Tasks::GenerateManifestHandler
     csv_string = GenerateManifestsTask.generate_manifests(batch,study)
     send_data csv_string,
       :type => "text/csv",
-      :filename=> manifest_filename(study.name,batch.id),
+      :filename => manifest_filename(study.name,batch.id),
       :disposition => 'attachment'
   end
 

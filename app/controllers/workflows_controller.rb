@@ -8,7 +8,7 @@ class WorkflowsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+  before_action :find_workflow_by_id, :only => [:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
@@ -162,7 +162,7 @@ class WorkflowsController < ApplicationController
         if @task.do_task(self, params)
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task,params)
-          @stage +=  1
+          @stage += 1
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
         end
@@ -193,7 +193,7 @@ class WorkflowsController < ApplicationController
 
   def ordered_fields(fields)
     response = Array.new
-    fields.keys.sort_by{|key| key.to_i}.each do |key|
+    fields.keys.sort_by {|key| key.to_i}.each do |key|
       response.push fields[key]
     end
     response

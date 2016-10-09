@@ -18,7 +18,7 @@ class PlateConversion < ActiveRecord::Base
 
   validates :target, :presence => true
   validates :purpose, :presence => true
-  validates :user, :presence =>true
+  validates :user, :presence => true
 
   after_create :convert_target
 

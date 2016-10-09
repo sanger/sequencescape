@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2012 Genome Research Ltd.
 require 'optparse'
 require 'rgl/dot'
-DOT=RGL::DOT
+DOT = RGL::DOT
 
 # Hack to work different version of sequencescape
 begin
@@ -100,7 +100,7 @@ class GraphRenderer < Renderer
   end
 
   def construct_graph(nodes, edges)
-    DOT::Graph.new("rankdir" =>@rankdir).tap do |graph|
+    DOT::Graph.new("rankdir" => @rankdir).tap do |graph|
 
 
       layouts.each do |layout|
@@ -115,10 +115,10 @@ class GraphRenderer < Renderer
       all_requests = []
 
       all_requests.group_by(&:class).each do |klass, requests|
-        subgraph = DOT::Subgraph.new("name" => "cluster_#{klass.name}", "style"=>"filled", "fillcolor"=>"gold", "color" => "goldenrod4")
+        subgraph = DOT::Subgraph.new("name" => "cluster_#{klass.name}", "style" => "filled", "fillcolor" => "gold", "color" => "goldenrod4")
         requests.each do |r|
-          subsubgraph = DOT::Subgraph.new("name" => "cluster_#{r.node_name}", "color"=>"none")
-          [r.asset.requests.size <=1 ? r.asset : nil, r, r.target_asset].compact.each do |o|
+          subsubgraph = DOT::Subgraph.new("name" => "cluster_#{r.node_name}", "color" => "none")
+          [r.asset.requests.size <= 1 ? r.asset : nil, r, r.target_asset].compact.each do |o|
             subsubgraph << DOT::Node.new("name" => o.node_name)
             graph << subsubgraph
           end
@@ -161,7 +161,7 @@ class GraphRenderer < Renderer
         next if done.include?(node) or not node
         done << node
          node_options = node.try(:node_options)
-        if label=label_map[node]
+        if label = label_map[node]
           node_options["label"] = label
         end
         dot_node = case
@@ -180,13 +180,13 @@ class GraphRenderer < Renderer
       end
     end
 
-    return cut+normal
+    return cut + normal
   end
 
   def add_edges(graph, nodes, edges)
     edges.each do |edge|
       next unless edge.parent and edge.object
-      next if edge.is_a?(HiddenEdge) and  not nodes.include?(edge.object)
+      next if edge.is_a?(HiddenEdge) and not nodes.include?(edge.object)
 
       graph << create_edge(edge)
     end
@@ -204,7 +204,7 @@ end
 class SingleGraphRenderer < GraphRenderer
   def add_edges(graph, nodes, edges)
     edge_set = Set.new()
-    super(graph, nodes, edges.select { |e| edge_set.include?(e.key) == false and edge_set<< e.key and edge_set.include?(e.reversed_key) == false})
+    super(graph, nodes, edges.select { |e| edge_set.include?(e.key) == false and edge_set << e.key and edge_set.include?(e.reversed_key) == false})
   end
 end
 
@@ -262,7 +262,7 @@ class Edge
 
   def label()
     if index
-      "#{index+1}/#{max_index+1} - #{object.class.name}# #{object.id}"
+      "#{index + 1}/#{max_index + 1} - #{object.class.name}# #{object.id}"
     else
       "#{object.class.name}# #{object.id}"
     end
@@ -290,9 +290,9 @@ class Edge
     when parent.is_a?(Request) && object && object.is_a?(Asset)
       { "color" => parent.color, "style" => "bold", "dir" => "both"}.merge(
       if parent.asset == object # source side
-      {"headlabel" =>  "", "arrowtail" => "empty", "arrowhead" => "dot", "samehead" => "source_#{object.node_name}"}
+      {"headlabel" => "", "arrowtail" => "empty", "arrowhead" => "dot", "samehead" => "source_#{object.node_name}"}
       else
-      {"headlabel" =>  "", "arrowhead" => "normal", "arrowtail" => "odot", "sametail" => "target_#{parent.node_name}"}
+      {"headlabel" => "", "arrowhead" => "normal", "arrowtail" => "odot", "sametail" => "target_#{parent.node_name}"}
       end
       )
       # AssetLink
@@ -308,7 +308,7 @@ class Edge
         {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both"}
     when parent.is_a?(Aliquot) && object.is_a?(Asset)
           @parent, @object = [@object, @parent] # reverse so they could share the same 'sametail'
-        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir"=> "both"}
+        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both"}
     else
       {}
     end
@@ -358,7 +358,7 @@ class NodeToCluster
     #create a cluster for each node
     selected_nodes.each do | node|
       cluster_name = "luster_#{node.node_name}"
-      cluster = DOT::Subgraph.new("name" => cluster_name, "label" => node.node_name, "fillcolor" => "yellow", "color" => "lightcyan", "style"=>"filled")
+      cluster = DOT::Subgraph.new("name" => cluster_name, "label" => node.node_name, "fillcolor" => "yellow", "color" => "lightcyan", "style" => "filled")
       cluster << DOT::Node.new("name" => node.node_name)
       clusters << cluster
       #node.instance_eval "def node_name(); '#{cluster_name}'; end"
@@ -388,7 +388,7 @@ end
 # use :skip_super to not include superclass association
 Models = {
   :submission => [{
-  Submission => [:study, :project, RequestByType=->(s) {  s.requests.group_by(&:request_type_id).values }, :asset_group],
+  Submission => [:study, :project, RequestByType = ->(s) {  s.requests.group_by(&:request_type_id).values }, :asset_group],
   Request => [:asset, :target_asset],
   Asset => [->(s) {  s.requests.group_by(&:request_type_id).values }, :requests_as_target, :children, :parent],
   AssetGroup => [:assets]
@@ -398,16 +398,16 @@ Models = {
 }
 ],
 
-  :simple_submission =>  { Submission => ->(s) {  s.requests.group_by(&:request_type_id).values }} ,
+  :simple_submission => { Submission => ->(s) {  s.requests.group_by(&:request_type_id).values }},
 
-  :asset_down => AssetDown={ Asset => [:children, RequestByType, :sample, :tags],
+  :asset_down => AssetDown = { Asset => [:children, RequestByType, :sample, :tags],
     Request => [:target_asset],
     Submission => [RequestByType],
     Aliquot::Receptacle => [:aliquots],
     Aliquot => [:sample, :tag],
     Plate => [:wells]
 },
-  :asset_up => AssetUp={ Asset => [:parents, :requests_as_target],
+  :asset_up => AssetUp = { Asset => [:parents, :requests_as_target],
     TagInstance => [:tag],
     Request => [:asset],
     Aliquot => [:sample, :tag],
@@ -418,7 +418,7 @@ Models = {
   StudySample => [:study],
   Asset => [:requests, :children, :parents],
   Well => [:container_association],
-  ContainerAssociation => [:container, :content] ,
+  ContainerAssociation => [:container, :content],
   Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
   Submission => [:asset_group]
 ),
@@ -428,31 +428,31 @@ Models = {
   :asset => [{Asset => [ ->(s) {  s.requests.group_by(&:request_type_id).values },
         :requests_as_target, :children, :parents]},
         { Request => [:asset, :target_asset]}],
-  :submission_down => [{ Submission => RequestByType}.merge(AssetDown)] ,
+  :submission_down => [{ Submission => RequestByType}.merge(AssetDown)],
     :bare => {}
 }
 
-Layouts =  { :submission => [ NodeToCluster.new(Submission)
+Layouts = { :submission => [ NodeToCluster.new(Submission)
   ]
 }
 optparse = OptionParser.new do |opts|
   opts.on('-e', '--eval expr ', 'ruby expression returning a list of object to pull') do |expr|
-    $objects<< expr
+    $objects << expr
   end
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
-    $objects<< [Sample, sample]
+    $objects << [Sample, sample]
   end
 
   opts.on('--study id_or_name', 'study to pull') do |study|
-    $objects<< [Study, study]
+    $objects << [Study, study]
   end
 
   opts.on('-a', '--asset id_or_name', 'asset to pull') do |asset|
-    $objects<< [Asset, asset]
+    $objects << [Asset, asset]
   end
 
   opts.on('-a', '--request id', 'request to pull') do |request|
-    $objects<< [Request, request]
+    $objects << [Request, request]
   end
 
   opts.on('--submission id_or_name', 'submission to pull') do |submission|
@@ -460,11 +460,11 @@ optparse = OptionParser.new do |opts|
   end
 
   opts.on('-rt','--request_type', 'request types') do |request_types|
-    $objects<< [RequestType, request_types]
+    $objects << [RequestType, request_types]
   end
 
   opts.on '-m' '--model', 'model of what needs to be pull' do |model_name|
-    $options[:model]=model_name
+    $options[:model] = model_name
   end
   opts.on('-rs', '--ruby', 'Generate a ruby script') do
     $options[:output_method] = ScriptRenderer.new
@@ -548,7 +548,7 @@ def load_objects(objects)
 end
 
 def object_to_hash(object)
-  att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
+  att = object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
   att.each do |k,v|
     if k =~ /name|login|email|decription|abstract|title/i and v.is_a?(String) and (k !~ /class_?name/)
       att[k] = "#{object.class.name}_#{object.id}_#{k}"
@@ -670,7 +670,7 @@ end
 [Well, MultiplexedLibraryTube].each do |klass|
   klass.class_eval do
     def node_options_with_multi
-      node_options_without_multi.merge("fillcolor" => aliquots.size > 1 ? "red": "lightcyan")
+      node_options_without_multi.merge("fillcolor" => aliquots.size > 1 ? "red" : "lightcyan")
     end
     alias_method_chain :node_options, :multi
   end

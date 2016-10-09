@@ -8,9 +8,9 @@ STDOUT.sync = true; STDOUT.flush
 STDERR.sync = true; STDERR.flush
 
 #Try to Load Merb
-merb_init_file = File.expand_path(File.dirname(__FILE__)+'/../config/merb_init')
+merb_init_file = File.expand_path(File.dirname(__FILE__) + '/../config/merb_init')
 if File.exists? merb_init_file
-  require File.expand_path(File.dirname(__FILE__)+'/../config/boot')
+  require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
   #need this because of the CWD
   Merb.root = MERB_ROOT
   require merb_init_file

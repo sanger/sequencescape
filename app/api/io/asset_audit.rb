@@ -19,7 +19,7 @@ class ::Io::AssetAudit < ::Core::Io::Base
     end
 
     def asset_uuid=(uuid)
-      self.asset =  Uuid.with_external_id(uuid).include_resource.map(&:resource).first
+      self.asset = Uuid.with_external_id(uuid).include_resource.map(&:resource).first
     end
 
     # TODO: add any methods

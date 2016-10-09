@@ -174,11 +174,11 @@ module Presenters
     end
 
     def stock_barcode
-      parent.source_plate.try(:sanger_human_barcode)||"Unknown"
+      parent.source_plate.try(:sanger_human_barcode) || "Unknown"
     end
 
     def still_required
-      wells/parent.height
+      wells / parent.height
     end
 
     # Gates

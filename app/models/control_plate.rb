@@ -8,7 +8,7 @@ class ControlPlate < Plate
 
   self.prefix = "DN"
 
-  AFFY_WELL_LOCATIONS= ['G1','H1']
+  AFFY_WELL_LOCATIONS = ['G1','H1']
   ILLUMINA_CONTROL_WELL_LOCATIONS = [ 'A1', 'C1', 'E1' ]
 
   def illumina_wells

@@ -15,9 +15,9 @@ class Studies::EventsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @user     = create :user
+      @user = create :user
       session[:user] = @user.id
-      @study  = create :study
+      @study = create :study
     end
 
     should_require_login(:index)

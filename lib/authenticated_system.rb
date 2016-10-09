@@ -159,10 +159,10 @@ module AuthenticatedSystem
           redirect_to :controller => '/sessions', :action => 'login'
         end
         accepts.xml do
-          render :xml  => {:error => "Couldn't authenticate you"}, :status => :unauthorized
+          render :xml => {:error => "Couldn't authenticate you"}, :status => :unauthorized
         end
         accepts.json do
-          render :json  => {:error => "Couldn't authenticate you"}, :status => :unauthorized
+          render :json => {:error => "Couldn't authenticate you"}, :status => :unauthorized
         end
       end
       false
@@ -196,7 +196,7 @@ module AuthenticatedSystem
       if user && user.remember_token?
         user.remember_me
         self.current_user = user
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+        cookies[:auth_token] = { :value => self.current_user.remember_token, :expires => self.current_user.remember_token_expires_at }
         flash[:notice] = "Logged in successfully"
       end
     end

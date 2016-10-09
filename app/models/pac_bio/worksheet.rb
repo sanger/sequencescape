@@ -11,7 +11,7 @@ class PacBio::Worksheet
 
   def create_csv_from_batch(batch)
     csv_string = CSV.generate( :row_sep => "\r\n") do |csv|
-      header_metadata(batch).each{ |header_row| csv << header_row }
+      header_metadata(batch).each { |header_row| csv << header_row }
       csv << column_headers
       batch.requests.each_with_index do |request,index|
         csv << ( row(request))

@@ -126,7 +126,7 @@ end
 
 
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
-  well =Uuid.find_by_external_id(uuid).resource
+  well = Uuid.find_by_external_id(uuid).resource
 
   sample = FactoryGirl.create(:sample, :name => "Testing_the_JSON_API")
   sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)

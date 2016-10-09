@@ -71,7 +71,7 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def npg_action_invalid?
-   @asset  ||= Asset.find(params[:asset_id])
+   @asset ||= Asset.find(params[:asset_id])
    request = @asset.source_request
    npg_events = Event.npg_events(request.id)
    raise NPGActionInvalid, "NPG user run this action. Please, contact USG" if npg_events.size > 0

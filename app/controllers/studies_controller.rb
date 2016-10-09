@@ -103,7 +103,7 @@ class StudiesController < ApplicationController
   def edit
     @study = Study.find(params[:id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?
-    @users   = User.all
+    @users = User.all
     redirect_if_not_owner_or_admin
   end
 
@@ -155,14 +155,14 @@ class StudiesController < ApplicationController
   end
 
   def collaborators
-    @study    = Study.find(params[:id])
+    @study = Study.find(params[:id])
     @all_roles  = Role.select(:name).uniq
     @roles      = Role.where(:authorizable_id => @study.id, :authorizable_type => "Study")
     @users      = User.order(:first_name)
   end
 
   def related_studies
-    @study    = Study.find(params[:id])
+    @study = Study.find(params[:id])
     @relation_names = StudyRelationType::names
     @studies = current_user.interesting_studies
     @studies.reject {|s| s == @study }
@@ -178,13 +178,13 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     status = 500
 
-    if pr=params[:related_study]
-      relation_type_name    = pr[:relation_type]
+    if pr = params[:related_study]
+      relation_type_name = pr[:relation_type]
       related_study = Study.find_by_id pr[:study_id]
 
       begin
         yield(relation_type_name, related_study)
-        redirect_to :action =>  "related_studies"
+        redirect_to :action => "related_studies"
         return
       rescue ActiveRecord::RecordInvalid, RuntimeError => ex
         status = 403
@@ -215,7 +215,7 @@ class StudiesController < ApplicationController
   end
 
   def follow
-    @study    = Study.find(params[:id])
+    @study = Study.find(params[:id])
     if current_user.has_role? 'follower', @study
       current_user.has_no_role 'follower', @study
       flash[:notice] = "You have stopped following the '#{@study.name}' study."
@@ -245,7 +245,7 @@ class StudiesController < ApplicationController
   def show_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text =@study.accession_service.accession_study_xml(@study)
+      xml_text = @study.accession_service.accession_study_xml(@study)
       format.xml  { render(:text => xml_text) }
     end
   end
@@ -253,7 +253,7 @@ class StudiesController < ApplicationController
    def show_policy_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text =@study.accession_service.accession_policy_xml(@study)
+      xml_text = @study.accession_service.accession_policy_xml(@study)
       format.xml  { render(:text => xml_text) }
     end
    end
@@ -261,7 +261,7 @@ class StudiesController < ApplicationController
    def show_dac_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text =@study.accession_service.accession_dac_xml(@study)
+      xml_text = @study.accession_service.accession_dac_xml(@study)
       format.xml  { render(:text => xml_text) }
     end
    end

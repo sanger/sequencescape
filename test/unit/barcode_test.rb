@@ -44,7 +44,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should_eventually "be splittable" do
-      prefix, number, check =  Barcode.split_barcode(@barcode)
+      prefix, number, check = Barcode.split_barcode(@barcode)
       assert_equal "247", prefix
       assert_equal 2, number
       assert_equal "799", check

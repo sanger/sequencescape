@@ -31,13 +31,13 @@ class DnaQcTask < Task
     end
 
     def qc_status
-      status =  [gel_status, pico_status, sequenom_status, concentration_status, gender_status, sample_name_empty]
+      status = [gel_status, pico_status, sequenom_status, concentration_status, gender_status, sample_name_empty]
 
       return "fail" if genotyping_done_status == "fail"
       return case
       when status.map { |s| s == "pass" or s == "*" }.all? then "pass"
       when status.map { |s| s == "fail" or s == "*" or s.nil?}.all? then "fail"
-      when status.map { |s| s == "fail"}.select{ |b| b == true }.size >=3 then "fail"
+      when status.map { |s| s == "fail"}.select { |b| b == true }.size >= 3 then "fail"
       else ""
       end
     end
@@ -51,7 +51,7 @@ class DnaQcTask < Task
 
     def pico_status
       case
-      when pico_value ==  "Pass" || pico_value ==  "passed" then "pass"
+      when pico_value == "Pass" || pico_value == "passed" then "pass"
       when pico_value == "ungraded" || pico_value == "repeat" then "*"
       when pico_value == "failed" then "fail"
       when ["Too Low To Normalise"].include?(pico_value) then "fail"
@@ -71,8 +71,8 @@ class DnaQcTask < Task
       return "*" unless @sequenom_count
       count = @sequenom_count.to_i
       case
-      when count  < 19 then "fail"
-      when count >19 then "pass"
+      when count < 19 then "fail"
+      when count > 19 then "pass"
       end
     end
     def concentration_status
@@ -99,7 +99,7 @@ class DnaQcTask < Task
     end
 
     def genotyping_done_status
-      @genotyping_done && @genotyping_done != "0" ?  "fail" : "pass"
+      @genotyping_done && @genotyping_done != "0" ? "fail" : "pass"
     end
   end # class QcData
 
@@ -133,7 +133,7 @@ class DnaQcTask < Task
 
         #activate the next requets
         request.next_requests(batch.pipeline).each do |next_request|
-          if next_request.blocked? and  next_request.unblock
+          if next_request.blocked? and next_request.unblock
             next_request.save
           end
         end
@@ -150,7 +150,7 @@ class DnaQcTask < Task
       end
     end
 
-    event =  LabEvent.new
+    event = LabEvent.new
     event.description = name
     event.eventful = request
     event.add_new_descriptor("Passed", request.state == "passed")

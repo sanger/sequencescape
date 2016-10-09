@@ -55,7 +55,7 @@ FactoryGirl.define do
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
   end
 
-  factory :plate_creator, :class =>  Plate::Creator do
+  factory :plate_creator, :class => Plate::Creator do
     name                {|t| FactoryGirl.generate :plate_creator_name }
   end
 

@@ -11,7 +11,7 @@ class RequestType < ActiveRecord::Base
   class DeprecatedError < RuntimeError; end
 
   class RequestTypePlatePurpose < ActiveRecord::Base
-    self.table_name =('request_type_plate_purposes')
+    self.table_name = ('request_type_plate_purposes')
 
     belongs_to :request_type
     validates_presence_of :request_type
@@ -27,7 +27,7 @@ class RequestType < ActiveRecord::Base
   has_many :requests, :inverse_of => :request_type
   has_many :pipelines_request_types, :inverse_of => :request_type
   has_many :pipelines, :through => :pipelines_request_types
-  has_many :library_types_request_types, :inverse_of=> :request_type
+  has_many :library_types_request_types, :inverse_of => :request_type
   has_many :library_types, :through => :library_types_request_types
   has_many :request_type_validators, :class_name => 'RequestType::Validator'
 
@@ -36,7 +36,7 @@ class RequestType < ActiveRecord::Base
   has_many :extended_validators, :through => :request_type_extended_validators, :dependent => :destroy
 
   def default_library_type
-    library_types.where(:library_types_request_types=>{:is_default=>true}).first
+    library_types.where(:library_types_request_types => {:is_default => true}).first
   end
 
   # Returns a collect of pipelines for which this RequestType is valid control.
@@ -59,7 +59,7 @@ class RequestType < ActiveRecord::Base
   belongs_to :request_purpose
   validates_presence_of :request_purpose
 
-  MORPHOLOGIES  = [
+  MORPHOLOGIES = [
     LINEAR = 0,   # one-to-one
     CONVERGENT = 1, # many-to-one
     DIVERGENT = 2 # one-to-many

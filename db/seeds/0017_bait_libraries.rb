@@ -6,7 +6,7 @@
 
 # Generate a few bait libraries.
 ['Standard','Custom - Pipeline', 'Custom - Customer'].each do |name|
-  BaitLibraryType.create!(:name=>name)
+  BaitLibraryType.create!(:name => name)
 end
 
 BaitLibrary::Supplier.create!(:name => 'Agilent').tap do |supplier|

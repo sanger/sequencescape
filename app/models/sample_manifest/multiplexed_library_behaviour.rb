@@ -130,7 +130,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
     def specialized_fields(row)
 
-      tag_group  = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
+      tag_group = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
 
       {
         :specialized_from_manifest => {

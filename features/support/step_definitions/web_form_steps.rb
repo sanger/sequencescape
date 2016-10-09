@@ -59,7 +59,7 @@ end
 
 def assert_label_exists(label_text, required = false)
   selector = 'label' << (required ? '.required' : ':not(.required)')
-  assert(page.has_css?(selector,:visible=>:all,:text=>label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
+  assert(page.has_css?(selector,:visible => :all,:text => label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
 end
 
 def locate_labeled_field_type(label_text, field_type)
@@ -113,12 +113,12 @@ Then /^I should see the (required )?select field "([^\"]+)" without the option "
 end
 
 Then /^the select field "([^\"]+)" should have the option "([^\"]+)"$/ do |field, option|
-  element = page.find_field(field, :visible=>:all,:disabled=>true)
+  element = page.find_field(field, :visible => :all,:disabled => true)
   element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
 Then /^the select field "([^\"]+)" should not have the option "([^\"]+)"$/ do |field, option|
-  element = page.find_field(field, :visible=>:all,:disabled=>true)
+  element = page.find_field(field, :visible => :all,:disabled => true)
   element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
@@ -154,12 +154,12 @@ end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
   selected = find_field(name).find('option[selected]').text
-  assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
+  assert_equal( value, selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^"([^\"]+)" should be selected from a disabled "([^\"]+)"$/ do |value, name|
   selected = find_field(name,disabled:true).find('option[selected]').text
-  assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
+  assert_equal( value, selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|

@@ -7,7 +7,7 @@
 class AddFlexibleCherrypickPipeline < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      pl= FlexibleCherrypickPipeline.create!(
+      pl = FlexibleCherrypickPipeline.create!(
         :name => 'Flexible Cherrypick',
         :automated => false,
         :active => true,
@@ -21,10 +21,10 @@ class AddFlexibleCherrypickPipeline < ActiveRecord::Migration
         :min_size => 1,
         :control_request_type_id => 0
       ) do |pl|
-        pl.workflow = LabInterface::Workflow.new(:name=>'Flexible Cherrypick',:pipeline=>pl)
+        pl.workflow = LabInterface::Workflow.new(:name => 'Flexible Cherrypick',:pipeline => pl)
         pl.request_types << RequestType.find_by_key('flexible_cherrypick')
       end
-       MultiplexedCherrypickingTask.create!(:workflow=>pl.workflow,:name=>'Set Plate Layout',:lab_activity=>true)
+       MultiplexedCherrypickingTask.create!(:workflow => pl.workflow,:name => 'Set Plate Layout',:lab_activity => true)
     end
   end
 

@@ -16,7 +16,7 @@ class LabInterface::WorkflowTest < ActiveSupport::TestCase
       @workflow = pipeline.workflow
       @workflow.update_attributes!(:name => 'Workflow for LabInterface::WorkflowTest')
 
-      task      = create :task, :workflow => @workflow
+      task = create :task, :workflow => @workflow
       create :descriptor, :task => task, :name => "prop", :value => "something", :key => "something"
       create :descriptor, :task => task, :name => "prop_2", :value => "upstairs", :key => "upstairs"
     end
@@ -25,27 +25,27 @@ class LabInterface::WorkflowTest < ActiveSupport::TestCase
 
     context "#deep_copy" do
       setup do
-        @labinterface_workflow_count =  LabInterface::Workflow.count
-        @task_count =  Task.count
-        @pipeline_count =  Pipeline.count
-        @descriptor_count =  Descriptor.count
+        @labinterface_workflow_count = LabInterface::Workflow.count
+        @task_count = Task.count
+        @pipeline_count = Pipeline.count
+        @descriptor_count = Descriptor.count
         @workflow.deep_copy
       end
 
       should "change LabInterface::Workflow.count by 1" do
-        assert_equal 1,  LabInterface::Workflow.count  - @labinterface_workflow_count, "Expected LabInterface::Workflow.count to change by 1"
+        assert_equal 1,  LabInterface::Workflow.count - @labinterface_workflow_count, "Expected LabInterface::Workflow.count to change by 1"
       end
 
        should "change Task.count by 1" do
-         assert_equal 1,  Task.count  - @task_count, "Expected Task.count to change by 1"
+         assert_equal 1,  Task.count - @task_count, "Expected Task.count to change by 1"
       end
 
        should "change Pipeline.count by 1" do
-         assert_equal 1,  Pipeline.count  - @pipeline_count, "Expected Pipeline.count to change by 1"
+         assert_equal 1,  Pipeline.count - @pipeline_count, "Expected Pipeline.count to change by 1"
       end
 
        should "change Descriptor.count by 2" do
-         assert_equal 2,  Descriptor.count  - @descriptor_count, "Expected Descriptor.count to change by 2"
+         assert_equal 2,  Descriptor.count - @descriptor_count, "Expected Descriptor.count to change by 2"
       end
 
       should "duplicate workflow" do

@@ -143,7 +143,7 @@ class PlatePurpose < Purpose
     raise "Apparently there are not requests on these wells?" if conditions.empty?
     Request.where_is_not_a?(TransferRequest).where([ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
-      request.request_metadata.update_attributes!(:customer_accepts_responsibility=>true) if customer_accepts_responsibility
+      request.request_metadata.update_attributes!(:customer_accepts_responsibility => true) if customer_accepts_responsibility
       request.passed? ? request.retrospective_fail! : request.fail!
     end
   end
@@ -181,7 +181,7 @@ class PlatePurpose < Purpose
   end
 
   def size
-    attributes['size']||96
+    attributes['size'] || 96
   end
 
   def well_locations

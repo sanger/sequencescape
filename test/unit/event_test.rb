@@ -156,7 +156,7 @@ class EventTest < ActiveSupport::TestCase
         @multiplexed_library_creation_request = create :request, :request_type => @mx_library_creation_request_type
         @pe_sequencing_request = create :request, :request_type => @pe_sequencing_request_type
         @dna_qc_request = create :request, :request_type => @dna_qc_request_type
-        @request_for_control =  create :request, :request_type => @pe_sequencing_request_type, :asset => @control, :state => "started"
+        @request_for_control = create :request, :request_type => @pe_sequencing_request_type, :asset => @control, :state => "started"
         @requests = [@library_creation_request, @multiplexed_library_creation_request, @pe_sequencing_request, @dna_qc_request]
       end
 

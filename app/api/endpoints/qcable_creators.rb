@@ -12,7 +12,7 @@ class ::Endpoints::QcableCreators < ::Core::Endpoint::Base
   instance do
     belongs_to(:user,   :json => 'user')
     belongs_to(:lot,  :json => 'lot')
-    has_many(:qcables,  :json => 'qcables', :to=>'qcables')
+    has_many(:qcables,  :json => 'qcables', :to => 'qcables')
   end
 
 end

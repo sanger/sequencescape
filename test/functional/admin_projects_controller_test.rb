@@ -28,8 +28,8 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         @project  = create :project, :approved => false
         role = FactoryGirl.create :owner_role, :authorizable => @project
         role.users << @user
-        @request_type =FactoryGirl.create :request_type
-        @other_request_type =FactoryGirl.create :request_type
+        @request_type = FactoryGirl.create :request_type
+        @other_request_type = FactoryGirl.create :request_type
         session[:user] = @user.id
         @emails = ActionMailer::Base.deliveries
         @emails.clear
@@ -50,7 +50,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
       context "#managed_update (with getting approved)" do
         setup do
-          @event_count =  Event.count
+          @event_count = Event.count
           put :managed_update, :id => @project.id, :project => { :approved => true, :name => @project.name }
         end
 
@@ -59,7 +59,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
 
         should "change Event.count by 1" do
-          assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+          assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
         end
 
         should "send an email" do

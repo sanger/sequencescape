@@ -7,7 +7,7 @@
 module ModelExtensions::Stamp
 
   def stamp_details=(details)
-    self.stamp_qcables.build(details.map{|d| locate_qcable(d) })
+    self.stamp_qcables.build(details.map {|d| locate_qcable(d) })
   end
 
   private

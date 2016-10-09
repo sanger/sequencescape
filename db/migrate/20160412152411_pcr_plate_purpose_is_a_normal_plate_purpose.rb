@@ -5,7 +5,7 @@
 class PcrPlatePurposeIsANormalPlatePurpose < ActiveRecord::Migration
 
   class Purpose < ActiveRecord::Base
-    self.table_name='plate_purposes'
+    self.table_name = 'plate_purposes'
   end
 
   def up

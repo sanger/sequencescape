@@ -118,7 +118,7 @@ FactoryGirl.define do
     sequence(:name) {|n| "Program#{n}" }
   end
 
-  factory  :project_with_order , :parent => :project  do
+  factory  :project_with_order, :parent => :project  do
     after(:build) { |project| project.orders ||= [create(:order, :project => project)] }
   end
 
@@ -161,7 +161,7 @@ FactoryGirl.define do
     read_length                   76
   end
 
-  factory  :request_metadata_for_standard_sequencing_with_read_length, :parent => :request_metadata, :class=>SequencingRequest::Metadata  do
+  factory  :request_metadata_for_standard_sequencing_with_read_length, :parent => :request_metadata, :class => SequencingRequest::Metadata  do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   76
@@ -276,7 +276,7 @@ FactoryGirl.define do
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
       next if request.request_type.nil?
-      request.request_metadata = build(:"request_metadata_for_standard_sequencing_with_read_length", :request=>request, :owner=>request) if request.request_metadata.new_record?
+      request.request_metadata = build(:"request_metadata_for_standard_sequencing_with_read_length", :request => request, :owner => request) if request.request_metadata.new_record?
       # request.request_metadata.owner = request
       request.sti_type = request.request_type.request_class_name
     end
@@ -298,7 +298,7 @@ FactoryGirl.define do
     request_purpose
     state             'pending'
     study
-    user              {|user| User.find_by(login:user_login)||create(:user, login: user_login) }
+    user              {|user| User.find_by(login:user_login) || create(:user, login: user_login) }
     workflow          {|workflow|   workflow.association(:submission_workflow)}
   end
 
@@ -357,7 +357,7 @@ FactoryGirl.define do
   end
 
   %w(failed passed pending cancelled).each do |request_state|
-    factory  :"#{request_state}_request", :parent =>  :request  do
+    factory  :"#{request_state}_request", :parent => :request  do
       state request_state
     end
   end
@@ -381,7 +381,7 @@ FactoryGirl.define do
 
   factory  :extended_validator  do
     behaviour 'SpeciesValidator'
-    options({:taxon_id=>9606})
+    options({:taxon_id => 9606})
   end
 
   factory  :validated_request_type, :parent => :request_type  do
@@ -414,8 +414,8 @@ FactoryGirl.define do
     order          1
     workflow    {|workflow| workflow.association(:submission_workflow)}
     after(:build) {|request_type|
-      request_type.library_types_request_types << create(:library_types_request_type,:request_type=>request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, :request_type=>request_type)
+      request_type.library_types_request_types << create(:library_types_request_type,:request_type => request_type)
+      request_type.request_type_validators << create(:library_request_type_validator, :request_type => request_type)
     }
   end
 
@@ -428,7 +428,7 @@ FactoryGirl.define do
     order          1
     workflow    {|workflow| workflow.association(:submission_workflow)}
     after(:build) {|request_type|
-      request_type.request_type_validators << create(:sequencing_request_type_validator, :request_type=>request_type)
+      request_type.request_type_validators << create(:sequencing_request_type_validator, :request_type => request_type)
     }
   end
 
@@ -452,8 +452,8 @@ FactoryGirl.define do
     for_multiplexing   true
     workflow           { |workflow| workflow.association(:submission_workflow)}
       after(:build) {|request_type|
-      request_type.library_types_request_types << create(:library_types_request_type,:request_type=>request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, :request_type=>request_type)
+      request_type.library_types_request_types << create(:library_types_request_type,:request_type => request_type)
+      request_type.request_type_validators << create(:library_request_type_validator, :request_type => request_type)
     }
   end
 
@@ -467,8 +467,8 @@ FactoryGirl.define do
     for_multiplexing   true
     workflow           { |workflow| workflow.association(:submission_workflow)}
       after(:build) {|request_type|
-      request_type.library_types_request_types << create(:library_types_request_type,:request_type=>request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, :request_type=>request_type)
+      request_type.library_types_request_types << create(:library_types_request_type,:request_type => request_type)
+      request_type.request_type_validators << create(:library_request_type_validator, :request_type => request_type)
     }
   end
 
@@ -602,7 +602,7 @@ FactoryGirl.define do
     end
   end
 
-  factory(:new_stock_tube_purpose, :class=>IlluminaHtp::StockTubePurpose) do |p|
+  factory(:new_stock_tube_purpose, :class => IlluminaHtp::StockTubePurpose) do |p|
     name { generate :purpose_name }
   end
 
@@ -617,13 +617,13 @@ FactoryGirl.define do
   end
   factory(:library_tube, :parent => :empty_library_tube) do
     after(:create) do |library_tube|
-      library_tube.aliquots.create!(:sample => create(:sample),:library_type=>'Standard')
+      library_tube.aliquots.create!(:sample => create(:sample),:library_type => 'Standard')
     end
   end
 
   factory :pac_bio_library_tube do
     after(:build) do |t|
-      t.aliquots.build(:sample=>(create :sample))
+      t.aliquots.build(:sample => (create :sample))
     end
   end
 
@@ -784,7 +784,7 @@ FactoryGirl.define do
     name  {|a| generate :faculty_sponsor_name }
   end
 
-  factory(:pooling_method, :class=> 'RequestType::PoolingMethod')  do
+  factory(:pooling_method, :class => 'RequestType::PoolingMethod')  do
     pooling_behaviour 'PlateRow'
     pooling_options({:pool_count => 8 })
   end

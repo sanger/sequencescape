@@ -12,7 +12,7 @@ class ::Endpoints::Stamps < ::Core::Endpoint::Base
   instance do
     belongs_to(:user, :json => 'user')
     belongs_to(:robot, :json => 'robot')
-    belongs_to(:lot, :json=>'lot')
+    belongs_to(:lot, :json => 'lot')
     has_many(:qcables,         :json => 'qcables', :to => 'qcables')
     has_many(:stamp_qcables,   :json => 'stamp_qcables', :to => 'stamp_qcables')
   end

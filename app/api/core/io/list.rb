@@ -21,8 +21,8 @@ class Core::Io::List
       :last  => action_for_page(@last_page),
       :read  => action_for_page(@current_page)
     }.tap do |actions_to_page|
-      actions_to_page[:previous] = action_for_page(@current_page-1) unless @current_page == 1
-      actions_to_page[:next]     = action_for_page(@current_page+1) unless @current_page == @last_page
+      actions_to_page[:previous] = action_for_page(@current_page - 1) unless @current_page == 1
+      actions_to_page[:next]     = action_for_page(@current_page + 1) unless @current_page == @last_page
     end
   end
   private :pagination_actions

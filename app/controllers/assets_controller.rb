@@ -105,7 +105,7 @@ class AssetsController < ApplicationController
       ActiveRecord::Base.transaction do
         @assets = (1..count).map do |n|
           asset = asset_class.new(params[:asset]) do |asset|
-            asset.name += " ##{n}" if count !=1
+            asset.name += " ##{n}" if count != 1
           end
           # from asset
           if parent.present?
@@ -175,7 +175,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if (@asset.update_attributes(params[:asset]) &&  @asset.update_attributes(params[:lane]))
+      if (@asset.update_attributes(params[:asset]) && @asset.update_attributes(params[:lane]))
         flash[:notice] = 'Asset was successfully updated.'
         unless params[:lab_view]
           format.html { redirect_to(:action => :show, :id => @asset.id) }

@@ -33,7 +33,7 @@ module PlatePurpose::Initial
 
   def generate_events_for(plate,orders,user)
     orders.each do |order_id|
-      BroadcastEvent::LibraryStart.create!(:seed=>plate,:user=>user,:properties=>{:order_id=>order_id})
+      BroadcastEvent::LibraryStart.create!(:seed => plate,:user => user,:properties => {:order_id => order_id})
     end
   end
   private :generate_events_for

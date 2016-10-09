@@ -16,7 +16,7 @@ module PlatePurpose::WorksOnLibraryRequests
       stock_id       = well_to_stock_id[well.id] or raise "No stock well for #{well.id.inspect} (#{well_to_stock_id.inspect})"
       stock_requests = requests[stock_id]        or raise "No requests for stock well #{stock_id.inspect} (#{requests.inspect})"
       stock_request  = stock_requests.detect {|stock_request| stock_request.submission_id == well.requests_as_target.first.submission_id }
-      stock_request                              or raise "No requests for stock well #{stock_id.inspect} with matching submission (#{requests.inspect})"
+      stock_request or raise "No requests for stock well #{stock_id.inspect} with matching submission (#{requests.inspect})"
       yield(well, stock_request)
     end
   end

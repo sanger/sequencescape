@@ -10,7 +10,7 @@ class Equipment < ActiveRecord::Base
   after_create :update_barcode
 
   def set_defaults
-    self.prefix||='XX'
+    self.prefix ||= 'XX'
   end
 
   def update_barcode

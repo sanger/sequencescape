@@ -81,7 +81,7 @@ module SampleManifestExcel
       def freeze_panes(name = :sanger_sample_id)
         axlsx_worksheet.sheet_view.pane do |pane|
           pane.state = :frozen
-          pane.y_split = first_row-1
+          pane.y_split = first_row - 1
           pane.x_split = freeze_after_column(name)
           pane.active_pane = :bottom_right
         end

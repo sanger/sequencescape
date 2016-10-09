@@ -25,7 +25,7 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
       should "create a new program" do
         num = Program.count
         post :create, {:program => {:name => "A very new program name"}}
-        assert_equal num+1, Program.count
+        assert_equal num + 1, Program.count
         assert assigns(:program)
         assert_redirected_to admin_program_path(assigns(:program))
       end

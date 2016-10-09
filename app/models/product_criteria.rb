@@ -13,7 +13,7 @@ class ProductCriteria < ActiveRecord::Base
   # By default rails will try and name the table 'product_criterias'
   # We don't use the singular 'ProductCriterion' as the class name
   # as a single record may define multiple criteria.
-  self.table_name=('product_criteria')
+  self.table_name = ('product_criteria')
 
   belongs_to :product
   validates_presence_of :product, :stage, :behaviour
@@ -23,8 +23,8 @@ class ProductCriteria < ActiveRecord::Base
 
   serialize :configuration
 
-  scope :for_stage, ->(stage) { where(:stage=>stage) }
-  scope :stock, ->()          { where(:stage=>STAGE_STOCK) }
+  scope :for_stage, ->(stage) { where(:stage => stage) }
+  scope :stock, ->()          { where(:stage => STAGE_STOCK) }
   scope :older_than, ->(id)   { wheere(['id < ?',id]) }
 
   before_create :set_version_number

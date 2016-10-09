@@ -34,7 +34,7 @@ module Core::Endpoint::BasicHandler::Paged
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    actions_to_details = [[:first,1]] +  ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
+    actions_to_details = [[:first,1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
     Hash[actions_to_details.map { |action,page| [action,core_path(page, options)] }]
   end
   private :pages_to_actions

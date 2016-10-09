@@ -102,7 +102,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
       end
 
       STATES[0..-2].each_with_index do |current_state,index|
-        next_state = STATES[ index+1 ]
+        next_state = STATES[ index + 1 ]
         should "return '#{ next_state }' for current state of '#{ current_state }'" do
           @batch.stubs(:qc_state).returns(current_state)
           assert_equal next_state, @batch.qc_next_state
@@ -122,7 +122,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
       end
 
       STATES[0..-2].each_with_index do |previous_state,index|
-        current_state = STATES[ index+1 ]
+        current_state = STATES[ index + 1 ]
         should "return '#{ previous_state }' for current state of '#{ current_state }'" do
           @batch.stubs(:qc_state).returns(current_state)
           assert_equal previous_state, @batch.qc_previous_state

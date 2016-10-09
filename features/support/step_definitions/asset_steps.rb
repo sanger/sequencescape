@@ -32,10 +32,10 @@ Given /^there is an asset link between "([^"]*)" and "([^"]*)"$/ do |source, tar
   AssetLink.create_edge(source_plate,target_plate)
   target_plate.wells.each do |target_well|
     source_well = source_plate.wells.located_at(target_well.map_description).first
-    Well::Link.create!(:target_well=>target_well,:source_well=>source_well,:type=>'stock')
+    Well::Link.create!(:target_well => target_well,:source_well => source_well,:type => 'stock')
   end
 end
 
 Given /^the multiplexed library tube with ID (\d+) has a BigDecimal volume$/ do |id|
-  MultiplexedLibraryTube.find(id).update_attributes!(:volume=>8.76000000)
+  MultiplexedLibraryTube.find(id).update_attributes!(:volume => 8.76000000)
 end

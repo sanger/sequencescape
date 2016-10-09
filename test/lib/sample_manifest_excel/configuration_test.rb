@@ -14,7 +14,7 @@ class ConfigurationTest < ActiveSupport::TestCase
 
   test "should be able to add a new file" do
     configuration.add_file "a_new_file"
-    assert_equal SampleManifestExcel::Configuration::FILES.length+1, configuration.files.length
+    assert_equal SampleManifestExcel::Configuration::FILES.length + 1, configuration.files.length
     assert configuration.files.include?(:a_new_file)
     assert configuration.respond_to?("a_new_file=")
   end

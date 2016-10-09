@@ -9,7 +9,7 @@ require_dependency 'attributable'
 module Metadata
   def has_metadata(options = {}, &block)
     as_class = options.delete(:as) || self
-    table_name = options.delete(:table_name) ||"#{ as_class.name.demodulize.underscore }_metadata"
+    table_name = options.delete(:table_name) || "#{ as_class.name.demodulize.underscore }_metadata"
     construct_metadata_class(table_name, as_class, &block)
     build_association(as_class, options)
   end
@@ -88,7 +88,7 @@ private
     attr_reader :tag, :name, :downcase
     def initialize(tag, as=nil, services=[],downcase=false)
       @tag = tag
-      @name = as||tag
+      @name = as || tag
       @services = [services].flatten.compact
       @downcase = downcase
     end

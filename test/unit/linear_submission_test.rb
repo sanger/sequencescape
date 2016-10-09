@@ -29,8 +29,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
     context "build (Submission factory)" do
       setup do
         @sequencing_request_type = create :sequencing_request_type
-        @purpose = create :plate_purpose, :name => "mock purpose", :type=>'Tube::StandardMx', :target_type => 'MultiplexedLibraryTube'
-        @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
+        @purpose = create :plate_purpose, :name => "mock purpose", :type => 'Tube::StandardMx', :target_type => 'MultiplexedLibraryTube'
+        @request_options = {"read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200"}
       end
 
       context 'multiplexed submission' do
@@ -60,7 +60,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @request_well.reload
             @expected_metric = create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'manually_failed', :proceed => true
 
-            @mpx_submission = LinearSubmission.build!(@basic_options.merge(:assets=>[@request_well]))
+            @mpx_submission = LinearSubmission.build!(@basic_options.merge(:assets => [@request_well]))
             @mpx_submission.save!
           end
 
@@ -117,7 +117,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               # that we'll wrap them together. If the setup phase can be improved we
               # can split them out again
               should 'create requests and items but not comments' do
-                assert_equal MX_ASSET_COUNT+1, Request.count - @request_count
+                assert_equal MX_ASSET_COUNT + 1, Request.count - @request_count
                 assert_equal MX_ASSET_COUNT, Item.count - @item_count
                 assert_equal @comment_count, Comment.count
               end
@@ -149,7 +149,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               # that we'll wrap them together. If the setup phase can be improved we
               # can split them out again
               should 'create requests and items but not comments' do
-                assert_equal MX_ASSET_COUNT+2, Request.count - @request_count
+                assert_equal MX_ASSET_COUNT + 2, Request.count - @request_count
                 assert_equal MX_ASSET_COUNT, Item.count - @item_count
                 assert_equal @comment_count, Comment.count
               end
@@ -200,8 +200,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @submission.process!
           end
 
-         should "change Request.count by #{SX_ASSET_COUNT*3}" do
-           assert_equal SX_ASSET_COUNT*3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT*3}"
+         should "change Request.count by #{SX_ASSET_COUNT * 3}" do
+           assert_equal SX_ASSET_COUNT * 3,  Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
         end
 
           context "#create_requests_for_items" do
@@ -211,12 +211,12 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               @submission.create_requests
             end
 
-           should "change Request.count by #{SX_ASSET_COUNT*3}" do
-             assert_equal SX_ASSET_COUNT*3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT*3}"
+           should "change Request.count by #{SX_ASSET_COUNT * 3}" do
+             assert_equal SX_ASSET_COUNT * 3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
           end
 
-           should "change Comment.count by #{SX_ASSET_COUNT*3}" do
-             assert_equal SX_ASSET_COUNT*3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT*3}"
+           should "change Comment.count by #{SX_ASSET_COUNT * 3}" do
+             assert_equal SX_ASSET_COUNT * 3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT * 3}"
           end
 
             should "assign submission ids to the requests" do
@@ -278,8 +278,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @asset_1 = create(:sample_tube)
         @asset_2 = create(:sample_tube)
 
-        @mx_request_type = create :multiplexed_library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
-        @lib_request_type = create :library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
+        @mx_request_type = create :multiplexed_library_creation_request_type, :asset_type => "SampleTube", :target_asset_type => "LibraryTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
+        @lib_request_type = create :library_creation_request_type, :asset_type => "SampleTube", :target_asset_type => "LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
         @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
         @se_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "SE sequencing", :order => 2, :key => "se_sequencing"
 
@@ -290,7 +290,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :user             => @user,
           :assets           => [ @asset_1, @asset_2 ],
           :request_types    => [ @lib_request_type.id, @pe_request_type.id ],
-          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, "read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200" },
+          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
           :comments         => ''
         )
         @mx_submission_with_multiplication_factor = LinearSubmission.build!(
@@ -300,7 +300,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :user             => @user,
           :assets           => [ @asset_1, @asset_2 ],
           :request_types    => [ @mx_request_type.id, @pe_request_type.id ],
-          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, "read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200" },
+          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
           :comments         => ''
         )
       end
@@ -309,12 +309,12 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         context "for non multiplexed libraries and sequencing" do
           setup do
-            @request_count =  Request.count
+            @request_count = Request.count
             @submission_with_multiplication_factor.process!
           end
 
            should "change Request.count by 12" do
-             assert_equal 12,  Request.count  - @request_count, "Expected Request.count to change by 12"
+             assert_equal 12,  Request.count - @request_count, "Expected Request.count to change by 12"
           end
 
           should "create 2 library requests" do

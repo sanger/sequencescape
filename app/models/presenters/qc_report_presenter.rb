@@ -12,7 +12,7 @@ class Presenters::QcReportPresenter
     'Study' => :study_name,
     'Product' => :product_name,
     'Criteria Version' => :criteria_version,
-    'Report Identifier'=> :report_identifier,
+    'Report Identifier' => :report_identifier,
     'Generated on' => :created_date,
     'Contents' => :new_or_all
   }
@@ -58,7 +58,7 @@ class Presenters::QcReportPresenter
   end
 
   def state_description
-    I18n.t(qc_report.state, :scope=>'qc_reports.state_descriptions', :default => :default, :queue_count => queue_count )
+    I18n.t(qc_report.state, :scope => 'qc_reports.state_descriptions', :default => :default, :queue_count => queue_count )
   end
 
   def to_csv(io)

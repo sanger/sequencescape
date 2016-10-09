@@ -63,7 +63,7 @@ end
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   SampleTube.order(:id).each do |asset|
-    asset.update_attributes!(:barcode=>counter)
+    asset.update_attributes!(:barcode => counter)
     counter += 1
   end
 end
@@ -71,7 +71,7 @@ end
 Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   LibraryTube.order(:id).each do |asset|
-    asset.update_attributes!(:barcode=>counter)
+    asset.update_attributes!(:barcode => counter)
     counter += 1
   end
 end

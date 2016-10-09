@@ -119,7 +119,7 @@ module SequencingQcBatch
     define_method(:"qc_#{ direction }_state") do
       raise StandardError, "Current QC state appears to be invalid: '#{ self.qc_state }'" unless qc_states.include?(self.qc_state.to_s)
       return nil if self.qc_state.to_s == qc_states.send(delimiter)
-      return qc_states[ qc_states.index(self.qc_state.to_s)+offset ]
+      return qc_states[ qc_states.index(self.qc_state.to_s) + offset ]
     end
   end
 

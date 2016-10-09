@@ -10,7 +10,7 @@ class Studies::AssetGroupsController < ApplicationController
   before_action :evil_parameter_hack!
 
   def index
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
     @asset_groups = @study.asset_groups
 
     respond_to do |format|
@@ -21,7 +21,7 @@ class Studies::AssetGroupsController < ApplicationController
 
   def show
     @asset_group = AssetGroup.find(params[:id])
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -31,7 +31,7 @@ class Studies::AssetGroupsController < ApplicationController
 
   def new
     @asset_group = AssetGroup.new
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -40,12 +40,12 @@ class Studies::AssetGroupsController < ApplicationController
   end
 
   def edit
-    @asset_group  = AssetGroup.find(params[:id])
-    @study      = Study.find(params[:study_id])
+    @asset_group = AssetGroup.find(params[:id])
+    @study = Study.find(params[:study_id])
   end
 
   def create
-    @study     = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
     @asset_group = AssetGroup.new(params[:asset_group])
     @asset_group.study = @study
 
@@ -64,8 +64,8 @@ class Studies::AssetGroupsController < ApplicationController
   end
 
   def update
-    @asset_group  = AssetGroup.find(params[:id])
-    @study      = Study.find(params[:study_id])
+    @asset_group = AssetGroup.find(params[:id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       if @asset_group.update_attributes(params[:asset_group])
@@ -82,7 +82,7 @@ class Studies::AssetGroupsController < ApplicationController
   def destroy
     @asset_group = AssetGroup.find(params[:id])
     @asset_group.destroy
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       format.html { redirect_to(study_asset_groups_url(@study)) }

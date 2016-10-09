@@ -16,13 +16,13 @@ class ProductCatalogueTest < ActiveSupport::TestCase
     context 'with single product behaviour' do
       setup do
         @catalogue = create :single_product_catalogue
-        @product =  create :product
+        @product = create :product
         @catalogue.products << @product
       end
 
       context '#product_for' do
         should 'return the product' do
-          assert_equal @product, @catalogue.product_for({:attributes=>:do_not_matter})
+          assert_equal @product, @catalogue.product_for({:attributes => :do_not_matter})
         end
       end
     end
@@ -62,7 +62,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
 
     should 'create a catalogue' do
       assert @constructed
-      assert_equal 1, ProductCatalogue.count -  @catalogue_count
+      assert_equal 1, ProductCatalogue.count - @catalogue_count
     end
 
     should 'only register novel products' do

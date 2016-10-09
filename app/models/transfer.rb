@@ -164,7 +164,7 @@ class Transfer < ActiveRecord::Base
 
   include Uuid::Uuidable
 
-  self.inheritance_column   = "sti_type"
+  self.inheritance_column = "sti_type"
 
   # So we can track who is requesting the transfer
   belongs_to :user
@@ -186,7 +186,7 @@ class Transfer < ActiveRecord::Base
       request_type_between(source, destination).create!(
         :asset         => source,
         :target_asset  => destination,
-        :submission_id => submission||source.pool_id
+        :submission_id => submission || source.pool_id
       )
     end
   end

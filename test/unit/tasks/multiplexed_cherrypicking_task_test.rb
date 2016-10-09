@@ -26,7 +26,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         @tags = [1,2,3,4,5,5,6,6].map {|i| tag_hash[i] }
         @requests = (1..8).map do |i|
           r = create :pooled_cherrypick_request
-          r.asset.aliquots.first.update_attributes!(:tag => @tags[i-1] )
+          r.asset.aliquots.first.update_attributes!(:tag => @tags[i - 1] )
           r
         end
 
@@ -58,11 +58,11 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   def params
     {
       :request_locations => request_location_hash,
-      :commit =>"Next step",
-      :batch_id =>"2",
-      :next_stage =>"true",
-      :workflow_id =>"24",
-      :id=>"2",
+      :commit => "Next step",
+      :batch_id => "2",
+      :next_stage => "true",
+      :workflow_id => "24",
+      :id => "2",
       :plate_purpose_id => @purpose_id,
       :existing_plate_barcode => @barcode,
       :micro_litre_volume_required => "5"
@@ -98,7 +98,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
           @requests = (1..8).map do |i|
             r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update_attributes!(:tag => @tags[i-1] )
+            r.asset.aliquots.first.update_attributes!(:tag => @tags[i - 1] )
             r
           end
 

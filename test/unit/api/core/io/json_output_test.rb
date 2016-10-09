@@ -201,7 +201,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           )
 
           assert_equal(
-            json_results({'nested'=>{}}),
+            json_results({'nested' => {}}),
             decode(@stream)
           )
         end

@@ -14,7 +14,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     setup do
       @template = FactoryGirl.build :submission_template
       @product = create(:product)
-      @template.product_catalogue.products <<  @product
+      @template.product_catalogue.products << @product
     end
 
     should "be able to create a new order" do
@@ -64,7 +64,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
         @test_request_typ_b = create :library_creation_request_type
         @test_request_typ_b
-        @test_request_type  = create :sequencing_request_type
+        @test_request_type = create :sequencing_request_type
         @order.request_types = [@test_request_typ_b, @test_request_type]
         @order.request_type_ids_list = [[@test_request_typ_b.id],[@test_request_type.id]]
       end

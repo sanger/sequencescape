@@ -9,7 +9,7 @@ print "Project ID? : "
 project_id = gets.chomp
 print "Study ID? : "
 study_id = gets.chomp
-sample_name_filename="../samplenames"
+sample_name_filename = "../samplenames"
 
 sample_names = []
 myfile = File.open(sample_name_filename)
@@ -22,7 +22,7 @@ puts "#{sample_names.size} Sample Names read from file"
 
 asset_group = AssetGroup.create(:name => "#{project_id}_asset_group_#{Time.now}")
 sample_names.each do |sample_name|
-  sample =Sample.find_by_name(sample_name)
+  sample = Sample.find_by_name(sample_name)
   raise "Cannot find #{sample_name}" if sample.nil?
   raise "sample has no asset" if sample.assets.blank?
   well = sample.assets.first

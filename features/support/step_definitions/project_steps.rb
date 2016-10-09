@@ -46,6 +46,6 @@ Given /^the project "([^\"]*)" a budget division "([^\"]*)"$/ do |project_name, 
   budget_division = BudgetDivision.find_by_name(budget_division_name ) or raise StandardError, "Cannot find budget division #{ budget_division_name.inspect }"
 
   project.update_attributes!(:project_metadata_attributes => {
-    :budget_division  => budget_division
+    :budget_division => budget_division
   })
 end

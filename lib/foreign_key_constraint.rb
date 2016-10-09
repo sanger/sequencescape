@@ -19,12 +19,12 @@ module ForeignKeyConstraint
   end
 
   def parse_options(table,modl,options)
-    fk = options[:foreign_key]||'id'
-    as = options[:as]||"#{modl.singularize}_id"
-    raise 'Invalid table name' unless /\A[a-z0-9_]+\Z/===table
-    raise 'Invalid model name' unless /\A[a-z0-9_]+\Z/===modl
-    raise 'Invalid foreign key' unless /\A[a-z0-9_]+\Z/===fk
-    raise 'Invalid association' unless /\A[a-z0-9_]+\Z/===as
+    fk = options[:foreign_key] || 'id'
+    as = options[:as] || "#{modl.singularize}_id"
+    raise 'Invalid table name' unless /\A[a-z0-9_]+\Z/ === table
+    raise 'Invalid model name' unless /\A[a-z0-9_]+\Z/ === modl
+    raise 'Invalid foreign key' unless /\A[a-z0-9_]+\Z/ === fk
+    raise 'Invalid association' unless /\A[a-z0-9_]+\Z/ === as
     yield(table,modl,as,fk)
   end
 

@@ -59,7 +59,7 @@ class PlatesController < ApplicationController
   def to_sample_tubes
     @locations = Location.all
     @barcode_printers = BarcodePrinter.all
-    @studies = Study.all.sort{ |a,b| a.name <=> b.name }
+    @studies = Study.all.sort { |a,b| a.name <=> b.name }
   end
 
   def create_sample_tubes
@@ -74,7 +74,7 @@ class PlatesController < ApplicationController
         # makes request properties partial show
         @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
         @current_user.save!
-        format.html { redirect_to(new_submission_path(:study_id=>asset_group.study.id)) }
+        format.html { redirect_to(new_submission_path(:study_id => asset_group.study.id)) }
         format.xml  { render :xml  => asset_group, :status => :created}
         format.json { render :json => asset_group, :status => :created}
       else

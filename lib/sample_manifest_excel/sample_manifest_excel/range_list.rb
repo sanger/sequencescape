@@ -53,7 +53,7 @@ module SampleManifestExcel
     def create(ranges_data)
       {}.tap do |ranges|
         ranges_data.each_with_index do |(name, options), i|
-          ranges[name] = SampleManifestExcel::Range.new(options: options, first_row: i+1)
+          ranges[name] = SampleManifestExcel::Range.new(options: options, first_row: i + 1)
         end
       end
     end

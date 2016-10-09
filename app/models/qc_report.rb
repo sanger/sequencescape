@@ -100,7 +100,7 @@ class QcReport < ActiveRecord::Base
           ActiveRecord::Base.transaction do
             assets.each do |asset|
               criteria = product_criteria.assess(asset)
-              QcMetric.create!(:asset=>asset,:qc_decision=>criteria.qc_decision,:metrics=>criteria.metrics,:qc_report=>self)
+              QcMetric.create!(:asset => asset,:qc_decision => criteria.qc_decision,:metrics => criteria.metrics,:qc_report => self)
             end
           end
         end

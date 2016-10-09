@@ -5,7 +5,7 @@
 class MetadataMigration < ActiveRecord::Migration
   class Property < ActiveRecord::Base
     class Definition < ActiveRecord::Base
-      self.table_name =('property_definitions')
+      self.table_name = ('property_definitions')
       has_many :properties, :class_name => 'MetadataMigration::Property', :foreign_key => :property_definition_id, :dependent => :destroy
 
      scope :for_class, ->(c) { where(:relates_to => c )  }
@@ -19,7 +19,7 @@ class MetadataMigration < ActiveRecord::Migration
       end
     end
 
-    self.table_name =('properties')
+    self.table_name = ('properties')
     belongs_to :definition, :class_name => 'MetadataMigration::Property::Definition', :foreign_key => :property_definition_id
   end
 

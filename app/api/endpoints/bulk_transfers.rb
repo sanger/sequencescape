@@ -11,6 +11,6 @@ class ::Endpoints::BulkTransfers < ::Core::Endpoint::Base
 
   instance do
     belongs_to(:user, :json => "user")
-    has_many(:transfers, :json => "transfers", :to =>"transfers")
+    has_many(:transfers, :json => "transfers", :to => "transfers")
   end
 end

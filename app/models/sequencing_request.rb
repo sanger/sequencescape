@@ -12,10 +12,10 @@ class SequencingRequest < CustomerRequest
 
   has_metadata :as => Request  do
     #redundant with library creation , but THEY are using it .
-    attribute(:fragment_size_required_from, :required =>true, :integer => true)
-    attribute(:fragment_size_required_to, :required =>true, :integer =>true)
+    attribute(:fragment_size_required_from, :required => true, :integer => true)
+    attribute(:fragment_size_required_to, :required => true, :integer => true)
 
-    attribute(:read_length, :integer => true, :validator => true, :required => true, :selection =>true )
+    attribute(:read_length, :integer => true, :validator => true, :required => true, :selection => true )
   end
 
   include Request::CustomerResponsibility
@@ -33,7 +33,7 @@ class SequencingRequest < CustomerRequest
     puldown_mx_library = PulldownMultiplexedLibraryTube.create!(:name => "#{barcode}", :barcode => barcode)
     lane = Lane.create!(:name => puldown_mx_library.name)
 
-    self.update_attributes!(:asset => puldown_mx_library, :target_asset =>lane)
+    self.update_attributes!(:asset => puldown_mx_library, :target_asset => lane)
   end
 
   class RequestOptionsValidator < DelegateValidation::Validator
@@ -54,7 +54,7 @@ class SequencingRequest < CustomerRequest
     requests_as_target = self.asset.requests_as_target
     return true if requests_as_target.nil?
     library_creation_requests = requests_as_target.where_is_a? Request::LibraryCreation
-    (library_creation_requests.size==0) || library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
+    (library_creation_requests.size == 0) || library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
   end
 
   def self.delegate_validator

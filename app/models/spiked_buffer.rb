@@ -26,12 +26,12 @@ class SpikedBuffer < LibraryTube
 
   def percentage_of_index
     return nil unless index
-    100*index.volume/volume
+    100 * index.volume / volume
   end
 
   def transfer(transfer_volume)
 
-    index_volume_to_transfer = index.volume*transfer_volume.to_f/self.volume # to do before super which modifies self.volume
+    index_volume_to_transfer = index.volume * transfer_volume.to_f / self.volume # to do before super which modifies self.volume
     super(transfer_volume).tap do |new_asset|
       new_asset.index = index.transfer(index_volume_to_transfer)
     end

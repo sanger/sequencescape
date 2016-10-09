@@ -20,7 +20,7 @@ Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/
 end
 
 Then /^the tag changing table should be:$/ do |expected_results_table|
-  actual_table = table( fetch_table('table.library_tube_list').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(.+)/] }}   )
+  actual_table = table( fetch_table('table.library_tube_list').collect { |row| row.collect {|cell| cell[/^(Tag [\d]+)|(.+)/] }}   )
   expected_results_table.diff!(actual_table)
 end
 
@@ -36,7 +36,7 @@ When /^I change the tags of the library tubes:$/ do |table|
   tube_to_tags = {}
   table.hashes.each do |row|
     barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
-    tube = LibraryTube.find_by_barcode(barcode)              or raise StandardError, "Cannot find library tube with barcode #{barcode.inspect}"
+    tube = LibraryTube.find_by_barcode(barcode) or raise StandardError, "Cannot find library tube with barcode #{barcode.inspect}"
     library_tubes << tube
 
     tag = Tag.find(tag_id)

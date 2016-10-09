@@ -26,7 +26,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#new_project" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         admin = create :role, :name => "administrator"
         user1 = create :user, :login => "abc123"
         user1.roles << admin
@@ -34,7 +34,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
      should "change Event.count by 1" do
-       assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+       assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
      end
 
       context "send 1 email to 1 recipient" do
@@ -57,7 +57,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#project_approved" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         role = create :manager_role, :authorizable => @project
         role.users << @user
         admin = create :role, :name => "administrator"
@@ -73,7 +73,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
 
       should "change Event.count by 1" do
-        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+        assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
       end
 
       context "send email to project manager" do
@@ -89,7 +89,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#project_approved by administrator" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ::ActionMailer::Base.deliveries = [] # reset the queue
         admin = create :role, :name => "administrator"
         @user1 = create :user, :login => "west"
@@ -102,7 +102,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       should "change Event.count by 1" do
-        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+        assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
       end
 
       context ": send emails to everyone administrators" do
@@ -121,7 +121,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#project_approved but not by administrator" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ActionMailer::Base.deliveries.clear
         admin = create :role, :name => "administrator"
         @user1 = create :user, :login => "west"
@@ -160,7 +160,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#study has samples added" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ::ActionMailer::Base.deliveries = []
         role = create :manager_role, :authorizable => @project
         role.users << @user
@@ -194,7 +194,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#request update failed" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ::ActionMailer::Base.deliveries = []
         role = create :manager_role, :authorizable => @project
         role.users << @user

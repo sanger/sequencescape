@@ -43,12 +43,12 @@ class Accessionable::Base
 
   def extract_accession_number(xmldoc)
           element = xmldoc.root.elements["/RECEIPT/#{schema_type.upcase}"]
-          accession_number       = element &&  element.attributes['accession']
+          accession_number = element && element.attributes['accession']
   end
 
   def extract_array_express_accession_number(xmldoc)
           element = xmldoc.root.elements["/RECEIPT/#{schema_type.upcase}/EXT_ID[@type='ArrayExpress']"]
-          accession_number       = element &&  element.attributes['accession']
+          accession_number = element && element.attributes['accession']
   end
 
   def update_accession_number!(user, accession_number)

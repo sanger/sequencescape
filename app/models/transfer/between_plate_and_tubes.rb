@@ -25,7 +25,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   }
 
   class WellToTube < ActiveRecord::Base
-    self.table_name =('well_to_tube_transfers')
+    self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, :class_name => 'Transfer::BetweenPlateAndTubes'
     validates_presence_of :transfer
@@ -52,7 +52,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # NOTE: Performance enhancement to convert a tube to it's minimal representation for presentation.
   def tube_to_hash(tube)
     # Only build the hash once per tube. Shows significant speed improvement, esp. with label_text
-    @tubes||={}
+    @tubes ||= {}
     @tubes[tube.id] ||= {
       :uuid    => tube.uuid,
       :name    => tube.name,

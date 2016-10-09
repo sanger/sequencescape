@@ -14,7 +14,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
        FactoryGirl.create(:pulldown_isc_request, {
           :asset => well,
           :pre_capture_pool => @pools[index],
-          :submission_id => index+1
+          :submission_id => index + 1
         })
       end
     end
@@ -22,10 +22,10 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
   context "A plate" do
     setup do
-      @plate =FactoryGirl.create :pooling_plate
+      @plate = FactoryGirl.create :pooling_plate
       @pools = (0..3).map do |i|
-        pool =FactoryGirl.create :pre_capture_pool
-        pool.uuid_object.update_attributes!(:external_id=>"00000000-0000-0000-0000-00000000000#{i}")
+        pool = FactoryGirl.create :pre_capture_pool
+        pool.uuid_object.update_attributes!(:external_id => "00000000-0000-0000-0000-00000000000#{i}")
         pool
       end
     end
@@ -66,19 +66,19 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       context 'when transfers are created' do
 
         setup do
-          @target_plate =FactoryGirl.create :initial_downstream_plate
+          @target_plate = FactoryGirl.create :initial_downstream_plate
           @transfer = Transfer::BetweenPlates.create!(
-            :source=>@plate,
-            :destination=>@target_plate,
-            :user =>FactoryGirl.create(:user),
-            :transfers => {'A1'=>['A1','B1'],'B1'=>['A1'],'C1'=>['A1'],'D1'=>['B1','C1'],'E1'=>['C1'],'F1'=>['C1']}
+            :source => @plate,
+            :destination => @target_plate,
+            :user => FactoryGirl.create(:user),
+            :transfers => {'A1' => ['A1','B1'],'B1' => ['A1'],'C1' => ['A1'],'D1' => ['B1','C1'],'E1' => ['C1'],'F1' => ['C1']}
           )
         end
 
         should "assign requests to the right submissions" do
           transfer_sub = {
-            'A1'=>{'A1'=>1,'B1'=>3},'B1'=>{'A1'=>1}, 'C1'=>{'A1'=>1},
-            'D1'=>{'C1'=>2,'B1'=>3},'E1'=>{'C1'=>2}, 'F1'=>{'C1'=>2},
+            'A1' => {'A1' => 1,'B1' => 3},'B1' => {'A1' => 1}, 'C1' => {'A1' => 1},
+            'D1' => {'C1' => 2,'B1' => 3},'E1' => {'C1' => 2}, 'F1' => {'C1' => 2},
           }
 
           assert_equal 8, @target_plate.transfer_requests.count
@@ -92,7 +92,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
       context "when some are started" do
         setup do
-          @pools[0,2].each {|pl| pl.requests.each {|r| r.update_attributes!(:state=>'started')}}
+          @pools[0,2].each {|pl| pl.requests.each {|r| r.update_attributes!(:state => 'started')}}
         end
 
         should "report the unstarted pool" do

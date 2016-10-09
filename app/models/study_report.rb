@@ -33,7 +33,7 @@ class StudyReport < ActiveRecord::Base
 
   def perform
     ActiveRecord::Base.transaction do
-      csv_options =  {:row_sep => "\r\n", :force_quotes => true }
+      csv_options = {:row_sep => "\r\n", :force_quotes => true }
       Tempfile.open("#{self.study.dehumanise_abbreviated_name}_progress_report.csv") do |tempfile|
         Study.find(self.study_id).progress_report_on_all_assets do |fields|
           tempfile.puts(CSV.generate_line(fields, csv_options))

@@ -29,11 +29,11 @@ class Studies::SampleRegistrationController < ApplicationController
       format.xml  { render(:xml  => flash.to_xml)  }
     end
   rescue SampleRegistrar::NoSamplesError => exception
-    flash.now[:error]      = 'You do not appear to have specified any samples'
+    flash.now[:error] = 'You do not appear to have specified any samples'
     @sample_registrars = [ SampleRegistrar.new ]
     render(:action => 'new')
   rescue SampleRegistrar::RegistrationError => exception
-    flash.now[:error]      = 'Your samples have not been registered'
+    flash.now[:error] = 'Your samples have not been registered'
     @sample_registrars = exception.sample_registrars
     render(:action => 'new')
   end

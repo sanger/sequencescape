@@ -138,16 +138,16 @@ class ProjectsController < ApplicationController
     if request.xhr?
       if params[:role]
         @user.has_role(params[:role][:authorizable_type].to_s, @project)
-        @roles   = @project.roles
+        @roles = @project.roles
         flash[:notice] = "Role added"
         render :partial => "roles", :status => 200
       else
-        @roles   = @project.roles
+        @roles = @project.roles
         flash[:error] = "A problem occurred while adding the role"
         render :partial => "roles", :status => 500
       end
     else
-      @roles   = @project.roles
+      @roles = @project.roles
       flash[:error] = "A problem occurred while adding the role"
       render :partial => "roles", :status => 401
     end
@@ -161,16 +161,16 @@ class ProjectsController < ApplicationController
     if request.xhr?
       if params[:role]
         @user.has_no_role(params[:role][:authorizable_type].to_s, @project)
-        @roles   = @project.roles
+        @roles = @project.roles
         flash[:error] = "Role was removed"
         render :partial => "roles", :status => 200
       else
-        @roles   = @project.roles
+        @roles = @project.roles
         flash[:error] = "A problem occurred while removing the role"
         render :partial => "roles", :status => 500
       end
     else
-      @roles   = @project.roles
+      @roles = @project.roles
       flash[:error] = "A problem occurred while removing the role"
       render :partial => "roles", :status => 401
     end

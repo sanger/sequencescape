@@ -19,7 +19,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
       @workflow = create :submission_workflow
       @user     = create :user, :workflow_id => @workflow.id
       session[:user] = @user.id
-      @study    = create :study
+      @study = create :study
     end
 
     should_require_login(:show)

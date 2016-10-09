@@ -69,7 +69,7 @@ class WellAttribute < ActiveRecord::Base
   def quantity_in_micro_grams
     return nil if measured_volume.nil? || concentration.nil?
     return nil if measured_volume < 0 || concentration < 0
-    (measured_volume * concentration)/1000
+    (measured_volume * concentration) / 1000
   end
 
 end

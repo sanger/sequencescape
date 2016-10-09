@@ -31,10 +31,10 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
 
       @pulldown_request_type = create :request_type, :name => "Bait Pulldown", :target_asset_type => nil
       @sequencing_request_type = create :request_type, :name => "Single ended sequencing2"
-      @submission  = FactoryHelp::submission(:request_types => [@pulldown_request_type, @sequencing_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
+      @submission = FactoryHelp::submission(:request_types => [@pulldown_request_type, @sequencing_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
       @item = create :item, :submission => @submission
 
-      @genotype_pipeline = create :pipeline, :name =>"Cluster formation SE2", :request_types => [@sequencing_request_type]
+      @genotype_pipeline = create :pipeline, :name => "Cluster formation SE2", :request_types => [@sequencing_request_type]
       @pulldown_pipeline = create :pipeline, :name => "Bait Pulldown", :request_types => [@pulldown_request_type], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
       @request1 = create(

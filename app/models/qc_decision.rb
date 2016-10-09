@@ -10,10 +10,10 @@ class QcDecision < ActiveRecord::Base
 
   class QcDecisionQcable < ActiveRecord::Base
 
-    self.table_name =('qc_decision_qcables')
+    self.table_name = ('qc_decision_qcables')
 
     belongs_to :qcable
-    belongs_to :qc_decision, :inverse_of=>:qc_decision_qcables
+    belongs_to :qc_decision, :inverse_of => :qc_decision_qcables
 
     validates :qcable, :presence => true
     validates :qc_decision, :presence => true

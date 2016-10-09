@@ -68,7 +68,7 @@ private
   def perform_rename_action_for_sample!
     samples_to_rename = self.study.samples.with_name(self.list_samples_to_rename)
     samples_to_rename.each { |sample| sample.rename_to!(sample.name.gsub(replace, with)) }
-    self.study.comments.create(:description => "Renamed Samples names: " + replace + " to " +  with , :user_id => user.id)
+    self.study.comments.create(:description => "Renamed Samples names: " + replace + " to " + with, :user_id => user.id)
   end
 
   def perform_rename_action_for_asset!

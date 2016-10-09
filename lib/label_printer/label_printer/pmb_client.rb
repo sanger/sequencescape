@@ -27,7 +27,7 @@ module LabelPrinter
     end
 
     def self.print(attributes)
-      RestClient.post print_job_url, {"data"=>{"attributes"=>attributes}}.to_json, headers
+      RestClient.post print_job_url, {"data" => {"attributes" => attributes}}.to_json, headers
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
@@ -54,7 +54,7 @@ module LabelPrinter
       if errors.present?
         [].tap do |error_list|
           JSON.parse(errors)['errors'].each do |k, v|
-            error_list << "%{attribute} %{message}" % {attribute: k.capitalize+":", message: v.join(", ")}
+            error_list << "%{attribute} %{message}" % {attribute: k.capitalize + ":", message: v.join(", ")}
           end
         end
         .join("; ")

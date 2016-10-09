@@ -17,9 +17,9 @@ class QcReportsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @request.env["HTTP_REFERER"] = '/'
 
-      @user     = create :user
+      @user = create :user
       session[:user] = @user.id
-      @study  = create :study
+      @study = create :study
       @product = create :product
       @product_criteria = create :product_criteria, :product => @product
     end

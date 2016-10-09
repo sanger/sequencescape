@@ -50,7 +50,7 @@ class AliquotIndexer
   end
 
   def index
-    @lane.aliquot_indicies.build(aliquots.each_with_index.map {|a,i| {:aliquot=>a, :aliquot_index => next_index } })
+    @lane.aliquot_indicies.build(aliquots.each_with_index.map {|a,i| {:aliquot => a, :aliquot_index => next_index } })
     @lane.save
   end
 end

@@ -20,7 +20,7 @@ class PipelineTest < ActiveSupport::TestCase
         @sample = create :sample
 
         @request_type = create :request_type, :name => "sequencing", :target_asset_type => nil
-        @submission  = FactoryHelp::submission(:request_types => [@request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
+        @submission = FactoryHelp::submission(:request_types => [@request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = create :item, :submission => @submission
 
         @pipeline = create :sequencing_pipeline, :name => "sequencing pipeline", :request_types => [ @request_type ]

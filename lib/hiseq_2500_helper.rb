@@ -23,7 +23,7 @@ module Hiseq2500Helper
       :name => settings[:name],
       :product_line => ProductLine.find_by_name("Illumina-#{settings[:pipeline].upcase}"),
       :submission_class_name => "LinearSubmission",
-      :submission_parameters=> {
+      :submission_parameters => {
         :workflow_id => 1,
         :request_type_ids_list => request_types(settings),
         :info_differential => 1
@@ -32,12 +32,12 @@ module Hiseq2500Helper
   end
 
   def self.sequencing_request_type(settings)
-    RequestType.find_by_key("illumina_#{settings[:pipeline]}_hiseq_2500_#{settings[:ended]||'paired'}_end_sequencing")
+    RequestType.find_by_key("illumina_#{settings[:pipeline]}_hiseq_2500_#{settings[:ended] || 'paired'}_end_sequencing")
   end
 
   def self.library_request_type(settings)
     # Ugh, our production and seeded database differ
-    RequestType.find_by_key(settings[:library_creation].first)||RequestType.find_by_key(settings[:library_creation].last)
+    RequestType.find_by_key(settings[:library_creation].first) || RequestType.find_by_key(settings[:library_creation].last)
   end
 
   def self.request_types(settings)
@@ -65,9 +65,9 @@ module Hiseq2500Helper
     when :ill_c_single
       { }
     when :sc
-      {:request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}}
+      {:request_options => {"fragment_size_required_to" => "400", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown"}}
     when :wgs
-      {:request_options=>{"fragment_size_required_to"=>"500", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}}
+      {:request_options => {"fragment_size_required_to" => "500", "fragment_size_required_from" => "300", "library_type" => "Standard"}}
     when :ill_b
       { }
     when :ill_b_single

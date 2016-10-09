@@ -10,7 +10,7 @@ module Api
     class << self
 
       def registered_mimetypes
-        @registered_mimetypes||[]
+        @registered_mimetypes || []
       end
 
       # We can't use the built in provides, as the accepted mimetimes are fixed when the route is set up.
@@ -27,10 +27,10 @@ module Api
       end
 
       def file_addition(action, http_method)
-        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_attatched=> true) do
+        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_attatched => true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentTypeOnFile if request.acceptable_media_types.prioritize(registered_mimetypes).present?
           report("file") do
-            filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[],1)||"unnamed_file"
+            filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[],1) || "unnamed_file"
             begin
 
               file = Tempfile.new(filename)
@@ -40,12 +40,12 @@ module Api
               # Be kind...
               file.rewind
               request.body.rewind
-              uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/')|| []
+              uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
               uuid = Uuid.find_by(external_id:uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
               handle_request(:instance, request, action, parts) do |request|
                 request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
                 request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
-                request.file    = file
+                request.file = file
                 request.filename = filename
               end
             ensure
@@ -56,10 +56,10 @@ module Api
       end
 
       def file_model_addition(action, http_method)
-        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_attatched=> true) do
+        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_attatched => true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentType if request.acceptable_media_types.prioritize(registered_mimetypes).present?
           report("model") do
-            filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[],1)||"unnamed_file"
+            filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[],1) || "unnamed_file"
             begin
               file = Tempfile.new(filename)
               file.write(request.body.read)
@@ -70,7 +70,7 @@ module Api
                 handle_request(:model, request, action, parts) do |request|
                   request.io     = lookup_for_class(model) { |_| nil }
                   request.target = model
-                  request.file    = file
+                  request.file = file
                   request.filename = filename
                 end
               end
@@ -82,7 +82,7 @@ module Api
       end
 
       def file_model_action(action, http_method)
-        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_requested=>true) do
+        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_requested => true) do
           report("model") do
             raise Core::Service::ContentFiltering::InvalidRequestedContentType
           end
@@ -90,7 +90,7 @@ module Api
       end
 
       def file_action(action, http_method)
-        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_requested=>true) do
+        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_requested => true) do
           report("file") do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id:uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
@@ -99,14 +99,14 @@ module Api
               request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
               request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
             end
-            uuid.resource.__send__(file_through) {|file| send_file file.path, :filename=> file.filename }
+            uuid.resource.__send__(file_through) {|file| send_file file.path, :filename => file.filename }
 
           end
         end
       end
 
       def instance_action(action, http_method)
-        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_attatched=> false, :file_requested=>false) do
+        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_attatched => false, :file_requested => false) do
           report("instance") do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id:uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
@@ -119,7 +119,7 @@ module Api
       end
 
       def model_action(action, http_method)
-        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_attatched=> false, :file_requested=>false) do
+        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_attatched => false, :file_requested => false) do
           report("model") do
             determine_model_from_parts(*params[:captures].join.split('/')) do |model, parts|
               handle_request(:model, request, action, parts) do |request|
@@ -157,7 +157,7 @@ module Api
       Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
       yield
     ensure
-      Rails.logger.info("API[handled]: #{handler}: #{request.fullpath} in #{Time.now-start}s")
+      Rails.logger.info("API[handled]: #{handler}: #{request.fullpath} in #{Time.now - start}s")
     end
     private :report
 

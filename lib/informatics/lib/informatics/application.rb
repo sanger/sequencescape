@@ -1,5 +1,5 @@
-require File.dirname(__FILE__)+'/globals'
-require File.dirname(__FILE__)+'/support/options'
+require File.dirname(__FILE__) + '/globals'
+require File.dirname(__FILE__) + '/support/options'
 
 module Informatics
   class Application

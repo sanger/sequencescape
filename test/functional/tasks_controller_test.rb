@@ -14,11 +14,11 @@ class TasksControllerTest < ActionController::TestCase
       @controller = TasksController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user       =FactoryGirl.create :admin
+      @user = FactoryGirl.create :admin
       session[:user] = @user.id
-      @pipeline =FactoryGirl.create :pipeline, :name => "Normal pipeline"
+      @pipeline = FactoryGirl.create :pipeline, :name => "Normal pipeline"
       @workflow = @pipeline.workflow
-      @task =FactoryGirl.create :task, :workflow => @workflow, :name => "A new task name"
+      @task = FactoryGirl.create :task, :workflow => @workflow, :name => "A new task name"
     end
     should_require_login
 
@@ -57,7 +57,7 @@ class TasksControllerTest < ActionController::TestCase
       end
 
       should "render create_task" do
-        assert_equal @old_count+1, Task.count
+        assert_equal @old_count + 1, Task.count
         assert_redirected_to task_path(assigns(:task))
       end
     end
@@ -92,7 +92,7 @@ class TasksControllerTest < ActionController::TestCase
       end
 
       should "destroy given tasks" do
-        assert_equal @old_count-1, Task.count
+        assert_equal @old_count - 1, Task.count
         assert_redirected_to tasks_path
       end
     end

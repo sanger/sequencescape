@@ -24,7 +24,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   end
 
   def set_model_for_input(model)
-    self.model_for_input =  model
+    self.model_for_input = model
   end
 
   def generate_json_to_object_mapping(json_to_attribute)

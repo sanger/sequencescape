@@ -52,8 +52,8 @@ class SubmissionsController < ApplicationController
   end
 
   def change_priority
-    Submission.find(params[:id]).update_attributes!(:priority=>params[:submission][:priority])
-    redirect_to :action=>:show, :id=>params[:id]
+    Submission.find(params[:id]).update_attributes!(:priority => params[:submission][:priority])
+    redirect_to :action => :show, :id => params[:id]
   end
 
   def index
@@ -68,7 +68,7 @@ class SubmissionsController < ApplicationController
   def cancel
     submission = Submission.find(params[:id])
     submission.cancel!
-    redirect_to :action=>:show, :id=>params[:id]
+    redirect_to :action => :show, :id => params[:id]
   end
 
   def destroy

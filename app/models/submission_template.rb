@@ -132,7 +132,7 @@ class SubmissionTemplate < ActiveRecord::Base
     klass = submission_class_name.constantize
     #TODO[mb14] Hack. This is to avoid to have to rename it in database or seen
     #The hack is not needed for subclasses as they inherits from Order
-    klass == Submission ? Order  : klass
+    klass == Submission ? Order : klass
   end
 
   private

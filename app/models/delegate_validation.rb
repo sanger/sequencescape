@@ -88,7 +88,7 @@ module DelegateValidation
 
     def self.CompositeValidator(*validator_classes)
       Class.new(CompositeValidator).tap do |sub_class|
-        sub_class.validator_classes =  validator_classes
+        sub_class.validator_classes = validator_classes
       end
     end
 

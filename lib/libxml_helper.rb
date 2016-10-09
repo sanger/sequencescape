@@ -69,7 +69,7 @@ class XML::Node
 
   # register a namespace, of the form "foo:http://example.com/ns"
   def register_namespace(name_and_href)
-    (@default_namespaces ||= []) <<name_and_href
+    (@default_namespaces ||= []) << name_and_href
   end
 
   def find_with_default_ns(xpath_expr, namespace=nil)

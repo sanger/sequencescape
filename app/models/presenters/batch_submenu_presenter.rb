@@ -12,7 +12,7 @@ module Presenters
 
     private
     def set_defaults(defaults)
-      @defaults=defaults
+      @defaults = defaults
     end
 
     def initialize(current_user, batch)
@@ -88,27 +88,27 @@ module Presenters
       # Printing of labels is enabled for anybody
       add_submenu_option "Print labels", :print_labels if is_pulldown_pipeline?
       add_submenu_option "Print pool label", :print_multiplex_labels if is_multiplexed?
-      add_submenu_option "Print labels" ,  :print_labels if is_multiplexed?
-      add_submenu_option "Print stock pool label" , :print_stock_multiplex_labels if is_multiplexed?
-      add_submenu_option "Print plate labels" , :print_plate_labels if has_plate_labels?
-      add_submenu_option "Print stock labels" , :print_stock_labels if has_stock_labels?
-      add_submenu_option "Print labels" , :print_labels if not_sequencing?
+      add_submenu_option "Print labels",  :print_labels if is_multiplexed?
+      add_submenu_option "Print stock pool label", :print_stock_multiplex_labels if is_multiplexed?
+      add_submenu_option "Print plate labels", :print_plate_labels if has_plate_labels?
+      add_submenu_option "Print stock labels", :print_stock_labels if has_stock_labels?
+      add_submenu_option "Print labels", :print_labels if not_sequencing?
 
       # Other options are enabled only for managers
       if is_manager?
         add_submenu_option "Vol' & Conc'", :edit_volume_and_concentration if not_sequencing?
-        add_submenu_option "Create stock tubes"  , :new_stock_assets if can_create_stock_assets?
-        add_submenu_option "Print sample prep worksheet" , :sample_prep_worksheet if pacbio_sample_pipeline?
+        add_submenu_option "Create stock tubes", :new_stock_assets if can_create_stock_assets?
+        add_submenu_option "Print sample prep worksheet", :sample_prep_worksheet if pacbio_sample_pipeline?
 
         if @pipeline.prints_a_worksheet_per_task? and !pacbio_sample_pipeline?
           @tasks.each do |task|
-            add_submenu_option "Print worksheet for #{task.name}" , {:action => :print, :task_id => task.id}
+            add_submenu_option "Print worksheet for #{task.name}", {:action => :print, :task_id => task.id}
           end
         else
-          add_submenu_option "Print worksheet" , :print
+          add_submenu_option "Print worksheet", :print
         end
 
-        add_submenu_option "Verify tube layout" , :verify if tube_layout_not_verified?
+        add_submenu_option "Verify tube layout", :verify if tube_layout_not_verified?
         add_submenu_option "Batch Report", :pulldown_batch_report if is_pulldown_pipeline?
       end
     end
@@ -131,7 +131,7 @@ module Presenters
         end
         action_params = url_for(actionConfig)
       end
-      @options += [{:label => text, :url =>  action_params}]
+      @options += [{:label => text, :url => action_params}]
     end
 
     def each_option

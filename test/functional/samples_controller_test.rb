@@ -27,15 +27,15 @@ class SamplesControllerTest < ActionController::TestCase
       'sample', {
         :defaults => {:name => "Sample22"},
         :formats => ['html'],
-        :ignore_actions =>['show','create','update','destroy'],
-        :user => -> { user =FactoryGirl.create(:user) ; user.is_administrator ; user }
+        :ignore_actions => ['show','create','update','destroy'],
+        :user => -> { user = FactoryGirl.create(:user) ; user.is_administrator ; user }
       }
     )
 
     # TODO: Test without admin
     context "when logged in" do
       setup do
-        @user =FactoryGirl.create :user
+        @user = FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
       end
@@ -43,8 +43,8 @@ class SamplesControllerTest < ActionController::TestCase
       context "#add_to_study" do
         setup do
           @initial_study_sample_count = StudySample.count
-          @sample =FactoryGirl.create :sample
-          @study =FactoryGirl.create :study
+          @sample = FactoryGirl.create :sample
+          @study = FactoryGirl.create :study
           put :add_to_study, :id => @sample.id, :study => { :id => @study.id }
         end
         should "change StudySample.count from  0 to 1" do

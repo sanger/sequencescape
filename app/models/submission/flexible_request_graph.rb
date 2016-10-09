@@ -135,7 +135,7 @@ module Submission::FlexibleRequestGraph
     private
 
     def comments
-      (chain.order.comments||"").split("\n")
+      (chain.order.comments || "").split("\n")
     end
 
     def user

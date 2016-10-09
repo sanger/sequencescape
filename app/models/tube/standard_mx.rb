@@ -1,7 +1,7 @@
 require_dependency 'tube/purpose'
 class Tube::StandardMx < Tube::Purpose
   def created_with_request_options(tube)
-    tube.parent.try(:created_with_request_options)||{}
+    tube.parent.try(:created_with_request_options) || {}
   end
 
   # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the

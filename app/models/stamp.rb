@@ -15,7 +15,7 @@ class Stamp < ActiveRecord::Base
 
   class StampQcable < ActiveRecord::Base
 
-    self.table_name =('stamp_qcables')
+    self.table_name = ('stamp_qcables')
 
     belongs_to :stamp, :inverse_of => :stamp_qcables
     belongs_to :qcable, :inverse_of => :stamp_qcable

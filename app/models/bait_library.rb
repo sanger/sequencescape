@@ -17,7 +17,7 @@ class BaitLibrary < ActiveRecord::Base
   end
 
   class Supplier < ActiveRecord::Base
-    self.table_name =('bait_library_suppliers')
+    self.table_name = ('bait_library_suppliers')
 
     # The names of suppliers needs to be unique
     validates_presence_of :name

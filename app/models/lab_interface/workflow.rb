@@ -68,8 +68,8 @@ class LabInterface::Workflow < ActiveRecord::Base
   def change_sorter_of_all_tasks(value)
     return nil if self.tasks.nil?
     self.tasks.each do |task|
-      next if task.sorted+value <0
-      task.sorted = task.sorted+value
+      next if task.sorted + value < 0
+      task.sorted = task.sorted + value
       task.save
     end
     true

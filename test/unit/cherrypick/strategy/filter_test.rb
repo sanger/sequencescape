@@ -22,7 +22,7 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
 
     should 'shorten plexes to the available space on the plate' do
       plexes = [ mock('plex 1'), mock('plex 2') ]
-      plexes.each_with_index { |p,i| p.expects(:slice).with(0, 10).returns("short #{i+1}") }
+      plexes.each_with_index { |p,i| p.expects(:slice).with(0, 10).returns("short #{i + 1}") }
 
       assert_equal(
         ["short 1", "short 2"],

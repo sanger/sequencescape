@@ -5,10 +5,10 @@
 # Copyright (C) 2012,2013,2015,2016 Genome Research Ltd.
 
 
-std = RequestPurpose.create!(:key=>'standard')
-qc = RequestPurpose.create!(:key=>'qc')
-int = RequestPurpose.create!(:key=>'internal')
-ctl = RequestPurpose.create!(:key=>'control')
+std = RequestPurpose.create!(:key => 'standard')
+qc = RequestPurpose.create!(:key => 'qc')
+int = RequestPurpose.create!(:key => 'internal')
+ctl = RequestPurpose.create!(:key => 'control')
 
 RequestType.create!(
   :name => 'Create Asset', :key => 'create_asset', :order => 1,
@@ -39,17 +39,17 @@ RequestType.create!(
   :request_purpose => int
 )
 RequestType.create!(
-  :asset_type=>"LibraryTube",
-  :billable=>false,
-  :deprecated=>false,
-  :for_multiplexing=>true,
-  :initial_state=>"pending",
-  :key=>"external_multiplexed_library_creation",
-  :morphology=>0,
-  :order=>0,
-  :multiples_allowed=>false,
-  :name=>"External Multiplexed Library Creation",
-  :no_target_asset=>false,
-  :request_class_name=>"ExternalLibraryCreationRequest",
+  :asset_type => "LibraryTube",
+  :billable => false,
+  :deprecated => false,
+  :for_multiplexing => true,
+  :initial_state => "pending",
+  :key => "external_multiplexed_library_creation",
+  :morphology => 0,
+  :order => 0,
+  :multiples_allowed => false,
+  :name => "External Multiplexed Library Creation",
+  :no_target_asset => false,
+  :request_class_name => "ExternalLibraryCreationRequest",
   :request_purpose => std
 )

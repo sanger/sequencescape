@@ -220,7 +220,7 @@ class Study < ActiveRecord::Base
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
-    attribute(:separate_y_chromosome_data, :required => true, :default=> false, :boolean => true)
+    attribute(:separate_y_chromosome_data, :required => true, :default => false, :boolean => true)
     attribute(:study_project_id)
     attribute(:study_abstract)
     attribute(:study_study_title)
@@ -259,7 +259,7 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_reason_comment)
     end
 
-    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
+    attribute(:data_access_group, :with => /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
 
     # SNP information
     attribute(:snp_study_id, :integer => true)
@@ -402,13 +402,13 @@ class Study < ActiveRecord::Base
 
   def mark_deactive
     unless self.inactive?
-      logger.warn "Study deactivation failed! #{self.errors.map{|e| e.to_s} }"
+      logger.warn "Study deactivation failed! #{self.errors.map {|e| e.to_s} }"
     end
   end
 
   def mark_active
     unless self.active?
-      logger.warn "Study activation failed! #{self.errors.map{|e| e.to_s} }"
+      logger.warn "Study activation failed! #{self.errors.map {|e| e.to_s} }"
     end
   end
 
@@ -418,7 +418,7 @@ class Study < ActiveRecord::Base
     failed = self.requests.failed.request_type(rts).count
     cancelled = self.requests.cancelled.request_type(rts).count
     if (total - failed - cancelled) > 0
-      completed_percent = ((self.requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f)*100)
+      completed_percent = ((self.requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f) * 100)
       completed_percent.to_i
     else
       return 0
@@ -460,7 +460,7 @@ class Study < ActiveRecord::Base
 
   def unprocessed_submissions?
     #TODO[mb14] optimize if needed
-    study.orders.any? { |o| o.submission.nil?  || o.submission.unprocessed?}
+    study.orders.any? { |o| o.submission.nil? || o.submission.unprocessed?}
   end
 
   # Used by EventfulMailer
@@ -535,7 +535,7 @@ class Study < ActiveRecord::Base
 
   def abbreviation
     abbreviation = self.study_metadata.study_name_abbreviation
-    abbreviation.blank? ?  "#{self.id}STDY" : abbreviation
+    abbreviation.blank? ? "#{self.id}STDY" : abbreviation
   end
 
   def dehumanise_abbreviated_name
@@ -570,7 +570,7 @@ class Study < ActiveRecord::Base
 
   def mailing_list_of_managers
     receiver = self.managers.pluck(:email).compact.uniq
-    receiver =  User.all_administrators_emails if receiver.empty?
+    receiver = User.all_administrators_emails if receiver.empty?
     return receiver
   end
 

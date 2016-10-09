@@ -24,7 +24,7 @@ end
 Given /^an event to the request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")
  request = lane.source_request
- FactoryGirl.create :event, :eventful => request, :created_by =>'npg'
+ FactoryGirl.create :event, :eventful => request, :created_by => 'npg'
 end
 
 When /^I (POST|PUT) following XML to change the QC state on the last asset:$/ do |action, xml|

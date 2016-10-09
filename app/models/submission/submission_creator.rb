@@ -123,7 +123,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
           submission.orders << new_order
         else
-          @submission = new_order.create_submission(:user => order.user, :priority=>priority)
+          @submission = new_order.create_submission(:user => order.user, :priority => priority)
         end
 
         new_order.save!
@@ -218,7 +218,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
         raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
       end
       raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
-      well_array = (well_locations||'').split(',').reject(&:blank?).map(&:strip)
+      well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
 
       find_wells_in_array(plate,well_array)
     end.flatten
@@ -264,7 +264,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
     # We can't get the template from a saved order, have to find by name.... :(
-    @template =  SubmissionTemplate.find_by_name(order.template_name) if try(:submission).try(:orders).present?
+    @template = SubmissionTemplate.find_by_name(order.template_name) if try(:submission).try(:orders).present?
     @template ||= SubmissionTemplate.find(@template_id)
   end
 
@@ -273,7 +273,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def product_lines
-    templates.group_by {|t| t.product_line.try(:name)||'General' }
+    templates.group_by {|t| t.product_line.try(:name) || 'General' }
   end
 
   def template_id

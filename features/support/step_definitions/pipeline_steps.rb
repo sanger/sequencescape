@@ -34,7 +34,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = FactoryGirl.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(:request_type => pipeline.request_types.last, :asset => FactoryGirl.create(pipeline_name_to_asset_type(pipeline_name)), :request_metadata => request_metadata)
   FactoryGirl.create(:request, request_parameters).tap do |request|
-    request.asset.update_attributes!(:location => pipeline.location,:barcode=>request.asset.id%9999999)
+    request.asset.update_attributes!(:location => pipeline.location,:barcode => request.asset.id % 9999999)
   end
 end
 
@@ -77,7 +77,7 @@ When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipel
   request_number = request_number.to_i
   pipeline = Pipeline.find_by_name(pipeline_name)
 
-  request = pipeline.requests.inbox[request_number-1]
+  request = pipeline.requests.inbox[request_number - 1]
   check("request_#{request.id}")
 end
 

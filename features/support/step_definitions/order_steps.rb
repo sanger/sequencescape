@@ -29,7 +29,7 @@ Given /^I have an order created with the following details based on the template
       end
     [ k.to_sym, v ]
   end
-  user = User.find_by(login:'abc123')||FactoryGirl.create(:user,login:'abc123')
+  user = User.find_by(login:'abc123') || FactoryGirl.create(:user,login:'abc123')
   order = template.create_order!({ :user => user }.merge(Hash[order_attributes]))
 end
 

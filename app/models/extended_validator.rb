@@ -17,7 +17,7 @@ class ExtendedValidator < ActiveRecord::Base
 
   class RequestTypeExtendedValidator < ActiveRecord::Base
 
-    self.table_name=('request_types_extended_validators')
+    self.table_name = ('request_types_extended_validators')
 
     belongs_to :extended_validator
     belongs_to :request_type

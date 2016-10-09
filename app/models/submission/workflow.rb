@@ -18,7 +18,7 @@ class Submission::Workflow < ActiveRecord::Base
       # Project metadata fields
       'project.metadata.gt_committee_tracking_id'
     ],
-    'Next-gen sequencing'   => [
+    'Next-gen sequencing' => [
       # Project metadata fields
       'project.metadata.project_manager_id',
       'project.metadata.funding_comments',

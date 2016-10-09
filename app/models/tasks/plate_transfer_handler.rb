@@ -15,7 +15,7 @@ module Tasks::PlateTransferHandler
   end
 
   def includes_for_plate_creation
-    [{:asset=>[:map,{:plate=>[:plate_purpose,:barcode_prefix]},:aliquots]},{:target_asset=>[:pac_bio_library_tube_metadata]}]
+    [{:asset => [:map,{:plate => [:plate_purpose,:barcode_prefix]},:aliquots]},{:target_asset => [:pac_bio_library_tube_metadata]}]
   end
 
   def find_or_create_target(task)
@@ -25,7 +25,7 @@ module Tasks::PlateTransferHandler
     source_wells = batch_requests.map {|r| r.asset}
     raise InvalidBatch if unsuitable_wells?(source_wells)
 
-    transfer_request_to_plate = RequestType.find_by_target_purpose_id(task.purpose_id)||RequestType.transfer
+    transfer_request_to_plate = RequestType.find_by_target_purpose_id(task.purpose_id) || RequestType.transfer
     transfer_request_from_plate = RequestType.transfer
     task.purpose.create!.tap do |target|
 
@@ -50,7 +50,7 @@ module Tasks::PlateTransferHandler
   def target_plate
     transfer = TransferRequest.siblings_of(@batch.requests.first).
       for_submission_id(@batch.requests.first.submission_id).
-      includes(:target_asset=>:plate).first
+      includes(:target_asset => :plate).first
     return nil unless transfer.present?
     transfer.target_asset.plate
   end
@@ -61,7 +61,7 @@ module Tasks::PlateTransferHandler
   private :unsuitable_wells?
 
   def do_plate_transfer_task(task,params)
-    target_plate.transition_to('passed',current_user) unless target_plate.state=='passed'
+    target_plate.transition_to('passed',current_user) unless target_plate.state == 'passed'
     true
   end
 

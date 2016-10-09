@@ -26,7 +26,7 @@ class FluidigmFile
 
     class Irods
       def initialize(barcode)
-        @data = IrodsReader::DataObj.find('seq','dcterms:audience'=>configatron.irods_audience, :fluidigm_plate=>barcode)
+        @data = IrodsReader::DataObj.find('seq','dcterms:audience' => configatron.irods_audience, :fluidigm_plate => barcode)
       end
 
       def empty?
@@ -35,7 +35,7 @@ class FluidigmFile
 
       def content(index=nil)
         raise StandardError, "Multiple files found" if data.size > 1 && index.nil?
-        @data[index||0].retrive
+        @data[index || 0].retrive
       end
     end
 
@@ -67,11 +67,11 @@ class FluidigmFile
     end
 
     def gender_marker?
-      /^GS/===name
+      /^GS/ === name
     end
 
     def gender
-      @@gender_map[result]||'Unknown'
+      @@gender_map[result] || 'Unknown'
     end
 
     def pass?
@@ -136,15 +136,15 @@ class FluidigmFile
 
   private
   def header_start_index
-    @header_start_index ||= (0..@csv.size).detect {|i| @csv[i][0]=='Experiment Information'} || raise(InvalidFile,'Could not find header')
+    @header_start_index ||= (0..@csv.size).detect {|i| @csv[i][0] == 'Experiment Information'} || raise(InvalidFile,'Could not find header')
   end
 
   def data_start_index
-    header_start_index+3
+    header_start_index + 3
   end
 
   def headers
-    @headers ||= @csv[header_start_index].zip(@csv[header_start_index+1]).zip(@csv[header_start_index+2]).map {|h| h.join(' ')}
+    @headers ||= @csv[header_start_index].zip(@csv[header_start_index + 1]).zip(@csv[header_start_index + 2]).map {|h| h.join(' ')}
   end
 
   def column(head)

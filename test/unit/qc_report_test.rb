@@ -32,7 +32,7 @@ class QcReportTest < ActiveSupport::TestCase
           2.times do |i|
             @attribute = create :well_attribute, :current_volume => 500, :concentration => 200
             sample = create(:study_sample, :study => study).sample
-            sample.update_attributes!(:sanger_sample_id=>'TEST1')
+            sample.update_attributes!(:sanger_sample_id => 'TEST1')
             well = create :well, :samples => [sample], :plate => @stock_plate, :map => create(:map, :location_id => i), :well_attribute => @attribute
             well.aliquots.each {|a| a.update_attributes!(:study => study) }
           end
@@ -75,7 +75,7 @@ class QcReportTest < ActiveSupport::TestCase
         @other_criteria = create :product_criteria
 
         @matching_report = create :qc_report, :study => @study, :exclude_existing => true, :product_criteria => @current_criteria, :report_identifier => 'Override'
-        @other_report   = create :qc_report, :study => @study, :exclude_existing => true, :product_criteria => @other_criteria
+        @other_report = create :qc_report, :study => @study, :exclude_existing => true, :product_criteria => @other_criteria
 
         @attribute = create :well_attribute, :current_volume => 500, :concentration => 200
 

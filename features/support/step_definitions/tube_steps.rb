@@ -7,7 +7,7 @@
 
 Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
   purpose = Tube::Purpose.find_by!(name:tube_purpose)
-  test=purpose.target_type.constantize.create!(
+  test = purpose.target_type.constantize.create!(
     :name => tube_name,
     :purpose => purpose
   )
@@ -32,7 +32,7 @@ Given /^a (started|passed|pending) transfer from the stock tube "([^"]*)" to the
   source = Tube.find_by_name(source_name) or raise "Cannot find source tube #{source_name.inspect}"
   Transfer::BetweenTubesBySubmission.create!(
     :source => source,
-    :user => User.last||User.create(:login=>'no_one')
+    :user => User.last || User.create(:login => 'no_one')
   )
   step %Q{the transfer requests on "#{source.id}" are #{state}}
 end
@@ -49,13 +49,13 @@ end
 
 def request_defaults(type)
   {
-    'Illumina-B STD'=>{
+    'Illumina-B STD' => {
       :request_metadata_attributes => {
         :fragment_size_required_from => 300,
         :fragment_size_required_to => 300
       }
     }
-  }[type]||{}
+  }[type] || {}
 end
 
 Given /^the transfer requests on "([^"]*)" are (pending|passed|started)$/ do |source_id,state|

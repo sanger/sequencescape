@@ -82,7 +82,7 @@ class ReceptionsController < ApplicationController
       location = Location.find(params[:location_id])
       assets = params[:asset_id]
       @errors = []
-      asset_count  = 0
+      asset_count = 0
 
       assets.each do |index,asset_id|
         asset = Asset.find_by(id: asset_id)

@@ -20,7 +20,7 @@ class Product < ActiveRecord::Base
 
   scope :with_stock_report, ->() {
     joins(:product_criteria).
-    where(:product_criteria => {:deprecated_at=>nil,:stage=>ProductCriteria::STAGE_STOCK})
+    where(:product_criteria => {:deprecated_at => nil,:stage => ProductCriteria::STAGE_STOCK})
   }
 
   scope :alphabetical, ->() { order(:name) }
@@ -30,7 +30,7 @@ class Product < ActiveRecord::Base
   end
 
   def display_name
-    deprecated? ? "#{name} (Deprecated #{deprecated_at.to_formatted_s(:iso8601)})": name
+    deprecated? ? "#{name} (Deprecated #{deprecated_at.to_formatted_s(:iso8601)})" : name
   end
 
 

@@ -158,7 +158,7 @@ class AmqpObserver < ActiveRecord::Observer
     def publish_to(exchange,record)
       exchange.publish(
         MultiJson.dump(record),
-        :key        => record.routing_key||"#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
+        :key        => record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
         :persistent => configatron.amqp.persistent
       )
     end

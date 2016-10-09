@@ -13,8 +13,8 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       @pre_count = AliquotIndex.count
       @lane = create :lane
       @tags = [1,8,2,4].map {|map_id| create :tag, :map_id => map_id }
-      @tag2s = [1,2].map {|map_id| create :tag, :map_id => map_id }*2
-      @aliquots = 4.times.map {|i| create :aliquot, :receptacle => @lane, :tag=>@tags[i], :tag2=>@tag2s[i] }
+      @tag2s = [1,2].map {|map_id| create :tag, :map_id => map_id } * 2
+      @aliquots = 4.times.map {|i| create :aliquot, :receptacle => @lane, :tag => @tags[i], :tag2 => @tag2s[i] }
 
       @aliquot_index = [1,4,2,3]
     end
@@ -40,9 +40,9 @@ class AliquotIndexerTest < ActiveSupport::TestCase
 
       setup do
         @phix = create :spiked_buffer do |sb|
-          sb.aliquots {|a| a.association(:aliquot, :receptacle => sb, :tag=>@tags[2]) }
+          sb.aliquots {|a| a.association(:aliquot, :receptacle => sb, :tag => @tags[2]) }
         end
-        a = create :aliquot, :receptacle => @phix, :tag=>@tags[2]
+        a = create :aliquot, :receptacle => @phix, :tag => @tags[2]
         @phix.aliquots = [a]
         @lane.parents << @phix
         @aliquot_index = [1,5,3,4]

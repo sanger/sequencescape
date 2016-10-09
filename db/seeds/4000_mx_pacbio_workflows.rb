@@ -50,26 +50,26 @@ PacBioSequencingPipeline.find_by_name('PacBio Sequencing').request_types << Requ
   request_type.multiples_allowed = true
   request_type.request_class     = PacBioSequencingRequest
   request_type.request_type_validators.build([
-    {:request_option=>'insert_size',
-    :valid_options=>RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
-    :request_type=>request_type},
-    {:request_option=>'sequencing_type',
-    :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
-    :request_type=>request_type}
+    {:request_option => 'insert_size',
+    :valid_options => RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
+    :request_type => request_type},
+    {:request_option => 'sequencing_type',
+    :valid_options => RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
+    :request_type => request_type}
   ])
 end
 
 pbs = PlatePurpose.create!(
-  :name=>'PacBio Sequencing',
-  :target_type=>'Plate',
-  :default_state=>'pending',
-  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :name => 'PacBio Sequencing',
+  :target_type => 'Plate',
+  :default_state => 'pending',
+  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
   :cherrypickable_target => false,
   :cherrypickable_source => false,
   :size => 96,
   :asset_shape => AssetShape.find_by_name('Standard'),
   :barcode_for_tecan => 'ean13_barcode'
 )
-AssignTubesToMultiplexedWellsTask.all.each {|task| task.update_attributes!(:purpose=>pbs)}
+AssignTubesToMultiplexedWellsTask.all.each {|task| task.update_attributes!(:purpose => pbs)}
 
 set_pipeline_flow_to('PacBio Tagged Library Prep' => 'PacBio Sequencing')

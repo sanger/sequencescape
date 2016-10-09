@@ -66,16 +66,16 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |key, login|
-  User.find_or_create_by(login:login).update_attributes!(:api_key=>key)
+  User.find_or_create_by(login:login).update_attributes!(:api_key => key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
-  User.find_by_api_key(cookie).update_attributes!(:api_key=>nil)
+  User.find_by_api_key(cookie).update_attributes!(:api_key => nil)
 end
 
 def api_request(action, path, body)
   raise StandardError, "You must explicitly set the API version you are using" if @api_path.nil?
-  @cookies  ||= {}
+  @cookies ||= {}
 
   headers = { }
   headers.merge!('HTTP_ACCEPT' => 'application/json')
@@ -140,7 +140,7 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.new(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none').save(:validate => false)
+  ApiApplication.new(:name => 'test_api',:key => key,:privilege => permission,:contact => 'none').save(:validate => false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
@@ -158,7 +158,7 @@ When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model,name|
 end
 
 When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
-  study        = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{ name.inspect }"
+  study = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{ name.inspect }"
   raise StandardError, "It appears there are no requests for study #{ name.inspect }" if study.requests.empty?
   visit(url_for(:controller => "api/requests", :action => 'show', :id => study.requests.last, :format => :json))
 end
@@ -329,10 +329,10 @@ Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
     :project_manager => ProjectManager.find_by_name('Unallocated'),
     :project_cost_code => "ABC",
     :funding_comments => "External funding",
-    :collaborators  => "No collaborators",
-    :external_funding_source  => "EU",
-    :budget_division  => BudgetDivision.find_by_name('Pathogen (including malaria)'),
-    :sequencing_budget_cost_centre  => "Sanger",
+    :collaborators => "No collaborators",
+    :external_funding_source => "EU",
+    :budget_division => BudgetDivision.find_by_name('Pathogen (including malaria)'),
+    :sequencing_budget_cost_centre => "Sanger",
     :project_funding_model => "Internal"
   })
 end

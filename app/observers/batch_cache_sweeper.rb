@@ -32,7 +32,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
       when record.is_a?(Aliquot)      then [ 'aliquots',       query_conditions_for(record)                                                ]
       when record.is_a?(Tag)          then [ 'aliquots',       "aliquots.tag_id=#{record.id}"                                              ]
     end
-    yield(JOINS.values.slice(0, JOINS.keys.index(model)+1), conditions)
+    yield(JOINS.values.slice(0, JOINS.keys.index(model) + 1), conditions)
   end
   private :through
 
@@ -51,7 +51,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
   private :handle
 
   def messengers_for(record)
-    Messenger.where(:target_type=>'Batch',:target_id=>ids_for(record))
+    Messenger.where(:target_type => 'Batch',:target_id => ids_for(record))
   end
 
 end

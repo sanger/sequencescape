@@ -34,7 +34,7 @@ module Tasks::StripTubeCreationHandler
     end
 
     input_plate  = @batch.requests.first.asset.plate
-    source_plate = input_plate.source_plate||input_plate
+    source_plate = input_plate.source_plate || input_plate
 
     if params['source_plate_barcode'] != input_plate.ean13_barcode
       flash[:error] = "'#{params['source_plate_barcode']}' is not the correct plate for this batch."
@@ -47,7 +47,7 @@ module Tasks::StripTubeCreationHandler
 
     (0...tubes_to_create).each do |tube_number|
 
-      tube = strip_purpose.create!(:name=>"#{base_name}:#{tube_number+1}",:location=>@batch.pipeline.location)
+      tube = strip_purpose.create!(:name => "#{base_name}:#{tube_number + 1}",:location => @batch.pipeline.location)
       AssetLink::Job.create(source_plate,[tube])
 
       tube.size.times do |index|

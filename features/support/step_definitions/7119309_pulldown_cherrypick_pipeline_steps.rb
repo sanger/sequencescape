@@ -34,7 +34,7 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells,
-    :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"400", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}
+    :request_options => {:multiplier => {"1" => "1", "3" => "1"}, "read_length" => "100", "fragment_size_required_to" => "400", "fragment_size_required_from" => "300", "library_type" => "Standard"}
     )
   step("1 pending delayed jobs are processed")
 end
@@ -73,7 +73,7 @@ end
 Given /^plate "([^"]*)" has concentration results$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
-    well.well_attribute.update_attributes!(:concentration => index*40)
+    well.well_attribute.update_attributes!(:concentration => index * 40)
   end
 end
 
@@ -98,7 +98,7 @@ end
 Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
-    well.well_attribute.update_attributes!(:measured_volume => index*11)
+    well.well_attribute.update_attributes!(:measured_volume => index * 11)
   end
 end
 
@@ -111,7 +111,7 @@ Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(CSV.parse(page.source).collect{|r| r.collect{|c| c ? c : "" }})
+  expected_results_table.diff!(CSV.parse(page.source).collect {|r| r.collect {|c| c ? c : "" }})
 end
 
 Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
@@ -119,12 +119,12 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
   tag_group = TagGroup.create!(:name => tag_group_name)
   tags = []
   1.upto(number_of_tags.to_i) do |i|
-    Tag.create!(:oligo => oligos[(i-1)%oligos.size], :map_id => i, :tag_group_id => tag_group.id)
+    Tag.create!(:oligo => oligos[(i - 1) % oligos.size], :map_id => i, :tag_group_id => tag_group.id)
   end
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|
-  actual_table = table(fetch_table('table.plate').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
+  actual_table = table(fetch_table('table.plate').collect { |row| row.collect {|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
 
   expected_results_table.diff!(actual_table)
 end
@@ -194,7 +194,7 @@ end
 
 Given /^all library tube barcodes are set to know values$/ do
   PulldownMultiplexedLibraryTube.all.each_with_index do |tube,index|
-    tube.update_attributes!(:barcode => "#{index+1}")
+    tube.update_attributes!(:barcode => "#{index + 1}")
   end
 end
 
@@ -237,7 +237,7 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
       :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
       :user => User.last,
       :assets => Well.all,
-      :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>'Standard'}
+      :request_options => {:multiplier => {"1" => "1", "3" => "1"}, "read_length" => "100", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => 'Standard'}
       )
     step("1 pending delayed jobs are processed")
 end

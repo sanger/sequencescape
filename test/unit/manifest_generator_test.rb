@@ -84,7 +84,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           @well.save
         end
         should "return inputted volume" do
-          volume= ManifestGenerator.well_volume(@well)
+          volume = ManifestGenerator.well_volume(@well)
           assert_equal 567,volume
           assert volume.is_a?(Integer)
         end

@@ -59,9 +59,9 @@ class TransferRequestTest < ActiveSupport::TestCase
       end
 
       should 'raise an exception' do
-        @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_1.receptacle.reload, :target_asset =>  @target_asset)
+        @transfer_request = RequestType.transfer.create!(:asset => @aliquot_1.receptacle.reload, :target_asset => @target_asset)
         assert_raise Aliquot::TagClash do
-          @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_2.receptacle.reload, :target_asset =>  @target_asset)
+          @transfer_request = RequestType.transfer.create!(:asset => @aliquot_2.receptacle.reload, :target_asset => @target_asset)
         end
       end
     end

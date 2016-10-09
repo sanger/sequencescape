@@ -55,7 +55,7 @@ class Document < ActiveRecord::Base
   def update_document_attributes
     if uploaded_data.present?
       self.content_type = uploaded_data.file.content_type
-      self.size    = uploaded_data.file.size
+      self.size = uploaded_data.file.size
     end
   end
   private :update_document_attributes

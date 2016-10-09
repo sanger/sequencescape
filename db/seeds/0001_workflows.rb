@@ -12,10 +12,10 @@ Pipeline.send(:before_save, :add_control_request_type)
 RequestType.send(:include, RequestTypePurposeCreation)
 RequestType.send(:before_validation, :add_request_purpose)
 
-ProductLine.create(:name=>'Illumina-A')
-ProductLine.create(:name=>'Illumina-B')
-ProductLine.create(:name=>'Illumina-C')
-ProductLine.create(:name=>'Illumina-HTP')
+ProductLine.create(:name => 'Illumina-A')
+ProductLine.create(:name => 'Illumina-B')
+ProductLine.create(:name => 'Illumina-C')
+ProductLine.create(:name => 'Illumina-HTP')
 
 ##################################################################################################################
 # Submission workflows and their associated pipelines.
@@ -62,7 +62,7 @@ locations_data = [
   'Illumina high throughput freezer'
 ]
 locations_data.each do |location|
-  Location.create!(:name=>location)
+  Location.create!(:name => location)
 end
 #import [ :name ], locations_data, :validate => false
 
@@ -129,7 +129,7 @@ LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |p
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Library preparation') do |workflow|
-    workflow.locale   = 'External'
+    workflow.locale = 'External'
   end.tap do |workflow|
     fragment_family = Family.create!(:name => "Fragment", :description => "Archived fragment")
     Descriptor.create!(:name => "start", :family_id => fragment_family.id)
@@ -187,7 +187,7 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-B MX Library Prepa
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Illumina-B MX Library Preparation') do |workflow|
-    workflow.locale   = 'External'
+    workflow.locale = 'External'
   end.tap do |workflow|
     [
 
@@ -232,7 +232,7 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-C MX Library Prepa
 
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Illumina-C MX Library Preparation workflow') do |workflow|
-    workflow.locale   = 'External'
+    workflow.locale = 'External'
   end.tap do |workflow|
     {
       TagGroupsTask      => { :name => 'Tag Groups',       :sorted => 1, :lab_activity => true },
@@ -277,7 +277,7 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Pulldown library preparation') do |workflow|
-    workflow.locale   = 'External'
+    workflow.locale = 'External'
   end.tap do |workflow|
     [
 
@@ -304,7 +304,7 @@ cluster_formation_se_request_type = ['a','b','c'].map do |pl|
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
-    request_type.request_class =  SequencingRequest
+    request_type.request_class = SequencingRequest
   end
 end << RequestType.create!(
     :workflow => next_gen_sequencing,
@@ -317,7 +317,7 @@ end << RequestType.create!(
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
-    request_type.request_class =  SequencingRequest
+    request_type.request_class = SequencingRequest
   end
 
 SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)', :request_types => cluster_formation_se_request_type ) do |pipeline|
@@ -412,9 +412,9 @@ single_ended_hi_seq_sequencing = ['a','b','c'].map do |pl|
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
-    request_type.request_class =  HiSeqSequencingRequest
+    request_type.request_class = HiSeqSequencingRequest
   end
-end <<   RequestType.create!(
+end << RequestType.create!(
     :workflow => next_gen_sequencing,
     :key => "single_ended_hi_seq_sequencing",
     :name => "Single ended hi seq sequencing",
@@ -425,7 +425,7 @@ end <<   RequestType.create!(
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
-    request_type.request_class =  HiSeqSequencingRequest
+    request_type.request_class = HiSeqSequencingRequest
   end
 
 SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types => single_ended_hi_seq_sequencing) do |pipeline|
@@ -484,14 +484,14 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-cluster_formation_pe_request_types =  ['a','b','c'].map do |pl|
+cluster_formation_pe_request_types = ['a','b','c'].map do |pl|
   RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_paired_end_sequencing", :name => "Illumina-#{pl.upcase} Paired end sequencing", :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
-    request_type.request_class =  SequencingRequest
+    request_type.request_class = SequencingRequest
   end
 end << RequestType.create!(
     :workflow => next_gen_sequencing,
@@ -504,7 +504,7 @@ end << RequestType.create!(
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
-    request_type.request_class =  SequencingRequest
+    request_type.request_class = SequencingRequest
   end
 
 hiseq_2500_request_types = ['a','b','c'].map do |pl|
@@ -748,7 +748,7 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
       request_type.asset_type        = 'LibraryTube'
       request_type.order             = 2
       request_type.multiples_allowed = true
-      request_type.request_class =  HiSeqSequencingRequest
+      request_type.request_class = HiSeqSequencingRequest
     end
   end
   pipeline.request_types << RequestType.create!(
@@ -762,7 +762,7 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
-    request_type.request_class =  HiSeqSequencingRequest
+    request_type.request_class = HiSeqSequencingRequest
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (no controls)') do |workflow|
@@ -998,12 +998,12 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
     request_type.multiples_allowed = true
     request_type.request_class     = PacBioSequencingRequest
     request_type.request_type_validators.build([
-      {:request_option=>'insert_size',
-      :valid_options=>RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
-      :request_type=>request_type},
-      {:request_option=>'sequencing_type',
-      :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
-      :request_type=>request_type}
+      {:request_option => 'insert_size',
+      :valid_options => RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
+      :request_type => request_type},
+      {:request_option => 'sequencing_type',
+      :valid_options => RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
+      :request_type => request_type}
     ])
   end
 
@@ -1056,7 +1056,7 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
       pipeline.asset_type         = 'LibraryTube'
       pipeline.externally_managed = true
 
-      pipeline.location   = Location.find_by_name('Pulldown freezer') or raise StandardError, "Pulldown freezer does not appear to exist!"
+      pipeline.location = Location.find_by_name('Pulldown freezer') or raise StandardError, "Pulldown freezer does not appear to exist!"
 
       pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :name => pipeline_name) do |request_type|
         request_type.billable          = true
@@ -1120,7 +1120,7 @@ end.tap do |pipeline|
 end
 
 # ADD ILC Cherrypick
-    cprt =  RequestType.create!(
+    cprt = RequestType.create!(
         :key => 'illumina_c_cherrypick',
         :name => 'Illumina-C Cherrypick',
         :workflow_id => Submission::Workflow.find_by_key("short_read_sequencing").id,
@@ -1131,7 +1131,7 @@ end
         :request_class_name => 'Request'
         )
 
-      liw = LabInterface::Workflow.create!(:name=>'Illumina-C Cherrypick')
+      liw = LabInterface::Workflow.create!(:name => 'Illumina-C Cherrypick')
 
       LabInterface::Workflow.find_by_name('Cherrypick').tasks.each do |task|
         # next if task.name == 'Set Location'
@@ -1143,13 +1143,13 @@ end
       CherrypickPipeline.create!(
         :name => 'Illumina-C Cherrypick',
         :active => true,
-        :automated=>false,
+        :automated => false,
         :location_id => Location.find_by_name('Library creation freezer'),
         :group_by_parent => true,
         :asset_type => 'Well',
         :group_name => 'Illumina-C Library creation',
         :max_size => 3000,
-        :sorter=>10,
+        :sorter => 10,
         :request_types => [cprt],
         :workflow => liw
       ) do |pipeline|
@@ -1206,7 +1206,7 @@ RequestType.create!({
   rt.acceptable_plate_purposes << Purpose.find_by_name!('SNP Type')
 end
 
-liw = LabInterface::Workflow.create!(:name=>'Cherrypick for Fluidigm')
+liw = LabInterface::Workflow.create!(:name => 'Cherrypick for Fluidigm')
 
 FluidigmTemplateTask.create!(
   :name => 'Select Plate Template',
@@ -1234,7 +1234,7 @@ end
 
 
 CherrypickPipeline.create!(
-  :name=>'Cherrypick for Fluidigm',
+  :name => 'Cherrypick for Fluidigm',
   :active => true,
   :location => Location.find_by_name('Sample logistics freezer'),
   :group_by_parent => true,
@@ -1260,7 +1260,7 @@ v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
   RequestType.create!({
     :key => "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
-    :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+    :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
     :asset_type => "LibraryTube",
     :order => 2,
     :initial_state => "pending",
@@ -1274,7 +1274,7 @@ v4_requests_types_se = [
   RequestType.create!({
   :key => "illumina_c_hiseq_v4_single_end_sequencing",
   :name => "Illumina-C HiSeq V4 Single end sequencing",
-  :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+  :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
   :asset_type => "LibraryTube",
   :order => 2,
   :initial_state => "pending",
@@ -1288,7 +1288,7 @@ x10_requests_types = ['a', 'b'].map do |pipeline|
   RequestType.create!({
     :key => "illumina_#{pipeline}_hiseq_x_paired_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq X Paired end sequencing",
-    :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+    :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
     :asset_type => "LibraryTube",
     :order => 2,
     :initial_state => "pending",
@@ -1299,7 +1299,7 @@ x10_requests_types = ['a', 'b'].map do |pipeline|
 end << RequestType.create!({
   :key => "bespoke_hiseq_x_paired_end_sequencing",
   :name => "Bespoke HiSeq X Paired end sequencing",
-  :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+  :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
   :asset_type => "LibraryTube",
   :order => 2,
   :initial_state => "pending",
@@ -1311,7 +1311,7 @@ end << RequestType.create!({
 st_x10 = [RequestType.create!({
     :key => "hiseq_x_paired_end_sequencing",
     :name => "HiSeq X Paired end sequencing",
-    :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+    :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
     :asset_type => "Well",
     :order => 2,
     :initial_state => "pending",
@@ -1421,7 +1421,7 @@ x10_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
         { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
         { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
         ].select do |task|
-          type ==  '(spiked in controls)' || task[:name] !=  'Add Spiked in Control'
+          type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control'
         end.each do |details|
           details.delete(:class).create!(details.merge(:workflow => workflow))
         end
@@ -1467,7 +1467,7 @@ end
   RequestType.create!({
     :key => "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq 4000 Paired end sequencing",
-    :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+    :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
     :asset_type => "LibraryTube",
     :order => 2,
     :initial_state => "pending",
@@ -1476,12 +1476,12 @@ end
     :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}"),
     :request_purpose => RequestPurpose.standard
   }).tap do |rt|
-    RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150,75])
+    RequestType::Validator.create!(:request_type => rt, :request_option => "read_length", :valid_options => [150,75])
   end
   RequestType.create!({
     :key => "illumina_#{pipeline}_hiseq_4000_single_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq 4000 Single end sequencing",
-    :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+    :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
     :asset_type => "LibraryTube",
     :order => 2,
     :initial_state => "pending",
@@ -1490,7 +1490,7 @@ end
     :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}"),
     :request_purpose => RequestPurpose.standard
   }).tap do |rt|
-    RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[50])
+    RequestType::Validator.create!(:request_type => rt, :request_option => "read_length", :valid_options => [50])
   end
 end
 

@@ -93,7 +93,7 @@ module SampleManifestExcel
     def update(first_row, last_row, ranges, worksheet)
       self.range = {first_column: number, first_row: first_row, last_row: last_row}
 
-      range = ranges.find_by(range_name)  || NullRange.new
+      range = ranges.find_by(range_name) || NullRange.new
       validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
 
       conditional_formattings.update(

@@ -1,7 +1,7 @@
 module LabelPrinter
   module Label
 
-    class SampleManifestTube <BaseTube
+    class SampleManifestTube < BaseTube
 
       attr_reader :sample_manifest, :only_first_label
 

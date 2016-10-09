@@ -83,7 +83,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
     should "add standard headings to worksheet" do
       worksheet.columns.headings.each_with_index do |heading, i|
-        assert_equal heading, spreadsheet.sheet(0).cell(9,i+1)
+        assert_equal heading, spreadsheet.sheet(0).cell(9,i + 1)
       end
     end
 
@@ -95,13 +95,13 @@ class WorksheetTest < ActiveSupport::TestCase
     end
 
     should "should add all of the details" do
-      assert_equal sample_manifest.details_array.count+9, spreadsheet.sheet(0).last_row
+      assert_equal sample_manifest.details_array.count + 9, spreadsheet.sheet(0).last_row
     end
 
     should "should add the attributes for each details" do
       [sample_manifest.details_array.first, sample_manifest.details_array.last].each do |detail|
         worksheet.columns.each do |k, column|
-          assert_equal column.attribute_value(detail), spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail)+10, column.number)
+          assert_equal column.attribute_value(detail), spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail) + 10, column.number)
         end
       end
     end
@@ -112,7 +112,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
     should "panes should be frozen correctly" do
       assert_equal worksheet.freeze_after_column(:sanger_sample_id), worksheet.axlsx_worksheet.sheet_view.pane.x_split
-      assert_equal worksheet.first_row-1, worksheet.axlsx_worksheet.sheet_view.pane.y_split
+      assert_equal worksheet.first_row - 1, worksheet.axlsx_worksheet.sheet_view.pane.y_split
       assert_equal "frozen", worksheet.axlsx_worksheet.sheet_view.pane.state
     end
 
@@ -141,7 +141,7 @@ class WorksheetTest < ActiveSupport::TestCase
     should "add ranges to axlsx worksheet" do
       range = worksheet.ranges.first.last
       range.options.each_with_index do |option, i|
-        assert_equal option, spreadsheet.sheet(0).cell(1,i+1)
+        assert_equal option, spreadsheet.sheet(0).cell(1,i + 1)
       end
       assert_equal worksheet.ranges.count, spreadsheet.sheet(0).last_row
     end

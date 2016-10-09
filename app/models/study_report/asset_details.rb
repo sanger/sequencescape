@@ -24,7 +24,7 @@ module StudyReport::AssetDetails
         :sample_name          => supplier_sample_name,
         :sanger_sample_id     => sample.sanger_sample_id,
         :control              => sample.control,
-        :status               => (sample.updated_by_manifest ? 'Updated by manifest' : 'Awaiting manifest') ,
+        :status               => (sample.updated_by_manifest ? 'Updated by manifest' : 'Awaiting manifest'),
 
         :supplier_gender      => sample.sample_metadata.gender,
         :cohort               => sample.sample_metadata.cohort,

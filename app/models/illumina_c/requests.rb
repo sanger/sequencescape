@@ -47,16 +47,16 @@ module IlluminaC::Requests
         {
           :name => 'Illumina-C Library Creation PCR',
           :key => 'illumina_c_pcr',
-          :for_multiplexing =>true,
-          :request_class_name =>'IlluminaC::Requests::PcrLibraryRequest',
-          :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm')
+          :for_multiplexing => true,
+          :request_class_name => 'IlluminaC::Requests::PcrLibraryRequest',
+          :target_purpose => Purpose.find_by_name('ILC Lib Pool Norm')
         },
         {
           :name => 'Illumina-C Library Creation No PCR',
           :key => 'illumina_c_nopcr',
-          :for_multiplexing =>true,
-          :request_class_name =>'IlluminaC::Requests::NoPcrLibraryRequest',
-          :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm')
+          :for_multiplexing => true,
+          :request_class_name => 'IlluminaC::Requests::NoPcrLibraryRequest',
+          :target_purpose => Purpose.find_by_name('ILC Lib Pool Norm')
         },
         {
           :name               => 'Illumina-C Library Creation PCR No Pooling',
@@ -69,15 +69,15 @@ module IlluminaC::Requests
         :key                => 'illumina_c_multiplexing',
         :request_class_name => 'Request::Multiplexing',
         :for_multiplexing   => true,
-        :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm')
+        :target_purpose => Purpose.find_by_name('ILC Lib Pool Norm')
         }
       ].each do |params|
          params.merge!({
           :workflow => Submission::Workflow.find_by_name("Next-gen sequencing"),
           :asset_type => 'Well',
-          :order =>1,
-          :initial_state =>'pending',
-          :billable =>true,
+          :order => 1,
+          :initial_state => 'pending',
+          :billable => true,
           :product_line => ProductLine.find_by_name('Illumina-C')
         })
         yield(params)

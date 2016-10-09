@@ -14,7 +14,7 @@ class SequencingPipelineTest < ActiveSupport::TestCase
   context 'SequencingPipeline' do
     setup do
       @pipeline = SequencingPipeline.new(
-        :workflow     => LabInterface::Workflow.new,
+        :workflow => LabInterface::Workflow.new,
         :request_types => [ create(:sequencing_request_type) ]
       )
     end

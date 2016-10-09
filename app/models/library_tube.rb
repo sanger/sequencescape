@@ -24,7 +24,7 @@ class LibraryTube < Tube
   scope :include_tag, -> { includes( :aliquots => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } ) }
 
   def sorted_tags_for_select
-    self.get_tag.tag_group.tags.sort{ |a,b| a.map_id <=> b.map_id }.collect { |t| [t.name, t.id] }
+    self.get_tag.tag_group.tags.sort { |a,b| a.map_id <=> b.map_id }.collect { |t| [t.name, t.id] }
   end
 
   # A library tube is created with request options that come from the request in which it is the target asset.
@@ -53,8 +53,8 @@ class LibraryTube < Tube
       :insert_size_from => aliquots.first.insert_size_from,
       :insert_size_to   => aliquots.first.insert_size_to
     }.tap do |tag_hash|
-      tag_hash.merge!(:tag=>tag.summary) if tag
-      tag_hash.merge!(:tag2=>tag2.summary) if tag2
+      tag_hash.merge!(:tag => tag.summary) if tag
+      tag_hash.merge!(:tag2 => tag2.summary) if tag2
     end
   end
 
@@ -63,11 +63,11 @@ class LibraryTube < Tube
     library_information[:tag]  = find_tag(library_information[:tag])
     library_information[:tag2] = find_tag(library_information[:tag2]) if library_information[:tag2]
 
-    self.specialized_from_manifest= library_information
+    self.specialized_from_manifest = library_information
   end
 
   def library_source_plates
-    purpose.try(:library_source_plates,self)||[]
+    purpose.try(:library_source_plates,self) || []
   end
 
   def find_tag(tag_info)

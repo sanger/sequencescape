@@ -31,8 +31,8 @@ module SubmissionSerializer
      new_attributes[key.to_sym] = attributes[key].duplicable? ? attributes[key].dup : attributes[key]
    end
 
-   new_attributes[:product_line]  = ProductLine.find(attributes['product_line_id']).name if attributes['product_line_id']
-   new_attributes[:product_catalogue]  = ProductCatalogue.find(attributes['product_catalogue_id']).name if attributes['product_catalogue_id']
+   new_attributes[:product_line] = ProductLine.find(attributes['product_line_id']).name if attributes['product_line_id']
+   new_attributes[:product_catalogue] = ProductCatalogue.find(attributes['product_catalogue_id']).name if attributes['product_catalogue_id']
    new_attributes[:superceded_by] = SubmissionTemplate.find(attributes['superceded_by_id']).name if attributes['superceded_by_id'] > 0
    new_attributes[:superceded_by_id] = attributes['superceded_by_id']
    new_attributes[:superceded_at] = attributes['superceded_at'].to_s if attributes['superceded_at']
@@ -65,8 +65,8 @@ module SubmissionSerializer
     end
 
     st[:product_line_id] = ProductLine.find_or_create_by(name:hash[:product_line]).id if hash[:product_line]
-    st[:product_catalogue_id]  = ProductCatalogue.find_or_create_by(name:hash[:product_catalogue]).id if hash[:product_catalogue]
-    st[:superceded_by_id] = hash.has_key?(:superceded_by) ? SubmissionTemplate.find_by_name(hash[:superceded_by]).try(:id)||-2 : hash[:superceded_by_id]||-1
+    st[:product_catalogue_id] = ProductCatalogue.find_or_create_by(name:hash[:product_catalogue]).id if hash[:product_catalogue]
+    st[:superceded_by_id] = hash.has_key?(:superceded_by) ? SubmissionTemplate.find_by_name(hash[:superceded_by]).try(:id) || -2 : hash[:superceded_by_id] || -1
     st[:superceded_at] =  DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
 
     sp = st[:submission_parameters] = {}

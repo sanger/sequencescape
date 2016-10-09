@@ -64,7 +64,7 @@ Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barco
   plate.wells.walk_in_column_major_order do |well, index|
     well.well_attribute.update_attributes!(
       :pico_pass      => "Pass",
-      :concentration  => 5 + (index%50),
+      :concentration  => 5 + (index % 50),
       :sequenom_count => index % 30,
       :gender_markers => [ 'F', 'F', 'F', 'F' ]
     )
@@ -75,8 +75,8 @@ Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcod
   plate = Plate.find_from_machine_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
     well.well_attribute.update_attributes!(
-      :current_volume      => 10 + (index%30),
-      :concentration  => 205 + (index%50)
+      :current_volume => 10 + (index % 30),
+      :concentration => 205 + (index % 50)
     )
   end
 end
@@ -85,8 +85,8 @@ Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_ba
   plate = Plate.find_from_machine_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
     well.well_attribute.update_attributes!(
-      :current_volume  => 10 + (index%30),
-      :concentration  =>  50 + (index%50)
+      :current_volume => 10 + (index % 30),
+      :concentration => 50 + (index % 50)
     )
   end
 end
@@ -113,13 +113,13 @@ end
 
 Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type, machine_barcode|
   plate_type.constantize.create!(
-    :barcode =>Barcode.number_to_human("#{machine_barcode}"),
+    :barcode => Barcode.number_to_human("#{machine_barcode}"),
     :plate_purpose => "#{plate_type}Purpose".constantize.first)
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   plate_type.constantize.create!(
-    :barcode =>Barcode.number_to_human("#{machine_barcode}"),
+    :barcode => Barcode.number_to_human("#{machine_barcode}"),
     :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name),
     :name => machine_barcode)
 end
@@ -169,8 +169,8 @@ end
 Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by_external_id(well_uuid).resource
   plate = Uuid.find_by_external_id(plate_uuid).resource
-  well.update_attributes!(:plate => plate, :map=>Map.find_by_description('A1'))
-  plate.update_attributes!(:barcode=>1)
+  well.update_attributes!(:plate => plate, :map => Map.find_by_description('A1'))
+  plate.update_attributes!(:barcode => 1)
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
@@ -251,10 +251,10 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   source = Plate.find_by_name(source_name)
   destination = Plate.find_by_name(dest_name)
   (0...count.to_i).each do |i|
-    RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state=>state)
-    Well::Link.create!(:source_well=>source.wells.in_row_major_order[i],:target_well=>destination.wells.in_row_major_order[i], :type=>'stock')
+    RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state => state)
+    Well::Link.create!(:source_well => source.wells.in_row_major_order[i],:target_well => destination.wells.in_row_major_order[i], :type => 'stock')
   end
-  AssetLink.create(:ancestor=>source,:descendant=>destination)
+  AssetLink.create(:ancestor => source,:descendant => destination)
 end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|

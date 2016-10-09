@@ -37,7 +37,7 @@ module IlluminaC::Helper
       self.type = params[:type]
       self.role = params[:role]
       self.skip_cherrypick = params[:skip_cherrypick]
-      self.sequencing = params[:sequencing]||ACCEPTABLE_SEQUENCING_REQUESTS
+      self.sequencing = params[:sequencing] || ACCEPTABLE_SEQUENCING_REQUESTS
     end
 
     def sequencing=(sequencing_array)
@@ -118,12 +118,12 @@ module IlluminaC::Helper
     def update!
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
-        SubmissionTemplate.find_by_name!(options[:name]).update_attributes!(:submission_parameters=>options[:submission_parameters])
+        SubmissionTemplate.find_by_name!(options[:name]).update_attributes!(:submission_parameters => options[:submission_parameters])
       end
     end
 
     def self.find_for(name,sequencing=nil)
-      tc = TemplateConstructor.new(:name=>name, :sequencing=>sequencing)
+      tc = TemplateConstructor.new(:name => name, :sequencing => sequencing)
       [true,false].map do |cherrypick|
         tc.sequencing.map do |sequencing_request_type|
           SubmissionTemplate.find_by_name!(tc.name_for(cherrypick,sequencing_request_type))

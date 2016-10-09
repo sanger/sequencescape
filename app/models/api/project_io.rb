@@ -42,17 +42,17 @@ class Api::ProjectIO < Api::Base
 
   with_association(:project_metadata) do
     with_association(:project_manager, :lookup_by => :name) do
-      map_attribute_to_json_attribute(:name , 'project_manager')
+      map_attribute_to_json_attribute(:name, 'project_manager')
     end
-    map_attribute_to_json_attribute(:project_cost_code , 'cost_code')
-    map_attribute_to_json_attribute(:funding_comments , 'funding_comments')
-    map_attribute_to_json_attribute(:collaborators , 'collaborators')
-    map_attribute_to_json_attribute(:external_funding_source , 'external_funding_source')
+    map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
+    map_attribute_to_json_attribute(:funding_comments, 'funding_comments')
+    map_attribute_to_json_attribute(:collaborators, 'collaborators')
+    map_attribute_to_json_attribute(:external_funding_source, 'external_funding_source')
     with_association(:budget_division, :lookup_by => :name) do
-      map_attribute_to_json_attribute(:name , 'budget_division')
+      map_attribute_to_json_attribute(:name, 'budget_division')
     end
-    map_attribute_to_json_attribute(:sequencing_budget_cost_centre , 'budget_cost_centre')
-    map_attribute_to_json_attribute(:project_funding_model , 'funding_model')
+    map_attribute_to_json_attribute(:sequencing_budget_cost_centre, 'budget_cost_centre')
+    map_attribute_to_json_attribute(:project_funding_model, 'funding_model')
   end
 
   extra_json_attributes do |object, json_attributes|

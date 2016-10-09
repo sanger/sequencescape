@@ -14,7 +14,7 @@ class SampleManifestTest < ActiveSupport::TestCase
       PlateBarcode.stubs(:create).returns(barcode)
 
       @study = create :study, :name => 'CARD1'
-      @study.study_metadata.study_name_abbreviation  = 'CARD1'
+      @study.study_metadata.study_name_abbreviation = 'CARD1'
       @study.save!
     end
 
@@ -51,7 +51,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @initial_mx_tubes      = MultiplexedLibraryTube.count
             @initial_in_study      = @study.samples.count
 
-            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type=>'multiplexed_library'
+            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type => 'multiplexed_library'
             @manifest.generate
           end
 
@@ -123,13 +123,13 @@ class SampleManifestTest < ActiveSupport::TestCase
 
     context 'delayed jobs' do
       setup do
-        @well_count =  Sample.count
+        @well_count = Sample.count
         Delayed::Job.first.invoke_job
       end
 
 
       should "change Well.count by 96" do
-        assert_equal 96,  Sample.count  - @well_count, "Expected Well.count to change by 96"
+        assert_equal 96,  Sample.count - @well_count, "Expected Well.count to change by 96"
       end
     end
   end

@@ -432,7 +432,7 @@ Sequencescape::Application.routes.draw do
 
   resources :families
 
-  resources :tag_groups, :excpet=>[:destroy] do
+  resources :tag_groups, :excpet => [:destroy] do
     resources :tags, :except => [:destroy, :index, :create, :new, :edit]
   end
 

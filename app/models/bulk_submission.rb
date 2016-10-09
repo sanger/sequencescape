@@ -81,7 +81,7 @@ class BulkSubmission
   private :headers
 
   def csv_data_rows
-    @csv_rows.slice(header_index+1...@csv_rows.length)
+    @csv_rows.slice(header_index + 1...@csv_rows.length)
   end
   private :csv_data_rows
 
@@ -116,7 +116,7 @@ class BulkSubmission
 
   def max_priority(orders)
     orders.inject(0) do |max,order|
-      priority = Submission::Priorities.priorities.index(order['priority'])||order['priority'].to_i
+      priority = Submission::Priorities.priorities.index(order['priority']) || order['priority'].to_i
       priority > max ? priority.to_i : max
     end
   end
@@ -150,7 +150,7 @@ class BulkSubmission
             end
 
             begin
-              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority=>max_priority(orders))
+              submission = Submission.create!(:name => submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority => max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
@@ -195,12 +195,12 @@ class BulkSubmission
   }
 
   def translate(header)
-    ALIAS_FIELDS[header]||header
+    ALIAS_FIELDS[header] || header
   end
 
   def validate_entry(header,pos,row,index)
     return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
-    errors.add(:spreadsheet, "Row #{index}, column #{pos+1} contains data but no heading.")
+    errors.add(:spreadsheet, "Row #{index}, column #{pos + 1} contains data but no heading.")
   end
   private :validate_entry
 
@@ -212,7 +212,7 @@ class BulkSubmission
     Hash.new {|h,i| h[i] = Array.new}.tap do |submission|
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
-        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
+        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index + start_row) }].merge('row' => index + start_row)
         submission[details['submission name']] << details
       end
     end.map do |submission_name, rows|
@@ -264,7 +264,7 @@ class BulkSubmission
         :user => user,
         :comments => details['comments'],
         :request_options => {
-          :read_length  => details['read length']
+          :read_length => details['read length']
         },
         :pre_cap_group => details['pre-capture group']
       }

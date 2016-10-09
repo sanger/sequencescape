@@ -8,8 +8,8 @@ class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
   model do
     action(:create) do |request,_|
       request.target.create!(request.attributes.tap do |attributes|
-        attributes[:decisions]=(attributes[:decisions]||[]).map do |d|
-          d.merge({'qcable'=>Uuid.find_by_external_id(d['qcable']).resource})
+        attributes[:decisions] = (attributes[:decisions] || []).map do |d|
+          d.merge({'qcable' => Uuid.find_by_external_id(d['qcable']).resource})
         end
       end)
     end
@@ -18,7 +18,7 @@ class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
   instance do
     belongs_to(:user,   :json => 'user')
     belongs_to(:lot,  :json => 'lot')
-    has_many(:qcables,  :json => 'qcables', :to=>'qcables')
+    has_many(:qcables,  :json => 'qcables', :to => 'qcables')
   end
 
 end

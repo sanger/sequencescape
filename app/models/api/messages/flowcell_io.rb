@@ -6,7 +6,7 @@
 
 class Api::Messages::FlowcellIO < Api::Base
 
-  MANUAL_QC_BOOLS = {'passed'=>true,'failed'=>false }
+  MANUAL_QC_BOOLS = {'passed' => true,'failed' => false }
 
   module LaneExtensions # Included in SequencingRequest
 
@@ -41,7 +41,7 @@ class Api::Messages::FlowcellIO < Api::Base
           end
         end
 
-        delegate :spiked_in_buffer, :external_release, :to=>:target_asset, :allow_nil => true
+        delegate :spiked_in_buffer, :external_release, :to => :target_asset, :allow_nil => true
 
         def controls
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []
@@ -73,7 +73,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def mx_library
-          asset.external_identifier||"UNKNOWN"
+          asset.external_identifier || "UNKNOWN"
         end
 
         def manual_qc

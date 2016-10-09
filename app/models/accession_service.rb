@@ -55,7 +55,7 @@ class AccessionService
         if success == 'true'
           #extract and update accession numbers
           accession_number = submission.all_accessionables.each do |acc|
-            accession_number       = acc.extract_accession_number(xmldoc)
+            accession_number = acc.extract_accession_number(xmldoc)
             if accession_number
               acc.update_accession_number!(user, accession_number)
               accession_numbers << accession_number
@@ -166,7 +166,7 @@ private
           if StudyType.include?(study_type)
             xml.STUDY_TYPE(:existing_study_type => study_type)
           else
-            xml.STUDY_TYPE(:existing_study_type => Study::Other_type , :new_study_type => study_type)
+            xml.STUDY_TYPE(:existing_study_type => Study::Other_type, :new_study_type => study_type)
           end
         }
             }
@@ -222,7 +222,7 @@ private
           if accession_number.blank?
             xml.ADD(:source => submission[:source], :schema => submission[:schema])
           else
-            xml.MODIFY(:source => submission[:source], :target=>"")
+            xml.MODIFY(:source => submission[:source], :target => "")
           end
         }
         xml.ACTION {
@@ -249,7 +249,7 @@ private
     raise StandardError, "Cannot connect to EBI to get accession number. Please configure accession_url in config.yml" if configatron.accession_url.blank?
 
     begin
-      rc = RestClient::Resource.new(URI.parse(configatron.accession_url+accession_login).to_s)
+      rc = RestClient::Resource.new(URI.parse(configatron.accession_url + accession_login).to_s)
       if configatron.disable_web_proxy == true
         RestClient.proxy = ''
       elsif not configatron.proxy.blank?
@@ -257,12 +257,12 @@ private
         # UA required to get through Sanger proxy
         # Although currently this UA is actually being set elsewhere in the
         # code as RestClient doesn't pass this header to the proxy.
-        rc.options[:headers]={:user_agent=>"Sequencescape Accession Client (#{Rails.env})"}
+        rc.options[:headers] = {:user_agent => "Sequencescape Accession Client (#{Rails.env})"}
       end
 
       payload = {}
       file_params.map { |p|
-        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap{|f| f.original_filename = p[:remote_name] }
+        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap {|f| f.original_filename = p[:remote_name] }
         }
       #rc.multipart_form_post = true # RC handles automatically
       response = rc.post(payload)

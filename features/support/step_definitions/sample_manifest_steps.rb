@@ -24,7 +24,7 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
         :sample_sra_hold  => "Hold"
       }
     )
-    sample.name = "#{study.abbreviation}#{index+1}"
+    sample.name = "#{study.abbreviation}#{index + 1}"
     sample.save(validate: false)
   end
 end
@@ -55,15 +55,15 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   index = 0
   Plate.order(:id).each do |plate|
     sequence_sanger_sample_ids_for(plate) do |well_index|
-      "sample_#{index+well_index}"
+      "sample_#{index + well_index}"
     end
     index += plate.size
   end
   SampleTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
+    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id => "tube_sample_#{idx + 1}")
   end
   LibraryTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
+    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id => "tube_sample_#{idx + 1}")
   end
 end
 
@@ -134,8 +134,8 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
     assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id), "tag_index: #{expected_data[:tag_index]} #{lt.aliquots.first.tag.try(:map_id)}"
-    assert_equal expected_data[:tag2_group], lt.aliquots.first.tag2.try(:tag_group).try(:name)||'', "tag2_group: #{expected_data[:tag2_group]} #{lt.aliquots.first.tag2.try(:tag_group).try(:name)||''}"
-    assert_equal expected_data[:tag2_index].to_i, lt.aliquots.first.tag2.try(:map_id)||0, "tag2_index: #{expected_data[:tag2_index]} #{lt.aliquots.first.tag2.try(:map_id)||''}"
+    assert_equal expected_data[:tag2_group], lt.aliquots.first.tag2.try(:tag_group).try(:name) || '', "tag2_group: #{expected_data[:tag2_group]} #{lt.aliquots.first.tag2.try(:tag_group).try(:name) || ''}"
+    assert_equal expected_data[:tag2_index].to_i, lt.aliquots.first.tag2.try(:map_id) || 0, "tag2_index: #{expected_data[:tag2_index]} #{lt.aliquots.first.tag2.try(:map_id) || ''}"
     assert_equal expected_data[:library_type], lt.aliquots.first.library_type, "library_type: #{expected_data[:library_type]} #{lt.aliquots.first.library_type}"
     assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from, "insert_size_from: #{expected_data[:insert_size_from]} #{lt.aliquots.first.insert_size_from}"
     assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to, "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
@@ -166,7 +166,7 @@ Then /^the sample controls and resubmits should look like:$/ do |table|
     sample = Sample.find_by_sanger_sample_id(expected_data[:sanger_sample_id]) or raise StandardError, "Cannot find sample by sanger ID #{expected_data[:sanger_sample_id]}"
     {
       'sanger_sample_id' => expected_data[:sanger_sample_id],
-      'supplier_name'             => sample.sample_metadata.supplier_name,
+      'supplier_name' => sample.sample_metadata.supplier_name,
       'is_control'       => sample.control.to_s,
       'is_resubmit'      => sample.sample_metadata.is_resubmitted.to_s
     }
@@ -193,12 +193,12 @@ Then /^the last created sample manifest should be:$/ do |table|
     tempfile.open
 
     spreadsheet = Roo::Spreadsheet.open(tempfile.path)
-    @worksheet   =spreadsheet.sheet(0)
+    @worksheet = spreadsheet.sheet(0)
   end
 
   table.rows.each_with_index do |row,index|
     expected = [ Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1] ]
-    got      = [ @worksheet.cell(offset+index+1,1), @worksheet.cell(offset+index+1,2) ]
+    got      = [ @worksheet.cell(offset + index + 1,1), @worksheet.cell(offset + index + 1,2) ]
     assert_equal(expected, got, "Unexpected manifest row #{index}")
   end
 end
@@ -237,18 +237,18 @@ Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
 end
 
 Given /^sample tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(:barcodes=>SampleTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(:barcodes => SampleTube.all.map(&:sanger_human_barcode))
 end
 
 Given /^library tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(:barcodes=>LibraryTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(:barcodes => LibraryTube.all.map(&:sanger_human_barcode))
 end
 
 Then /^print any manifest errors for debugging$/ do
   if SampleManifest.last.last_errors.present?
-    puts "="*80
+    puts "=" * 80
     SampleManifest.last.last_errors.each {|error| puts error}
-    puts "="*80
+    puts "=" * 80
   end
 end
 

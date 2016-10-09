@@ -34,7 +34,7 @@ class BaitLibraryLayout < ActiveRecord::Base
   def record_bait_library_assignment(well, bait_library)
     # Note: The serialization of the hash prevents the use of a block
     # to set default values etc.
-    (self.layout[bait_library.name]||=[]).push(well.map.description)
+    (self.layout[bait_library.name] ||= []).push(well.map.description)
   end
   private :record_bait_library_assignment
 

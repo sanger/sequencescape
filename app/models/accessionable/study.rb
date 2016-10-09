@@ -38,7 +38,7 @@ module Accessionable
         @related_studies << RelatedStudy.new(r.related_study, r.name)
       end
       study.reversed_study_relations.each do |r|
-        rs=RelatedStudy.new(r.study, r.reversed_name)
+        rs = RelatedStudy.new(r.study, r.reversed_name)
         @related_studies << rs if rs.to_send?
       end
     end
@@ -65,7 +65,7 @@ module Accessionable
         if StudyType.include?(study_type)
           xml.STUDY_TYPE(:existing_study_type => study_type)
         else
-          xml.STUDY_TYPE(:existing_study_type => ::Study::Other_type , :new_study_type => study_type)
+          xml.STUDY_TYPE(:existing_study_type => ::Study::Other_type, :new_study_type => study_type)
         end
 
         xml.RELATED_STUDIES {

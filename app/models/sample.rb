@@ -93,7 +93,7 @@ class Sample < ActiveRecord::Base
 
     # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
 
-    md=Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact',left:"#{query}%",exact:query).pluck(:sample_id)
+    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact',left:"#{query}%",exact:query).pluck(:sample_id)
 
     # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
     # of numbers seems to massively increase the query length.
@@ -133,7 +133,7 @@ class Sample < ActiveRecord::Base
   def shorten_sanger_sample_id
     short_sanger_id = case sanger_sample_id
       when blank? then name
-      when sanger_sample_id.size <10 then sanger_sample_id
+      when sanger_sample_id.size < 10 then sanger_sample_id
       when /([\d]{7})$/ then $1
       else
         sanger_sample_id
@@ -369,9 +369,9 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services=>:EGA, :downcase => true)
-    include_tag(:phenotype, :services=>:EGA)
-    include_tag(:donor_id, :services=>:EGA, :as => 'subject_id')
+    include_tag(:gender, :services => :EGA, :downcase => true)
+    include_tag(:phenotype, :services => :EGA)
+    include_tag(:donor_id, :services => :EGA, :as => 'subject_id')
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)
@@ -467,7 +467,7 @@ class Sample < ActiveRecord::Base
   end
 
   def friendly_name
-    sanger_sample_id||name
+    sanger_sample_id || name
   end
 
   # These don't really belong here, but exist due to the close coupling between sample

@@ -35,7 +35,7 @@ class Task < ActiveRecord::Base
         return
       end
     end
-    self.descriptors <<  Descriptor.new(:name => name_s, :value => value)
+    self.descriptors << Descriptor.new(:name => name_s, :value => value)
 #    self.descriptors.save
   end
   # END descriptors
@@ -60,7 +60,7 @@ class Task < ActiveRecord::Base
         return
       end
     end
-    self.subclass_attributes <<  SubclassAttribute.new(:name => name_s, :value => value)
+    self.subclass_attributes << SubclassAttribute.new(:name => name_s, :value => value)
 #    self.subclass.save
   end
 
@@ -154,7 +154,7 @@ class Task < ActiveRecord::Base
   def subassets_for_asset(asset)
     return [] unless asset
     sub_assets = []
-    family_map  = families.index_by(&:name)
+    family_map = families.index_by(&:name)
     return asset.children.select { |a| family_map[a.sti_type] }
   end
 

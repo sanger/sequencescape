@@ -11,10 +11,10 @@ module SampleManifest::InputBehaviour
       csv        = CSV.parse(spreadsheet_file.read)
       column_map = compute_column_map(csv[spreadsheet_header_row])
 
-      spreadsheet_offset.upto(csv.size-1) do |n|
+      spreadsheet_offset.upto(csv.size - 1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
-        sample           = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
+        sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
         return sample.sample_manifest
       end
       nil
@@ -153,7 +153,7 @@ module SampleManifest::InputBehaviour
 
   def clean_up_sheet(csv)
     # Clean up CSV
-    0.upto(csv.size-1) do |row|
+    0.upto(csv.size - 1) do |row|
       0.upto(csv[row].size) do |col|
         csv[row][col] = clean_up_value(csv[row][col])
       end
@@ -190,7 +190,7 @@ module SampleManifest::InputBehaviour
     end
 
     column_map = SampleManifest.compute_column_map(headers)
-    spreadsheet_offset.upto(csv.size-1) do |row|
+    spreadsheet_offset.upto(csv.size - 1) do |row|
       yield(Hash[headers.each_with_index.map { |header, column| [ header, csv[row][column] ] }])
     end
   rescue CSV::MalformedCSVError => exception

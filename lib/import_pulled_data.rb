@@ -21,7 +21,7 @@ module ImportPulledData
       object_id = parameter[:id]
       attributes = parameter[:attributes]
       # map name from table
-      if name=attributes["name"]
+      if name = attributes["name"]
         attributes["name"] = names_map.fetch(name, name)
       end
 

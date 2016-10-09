@@ -10,7 +10,7 @@ Given /^Pipeline "([^\"]*)" and a setup for submitted at$/ do |name|
   request_type = pipeline.request_types.detect {|rt| !rt.deprecated }
   metadata = FactoryGirl.create :"request_metadata_for_#{request_type.key}"
   asset = FactoryGirl.create(asset_type)
-  request  = FactoryGirl.create :request, :request_type => request_type, :asset => asset, :request_metadata => metadata
+  request = FactoryGirl.create :request, :request_type => request_type, :asset => asset, :request_metadata => metadata
   if request.asset.is_a?(Well)
     request.asset.plate = FactoryGirl.create(:plate) if request.asset.plate.nil?
     request.asset.plate.location = pipeline.location

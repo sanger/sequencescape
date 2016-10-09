@@ -56,9 +56,9 @@ class Studies::WorkflowsController < ApplicationController
     params.each do |key, value|
       new_key = key.sub(/^amp;/, "")
       next if new_key == key
-      params[new_key]=value
+      params[new_key] = value
     end
-    page_params= { :page => params[:page] || 1, :per_page => params[:per_page] || 50 }
+    page_params = { :page => params[:page] || 1, :per_page => params[:per_page] || 50 }
 
     if request.xhr?
       @default_tab_label = "Assets progress"
@@ -73,13 +73,13 @@ class Studies::WorkflowsController < ApplicationController
       when "Assets progress"
         @asset_type = Aliquot::Receptacle.descendants.detect {|cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
         @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
-        @page_elements= @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
+        @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
 
         @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)
         render :partial => "asset_progress"
       when "Summary"
-        @page_elements= @study.assets_through_requests.for_summary.paginate(page_params)
+        @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
         render :partial => "summary"
       else
@@ -99,7 +99,7 @@ class Studies::WorkflowsController < ApplicationController
         end
       end
     else
-      page_params[:summary]= params[:summary]
+      page_params[:summary] = params[:summary]
       redirect_to study_workflow_path(@study, @workflow, page_params)
     end
   end
@@ -115,19 +115,19 @@ class Studies::WorkflowsController < ApplicationController
 
   def compute_total_request(study)
     total_requests = { }
-    report =  @study.total_requests_report
+    report = @study.total_requests_report
     @workflow.request_types.each do |rt|
-      total_requests[rt] = report[rt.id]||0
+      total_requests[rt] = report[rt.id] || 0
     end
     total_requests
   end
 
   def group_count(enumerable)
-    map = Hash.new { |hash, key| hash[key]= Hash.new 0 } # defining default value for nested hash
+    map = Hash.new { |hash, key| hash[key] = Hash.new 0 } # defining default value for nested hash
     enumerable.each do |e|
       groups = yield(e)
       groups.each do  |g_id, count|
-        map[g_id.to_i][e]= count
+        map[g_id.to_i][e] = count
       end
     end
     map
@@ -135,7 +135,7 @@ class Studies::WorkflowsController < ApplicationController
 
   private
   def discover_study
-    @study  = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 

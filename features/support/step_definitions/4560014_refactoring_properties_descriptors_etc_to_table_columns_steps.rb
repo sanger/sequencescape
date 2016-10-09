@@ -24,7 +24,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
 
   #should be on target asset when we'll use target_asset
   asset.aliquots.each do |a|
-    a.update_attributes!(:study_id=>study.id)
+    a.update_attributes!(:study_id => study.id)
   end
 
   # The UUID for the requests needs to be sequentially generated from the study UUID
@@ -65,8 +65,8 @@ Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+
   request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{ type.inspect }"
 
   (0...count.to_i).each do |index|
-    asset = FactoryGirl.create(request_type.asset_type.underscore, :name => "#{ study_name } - Source asset #{index+1}")
-    target_asset = FactoryGirl.create(request_type.asset_type.underscore, :name => "#{ study_name } - Target asset #{index+1}")
+    asset = FactoryGirl.create(request_type.asset_type.underscore, :name => "#{ study_name } - Source asset #{index + 1}")
+    target_asset = FactoryGirl.create(request_type.asset_type.underscore, :name => "#{ study_name } - Target asset #{index + 1}")
     create_request(request_type, study, project, asset, target_asset, :id => id.to_i + index)
   end
 end
@@ -96,12 +96,12 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
 
   assets = (1..count.to_i).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
-    param = asset_type == 'well' ? {:id=>90+i} : {:name => "#{ group_name }, #{ asset_type } #{ i }"}
+    param = asset_type == 'well' ? {:id => 90 + i} : {:name => "#{ group_name }, #{ asset_type } #{ i }"}
     FactoryGirl.create(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param ).tap do |asset|
       if asset.primary_aliquot.present?
         asset.primary_aliquot.sample.tap { |s| s.name = sample_name ; s.save(:validate => false); s.studies << study }
       else
-        asset.aliquots.create!(:sample => FactoryGirl.create(:sample, :name => sample_name), :study=>study)
+        asset.aliquots.create!(:sample => FactoryGirl.create(:sample, :name => sample_name), :study => study)
         asset.aliquots.each {|a| study.samples << a.sample}
       end
     end

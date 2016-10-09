@@ -20,8 +20,8 @@ class BulkTransfer < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       each_transfer do |source,destination,transfers|
         Transfer::BetweenPlates.create!(
-          :source=>source,
-          :destination=>destination,
+          :source => source,
+          :destination => destination,
           :user => user,
           :transfers => transfers,
           :bulk_transfer_id => self.id
@@ -33,7 +33,7 @@ class BulkTransfer < ActiveRecord::Base
 
   def each_transfer
     well_transfers.group_by { |tf| [tf["source_uuid"],tf["destination_uuid"]] }.each do |source_dest, all_transfers|
-      transfers = Hash.new {|h,i| h[i]=[] }
+      transfers = Hash.new {|h,i| h[i] = [] }
       all_transfers.each {|t| transfers[t["source_location"]] << t["destination_location"]  }
 
       source = Uuid.find_by_external_id(source_dest.first).resource

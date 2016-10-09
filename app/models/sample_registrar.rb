@@ -99,7 +99,7 @@ class SampleRegistrar < ActiveRecord::Base
     record.sample_tube.name = record.sample.name
   end
   after_create do |record|
-    record.sample_tube.aliquots.create!(:sample => record.sample, :study=>record.study)
+    record.sample_tube.aliquots.create!(:sample => record.sample, :study => record.study)
   end
 
   # SampleTubes are registered within an AssetGroup, unless the AssetGroup is unspecified.

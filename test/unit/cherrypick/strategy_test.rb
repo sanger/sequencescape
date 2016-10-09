@@ -8,7 +8,7 @@ require 'test_helper'
 
 class Cherrypick::StrategyTest < ActiveSupport::TestCase
   def request(submission_id, barcode = 1)
-    OpenStruct.new(:submission_id => submission_id, :barcode => barcode,:representation=>"request_#{submission_id}")
+    OpenStruct.new(:submission_id => submission_id, :barcode => barcode,:representation => "request_#{submission_id}")
   end
   private :request
 

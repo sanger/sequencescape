@@ -7,7 +7,7 @@
 class AddVerisonIdColumnToCriteria < ActiveRecord::Migration
   def self.up
     add_column :product_criteria, :version, :integer
-    add_index :product_criteria, [:product_id,:stage,:version], :unique =>true
+    add_index :product_criteria, [:product_id,:stage,:version], :unique => true
   end
 
   def self.down

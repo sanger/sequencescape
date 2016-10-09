@@ -30,7 +30,7 @@ FactoryGirl.define do
     name 'Study: Manages'
     state 'active'
     after(:create) do |study|
-      study.study_metadata.update_attributes!(:data_release_strategy=> 'managed')
+      study.study_metadata.update_attributes!(:data_release_strategy => 'managed')
     end
   end
   # These require property definitions to be properly setup

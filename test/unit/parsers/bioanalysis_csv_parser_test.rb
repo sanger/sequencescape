@@ -105,7 +105,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
     end
     context "with an invalid CSV biorobot file" do
       setup do
-        filename = File.dirname(__FILE__)+"/../../data/bioanalysis_qc_results-with-error.csv"
+        filename = File.dirname(__FILE__) + "/../../data/bioanalysis_qc_results-with-error.csv"
         content = read_file filename
 
         @parser = Parsers::BioanalysisCsvParser.new(CSV.parse(content))

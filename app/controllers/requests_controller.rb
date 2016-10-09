@@ -13,7 +13,7 @@ class RequestsController < ApplicationController
   before_action :set_permitted_params, :only => [ :update ]
 
   def set_permitted_params
-    @parameters = params[:request].reject{|k,v| !['request_metadata_attributes'].include?(k.to_s)}
+    @parameters = params[:request].reject {|k,v| !['request_metadata_attributes'].include?(k.to_s)}
   end
   attr_reader :parameters
  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
@@ -25,14 +25,14 @@ class RequestsController < ApplicationController
     # are limited by the Asset / Item.
     request_source = Request.order(created_at: :desc).includes(:asset,:request_type).where(search_params).paginate(per_page: 200, page:params[:page])
 
-    @item                   = Item.find(params[:item_id]) if params[:item_id]
-    @item  ||= @asset_id    = Asset.find(params[:asset_id]) if params[:asset_id]
+    @item = Item.find(params[:item_id]) if params[:item_id]
+    @item ||= @asset_id = Asset.find(params[:asset_id]) if params[:asset_id]
     @request_type           = RequestType.find(params[:request_type_id]) if params[:request_type_id]
     @study                  = Study.find(params[:study_id]) if params[:study_id]
 
     # Deprecated?: It would be great if we could remove this
     if params[:request_type] and params[:workflow]
-      request_source    = request_source.for_request_types(params[:request_type]).for_workflow(params[:workflow]).includes(:user)
+      request_source = request_source.for_request_types(params[:request_type]).for_workflow(params[:workflow]).includes(:user)
     end
 
     # Now, here we go: find all of the requests!
@@ -194,7 +194,7 @@ class RequestsController < ApplicationController
   before_action :find_request, :only => [ :filter_change_decision, :change_decision ]
 
   def find_request
-    @request  = Request.find(params[:id])
+    @request = Request.find(params[:id])
   end
 
   def filter_change_decision

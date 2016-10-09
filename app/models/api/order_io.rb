@@ -21,25 +21,25 @@ class Api::OrderIO < Api::Base
   #end
 
   with_association(:project) do
-    map_attribute_to_json_attribute(:uuid  , 'project_uuid')
-    map_attribute_to_json_attribute(:id  , 'project_internal_id')
-    map_attribute_to_json_attribute(:name  , 'project_name')
+    map_attribute_to_json_attribute(:uuid, 'project_uuid')
+    map_attribute_to_json_attribute(:id, 'project_internal_id')
+    map_attribute_to_json_attribute(:name, 'project_name')
   end
 
   with_association(:study) do
-    map_attribute_to_json_attribute(:uuid  , 'study_uuid')
-    map_attribute_to_json_attribute(:id  , 'study_internal_id')
-    map_attribute_to_json_attribute(:name  , 'study_name')
+    map_attribute_to_json_attribute(:uuid, 'study_uuid')
+    map_attribute_to_json_attribute(:id, 'study_internal_id')
+    map_attribute_to_json_attribute(:name, 'study_name')
   end
 
   with_association(:submission) do
-    map_attribute_to_json_attribute(:uuid  , 'submission_uuid')
-    map_attribute_to_json_attribute(:id  , 'submission_internal_id')
+    map_attribute_to_json_attribute(:uuid, 'submission_uuid')
+    map_attribute_to_json_attribute(:id, 'submission_internal_id')
     #map_attribute_to_json_attribute(:name  , 'submission_name')
   end
 
   with_association(:user) do
-    map_attribute_to_json_attribute(:login  , 'created_by')
+    map_attribute_to_json_attribute(:login, 'created_by')
   end
 
   extra_json_attributes do |object, json_attributes|

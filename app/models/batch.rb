@@ -53,7 +53,7 @@ class Batch < ActiveRecord::Base
 
   def cluster_formation_requests_must_be_over_minimum
     if (!pipeline.min_size.nil?) && (requests.size < pipeline.min_size)
-      errors.add :base, "You must create batches of at least " + pipeline.min_size.to_s+" requests in the pipeline " + pipeline.name
+      errors.add :base, "You must create batches of at least " + pipeline.min_size.to_s + " requests in the pipeline " + pipeline.name
     end
   end
 
@@ -179,7 +179,7 @@ class Batch < ActiveRecord::Base
 
     BatchRequest.transaction do
       batch_requests.each do |batch_request|
-        batch_request.move_to_position!(request_ids_in_position_order.index(batch_request.request_id)+1)
+        batch_request.move_to_position!(request_ids_in_position_order.index(batch_request.request_id) + 1)
       end
     end
   end
@@ -292,7 +292,7 @@ class Batch < ActiveRecord::Base
     ev = self.lab_events
     d = []
     unless ev.empty?
-      ev.sort_by{ |i| i[:created_at] }.each do |t|
+      ev.sort_by { |i| i[:created_at] }.each do |t|
         if t.descriptors
           if g = t.descriptor_value("task")
             d << {"task" => g, "description" => t.description, "message" => t.message, "data" => t.data, "created_at" => t.created_at}
@@ -395,7 +395,7 @@ class Batch < ActiveRecord::Base
     return nil if requests.empty?
     requests.first.asset.ancestors.joins(
       'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id').
-      find_by(:plate_purposes=>{:name=>name})
+      find_by(:plate_purposes => {:name => name})
   end
 
   def swap(current_user, batch_info = {})
@@ -436,18 +436,18 @@ class Batch < ActiveRecord::Base
   end
 
   def add_control(control_name, control_count)
-    asset   = Asset.find_by_name_and_resource(control_name, true)
+    asset = Asset.find_by_name_and_resource(control_name, true)
 
-    control_count  = self.space_left if control_count == 0
+    control_count = self.space_left if control_count == 0
 
     first_control = [3, (self.item_limit - control_count)].min
 
     ActiveRecord::Base.transaction do
-      self.shift_item_positions(first_control+1, control_count)
+      self.shift_item_positions(first_control + 1, control_count)
       (1..control_count).each do |index|
         self.batch_requests.create!(
           :request  => self.pipeline.control_request_type.create_control!(:asset => asset, :study_id => 198),
-          :position => first_control+index
+          :position => first_control + index
         )
       end
     end
@@ -500,10 +500,10 @@ class Batch < ActiveRecord::Base
         well = request.asset
         #TODO[mb14] DRY it
         tagged_well = well
-        while transfer_requests=tagged_well.requests.select { |r| r.is_a?(TransferRequest) }  and transfer_requests.size == 1
+        while transfer_requests = tagged_well.requests.select { |r| r.is_a?(TransferRequest) } and transfer_requests.size == 1
           target_well = transfer_requests.first.target_asset
           break unless target_well.is_a?(Well)
-          tagged_well=target_well
+          tagged_well = target_well
           tag_on_well = tagged_well.primary_aliquot.try(:tag)
           if tag_on_well.present?
             tag_name              = tag_on_well.name

@@ -21,8 +21,8 @@ class SampleTest < ActiveSupport::TestCase
         @tube_a = create :empty_library_tube
         @tube_b = create :empty_sample_tube
 
-       create(:aliquot, :sample=>@sample, :receptacle => @tube_b)
-       create(:aliquot, :sample=>@sample, :receptacle => @tube_a)
+       create(:aliquot, :sample => @sample, :receptacle => @tube_b)
+       create(:aliquot, :sample => @sample, :receptacle => @tube_a)
       end
 
       should "have the first tube it was added to as a primary asset" do

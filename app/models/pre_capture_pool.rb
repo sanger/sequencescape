@@ -43,8 +43,8 @@ class PreCapturePool < ActiveRecord::Base
       ActiveRecord::Base.transaction do
         return if poolable_type.nil?
         grouped_requests.each do |_,requests|
-          plex   = requests.first.order.request_options['pre_capture_plex_level'].to_i
-          offset.times { requests.map!{|r| submission.next_requests(r) }}
+          plex = requests.first.order.request_options['pre_capture_plex_level'].to_i
+          offset.times { requests.map! {|r| submission.next_requests(r) }}
           pool(requests, plex)
         end
       end
@@ -66,7 +66,7 @@ class PreCapturePool < ActiveRecord::Base
 
     def pool(requests,plex)
       requests.flatten.each_slice(plex) do |pooled_requests|
-        PreCapturePool.create!(:requests=>pooled_requests)
+        PreCapturePool.create!(:requests => pooled_requests)
       end
     end
 
@@ -75,7 +75,7 @@ class PreCapturePool < ActiveRecord::Base
         joins(:order,{asset: :map}).
         where(request_type_id: library_creation_type).
         order('maps.column_order ASC, id ASC').
-        group_by {|r| r.order.pre_cap_group||"o#{r.order_id}" }
+        group_by {|r| r.order.pre_cap_group || "o#{r.order_id}" }
     end
 
   end

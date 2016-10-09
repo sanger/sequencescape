@@ -144,7 +144,7 @@ module Core
         # The WTSISignOn service has been retired. However previously the code
         # supported supplying the API key in this cookie, so this has been left
         # for compatibility purposes
-        @service.request.cookies['api_key']||@service.request.cookies['WTSISignOn']
+        @service.request.cookies['api_key'] || @service.request.cookies['WTSISignOn']
       end
 
       def response(&block)
@@ -242,14 +242,14 @@ module Core
           end
         end
 
-        Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now-start}s")
+        Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now - start}s")
       end
 
       def close
         identifier, started_at = self.identifier, self.started_at  # Save for later as next line discards our request!
         discard_all_references
       ensure
-        Rails.logger.info("API[finished]: #{identifier} in #{Time.now-started_at}s")
+        Rails.logger.info("API[finished]: #{identifier} in #{Time.now - started_at}s")
       end
 
       def discard_all_references

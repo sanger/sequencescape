@@ -14,11 +14,11 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       asset1 = create :child_plate, barcode: barcode1
       asset2 = create :child_plate, barcode: barcode2
       asset3 = create :child_plate, barcode: barcode3
-      options = {printables: {"#{asset1.id}"=>"true", "#{asset2.id}" => "true", "#{asset3.id}" => "false"}}
+      options = {printables: {"#{asset1.id}" => "true", "#{asset2.id}" => "true", "#{asset3.id}" => "false"}}
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
       @assets = [asset1, asset2]
 
-      @labels =  [{main_label:
+      @labels = [{main_label:
                   {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
                   bottom_left: "#{asset1.sanger_human_barcode}",
                   top_right: "#{prefix} #{barcode1}",
@@ -55,7 +55,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       options = {printables: asset}
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
 
-      @labels =  [{main_label:
+      @labels = [{main_label:
                   {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
                   bottom_left: "#{asset.sanger_human_barcode}",
                   top_right: "#{prefix} #{barcode1}",
@@ -84,10 +84,10 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       asset1 = create :sample_tube, barcode: barcode1, name: asset_name
       asset2 = create :sample_tube, barcode: barcode2, name: asset_name
       asset3 = create :sample_tube, barcode: barcode3
-      options = {printables: {"#{asset1.id}"=>"true", "#{asset2.id}" => "true", "#{asset3.id}" => "false"}}
+      options = {printables: {"#{asset1.id}" => "true", "#{asset2.id}" => "true", "#{asset3.id}" => "false"}}
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
       @assets = [asset1, asset2]
-      @labels =  [{main_label:
+      @labels = [{main_label:
                   {top_line: asset_name,
                   middle_line: barcode1,
                   bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
@@ -124,7 +124,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       options = {printables: asset}
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
 
-      @labels =  [{main_label:
+      @labels = [{main_label:
                   {top_line: asset_name,
                   middle_line: barcode1,
                   bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",

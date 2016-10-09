@@ -74,8 +74,8 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         @assay_plate_b = create :pico_assay_b_plate, :barcode => "8888"
         @assay_plate_c = create :pico_assay_a_plate, :barcode => "5555"
         @assay_plate_d = create :pico_assay_a_plate, :barcode => "5555"
-        @sequenom_plate_a = create :sequenom_qc_plate , :barcode => "7777", :name=>'a'
-        @sequenom_plate_b = create :sequenom_qc_plate , :barcode => "6666", :name=>'b'
+        @sequenom_plate_a = create :sequenom_qc_plate, :barcode => "7777", :name => 'a'
+        @sequenom_plate_b = create :sequenom_qc_plate, :barcode => "6666", :name => 'b'
 
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_a)
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_b)

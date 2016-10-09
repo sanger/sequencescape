@@ -6,7 +6,7 @@
 
 class TubeCreation < AssetCreation
   class ChildTube < ActiveRecord::Base
-    self.table_name =('tube_creation_children')
+    self.table_name = ('tube_creation_children')
     belongs_to :tube_creation
     belongs_to :tube
   end

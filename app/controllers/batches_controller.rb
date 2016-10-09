@@ -288,7 +288,7 @@ class BatchesController < ApplicationController
         reason = params[:failure][:reason]
         comment = params[:failure][:comment]
         requests = params[:requested_fail] || {}
-        fail_but_charge = params[:failure][:fail_but_charge]=='1'
+        fail_but_charge = params[:failure][:fail_but_charge] == '1'
         requests_for_removal = params[:requested_remove] || {}
         # Check to see if the user is trying to remove AND fail the same request.
         diff = requests_for_removal.keys & requests.keys
@@ -301,7 +301,7 @@ class BatchesController < ApplicationController
           else
             unless requests.empty?
               @batch.fail_batch_items(requests, reason, comment, fail_but_charge)
-              flash[:notice] = "#{requests.keys.to_sentence} set to failed.#{fail_but_charge ? ' The customer will still be charged.':''}"
+              flash[:notice] = "#{requests.keys.to_sentence} set to failed.#{fail_but_charge ? ' The customer will still be charged.' : ''}"
             end
 
             unless requests_for_removal.empty?
@@ -565,8 +565,8 @@ class BatchesController < ApplicationController
   end
 
   def swap
-    if @batch.swap(current_user, {"batch_1" => {"id"=>params["batch"]["1"], "lane"=>params["batch"]["position"]["1"]},
-                    "batch_2" => {"id"=>params["batch"]["2"], "lane"=>params["batch"]["position"]["2"]}
+    if @batch.swap(current_user, {"batch_1" => {"id" => params["batch"]["1"], "lane" => params["batch"]["position"]["1"]},
+                    "batch_2" => {"id" => params["batch"]["2"], "lane" => params["batch"]["position"]["2"]}
                   })
       flash[:notice] = "Successfully swapped lane positions"
       redirect_to batch_path(@batch)
@@ -579,7 +579,7 @@ class BatchesController < ApplicationController
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
     send_data csv_string, :type => "text/plain",
-     :filename=>"#{@batch.id}_cherrypick_layout.csv",
+     :filename => "#{@batch.id}_cherrypick_layout.csv",
      :disposition => 'attachment'
   end
 
@@ -589,7 +589,7 @@ class BatchesController < ApplicationController
                                                              @batch.total_volume_to_cherrypick,
                                                              params[:plate_type])
     send_data tecan_gwl_file_as_string, :type => "text/plain",
-     :filename=>"#{@batch.id}_batch_#{@plate_barcode}.gwl",
+     :filename => "#{@batch.id}_batch_#{@plate_barcode}.gwl",
      :disposition => 'attachment'
   end
 
@@ -607,7 +607,7 @@ class BatchesController < ApplicationController
       @batch_assets = []
       unless @batch.multiplexed?
         @batch_assets = @batch.requests.map(&:target_asset)
-        @batch_assets.delete_if{ |a| a.has_stock_asset? }
+        @batch_assets.delete_if { |a| a.has_stock_asset? }
         if @batch_assets.empty?
           flash[:error] = "Stock tubes already exist for everything."
           redirect_to batch_path(@batch)
@@ -654,7 +654,7 @@ class BatchesController < ApplicationController
   def pulldown_batch_report
     csv_string = @batch.pulldown_batch_report
     send_data csv_string, :type => "text/plain",
-     :filename=>"batch_#{@batch.id}_report.csv",
+     :filename => "batch_#{@batch.id}_report.csv",
      :disposition => 'attachment'
 
   end
@@ -662,14 +662,14 @@ class BatchesController < ApplicationController
   def pacbio_sample_sheet
     csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
     send_data csv_string, :type => "text/plain",
-     :filename=>"batch_#{@batch.id}_sample_sheet.csv",
+     :filename => "batch_#{@batch.id}_sample_sheet.csv",
      :disposition => 'attachment'
   end
 
   def sample_prep_worksheet
     csv_string = PacBio::Worksheet.new.create_csv_from_batch(@batch)
     send_data csv_string, :type => "text/plain",
-     :filename=>"batch_#{@batch.id}_worksheet.csv",
+     :filename => "batch_#{@batch.id}_worksheet.csv",
      :disposition => 'attachment'
   end
 
