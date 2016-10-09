@@ -13,3 +13,5 @@ AllCops:
 # The exclusions don't even get added to the rubocop_todo properly!
 Style/VariableNumber:
   Enabled: false
+Rails:
+  Enabled: true
