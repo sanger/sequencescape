@@ -1,10 +1,10 @@
 inherit_from: .rubocop_todo.yml
 AllCops:
+  TargetRubyVersion: 2.3
   Include:
     - Rakefile
     - config.ru
     - lib/**/*.rake
   Exclude:
     - db/schema.rb
-Metrics/LineLength:
-  Max: 125 # We should probably reduce this over time
+    - db/archived_migrations/*

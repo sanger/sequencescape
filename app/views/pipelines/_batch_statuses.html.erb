@@ -28,7 +28,7 @@
         <%= render :partial => "shared/batches", :locals => { :batches => @failed_batches, :in_progress => false, :showing_all => false, :batch_state => 'failed' } %>
       </div>
       <div id="5_definition" class="tab_content0 last_5" style="display:none;">
-        <%= render :partial => "shared/batches", :locals => { :batches => @last_5_batches, :in_progress => false, :showing_all => false, :batch_state => 'last 5' } %>
+        <%= render :partial => "shared/batches", :locals => { :batches => @last5_batches, :in_progress => false, :showing_all => false, :batch_state => 'last 5' } %>
       </div>
     </div>
   </div>

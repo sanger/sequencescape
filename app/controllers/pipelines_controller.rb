@@ -36,7 +36,7 @@ class PipelinesController < ApplicationController
     @released_batches    = @pipeline.batches.released_for_ui.includes_for_ui
     @failed_batches      = @pipeline.batches.failed_for_ui.includes_for_ui
 
-    @batches = @last_5_batches = @pipeline.batches.latest_first.includes_for_ui
+    @batches = @last5_batches = @pipeline.batches.latest_first.includes_for_ui
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types.shown_in_inbox

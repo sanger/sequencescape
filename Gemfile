@@ -117,7 +117,8 @@ group :test do
   # gem 'parallel_tests', :require => false
   gem 'rgl', :require => false
   gem 'simplecov', require: false
-  gem 'rspec', require: false
+  # Temporarily disabled as causes cukes to fail
+  # gem 'rspec', require: false
 end
 
 group :cucumber do
