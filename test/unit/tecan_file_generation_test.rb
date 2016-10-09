@@ -150,15 +150,24 @@ class GeneratorTest < ActiveSupport::TestCase
           end
 
           should "have a header section" do
-            assert_match /^C;\nC; This file created by (.+?) on (.+?)\nC;\n/, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            assert_match(
+              /^C;\nC; This file created by (.+?) on (.+?)\nC;\n/,
+              Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            )
           end
 
           should "contain buffers" do
-            assert_match /(?:A;BUFF;;.*?\nD;DEST[0-9].*?\nW;\n)?/, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            assert_match(
+              /(?:A;BUFF;;.*?\nD;DEST[0-9].*?\nW;\n)?/,
+              Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            )
           end
 
           should "contain a footer" do
-            assert_match /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = [0-9]+\n$/, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            assert_match(
+              /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = [0-9]+\n$/,
+              Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            )
           end
         end
         context "when passed invalid object" do

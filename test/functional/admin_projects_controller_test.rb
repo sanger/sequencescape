@@ -69,9 +69,9 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /[TEST].*Project/ === last_mail.subject
+          assert_match(/[TEST].*Project/, last_mail.subject)
           assert last_mail.bcc.include? "project.owner@example.com"
-          assert /Project approved by/, last_mail.body
+          assert_match(/Project approved by/, last_mail.body)
         end
       end
     end

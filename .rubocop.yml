@@ -15,3 +15,8 @@ Style/VariableNumber:
   Enabled: false
 Rails:
   Enabled: true
+# Step definitions are defined with Given /regex/ do ...
+# There is little ambiguity here, and brackets just break convention
+Lint/AmbiguousRegexpLiteral:
+  Exclude:
+    - features/support/step_definitions/**/*

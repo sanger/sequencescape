@@ -50,7 +50,7 @@ class QcReportTest < ActiveSupport::TestCase
 
       should 'assign a report identifier' do
         assert @qc_report.report_identifier.present?, "No identifier assigned"
-        assert /wtccc_product[0-9]+_[0-9]{12}/ === @qc_report.report_identifier, "Unexpected identifier: #{@qc_report.report_identifier}"
+        assert_match(/wtccc_product[0-9]+_[0-9]{12}/, @qc_report.report_identifier, "Unexpected identifier: #{@qc_report.report_identifier}")
       end
 
       should 'record the result of each qc' do

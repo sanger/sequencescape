@@ -47,9 +47,9 @@ class EventFactoryTest < ActiveSupport::TestCase
         should 'Have sent an email' do
           assert_equal 1, emails.count
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project/ === last_mail.subject
+          assert_match(/Project/,last_mail.subject)
           assert last_mail.bcc.include?("abc123@example.com")
-          assert /Project registered/, last_mail.body
+          assert_match(/Project registered/, last_mail.body)
           assert_equal 1, last_mail.bcc.size
         end
       end
@@ -79,10 +79,10 @@ class EventFactoryTest < ActiveSupport::TestCase
       context "send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project approved/ === last_mail.subject
+          assert_match(/Project approved/, last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
           assert !last_mail.bcc.include?("")
-          assert /Project approved/, last_mail.body
+          assert_match(/Project approved/, last_mail.body)
         end
       end
     end
@@ -108,12 +108,12 @@ class EventFactoryTest < ActiveSupport::TestCase
       context ": send emails to everyone administrators" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project approved/ === last_mail.subject
+          assert_match(/Project approved/, last_mail.subject)
           assert last_mail.bcc.include?("north@example.com")
           assert last_mail.bcc.include?("south@example.com")
           assert last_mail.bcc.include?("west@example.com")
           assert !last_mail.bcc.include?("")
-          assert /Project approved/, last_mail.body
+          assert_match(/Project approved/, last_mail.body)
         end
       end
 
@@ -142,10 +142,10 @@ class EventFactoryTest < ActiveSupport::TestCase
       context ": send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project approved/ === last_mail.subject
+          assert_match(/Project approved/,last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
           assert !last_mail.bcc.include?("")
-          assert /Project approved/, last_mail.body
+          assert_match(/Project approved/, last_mail.body)
         end
       end
 
@@ -184,8 +184,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       context "send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Sample/ === last_mail.subject
-          assert /registered/ === last_mail.subject
+          assert_match(/Sample/, last_mail.subject)
+          assert_match(/registered/,last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
         end
       end
@@ -219,8 +219,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       context "send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Request update/ === last_mail.subject
-          assert /failed/ === last_mail.subject
+          assert_match(/Request update/,last_mail.subject)
+          assert_match(/failed/,last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
         end
       end

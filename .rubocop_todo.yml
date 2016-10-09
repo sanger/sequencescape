@@ -16,8 +16,8 @@ Lint/AmbiguousOperator:
     - 'test/unit/batch_test.rb'
 
 # Offense count: 954
-Lint/AmbiguousRegexpLiteral:
-  Enabled: false
+#Lint/AmbiguousRegexpLiteral:
+#  Enabled: false
 
 # Offense count: 17
 # Configuration parameters: AllowSafeAssignment.
