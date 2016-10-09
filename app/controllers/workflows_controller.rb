@@ -40,7 +40,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @workflows.to_xml}
+      format.xml { render :xml => @workflows.to_xml }
     end
   end
 
@@ -79,7 +79,7 @@ class WorkflowsController < ApplicationController
   def batches
     @workflow = LabInterface::Workflow.find(params[:id])
     #TODO association broken here - something to do with the attachables polymorph?
-    @batches = Batch.where(workflow_id: @workflow.id).sort_by {|batch| batch.id}.reverse
+    @batches = Batch.where(workflow_id: @workflow.id).sort_by { |batch| batch.id }.reverse
   end
 
   def create
@@ -193,7 +193,7 @@ class WorkflowsController < ApplicationController
 
   def ordered_fields(fields)
     response = Array.new
-    fields.keys.sort_by {|key| key.to_i}.each do |key|
+    fields.keys.sort_by { |key| key.to_i }.each do |key|
       response.push fields[key]
     end
     response

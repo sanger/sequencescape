@@ -40,5 +40,5 @@ Sequencescape::Application.configure do
 
 
   #config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
-  config.active_record.observers = [ :request_observer ]
+  config.active_record.observers = [:request_observer]
 end

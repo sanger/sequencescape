@@ -20,7 +20,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     setup do
       @asset_shape = AssetShape.create!(:name => 'mini',:horizontal_ratio => 4,:vertical_ratio => 3,:description_strategy => 'Map::Coordinate')
 
-      ('A'..'C').map {|r| (1..4).map {|c| "#{r}#{c}"}}.flatten.each_with_index do |m,i|
+      ('A'..'C').map { |r| (1..4).map { |c| "#{r}#{c}" } }.flatten.each_with_index do |m,i|
         Map.create!(:description => m,:asset_size => 12,:asset_shape_id => @asset_shape.id,:location_id => i + 1,:row_order => i,:column_order => ((i / 4) + 3 * (i % 4)) )
       end
 
@@ -47,10 +47,10 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     context '#pick_onto_partial_plate' do
       setup do
         plate = @mini_plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |plate|
-          plate.wells.build(maps_for(12).map {|m| {:map => m} })
+          plate.wells.build(maps_for(12).map { |m| { :map => m } })
         end
         # TODO: This is very slow, and could do with improvements
-        @requests = plate.wells.sort_by {|w| w.map.column_order }.map { |w| create(:well_request, :asset => w) }
+        @requests = plate.wells.sort_by { |w| w.map.column_order }.map { |w| create(:well_request, :asset => w) }
       end
 
       should 'error when the robot has no beds' do
@@ -58,7 +58,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         robot.stubs(:max_beds).returns(0)
 
         partial = @mini_plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
-          partial.wells.build(maps_for(6).map {|m| {:map => m} })
+          partial.wells.build(maps_for(6).map { |m| { :map => m } })
         end
 
         assert_raises(StandardError) do
@@ -71,13 +71,13 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           plate_purpose = @mini_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'column')
           @partial = plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
-            partial.wells.build(maps_for(6).map {|m| {:map => m} })
+            partial.wells.build(maps_for(6).map { |m| { :map => m } })
           end
           @expected_partial = [CherrypickTask::TEMPLATE_EMPTY_WELL] * @partial.wells.size
         end
 
         should 'represent partial plate correctly when there are no picks made' do
-          expected = [ @expected_partial ]
+          expected = [@expected_partial]
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
           plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @batch, @partial)
@@ -104,7 +104,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           plate_purpose = @mini_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'row')
           @partial = plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
-            partial.wells.build(maps_for(4,0,'row').map {|m| {:map => m} })
+            partial.wells.build(maps_for(4,0,'row').map { |m| { :map => m } })
           end
         end
 
@@ -138,8 +138,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       context 'with left & right columns filled' do
         setup do
           @partial = @mini_plate_purpose.create!(:without_wells,:barcode => (@barcode += 1)) do |partial|
-            ms = maps_for(3,0,'column').map {|m| {:map => m} }
-            ms.concat(maps_for(12,9,'column').map {|m| {:map => m} })
+            ms = maps_for(3,0,'column').map { |m| { :map => m } }
+            ms.concat(maps_for(12,9,'column').map { |m| { :map => m } })
             partial.wells.build(ms)
           end
         end
@@ -176,7 +176,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       context 'where the template defines a control well' do
         setup do
           @partial = @mini_plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
-            partial.wells.build(maps_for(3).map {|m| {:map => m} })
+            partial.wells.build(maps_for(3).map { |m| { :map => m } })
           end
           @expected_partial = [CherrypickTask::TEMPLATE_EMPTY_WELL] * @partial.wells.size
           pad_expected_plate_with_empty_wells(@template, @expected_partial)

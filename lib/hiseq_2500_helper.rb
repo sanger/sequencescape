@@ -54,24 +54,24 @@ module Hiseq2500Helper
             :display_name => "Library type",
             :key => "library_type"
           ),
-          FieldInfo.new(:kind => "Selection",:default_value => sizes.last,:parameters => {:selection => sizes},:display_name => "Read length",:key => "read_length")
+          FieldInfo.new(:kind => "Selection",:default_value => sizes.last,:parameters => { :selection => sizes },:display_name => "Read length",:key => "read_length")
         ]
   end
 
   def self.other(settings)
     case settings[:sub_params]
     when :ill_c
-      { }
+      {}
     when :ill_c_single
-      { }
+      {}
     when :sc
-      {:request_options => {"fragment_size_required_to" => "400", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown"}}
+      { :request_options => { "fragment_size_required_to" => "400", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" } }
     when :wgs
-      {:request_options => {"fragment_size_required_to" => "500", "fragment_size_required_from" => "300", "library_type" => "Standard"}}
+      { :request_options => { "fragment_size_required_to" => "500", "fragment_size_required_from" => "300", "library_type" => "Standard" } }
     when :ill_b
-      { }
+      {}
     when :ill_b_single
-      { }
+      {}
     else
       raise "Invalid submission parameters"
     end

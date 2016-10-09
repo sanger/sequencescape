@@ -102,7 +102,7 @@ class BulkSubmission
   private :start_row
 
   def header_row?(row)
-    row.each {|col| col.try(:downcase!)}
+    row.each { |col| col.try(:downcase!) }
     (row & COMMON_FIELDS).length > 0
   end
   private :header_row?
@@ -209,7 +209,7 @@ class BulkSubmission
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
   def submission_structure
-    Hash.new {|h,i| h[i] = Array.new}.tap do |submission|
+    Hash.new { |h,i| h[i] = Array.new }.tap do |submission|
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
         details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index + start_row) }].merge('row' => index + start_row)
@@ -237,7 +237,7 @@ class BulkSubmission
   def shared_options!(rows)
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
-      option = rows.map {|r| r[field] }.uniq
+      option = rows.map { |r| r[field] }.uniq
       self.errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
       [field, option.first]
     end

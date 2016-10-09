@@ -39,7 +39,7 @@ class AccessionService
 
             Rails::logger.debug { file.each_line.to_a.join("\n") }
 
-            {:name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
+            { :name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
           end
          )
 
@@ -72,7 +72,7 @@ class AccessionService
 
         elsif success == 'false'
           errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
-          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{ errors.map { |e| "\n  - #{e}"} }"
+          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{ errors.map { |e| "\n  - #{e}" } }"
         else
           raise AccessionServiceError,  "Could not get accession number. Error in submitted data: #{$!}"
         end
@@ -192,9 +192,7 @@ private
           end
         } unless sampledata[:tags].blank?
 
-        xml.SAMPLE_LINKS {
-
-        } unless sampledata[:links].blank?
+        xml.SAMPLE_LINKS {} unless sampledata[:links].blank?
       }
     }
     return xml.target!
@@ -257,12 +255,12 @@ private
         # UA required to get through Sanger proxy
         # Although currently this UA is actually being set elsewhere in the
         # code as RestClient doesn't pass this header to the proxy.
-        rc.options[:headers] = {:user_agent => "Sequencescape Accession Client (#{Rails.env})"}
+        rc.options[:headers] = { :user_agent => "Sequencescape Accession Client (#{Rails.env})" }
       end
 
       payload = {}
       file_params.map { |p|
-        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap {|f| f.original_filename = p[:remote_name] }
+        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap { |f| f.original_filename = p[:remote_name] }
         }
       #rc.multipart_form_post = true # RC handles automatically
       response = rc.post(payload)

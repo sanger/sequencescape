@@ -21,7 +21,7 @@ class StudiesControllerTest < ActionController::TestCase
 
     resource_test(
       'study', {
-        :defaults => {:name => "study name"},
+        :defaults => { :name => "study name" },
         :user => :admin,
         :other_actions => ['properties', 'study_status'],
         :ignore_actions => ['show', 'create', 'update', 'destroy'],

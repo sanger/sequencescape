@@ -40,7 +40,7 @@ module Event::PlateEvents
   private :event_from_database
 
   def event_from_object(key)
-    events.reverse.detect {|e| e.family == key }.try(:content)
+    events.reverse.detect { |e| e.family == key }.try(:content)
   end
   private :event_from_object
 

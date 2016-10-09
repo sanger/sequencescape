@@ -25,7 +25,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context "with 1 plate" do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, :snp_plates => {"1" => "1234"}, :asset => {:location_id => @location.id}
+          post :import_from_snp, :snp_plates => { "1" => "1234" }, :asset => { :location_id => @location.id }
         end
 
         should "change Plate.count by 1" do
@@ -38,7 +38,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context "with 3 plates" do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, :snp_plates => {"1" => "1234", "5" => "7654", "10" => "3456"}, :asset => {:location_id => @location.id}
+          post :import_from_snp, :snp_plates => { "1" => "1234", "5" => "7654", "10" => "3456" }, :asset => { :location_id => @location.id }
         end
 
         should "change Plate.count by 3" do
@@ -51,7 +51,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context "with 3 plates plus blanks" do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, :snp_plates => {"1" => "1234", "7" => "", "5" => "7654", "2" => "", "10" => "3456"}, :asset => {:location_id => @location.id}
+          post :import_from_snp, :snp_plates => { "1" => "1234", "7" => "", "5" => "7654", "2" => "", "10" => "3456" }, :asset => { :location_id => @location.id }
         end
 
         should "change Plate.count by 3" do

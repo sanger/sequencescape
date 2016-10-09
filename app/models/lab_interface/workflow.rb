@@ -6,7 +6,7 @@
 
 class LabInterface::Workflow < ActiveRecord::Base
 
-  has_many :tasks, ->() { order('sorted')}, :dependent => :destroy, :foreign_key => :pipeline_workflow_id
+  has_many :tasks, ->() { order('sorted') }, :dependent => :destroy, :foreign_key => :pipeline_workflow_id
   has_many :families
 
   belongs_to :pipeline, inverse_of: :workflow

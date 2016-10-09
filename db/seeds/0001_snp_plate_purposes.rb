@@ -350,7 +350,7 @@ relationships = {
 ActiveRecord::Base.transaction do
   # All of the PlatePurpose names specified in the keys of RELATIONSHIPS have complicated relationships.
   # The others are simply maps to themselves.
-  PlatePurpose.where(['name NOT IN (?)', relationships.keys ]).each do |purpose|
+  PlatePurpose.where(['name NOT IN (?)', relationships.keys]).each do |purpose|
     purpose.child_relationships.create!(:child => purpose, :transfer_request_type => RequestType.transfer)
   end
 

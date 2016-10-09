@@ -16,7 +16,7 @@ class Api::TagIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([ :uuid_object, { :tag_group => [:uuid_object] } ]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { :tag_group => [:uuid_object] }]) }
       end
     end
   end

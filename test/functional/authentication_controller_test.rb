@@ -12,7 +12,7 @@ class AuthenticationController < ApplicationController
   before_action :login_required, :except => :open
 
   def restricted
-    data = {:parent => {:child => "open"}}
+    data = { :parent => { :child => "open" } }
     respond_to do |format|
       format.html { render :text => "<html></html>" }
       format.xml  { render :text => data.to_xml }
@@ -21,7 +21,7 @@ class AuthenticationController < ApplicationController
   end
 
   def open
-    data = {:parent => {:child => "restricted"}}
+    data = { :parent => { :child => "restricted" } }
     respond_to do |format|
       format.html { render :text => "<html></html>" }
       format.xml  { render :text => data.to_xml }

@@ -149,7 +149,7 @@ class WorksheetTest < ActiveSupport::TestCase
     should "set absolute references in ranges" do
       range = range_list.ranges.values.first
       assert_equal "Ranges!#{range.fixed_reference}", range.absolute_reference
-      assert range_list.all? {|k, range| range.absolute_reference.present?}
+      assert range_list.all? { |k, range| range.absolute_reference.present? }
     end
 
   end

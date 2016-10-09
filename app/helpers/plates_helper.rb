@@ -37,7 +37,7 @@ module PlatesHelper
   end
 
   def wells_hash(plate)
-    Hash.new {|h,i| h[i] = ['[ Empty ]','', 'NTC'] }.tap do |wells|
+    Hash.new { |h,i| h[i] = ['[ Empty ]','', 'NTC'] }.tap do |wells|
       wells[:overide] = ['','', 'NTC']
       plate.wells.each do |well|
         raise AliquotError if well.aliquots.count > 1

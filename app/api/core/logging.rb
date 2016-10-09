@@ -13,7 +13,7 @@ module Core::Logging
     END_OF_HELPER
   end
 
-  [ :debug, :info, :error ].each do |level|
+  [:debug, :info, :error].each do |level|
     logging_helper(level)
   end
 

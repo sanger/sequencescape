@@ -65,7 +65,7 @@ module Sanger
                     flunk "Testing for an unknown action: #{action}"
                   end
                 end
-                should redirect_to("login page") {login_path}
+                should redirect_to("login page") { login_path }
               end
             end
           end

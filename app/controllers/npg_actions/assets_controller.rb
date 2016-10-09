@@ -6,10 +6,10 @@
 
 class NpgActions::AssetsController < ApplicationController
 
-  before_action :login_required, :except => [ :pass, :fail ]
-  before_action :find_asset, :only => [ :pass, :fail ]
-  before_action :find_request, :only => [ :pass, :fail ]
-  before_action :npg_action_invalid?, :only => [ :pass, :fail ]
+  before_action :login_required, :except => [:pass, :fail]
+  before_action :find_asset, :only => [:pass, :fail]
+  before_action :find_request, :only => [:pass, :fail]
+  before_action :npg_action_invalid?, :only => [:pass, :fail]
   before_action :xml_valid?, :only => [:pass, :fail]
 
 

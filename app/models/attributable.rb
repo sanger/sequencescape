@@ -43,7 +43,7 @@ module Attributable
 
   def instance_defaults
     self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.validator? }
+      hash.tap { hash[attribute.name] = attribute.default_from(self) if attribute.validator? }
     end
   end
 
@@ -93,7 +93,7 @@ module Attributable
 
     def defaults
       attribute_details.inject({}) do |hash, attribute|
-        hash.tap { hash[ attribute.name ] = attribute.default }
+        hash.tap { hash[attribute.name] = attribute.default }
       end
     end
 
@@ -125,7 +125,7 @@ module Attributable
 
       module InstanceMethods
         def for_select_dropdown
-          [ self.name, self.id ]
+          [self.name, self.id]
         end
       end
     end
@@ -184,7 +184,7 @@ module Attributable
     end
 
     def get_scoped_selection
-      @scope.inject(@owner.reflections[@name.to_s].klass) {|k,v| k.send(v.to_sym) }
+      @scope.inject(@owner.reflections[@name.to_s].klass) { |k,v| k.send(v.to_sym) }
     end
     private :get_scoped_selection
 

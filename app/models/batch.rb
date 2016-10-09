@@ -75,9 +75,9 @@ class Batch < ActiveRecord::Base
 
   # Named scope for search by query string behavior
  scope :for_search_query, ->(query,with_includes) {
-    conditions = [ 'id=?', query ]
+    conditions = ['id=?', query]
     if user = User.find_by_login(query)
-      conditions = [ 'user_id=?', user.id ]
+      conditions = ['user_id=?', user.id]
     end
     where(conditions)
   }
@@ -227,7 +227,7 @@ class Batch < ActiveRecord::Base
 
   # This looks odd. Why would a request have the same asset as target asset? Why are we filtering them out here?
   def output_plate_group
-    requests.select { |r| r.target_asset != r.asset}.map(&:target_asset).select(&:present?).group_by(&:plate)
+    requests.select { |r| r.target_asset != r.asset }.map(&:target_asset).select(&:present?).group_by(&:plate)
   end
 
   def output_plates
@@ -295,7 +295,7 @@ class Batch < ActiveRecord::Base
       ev.sort_by { |i| i[:created_at] }.each do |t|
         if t.descriptors
           if g = t.descriptor_value("task")
-            d << {"task" => g, "description" => t.description, "message" => t.message, "data" => t.data, "created_at" => t.created_at}
+            d << { "task" => g, "description" => t.description, "message" => t.message, "data" => t.data, "created_at" => t.created_at }
           end
         end
       end
@@ -395,7 +395,7 @@ class Batch < ActiveRecord::Base
     return nil if requests.empty?
     requests.first.asset.ancestors.joins(
       'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id').
-      find_by(:plate_purposes => {:name => name})
+      find_by(:plate_purposes => { :name => name })
   end
 
   def swap(current_user, batch_info = {})

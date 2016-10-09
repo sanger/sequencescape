@@ -10,7 +10,7 @@ module Api
     # NOTE: This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
     ALL_SERVICES_AVAILABLE = Hash[Dir.glob(File.join(Rails.root, %w{app api endpoints ** *.rb})).map do |file|
       handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
-      [ handler.root.gsub('/', '_'), handler ]
+      [handler.root.gsub('/', '_'), handler]
     end]
 
     use Api::EndpointHandler
@@ -57,7 +57,7 @@ module Api
           request.service = self
           request.path    = '/'
         end.response do |response|
-          class << response ; include RootResponse ; end
+          class << response; include RootResponse; end
           response.services(ALL_SERVICES_AVAILABLE)
         end
       end
@@ -65,9 +65,9 @@ module Api
       body(result)
     end
 
-    [ :post, :put, :delete ].each do |action|
+    [:post, :put, :delete].each do |action|
       send(action, %r{^/?$}) do
-        raise MethodNotAllowed, [ :get ]
+        raise MethodNotAllowed, [:get]
       end
     end
   end

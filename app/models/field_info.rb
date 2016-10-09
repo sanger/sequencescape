@@ -11,7 +11,7 @@ class FieldInfo
   TEXT      = 'Text'
   BOOLEAN   = 'Boolean'
   NUMERIC   = 'Numeric'
-  Kind      = [ SELECTION, TEXT, BOOLEAN ]
+  Kind      = [SELECTION, TEXT, BOOLEAN]
   attr_accessor :display_name, :key, :kind, :default_value, :parameters
 
   def initialize(args)

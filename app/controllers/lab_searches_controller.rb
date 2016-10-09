@@ -17,7 +17,7 @@ class LabSearchesController < ApplicationController
 
 private
 
-  SEARCHABLE_CLASSES = [ Batch, Asset ]
+  SEARCHABLE_CLASSES = [Batch, Asset]
   def searchable_classes
     SEARCHABLE_CLASSES
   end

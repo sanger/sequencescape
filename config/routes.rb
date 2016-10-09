@@ -89,7 +89,7 @@ Sequencescape::Application.routes.draw do
     end
 
   end
-  resources :uuids, :only => [ :show ]
+  resources :uuids, :only => [:show]
 
   match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch, :via => :post
   match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch, :via => :post

@@ -26,7 +26,7 @@ class Api::Base
     # Maps the attribute names in the errors to their JSON counterparts, so that the end user gets
     # the correct information.
     def map_attribute_to_json_attribute_in_errors(attribute_errors)
-      Hash[attribute_errors.map { |a,v| [ json_attribute_for_attribute(*a.to_s.split('.')), v ] }]
+      Hash[attribute_errors.map { |a,v| [json_attribute_for_attribute(*a.to_s.split('.')), v] }]
     end
   end
 
@@ -46,7 +46,7 @@ class Api::Base
       json_attributes["deleted_at"] = Time.now if object.destroyed?
 
       self.attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
-        json_attributes[ json_attribute ] = object.send(attribute)
+        json_attributes[json_attribute] = object.send(attribute)
       end
       self.associations.each do |association, helper|
         value = object.send(association)
@@ -59,10 +59,10 @@ class Api::Base
           helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
           helper.to_hash(value)
         end
-        json_attributes.update({helper.alias.to_s => all_targets })
+        json_attributes.update({ helper.alias.to_s => all_targets })
       end
       self.related_resources.each do |relation|
-        json_attributes[ relation.to_s ] = File.join(object.url, relation.to_s)
+        json_attributes[relation.to_s] = File.join(object.url, relation.to_s)
       end
       self.extra_json_attribute_handlers.each do |handler|
         handler.call(object, json_attributes)
@@ -75,7 +75,7 @@ class Api::Base
 
       json_attributes = {}
       self.attribute_to_json_attribute_mappings_for_list.each do |attribute, json_attribute|
-        json_attributes[ json_attribute ] = object.send(attribute)
+        json_attributes[json_attribute] = object.send(attribute)
       end
       json_attributes
     end
@@ -97,7 +97,7 @@ class Api::Base
         self.model_class = model
 
         model.column_names.each do |column|
-          map_attribute_to_json_attribute(column, column) unless [ :descriptor_fields ].include?(column.to_sym)
+          map_attribute_to_json_attribute(column, column) unless [:descriptor_fields].include?(column.to_sym)
         end
 
         # TODO[xxx]: It's better that some of these are decided at generation, rather than execution, time.
@@ -194,7 +194,7 @@ class Api::Base
       define_method(:alias) { options[:as] || association }
     end
     self.nested_has_many_associations = Hash.new if self.nested_has_many_associations.empty?
-    self.nested_has_many_associations[ association.to_sym ] = association_helper
+    self.nested_has_many_associations[association.to_sym] = association_helper
   end
 
   def self.performs_lookup?
@@ -238,32 +238,32 @@ class Api::Base
 
       attributes = {}
       self.attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
-        attributes[ attribute ] = json_attributes[ json_attribute ] if json_attributes.key?(json_attribute)
+        attributes[attribute] = json_attributes[json_attribute] if json_attributes.key?(json_attribute)
       end
       self.associations.each do |association, helper|
         if helper.performs_lookup?
           helper.lookup_associated_record_from(json_attributes) do |associated_record|
-            attributes[ :"#{ association }_id" ] = associated_record.try(:id)
+            attributes[:"#{ association }_id"] = associated_record.try(:id)
           end
         else
           association_attributes = helper.convert_json_attributes_to_attributes(json_attributes)
-          attributes[ :"#{ association }_attributes" ] = association_attributes unless association_attributes.empty?
+          attributes[:"#{ association }_attributes"] = association_attributes unless association_attributes.empty?
         end
       end
       attributes
     end
 
     def json_attribute_for_attribute(attribute_or_association, *rest)
-      json_attribute = self.attribute_to_json_attribute_mappings[ attribute_or_association.to_sym ]
+      json_attribute = self.attribute_to_json_attribute_mappings[attribute_or_association.to_sym]
       if json_attribute.blank?
         # If we have reached the end of the line, and the attribute_or_association is for what looks like
         # an association, then we'll look it up without the '_id' and return that value.
         if attribute_or_association.to_s =~ /_id$/ and rest.empty?
-          association = self.associations[ attribute_or_association.to_s.sub(/_id$/, '').to_sym ]
+          association = self.associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
           raise StandardError, "Unexpected association #{ attribute_or_association.inspect }" if association.nil?
           return association.json_attribute_for_attribute(:name)
         end
-        json_attribute = self.associations[ attribute_or_association.to_sym ].json_attribute_for_attribute(*rest)
+        json_attribute = self.associations[attribute_or_association.to_sym].json_attribute_for_attribute(*rest)
       end
       raise StandardError, "Unexpected attribute #{ attribute_or_association.inspect } does not appear to be mapped" if json_attribute.blank?
       json_attribute

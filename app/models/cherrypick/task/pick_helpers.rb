@@ -23,13 +23,13 @@ module Cherrypick::Task::PickHelpers
           well     = request.target_asset
           well.map = position
           picker.call(well, request)
-          [ well, request ]
+          [well, request]
         else
           nil
         end
       end.compact
 
-      wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
+      wells_and_requests.each { |well, request| well.well_attribute.save!; well.save!; request.pass! }
 
       # Attach the wells to the existing partial plate, or to a new plate if we need to create
       # one.  After the partial plate has been attached to we automatically need a new plate.

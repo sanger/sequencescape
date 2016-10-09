@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 def fetch_table(selector)
-  find(selector).all('tr').map {|row| row.all('th,td').map {|cell| cell.text.squish }}
+  find(selector).all('tr').map { |row| row.all('th,td').map { |cell| cell.text.squish } }
 end
 
 begin

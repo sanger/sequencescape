@@ -15,8 +15,8 @@ class Map < ActiveRecord::Base
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
     PLATE_DIMENSIONS = Hash.new { |h,k| [] }.merge(
-      96  => [ 12, 8 ],
-      384 => [ 24, 16 ]
+      96  => [12, 8],
+      384 => [24, 16]
     )
 
     def self.location_from_row_and_column(row, column,_=nil,__=nil)
@@ -54,11 +54,11 @@ class Map < ActiveRecord::Base
     end
 
     def self.descriptions_for_row(row,size)
-      (1..plate_width(size)).map {|column| "#{row}#{column}"}
+      (1..plate_width(size)).map { |column| "#{row}#{column}" }
     end
 
     def self.descriptions_for_column(column,size)
-      (0...plate_length(size)).map {|row| Map.location_from_row_and_column(row,column)}
+      (0...plate_length(size)).map { |row| Map.location_from_row_and_column(row,column) }
     end
 
     def self.plate_width(plate_size)
@@ -139,8 +139,8 @@ class Map < ActiveRecord::Base
 
   scope :where_description, ->(*descriptions) { where(:description => descriptions.flatten) }
   scope :where_plate_size,  ->(size) { where(:asset_size => size) }
-  scope :where_plate_shape, ->(asset_shape) { where(:asset_shape_id => asset_shape)}
-  scope :where_vertical_plate_position, ->(*positions) { where(:column_order => positions.map {|v| v - 1}) }
+  scope :where_plate_shape, ->(asset_shape) { where(:asset_shape_id => asset_shape) }
+  scope :where_vertical_plate_position, ->(*positions) { where(:column_order => positions.map { |v| v - 1 }) }
 
   belongs_to :asset_shape, :class_name => 'AssetShape'
   delegate :standard?, :to => :asset_shape
@@ -258,7 +258,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.split_well_description(well_description)
-    { :row => well_description.getbyte(0) - 65, :col => well_description[1,well_description.size].to_i}
+    { :row => well_description.getbyte(0) - 65, :col => well_description[1,well_description.size].to_i }
   end
 
   def self.find_for_cell_location(cell_location, asset_size)

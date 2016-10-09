@@ -16,7 +16,7 @@ class Api::StudySampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, {:study => :uuid_object }, {:sample => :uuid_object } ]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { :study => :uuid_object }, { :sample => :uuid_object }]) }
       end
     end
   end
@@ -38,5 +38,5 @@ class Api::StudySampleIO < Api::Base
     map_attribute_to_json_attribute(:uuid, 'study_uuid')
   end
 
-  self.related_resources = [ :samples, :studies ]
+  self.related_resources = [:samples, :studies]
 end

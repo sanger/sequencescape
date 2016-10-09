@@ -27,9 +27,9 @@ namespace :working do
 
    project = Project.create!(:name => 'A project',:enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111', :project_funding_model => 'Internal' })
    project.activate!
-   study = Study.create!(:name => 'A study',:study_metadata_attributes => {:faculty_sponsor => faculty_sponsor,:data_release_study_type => DataReleaseStudyType.first, :study_type => StudyType.first,:study_description => 'A seeded test study',:contaminated_human_dna => 'No',:contains_human_dna => 'No',:commercially_available => 'No', :program_id => program.id})
+   study = Study.create!(:name => 'A study',:study_metadata_attributes => { :faculty_sponsor => faculty_sponsor,:data_release_study_type => DataReleaseStudyType.first, :study_type => StudyType.first,:study_description => 'A seeded test study',:contaminated_human_dna => 'No',:contains_human_dna => 'No',:commercially_available => 'No', :program_id => program.id })
    study.activate!
-   study_b = Study.create!(:name => 'B study',:study_metadata_attributes => {:faculty_sponsor => faculty_sponsor,:data_release_study_type => DataReleaseStudyType.first, :study_type => StudyType.first,:study_description => 'A seeded test study',:contaminated_human_dna => 'No',:contains_human_dna => 'No',:commercially_available => 'No', :program_id => program.id})
+   study_b = Study.create!(:name => 'B study',:study_metadata_attributes => { :faculty_sponsor => faculty_sponsor,:data_release_study_type => DataReleaseStudyType.first, :study_type => StudyType.first,:study_description => 'A seeded test study',:contaminated_human_dna => 'No',:contains_human_dna => 'No',:commercially_available => 'No', :program_id => program.id })
    study_b.activate!
 
    user.is_owner(study)
@@ -63,7 +63,7 @@ namespace :working do
       robot.create_max_plates_property(:value => 10)
     end
 
-    Sample.all.each {|s| study_b.samples << s }
+    Sample.all.each { |s| study_b.samples << s }
 
     BarcodePrinter.create!(:name => 'g312bc2', :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'))
     BarcodePrinter.create!(:name => 'g311bc2', :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'))
@@ -82,7 +82,7 @@ namespace :working do
       :received_at => DateTime.now
     )
    qcc = QcableCreator.create!(:lot => lot,:user => user,:count => 30)
-   qcc.qcables.each {|qcable| qcable.update_attributes!(:state => 'available'); qcable.asset.update_attributes!(:location => locations[:htp]) ;puts "Tag Plate: #{qcable.asset.ean13_barcode}"}
+   qcc.qcables.each { |qcable| qcable.update_attributes!(:state => 'available'); qcable.asset.update_attributes!(:location => locations[:htp]);puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
 
  end
  end
@@ -90,7 +90,7 @@ end
 
   def sample_named(name,study,user)
     {
-        "sample_tube_attributes" => {"two_dimensional_barcode" => ""},
+        "sample_tube_attributes" => { "two_dimensional_barcode" => "" },
         "study" => study,
         "asset_group_name" => "asset_group",
         "sample_attributes" => {

@@ -10,7 +10,7 @@ Given /^the fields of the sample_metadata for the sample called "([^"]+)" are pr
   updates = Hash[columns.map do |column|
     case
     when !sample.sample_metadata[column.name].nil? then nil
-    when [ :string, :text ].include?(column.type)  then [ column.name, column.name ]
+    when [:string, :text].include?(column.type)  then [column.name, column.name]
     when column.type == :boolean                   then true
     else raise StandardError, "Unknown column type #{column.type.inspect} (#{column.name.inspect})"
     end

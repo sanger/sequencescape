@@ -34,7 +34,7 @@ class PlatesControllerTest < ActionController::TestCase
       @plate_barcode = mock("plate barcode")
       @plate_barcode.stubs(:barcode).returns("1234567")
       PlateBarcode.stubs(:create).returns(@plate_barcode)
-      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
       LabelPrinter::PmbClient.stubs(:print).returns(200)
     end
 
@@ -62,7 +62,7 @@ class PlatesControllerTest < ActionController::TestCase
        context "with no source plates" do
           setup do
             @plate_count = Plate.count
-            post :create, :plates => {:creator_id => @gel_dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :user_barcode => '2470000100730'}
+            post :create, :plates => { :creator_id => @gel_dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :user_barcode => '2470000100730' }
           end
 
           should "change Plate.count by 1" do
@@ -84,8 +84,8 @@ class PlatesControllerTest < ActionController::TestCase
               context "when we don't have a parent" do
                 setup do
                   @plate_count = Plate.count
-                  post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
-                    :source_plates => "", :user_barcode => '2470000100730'}
+                  post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                    :source_plates => "", :user_barcode => '2470000100730' }
                 end
 
                 should "change Plate.count by 1" do
@@ -101,8 +101,8 @@ class PlatesControllerTest < ActionController::TestCase
               context "when the parent doesn't have a dilution factor" do
                 setup do
                   @plate_count = Plate.count
-                  post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
-                    :source_plates => "#{@parent_raw_barcode}", :user_barcode => '2470000100730'}
+                  post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                    :source_plates => "#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
                 end
 
                 should "change Plate.count by 1" do
@@ -119,8 +119,8 @@ class PlatesControllerTest < ActionController::TestCase
                   @parent_plate.dilution_factor = 3.53
                   @parent_plate.save!
                   @plate_count = Plate.count
-                  post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
-                    :source_plates => "#{@parent_raw_barcode}", :user_barcode => '2470000100730'}
+                  post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                    :source_plates => "#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
                 end
 
                 should "change Plate.count by 1" do
@@ -151,8 +151,8 @@ class PlatesControllerTest < ActionController::TestCase
                   context "and I don't select any dilution factor" do
                     setup do
                       @plate_count = Plate.count
-                      post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
-                        :source_plates => "#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730'}
+                      post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                        :source_plates => "#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730' }
                     end
 
                     should "change Plate.count by 2" do
@@ -168,7 +168,7 @@ class PlatesControllerTest < ActionController::TestCase
                   context "and I select a dilution factor of 2.0" do
                     setup do
                       @plate_count = Plate.count
-                      post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                      post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                         :source_plates => "#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730',
                         :dilution_factor => 2.0
                       }
@@ -191,7 +191,7 @@ class PlatesControllerTest < ActionController::TestCase
               context "when we don't have a parent" do
                 setup do
                   @plate_count = Plate.count
-                  post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                  post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates => "", :user_barcode => '2470000100730',
                     :dilution_factor => 12.0 }
                 end
@@ -207,7 +207,7 @@ class PlatesControllerTest < ActionController::TestCase
               context "when the parent doesn't have a dilution factor" do
                 setup do
                   @plate_count = Plate.count
-                  post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                  post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates => "#{@parent_raw_barcode}", :user_barcode => '2470000100730',
                     :dilution_factor => 12.0 }
                 end
@@ -226,7 +226,7 @@ class PlatesControllerTest < ActionController::TestCase
                   @plate_count = Plate.count
                   @parent_plate.dilution_factor = 4
                   @parent_plate.save!
-                  post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                  post :create, :plates => { :creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates => "#{@parent_raw_barcode}", :user_barcode => '2470000100730',
                     :dilution_factor => 12.0 }
                 end
@@ -252,7 +252,7 @@ class PlatesControllerTest < ActionController::TestCase
             context "without a dilution factor" do
               setup do
                 @picoassayplate_count =  PicoAssayPlate.count
-                post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id,
+                post :create, :plates => { :creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id,
                   :source_plates => "#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
               end
 
@@ -274,7 +274,7 @@ class PlatesControllerTest < ActionController::TestCase
               setup do
                 @parent_plate.dilution_factor = 4
                 @parent_plate.save!
-                post :create, :plates => {:creator_id => @pico_assay_plate_creator.id,
+                post :create, :plates => { :creator_id => @pico_assay_plate_creator.id,
                   :barcode_printer => @barcode_printer.id, :source_plates => "#{@parent_raw_barcode}",
                   :dilution_factor => 12.0,
                   :user_barcode => '2470000100730' }
@@ -294,7 +294,7 @@ class PlatesControllerTest < ActionController::TestCase
               @parent_raw_barcode  = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
               @parent_raw_barcode2 = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
               @parent_raw_barcode3 = Barcode.calculate_barcode(Plate.prefix, @parent_plate3.barcode.to_i)
-              post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id, :source_plates => "#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730'}
+              post :create, :plates => { :creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id, :source_plates => "#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730' }
             end
 
             should "change PicoAssayPlate.count by 6" do

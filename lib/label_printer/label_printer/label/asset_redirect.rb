@@ -18,14 +18,14 @@ module LabelPrinter
       end
 
       def assets
-        _assets.each {|asset| asset.barcode! unless asset.barcode.present? }
+        _assets.each { |asset| asset.barcode! unless asset.barcode.present? }
       end
 
       def _assets
         if printables.is_a? Asset
           [printables]
         else
-          ids = printables.select {|id, check| check == "true"}.keys
+          ids = printables.select { |id, check| check == "true" }.keys
           Asset.find(ids)
         end
       end

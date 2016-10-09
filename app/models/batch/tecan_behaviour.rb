@@ -28,7 +28,7 @@ module Batch::TecanBehaviour
        "destination" => {}
     }
 
-    requests.includes([{:asset => :plate},{:target_asset => :plate}]).where(:state => "passed").each do |request|
+    requests.includes([{ :asset => :plate },{ :target_asset => :plate }]).where(:state => "passed").each do |request|
 
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
@@ -42,7 +42,7 @@ module Batch::TecanBehaviour
       end
 
       if data_object["source"][full_source_barcode].nil?
-        data_object["source"][full_source_barcode] = {"name" => source_plate_name, "plate_size" => request.asset.plate.size}
+        data_object["source"][full_source_barcode] = { "name" => source_plate_name, "plate_size" => request.asset.plate.size }
       end
       if data_object["destination"][full_destination_barcode].nil?
         data_object["destination"][full_destination_barcode] = {

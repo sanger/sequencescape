@@ -159,10 +159,10 @@ module AuthenticatedSystem
           redirect_to :controller => '/sessions', :action => 'login'
         end
         accepts.xml do
-          render :xml => {:error => "Couldn't authenticate you"}, :status => :unauthorized
+          render :xml => { :error => "Couldn't authenticate you" }, :status => :unauthorized
         end
         accepts.json do
-          render :json => {:error => "Couldn't authenticate you"}, :status => :unauthorized
+          render :json => { :error => "Couldn't authenticate you" }, :status => :unauthorized
         end
       end
       false

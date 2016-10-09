@@ -33,7 +33,7 @@ class AttachInfiniumBarcodeTest < TaskTestBase
       end
       context "with valid parameters" do
         setup do
-          params = { :barcodes => {"#{@plate1.id}" => "111", "#{@plate2.id}" => "222"}}
+          params = { :barcodes => { "#{@plate1.id}" => "111", "#{@plate2.id}" => "222" } }
           @task.do_task(@workflow, params)
         end
 
@@ -47,7 +47,7 @@ class AttachInfiniumBarcodeTest < TaskTestBase
       end
       context "with plate that doesnt exist" do
         setup do
-          params = { :barcodes => {"99999" => "111"}}
+          params = { :barcodes => { "99999" => "111" } }
           @returned_task_value = @task.do_task(@workflow, params)
         end
 

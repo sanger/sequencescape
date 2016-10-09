@@ -17,7 +17,7 @@ class QcReport < ActiveRecord::Base
 
     module ClassMethods
       def available_states
-        QcReport.aasm.states.map {|state| state.name.to_s }
+        QcReport.aasm.states.map { |state| state.name.to_s }
       end
     end
 

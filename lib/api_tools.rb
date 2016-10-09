@@ -44,7 +44,7 @@ module ApiTools
   alias_method(:json_root, :url_name)
 
   def url
-    [ configatron.api_url, API_VERSION, self.url_name.pluralize, self.uuid ].join('/')
+    [configatron.api_url, API_VERSION, self.url_name.pluralize, self.uuid].join('/')
   end
 
 end

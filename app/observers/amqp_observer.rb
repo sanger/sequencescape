@@ -113,7 +113,7 @@ class AmqpObserver < ActiveRecord::Observer
       def <<(record)
         self.tap do
           determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
-            pair = [ record_to_broadcast.class, record_to_broadcast.id ]
+            pair = [record_to_broadcast.class, record_to_broadcast.id]
             if record.destroyed?
               @updated.delete(pair)
               @deleted << record_for_deletion if record_for_deletion.present?

@@ -21,7 +21,7 @@ namespace :uat do
 
     def sample_named(name,study,user)
       {
-          "sample_tube_attributes" => {"two_dimensional_barcode" => ""},
+          "sample_tube_attributes" => { "two_dimensional_barcode" => "" },
           "study" => study,
           "asset_group_name" => "asset_group_#{study.id}",
           "sample_attributes" => {
@@ -234,7 +234,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       Study.find_each do |study|
         print '.'
-        SampleRegistrar.register!((1..96).map {|i| sample_named("sample_#{study.id}_#{i}",study,user)})
+        SampleRegistrar.register!((1..96).map { |i| sample_named("sample_#{study.id}_#{i}",study,user) })
         print '.'
         stock = Purpose.find(2).create!(:barcode => (10 * study.id)).tap do |plate|
           plate.wells.each { |w| w.aliquots.create!(
@@ -252,12 +252,12 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         end
         (1..4).each do |i|
           child = Purpose.find_by_name('Cherrypicked').create!(:barcode => i + (10 * study.id),:location => Location.find_by_name('Illumina high throughput freezer'))
-          child.wells.each {|w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
+          child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
         (1..4).each do |i|
           child = Purpose.find_by_name('ILC Stock').create!(:barcode => i + 4 + (10 * study.id),:location => Location.find_by_name('Illumina high throughput freezer'))
-          child.wells.each {|w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
+          child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
       end
@@ -270,7 +270,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         :received_at => DateTime.now
       )
      qcc = QcableCreator.create!(:lot => lot,:user => user,:count => 30)
-     qcc.qcables.each {|qcable| qcable.update_attributes!(:state => 'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}"}
+     qcc.qcables.each { |qcable| qcable.update_attributes!(:state => 'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
 
     else
       # We should never be hitting here

@@ -97,11 +97,11 @@ module WTSI
     end
 
     def extension_string
-      filetypes.keys.map {|ext| "*.#{ext}"}.join(' ')
+      filetypes.keys.map { |ext| "*.#{ext}" }.join(' ')
     end
 
     def files_to_license
-      `git ls-files #{extension_string}`.split.reject {|file| excluded?(file) }
+      `git ls-files #{extension_string}`.split.reject { |file| excluded?(file) }
     end
 
     def excluded?(file_path)
@@ -134,7 +134,7 @@ module WTSI
         new_file.write(first_line) if !first_line.nil? && first_line.match(/^#!/)
         new_file.write(license_text)
         new_file.write(first_line) unless !first_line.nil? && first_line.match(/^#!/)
-        old_file.each_line {|line| new_file.puts(line) }
+        old_file.each_line { |line| new_file.puts(line) }
       rescue => exception
         STDERR.puts "Something went wrong applying license to #{filename}:"
         raise exception

@@ -66,7 +66,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
-            assert_equal w.aliquots.map {|a| a.sample.name}, Plate.last.wells.located_at(w.map_description).first.aliquots.map {|a| a.sample.name}
+            assert_equal w.aliquots.map { |a| a.sample.name }, Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name }
           end
         end
 
@@ -133,7 +133,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         plate_barcode.stubs(:barcode).returns("1234567")
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
-        params = {:plate_transfer_task => {}, :batch_id => @batch.id}
+        params = { :plate_transfer_task => {}, :batch_id => @batch.id }
         # @workflows_controller.batch = mock("Batch")
 
                   params = { :batch_id => @batch.id }

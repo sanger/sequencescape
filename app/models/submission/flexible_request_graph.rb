@@ -27,7 +27,7 @@ module Submission::FlexibleRequestGraph
 
     def initialize(order,source_assets, multiplexing_assets)
       @order = order
-      @source_assets_qc_metrics = source_assets.map {|asset| Doublet.new(asset,asset.latest_stock_metrics(product)) }
+      @source_assets_qc_metrics = source_assets.map { |asset| Doublet.new(asset,asset.latest_stock_metrics(product)) }
       @multiplexing_assets = multiplexing_assets
       @preplexed = multiplexing_assets.present?
       @built = false
@@ -59,7 +59,7 @@ module Submission::FlexibleRequestGraph
     private
 
     def request_types
-      order.request_types.map {|request_type_id| RequestType.find(request_type_id) }
+      order.request_types.map { |request_type_id| RequestType.find(request_type_id) }
     end
 
     def multiplier_for(request_type)
@@ -184,7 +184,7 @@ module Submission::FlexibleRequestGraph
     def generate_target_assets
       @target_assets_qc_metrics ||= chain.multiplexing_assets do
         # We yield only if we don't have any multiplexing assets
-        all_qc_metrics = source_assets_qc_metrics.map {|doublet| doublet.qc_metric }.flatten.uniq
+        all_qc_metrics = source_assets_qc_metrics.map { |doublet| doublet.qc_metric }.flatten.uniq
         request_type.pool_count.times.map { Doublet.new(create_target_asset,all_qc_metrics) }
       end
     end

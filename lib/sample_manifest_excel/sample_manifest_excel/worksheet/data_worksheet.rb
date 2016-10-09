@@ -6,9 +6,9 @@ module SampleManifestExcel
 
     class DataWorksheet < Base
 
-       STYLES = {  unlocked: { locked: false, border: { style: :thin, color: "00"}},
-                  wrap_text: {alignment: { horizontal: :center, vertical: :center, wrap_text: true},
-                  border: {style: :thin, color: "00", edges: [:left, :right, :top, :bottom]}}
+       STYLES = {  unlocked: { locked: false, border: { style: :thin, color: "00" } },
+                  wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
+                  border: { style: :thin, color: "00", edges: [:left, :right, :top, :bottom] } }
                 }
 
       def initialize(attributes = {})

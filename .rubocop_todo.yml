@@ -1496,30 +1496,6 @@ Style/SpaceBeforeFirstArg:
     - 'test/lib/sample_manifest_excel/column_test.rb'
     - 'test/unit/project_test.rb'
 
-# Offense count: 26
-# Cop supports --auto-correct.
-Style/SpaceBeforeSemicolon:
-  Enabled: false
-
-# Offense count: 779
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-# SupportedStyles: space, no_space
-Style/SpaceInsideBlockBraces:
-  Enabled: false
-
-# Offense count: 1081
-# Cop supports --auto-correct.
-Style/SpaceInsideBrackets:
-  Enabled: false
-
-# Offense count: 2750
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
-# SupportedStyles: space, no_space, compact
-Style/SpaceInsideHashLiteralBraces:
-  Enabled: false
-
 # Offense count: 557
 # Cop supports --auto-correct.
 Style/SpaceInsideParens:

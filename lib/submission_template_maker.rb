@@ -37,7 +37,7 @@ module SubmissionTemplateMaker
 
   def new_request_types(product_line, old_request_types_list)
     old_request_types_list.map do |old_rtype|
-      [ new_request_type(product_line, old_rtype).id ]
+      [new_request_type(product_line, old_rtype).id]
     end
   end
 end

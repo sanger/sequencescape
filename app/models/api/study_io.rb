@@ -98,5 +98,5 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:hmdmc_approval_number,'hmdmc_number')
   end
 
-  self.related_resources = [ :samples, :projects ]
+  self.related_resources = [:samples, :projects]
 end

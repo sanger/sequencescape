@@ -16,7 +16,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     setup do
       @product_a = create :product
-      @criteria_a = create :product_criteria, :product => @product_a, :configuration => {:total_micrograms => {:greater_than => 50}}
+      @criteria_a = create :product_criteria, :product => @product_a, :configuration => { :total_micrograms => { :greater_than => 50 } }
     end
 
 
@@ -57,7 +57,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'be otherwise immutable' do
-      @criteria_a.configuration = {:something => 'else'}
+      @criteria_a.configuration = { :something => 'else' }
       assert_raise(ActiveRecord::RecordNotSaved) { @criteria_a.save! }
     end
 

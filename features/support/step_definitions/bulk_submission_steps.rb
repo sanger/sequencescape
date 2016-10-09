@@ -100,9 +100,9 @@ Then /^there should be an order with the gigabases expected set to "(.*?)"$/ do 
 end
 
 Then /^the last submission should contain two assets$/ do
-  assert_equal 2, Submission.last.orders.reduce(0) {|total,order| total + order.assets.count }
+  assert_equal 2, Submission.last.orders.reduce(0) { |total,order| total + order.assets.count }
 end
 
 Then /^the last submission should contain the tube with barcode "(.*?)"$/ do |barcode|
-  assert Submission.last.orders.reduce([]) {|assets,order| assets.concat(order.assets) }.detect {|a| a.barcode == barcode}
+  assert Submission.last.orders.reduce([]) { |assets,order| assets.concat(order.assets) }.detect { |a| a.barcode == barcode }
 end

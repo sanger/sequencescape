@@ -16,7 +16,7 @@ class StudyReportsController < ApplicationController
   end
 
   def new
-    params[:study_report] = {:study => params[:study]}
+    params[:study_report] = { :study => params[:study] }
     create
   end
 

@@ -20,6 +20,6 @@ FactoryGirl.define do
     product
     stage         'stock'
     behaviour     'Basic'
-    configuration { {:total_micrograms => {:greater_than => 50},:sanger_sample_id => {}} }
+    configuration { { :total_micrograms => { :greater_than => 50 },:sanger_sample_id => {} } }
   end
 end

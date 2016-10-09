@@ -10,7 +10,7 @@ class Core::Io::List
   def initialize(command, objects)
     @command, @container = command, command.send(:container)
     @objects = objects.map { |o| Core::Io::Registry.instance.lookup(o.class).create!(@container, o) }
-    @current_page, @last_page = [ 1, objects.current_page ].max, [ 1, objects.total_pages ].max
+    @current_page, @last_page = [1, objects.current_page].max, [1, objects.total_pages].max
   end
 
   delegate :action_for_page, :to => :@command

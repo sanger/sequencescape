@@ -22,7 +22,7 @@ Given /^study "([^\"]+)" has the following registered samples in sample tubes( w
 
      FactoryHelp::submission(
       :study => study,
-      :assets => [ sample_tube ],
+      :assets => [sample_tube],
       :workflow => @current_user.workflow,
       :state => 'ready'
     )

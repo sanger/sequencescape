@@ -48,7 +48,7 @@ class PlatePurpose < Purpose
   serialize :cherrypick_filters
   validates_presence_of(:cherrypick_filters, :if => :cherrypickable_target?)
   before_validation(:if => :cherrypickable_target?) do |r|
-    r[:cherrypick_filters] ||= [ 'Cherrypick::Strategy::Filter::ShortenPlexesToFit' ]
+    r[:cherrypick_filters] ||= ['Cherrypick::Strategy::Filter::ShortenPlexesToFit']
   end
 
   belongs_to :asset_shape, :class_name => 'AssetShape'
@@ -72,7 +72,7 @@ class PlatePurpose < Purpose
   end
 
   def cherrypick_completed(plate)
-    messenger_creators.each {|creator| creator.create!(plate) }
+    messenger_creators.each { |creator| creator.create!(plate) }
   end
 
   def plate_height
@@ -141,7 +141,7 @@ class PlatePurpose < Purpose
       parameters.concat(args)
     end
     raise "Apparently there are not requests on these wells?" if conditions.empty?
-    Request.where_is_not_a?(TransferRequest).where([ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
+    Request.where_is_not_a?(TransferRequest).where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
       request.request_metadata.update_attributes!(:customer_accepts_responsibility => true) if customer_accepts_responsibility
       request.passed? ? request.retrospective_fail! : request.fail!

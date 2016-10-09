@@ -11,7 +11,7 @@ Given /^study "([^"]+)" has a registered sample "([^"]+)"$/ do |study_name,sampl
 
   FactoryHelp::submission(
     :study => study,
-    :assets => [ st ],
+    :assets => [st],
     :workflow => @current_user.workflow,
     :state => 'ready'
   )
@@ -23,8 +23,8 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
 
   table.hashes.each do |row|
     state, asset_name, sample_name = row['state'], row['asset'], row['sample']
-    asset  = Asset.find_by!({:name => asset_name })
-    sample = Sample.find_by!({:name => sample_name })
+    asset  = Asset.find_by!({ :name => asset_name })
+    sample = Sample.find_by!({ :name => sample_name })
 
     if asset.respond_to?(:aliquots)
       asset.aliquots.each do |aliquot|
@@ -35,7 +35,7 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
     count = (row['count'] == 'none') ? 0 : row['count'].to_i
     if count == 0
       requests = study.requests.for_asset_id(asset.id).for_state(state)
-      requests.select { |r| r.samples.include?(sample)}.map(&:destroy) if requests.present?
+      requests.select { |r| r.samples.include?(sample) }.map(&:destroy) if requests.present?
     else
       count.to_i.times do |index|
         FactoryGirl.create(

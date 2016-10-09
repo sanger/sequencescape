@@ -21,7 +21,7 @@ module Core
         end
 
         def api_error(response)
-          response.general_error(self.class.api_error_code, [ self.class.api_error_message || self.api_error_message ])
+          response.general_error(self.class.api_error_code, [self.class.api_error_message || self.api_error_message])
         end
       end
 
@@ -99,7 +99,7 @@ module Core
       "#{request.scheme}://#{request.host_with_port}/#{self.class.api_version_path}/#{sub_path.compact.join('/')}"
     end
 
-    [ :before, :after ].each do |filter|
+    [:before, :after].each do |filter|
       line = __LINE__ + 1
       class_eval("
         def self.#{filter}_all_actions(&block)

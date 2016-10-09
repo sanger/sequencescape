@@ -13,7 +13,7 @@ module Core::Endpoint::BasicHandler::EndpointLookup
     raise EndpointError, "Incorrect hierarchy for #{root.inspect}"     if model.nil?
     raise MissingEndpoint, "No endpoint for the model #{root.inspect}" if model == ActiveRecord::Base
 
-    endpoint_name = [ 'Endpoints', model.name.pluralize ].join('::')
+    endpoint_name = ['Endpoints', model.name.pluralize].join('::')
 
     begin
       endpoint_name.constantize

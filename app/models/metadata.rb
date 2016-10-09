@@ -14,7 +14,7 @@ module Metadata
     build_association(as_class, options)
   end
 
-  SECTION_FIELDS = [ :edit_info, :help, :label, :unspecified ]
+  SECTION_FIELDS = [:edit_info, :help, :label, :unspecified]
   Section = Struct.new(*SECTION_FIELDS,:label_options)
 
 private
@@ -69,7 +69,7 @@ private
     ", __FILE__, line)
 
     def self.required_tags
-      @required_tags ||= Hash.new {|h,k| h[k] = Array.new }
+      @required_tags ||= Hash.new { |h,k| h[k] = Array.new }
     end
   end
 
@@ -131,7 +131,7 @@ private
 
     def merge_instance_defaults
       # Replace attributes with the default if the value is nil
-      self.attributes = instance_defaults.merge(self.attributes.symbolize_keys) {|key, default, attribute| attribute.nil? ? default : attribute}
+      self.attributes = instance_defaults.merge(self.attributes.symbolize_keys) { |key, default, attribute| attribute.nil? ? default : attribute }
     end
 
     include Attributable
@@ -155,11 +155,11 @@ private
     class << self
 
       def metadata_attribute_path_store
-        @md_a_p ||= Hash.new {|h,field| h[field] = metadata_attribute_path_generator(field) }
+        @md_a_p ||= Hash.new { |h,field| h[field] = metadata_attribute_path_generator(field) }
       end
 
       def metadata_attribute_path_generator(field)
-        self.name.underscore.split('/').map(&:to_sym) + [ field.to_sym ]
+        self.name.underscore.split('/').map(&:to_sym) + [field.to_sym]
       end
 
       def metadata_attribute_path(field)
@@ -167,7 +167,7 @@ private
       end
 
       def localised_sections_store
-        @loc_sec ||= Hash.new {|h,field| h[field] = localised_sections_generator(field) }
+        @loc_sec ||= Hash.new { |h,field| h[field] = localised_sections_generator(field) }
       end
 
       def localised_sections_generator(field)
@@ -175,8 +175,8 @@ private
           * (SECTION_FIELDS.map do |section|
             I18n.t(
               section,
-              :scope => [ :metadata, metadata_attribute_path(field) ].flatten,
-              :default => I18n.t(section, :scope => [ :metadata, :defaults ])
+              :scope => [:metadata, metadata_attribute_path(field)].flatten,
+              :default => I18n.t(section, :scope => [:metadata, :defaults])
             )
           end << {})
         )

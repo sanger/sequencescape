@@ -88,7 +88,7 @@ before_action :evil_parameter_hack!
       flash[:notice] = "Your project has been updated"
       redirect_to :controller => "admin/projects", :action => "update", :id => @project.id
     else
-      logger.warn "Failed to update attributes: #{@project.errors.map {|e| e.to_s }}"
+      logger.warn "Failed to update attributes: #{@project.errors.map { |e| e.to_s }}"
       flash[:error] = "Failed to update attributes for project!"
       render :action => :show, :id => @project.id and return
     end
@@ -97,7 +97,7 @@ before_action :evil_parameter_hack!
   def sort
     @projects = Project.all.sort_by { |project| project.name }
     if params[:sort] == "date"
-      @projects = @projects.sort_by { |project| project.created_at}
+      @projects = @projects.sort_by { |project| project.created_at }
     elsif params[:sort] == "owner"
       @projects = @projects.sort_by { |project| project.user_id }
     end

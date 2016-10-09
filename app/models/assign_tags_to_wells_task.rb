@@ -55,7 +55,7 @@ class AssignTagsToWellsTask < Task
       tagged_to_pooled  = tagged_well.requests_as_source.where_is_a?(TransferRequest).first
       pooled_well       = tagged_to_pooled.target_asset
 
-      requests_to_destroy.concat([ source_to_library, library_to_tagged, tagged_to_pooled ])
+      requests_to_destroy.concat([source_to_library, library_to_tagged, tagged_to_pooled])
       requests_to_destroy.concat(pooled_well.requests_as_source.where_is_a?(TransferRequest).all)
 
       source_well_to_intermediate_wells[source_well] = [library_well, tagged_well, pooled_well, target_tube]
@@ -144,7 +144,7 @@ class AssignTagsToWellsTask < Task
 
   def validate_returned_tags_are_not_repeated_in_submission!(requests, params)
     submission_to_tag = params[:tag].map do |well_id, tag_id|
-      well_requests = requests.select {|request| request.asset_id == well_id.to_i}
+      well_requests = requests.select { |request| request.asset_id == well_id.to_i }
       raise "couldnt find matching well request" if well_requests.empty? || well_requests.first.nil?
       [well_requests.first.submission_id, tag_id]
     end
@@ -178,7 +178,7 @@ class AssignTagsToWellsTask < Task
   end
 
   def validate_tags_not_repeated_for_submission!(requests, tags_to_wells)
-    submission_to_tag = requests.select { |request| request.asset }.map { |request| [request.submission_id, tags_to_wells[request.asset.map.description].map_id ] }
+    submission_to_tag = requests.select { |request| request.asset }.map { |request| [request.submission_id, tags_to_wells[request.asset.map.description].map_id] }
     raise "Duplicate tags will be assigned to a pooled tube" if submission_to_tag != submission_to_tag.uniq
 
     nil
@@ -212,8 +212,8 @@ class AssignTagsToWellsTask < Task
   def map_asset_ids_to_normalised_index_by_submission(requests)
     submissions_to_index = {}
     asset_ids_to_index = {}
-    requests.map {|request| request.submission_id }.uniq.each_with_index { |submission_id, index| submissions_to_index[submission_id] = index }
-    requests.map {|request| asset_ids_to_index[request.asset_id] = submissions_to_index[request.submission_id] }
+    requests.map { |request| request.submission_id }.uniq.each_with_index { |submission_id, index| submissions_to_index[submission_id] = index }
+    requests.map { |request| asset_ids_to_index[request.asset_id] = submissions_to_index[request.submission_id] }
 
     asset_ids_to_index
   end

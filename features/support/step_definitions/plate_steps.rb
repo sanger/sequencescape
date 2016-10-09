@@ -66,7 +66,7 @@ Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barco
       :pico_pass      => "Pass",
       :concentration  => 5 + (index % 50),
       :sequenom_count => index % 30,
-      :gender_markers => [ 'F', 'F', 'F', 'F' ]
+      :gender_markers => ['F', 'F', 'F', 'F']
     )
   end
 end

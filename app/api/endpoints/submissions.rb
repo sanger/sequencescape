@@ -17,7 +17,7 @@ class Endpoints::Submissions < Core::Endpoint::Base
     belongs_to(:user,    :json => 'user')
     has_many(
       :requests, :json => 'requests', :to => 'requests',
-      :include => [ :source_asset, :target_asset ]
+      :include => [:source_asset, :target_asset]
     )
 
     action(:update, :to => :standard_update!, :if => :building?)

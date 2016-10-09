@@ -20,7 +20,7 @@ module Presenters
       @batch = batch
       @pipeline = @batch.pipeline
 
-      set_defaults({:controller => :batches, :id => @batch.id, :only_path => true})
+      set_defaults({ :controller => :batches, :id => @batch.id, :only_path => true })
     end
 
     def build_submenu
@@ -74,11 +74,11 @@ module Presenters
     end
 
     def has_plate_labels?
-      [ cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline? ].any?
+      [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
     end
 
     def has_stock_labels?
-      [ not_sequencing?, can_create_stock_assets?, !is_multiplexed?].all?
+      [not_sequencing?, can_create_stock_assets?, !is_multiplexed?].all?
     end
 
     def load_pipeline_options
@@ -102,7 +102,7 @@ module Presenters
 
         if @pipeline.prints_a_worksheet_per_task? and !pacbio_sample_pipeline?
           @tasks.each do |task|
-            add_submenu_option "Print worksheet for #{task.name}", {:action => :print, :task_id => task.id}
+            add_submenu_option "Print worksheet for #{task.name}", { :action => :print, :task_id => task.id }
           end
         else
           add_submenu_option "Print worksheet", :print
@@ -131,7 +131,7 @@ module Presenters
         end
         action_params = url_for(actionConfig)
       end
-      @options += [{:label => text, :url => action_params}]
+      @options += [{ :label => text, :url => action_params }]
     end
 
     def each_option

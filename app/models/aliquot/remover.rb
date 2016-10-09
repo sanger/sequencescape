@@ -37,7 +37,7 @@ module Aliquot::Remover
   def remove_downstream_aliquots
     # On the target asset of the failed request.
     ActiveRecord::Base.transaction do
-      target_aliquots = aliquots.map {|aliquot| AliquotRecord.new(aliquot)}
+      target_aliquots = aliquots.map { |aliquot| AliquotRecord.new(aliquot) }
       on_downstream_aliquots(target_aliquots)
     end
 

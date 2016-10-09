@@ -7,7 +7,7 @@
 FactoryGirl.define do
 
   factory :lot_type do
-    sequence(:name) {|n| "lot_type#{n}" }
+    sequence(:name) { |n| "lot_type#{n}" }
     template_class 'PlateTemplate'
     target_purpose { Tube::Purpose.stock_library_tube }
 
@@ -34,7 +34,7 @@ FactoryGirl.define do
   end
 
   factory :lot do |lot|
-    sequence(:lot_number)  {|n| "lot#{n}" }
+    sequence(:lot_number)  { |n| "lot#{n}" }
     lot_type
     template    { create :plate_template_with_well }
     user
@@ -60,11 +60,11 @@ FactoryGirl.define do
     # the object before setting attributes, which messes up the state machine
     # callbacks.
     lot { create :lot }
-    qcable_creator { create :qcable_creator}
+    qcable_creator { create :qcable_creator }
 
     factory :qcable_with_asset do |qcable|
       state  'created'
-      asset  {create :full_plate }
+      asset  { create :full_plate }
     end
   end
 

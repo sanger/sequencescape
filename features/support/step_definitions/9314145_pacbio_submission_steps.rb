@@ -29,7 +29,7 @@ Given /^I have a PacBio submission$/ do
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user => User.last,
     :assets => Plate.find_by_barcode(1234567).wells.all,
-    :request_options => {:multiplier => {"1" => "1", "3" => "1"}, "insert_size" => "500", "sequencing_type" => "Standard"}
+    :request_options => { :multiplier => { "1" => "1", "3" => "1" }, "insert_size" => "500", "sequencing_type" => "Standard" }
     )
   step("1 pending delayed jobs are processed")
 end
@@ -149,8 +149,8 @@ Then /^the PacBio manifest for the last batch should look like:$/ do |expected_r
   pac_bio_run_file = PacBio::SampleSheet.new.create_csv_from_batch(Batch.last)
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
-  expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
-  actual_table = CSV.parse( csv_rows.map {|c| "#{c}\r\n"}.join(''))
+  expected_results_table.column_names.each { |c| expected_results_table.map_column!(c) { |d| d.blank? ? nil : d } }
+  actual_table = CSV.parse( csv_rows.map { |c| "#{c}\r\n" }.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -176,7 +176,7 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
   worksheet = page.source
   csv_rows = worksheet.split(/\r\n/)
   csv_rows.shift(2)
-  actual_table = CSV.parse( csv_rows.map {|c| "#{c}\r\n"}.join(''))
+  actual_table = CSV.parse( csv_rows.map { |c| "#{c}\r\n" }.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -223,8 +223,8 @@ Then /^the PacBio manifest should be:$/ do |expected_results_table|
   pac_bio_run_file = page.source
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
-  actual_table = CSV.parse( csv_rows.map {|c| "#{c}\r\n"}.join(''))
-  expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
+  actual_table = CSV.parse( csv_rows.map { |c| "#{c}\r\n" }.join(''))
+  expected_results_table.column_names.each { |c| expected_results_table.map_column!(c) { |d| d.blank? ? nil : d } }
   expected_results_table.diff!(actual_table)
 end
 

@@ -8,7 +8,7 @@ class PipelinesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_pipeline_by_id, :only => [ :show, :setup_inbox,
+  before_action :find_pipeline_by_id, :only => [:show, :setup_inbox,
                                    :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
 
   before_action :lab_manager_login_required, :only => [:update_priority,:deactivate,:activate]
@@ -17,11 +17,11 @@ class PipelinesController < ApplicationController
 
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical.all
-    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p ; h }
+    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p; h }
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @pipelines.to_xml}
+      format.xml { render :xml => @pipelines.to_xml }
     end
   end
 
@@ -84,7 +84,7 @@ class PipelinesController < ApplicationController
   end
 
 
-  before_action :prepare_batch_and_pipeline, :only => [ :summary, :finish ]
+  before_action :prepare_batch_and_pipeline, :only => [:summary, :finish]
   def prepare_batch_and_pipeline
     @batch    = Batch.find(params[:id])
     @pipeline = @batch.pipeline

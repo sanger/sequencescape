@@ -52,7 +52,7 @@ end
 Given /^the plate "(.*?)" has additional wells$/ do |name|
   Plate.find_by_name(name).tap do |plate|
     plate.wells.import(
-      [ 'C1', 'D1' ].map do |location|
+      ['C1', 'D1'].map do |location|
         map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
         FactoryGirl.create(:tagged_well, :map => map)
       end
@@ -76,7 +76,7 @@ end
 def assert_request_state(state, targets, direction, request_class)
   association = (direction == 'to') ? :requests_as_target : :requests_as_source
   assert_equal(
-    [ state ],
+    [state],
     Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:state).uniq,
     "Some #{request_class.name} requests are in the wrong state"
   )
@@ -133,7 +133,7 @@ end
 
 Then /^the study for the aliquots in the wells of (the plate .+) should match the last submission$/ do |plate|
   study = Submission.last.orders.first.study
-  plate.wells.each {|w| w.aliquots.each {|a| assert_equal study, a.study}}
+  plate.wells.each { |w| w.aliquots.each { |a| assert_equal study, a.study } }
 end
 Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"

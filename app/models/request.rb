@@ -37,7 +37,7 @@ class Request < ActiveRecord::Base
   scope :for_pipeline, ->(pipeline) {
 
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ).
-      where([ 'prt.pipeline_id=?', pipeline.id]).
+      where(['prt.pipeline_id=?', pipeline.id]).
       readonly(false)
 
   }
@@ -59,7 +59,7 @@ class Request < ActiveRecord::Base
     submission_ids = plate.all_submission_ids
     add_joins =
       if plate.stock_plate?
-        [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
+        ['INNER JOIN assets AS pw ON requests.asset_id=pw.id']
       else
         [
           'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
@@ -86,7 +86,7 @@ class Request < ActiveRecord::Base
   scope :for_pre_cap_grouping_of, ->(plate) {
     add_joins =
       if plate.stock_plate?
-        [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
+        ['INNER JOIN assets AS pw ON requests.asset_id=pw.id']
       else
         [
           'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
@@ -119,8 +119,8 @@ class Request < ActiveRecord::Base
   }
 
 
-  scope :including_samples_from_target, ->() { includes({ :target_asset => {:aliquots => :sample } }) }
-  scope :including_samples_from_source, ->() { includes({ :asset => {:aliquots => :sample } }) }
+  scope :including_samples_from_target, ->() { includes({ :target_asset => { :aliquots => :sample } }) }
+  scope :including_samples_from_source, ->() { includes({ :asset => { :aliquots => :sample } }) }
 
   scope :for_order_including_submission_based_requests, ->(order) {
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
@@ -153,8 +153,8 @@ class Request < ActiveRecord::Base
   has_many :request_events, ->() { order(:current_from) }
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
-  scope :for_pacbio_sample_sheet, -> { includes([{:target_asset => :map},:request_metadata]) }
-  scope :for_billing, -> { includes([ :initial_project, :request_type, { :target_asset => :aliquots }]) }
+  scope :for_pacbio_sample_sheet, -> { includes([{ :target_asset => :map },:request_metadata]) }
+  scope :for_billing, -> { includes([:initial_project, :request_type, { :target_asset => :aliquots }]) }
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
@@ -216,33 +216,33 @@ class Request < ActiveRecord::Base
     where(:request_type_id => request_type)
   }
 
-  scope :where_is_a?,     ->(clazz) { where( sti_type: [ clazz, *clazz.descendants ].map(&:name) ) }
-  scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
+  scope :where_is_a?,     ->(clazz) { where( sti_type: [clazz, *clazz.descendants].map(&:name) ) }
+  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
   scope :full_inbox, -> { where(:state => ["pending","hold"]) }
 
-  scope :with_asset,  -> { where('asset_id is not null')}
-  scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)')}
-  scope :join_asset,  -> { joins(:asset)}
+  scope :with_asset,  -> { where('asset_id is not null') }
+  scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
+  scope :join_asset,  -> { joins(:asset) }
   scope :with_asset_location, -> { includes(:asset => :map) }
 
   scope :siblings_of, ->(request) { where(asset_id:request.asset_id).where.not(id:request.id) }
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
-  scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id ]).readonly(false) }
+  scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id]).readonly(false) }
 
   #Use container location
   scope :holder_located, ->(location_id) {
     joins(["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"]).
-    where(['location_associations.location_id = ?', location_id ]).
+    where(['location_associations.location_id = ?', location_id]).
     readonly(false)
   }
 
   scope :holder_not_control, -> {
     joins(["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"]).
-    where(['hncc.sti_type != ?', 'ControlPlate' ]).
+    where(['hncc.sti_type != ?', 'ControlPlate']).
     readonly(false)
   }
   scope :without_asset, -> { where('asset_id is null') }
@@ -256,14 +256,14 @@ class Request < ActiveRecord::Base
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{:submission => {:orders => :study}, :asset => [:scanned_into_lab_event,:studies]}])}
-  scope :loaded_for_grouped_inbox_display, -> { preload([ {:submission => :orders}, :asset, :target_asset, :request_type ])}
+  scope :loaded_for_inbox_display, -> { preload([{ :submission => { :orders => :study }, :asset => [:scanned_into_lab_event,:studies] }]) }
+  scope :loaded_for_grouped_inbox_display, -> { preload([{ :submission => :orders }, :asset, :target_asset, :request_type]) }
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
 
   scope :group_conditions, ->(conditions, variables) {
-    where([ conditions.join(' OR '), *variables ])
+    where([conditions.join(' OR '), *variables])
   }
 
   def self.group_requests(finder_method, options = {})
@@ -300,7 +300,7 @@ class Request < ActiveRecord::Base
     attributes[:requests] = :request_type_id
     # SELECT and GROUP BY do NOT scrub their input. While there shouldn't be any user provided input
     # comming in here, lets cautious!
-    scrubbed_atts = attributes.map {|k,v| "#{k.to_s.gsub(/[^\w\.]/,'')}.#{v.to_s.gsub(/[^\w\.]/,'')}"}.join(', ')
+    scrubbed_atts = attributes.map { |k,v| "#{k.to_s.gsub(/[^\w\.]/,'')}.#{v.to_s.gsub(/[^\w\.]/,'')}" }.join(', ')
     group(scrubbed_atts).
     select([
       'MIN(requests.id) AS id',
@@ -326,18 +326,18 @@ class Request < ActiveRecord::Base
   scope :for_request_types, ->(types) { joins(:request_type).where(:request_types => { :key => types }) }
 
   scope :for_search_query, ->(query,with_includes) {
-     where([ 'id=?', query ])
+     where(['id=?', query])
    }
 
    scope :find_all_target_asset, ->(target_asset_id) {
-     where(['target_asset_id = ?', "#{target_asset_id}" ])
+     where(['target_asset_id = ?', "#{target_asset_id}"])
    }
    scope :for_studies, ->(*studies) {
      where(:initial_study_id => studies)
    }
 
 
-  scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{:asset => :aliquots,:target_asset => :aliquots}]) }
+  scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{ :asset => :aliquots,:target_asset => :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
 
@@ -421,11 +421,11 @@ class Request < ActiveRecord::Base
   end
 
   def previous_failed_requests
-    self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
+    self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?) }
   end
 
   def add_comment(comment, user)
-    self.comments.create({:description => comment, :user => user})
+    self.comments.create({ :description => comment, :user => user })
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
@@ -450,10 +450,10 @@ class Request < ActiveRecord::Base
     return [] if self.lab_events.empty?
 
     self.events.map do |event|
-      next if event.family.nil? or not [ 'pass', 'fail' ].include?(event.family.downcase)
+      next if event.family.nil? or not ['pass', 'fail'].include?(event.family.downcase)
 
       message = event.message || "(No message was specified)"
-      {"event_id" => event.id, "status" => event.family.downcase, "message" => message, "created_at" => event.created_at}
+      { "event_id" => event.id, "status" => event.family.downcase, "message" => message, "created_at" => event.created_at }
     end.compact
   end
 

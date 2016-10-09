@@ -85,7 +85,7 @@ class EventFactory
 
   # creates an event and sends an email when samples are register to a study
   def self.study_has_samples_registered(study,samples,user)
-    sample_names_string = samples.map {|s| s.name}.join("','")
+    sample_names_string = samples.map { |s| s.name }.join("','")
     content = "Samples '#{sample_names_string}' registered by user '#{user.login}' on #{Time.now}"
 
     study_event = Event.create(

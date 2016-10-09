@@ -44,7 +44,7 @@ end
 
 Given /^I have (\d+) requests for "([^"]*)" that are part of the same submission$/ do |count, pipeline_name|
   pipeline   = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  submission = FactoryGirl.create(:submission, :request_types => [ pipeline.request_types.last.id ])
+  submission = FactoryGirl.create(:submission, :request_types => [pipeline.request_types.last.id])
   (1..count.to_i).each do |_|
     create_request_for_pipeline(pipeline_name, :submission => submission)
   end
@@ -56,7 +56,7 @@ end
 
 Given /^all requests for the submission with UUID "([^\"]+)" are in the "([^\"]+)" state$/ do |uuid, state|
   submission = Uuid.lookup_single_uuid(uuid).resource
-  Request.update_all("state=#{state.inspect}", [ 'submission_id=?', submission.id ])
+  Request.update_all("state=#{state.inspect}", ['submission_id=?', submission.id])
 end
 
 Given /^I on batch page$/ do

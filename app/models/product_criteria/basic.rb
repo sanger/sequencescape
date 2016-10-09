@@ -42,7 +42,7 @@ class ProductCriteria::Basic
     end
 
     def headers(configuration)
-      configuration.map {|k,v| k } + [:comment]
+      configuration.map { |k,v| k } + [:comment]
     end
   end
 
@@ -60,11 +60,11 @@ class ProductCriteria::Basic
   end
 
   def conflicting_gender_markers
-    (gender_markers || []).select {|marker| conflicting_marker?(marker)}.count
+    (gender_markers || []).select { |marker| conflicting_marker?(marker) }.count
   end
 
   def metrics
-    values.merge({:comment => @comment.join(';')})
+    values.merge({ :comment => @comment.join(';') })
   end
 
   def well_location
@@ -92,7 +92,7 @@ class ProductCriteria::Basic
   # Return the sample gender, returns nil if it can't be determined
   # ie. mixed input, or not male/female
   def sample_gender
-    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
+    markers = @well_or_metric.samples.map { |s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
     return nil if markers.count > 1
     GENDER_MARKER_MAPS[markers.first]
   end

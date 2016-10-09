@@ -201,5 +201,5 @@ Then /^the last submission should have a priority of (\d+)$/ do |priority|
 end
 
 Given /^all the requests in the last submission are cancelled$/ do
-  Submission.last.requests.each {|r| r.update_attributes!(:state => 'cancelled') }
+  Submission.last.requests.each { |r| r.update_attributes!(:state => 'cancelled') }
 end

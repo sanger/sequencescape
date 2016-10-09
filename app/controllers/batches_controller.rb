@@ -22,7 +22,7 @@ class BatchesController < ApplicationController
     elsif logged_in?
       @user = current_user
       assigned_batches = Batch.where(assignee_id: @user.id)
-      @batches = (@user.batches + assigned_batches).sort_by {|batch| batch.id}.reverse
+      @batches = (@user.batches + assigned_batches).sort_by { |batch| batch.id }.reverse
     else
       # Can end up here with XML. And it causes pain.
       @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
@@ -179,7 +179,7 @@ class BatchesController < ApplicationController
             redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
           end
           format.xml do
-            render :xml => {:error => message}.to_xml(:root => :errors), :status => :bad_request
+            render :xml => { :error => message }.to_xml(:root => :errors), :status => :bad_request
           end
         end
       end
@@ -191,7 +191,7 @@ class BatchesController < ApplicationController
           redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
         end
         format.xml do
-          errors = {:error => message}
+          errors = { :error => message }
           render :xml => errors.to_xml(:root => :errors), :status => :method_not_allowed
         end
       end
@@ -508,13 +508,13 @@ class BatchesController < ApplicationController
       render :action => "simplified_worksheet", :layout => false
     elsif @batch.multiplexed?
       if @task
-        render :action => "multiplexed_library_worksheet", :layout => false, :locals => {:task => @task}
+        render :action => "multiplexed_library_worksheet", :layout => false, :locals => { :task => @task }
       else
         render :action => "multiplexed_library_worksheet", :layout => false
       end
     else
       if @task
-        render :action => "detailed_worksheet", :layout => false, :locals => {:task => @task}
+        render :action => "detailed_worksheet", :layout => false, :locals => { :task => @task }
       else
         render :action => "detailed_worksheet", :layout => false
       end
@@ -565,8 +565,8 @@ class BatchesController < ApplicationController
   end
 
   def swap
-    if @batch.swap(current_user, {"batch_1" => {"id" => params["batch"]["1"], "lane" => params["batch"]["position"]["1"]},
-                    "batch_2" => {"id" => params["batch"]["2"], "lane" => params["batch"]["position"]["2"]}
+    if @batch.swap(current_user, { "batch_1" => { "id" => params["batch"]["1"], "lane" => params["batch"]["position"]["1"] },
+                    "batch_2" => { "id" => params["batch"]["2"], "lane" => params["batch"]["position"]["2"] }
                   })
       flash[:notice] = "Successfully swapped lane positions"
       redirect_to batch_path(@batch)

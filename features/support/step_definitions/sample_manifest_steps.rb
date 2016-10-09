@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
-  Supplier.create!({:name => supplier_name })
+  Supplier.create!({ :name => supplier_name })
 end
 
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
@@ -127,7 +127,7 @@ Then /^the sample reference genomes should be:$/ do |table|
 end
 
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
-  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map {|a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id]}
+  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
   table.hashes.each do |expected_data|
     lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT',''))
     assert_equal 1, lt.aliquots.count, "Wrong number of aliquots"
@@ -197,8 +197,8 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 
   table.rows.each_with_index do |row,index|
-    expected = [ Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1] ]
-    got      = [ @worksheet.cell(offset + index + 1,1), @worksheet.cell(offset + index + 1,2) ]
+    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1]]
+    got      = [@worksheet.cell(offset + index + 1,1), @worksheet.cell(offset + index + 1,2)]
     assert_equal(expected, got, "Unexpected manifest row #{index}")
   end
 end
@@ -247,7 +247,7 @@ end
 Then /^print any manifest errors for debugging$/ do
   if SampleManifest.last.last_errors.present?
     puts "=" * 80
-    SampleManifest.last.last_errors.each {|error| puts error}
+    SampleManifest.last.last_errors.each { |error| puts error }
     puts "=" * 80
   end
 end

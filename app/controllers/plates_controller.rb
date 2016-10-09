@@ -75,8 +75,8 @@ class PlatesController < ApplicationController
         @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
         @current_user.save!
         format.html { redirect_to(new_submission_path(:study_id => asset_group.study.id)) }
-        format.xml  { render :xml  => asset_group, :status => :created}
-        format.json { render :json => asset_group, :status => :created}
+        format.xml  { render :xml  => asset_group, :status => :created }
+        format.json { render :json => asset_group, :status => :created }
       else
         flash[:error] = 'Failed to create sample tubes'
         format.html { redirect_to(to_sample_tubes_plates_path) }

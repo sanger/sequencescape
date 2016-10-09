@@ -126,7 +126,7 @@ module Tasks::CherrypickHandler
       used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
 
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
-      plates_with_samples = plates.reject {|pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
+      plates_with_samples = plates.reject { |pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
       if fluidigm_plate.present? && plates_with_samples.count > 1
         raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
@@ -138,7 +138,7 @@ module Tasks::CherrypickHandler
         plate = partial_plate
         if plate.nil?
           barcode = PlateBarcode.create.barcode
-          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode, :plate_metadata_attributes => {:fluidigm_barcode => fluidigm_plate})
+          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode, :plate_metadata_attributes => { :fluidigm_barcode => fluidigm_plate })
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.
@@ -172,7 +172,7 @@ module Tasks::CherrypickHandler
 
       # Attach the wells into their plate for maximum efficiency.
       plates_and_wells.each do |plate, wells|
-        wells.map { |w| w.well_attribute.save! ; w.save! }
+        wells.map { |w| w.well_attribute.save!; w.save! }
         plate.wells.attach(wells)
       end
 

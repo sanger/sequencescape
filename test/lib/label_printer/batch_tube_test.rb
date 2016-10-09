@@ -22,8 +22,8 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       request = create :multiplexed_library_creation_request, target_asset: library_tube_with_stock_tube
       batch.requests << request
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: true}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: true }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
@@ -41,8 +41,8 @@ class BatchTubeTest < ActiveSupport::TestCase
       @batch = create :batch
       @batch.requests << request
 
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: true}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: true }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
@@ -65,8 +65,8 @@ class BatchTubeTest < ActiveSupport::TestCase
       request = create :multiplexed_library_creation_request, target_asset: (create :library_tube, barcode: "111")
       batch.requests << request
 
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: false}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: false }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
@@ -81,8 +81,8 @@ class BatchTubeTest < ActiveSupport::TestCase
       @batch = create :batch
       @batch.requests << request
 
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: false}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: false }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count

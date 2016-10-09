@@ -23,7 +23,7 @@ class PipelineTest < ActiveSupport::TestCase
         @submission = FactoryHelp::submission(:request_types => [@request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = create :item, :submission => @submission
 
-        @pipeline = create :sequencing_pipeline, :name => "sequencing pipeline", :request_types => [ @request_type ]
+        @pipeline = create :sequencing_pipeline, :name => "sequencing pipeline", :request_types => [@request_type]
         @metadata1 = create :request_metadata
         @metadata2 = create :request_metadata
         @request1 = create(
@@ -55,25 +55,25 @@ class PipelineTest < ActiveSupport::TestCase
       end
 
       should "return true if the requests don't make use of the read_length attribute" do
-        @batch = @pipeline.batches.create!(:requests => [ @request1, @request2 ])
+        @batch = @pipeline.batches.create!(:requests => [@request1, @request2])
         assert @pipeline.is_read_length_consistent_for_batch?(@batch)
       end
 
       should "check that all the requests has the read_length attribute defined" do
         @request2.request_metadata.read_length = nil
-        @batch = @pipeline.batches.create(:requests => [ @request1, @request2 ])
+        @batch = @pipeline.batches.create(:requests => [@request1, @request2])
         assert !@pipeline.is_read_length_consistent_for_batch?(@batch)
       end
 
       should "check that the read_length attribute is the same in all the requests" do
         @request1.request_metadata.read_length = 76
         @request2.request_metadata.read_length = 100
-        @batch = @pipeline.batches.create(:requests => [ @request1, @request2 ])
+        @batch = @pipeline.batches.create(:requests => [@request1, @request2])
         assert !@pipeline.is_read_length_consistent_for_batch?(@batch)
       end
 
       should "check that other pipelines are not affected by different read_length attributes" do
-        @pipeline2 = create :pipeline, :name => "other pipeline", :request_types => [ @request_type ]
+        @pipeline2 = create :pipeline, :name => "other pipeline", :request_types => [@request_type]
         @request1 = create(
           :request_without_assets,
           :request_metadata => @metadata1,
@@ -98,7 +98,7 @@ class PipelineTest < ActiveSupport::TestCase
 
         @request1.request_metadata.read_length = 76
         @request2.request_metadata.read_length = 100
-        @batch = @pipeline2.batches.create(:requests => [ @request1, @request2 ])
+        @batch = @pipeline2.batches.create(:requests => [@request1, @request2])
         assert @pipeline2.is_read_length_consistent_for_batch?(@batch)
       end
     end

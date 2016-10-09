@@ -17,8 +17,8 @@ class TransferRequestTest < ActiveSupport::TestCase
 
   def self.shared_tests
     should 'duplicate the aliquots' do
-      expected_aliquots = @source.aliquots.map { |a| [ a.sample_id, a.tag_id ] }
-      target_aliquots   = @destination.aliquots.map { |a| [ a.sample_id, a.tag_id ] }
+      expected_aliquots = @source.aliquots.map { |a| [a.sample_id, a.tag_id] }
+      target_aliquots   = @destination.aliquots.map { |a| [a.sample_id, a.tag_id] }
       assert_equal(expected_aliquots, target_aliquots)
     end
 

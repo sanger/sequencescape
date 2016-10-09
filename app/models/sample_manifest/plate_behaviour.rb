@@ -121,7 +121,7 @@ module SampleManifest::PlateBehaviour
 
     def details(&block)
       samples.each do |sample|
-        well = sample.wells.includes([ :container, :map ]).first
+        well = sample.wells.includes([:container, :map]).first
         yield({
           :barcode   => well.plate.sanger_human_barcode,
           :position  => well.map.description,
@@ -146,8 +146,8 @@ module SampleManifest::PlateBehaviour
   def generate_wells_asynchronously(well_data_with_ids, plate_id)
     ActiveRecord::Base.transaction do
       # Ensure the order of the wells are maintained
-      maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [ map.id, map ] }]
-      well_data = well_data_with_ids.map { |map_id,sample_id| [ maps[map_id], sample_id ] }
+      maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [map.id, map] }]
+      well_data = well_data_with_ids.map { |map_id,sample_id| [maps[map_id], sample_id] }
 
       generate_wells(well_data, Plate.find(plate_id))
     end

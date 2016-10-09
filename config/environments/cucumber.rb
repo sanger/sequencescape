@@ -36,7 +36,7 @@ config.action_controller.allow_forgery_protection    = false
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
 
-config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
+config.active_record.observers = [:batch_cache_sweeper, :request_observer]
 
 if defined?(ENV_JAVA)
   ENV_JAVA['http.proxyHost'] = nil

@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class Submission::SubmissionPresenter < Submission::PresenterSkeleton
-  self.attributes = [ :id ]
+  self.attributes = [:id]
 
   def submission
     @submission ||= Submission.find(id)

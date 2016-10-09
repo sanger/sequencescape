@@ -45,7 +45,7 @@ class BulkSubmissionsController < ApplicationController
   private
 
   def find_submission_template_groups
-    @submission_template_groups = SubmissionTemplate.visible.include_product_line.group_by {|t| t.product_line.try(:name) || DEFAULT_SUBMISSION_TEMPLATE_GROUP}
+    @submission_template_groups = SubmissionTemplate.visible.include_product_line.group_by { |t| t.product_line.try(:name) || DEFAULT_SUBMISSION_TEMPLATE_GROUP }
   end
 
 end

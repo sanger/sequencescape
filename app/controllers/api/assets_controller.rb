@@ -21,7 +21,7 @@ class Api::AssetsController < Api::BaseController
     # should holder be exposed in the API ?
     # rather than location and container
     respond_to do |format|
-      format.json { render :json => @object.holder}
+      format.json { render :json => @object.holder }
     end
   end
 end

@@ -26,7 +26,7 @@ module User::Authentication
     ldap_profile = ldap.search( :base => treebase, :filter => filter )[0]
     # If we have two or more records, something is off with LDAP
 
-    {:email => "mail", :first_name => "givenname", :last_name => "sn"}.each do |attr,ldap_attr|
+    { :email => "mail", :first_name => "givenname", :last_name => "sn" }.each do |attr,ldap_attr|
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
     self.save if self.changed?

@@ -41,4 +41,4 @@ end
 
 
 project = Project.find(project_id)
-submission = LinearSubmission.build(nil, study, project, Submission::Workflow.find(2), User.find_by_login('nts'), asset_list, [], Submission::Workflow.find(2).request_types.map { |r| r.id}, [], [])
+submission = LinearSubmission.build(nil, study, project, Submission::Workflow.find(2), User.find_by_login('nts'), asset_list, [], Submission::Workflow.find(2).request_types.map { |r| r.id }, [], [])

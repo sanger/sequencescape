@@ -46,7 +46,7 @@ module Tasks::AssignTubesToWellsHandler
 
     plate ||= find_or_create_plate(task.purpose)
 
-    well_hash = Hash[plate.wells.located_at(params[:request_locations].values.uniq).map {|w| [w.map_description,w]}]
+    well_hash = Hash[plate.wells.located_at(params[:request_locations].values.uniq).map { |w| [w.map_description,w] }]
 
     problem_wells = wells_with_duplicates(params)
 
@@ -83,11 +83,11 @@ module Tasks::AssignTubesToWellsHandler
   # First filters out any equivalent aliquots. (ie. same sample, tag, library_type, etc.)
   def wells_with_duplicates(params)
     invalid_wells = []
-    @batch.requests.group_by {|request| params[:request_locations][request.id.to_s]}.each do |well,requests|
-      all_aliquots = requests.map {|r| r.asset.aliquots }.flatten
+    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well,requests|
+      all_aliquots = requests.map { |r| r.asset.aliquots }.flatten
       # Push each aliquot onto an array as long as it doesn't match an aliquot already on the array
       unique_aliquots = all_aliquots.reduce([]) do |selected_aliquots,candidate|
-        selected_aliquots << candidate unless selected_aliquots.any? {|existing_aliquot| existing_aliquot.equivalent?(candidate) }
+        selected_aliquots << candidate unless selected_aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate) }
         selected_aliquots
       end
       # uniq! returns any duplicates, or nil if there are none
@@ -100,8 +100,8 @@ module Tasks::AssignTubesToWellsHandler
 
   def find_incompatible_wells(params)
     invalid_wells = []
-    @batch.requests.group_by {|request| params[:request_locations][request.id.to_s]}.each do |well,requests|
-      next if requests.map {|r| r.shared_attributes }.uniq.count <= 1
+    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well,requests|
+      next if requests.map { |r| r.shared_attributes }.uniq.count <= 1
       invalid_wells << well
     end
     invalid_wells

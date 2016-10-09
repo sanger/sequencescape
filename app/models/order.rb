@@ -125,7 +125,7 @@ class Order < ActiveRecord::Base
   scope :including_associations_for_json, -> {
     includes([
       :uuid_object,
-      {:assets => [:uuid_object] },
+      { :assets => [:uuid_object] },
       { :project => :uuid_object },
       { :study => :uuid_object },
       :user
@@ -159,7 +159,7 @@ class Order < ActiveRecord::Base
   # only needed to note
   def self.build!(options)
     #call submission with appropriate Order subclass
-    Submission.build!({:template => self}.merge(options))
+    Submission.build!({ :template => self }.merge(options))
   end
 
   def self.extended(base)
@@ -241,7 +241,7 @@ class Order < ActiveRecord::Base
       :info_differential => info_differential,
       :customize_partial => customize_partial,
       :asset_input_methods => asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
-    }.reject { |k,v| v.nil?}
+    }.reject { |k,v| v.nil? }
   end
 
   def request_types_list
@@ -291,7 +291,7 @@ class Order < ActiveRecord::Base
   end
 
   def request_attributes
-    attributes = ActiveSupport::OrderedHash.new {|hash,value| hash[value] = CompositeAttribute.new(value) }
+    attributes = ActiveSupport::OrderedHash.new { |hash,value| hash[value] = CompositeAttribute.new(value) }
     request_types_list.flatten.each do |request_type|
       mocked = mock_metadata_for(request_type)
       request_type.request_class::Metadata.attribute_details.each do |att|
@@ -364,11 +364,11 @@ class Order < ActiveRecord::Base
   end
 
   def collect_gigabases_expected?
-    input_field_infos.any? {|k| k.key == :gigabases_expected}
+    input_field_infos.any? { |k| k.key == :gigabases_expected }
   end
 
   def add_comment(comment_str, user)
-    update_attribute(:comments, [comments, comment_str ].compact.join('; '))
+    update_attribute(:comments, [comments, comment_str].compact.join('; '))
     save!
 
     submission.requests.where_is_not_a?(TransferRequest).for_order_including_submission_based_requests(self).map do |request|

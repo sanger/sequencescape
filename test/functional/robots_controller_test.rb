@@ -36,7 +36,7 @@ class RobotsControllerTest < ActionController::TestCase
     context "#create" do
       setup do
         @count = Robot.count
-        post :create, :robot => {:name => "newrobot", :location => "biglab" }
+        post :create, :robot => { :name => "newrobot", :location => "biglab" }
       end
       should "increase number of robots" do
         assert_equal @count + 1, Robot.count
@@ -63,7 +63,7 @@ class RobotsControllerTest < ActionController::TestCase
 
     context "#update" do
       setup do
-        put :update, :id => @robot.id, :robot => {:name => "tecan"}
+        put :update, :id => @robot.id, :robot => { :name => "tecan" }
       end
 
       should "update name" do

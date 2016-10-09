@@ -26,7 +26,7 @@ When /^I print the following labels in the asset group$/ do |table|
     headers:  LabelPrinter::PmbClient.headers, times: 1) do |req|
     h_body = JSON.parse(req.body)
     all_label_bitmaps = h_body["data"]["attributes"]["labels"]["body"].first["main_label"]
-    label_bitmaps.all? {|k, v| v.match all_label_bitmaps[k]}
+    label_bitmaps.all? { |k, v| v.match all_label_bitmaps[k] }
   end
 end
 

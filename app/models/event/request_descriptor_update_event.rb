@@ -10,15 +10,15 @@ module Event::RequestDescriptorUpdateEvent
   end
 
   def pass_or_fail_event?
-    [ 'fail', 'pass' ].include?(self.family)
+    ['fail', 'pass'].include?(self.family)
   end
 
   def library_creation_descriptor?
-    [ 'library_creation_complete', 'multiplexed_library_creation' ].include?(self.descriptor_key)
+    ['library_creation_complete', 'multiplexed_library_creation'].include?(self.descriptor_key)
   end
 
   def set_request_metadata
-    eventful.request_metadata[ self.descriptor_key ] = self.content
+    eventful.request_metadata[self.descriptor_key] = self.content
     eventful.request_metadata.save!
   end
 

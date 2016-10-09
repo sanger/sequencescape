@@ -46,11 +46,11 @@ module LabelPrinter
     end
 
     def printer_name_attribute
-      {printer_name: printer_name}
+      { printer_name: printer_name }
     end
 
     def label_template_id_attribute
-      {label_template_id: label_template_id}
+      { label_template_id: label_template_id }
     end
 
     def label_template_id

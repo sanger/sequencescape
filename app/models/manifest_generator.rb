@@ -42,22 +42,22 @@ class ManifestGenerator
     replicates        = ""
     tissue_source     = "-"
 
-    [ "#{plate_label}",
-      well_map_description(well),
-      well_sample_is_control(well),
-      construct_sample_label(plate_barcode, well),
-      well_sample_species(well),
-      well_sample_gender(well),
-      "#{comments}",
-      well_volume(well),
-      well_concentration(well),
-      "#{extraction_method}",
-      "#{wga_method}",
-      "#{dna_mass}",
-      well_sample_parent(well, 'mother'),
-      well_sample_parent(well, 'father'),
-      "#{replicates}",
-      "#{tissue_source}"
+    ["#{plate_label}",
+     well_map_description(well),
+     well_sample_is_control(well),
+     construct_sample_label(plate_barcode, well),
+     well_sample_species(well),
+     well_sample_gender(well),
+     "#{comments}",
+     well_volume(well),
+     well_concentration(well),
+     "#{extraction_method}",
+     "#{wga_method}",
+     "#{dna_mass}",
+     well_sample_parent(well, 'mother'),
+     well_sample_parent(well, 'father'),
+     "#{replicates}",
+     "#{tissue_source}"
     ]
   end
 

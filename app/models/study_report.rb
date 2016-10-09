@@ -16,7 +16,7 @@ class StudyReport < ActiveRecord::Base
   scope :for_user, ->(user) { where(:user_id => user.id) }
   #named_scope :without_files, -> { select_without_file_columns_for(:report) }
 
-  has_uploaded :report, {:serialization_column => "report_filename"}
+  has_uploaded :report, { :serialization_column => "report_filename" }
 
   belongs_to :study
   belongs_to :user
@@ -33,7 +33,7 @@ class StudyReport < ActiveRecord::Base
 
   def perform
     ActiveRecord::Base.transaction do
-      csv_options = {:row_sep => "\r\n", :force_quotes => true }
+      csv_options = { :row_sep => "\r\n", :force_quotes => true }
       Tempfile.open("#{self.study.dehumanise_abbreviated_name}_progress_report.csv") do |tempfile|
         Study.find(self.study_id).progress_report_on_all_assets do |fields|
           tempfile.puts(CSV.generate_line(fields, csv_options))
@@ -43,7 +43,7 @@ class StudyReport < ActiveRecord::Base
       end
     end
   end
-  handle_asynchronously :perform, :priority => Proc.new {|i| i.priority }
+  handle_asynchronously :perform, :priority => Proc.new { |i| i.priority }
 
   def priority
     configatron.delayed_job.fetch(:study_report_priority) || 100

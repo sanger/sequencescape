@@ -6,8 +6,8 @@
 
 # Comparing aliquots is about comparing their sample & tag, not their ID nor the receptacle they are in.
 def assert_equal_aliquots(expected, received)
-  expected_details = expected.map { |aliquot| [ aliquot.sample_id, aliquot.tag_id ] }.sort
-  received_details = received.map { |aliquot| [ aliquot.sample_id, aliquot.tag_id ] }.sort
+  expected_details = expected.map { |aliquot| [aliquot.sample_id, aliquot.tag_id] }.sort
+  received_details = received.map { |aliquot| [aliquot.sample_id, aliquot.tag_id] }.sort
   assert_equal expected_details, received_details, 'Aliqouts are not as expected'
 end
 
@@ -39,5 +39,5 @@ end
 
 Given /^the aliquots in the library tube called "([^\"]+)" have been modified$/ do |name|
   tube = LibraryTube.find_by_name(name) or raise "Can't find library tube named #{name.inspect}"
-  tube.aliquots.each { |a| a.updated_at = Time.now ; a.save(:validate => false) }
+  tube.aliquots.each { |a| a.updated_at = Time.now; a.save(:validate => false) }
 end

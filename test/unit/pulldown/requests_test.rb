@@ -7,7 +7,7 @@
 require 'test_helper'
 
 class Pulldown::RequestsTest < ActiveSupport::TestCase
-  [ :wgs, :sc, :isc ].each do |request_type|
+  [:wgs, :sc, :isc].each do |request_type|
     context request_type.to_s.upcase do
       setup do
         @request = create(:"pulldown_#{request_type}_request")

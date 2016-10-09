@@ -97,10 +97,10 @@ end
 Given /^I have a robot for testing called "(.*?)"$/ do |name|
   Robot.create!(:name => name,:location => 'Somewhere',:barcode => 123) do |robot|
     robot.robot_properties.build([
-      {:name => 'Max Number of plates',:key => 'max_plates',:value => '3'},
-      {:key => 'SCRC1',:value => '20001'},
-      {:key => 'DEST1',:value => '20002'},
-      {:key => 'DEST2',:value => '20003'}
+      { :name => 'Max Number of plates',:key => 'max_plates',:value => '3' },
+      { :key => 'SCRC1',:value => '20001' },
+      { :key => 'DEST1',:value => '20002' },
+      { :key => 'DEST2',:value => '20003' }
     ])
   end
 end
@@ -118,7 +118,7 @@ Given /^I have a qc library created$/ do
   reporter_plate = qcb.qcables.first.asset
 
   tag_plate.update_attributes!(:plate_purpose => PlatePurpose.find_by_name('Tag PCR'))
-  Transfer::BetweenPlates.create!(:user => user,:source => reporter_plate,:destination => tag_plate,:transfers => {'A1' => 'A1'})
+  Transfer::BetweenPlates.create!(:user => user,:source => reporter_plate,:destination => tag_plate,:transfers => { 'A1' => 'A1' })
   stc = SpecificTubeCreation.create!(:parent => tag_plate,:child_purposes => [Tube::Purpose.find_by_name('Tag MX')],:user => user)
   batch = Batch.new(:pipeline => Pipeline.find_by_name('MiSeq sequencing')).tap do |batch|
     batch.id = 12345

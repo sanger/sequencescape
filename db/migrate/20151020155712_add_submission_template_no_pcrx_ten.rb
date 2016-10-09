@@ -42,7 +42,7 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
           rt = RequestType.find_by_key(rt_name)
           lib_types = rt.library_types
           unless lib_types.nil?
-            rt.library_types = lib_types.reject {|lt| lt == hiseqlt }
+            rt.library_types = lib_types.reject { |lt| lt == hiseqlt }
           end
         end
         hiseqlt.destroy

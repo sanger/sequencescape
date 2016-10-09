@@ -52,14 +52,14 @@ module Request::Statistics
     end
 
     def completed
-      [ 'passed', 'failed' ].map(&method(:[])).sum
+      ['passed', 'failed'].map(&method(:[])).sum
     end
 
     def pending
-      [ 'pending', 'blocked' ].map(&method(:[])).sum
+      ['pending', 'blocked'].map(&method(:[])).sum
     end
 
-    [ :started, :passed, :failed, :cancelled ].each do |direct_type|
+    [:started, :passed, :failed, :cancelled].each do |direct_type|
       class_eval("def #{direct_type} ; self[#{direct_type.to_s.inspect}] ; end")
     end
 
@@ -85,7 +85,7 @@ module Request::Statistics
       ", __FILE__, line)
     end
 
-    [ :started, :passed, :failed, :cancelled, :completed, :pending ].each do |name|
+    [:started, :passed, :failed, :cancelled, :completed, :pending].each do |name|
       summary_counter(name)
     end
   end

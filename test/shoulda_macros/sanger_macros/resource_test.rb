@@ -211,7 +211,7 @@ module Sanger
                       end
                       should respond_with :success
                       should "have api version attribute on root object" do
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}", :attributes => {:api_version => "0.6"}
+                        assert_tag :tag => "#{resource_name.to_s.pluralize}", :attributes => { :api_version => "0.6" }
                         assert_tag :tag => "#{resource_name.to_s.pluralize}"
                       end
                     end
@@ -227,7 +227,7 @@ module Sanger
                       end
                       should respond_with :success
                       should "show xml" do
-                        assert_tag :tag => "#{resource_name}", :attributes => {:api_version => RELEASE.api_version}
+                        assert_tag :tag => "#{resource_name}", :attributes => { :api_version => RELEASE.api_version }
                         assert_tag :tag => "#{resource_name}"
                       end
                     end

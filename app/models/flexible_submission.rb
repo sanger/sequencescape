@@ -13,7 +13,7 @@ class FlexibleSubmission < Order
   include Submission::Crossable
 
   def request_type_ids=(id_list)
-    self.request_type_ids_list = id_list.map {|i| [i] }
+    self.request_type_ids_list = id_list.map { |i| [i] }
   end
 
   def request_type_ids

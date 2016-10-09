@@ -93,7 +93,7 @@ class SubmissionTest < ActiveSupport::TestCase
 
       context "and incompatible request options" do
         setup do
-          @order1.request_options = {:option => "value"}
+          @order1.request_options = { :option => "value" }
         end
 
         should "be incompatible" do

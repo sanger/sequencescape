@@ -20,7 +20,7 @@ module BroadcastEvent::SubjectHelpers
     end
 
     def as_json(*args)
-      Hash[json_fields.map {|f| [f,send(f)] }]
+      Hash[json_fields.map { |f| [f,send(f)] }]
     end
 
     delegate :friendly_name, :uuid, :subject_type, :to => :target
@@ -64,7 +64,7 @@ module BroadcastEvent::SubjectHelpers
 
   module MultiTarget
     def for(seed,event)
-      target_for(seed,event).map {|t| Subject.new(name,t) }
+      target_for(seed,event).map { |t| Subject.new(name,t) }
     end
   end
 

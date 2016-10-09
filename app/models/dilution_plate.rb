@@ -14,7 +14,7 @@ class DilutionPlate < Plate
   scope :with_pico_children,  -> {
     joins(:pico_descendants).
     select('`assets`.*').
-    where(:asset_links => {:direct => true}).
+    where(:asset_links => { :direct => true }).
     uniq
   }
 
@@ -23,7 +23,7 @@ class DilutionPlate < Plate
   end
 
   def to_pico_hash
-    {:pico_dilution => {
+    { :pico_dilution => {
         :child_barcodes => pico_children.map { |plate| plate.barcode_dilution_factor_created_at_hash }
       }.merge(barcode_dilution_factor_created_at_hash),
         :study_name => study_name

@@ -22,8 +22,8 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   def self.shared
     context "with tag clashes" do
       setup do
-        tag_hash = Hash.new {|h,i| h[i] = create :tag }
-        @tags = [1,2,3,4,5,5,6,6].map {|i| tag_hash[i] }
+        tag_hash = Hash.new { |h,i| h[i] = create :tag }
+        @tags = [1,2,3,4,5,5,6,6].map { |i| tag_hash[i] }
         @requests = (1..8).map do |i|
           r = create :pooled_cherrypick_request
           r.asset.aliquots.first.update_attributes!(:tag => @tags[i - 1] )
@@ -93,8 +93,8 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
         setup do
 
-          tag_hash = Hash.new {|h,i| h[i] = create :tag }
-          @tags = [1,2,3,4,5,6,7,8].map {|i| tag_hash[i] }
+          tag_hash = Hash.new { |h,i| h[i] = create :tag }
+          @tags = [1,2,3,4,5,6,7,8].map { |i| tag_hash[i] }
 
           @requests = (1..8).map do |i|
             r = create :pooled_cherrypick_request

@@ -14,13 +14,13 @@ FactoryGirl.define do
   #easier to keep it here at the moment because we are moving stuff between both
   factory :order do |order|
     study
-    workflow              {|workflow| workflow.association(:submission_workflow)}
+    workflow              { |workflow| workflow.association(:submission_workflow) }
     project
     user
     item_options          {}
     request_options       {}
     assets                []
-    request_types         { [ create(:request_type).id ] }
+    request_types         { [create(:request_type).id] }
 
     factory :order_with_submission do
       after(:build) { |o| o.create_submission(:user_id => o.user_id) }

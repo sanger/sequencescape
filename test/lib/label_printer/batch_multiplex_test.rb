@@ -19,15 +19,15 @@ class BatchMultiplexTest < ActiveSupport::TestCase
     @tube_name = 'tube name'
     @tube1 = create :library_tube, barcode: barcode1, name: @tube_name
 
-    printable = {tube1.id => "on"}
-    options = {count: '1', printable: printable, batch: batch}
+    printable = { tube1.id => "on" }
+    options = { count: '1', printable: printable, batch: batch }
     @tube_label = LabelPrinter::Label::BatchMultiplex.new(options)
-    @label = {top_line: "(p) #{@tube_name}",
+    @label = { top_line: "(p) #{@tube_name}",
               middle_line: barcode1,
               bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
               round_label_top_line: prefix,
               round_label_bottom_line: barcode1,
-              barcode: tube1.ean13_barcode}
+              barcode: tube1.ean13_barcode }
   end
 
   test "should return correct tubes" do

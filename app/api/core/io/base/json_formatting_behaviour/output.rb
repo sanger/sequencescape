@@ -15,7 +15,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
     # we will only open and close blocks as we go.  Then build a tree that can be executed against
     # an object to generate the JSON appropriately.
     tree = attribute_to_json.sort_by(&:last).map do |attribute, json|
-      [ json.split('.'), attribute.split('.').map(&:to_sym) ]
+      [json.split('.'), attribute.split('.').map(&:to_sym)]
     end.inject(json_code_tree.for(self)) do |tree, (json_path, attribute_path)|
       tree.tap do
         json_leaf = json_path.pop

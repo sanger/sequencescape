@@ -90,11 +90,11 @@ module Submission::StateMachine
       state :cancelled,   :enter => :cancel_all_requests
 
       event :built do
-        transitions :to => :pending, :from => [ :building ]
+        transitions :to => :pending, :from => [:building]
       end
 
       event :cancel do
-        transitions :to => :cancelled, :from => [ :pending, :ready, :cancelled ], :guard => :requests_cancellable?
+        transitions :to => :cancelled, :from => [:pending, :ready, :cancelled], :guard => :requests_cancellable?
       end
 
       event :process do

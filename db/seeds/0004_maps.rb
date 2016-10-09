@@ -14,7 +14,7 @@
 # D . . . . . . . . .
 #
 map_data = []
-[ 96, 384 ].each do |plate_size|
+[96, 384].each do |plate_size|
   Map.plate_dimensions(plate_size) do |width, height|
     details = (0...plate_size).map do |index|
       {

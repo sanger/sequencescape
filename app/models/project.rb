@@ -52,7 +52,7 @@ class Project < ActiveRecord::Base
   scope :in_assets, ->(assets) {
     select('projects.*').uniq.
     joins(:aliquots).
-    where(aliquots:{receptacle_id: assets})
+    where(aliquots:{ receptacle_id: assets })
   }
 
   has_many :roles, :as => :authorizable
@@ -66,7 +66,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
 
   scope :for_search_query, ->(query,with_includes) {
-    where([ 'name LIKE ? OR id=?', "%#{query}%", query ])
+    where(['name LIKE ? OR id=?', "%#{query}%", query])
   }
 
   # Allow us to pass in nil or '' if we don't want to filter state.
@@ -78,7 +78,7 @@ class Project < ActiveRecord::Base
   scope :approved,     ->()     { where(approved: true) }
   scope :unapproved,   ->()     { where(approved: false) }
   scope :valid,        ->()     { active.approved }
-  scope :for_user,     ->(user) { joins({:roles => :user_role_bindings}).where(:roles_users => {:user_id => user}) }
+  scope :for_user,     ->(user) { joins({ :roles => :user_role_bindings }).where(:roles_users => { :user_id => user }) }
 
   scope :with_unallocated_manager, ->() {
     roles = Role.arel_table
@@ -130,7 +130,7 @@ class Project < ActiveRecord::Base
   end
 
   def owners
-    role = self.roles.detect {|r| r.name == "owner" }
+    role = self.roles.detect { |r| r.name == "owner" }
     unless role.nil?
       role.users
     else
@@ -144,7 +144,7 @@ class Project < ActiveRecord::Base
   end
 
   def manager
-    role = self.roles.detect {|r| r.name == "manager"}
+    role = self.roles.detect { |r| r.name == "manager" }
     unless role.nil?
       role.users.first
     else

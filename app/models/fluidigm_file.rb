@@ -59,7 +59,7 @@ class FluidigmFile
     attr_reader :name, :result
 
     @@valid_markers = ['XX','XY','YY']
-    @@gender_map    = {'XX' => 'F', 'YY' => 'F', 'XY' => 'M'}
+    @@gender_map    = { 'XX' => 'F', 'YY' => 'F', 'XY' => 'M' }
 
     def initialize(name,result)
       @name   = name
@@ -88,7 +88,7 @@ class FluidigmFile
     end
 
     def gender_markers
-      marker_array.select {|m| m.gender_marker?}.map(&:gender)
+      marker_array.select { |m| m.gender_marker? }.map(&:gender)
     end
 
     def add_assay(assay,marker)
@@ -96,7 +96,7 @@ class FluidigmFile
     end
 
     def count
-      marker_array.select {|m| m.pass? }.count
+      marker_array.select { |m| m.pass? }.count
     end
 
     private
@@ -114,7 +114,7 @@ class FluidigmFile
   end
 
   def each_well
-    @wells.each {|_,w| yield(w)}
+    @wells.each { |_,w| yield(w) }
   end
 
   def for_plate?(test_plate)
@@ -126,7 +126,7 @@ class FluidigmFile
   end
 
   def well_at(description)
-    @wells ||= Hash.new {|hash,desc| hash[desc] = FluidigmWell.new(desc) }
+    @wells ||= Hash.new { |hash,desc| hash[desc] = FluidigmWell.new(desc) }
     @wells[description]
   end
 
@@ -136,7 +136,7 @@ class FluidigmFile
 
   private
   def header_start_index
-    @header_start_index ||= (0..@csv.size).detect {|i| @csv[i][0] == 'Experiment Information'} || raise(InvalidFile,'Could not find header')
+    @header_start_index ||= (0..@csv.size).detect { |i| @csv[i][0] == 'Experiment Information' } || raise(InvalidFile,'Could not find header')
   end
 
   def data_start_index
@@ -144,7 +144,7 @@ class FluidigmFile
   end
 
   def headers
-    @headers ||= @csv[header_start_index].zip(@csv[header_start_index + 1]).zip(@csv[header_start_index + 2]).map {|h| h.join(' ')}
+    @headers ||= @csv[header_start_index].zip(@csv[header_start_index + 1]).zip(@csv[header_start_index + 2]).map { |h| h.join(' ') }
   end
 
   def column(head)

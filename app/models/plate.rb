@@ -85,7 +85,7 @@ class Plate < Asset
   def submission_ids
     @siat ||=  container_associations.
       joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id').
-      where.not(requests:{submission_id:nil}).where.not(requests:{state: Request::Statemachine::INACTIVE}).
+      where.not(requests:{ submission_id:nil }).where.not(requests:{ state: Request::Statemachine::INACTIVE }).
       uniq.pluck(:submission_id)
   end
 
@@ -103,7 +103,7 @@ class Plate < Asset
   end
 
   def self.derived_classes
-    [ self, *self.descendants ].map(&:name)
+    [self, *self.descendants].map(&:name)
   end
 
   def prefix
@@ -157,12 +157,12 @@ class Plate < Asset
     # At time of writing, submissions add comments to each request, so there are a lot of comments
     # getting created here. (The intent is to change this so requests are treated similarly to plates)
     def create!(options)
-      plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
+      plate.submissions.each { |s| s.add_comment(options[:description],options[:user]) }
       Comment.create!(options.merge(:commentable => plate))
     end
 
     def create(options)
-      plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
+      plate.submissions.each { |s| s.add_comment(options[:description],options[:user]) }
       Comment.create(options.merge(:commentable => plate))
     end
 
@@ -276,7 +276,7 @@ class Plate < Asset
     end
   end
 
-  scope :include_wells_and_attributes, -> { includes(:wells => [ :map, :well_attribute ]) }
+  scope :include_wells_and_attributes, -> { includes(:wells => [:map, :well_attribute]) }
 
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
@@ -289,7 +289,7 @@ class Plate < Asset
   scope :qc_started_plates, -> {
     select('DISTINCT assets.*').
     joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
-    where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id ]).
+    where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id]).
     order('assets.id DESC').
     includes(:events,:asset_audits)
   }
@@ -335,7 +335,7 @@ class Plate < Asset
   scope :with_wells, ->(wells) {
       select('DISTINCT assets.*').
       joins(:container_associations).
-      where(:container_associations => {:content_id => wells.map(&:id) })
+      where(:container_associations => { :content_id => wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, :class_name => "Plate", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
@@ -344,7 +344,7 @@ class Plate < Asset
 
   scope :with_descendants_owned_by, ->(user) {
     joins(:descendant_plates => :plate_owner).
-    where(:plate_owners => {:user_id => user}).
+    where(:plate_owners => { :user_id => user }).
     uniq
   }
 
@@ -359,9 +359,9 @@ class Plate < Asset
         :uuid_object, :map,
         {
           :requests_as_target => [
-            {:initial_study => :uuid_object},
-            {:initial_project => :uuid_object},
-            {:asset => {:aliquots => :sample}}
+            { :initial_study => :uuid_object },
+            { :initial_project => :uuid_object },
+            { :asset => { :aliquots => :sample } }
           ]
         }
       ]
@@ -445,7 +445,7 @@ class Plate < Asset
   end
 
   def set_plate_type(result)
-    self.add_descriptor(Descriptor.new({:name => "Plate Type", :value => result}))
+    self.add_descriptor(Descriptor.new({ :name => "Plate Type", :value => result }))
     self.save
   end
 
@@ -646,7 +646,7 @@ class Plate < Asset
 
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, location, study)
     return nil if plates.empty?
-    plate_barcodes = plates.map { |plate| plate.barcode}
+    plate_barcodes = plates.map { |plate| plate.barcode }
     asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.now.to_formatted_s(:sortable)} ", study)
     plates.each do |plate|
       next if plate.wells.empty?
@@ -797,7 +797,7 @@ class Plate < Asset
   def stock_wells
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
     return Hash[wells.with_pool_id.map { |w| [w,[w]] }] if stock_plate?
-    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.sort_by {|sw| sw.map.column_order } ] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
+    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.sort_by { |sw| sw.map.column_order }] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
       raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
     end
   end
@@ -813,7 +813,7 @@ class Plate < Asset
   def update_concentrations_from(parser)
     ActiveRecord::Base.transaction do
       parser.each_well_and_parameters do |position,concentration,molarity|
-        wells.include_map.detect {|w| w.map_description == position }.tap do |well|
+        wells.include_map.detect { |w| w.map_description == position }.tap do |well|
           well.set_concentration(concentration)
           well.set_molarity(molarity)
           well.save!

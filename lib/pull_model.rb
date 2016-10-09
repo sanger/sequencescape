@@ -111,7 +111,7 @@ class GraphRenderer < Renderer
       add_edges(graph, drawn_nodes, edges)
 
       #hack
-      all_requests = drawn_nodes.select { |n| n.is_a?(Request)}
+      all_requests = drawn_nodes.select { |n| n.is_a?(Request) }
       all_requests = []
 
       all_requests.group_by(&:class).each do |klass, requests|
@@ -204,7 +204,7 @@ end
 class SingleGraphRenderer < GraphRenderer
   def add_edges(graph, nodes, edges)
     edge_set = Set.new()
-    super(graph, nodes, edges.select { |e| edge_set.include?(e.key) == false and edge_set << e.key and edge_set.include?(e.reversed_key) == false})
+    super(graph, nodes, edges.select { |e| edge_set.include?(e.key) == false and edge_set << e.key and edge_set.include?(e.reversed_key) == false })
   end
 end
 
@@ -228,12 +228,12 @@ class YamlRenderer < Renderer
   def render_objects(objects)
     objects.map do |object|
       att = object_to_hash(object)
-      {:class => object.class.name, :id => object.id, :attributes => att}
+      { :class => object.class.name, :id => object.id, :attributes => att }
     end.to_yaml
   end
 end
 
-$options = {:output_method => YamlRenderer.new, :model => :sample_with_assets}
+$options = { :output_method => YamlRenderer.new, :model => :sample_with_assets }
 $objects = []
 $already_pulled = {}
 
@@ -280,19 +280,19 @@ class Edge
     case
       # Request related
     when object && object.is_a?(Request) && parent && parent.is_a?(Asset)
-      { "color" => object.color, "style" => "bold", "dir" => "both"}.merge(
+      { "color" => object.color, "style" => "bold", "dir" => "both" }.merge(
       if object.asset == parent # source side
-        { "taillabel" => "", "arrowtail" => "dot", "arrowhead" => "empty", "sametail" => "source_#{parent.node_name}"}
+        { "taillabel" => "", "arrowtail" => "dot", "arrowhead" => "empty", "sametail" => "source_#{parent.node_name}" }
       else
-        { "taillabel" => "", "arrowtail" => "normal", "arrowhead" => "odot", "sametail" => "target_#{parent.node_name}"}
+        { "taillabel" => "", "arrowtail" => "normal", "arrowhead" => "odot", "sametail" => "target_#{parent.node_name}" }
       end
       )
     when parent.is_a?(Request) && object && object.is_a?(Asset)
-      { "color" => parent.color, "style" => "bold", "dir" => "both"}.merge(
+      { "color" => parent.color, "style" => "bold", "dir" => "both" }.merge(
       if parent.asset == object # source side
-      {"headlabel" => "", "arrowtail" => "empty", "arrowhead" => "dot", "samehead" => "source_#{object.node_name}"}
+      { "headlabel" => "", "arrowtail" => "empty", "arrowhead" => "dot", "samehead" => "source_#{object.node_name}" }
       else
-      {"headlabel" => "", "arrowhead" => "normal", "arrowtail" => "odot", "sametail" => "target_#{parent.node_name}"}
+      { "headlabel" => "", "arrowhead" => "normal", "arrowtail" => "odot", "sametail" => "target_#{parent.node_name}" }
       end
       )
       # AssetLink
@@ -300,15 +300,15 @@ class Edge
         if parent and parent.parents.present? and parent.parents.include?(object)
           @parent, @object = [@object, @parent] # reverse so they could share the same 'sametail'
         end
-      {"style" => "dashed", "dir" => "both"}.merge(
-        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name}
+      { "style" => "dashed", "dir" => "both" }.merge(
+        { "arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name }
       )
       #Aliquot
     when object.is_a?(Aliquot) && parent.is_a?(Asset)
-        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both"}
+        { "arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both" }
     when parent.is_a?(Aliquot) && object.is_a?(Asset)
           @parent, @object = [@object, @parent] # reverse so they could share the same 'sametail'
-        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both"}
+        { "arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both" }
     else
       {}
     end
@@ -328,7 +328,7 @@ end
 
 class CutEdge < Edge
   def node_options
-    super.merge({ "color" => "red", "style" => "none"})
+    super.merge({ "color" => "red", "style" => "none" })
   end
 
   def edge_options
@@ -398,7 +398,7 @@ Models = {
 }
 ],
 
-  :simple_submission => { Submission => ->(s) {  s.requests.group_by(&:request_type_id).values }},
+  :simple_submission => { Submission => ->(s) {  s.requests.group_by(&:request_type_id).values } },
 
   :asset_down => AssetDown = { Asset => [:children, RequestByType, :sample, :tags],
     Request => [:target_asset],
@@ -412,7 +412,7 @@ Models = {
     Request => [:asset],
     Aliquot => [:sample, :tag],
     Aliquot::Receptacle => [:aliquots],
-    Well => [:plate]},
+    Well => [:plate] },
   :sample_with_assets => AssetDown.merge(
   Sample => [:assets, :study_samples],
   StudySample => [:study],
@@ -425,14 +425,14 @@ Models = {
   :asset_up_and_down => [AssetUp, AssetDown],
   :asset_down_and_up => [AssetDown, AssetUp],
   :full_asset => AssetUp.merge(AssetDown),
-  :asset => [{Asset => [ ->(s) {  s.requests.group_by(&:request_type_id).values },
-        :requests_as_target, :children, :parents]},
-        { Request => [:asset, :target_asset]}],
-  :submission_down => [{ Submission => RequestByType}.merge(AssetDown)],
+  :asset => [{ Asset => [->(s) {  s.requests.group_by(&:request_type_id).values },
+        :requests_as_target, :children, :parents] },
+        { Request => [:asset, :target_asset] }],
+  :submission_down => [{ Submission => RequestByType }.merge(AssetDown)],
     :bare => {}
 }
 
-Layouts = { :submission => [ NodeToCluster.new(Submission)
+Layouts = { :submission => [NodeToCluster.new(Submission)
   ]
 }
 optparse = OptionParser.new do |opts|
@@ -548,7 +548,7 @@ def load_objects(objects)
 end
 
 def object_to_hash(object)
-  att = object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
+  att = object.attributes.reject { |k,v| [:created_at, :updated_at].include?(k.to_sym) }
   att.each do |k,v|
     if k =~ /name|login|email|decription|abstract|title/i and v.is_a?(String) and (k !~ /class_?name/)
       att[k] = "#{object.class.name}_#{object.id}_#{k}"
@@ -677,7 +677,7 @@ end
 end
 class Request
   def color()
-    {"passed" => "green4", "failed" => "firebrick4", "pending" => "dodgerblue4", "started" => "darkorchid4"}.fetch(state, "gray22")
+    { "passed" => "green4", "failed" => "firebrick4", "pending" => "dodgerblue4", "started" => "darkorchid4" }.fetch(state, "gray22")
   end
   def node_options_with_state_color()
     node_options_without_state_color.merge("fontcolor" => color() )

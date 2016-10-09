@@ -52,7 +52,7 @@ class FakeAccessionService < FakeSinatraService
   end
 
   def add_payload(payload)
-    sent.push(Hash[*payload.map {|k,v| [k, v.readlines]}.map {|k,v| [k,(v unless v.empty?)]}.flatten])
+    sent.push(Hash[*payload.map { |k,v| [k, v.readlines] }.map { |k,v| [k,(v unless v.empty?)] }.flatten])
   end
 
   class Service < FakeSinatraService::Base

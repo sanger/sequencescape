@@ -41,13 +41,13 @@ module LabInterface::WorkflowsHelper
     @tag_hash ||= Hash[
       Tag.joins('INNER JOIN aliquots ON aliquots.tag_id = tags.id').
         select('tags.map_id, aliquots.receptacle_id AS receptacle_id').
-        where(aliquots: {receptacle_id: @batch.requests.map(&:asset_id).uniq }).map do |tag|
+        where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id).uniq }).map do |tag|
       [tag.receptacle_id,tag.map_id]
-    end].tap {|th| th.default = '-' }
+    end].tap { |th| th.default = '-' }
   end
 
   def qc_select_box(request, status, html_options={})
-    select_options = [ 'pass', 'fail' ]
+    select_options = ['pass', 'fail']
     select_options.unshift('') if html_options.delete(:generate_blank)
     select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(:class => 'qc_state'))
   end
@@ -57,10 +57,10 @@ module LabInterface::WorkflowsHelper
     if status.blank? || status == "Pass"
       status = "OK"
     end
-    select_tag("wells[#{request.id}][qc_state]", options_for_select({"Pass" => "OK", "Fail" => "Fail", "Weak" => "Weak", "No Band" => "Band Not Visible", "Degraded" => "Degraded"}, status), html_options)
+    select_tag("wells[#{request.id}][qc_state]", options_for_select({ "Pass" => "OK", "Fail" => "Fail", "Weak" => "Weak", "No Band" => "Band Not Visible", "Degraded" => "Degraded" }, status), html_options)
   end
 
   def request_types_sorted_by_total(workflow, project)
-    workflow.request_types.to_a.sort {|a,b| a.name <=> b.name}
+    workflow.request_types.to_a.sort { |a,b| a.name <=> b.name }
   end
 end

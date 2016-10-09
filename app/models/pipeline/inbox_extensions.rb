@@ -10,10 +10,10 @@ module Pipeline::InboxExtensions
     requests = proxy_association.scope
     pipeline = proxy_association.owner
     # Build a list of methods to invoke to build the correct request list
-    actions = [ :unbatched ]
+    actions = [:unbatched]
     actions.concat(pipeline.custom_inbox_actions)
     actions << ((pipeline.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
-    actions << [ (pipeline.group_by_parent? ? :holder_located : :located), pipeline.location_id ]
+    actions << [(pipeline.group_by_parent? ? :holder_located : :located), pipeline.location_id]
 
     if action != :count
       actions << :include_request_metadata
@@ -22,9 +22,9 @@ module Pipeline::InboxExtensions
     end
 
     if action.present?
-      actions << [ action ]
+      actions << [action]
     elsif pipeline.paginate?
-      actions << [ :paginate, { :per_page => 50, :page => current_page } ]
+      actions << [:paginate, { :per_page => 50, :page => current_page }]
     end
 
     actions.inject(requests) { |context, action| context.send(*Array(action)) }

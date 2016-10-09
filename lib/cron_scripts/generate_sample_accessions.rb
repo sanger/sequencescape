@@ -15,7 +15,7 @@ class ::Sample
       'LEFT JOIN data_release_study_types AS trea_drst ON trea_drst.id = trea_sm.data_release_study_type_id'
     ]).
     readonly(false).
-    where([ "
+    where(["
       (tcnan_sm.sample_ebi_accession_number IS NULL OR TRIM(tcnan_sm.sample_ebi_accession_number) = '') AND
       (tcnan_sm.sample_taxon_id IS NOT NULL) AND
       (tcnan_sm.sample_common_name IS NOT NULL AND TRIM(tcnan_sm.sample_common_name) != '') AND
@@ -32,10 +32,10 @@ class ::Sample
         )
       )
     ", {
-      :data_release_timing          => [ 'never', 'delayed' ],
+      :data_release_timing          => ['never', 'delayed'],
       :data_release_study_type      => DataReleaseStudyType::DATA_RELEASE_TYPES_SAMPLES,
-      :data_release_managed_or_open => [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ]
-    } ])
+      :data_release_managed_or_open => [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED]
+    }])
   }
 end
 

@@ -10,7 +10,7 @@ class HealthController < ApplicationController
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :login_required, :except => [ :index ]
+  before_action :login_required, :except => [:index]
 
   def index
     @monitor = Health.new

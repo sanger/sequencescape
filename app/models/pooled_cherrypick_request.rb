@@ -25,7 +25,7 @@ class PooledCherrypickRequest < CustomerRequest
         clone.project_id = initial_project_id || aliquot.project_id
       end
     end.reject do |candidate_aliquot|
-      target_asset.aliquots.any? {|existing_aliquot| existing_aliquot.equivalent?(candidate_aliquot) }
+      target_asset.aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate_aliquot) }
     end
   end
 

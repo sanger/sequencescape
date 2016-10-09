@@ -79,9 +79,7 @@ module Accessionable
             end
           } unless self.tags.blank?
 
-          xml.SAMPLE_LINKS {
-
-          } unless self.links.blank?
+          xml.SAMPLE_LINKS {} unless self.links.blank?
         }
       }
       return xml.target!

@@ -17,15 +17,15 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       @fluidigm = FluidigmFile.new(@file.read)
       @well_maps = {
         'S06' => {
-          :markers => [ @XY,@XY,@XY ],
+          :markers => [@XY,@XY,@XY],
           :count   => 94
         },
         'S04' => {
-          :markers => [ @NC, @XX, @XX ],
+          :markers => [@NC, @XX, @XX],
           :count => 92
         },
         'S43' => {
-          :markers => [ @XX, @XX, @XX ],
+          :markers => [@XX, @XX, @XX],
           :count => 94
         }
       }

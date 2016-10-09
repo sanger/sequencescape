@@ -11,7 +11,7 @@ class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = "12345678"
     purpose = create :plate_purpose
-    purpose.create!(:do_not_create_wells,{:name => "Cherrypicked #{barcode}", :size => 192,:barcode => barcode,:plate_metadata_attributes => {:fluidigm_barcode => fluidigm_barcode}})
+    purpose.create!(:do_not_create_wells,{ :name => "Cherrypicked #{barcode}", :size => 192,:barcode => barcode,:plate_metadata_attributes => { :fluidigm_barcode => fluidigm_barcode } })
   end
 
   context "" do
@@ -37,7 +37,7 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     context "#add_well" do
-      [ [96,7,11], [384,15,23] ].each do |plate_size, row_size,col_size|
+      [[96,7,11], [384,15,23]].each do |plate_size, row_size,col_size|
         context "for #{plate_size} plate" do
           setup do
             @well = Well.new
@@ -390,9 +390,9 @@ end
       setup do
         @plate = Plate.new
         @plate.wells.build([
-          {:map => Map.find_by_description('A1')},
-          {:map => Map.find_by_description('B1')},
-          {:map => Map.find_by_description('C1')}
+          { :map => Map.find_by_description('A1') },
+          { :map => Map.find_by_description('B1') },
+          { :map => Map.find_by_description('C1') }
         ])
         @plate.wells.first.set_concentration('12')
         @plate.wells.first.set_molarity('34')
@@ -402,15 +402,15 @@ end
       end
 
       should 'update new wells' do
-        assert_equal 2.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_concentration
-        assert_equal 3.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_molarity
-        assert_equal 4.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_concentration
-        assert_equal 5.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_molarity
+        assert_equal 2.0, @plate.wells.detect { |w| w.map_description == 'B1' }.reload.get_concentration
+        assert_equal 3.0, @plate.wells.detect { |w| w.map_description == 'B1' }.reload.get_molarity
+        assert_equal 4.0, @plate.wells.detect { |w| w.map_description == 'C1' }.reload.get_concentration
+        assert_equal 5.0, @plate.wells.detect { |w| w.map_description == 'C1' }.reload.get_molarity
       end
 
       should 'no clear existing data' do
-        assert_equal 12.0, @plate.wells.detect {|w| w.map_description == 'A1' }.reload.get_concentration
-        assert_equal 34.0, @plate.wells.detect {|w| w.map_description == 'A1' }.reload.get_molarity
+        assert_equal 12.0, @plate.wells.detect { |w| w.map_description == 'A1' }.reload.get_concentration
+        assert_equal 34.0, @plate.wells.detect { |w| w.map_description == 'A1' }.reload.get_molarity
       end
     end
   end
@@ -441,9 +441,9 @@ end
   context "tubes are created from plate" do
     should "send print request" do
       plate = create :plate
-      10.times {plate.add_and_save_well(create :well_with_sample_and_without_plate)}
+      10.times { plate.add_and_save_well(create :well_with_sample_and_without_plate) }
       barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
 
       RestClient.expects(:post)
 

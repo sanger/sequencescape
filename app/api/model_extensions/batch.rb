@@ -17,8 +17,8 @@ module ModelExtensions::Batch
         :requests => [
           :uuid_object, :request_metadata, :request_type,
           { :submission   => :uuid_object },
-          { :asset        => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] },
-          { :target_asset => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] }
+          { :asset        => [:uuid_object, :barcode_prefix, { :aliquots => [:sample, :tag] }] },
+          { :target_asset => [:uuid_object, :barcode_prefix, { :aliquots => [:sample, :tag] }] }
         ]
       )}
 
@@ -40,12 +40,12 @@ module ModelExtensions::Batch
       # we need to call downstream request before setting the target_asset
       # otherwise, the request use the target asset to find the next request
       target_asset = asset_type.create! do |asset|
-        asset.barcode = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
+        asset.barcode = AssetBarcode.new_barcode unless [Lane, Well].include?(asset_type)
         asset.generate_name(request.asset.name)
       end
 
       downstream_requests_needing_asset(request) do |downstream_requests|
-        requests_to_update.concat(downstream_requests.map { |r| [ r.id, target_asset.id ] })
+        requests_to_update.concat(downstream_requests.map { |r| [r.id, target_asset.id] })
       end
 
       request.update_attributes!(:target_asset => target_asset)

@@ -31,7 +31,7 @@ class AssetsController < ApplicationController
           format.xml  { render :xml => Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml  { render :xml => ["relations" => {"parents" => @asset.parents, "children" => @asset.children}].to_xml }
+        format.xml  { render :xml => ["relations" => { "parents" => @asset.parents, "children" => @asset.children }].to_xml }
       end
     end
   end
@@ -154,7 +154,7 @@ class AssetsController < ApplicationController
     respond_to do |format|
       if saved
         flash[:notice] = 'Asset was successfully created.'
-        format.html { render :action => :create}
+        format.html { render :action => :create }
         format.xml  { render :xml => @assets, :status => :created, :location => assets_url(@assets) }
         format.json { render :json => @assets, :status => :created, :location => assets_url(@assets) }
       else
@@ -200,7 +200,7 @@ class AssetsController < ApplicationController
   end
 
   def summary
-    @summary = UiHelper::Summary.new({:per_page => 25, :page => params[:page]})
+    @summary = UiHelper::Summary.new({ :per_page => 25, :page => params[:page] })
     @summary.load_item(@asset)
   end
 
@@ -257,7 +257,7 @@ class AssetsController < ApplicationController
   def show_plate
   end
 
-  before_action :prepare_asset, :only => [ :new_request, :create_request ]
+  before_action :prepare_asset, :only => [:new_request, :create_request]
 
   def prepare_asset
     @asset = Asset.find(params[:id])
@@ -265,7 +265,7 @@ class AssetsController < ApplicationController
   private :prepare_asset
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, {:study_id => @study.try(:id), :project_id => @project.try(:id), :request_type_id => @request_type.try(:id)})
+    new_request_asset_path(@asset, { :study_id => @study.try(:id), :project_id => @project.try(:id), :request_type_id => @request_type.try(:id) })
   end
   private :new_request_for_current_asset
 
@@ -287,8 +287,8 @@ class AssetsController < ApplicationController
       :project         => @project,
       :workflow        => @request_type.workflow,
       :user            => current_user,
-      :assets          => [ @asset ],
-      :request_types   => [ @request_type.id ],
+      :assets          => [@asset],
+      :request_types   => [@request_type.id],
       :request_options => request_options,
       :comments        => params[:comments],
       :priority        => params[:priority]

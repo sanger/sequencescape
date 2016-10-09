@@ -25,7 +25,7 @@ class SequenomController < ApplicationController
   end
 
   # Here are all of the steps that can be performed
-  STEPS = [ 'PCR Mix', 'SAP Mix', 'IPLEX Mix', 'HPLC Water' ].map { |name| SequenomStep.new(name) }
+  STEPS = ['PCR Mix', 'SAP Mix', 'IPLEX Mix', 'HPLC Water'].map { |name| SequenomStep.new(name) }
   class << STEPS
     def for(step_name)
       self.find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{ step_name }'"
@@ -33,7 +33,7 @@ class SequenomController < ApplicationController
   end
 
   before_action :login_required
-  before_action :find_plate_from_id, :only => [ :show, :update ]
+  before_action :find_plate_from_id, :only => [:show, :update]
 
   def index
     # Do nothing, fall through to the view
@@ -118,8 +118,8 @@ private
     before_action(filter_name, filter_options)
   end
 
-  find_by_barcode_filter(User,  :only => [ :update, :quick_update ]) { |barcode,human_barcode| human_barcode }
-  find_by_barcode_filter(Plate, :only => [ :search, :quick_update ]) { |barcode,human_barcode| Barcode.number_to_human(barcode) }
+  find_by_barcode_filter(User,  :only => [:update, :quick_update]) { |barcode,human_barcode| human_barcode }
+  find_by_barcode_filter(Plate, :only => [:search, :quick_update]) { |barcode,human_barcode| Barcode.number_to_human(barcode) }
 
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!

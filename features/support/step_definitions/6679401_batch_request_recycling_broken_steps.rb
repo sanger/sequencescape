@@ -59,7 +59,7 @@ Then /^the batch (input|output) asset table should be:$/ do |name, expected_tabl
 end
 
 Then /^the batch input asset table should have 1 row with (\d+) wells$/ do |count|
-  Cucumber::Ast::Table.new([ { 'Wells' => count } ]).diff!(table(fetch_table("##{name}_assets")))
+  Cucumber::Ast::Table.new([{ 'Wells' => count }]).diff!(table(fetch_table("##{name}_assets")))
 end
 
 Given /^the plate template "([^\"]+)" exists$/ do |name|
@@ -96,7 +96,7 @@ def build_batch_for(name, count, &block)
   user = FactoryGirl.create(:user)
 
   assets = (1..count.to_i).map do |_|
-    asset_attributes = { }
+    asset_attributes = {}
     if submission_details.key?(:holder_type)
       asset_attributes[:container] = FactoryGirl.create(submission_details[:holder_type], :location_id => pipeline.location_id)
       asset_attributes[:map_id] = 1

@@ -10,7 +10,7 @@
 # across two.
 module Pipeline::InboxGroupedBySubmission
   def self.included(base)
-    base.has_many :inbox, :class_name => 'Request', :extend => [ Pipeline::RequestsInStorage, Pagination ]
+    base.has_many :inbox, :class_name => 'Request', :extend => [Pipeline::RequestsInStorage, Pagination]
   end
 
   # Always group by submission
@@ -28,7 +28,7 @@ module Pipeline::InboxGroupedBySubmission
 
     def paginated_by_submission(*args)
       options                      = args.extract_options!
-      options_for_submission_query = Hash[[ :limit, :offset ].map { |k| [ k, options.delete(k) ] if options.key?(k) }.compact]
+      options_for_submission_query = Hash[[:limit, :offset].map { |k| [k, options.delete(k)] if options.key?(k) }.compact]
       all(options.deep_merge(:conditions => { :submission_id => submissions(:all, options_for_submission_query).map(&:submission_id) }))
     end
 

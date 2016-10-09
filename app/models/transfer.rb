@@ -32,7 +32,7 @@ class Transfer < ActiveRecord::Base
     # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
     # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
     # are failed).
-    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'passed', 'failed', 'cancelled' ]
+    ALL_STATES = ['started', 'qc_complete', 'pending', 'passed', 'failed', 'cancelled']
 
     def self.state_helper(names)
       Array(names).each do |name|
@@ -82,9 +82,9 @@ class Transfer < ActiveRecord::Base
                 query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.can_be_considered_a_stock_plate=TRUE)'
               end
 
-              joins(join_options).where([ query_conditions, states ])
+              joins(join_options).where([query_conditions, states])
             else
-              { }
+              {}
             end
           }
         end
@@ -106,7 +106,7 @@ class Transfer < ActiveRecord::Base
               ]
 
 
-              joins(join_options).where(transfer_requests_as_target:{state:states})
+              joins(join_options).where(transfer_requests_as_target:{ state:states })
             else
               all
             end
@@ -136,7 +136,7 @@ class Transfer < ActiveRecord::Base
       base.class_eval do
         belongs_to :destination, :polymorphic => true
         validates_presence_of :destination
-        validates_uniqueness_of :destination_id, :scope => [ :destination_type, :source_id ], :message => 'can only be transferred to once from the source'
+        validates_uniqueness_of :destination_id, :scope => [:destination_type, :source_id], :message => 'can only be transferred to once from the source'
       end
     end
   end

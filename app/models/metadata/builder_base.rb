@@ -9,7 +9,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
 
   def initialize(*args, &block)
     super
-    @views, @locals, @root, @filter = { }, { }, nil, ->(_) { true }
+    @views, @locals, @root, @filter = {}, {}, nil, ->(_) { true }
   end
 
   def view_for(type, partial_name = nil, &block)

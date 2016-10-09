@@ -36,13 +36,13 @@ class Aliquot::Receptacle < Asset
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
 
   # Named scopes for the future
-  scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
-  scope :include_aliquots_for_api, -> { includes( :aliquots => [ {:sample => [:uuid_object,:study_reference_genome,{:sample_metadata => :reference_genome}]}, { :tag => :tag_group }, :bait_library ] ) }
+  scope :include_aliquots, -> { includes( :aliquots => [:sample, :tag, :bait_library] ) }
+  scope :include_aliquots_for_api, -> { includes( :aliquots => [{ :sample => [:uuid_object,:study_reference_genome,{ :sample_metadata => :reference_genome }] }, { :tag => :tag_group }, :bait_library] ) }
   scope :for_summary, -> { includes(:map,:samples,:studies,:projects) }
-  scope :include_creation_batches, -> { includes(:creation_batches)}
-  scope :include_source_batches, -> { includes(:source_batches)}
+  scope :include_creation_batches, -> { includes(:creation_batches) }
+  scope :include_source_batches, -> { includes(:source_batches) }
 
-  scope :for_study_and_request_type, ->(study,request_type) { joins(:aliquots,:requests).where(aliquots:{study_id:study}).where(requests:{request_type_id:request_type}) }
+  scope :for_study_and_request_type, ->(study,request_type) { joins(:aliquots,:requests).where(aliquots:{ study_id:study }).where(requests:{ request_type_id:request_type }) }
 
   # This is a lambda as otherwise the scope selects Aliquot::Receptacles
   scope :with_aliquots, -> { joins(:aliquots) }

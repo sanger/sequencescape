@@ -25,10 +25,10 @@ class SamplesControllerTest < ActionController::TestCase
     # why, if you remove 'update' from the 'ignore_actions' you'll find the test fails!
     resource_test(
       'sample', {
-        :defaults => {:name => "Sample22"},
+        :defaults => { :name => "Sample22" },
         :formats => ['html'],
         :ignore_actions => ['show','create','update','destroy'],
-        :user => -> { user = FactoryGirl.create(:user) ; user.is_administrator ; user }
+        :user => -> { user = FactoryGirl.create(:user); user.is_administrator; user }
       }
     )
 

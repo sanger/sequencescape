@@ -92,7 +92,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           end
 
           should 'handle arrays' do
-            @value = [ '1', '2', '3' ]
+            @value = ['1', '2', '3']
           end
 
           should 'handle numbers' do
@@ -201,7 +201,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           )
 
           assert_equal(
-            json_results({'nested' => {}}),
+            json_results({ 'nested' => {} }),
             decode(@stream)
           )
         end

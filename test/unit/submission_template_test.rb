@@ -80,6 +80,6 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
   end
 
   def field(field_name)
-    @order.input_field_infos.detect {|ifi| ifi.display_name == field_name} || raise("#{field_name} field not found")
+    @order.input_field_infos.detect { |ifi| ifi.display_name == field_name } || raise("#{field_name} field not found")
   end
 end

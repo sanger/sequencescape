@@ -61,14 +61,14 @@ class Asset < ActiveRecord::Base
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
-  scope :where_is_a?,     ->(clazz) { where( sti_type: [ clazz, *clazz.descendants ].map(&:name) ) }
-  scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
+  scope :where_is_a?,     ->(clazz) { where( sti_type: [clazz, *clazz.descendants].map(&:name) ) }
+  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
 
   #Orders
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
 
-  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(:requests => { :sti_type => [ t, *t.descendants ].map(&:name) }) }
+  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(:requests => { :sti_type => [t, *t.descendants].map(&:name) }) }
 
   extend ContainerAssociation::Extension
 
@@ -114,12 +114,12 @@ class Asset < ActiveRecord::Base
  scope :for_search_query, ->(query,with_includes) {
 
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
-    arguments = {:name => "%#{query}%"}
+    arguments = { :name => "%#{query}%" }
 
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
     if /\A\d+\z/ === query
       search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
-      arguments.merge!({:id => query.to_i, :barcode => query.to_s})
+      arguments.merge!({ :id => query.to_i, :barcode => query.to_s })
     end
 
     # If We're a Sanger Human barcode
@@ -127,7 +127,7 @@ class Asset < ActiveRecord::Base
       prefix_id = BarcodePrefix.find_by_prefix(match[1]).try(:id)
       number = match[2]
       search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
-      arguments.merge!({:barcode => number, :prefix_id => prefix_id})
+      arguments.merge!({ :barcode => number, :prefix_id => prefix_id })
     end
 
     search << ')'
@@ -298,10 +298,10 @@ class Asset < ActiveRecord::Base
   end
 
   QC_STATES = [
-    [ 'passed',  'pass' ],
-    [ 'failed',  'fail' ],
-    [ 'pending', 'pending' ],
-    [  nil, '']
+    ['passed',  'pass'],
+    ['failed',  'fail'],
+    ['pending', 'pending'],
+    [nil, '']
   ]
 
   QC_STATES.reject { |k,v| k.nil? }.each do |state, qc_state|
@@ -335,7 +335,7 @@ class Asset < ActiveRecord::Base
       when state == 'passed'  then self.external_release = true
       when state == 'pending' then self # Do nothing
       when state.nil?         then self # TODO: Ignore for the moment, correct later
-      when [ 'scanned_into_lab' ].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
+      when ['scanned_into_lab'].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
       else raise StandardError, "Invalid external release state #{state.inspect}"
       end
     end
@@ -388,7 +388,7 @@ class Asset < ActiveRecord::Base
         if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
           { :query => 'FALSE' }
         else
-          { :query => '(barcode=? AND barcode_prefix_id=?)', :parameters => [ barcode_number, barcode_prefix.id ] }
+          { :query => '(barcode=? AND barcode_prefix_id=?)', :parameters => [barcode_number, barcode_prefix.id] }
         end
       when /^\d{10}$/ # A Fluidigm barcode
         { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query => '(pmmb.fluidigm_barcode=?)', :parameters => source_barcode.to_s }
@@ -403,7 +403,7 @@ class Asset < ActiveRecord::Base
       end
     end
 
-      where([ query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact ]).
+      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact]).
       joins(query_details[:joins].compact.uniq)
   }
 

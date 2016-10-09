@@ -39,7 +39,7 @@ module Submission::AssetSubmissionFinder
 
   def find_tubes_including_samples_for!(details)
 
-    prefix_cache = Hash.new {|cache,prefix| cache[prefix] = BarcodePrefix.find_by_prefix(prefix) }
+    prefix_cache = Hash.new { |cache,prefix| cache[prefix] = BarcodePrefix.find_by_prefix(prefix) }
 
     details['barcode'].map do |barcode|
       match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"

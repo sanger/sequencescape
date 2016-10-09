@@ -43,7 +43,7 @@ module Core::Service::ContentFiltering
      headers('Content-Type' => 'application/json')
     end
 
-    ACCEPTABLE_TYPES = [ 'application/json' ]
+    ACCEPTABLE_TYPES = ['application/json']
     ACCEPTABLE_TYPES << '*/*' if Rails.env == 'development'
 
     def acceptable_types

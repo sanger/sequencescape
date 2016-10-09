@@ -5,11 +5,11 @@
 module SequencingQcPipeline
   # Returns Quality Control pipeline found using Regexp
   def qc_auto_pipeline_id
-    Pipeline.find_by({:name => "quality control", :automated => true}).id
+    Pipeline.find_by({ :name => "quality control", :automated => true }).id
   end
 
   def self.qc_auto_pipeline
-    Pipeline.find_by({:name => "quality control", :automated => true})
+    Pipeline.find_by({ :name => "quality control", :automated => true })
   end
 
   def cluster_formation_pipeline_id

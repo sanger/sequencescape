@@ -16,7 +16,7 @@ class StudiesController < ApplicationController
 
   before_action :login_required
   before_action :admin_login_required, :only => [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
-  before_action :manager_login_required, :only => [ :close, :open, :related_studies, :relate_study, :unrelate_study]
+  before_action :manager_login_required, :only => [:close, :open, :related_studies, :relate_study, :unrelate_study]
 
   around_filter :rescue_validation, :only => [:close, :open]
 
@@ -126,7 +126,7 @@ class StudiesController < ApplicationController
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => exception
-    Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
     flash.now[:error] = "Failed to update attributes for study!"
     render :action => "edit", :id => @study.id
   end
@@ -165,11 +165,11 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     @relation_names = StudyRelationType::names
     @studies = current_user.interesting_studies
-    @studies.reject {|s| s == @study }
+    @studies.reject { |s| s == @study }
 
     #TODO create a proper ReversedStudyRelation
-    @relations = @study.study_relations.map { |r| [r.related_study, r.name ] } +
-      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name ] }
+    @relations = @study.study_relations.map { |r| [r.related_study, r.name] } +
+      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
 
   end
 
@@ -341,7 +341,7 @@ class StudiesController < ApplicationController
      if @study.errors.count > 0
        flash[:error] = "Error submitting your plates"
        respond_to do |format|
-         format.html { render :action => "new_plate_submission"}
+         format.html { render :action => "new_plate_submission" }
          format.xml  { render :xml  => flash, :status => :unprocessable_entity }
          format.json { render :json => flash, :status => :unprocessable_entity }
        end
@@ -353,7 +353,7 @@ class StudiesController < ApplicationController
      if @study.errors.count > 0
        flash[:error] = "Error submitting your plates"
        respond_to do |format|
-         format.html { render :action => "new_plate_submission"}
+         format.html { render :action => "new_plate_submission" }
          format.xml  { render :xml  => flash, :status => :unprocessable_entity }
          format.json { render :json => flash, :status => :unprocessable_entity }
        end
@@ -446,7 +446,7 @@ class StudiesController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+      Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
       flash[:error] = "Failed to update attributes for study!"
       render :action => "edit", :id => @study.id
     end

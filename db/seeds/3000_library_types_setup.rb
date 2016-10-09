@@ -18,7 +18,7 @@ module SetupLibraryTypes
       "Pulldown::Requests::IscLibraryRequestPart" => ["Agilent Pulldown"],
       "IlluminaC::Requests::PcrLibraryRequest" => ["Manual Standard WGS (Plate)", "ChIP-Seq Auto", "TruSeq mRNA (RNA Seq)", "Small RNA (miRNA)", "RNA-seq dUTP eukaryotic", "RNA-seq dUTP prokaryotic"],
       "IlluminaC::Requests::NoPcrLibraryRequest" => ["No PCR (Plate)"]
-    }.tap {|h| h.default = [] }[request_type.request_class_name]
+    }.tap { |h| h.default = [] }[request_type.request_class_name]
   end
 
   def self.existing_defaults_for(request_type)
@@ -44,7 +44,7 @@ LibraryType.create!([
   "TraDIS", "qPCR only", "Pre-quality controlled", "DSN_RNAseq", "RNA-seq dUTP",
   "Manual Standard WGS (Plate)", "ChIP-Seq Auto", "TruSeq mRNA (RNA Seq)", "Small RNA (miRNA)",
   "RNA-seq dUTP eukaryotic", "RNA-seq dUTP prokaryotic", "No PCR (Plate)"
-].map {|name| {:name => name} })
+].map { |name| { :name => name } })
 
 RequestType.find_each do |request_type|
 
@@ -98,7 +98,7 @@ library_types = LibraryType.create!([
   "TraDIS qPCR only", "Transcriptome counting qPCR only", "Nextera single index qPCR only",
   "Nextera dual index qPCR only", "Bisulphate qPCR only", "TraDIS pre quality controlled",
   "Transcriptome counting pre quality controlled", "Nextera single index pre quality controlled",
-  "Nextera dual index pre quality controlled", "Bisulphate pre quality controlled"].map {|name| {:name => name} })
+  "Nextera dual index pre quality controlled", "Bisulphate pre quality controlled"].map { |name| { :name => name } })
 
 [:illumina_c_multiplexed_library_creation, :illumina_c_library_creation].each do |request_class_symbol|
   request_type = RequestType.find_by_key(request_class_symbol.to_s)

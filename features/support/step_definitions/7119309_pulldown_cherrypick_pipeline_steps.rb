@@ -34,7 +34,7 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells,
-    :request_options => {:multiplier => {"1" => "1", "3" => "1"}, "read_length" => "100", "fragment_size_required_to" => "400", "fragment_size_required_from" => "300", "library_type" => "Standard"}
+    :request_options => { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "400", "fragment_size_required_from" => "300", "library_type" => "Standard" }
     )
   step("1 pending delayed jobs are processed")
 end
@@ -111,7 +111,7 @@ Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(CSV.parse(page.source).collect {|r| r.collect {|c| c ? c : "" }})
+  expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : "" } })
 end
 
 Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
@@ -124,7 +124,7 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|
-  actual_table = table(fetch_table('table.plate').collect { |row| row.collect {|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
+  actual_table = table(fetch_table('table.plate').collect { |row| row.collect { |cell| cell[/^(Tag [\d]+)|(\w+)/] } })
 
   expected_results_table.diff!(actual_table)
 end
@@ -237,18 +237,18 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
       :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
       :user => User.last,
       :assets => Well.all,
-      :request_options => {:multiplier => {"1" => "1", "3" => "1"}, "read_length" => "100", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => 'Standard'}
+      :request_options => { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => 'Standard' }
       )
     step("1 pending delayed jobs are processed")
 end
 
 When /^the last batch is sorted in row order$/ do
-  order = Batch.last.batch_requests.map {|br| br.request.asset.map.row_order }.sort
-  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.request.asset.map.row_order))}
+  order = Batch.last.batch_requests.map { |br| br.request.asset.map.row_order }.sort
+  Batch.last.batch_requests.map { |br| br.update_attributes!(:position => order.index(br.request.asset.map.row_order)) }
 end
 
 When /^the last batch is sorted in row and plate order$/ do
-  source = Batch.last.batch_requests.group_by {|br| br.request.asset.plate.id }
-  order = source.sort_by(&:first).map {|plate,br| br.sort_by {|br| br.request.asset.map.row_order}.map(&:id) }.flatten
-  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.id))}
+  source = Batch.last.batch_requests.group_by { |br| br.request.asset.plate.id }
+  order = source.sort_by(&:first).map { |plate,br| br.sort_by { |br| br.request.asset.map.row_order }.map(&:id) }.flatten
+  Batch.last.batch_requests.map { |br| br.update_attributes!(:position => order.index(br.id)) }
 end

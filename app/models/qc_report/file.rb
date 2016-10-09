@@ -107,7 +107,7 @@ class QcReport::File
   def process_line(line)
     qc_decision = (line[:qc_decision] || "").strip
     proceed = (line[:proceed] || "").strip
-    {:qc_decision => qc_decision, :proceed => proceed }
+    { :qc_decision => qc_decision, :proceed => proceed }
   end
 
   def invalid(message)

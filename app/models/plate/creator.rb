@@ -61,7 +61,7 @@ class Plate::Creator < ActiveRecord::Base
 
     creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
 
-    return [ plate ]
+    return [plate]
   end
 
   def create_plates(source_plate_barcodes, current_user, creator_parameters=nil)

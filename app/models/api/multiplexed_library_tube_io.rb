@@ -15,7 +15,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix, :scanned_into_lab_event ]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix, :scanned_into_lab_event]) }
         alias_method(:json_root, :url_name)
       end
     end
@@ -52,6 +52,6 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
     map_attribute_to_json_attribute(:content, 'scanned_in_date')
   end
 
-  self.related_resources = [ :lanes, :requests ]
+  self.related_resources = [:lanes, :requests]
 
 end

@@ -53,7 +53,7 @@ class SubmissionPool < ActiveRecord::Base
   has_many :tag2_layout_template_submissions, :class_name => 'Tag2Layout::TemplateSubmission', :foreign_key => 'submission_id'
   has_many :tag2_layout_templates, :through => :tag2_layout_template_submissions
 
-  scope :include_uuid, ->() { }
+  scope :include_uuid, ->() {}
   scope :include_outer_request, ->() { includes(:outer_request) }
 
   scope :for_plate, ->(plate) {
@@ -101,7 +101,7 @@ class SubmissionPool < ActiveRecord::Base
   end
 
   def used_tag2_layout_templates
-    tag2_layout_templates.map {|template| {"uuid" => template.uuid,"name" => template.name}}
+    tag2_layout_templates.map { |template| { "uuid" => template.uuid,"name" => template.name } }
   end
 
 end

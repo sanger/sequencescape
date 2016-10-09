@@ -5,7 +5,7 @@ class ValidationTest < ActiveSupport::TestCase
   attr_reader :validation, :options, :range
 
   def setup
-    @options = {option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth'}
+    @options = { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' }
     @range = build(:range)
   end
 

@@ -92,7 +92,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     # Chances are we're going to use the same tag group multiple times. This avoids the need to poll
     # the database each time, allowing us just to retrieve the list of tags in one go.
     def tag_group_cache(name)
-      @tag_group_cache ||= Hash.new {|h,new_name| h[new_name] = TagGroup.include_tags.where( name:new_name ).first }
+      @tag_group_cache ||= Hash.new { |h,new_name| h[new_name] = TagGroup.include_tags.where( name:new_name ).first }
       @tag_group_cache[name]
     end
 
@@ -115,7 +115,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
       # Tag Group validation
       tag_group = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
       return yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if tag_group.nil?
-      yield "#{tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.nil?
+      yield "#{tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if tag_group.tags.detect { |tag| tag.map_id == row['TAG INDEX'].to_i }.nil?
 
       # Keep track if our first row is dual indexed or not.
       @dual_indexed = row[SampleManifest::Headers::TAG2_GROUP_FIELD].present? if @dual_indexed.nil?
@@ -124,7 +124,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
       tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
       return yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}' for tag 2" if tag2_group.nil?
-      yield "#{tag2_group.name} doesn't include a tag with index #{row[SampleManifest::Headers::TAG2_INDEX_FIELD]}" if tag2_group.tags.detect {|tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i}.nil?
+      yield "#{tag2_group.name} doesn't include a tag with index #{row[SampleManifest::Headers::TAG2_INDEX_FIELD]}" if tag2_group.tags.detect { |tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i }.nil?
 
     end
 
@@ -134,7 +134,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
       {
         :specialized_from_manifest => {
-          :tag_id           => tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.id,
+          :tag_id           => tag_group.tags.detect { |tag| tag.map_id == row['TAG INDEX'].to_i }.id,
           :library_type     => row['LIBRARY TYPE'],
           :insert_size_from => row['INSERT SIZE FROM'].to_i,
           :insert_size_to   => row['INSERT SIZE TO'].to_i
@@ -142,7 +142,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
       }.tap do |params|
         if row[SampleManifest::Headers::TAG2_GROUP_FIELD].present?
           tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
-          params[:specialized_from_manifest].merge!(:tag2_id => tag2_group.tags.detect {|tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i}.id )
+          params[:specialized_from_manifest].merge!(:tag2_id => tag2_group.tags.detect { |tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i }.id )
         end
       end
     end

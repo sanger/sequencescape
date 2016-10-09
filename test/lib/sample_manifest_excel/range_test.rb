@@ -9,7 +9,7 @@ class RangeTest < ActiveSupport::TestCase
   end
 
   test "should be comparable" do
-    attributes = {options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: "Sheet1"}
+    attributes = { options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: "Sheet1" }
     assert_equal SampleManifestExcel::Range.new(attributes), SampleManifestExcel::Range.new(attributes)
     refute_equal SampleManifestExcel::Range.new(attributes), SampleManifestExcel::Range.new(attributes.except(:last_row))
   end
@@ -59,9 +59,9 @@ class RangeTest < ActiveSupport::TestCase
     end
 
     should "#references should return first_cell reference, reference, fixed_reference and absolute_reference" do
-      assert_equal({first_cell_reference: range.first_cell_reference,
+      assert_equal({ first_cell_reference: range.first_cell_reference,
         reference: range.reference, fixed_reference: range.fixed_reference,
-        absolute_reference: range.absolute_reference}, range.references)
+        absolute_reference: range.absolute_reference }, range.references)
     end
 
   end

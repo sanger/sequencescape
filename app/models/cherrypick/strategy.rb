@@ -297,8 +297,8 @@ class Cherrypick::Strategy
       filter.call(plexes, current_plate)
     end
 
-    return [ [Cherrypick::Strategy::Empty] * current_plate.remainder, requests ] if candidate_plexes.empty?
-    [ candidate_plexes.first, requests - candidate_plexes.first ]
+    return [[Cherrypick::Strategy::Empty] * current_plate.remainder, requests] if candidate_plexes.empty?
+    [candidate_plexes.first, requests - candidate_plexes.first]
   end
   private :choose_next_plex_from
 end

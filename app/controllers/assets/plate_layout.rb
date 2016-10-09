@@ -21,7 +21,7 @@ class AssetsController < ApplicationController
 
     def set_details_for_well_at(location_id, details)
       assert_valid_location(location_id)
-      @wells[ location_id - 1 ] = details
+      @wells[location_id - 1] = details
     end
 
     def size
@@ -39,7 +39,7 @@ class AssetsController < ApplicationController
     def well_at(row, column)
       location_id = location_for_well_at(row, column)
       assert_valid_location(location_id)
-      @wells[ location_id - 1 ]
+      @wells[location_id - 1]
     end
 
     def empty_well_at?(row, column)
@@ -48,7 +48,7 @@ class AssetsController < ApplicationController
 
     def good_well_at?(row, column)
       well = well_at(row, column)
-      [:request, :asset].all? { |field| not well[ field ].nil? }
+      [:request, :asset].all? { |field| not well[field].nil? }
     end
 
     def bad_well_at?(row, column)

@@ -68,7 +68,7 @@ class AssetsControllerTest < ActionController::TestCase
       @user = create :user
       @controller.stubs(:current_user).returns(@user)
       @barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+      LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
     end
 
     should "#print_assets should send print request" do
@@ -79,7 +79,7 @@ class AssetsControllerTest < ActionController::TestCase
     should "#print_labels should send print request" do
       asset = create :sample_tube
       RestClient.expects(:post)
-      post :print_labels, printables: {"#{asset.id}" => "true"}, printer: barcode_printer.name, id: "#{asset.id}"
+      post :print_labels, printables: { "#{asset.id}" => "true" }, printer: barcode_printer.name, id: "#{asset.id}"
     end
   end
 

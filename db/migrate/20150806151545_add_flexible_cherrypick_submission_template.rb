@@ -15,7 +15,7 @@ class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
         :submission_parameters => {
           :workflow_id => Submission::Workflow.find_by_key('microarray_genotyping').id,
           :request_options => {
-            :initial_state => { flex_id => :pending}
+            :initial_state => { flex_id => :pending }
           },
           :request_type_ids_list => [[flex_id]],
           :input_field_infos => cp_ifi

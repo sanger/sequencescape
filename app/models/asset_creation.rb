@@ -42,7 +42,7 @@ class AssetCreation < ActiveRecord::Base
   end
 
   def connect_parent_and_children
-    children.each {|child| create_ancestor_asset!(parent, child)}
+    children.each { |child| create_ancestor_asset!(parent, child) }
   end
   private :connect_parent_and_children
 

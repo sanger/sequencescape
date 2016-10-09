@@ -47,7 +47,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
         setup do
           @old_count_plate = PlateTemplate.count
           @old_count_wells = Well.count
-          post :create, :name => "test",:user_id => @user.id, :rows => 8,  :cols => 12, :empty_well => {"A1" => 1,"H12" => 96}
+          post :create, :name => "test",:user_id => @user.id, :rows => 8,  :cols => 12, :empty_well => { "A1" => 1,"H12" => 96 }
         end
         should respond_with :redirect
         should set_flash.to( "Template saved")

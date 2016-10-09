@@ -99,7 +99,7 @@ module Api
               request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
               request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
             end
-            uuid.resource.__send__(file_through) {|file| send_file file.path, :filename => file.filename }
+            uuid.resource.__send__(file_through) { |file| send_file file.path, :filename => file.filename }
 
           end
         end
@@ -182,8 +182,8 @@ module Api
     def handle_request(handler, http_request, action, parts)
       endpoint_lookup, io_lookup =
         case handler
-        when :instance then [ :endpoint_for_object, :lookup_for_object ]
-        when :model    then [ :endpoint_for_class,  :lookup_for_class  ]
+        when :instance then [:endpoint_for_object, :lookup_for_object]
+        when :model    then [:endpoint_for_class,  :lookup_for_class]
         else raise StandardError, "Unexpected handler #{handler.inspect}"
         end
 

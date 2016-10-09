@@ -35,7 +35,7 @@ Sequencescape::Application.configure do
 
   config.time_zone = 'London'
 
-  config.active_record.observers = [ :request_observer ]
+  config.active_record.observers = [:request_observer]
 
   config.log_level = :debug
 

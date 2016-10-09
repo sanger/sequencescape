@@ -5,5 +5,5 @@
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
 Given /^all the "([^"]*)" requests in the last submission have been started$/ do |request_type|
-  Submission.last.requests.select {|r| r.sti_type == request_type}.map(&:start!)
+  Submission.last.requests.select { |r| r.sti_type == request_type }.map(&:start!)
 end

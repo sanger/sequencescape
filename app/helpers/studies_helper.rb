@@ -14,7 +14,7 @@ module StudiesHelper
   end
 
   def display_owner(study)
-    owners_for_display([ study.owner ].compact)
+    owners_for_display([study.owner].compact)
   end
 
   def display_owners(study)

@@ -10,7 +10,7 @@ class Api::BaseController < ApplicationController
   before_action :evil_parameter_hack!
   class_attribute :model_class
   before_action { |controller| Uuid.translate_uuids_to_ids_in_params(controller.params) }
-  around_filter :wrap_in_transaction, :only => [ :create, :update, :destroy ]
+  around_filter :wrap_in_transaction, :only => [:create, :update, :destroy]
 
   delegate :render_class, :to => :model_class
 
@@ -19,7 +19,7 @@ class Api::BaseController < ApplicationController
   #++
   rescue_from ActiveRecord::RecordInvalid do |exception|
     errors = exception.record.errors.inject(Hash.new { |h,k| h[k] = [] }) do |hash, field_and_error_pair|
-      hash.tap { hash[ field_and_error_pair.first ].push(field_and_error_pair.last) }
+      hash.tap { hash[field_and_error_pair.first].push(field_and_error_pair.last) }
     end
     respond_to do |format|
       format.json { render :json => self.render_class.map_attribute_to_json_attribute_in_errors(errors), :status => :unprocessable_entity }
@@ -40,7 +40,7 @@ class Api::BaseController < ApplicationController
   end
 
   def index
-    sort_order = @context_order || {id: :desc}
+    sort_order = @context_order || { id: :desc }
 
     results = @context.order(sort_order).paginate(page: params[:page], total_entries: 100000000, per_page: 500)
 

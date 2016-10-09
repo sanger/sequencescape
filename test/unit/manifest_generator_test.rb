@@ -195,7 +195,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           {
             'M' => 'Male',
             'F' => 'Female',
-            'U' => [ 'not applicable', 'mixed', 'hermaphrodite', nil ]
+            'U' => ['not applicable', 'mixed', 'hermaphrodite', nil]
           }.each do |expected, genders|
             Array(genders).each do |gender|
               should "see #{gender.inspect} as #{expected.inspect}" do

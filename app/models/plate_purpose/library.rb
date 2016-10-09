@@ -11,7 +11,7 @@ module PlatePurpose::Library
     end
   end
 
-  STATES_TO_ASSIGN_LIBRARY_INFORMATION = [ 'started', 'passed' ]
+  STATES_TO_ASSIGN_LIBRARY_INFORMATION = ['started', 'passed']
 
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super

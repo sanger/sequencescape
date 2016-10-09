@@ -16,10 +16,10 @@ class QcReportsController < ApplicationController
     @qc_reports = QcReport.for_report_page(conditions).page(params[:page]).includes(:study,:product)
     @qc_report = QcReport.new(:exclude_existing => true,:study_id => params[:study_id])
     @studies = Study.alphabetical.pluck(:name,:id)
-    @states = QcReport.available_states.map {|s| [s.humanize,s] }
+    @states = QcReport.available_states.map { |s| [s.humanize,s] }
 
-    @all_products = Product.alphabetical.all.map {|product| [product.display_name,product.id]}
-    @active_products = Product.with_stock_report.active.alphabetical.all.map {|product| [product.display_name,product.id]}
+    @all_products = Product.alphabetical.all.map { |product| [product.display_name,product.id] }
+    @active_products = Product.with_stock_report.active.alphabetical.all.map { |product| [product.display_name,product.id] }
   end
 
   def create
@@ -98,7 +98,7 @@ class QcReportsController < ApplicationController
   def conditions
     conds = {}
     conds[:study_id] = params[:study_id] if params[:study_id].present?
-    conds[:product_criteria] = {:product_id => params[:product_id]} if params[:product_id].present?
+    conds[:product_criteria] = { :product_id => params[:product_id] } if params[:product_id].present?
     conds[:state] = params[:state] if params[:state].present?
     conds
   end

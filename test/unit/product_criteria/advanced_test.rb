@@ -13,12 +13,12 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
     setup do
       @params = {
         'failed' => {
-          :concentration              => {:greater_than => 500 },
-          :measured_volume            => {:greater_than => 100 }
+          :concentration              => { :greater_than => 500 },
+          :measured_volume            => { :greater_than => 100 }
         },
         'unprocessable' => {
-          :concentration              => {:greater_than => 50 },
-          :measured_volume            => {:greater_than => 10 }
+          :concentration              => { :greater_than => 50 },
+          :measured_volume            => { :greater_than => 10 }
         }
       }
     end

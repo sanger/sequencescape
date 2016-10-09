@@ -31,11 +31,11 @@ module Authorization
       # Allow class-level authorization check.
       # permit is used in a before_action fashion and passes arguments to the before_action.
       def permit( authorization_expression, *args )
-        filter_keys = [ :only, :except ]
+        filter_keys = [:only, :except]
         filter_args, eval_args = {}, {}
         if args.last.is_a? Hash
-          filter_args.merge!( args.last.reject {|k,v| not filter_keys.include? k } )
-          eval_args.merge!( args.last.reject {|k,v| filter_keys.include? k } )
+          filter_args.merge!( args.last.reject { |k,v| not filter_keys.include? k } )
+          eval_args.merge!( args.last.reject { |k,v| filter_keys.include? k } )
         end
         before_action( filter_args ) do |controller|
           controller.permit( authorization_expression, eval_args )

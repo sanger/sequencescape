@@ -35,7 +35,7 @@ Given /^the library tube "(.*?)" has aliquots with tag (\d+) under project "(.*?
 end
 
 Then /^the multiplexed library tube "(.*?)" should have (\d+) "(.*?)" requests$/ do |mx_library_tube_name, count, request_type|
-  assert_equal count.to_i, MultiplexedLibraryTube.find_by_name(mx_library_tube_name).requests.select {|r| r.request_type.name == request_type}.count
+  assert_equal count.to_i, MultiplexedLibraryTube.find_by_name(mx_library_tube_name).requests.select { |r| r.request_type.name == request_type }.count
 end
 Then /^the last submission should be called "(.*?)"$/ do |name|
   assert_equal name, Submission.last.name

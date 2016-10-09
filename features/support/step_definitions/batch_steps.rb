@@ -64,5 +64,5 @@ When /^the batch is started$/ do
 end
 
 Then /^the customer should accept responsibility for all requests in the last batch$/ do
-  Batch.last.requests.all? {|r| r.request_metadata.customer_accepts_responsibility? }
+  Batch.last.requests.all? { |r| r.request_metadata.customer_accepts_responsibility? }
 end

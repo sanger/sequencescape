@@ -28,7 +28,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
 
   def select_by_association(association, options={},html_options={})
-    association_target, options = association.to_s.classify.constantize, { }
+    association_target, options = association.to_s.classify.constantize, {}
     options[:selected] = association_target.default.for_select_dropdown.last if @object.send(association).nil? and association_target.default.present?
     select(:"#{association}_id", association_target.for_select_association, options,html_options)
   end
@@ -97,7 +97,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
 
     values  = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map { |v| v.to_s.downcase.gsub(/[^a-z0-9]+/, '_') }
     content = capture(&block)
-    concat(content_tag(:div, content, :class => [ :related_to, options[:to], values ].flatten.join(' ')))
+    concat(content_tag(:div, content, :class => [:related_to, options[:to], values].flatten.join(' ')))
 
     @related_fields.push(options[:to])
     content
@@ -110,7 +110,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         Array(key).each { |k| values[k.to_s] = Array(value) }
       end
     end
-    @changing.push([ field, options ])
+    @changing.push([field, options])
   end
 
   # Renders the Javascript for dealing with showing and hiding the related fields.

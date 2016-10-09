@@ -13,16 +13,16 @@ module Tasks::StripTubeCreationHandler
 
     strip_count = task.descriptors.find_by_key!('strips_to_create')
 
-    @options = strip_count.selection.select {|v| v <= (@tubes_available)}
+    @options = strip_count.selection.select { |v| v <= (@tubes_available) }
     @default = strip_count.value || @options.last
   end
 
   def do_strip_tube_creation_task(task,params)
     tubes_to_create = params['tubes_to_create'].to_i
 
-    locations_requests = @batch.requests.with_asset_location.pending.group_by {|r| r.asset.map.column_order }
+    locations_requests = @batch.requests.with_asset_location.pending.group_by { |r| r.asset.map.column_order }
 
-    if locations_requests.any? {|k,v| v.count < tubes_to_create }
+    if locations_requests.any? { |k,v| v.count < tubes_to_create }
       flash[:error] = "There are insufficient requests remaining for the requested number of tubes."
       flash[:error].concat(" Some wells of the plate have different numbers of requests.") if locations_requests.values.map(&:count).uniq.count > 1
       return false

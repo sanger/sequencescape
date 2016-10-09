@@ -58,7 +58,7 @@ Given /^study "([^\"]*)" has samples registered$/ do |study|
     }
   }
   sample_registrar = SampleRegistrar.new
-  sample_registrar.create({"samples" => samples, "study_id" => proj.id, "sample_group" => {"id" => new_sample_group.id.to_s}, "current_user" => user})
+  sample_registrar.create({ "samples" => samples, "study_id" => proj.id, "sample_group" => { "id" => new_sample_group.id.to_s }, "current_user" => user })
 end
 
 Given /^study "([^\"]*)" has assets registered$/ do |study|
@@ -180,7 +180,7 @@ end
 def GivenFacultySponsor(attribute, regexp)
   Given(regexp) do |name,value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
-    faculty_sponsor = FacultySponsor.create!({:name => value})
+    faculty_sponsor = FacultySponsor.create!({ :name => value })
     study.study_metadata.send(:"#{ attribute }=", faculty_sponsor)
     study.save!
   end
@@ -351,7 +351,7 @@ Then /^I should exactly see "([^"]*)"$/ do |text|
 end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|
- type = {"dac" => "DAC", "policy" => "Policy", "array express" => ""}.fetch(type, type)
+ type = { "dac" => "DAC", "policy" => "Policy", "array express" => "" }.fetch(type, type)
  step %Q{I am on the workflow page for study "#{study_name}"}
  step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, " ")
 end

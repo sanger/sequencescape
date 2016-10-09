@@ -41,7 +41,7 @@ class Pipeline < ActiveRecord::Base
   has_many :tasks, :through => :workflows
   has_many :pipelines_request_types, :inverse_of => :pipeline
   has_many :request_types, :through => :pipelines_request_types, :validate => false
-  has_many :requests, :through => :request_types, :extend => [ Pipeline::InboxExtensions, Pipeline::RequestsInStorage]
+  has_many :requests, :through => :request_types, :extend => [Pipeline::InboxExtensions, Pipeline::RequestsInStorage]
   has_many :batches do
     def build(attributes = nil)
       attributes ||= {}

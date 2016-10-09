@@ -113,7 +113,7 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     if params[:asset]
-      ids = params[:asset].map {|a| a[1] == "1" ? a[0] : nil }.select {|a| !a.nil? }
+      ids = params[:asset].map { |a| a[1] == "1" ? a[0] : nil }.select { |a| !a.nil? }
       @assets = Asset.find(ids)
       @asset_group.assets << @assets
     end
@@ -134,12 +134,12 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
-    @assets = @asset_group ? @asset_group.assets.select {|asset| asset.is_a?(Barcode::Barcodeable)} : []
+    @assets = @asset_group ? @asset_group.assets.select { |asset| asset.is_a?(Barcode::Barcodeable) } : []
 
-    unbarcoded = @asset_group.assets.reject {|asset| asset.is_a?(Barcode::Barcodeable)}
-    @unbarcoded_types = unbarcoded.map {|ub| ub.sti_type.pluralize.humanize }.uniq.to_sentence
+    unbarcoded = @asset_group.assets.reject { |asset| asset.is_a?(Barcode::Barcodeable) }
+    @unbarcoded_types = unbarcoded.map { |ub| ub.sti_type.pluralize.humanize }.uniq.to_sentence
     @unbarcoded_count = unbarcoded.length
-    @containers = unbarcoded.map {|ub| ub.container }.uniq.select {|container| container.is_a?(Barcode::Barcodeable) }
+    @containers = unbarcoded.map { |ub| ub.container }.uniq.select { |container| container.is_a?(Barcode::Barcodeable) }
   end
 
   def print_labels

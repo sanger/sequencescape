@@ -17,7 +17,7 @@ class PacBioLibraryTube < Tube
 
 
   def protocols_for_select
-    ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id]}.tap do |protocols|
+    ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id] }.tap do |protocols|
       reference_genome = primary_aliquot.sample.sample_reference_genome
       protocols.unshift([reference_genome.name, reference_genome.id]) if reference_genome.present?
     end

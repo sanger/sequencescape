@@ -13,7 +13,7 @@ class DeprecatePostShearToAlLibs < ActiveRecord::Migration
       # of the plate. The plate was then passed by the subsequent mj_started transition
       # of the plate downstream. With the new simplified model this means that fx_transfer
       # is equivalent to a passed state.
-      deprecate_class('IlluminaHtp::Requests::PostShearToAlLibs', state_change:{'fx_transfer' => 'passed'})
+      deprecate_class('IlluminaHtp::Requests::PostShearToAlLibs', state_change:{ 'fx_transfer' => 'passed' })
     end
   end
 

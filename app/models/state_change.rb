@@ -27,7 +27,7 @@ class StateChange < ActiveRecord::Base
   validates :reason, :presence => true, :if => :targetted_for_failure?
 
   def targetted_for_failure?
-    [ 'failed', 'cancelled' ].include?(target_state)
+    ['failed', 'cancelled'].include?(target_state)
   end
   private :targetted_for_failure?
 

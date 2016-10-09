@@ -31,7 +31,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           @study, @project = FactoryGirl.create(:study),FactoryGirl.create(:project)
           @sample = FactoryGirl.create :sample
-          @submission = FactoryGirl.create :submission_without_order, {:priority => 3}
+          @submission = FactoryGirl.create :submission_without_order, { :priority => 3 }
 
           @library = FactoryGirl.create(:empty_library_tube).tap do |library_tube|
             library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study, :library => library_tube, :library_type => 'Standard')
@@ -59,7 +59,7 @@ class BatchesControllerTest < ActionController::TestCase
         should "have api version attribute on root object" do
           assert_response :success
           assert_tag :tag => 'lane', :attributes => { :position => 1, :id => @lane.id, :priority => 3 }
-          assert_tag :tag => "library", :attributes => {:request_id => @request_one.id, :qc_state => 'fail'}
+          assert_tag :tag => "library", :attributes => { :request_id => @request_one.id, :qc_state => 'fail' }
         end
 
         should 'expose the library information correctly' do
@@ -134,7 +134,7 @@ class BatchesControllerTest < ActionController::TestCase
               get :add_control, :id => @batch_one, :control => { :id =>  @cn.id }
             end
             should "#create_training_batchl" do
-              get :create_training_batch, :id => @batch_one, :control => { :id =>  @cn.id }
+              get :create_training_batch, :id => @batch_one, :control => { :id => @cn.id }
             end
           end
         end
@@ -142,14 +142,14 @@ class BatchesControllerTest < ActionController::TestCase
 
         should "#update" do
           @pipeline_user = create :pipeline_admin, :login => 'ur1', :first_name => 'Ursula', :last_name => 'Robinson'
-          put :update, :id => @batch_one.id, :batch => {:assignee_id => @pipeline_user.id }
+          put :update, :id => @batch_one.id, :batch => { :assignee_id => @pipeline_user.id }
           assert_redirected_to batch_path(assigns(:batch))
           assert_equal assigns(:batch).assignee, @pipeline_user
           assert_includes flash[:notice], "Assigned to Ursula Robinson (ur1)"
         end
 
         should "redirect on update without param" do
-          put :update, :id => @batch_one.id, :batch => {:id => 'bad id'}
+          put :update, :id => @batch_one.id, :batch => { :id => 'bad id' }
           assert_response :redirect
         end
 
@@ -164,7 +164,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context "redirect to #show new batch" do
             setup do
-              post :create, :id => @pipeline.id, :request => {@request_three.id => "0", @request_four.id => "1"}
+              post :create, :id => @pipeline.id, :request => { @request_three.id => "0", @request_four.id => "1" }
             end
 
             should "create_batch  with no controls" do
@@ -177,7 +177,7 @@ class BatchesControllerTest < ActionController::TestCase
             setup do
               @cn = FactoryGirl.create :control, :name => "Control 1", :item_id => 2, :pipeline => @pipeline
               @pipeline.controls << @cn
-              post :create, :id => @pipeline.id, :request => {@request_three.id => "0", @request_four.id => "1"}
+              post :create, :id => @pipeline.id, :request => { @request_three.id => "0", @request_four.id => "1" }
             end
 
             should "if pipeline has controls" do
@@ -190,7 +190,7 @@ class BatchesControllerTest < ActionController::TestCase
           context "create and assign requests" do
             setup do
               @old_count = Batch.count
-              post :create, :id => @pipeline.id, :request => {@request_three.id => "1", @request_four.id => "1"}
+              post :create, :id => @pipeline.id, :request => { @request_three.id => "1", @request_four.id => "1" }
               @batch = Batch.last
             end
 
@@ -250,7 +250,7 @@ class BatchesControllerTest < ActionController::TestCase
                 EventSender.expects(:send_fail_event).returns(true).times(1)
                 post :fail_items, :id => @batch_one.id,
                                   :failure => { :reason => "PCR not completed", :comment => "" },
-                                  :requested_fail => {"#{@request_one.id}" => "on"}
+                                  :requested_fail => { "#{@request_one.id}" => "on" }
               end
               should "create a failure on each item in this batch and have two items related" do
                 assert_equal 0, @batch_one.failures.size
@@ -276,7 +276,7 @@ class BatchesControllerTest < ActionController::TestCase
         @batch.requests << request
         r = @batch.requests.first
         @e = r.lab_events.create(:description => "Cluster generation")
-        @e.add_descriptor Descriptor.new({:name => "Chip Barcode", :value => "Chip Barcode: 62c7gaaxx"})
+        @e.add_descriptor Descriptor.new({ :name => "Chip Barcode", :value => "Chip Barcode: 62c7gaaxx" })
         @e.batch_id = @batch.id
         @e.save
         get :find_batch_by_barcode, :id => "62c7gaaxx", :format => :xml
@@ -309,7 +309,7 @@ class BatchesControllerTest < ActionController::TestCase
         @user = create :user
         @controller.stubs(:current_user).returns(@user)
         @barcode_printer = create :barcode_printer
-        LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+        LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
       end
 
       should "#print_plate_barcodes should send print request" do
@@ -327,7 +327,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, printer: barcode_printer.name, count: "3", printable: {"#{@batch.output_plates.first.barcode}" => "on"}, batch_id: "#{@batch.id}"
+        post :print_plate_barcodes, printer: barcode_printer.name, count: "3", printable: { "#{@batch.output_plates.first.barcode}" => "on" }, batch_id: "#{@batch.id}"
       end
 
       should "#print_barcodes should send print request" do
@@ -335,7 +335,7 @@ class BatchesControllerTest < ActionController::TestCase
         request = create :library_creation_request, target_asset: (create :library_tube, barcode: "111")
         @batch = create :batch
         @batch.requests << request
-        printable = {request.id => "on"}
+        printable = { request.id => "on" }
 
         RestClient.expects(:post)
 
@@ -351,7 +351,7 @@ class BatchesControllerTest < ActionController::TestCase
           :multiplexed => true
         batch = pipeline.batches.create!
         library_tube = create :library_tube, barcode: "111"
-        printable = {library_tube.id => "on"}
+        printable = { library_tube.id => "on" }
 
         RestClient.expects(:post)
 

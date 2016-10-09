@@ -30,7 +30,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       setup do
         @sequencing_request_type = create :sequencing_request_type
         @purpose = create :plate_purpose, :name => "mock purpose", :type => 'Tube::StandardMx', :target_type => 'MultiplexedLibraryTube'
-        @request_options = {"read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200"}
+        @request_options = { "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" }
       end
 
       context 'multiplexed submission' do
@@ -39,7 +39,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         context 'Customer decision propagation' do
 
           setup do
-            @mpx_request_type = create :well_request_type, {:target_purpose => @purpose, :for_multiplexing => true}
+            @mpx_request_type = create :well_request_type, { :target_purpose => @purpose, :for_multiplexing => true }
             @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
             @our_product_criteria = create :product_criteria
 
@@ -79,7 +79,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @mpx_assets = (1..MX_ASSET_COUNT).map { |i| create(:sample_tube, :name => "MX-asset#{ i }") }
             @mpx_asset_group = create :asset_group, :name => "MPX", :assets => @mpx_assets
 
-            @mpx_request_type = create :multiplexed_library_creation_request_type, {:target_purpose => @purpose}
+            @mpx_request_type = create :multiplexed_library_creation_request_type, { :target_purpose => @purpose }
             @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
             @basic_options = {
@@ -187,7 +187,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         should "save request_types as array of Fixnums" do
           assert_kind_of Array, @submission.orders.first.request_types
-          assert @submission.orders.first.request_types.all? {|sample| sample.kind_of?(Fixnum) }
+          assert @submission.orders.first.request_types.all? { |sample| sample.kind_of?(Fixnum) }
         end
 
         should "save a comment if there's one passed in" do
@@ -288,8 +288,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :project          => @project,
           :workflow         => @workflow,
           :user             => @user,
-          :assets           => [ @asset_1, @asset_2 ],
-          :request_types    => [ @lib_request_type.id, @pe_request_type.id ],
+          :assets           => [@asset_1, @asset_2],
+          :request_types    => [@lib_request_type.id, @pe_request_type.id],
           :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
           :comments         => ''
         )
@@ -298,8 +298,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :project          => @project,
           :workflow         => @workflow,
           :user             => @user,
-          :assets           => [ @asset_1, @asset_2 ],
-          :request_types    => [ @mx_request_type.id, @pe_request_type.id ],
+          :assets           => [@asset_1, @asset_2],
+          :request_types    => [@mx_request_type.id, @pe_request_type.id],
           :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
           :comments         => ''
         )

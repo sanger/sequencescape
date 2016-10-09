@@ -13,7 +13,7 @@ class UnifyInitialDownstreamClasses < ActiveRecord::Migration
 
   STATE_MIGRATIONS = { 'Pulldown::Requests::PcrXpToIscLibPool' => {
     'nx_in_progress' => 'passed'
-  }}
+  } }
 
   def up
     ActiveRecord::Base.transaction do

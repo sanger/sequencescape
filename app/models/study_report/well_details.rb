@@ -11,8 +11,8 @@ module StudyReport::WellDetails
         :map,
         :well_attribute,
         :events,
-        { :plate => [:plate_purpose,:events], :primary_aliquot => { :sample => [:sample_metadata,{:sample_manifest => :supplier},:external_properties] } },
-        { :latest_child_well => [:map, {:plate => [:plate_purpose,:plate_metadata]}]}
+        { :plate => [:plate_purpose,:events], :primary_aliquot => { :sample => [:sample_metadata,{ :sample_manifest => :supplier },:external_properties] } },
+        { :latest_child_well => [:map, { :plate => [:plate_purpose,:plate_metadata] }] }
       ])}
     end
   end

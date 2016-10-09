@@ -40,7 +40,7 @@ class TasksControllerTest < ActionController::TestCase
 
     context "#new" do
       setup do
-        get :new, {:workflow_id => @workflow.id}
+        get :new, { :workflow_id => @workflow.id }
       end
 
       should "render new" do
@@ -52,8 +52,8 @@ class TasksControllerTest < ActionController::TestCase
       setup do
         @old_count = Task.count
         post  :create,
-              :descriptor => {"1" => {"name" => "Yeah", "kind" => "Text", "selection" => {"1" => ""}}},
-              :task => {"name" => "A Task", "pipeline_workflow_id" => "1", "sorted" => "1", "batched" => "1"}
+              :descriptor => { "1" => { "name" => "Yeah", "kind" => "Text", "selection" => { "1" => "" } } },
+              :task => { "name" => "A Task", "pipeline_workflow_id" => "1", "sorted" => "1", "batched" => "1" }
       end
 
       should "render create_task" do
@@ -76,8 +76,8 @@ class TasksControllerTest < ActionController::TestCase
       setup do
         put :update,
             :id => @task.id,
-            :descriptor => {"1" => {"name" => "Yeah", "kind" => "Text", "selection" => {"1" => ""}}},
-            :task => {"name" => "A Task", "pipeline_workflow_id" => "1", "sorted" => "1", "batched" => "1"}
+            :descriptor => { "1" => { "name" => "Yeah", "kind" => "Text", "selection" => { "1" => "" } } },
+            :task => { "name" => "A Task", "pipeline_workflow_id" => "1", "sorted" => "1", "batched" => "1" }
       end
 
       should "render update task" do

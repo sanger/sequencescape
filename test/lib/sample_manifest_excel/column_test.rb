@@ -5,14 +5,14 @@ class ColumnTest < ActiveSupport::TestCase
   attr_reader :column, :sample, :range_list, :worksheet
 
   def setup
-    @range_list = build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range)})
+    @range_list = build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range) })
     @worksheet = Axlsx::Workbook.new.add_worksheet
   end
 
   def options
     { heading: "PUBLIC NAME", name: :public_name, type: :string, value: 10, number: 125, attribute: :barcode,
       validation: FactoryGirl.attributes_for(:validation),
-      conditional_formattings: {simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula)}
+      conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) }
     }
   end
 
@@ -54,7 +54,7 @@ class ColumnTest < ActiveSupport::TestCase
   # end
 
   test "should have an attribute value" do
-    detail = {barcode: 'barcode', sanger_id: 'sanger_id', position: 'position'}
+    detail = { barcode: 'barcode', sanger_id: 'sanger_id', position: 'position' }
     assert_equal detail[:barcode], SampleManifestExcel::Column.new(options).attribute_value(detail)
     assert_equal options[:value], SampleManifestExcel::Column.new(options.except(:attribute)).attribute_value(detail)
     refute  SampleManifestExcel::Column.new(options.except(:value, :attribute)).attribute_value(detail)

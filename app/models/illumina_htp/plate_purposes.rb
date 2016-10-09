@@ -58,16 +58,16 @@ module IlluminaHtp::PlatePurposes
   ]
 
   BRANCHES = [
-    [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
-    [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
-    [ 'PF MiSeq Stock','PF MiSeq QCR'],
-    [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
-    [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
-    [ 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
-    [ 'Lib PCR-XP','ISC lib pool' ],
-    [ 'Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
-    [ 'Lib PCRR-XP','ISC lib pool' ],
-    [ 'Post Shear', 'Post Shear XP', 'AL Libs']
+    ['PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
+    ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
+    ['PF MiSeq Stock','PF MiSeq QCR'],
+    ['Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
+    ['Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm'],
+    ['Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin'],
+    ['Lib PCR-XP','ISC lib pool'],
+    ['Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
+    ['Lib PCRR-XP','ISC lib pool'],
+    ['Post Shear', 'Post Shear XP', 'AL Libs']
   ]
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'
@@ -91,12 +91,12 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'PF Cherrypicked', 'PF Shear',            :initial   ],
-    [ 'Cherrypicked',    'Shear',               :initial   ],
-    [ 'Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'           ],
-    [ 'Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'           ],
-    [ 'Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ],
-    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ]
+    ['PF Cherrypicked', 'PF Shear',            :initial],
+    ['Cherrypicked',    'Shear',               :initial],
+    ['Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'],
+    ['Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'],
+    ['Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'],
+    ['Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream']
   ]
 
   PLATE_PURPOSE_TYPE = {

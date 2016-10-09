@@ -21,11 +21,11 @@ module Informatics
     end
 
     def global_searchable_classes
-       [ Project, Study, Sample, Asset, AssetGroup, Request, Supplier, Submission ]
+       [Project, Study, Sample, Asset, AssetGroup, Request, Supplier, Submission]
     end
 
     def search_options
-      global_searchable_classes.map {|klass| [klass.name] * 2 } << ['All',nil]
+      global_searchable_classes.map { |klass| [klass.name] * 2 } << ['All',nil]
     end
 
   end

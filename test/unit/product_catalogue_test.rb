@@ -22,7 +22,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
 
       context '#product_for' do
         should 'return the product' do
-          assert_equal @product, @catalogue.product_for({:attributes => :do_not_matter})
+          assert_equal @product, @catalogue.product_for({ :attributes => :do_not_matter })
         end
       end
     end

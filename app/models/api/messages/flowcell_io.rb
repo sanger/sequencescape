@@ -6,7 +6,7 @@
 
 class Api::Messages::FlowcellIO < Api::Base
 
-  MANUAL_QC_BOOLS = {'passed' => true,'failed' => false }
+  MANUAL_QC_BOOLS = { 'passed' => true,'failed' => false }
 
   module LaneExtensions # Included in SequencingRequest
 
@@ -30,7 +30,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def flowcell_barcode
-          lab_events.each {|e| e.descriptor_value_for(flowcell_identifier).tap {|bc| return bc unless bc.nil? } }
+          lab_events.each { |e| e.descriptor_value_for(flowcell_identifier).tap { |bc| return bc unless bc.nil? } }
         end
 
         def samples
@@ -158,7 +158,7 @@ class Api::Messages::FlowcellIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }])}
+        scope :including_associations_for_json, -> { includes([:uuid_object, :user, :assignee, { :pipeline => :uuid_object }]) }
 
         def flowcell_barcode
           requests.first.flowcell_barcode

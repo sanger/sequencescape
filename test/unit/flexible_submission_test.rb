@@ -23,12 +23,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling}
+        @library_creation_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling }
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
-        @request_options = {"read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200"}
+        @request_options = { "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" }
       end
 
       context 'multiplexed submission' do
@@ -192,7 +192,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
              end
 
              should 'not set request study or projects' do
-              assert @sub.requests.all? {|r| r.initial_study_id.nil? && r.initial_project_id.nil? }
+              assert @sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? }
              end
           end
 
@@ -209,12 +209,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, {:for_multiplexing => true, :target_asset_type => 'MultiplexedLibraryTube', :pooling_method => @pooling}
+        @library_creation_request_type = create :well_request_type, { :for_multiplexing => true, :target_asset_type => 'MultiplexedLibraryTube', :pooling_method => @pooling }
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
-        @request_options = {"read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200"}
+        @request_options = { "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" }
       end
 
       context 'multiplexed submission' do
@@ -251,9 +251,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               rows = (0...8).to_a
               used_assets = []
 
-              @assets.group_by {|well| well.map.row }.each do |row,wells|
+              @assets.group_by { |well| well.map.row }.each do |row,wells|
                 assert rows.delete(row).present?, "Row #{row} was unexpected"
-                unique_target_assets = wells.map {|w| w.requests.first.target_asset }.uniq
+                unique_target_assets = wells.map { |w| w.requests.first.target_asset }.uniq
                 assert_equal unique_target_assets.count, 1
                 assert (used_assets & unique_target_assets).empty?, "Target assets are reused"
                 used_assets.concat(unique_target_assets)
@@ -274,11 +274,11 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing => false}
-        @mx_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling}
+        @ux_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => false }
+        @mx_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling }
         @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
 
-        @request_type_ids = [ @mx_request_type.id, @pe_request_type.id ]
+        @request_type_ids = [@mx_request_type.id, @pe_request_type.id]
 
         @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
           :study            => @study,
@@ -318,12 +318,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing => false}
-        @mx_request_type = create :well_request_type, {:target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling}
+        @ux_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => false }
+        @mx_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling }
         @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
 
-        @mx_request_type_ids = [ @mx_request_type.id, @pe_request_type.id ]
-        @ux_request_type_ids = [ @ux_request_type.id, @pe_request_type.id ]
+        @mx_request_type_ids = [@mx_request_type.id, @pe_request_type.id]
+        @ux_request_type_ids = [@ux_request_type.id, @pe_request_type.id]
 
       end
 

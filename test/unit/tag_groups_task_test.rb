@@ -40,7 +40,7 @@ class TagGroupsTaskTest < TaskTestBase
         # session[:user] = @user.id
         @controller.batch = @batch
         @workflow = create :lab_workflow_for_pipeline
-        params = {:batch_id => @batch.id, :workflow_id => @workflow.id}
+        params = { :batch_id => @batch.id, :workflow_id => @workflow.id }
         @task.render_task(@controller, params)
       end
     end

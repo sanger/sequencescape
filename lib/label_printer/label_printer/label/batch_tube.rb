@@ -29,21 +29,21 @@ module LabelPrinter
         if stock.present?
           if batch.multiplexed?
             #all info on a label including barcode is about target_asset first child
-            tubes = requests.map {|request| request.target_asset.children.first}
+            tubes = requests.map { |request| request.target_asset.children.first }
           else
             #all info on a label including barcode is about target_asset stock asset
-            tubes = requests.map {|request| request.target_asset.stock_asset}
+            tubes = requests.map { |request| request.target_asset.stock_asset }
           end
         else
           #all info on a label including barcode is about target_asset
-          tubes = requests.map {|request| request.target_asset}
+          tubes = requests.map { |request| request.target_asset }
         end
       end
 
       private
 
       def requests
-        request_ids = printable.select {|barcode, check| check == 'on'}.keys
+        request_ids = printable.select { |barcode, check| check == 'on' }.keys
         requests = Request.find request_ids
       end
 

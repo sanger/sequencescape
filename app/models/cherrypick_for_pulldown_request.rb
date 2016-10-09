@@ -17,7 +17,7 @@ class CherrypickForPulldownRequest < TransferRequest
     state :hold
 
     event :hold do
-      transitions :to => :hold, :from => [ :pending ]
+      transitions :to => :hold, :from => [:pending]
     end
 
     # State Machine events

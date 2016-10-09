@@ -16,7 +16,7 @@ class Api::LaneIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix ] ) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix] ) }
       end
     end
 
@@ -40,5 +40,5 @@ class Api::LaneIO < Api::Base
     map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
   end
 
-  self.related_resources = [ :requests ]
+  self.related_resources = [:requests]
 end

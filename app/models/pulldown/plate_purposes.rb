@@ -87,8 +87,8 @@ module Pulldown::PlatePurposes
 
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'Lib PCR-XP',   'ISCH lib pool', 'TransferRequest::InitialTransfer' ],
-    [ 'Lib PCRR-XP',  'ISCH lib pool', 'TransferRequest::InitialTransfer' ]
+    ['Lib PCR-XP',   'ISCH lib pool', 'TransferRequest::InitialTransfer'],
+    ['Lib PCRR-XP',  'ISCH lib pool', 'TransferRequest::InitialTransfer']
   ]
 
   STOCK_PLATE_PURPOSES = ['WGS stock DNA','SC stock DNA','ISC stock DNA']

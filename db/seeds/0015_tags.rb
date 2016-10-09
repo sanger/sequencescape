@@ -30,7 +30,7 @@ tag_group_names = [
 ]
 
 # Now we can load the tag information from production in a much more controlled fashion
-tags = {"TruSeq small RNA index tags - 6 mer tags" =>
+tags = { "TruSeq small RNA index tags - 6 mer tags" =>
   [[7, "CAGATC"],
    [12, "CTTGTA"],
    [23, "GAGTGG"],

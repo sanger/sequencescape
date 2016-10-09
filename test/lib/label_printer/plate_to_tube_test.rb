@@ -15,14 +15,14 @@ class PlateToTubesTest < ActiveSupport::TestCase
     @tube1 = create :sample_tube, barcode: barcode1, name: asset_name
     @sample_tubes = create_list :sample_tube, 4
     sample_tubes.unshift(tube1)
-    options = {sample_tubes: sample_tubes}
+    options = { sample_tubes: sample_tubes }
     @tube_label = LabelPrinter::Label::PlateToTubes.new(options)
-    @label = {top_line: "#{asset_name}",
+    @label = { top_line: "#{asset_name}",
               middle_line: barcode1,
               bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
               round_label_top_line: prefix,
               round_label_bottom_line: barcode1,
-              barcode: tube1.ean13_barcode}
+              barcode: tube1.ean13_barcode }
   end
 
   test "should have tubes" do

@@ -16,7 +16,7 @@ class Api::SampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { :sample_metadata => :reference_genome }, { :studies => [ :study_metadata, :uuid_object ] } ])}
+        scope :including_associations_for_json, -> { includes([:uuid_object, { :sample_metadata => :reference_genome }, { :studies => [:study_metadata, :uuid_object] }]) }
         alias_method(:json_root, :url_name)
       end
     end
@@ -69,7 +69,7 @@ class Api::SampleIO < Api::Base
     map_attribute_to_json_attribute(:donor_id)
   end
 
-  self.related_resources = [ :sample_tubes ]
+  self.related_resources = [:sample_tubes]
 
   extra_json_attributes do |object, json_attributes|
     if json_attributes['reference_genome'].blank?

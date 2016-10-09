@@ -12,15 +12,15 @@ class Sequenom96PlateTest < ActiveSupport::TestCase
     @plate1 = create :sequenom_qc_plate, barcode: barcode1, name: 'QC134443_9168137_163993_160200_20160617'
     @top = "134443  9168137"
     @bottom = "163993  160200 "
-    options = {plates: [plate1], count: 1}
+    options = { plates: [plate1], count: 1 }
     @purpose = "Sequenom"
     @plate_label = LabelPrinter::Label::Sequenom96Plate.new(options)
-    @label = {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
+    @label = { top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
             bottom_left: "#{plate1.sanger_human_barcode}",
             top_right: "#{top}",
             bottom_right: "#{bottom}",
             top_far_right: "#{purpose}",
-            barcode: "#{plate1.ean13_barcode}"}
+            barcode: "#{plate1.ean13_barcode}" }
   end
 
   test 'should have assets' do

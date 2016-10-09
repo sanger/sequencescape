@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
   public
 
   def block_api_access(message = nil, format = :xml)
-    content = {:error => "Unsupported API access"}
+    content = { :error => "Unsupported API access" }
     content[:message] = message unless message.nil?
     { format => content.send("to_#{format}".to_sym, :root => :errors), :status => 406 }
   end

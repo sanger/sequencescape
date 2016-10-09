@@ -24,15 +24,15 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
       @well_maps = {
         'S06' => {
-          :markers => [ XY,XY,XY ],
+          :markers => [XY,XY,XY],
           :count   => 94
         },
         'S04' => {
-          :markers => [ NC, XX, XX ],
+          :markers => [NC, XX, XX],
           :count => 92
         },
         'S43' => {
-          :markers => [ XX, XX, XX ],
+          :markers => [XX, XX, XX],
           :count => 94
         }
       }
@@ -65,7 +65,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
     should "let us grab all well locations" do
       assert_equal 95, @fluidigm.well_locations.count
-      @fluidigm.well_locations.each {|l| assert l.is_a?(String)}
+      @fluidigm.well_locations.each { |l| assert l.is_a?(String) }
     end
 
     should "let us fetch individual wells" do

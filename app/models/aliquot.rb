@@ -135,7 +135,7 @@ class Aliquot < ActiveRecord::Base
 
   # Aliquot are similar if they share the same sample AND the same tag (if they have one: nil acts as a wildcard))
   def =~(object)
-    a, b = [self, object].map { |o| [o.tag_id, o.sample_id, o.tag2_id < 0 ? nil : o.tag2_id ] }
+    a, b = [self, object].map { |o| [o.tag_id, o.sample_id, o.tag2_id < 0 ? nil : o.tag2_id] }
     a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
   end
 

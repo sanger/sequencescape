@@ -227,7 +227,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
         context 'when sample information is missing' do
           setup do
             post :create, :study_id => @study,
-              :sample_registrars => { '1' => { } }
+              :sample_registrars => { '1' => {} }
           end
           should render_template :new
         end

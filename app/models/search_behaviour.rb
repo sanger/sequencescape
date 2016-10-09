@@ -19,7 +19,7 @@ module SearchBehaviour
     @render_start = Time.now
     respond_to do |format|
       format.html
-      format.js { render :partial => 'search', :layout => false}
+      format.js { render :partial => 'search', :layout => false }
     end
   end
 

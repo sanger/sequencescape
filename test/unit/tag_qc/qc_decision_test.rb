@@ -33,8 +33,8 @@ class QcDecisionTest < ActiveSupport::TestCase
             :user => @user,
             :lot  => @lot,
             :decisions => [
-              {:qcable => @qcable_a, :decision => 'release'},
-              {:qcable => @qcable_b, :decision => 'fail'}
+              { :qcable => @qcable_a, :decision => 'release' },
+              { :qcable => @qcable_b, :decision => 'fail' }
             ]
           )
         end
@@ -46,7 +46,7 @@ class QcDecisionTest < ActiveSupport::TestCase
 
         should "record the decision" do
           assert_equal 2, @qcd.qc_decision_qcables.count
-          assert_equal ['fail','release'], @qcd.qc_decision_qcables.map {|d| d.decision }.sort
+          assert_equal ['fail','release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
         end
 
       end
@@ -57,8 +57,8 @@ class QcDecisionTest < ActiveSupport::TestCase
             :user => @user,
             :lot  => @lot,
             :decisions => [
-              {:qcable => @qcable_a, :decision => 'delete'},
-              {:qcable => @qcable_b, :decision => 'fail'}
+              { :qcable => @qcable_a, :decision => 'delete' },
+              { :qcable => @qcable_b, :decision => 'fail' }
             ]
           )
         end
@@ -70,8 +70,8 @@ class QcDecisionTest < ActiveSupport::TestCase
             :user => @user_b,
             :lot  => @lot,
             :decisions => [
-              {:qcable => @qcable_a, :decision => 'release'},
-              {:qcable => @qcable_b, :decision => 'fail'}
+              { :qcable => @qcable_a, :decision => 'release' },
+              { :qcable => @qcable_b, :decision => 'fail' }
             ]
           )
         end

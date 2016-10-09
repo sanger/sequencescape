@@ -21,7 +21,7 @@ class LibraryTube < Tube
     true
   end
 
-  scope :include_tag, -> { includes( :aliquots => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } ) }
+  scope :include_tag, -> { includes( :aliquots => { :tag => [:uuid_object, { :tag_group => :uuid_object }] } ) }
 
   def sorted_tags_for_select
     self.get_tag.tag_group.tags.sort { |a,b| a.map_id <=> b.map_id }.collect { |t| [t.name, t.id] }

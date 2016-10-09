@@ -60,9 +60,9 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
   def assert_subject(subject,role_type)
     assert @event.subjects, "No subjects found"
-    test_subject = @event.subjects.detect {|s| s.uuid == subject.uuid }
+    test_subject = @event.subjects.detect { |s| s.uuid == subject.uuid }
 
-    assert test_subject, "Could not find #{subject.uuid} in: #{@event.subjects.map {|s| s.try(:uuid) }.join(', ')}"
+    assert test_subject, "Could not find #{subject.uuid} in: #{@event.subjects.map { |s| s.try(:uuid) }.join(', ')}"
 
     assert_equal subject.friendly_name, test_subject.friendly_name
     assert_equal subject.subject_type, test_subject.subject_type
@@ -93,7 +93,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
     has_metadata :data_a, :data_method_a
     has_metadata(:data_b) { |ts,e| ts.dynamic_relation.data_method_b }
 
-    has_metadata(:data_c) {|ts,e| e.accessible }
+    has_metadata(:data_c) { |ts,e| e.accessible }
 
     def accessible
       'value_c'
@@ -172,7 +172,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
       end
 
       should 'find all metadata as a hash' do
-        assert_equal({'data_a' => @value_a, 'data_b' => @value_b, 'data_c' => 'value_c'}, @event.metadata)
+        assert_equal({ 'data_a' => @value_a, 'data_b' => @value_b, 'data_c' => 'value_c' }, @event.metadata)
       end
 
       # Put it all together

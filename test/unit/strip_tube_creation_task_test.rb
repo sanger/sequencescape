@@ -57,7 +57,7 @@ end
     context "#do_task with all tubes" do
       setup do
         @workflow_c.batch = @batch
-        params = {'tubes_to_create' => 2,'source_plate_barcode' => @plate.ean13_barcode}
+        params = { 'tubes_to_create' => 2,'source_plate_barcode' => @plate.ean13_barcode }
         @before = StripTube.count
         @task.do_task(@workflow_c, params)
       end
@@ -78,7 +78,7 @@ end
     context "#do_task with incorrect barcode" do
       setup do
         @workflow_c.batch = @batch
-        params = {'tubes_to_create' => 2,'source_plate_barcode' => 'not a barcode'}
+        params = { 'tubes_to_create' => 2,'source_plate_barcode' => 'not a barcode' }
         @before = StripTube.count
         @return = @task.do_task(@workflow_c, params)
       end
@@ -97,7 +97,7 @@ end
     context "#do_task with remaining tubes" do
       setup do
         @workflow_c.batch = @batch
-        params = {'tubes_to_create' => 1,'source_plate_barcode' => @plate.ean13_barcode}
+        params = { 'tubes_to_create' => 1,'source_plate_barcode' => @plate.ean13_barcode }
         @before = StripTube.count
         @task.do_task(@workflow_c, params)
         @rs = @batch.requests

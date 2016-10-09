@@ -145,7 +145,7 @@ class SampleRegistrar < ActiveRecord::Base
   REMAPPED_COLUMN_NAMES = { 'Asset group name' => 'Asset group' }
 
   # Columns that are required for the spreadsheet to be considered valid.
-  REQUIRED_COLUMNS = [ 'Asset group', 'Sample name' ]
+  REQUIRED_COLUMNS = ['Asset group', 'Sample name']
   REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ')
 
   def self.from_spreadsheet(file, study, user)
@@ -206,9 +206,9 @@ class SampleRegistrar < ActiveRecord::Base
       attributes = {
         :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
         :sample_attributes => {
-          :sample_metadata_attributes => { }
+          :sample_metadata_attributes => {}
         },
-        :sample_tube_attributes => { }
+        :sample_tube_attributes => {}
       }
 
       used_definitions.each_with_index do |handler, index|

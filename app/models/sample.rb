@@ -241,7 +241,7 @@ class Sample < ActiveRecord::Base
   end
 
   def sample_supplier_name_empty?(supplier_sample_name)
-    supplier_sample_name.blank? || [ 'empty', 'blank', 'water', 'no supplier name available', 'none' ].include?(supplier_sample_name.downcase)
+    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
   def accession_service
@@ -263,11 +263,11 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
-  GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
-  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
-                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue' ]
-  SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
+  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
+  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
+  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
+                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
+  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
@@ -350,7 +350,7 @@ class Sample < ActiveRecord::Base
       :sample_sra_hold         => SRA_HOLD_VALUES
 #      :reference_genome        => ??
     }.inject({}) do |h,(k,v)|
-      h[k] = v.inject({}) { |a,b| a[b.downcase] = b ; a }
+      h[k] = v.inject({}) { |a,b| a[b.downcase] = b; a }
       h
     end
 

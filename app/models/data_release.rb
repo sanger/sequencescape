@@ -20,7 +20,7 @@ module DataRelease
     return true unless valid_data_release_properties?
     return false if self.study_metadata.data_release_study_type.try(:studies_excluded_for_release?)
     # TODO[xxx]: was this removed?
-    return false if [ 'never', 'delayed' ].include?(self.study_metadata.data_release_timing)
+    return false if ['never', 'delayed'].include?(self.study_metadata.data_release_timing)
     true
   end
 

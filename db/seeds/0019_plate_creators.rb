@@ -15,13 +15,13 @@ ActiveRecord::Base.transaction do
   end
 
   # Additional plate purposes required
-  [ 'Pico dilution', 'Working dilution' ].each do |name|
+  ['Pico dilution', 'Working dilution'].each do |name|
     plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find #{name.inspect} plate purpose"
-    Plate::Creator.create!(:name => name, :plate_purpose => plate_purpose, :plate_purposes => [ plate_purpose ])
+    Plate::Creator.create!(:name => name, :plate_purpose => plate_purpose, :plate_purposes => [plate_purpose])
   end
 
   plate_purpose = PlatePurpose.find_by_name!("Pre-Extracted Plate")
-  creator = Plate::Creator.create!(:name => "Pre-Extracted Plate", :plate_purpose => plate_purpose, :plate_purposes => [ plate_purpose ])
+  creator = Plate::Creator.create!(:name => "Pre-Extracted Plate", :plate_purpose => plate_purpose, :plate_purposes => [plate_purpose])
   creator.parent_plate_purposes << Purpose.find_by_name!("Stock plate")
 
 

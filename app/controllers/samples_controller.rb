@@ -12,7 +12,7 @@ class SamplesController < ApplicationController
 
   #require 'curb'
 
-  before_action :admin_login_required, :only => [ :administer, :destroy ]
+  before_action :admin_login_required, :only => [:administer, :destroy]
 
   def index
     @samples = Sample.order(created_at: :desc).page(params[:page])
@@ -186,8 +186,8 @@ class SamplesController < ApplicationController
      body = rc.get.body
 
      respond_to do |format|
-       format.js {render :text => body}
-       format.xml {render :text => body}
+       format.js { render :text => body }
+       format.xml { render :text => body }
        #      format.html {render :nothing}
      end
    end

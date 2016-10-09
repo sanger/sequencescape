@@ -14,8 +14,8 @@ class MetadataMigration < ActiveRecord::Migration
       # It's more efficient to delete all of the properties and then delete the definition.
       def self.delete_for(relates_to, keys)
         definition_ids = self.for_class(relates_to).for_keys(keys).all.map(&:id)
-        Property.delete_all([ 'property_definition_id IN (?)', definition_ids ])
-        self.delete_all([ 'id IN (?)', definition_ids ])
+        Property.delete_all(['property_definition_id IN (?)', definition_ids])
+        self.delete_all(['id IN (?)', definition_ids])
       end
     end
 
@@ -29,10 +29,10 @@ class MetadataMigration < ActiveRecord::Migration
 
   def self.properties_from_metadata
     metadata_class.column_names.reject do |name|
-      [ :id, self.reference_id ].include?(name.to_sym)
+      [:id, self.reference_id].include?(name.to_sym)
     end.inject({}) do |hash,p|
       returning(hash) do
-        hash[ p ] = Property::Definition.find_by( :relates_to => self.reference_class_name, :key => p.to_s ) or raise StandardError, "Cannot find property definition for '#{ p }'"
+        hash[p] = Property::Definition.find_by( :relates_to => self.reference_class_name, :key => p.to_s ) or raise StandardError, "Cannot find property definition for '#{ p }'"
       end
     end
   end
@@ -51,7 +51,7 @@ class MetadataMigration < ActiveRecord::Migration
           metadata_class.new(
             properties.inject({ self.reference_id.to_s => record.id }) do |attributes,(property,definition)|
               returning(attributes) do
-                attributes[ property.to_s ] = record.properties.detect { |p|
+                attributes[property.to_s] = record.properties.detect { |p|
                   p.property_definition_id == definition.id
                 }.try(:value)
               end
@@ -80,7 +80,7 @@ class MetadataMigration < ActiveRecord::Migration
         # Delete all of the properties that we have migrated, leaving any that may exist outside that.
         say('Destroying all of the migrated property definitions')
         Property::Definition.delete_for(self.reference_class_name, self.metadata_class.column_names.reject do |name|
-          [ :id, self.reference_id ].include?(name.to_sym)
+          [:id, self.reference_id].include?(name.to_sym)
         end)
       rescue
         self.drop_table(self.metadata_class.table_name)

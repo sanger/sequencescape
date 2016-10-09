@@ -7,8 +7,8 @@
 class Api::StudySamplesController < Api::BaseController
   self.model_class = StudySample
 
-  before_action :prepare_object, :only => [ :show ]
-  before_action :prepare_list_context, :only => [ :index ]
+  before_action :prepare_object, :only => [:show]
+  before_action :prepare_list_context, :only => [:index]
 
 private
 

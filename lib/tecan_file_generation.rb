@@ -13,7 +13,7 @@ module Sanger
 
           source_barcode_index = source_barcode_to_plate_index(data_object["destination"])
           buffer_data = buffers(data_object, total_volume)
-          output_file_contents = [ header(data_object)]
+          output_file_contents = [header(data_object)]
           unless buffer_data.blank?
             output_file_contents << buffer_data
             output_file_contents << buffer_seperator
@@ -58,13 +58,13 @@ module Sanger
 
         def self.each_mapping(data_object)
           data_object["destination"].each do |dest_plate_barcode,plate_details|
-            mapping_by_well = Hash.new {|h,i| h[i] = [] }
+            mapping_by_well = Hash.new { |h,i| h[i] = [] }
             plate_details["mapping"].each do |mapping|
               destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
               mapping_by_well[destination_position] << mapping
             end
 
-            mapping_by_well.sort {|a,b| a[0] <=> b[0]}.each do |dest_position, mappings|
+            mapping_by_well.sort { |a,b| a[0] <=> b[0] }.each do |dest_position, mappings|
               mappings.each do |mapping|
                 yield(mapping, dest_plate_barcode, plate_details)
               end
@@ -107,11 +107,11 @@ module Sanger
 
         def self.footer(source_barcode_index,dest_barcode_index)
           footer = "C;\n"
-          source_barcode_index.sort {|a,b| a[1] <=> b[1]}.each do |barcode,index|
+          source_barcode_index.sort { |a,b| a[1] <=> b[1] }.each do |barcode,index|
             footer += "C; SCRC#{index} = #{barcode}\n"
           end
           footer += "C;\n"
-          dest_barcode_index.sort {|a,b| a[1] <=> b[1]}.each do |barcode,index|
+          dest_barcode_index.sort { |a,b| a[1] <=> b[1] }.each do |barcode,index|
             footer += "C; DEST#{index} = #{barcode}\n"
           end
           footer

@@ -61,7 +61,7 @@ module ApplicationHelper
   end
 
   def api_data
-    {:api_version => RELEASE.api_version}
+    { :api_version => RELEASE.api_version }
   end
 
   def display_user_guide(display_text, link=nil)
@@ -212,10 +212,10 @@ module ApplicationHelper
 
   def tabulated_error_messages_for(*params)
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
-    objects = params.collect {|object_name| instance_variable_get("@#{object_name}") }.compact
-    count   = objects.inject(0) {|sum, object| sum + object.errors.count }
+    objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
+    count   = objects.inject(0) { |sum, object| sum + object.errors.count }
     unless count.zero?
-      error_messages = objects.map {|object| object.errors.full_messages.map {|msg| content_tag(:div, msg) } }.join
+      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| content_tag(:div, msg) } }.join
       [content_tag(:td, :class => 'error item') do
         "Your #{params.first} has not been created."
       end,
@@ -280,7 +280,7 @@ module ApplicationHelper
   end
 
   def sorted_requests_for_search(requests)
-    sorted_requests = requests.select {|r| r.pipeline_id.nil?}
+    sorted_requests = requests.select { |r| r.pipeline_id.nil? }
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
     requests = requests + sorted_requests

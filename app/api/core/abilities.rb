@@ -155,8 +155,8 @@ module Core::Abilities
       can(:read, :all)
 
       # Every application is entitled to be able to lookup UUIDs and make searches
-      can(:create, [ Endpoints::Uuids::Model::Lookup, Endpoints::Uuids::Model::Bulk ])
-      can(:create, [ Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All, Endpoints::Searches::Instance::Last ])
+      can(:create, [Endpoints::Uuids::Model::Lookup, Endpoints::Uuids::Model::Bulk])
+      can(:create, [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All, Endpoints::Searches::Instance::Last])
     end
 
     # Registered applications can manage all objects that allow it and can have unauthenicated users.
@@ -167,7 +167,7 @@ module Core::Abilities
 
     # State changes only
     tag_plates do
-       can(:create, [ Endpoints::StateChanges::Model ])
+       can(:create, [Endpoints::StateChanges::Model])
        can(:authenticate, :all)
     end
 

@@ -11,7 +11,7 @@ class BatchTest < ActiveSupport::TestCase
     @pipeline = create :pipeline,
       :name          => 'Test pipeline',
       :workflow      => LabInterface::Workflow.create!(:item_limit => 8),
-      :request_types => [ create(:request_type, :request_class => Request, :order => 1) ]
+      :request_types => [create(:request_type, :request_class => Request, :order => 1)]
   end
 
   context "A batch" do
@@ -87,8 +87,8 @@ end
       should 'move the requests to different positions' do
         @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
 
-        expected = Hash[@requests.reverse.each_with_index.map { |request,index| [ request.id, index + 1 ] }]
-        actual   = Hash[@batch.batch_requests.map { |batch_request| [ batch_request.request_id, batch_request.position ] }]
+        expected = Hash[@requests.reverse.each_with_index.map { |request,index| [request.id, index + 1] }]
+        actual   = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
         assert_equal(expected, actual, "Positions of requests do not match")
       end
     end
@@ -101,9 +101,9 @@ end
       should 'move the requests that are at, and after, the position by the number and have no asset' do
         @batch.shift_item_positions(5, 2)
 
-        positions = [ 1, 2, 3, 4, 7, 8, 9, 10, 11, 12 ]
-        expected  = Hash[@requests.each_with_index.map { |request,index| [ request.id, positions[index] ] }]
-        actual    = Hash[@batch.batch_requests.map { |batch_request| [ batch_request.request_id, batch_request.position ] }]
+        positions = [1, 2, 3, 4, 7, 8, 9, 10, 11, 12]
+        expected  = Hash[@requests.each_with_index.map { |request,index| [request.id, positions[index]] }]
+        actual    = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
         assert_equal(expected, actual, "Positions of requests do not match")
       end
     end
@@ -115,7 +115,7 @@ end
       @request1 = @pipeline.request_types.last.create!(:asset => create(:sample_tube), :target_asset => create(:empty_library_tube))
       @request2 = @pipeline.request_types.last.create!(:asset => create(:sample_tube), :target_asset => create(:empty_library_tube))
 
-      @batch = @pipeline.batches.create!(:requests => [ @request1, @request2 ])
+      @batch = @pipeline.batches.create!(:requests => [@request1, @request2])
     end
     should "be able to call start_requests" do
       assert_nothing_raised do
@@ -135,7 +135,7 @@ end
         context "where 1 needs to be removed" do
           setup do
             @batch_requests_count = @batch.requests.count
-            @batch.remove_request_ids([ @request2.id],'Reason','Comment')
+            @batch.remove_request_ids([@request2.id],'Reason','Comment')
           end
           should "leave 2 requests behind" do
             assert_not_nil @batch.requests.find(@request2.id)
@@ -477,13 +477,13 @@ end
 
       should "return true if the tubes are scanned in in the correct order" do
         number_of_batch_events = @batch.lab_events.size
-        assert @batch.verify_tube_layout({"1" => "654321", "2" => "123456"})
+        assert @batch.verify_tube_layout({ "1" => "654321", "2" => "123456" })
         assert_equal number_of_batch_events + 1, @batch.lab_events.size
       end
 
       should "return false and add errors to the batch if the tubes are not in the correct order" do
         number_of_batch_events = @batch.lab_events.size
-        assert ! @batch.verify_tube_layout({"1" => "123456", "2" => "654321"})
+        assert ! @batch.verify_tube_layout({ "1" => "123456", "2" => "654321" })
         assert ! @batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
       end
@@ -602,8 +602,8 @@ end
                   "results" => "Some free form data (no html please)",
                   "criteria" => {
                     "criterion" => [
-                      {"value" => "Greater than 80mb", "key" => "yield"},
-                      {"value" => "Greater than Q20", "key" => "count"}
+                      { "value" => "Greater than 80mb", "key" => "yield" },
+                      { "value" => "Greater than Q20", "key" => "count" }
                     ]
                   },
                   "data_source" => "/somewhere.fastq",
@@ -621,7 +621,7 @@ end
               "identifier" => @batch.id,
               "location"   => 1
             }
-            @evaluations = [ @evaluation ]
+            @evaluations = [@evaluation]
           end
 
           context 'checking stuff' do
@@ -650,7 +650,7 @@ end
             end
           end
 
-          [ 'qc_pending', 'qc_submitted', 'qc_manual' ].each do |initial_state|
+          ['qc_pending', 'qc_submitted', 'qc_manual'].each do |initial_state|
             should "changing state from #{initial_state}" do
               @batch.update_attributes!(:qc_state => initial_state)
               Batch.qc_evaluations_update({ 'evaluation' => @evaluation })
@@ -661,7 +661,7 @@ end
 
         context "when evaluations tag contains more than 1 evaluation" do
           setup do
-            @info = {"evaluation" => [{"result" => "pass", "checks" => {"check" => [{"results" => "Some free form data (no html please)", "criteria" => {"criterion" => [{"value" => "Greater than 80mb", "key" => "yield"}, {"value" => "Greater than Q20", "key" => "count"}]}, "data_source" => "/somewhere.fastq", "links" => {"link" => {"href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink"}}, "comment" => "All good", "pass" => "true"}, {"results" => "Some free form data (no html please)", "criteria" => {"criterion" => [{"value" => "Greater than 80mb", "key" => "yield"}, {"value" => "Greater than Q20", "key" => "count"}]}, "data_source" => "/somewhere.fastq", "links" => {"link" => {"href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink"}}, "comment" => "All good", "pass" => "true"}]}, "check" => "Auto QC", "identifier" => @batch.id, "location" => 1}, {"result" => "fail", "checks" => {"check" => {"results" => "Some free form data (no html please)", "criteria" => {"criterion" => [{"value" => "Greater than 80mb", "key" => "yield"}, {"value" => "Greater than Q20", "key" => "count"}]}, "data_source" => "/somewhere.fastq", "links" => {"link" => {"href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink"}}, "comment" => "All good", "pass" => "true"}}, "check" => "Auto QC", "identifier" => @batch.id, "location" => 2}]}
+            @info = { "evaluation" => [{ "result" => "pass", "checks" => { "check" => [{ "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" }, { "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" }] }, "check" => "Auto QC", "identifier" => @batch.id, "location" => 1 }, { "result" => "fail", "checks" => { "check" => { "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" } }, "check" => "Auto QC", "identifier" => @batch.id, "location" => 2 }] }
             @events_count = LabEvent.count
             @requests_count = Request.count
           end
@@ -813,9 +813,9 @@ end
     context "#swap" do
       # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
       [
-        [ 3, 4 ],
-        [ 4, 4 ],
-        [ 2, 1 ]
+        [3, 4],
+        [4, 4],
+        [2, 1]
       ].each do |left_position, right_position|
         context "when swapping #{left_position} and #{right_position}" do
           setup do
@@ -836,8 +836,8 @@ end
             assert(
               @left_batch.swap(
                 @user, {
-                  "batch_1" => {"id" => @left_batch.id.to_s,  "lane" => left_position.to_s },
-                  "batch_2" => {"id" => @right_batch.id.to_s, "lane" => right_position.to_s }
+                  "batch_1" => { "id" => @left_batch.id.to_s,  "lane" => left_position.to_s },
+                  "batch_2" => { "id" => @right_batch.id.to_s, "lane" => right_position.to_s }
                 }
              )
             )

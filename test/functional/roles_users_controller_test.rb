@@ -24,7 +24,7 @@ class Admin::Roles::UsersControllerTest < ActionController::TestCase
         :parent => 'role',
         :actions => ['index'],
         :ignore_actions => ['show','create'],
-        :user => -> { user = FactoryGirl.create(:user) ; user.is_administrator ; user },
+        :user => -> { user = FactoryGirl.create(:user); user.is_administrator; user },
         :formats => ['html']
       }
     )

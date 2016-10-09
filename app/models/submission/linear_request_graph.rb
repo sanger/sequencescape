@@ -15,7 +15,7 @@ module Submission::LinearRequestGraph
     ActiveRecord::Base.transaction do
       create_request_chain!(
         build_request_type_multiplier_pairs,
-        assets.map { |asset| [ asset, asset.latest_stock_metrics(product), create_item_for!(asset) ] },
+        assets.map { |asset| [asset, asset.latest_stock_metrics(product), create_item_for!(asset)] },
         multiplexing_assets,
         &block
       )
@@ -31,7 +31,7 @@ module Submission::LinearRequestGraph
     end
 
     request_types.dup.map do |request_type_id|
-      [ RequestType.find(request_type_id), multipliers[request_type_id.to_s] ]
+      [RequestType.find(request_type_id), multipliers[request_type_id.to_s]]
     end
   end
   private :build_request_type_multiplier_pairs
@@ -104,15 +104,15 @@ module Submission::LinearRequestGraph
 
       target_assets_items = if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
         if multiplexing_assets.nil?
-          criteria = source_asset_qc_metric_and_item.map {|sci| sci[1] }.flatten.uniq
-          target_assets.uniq.map { |asset| [ asset, criteria, nil ] }
+          criteria = source_asset_qc_metric_and_item.map { |sci| sci[1] }.flatten.uniq
+          target_assets.uniq.map { |asset| [asset, criteria, nil] }
         else
           associate_built_requests(target_assets.uniq.compact); []
         end
       else
         target_assets.each_with_index.map do |asset,index|
           source_asset = request_type.no_target_asset? ? source_asset_qc_metric_and_item[index].first : asset
-          [ source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last ]
+          [source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last]
         end
       end
 

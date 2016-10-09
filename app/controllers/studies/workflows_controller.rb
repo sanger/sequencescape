@@ -10,7 +10,7 @@ class Studies::WorkflowsController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :discover_study, :discover_workflow
 
-  before_action :setup_tabs, :only => [ :show, :show_summary ]
+  before_action :setup_tabs, :only => [:show, :show_summary]
 
   def setup_tabs
     @total_requests = compute_total_request(@study)
@@ -71,7 +71,7 @@ class Studies::WorkflowsController < ApplicationController
         sample_ids      = @page_elements.map(&:id)
         render :partial => "sample_progress"
       when "Assets progress"
-        @asset_type = Aliquot::Receptacle.descendants.detect {|cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
+        @asset_type = Aliquot::Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
         @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
         @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
@@ -114,7 +114,7 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   def compute_total_request(study)
-    total_requests = { }
+    total_requests = {}
     report = @study.total_requests_report
     @workflow.request_types.each do |rt|
       total_requests[rt] = report[rt.id] || 0

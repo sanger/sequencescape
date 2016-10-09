@@ -38,7 +38,7 @@ class SubmissionsControllerTest < ActionController::TestCase
       setup do
         @user.is_lab_manager
         @submission = Submission.create!(:priority => 1, :user => @user)
-        post :change_priority, {:id => @submission.id, :submission => {:priority => 3}}
+        post :change_priority, { :id => @submission.id, :submission => { :priority => 3 } }
       end
 
       should 'allow update of priorities' do
@@ -52,9 +52,9 @@ class SubmissionsControllerTest < ActionController::TestCase
       #Mainly to verify that it isn't the new test that is broken
 
       setup do
-        samples = Well.with_aliquots.each.map {|w| w.aliquots.first.sample.name}
+        samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
-        post(:create, :submission => {:is_a_sequencing_order => "false", :comments => "", :template_id => @submission_template.id.to_s, :order_params => {"read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown"}, :asset_group_id => "", :study_id => @study.id.to_s, :sample_names_text => samples[1..4].join("\n"), :plate_purpose_id => @plate.plate_purpose.id.to_s, :project_name => "A project"})
+        post(:create, :submission => { :is_a_sequencing_order => "false", :comments => "", :template_id => @submission_template.id.to_s, :order_params => { "read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" }, :asset_group_id => "", :study_id => @study.id.to_s, :sample_names_text => samples[1..4].join("\n"), :plate_purpose_id => @plate.plate_purpose.id.to_s, :project_name => "A project" })
 
       end
 
@@ -78,7 +78,7 @@ class SubmissionsControllerTest < ActionController::TestCase
           well.aliquots.create(:sample => @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
-        samples = @wd_plate.wells.with_aliquots.each.map {|w| w.aliquots.first.sample.name}
+        samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create, :submission => {
           :is_a_sequencing_order => "false",
@@ -95,7 +95,7 @@ class SubmissionsControllerTest < ActionController::TestCase
           :study_id => @study.id.to_s,
           :sample_names_text => samples[1..4].join("\n"),
           :plate_purpose_id => @wd_plate.plate_purpose.id.to_s,
-          :project_name => "A project"})
+          :project_name => "A project" })
 
       end
 
@@ -175,6 +175,6 @@ class SubmissionsControllerTest < ActionController::TestCase
 
 
   def plate_submission(text)
-    {:submission => {:is_a_sequencing_order => "false", :comments => "", :template_id => @submission_template.id.to_s, :order_params => {"read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown"}, :asset_group_id => "", :study_id => @study.id.to_s, :sample_names_text => '', :barcodes_wells_text => text, :plate_purpose_id => @plate.plate_purpose.id.to_s, :project_name => "A project"}}
+    { :submission => { :is_a_sequencing_order => "false", :comments => "", :template_id => @submission_template.id.to_s, :order_params => { "read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" }, :asset_group_id => "", :study_id => @study.id.to_s, :sample_names_text => '', :barcodes_wells_text => text, :plate_purpose_id => @plate.plate_purpose.id.to_s, :project_name => "A project" } }
   end
 end

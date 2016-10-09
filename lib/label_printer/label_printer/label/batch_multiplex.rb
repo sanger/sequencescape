@@ -17,7 +17,7 @@ module LabelPrinter
 
       def tubes
         if batch.multiplexed?
-          ids = printable.select {|id, check| check == 'on'}.keys
+          ids = printable.select { |id, check| check == 'on' }.keys
           Asset.find ids
         end
       end

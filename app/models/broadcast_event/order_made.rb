@@ -24,25 +24,25 @@ class BroadcastEvent::OrderMade < BroadcastEvent
     event.plates
   end
 
-  has_subjects(:order_source_tubes) {|order,event| order.assets.select {|a| a.is_a?(Tube) } }
+  has_subjects(:order_source_tubes) { |order,event| order.assets.select { |a| a.is_a?(Tube) } }
 
-  has_subjects(:stock_plate) {|order,event| event.plates.map(&:original_stock_plates).flatten.uniq }
+  has_subjects(:stock_plate) { |order,event| event.plates.map(&:original_stock_plates).flatten.uniq }
 
   def plates
     return @plates if @plates
-    wells = seed.assets.select {|a| a.is_a?(Well) }
+    wells = seed.assets.select { |a| a.is_a?(Well) }
     return []  if wells.empty?
     @plates = Plate.with_wells(wells)
   end
 
 
-  has_metadata(:library_type) {|order,e| order.request_options['library_type'] }
-  has_metadata(:fragment_size_from) {|order,e| order.request_options['fragment_size_required_from'] }
-  has_metadata(:fragment_size_to) {|order,e| order.request_options['fragment_size_required_to'] }
-  has_metadata(:read_length) {|order,e| order.request_options[:read_length] }
-  has_metadata(:bait_library) {|order,e| order.request_options[:bait_library_name] }
+  has_metadata(:library_type) { |order,e| order.request_options['library_type'] }
+  has_metadata(:fragment_size_from) { |order,e| order.request_options['fragment_size_required_from'] }
+  has_metadata(:fragment_size_to) { |order,e| order.request_options['fragment_size_required_to'] }
+  has_metadata(:read_length) { |order,e| order.request_options[:read_length] }
+  has_metadata(:bait_library) { |order,e| order.request_options[:bait_library_name] }
 
-  has_metadata(:order_type) {|order,e| order.order_role.try(:role) || 'UNKNOWN' }
-  has_metadata(:submission_template) {|order,e| order.template_name }
+  has_metadata(:order_type) { |order,e| order.order_role.try(:role) || 'UNKNOWN' }
+  has_metadata(:submission_template) { |order,e| order.template_name }
 
 end

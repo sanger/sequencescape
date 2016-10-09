@@ -22,7 +22,7 @@ class IlluminaC::MxTubePurpose < IlluminaHtp::MxTubePurpose
   end
 
   def request_state(request,state)
-    mappings = {'cancelled' => 'cancelled','failed' => 'failed','passed' => 'passed'}
+    mappings = { 'cancelled' => 'cancelled','failed' => 'failed','passed' => 'passed' }
     request.is_a?(TransferRequest) || request.is_a?(Request::Multiplexing) ? state : mappings[state]
   end
   private :request_state

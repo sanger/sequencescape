@@ -23,6 +23,6 @@ class Pulldown::InitialPlatePurpose < PlatePurpose
     transfer_request_sti = [TransferRequest, *TransferRequest.descendants].map(&:name)
     Request.select("requests.*").
       joins("INNER JOIN requests AS asctf ON asctf.asset_id = requests.asset_id").
-      where(asctf:{target_asset_id:well_ids,sti_type:transfer_request_sti}).where.not(sti_type: transfer_request_sti)
+      where(asctf:{ target_asset_id:well_ids,sti_type:transfer_request_sti }).where.not(sti_type: transfer_request_sti)
   end
 end

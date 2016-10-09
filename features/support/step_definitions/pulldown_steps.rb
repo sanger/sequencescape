@@ -206,14 +206,14 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
 
   results = request_type.requests.all.map do |request|
     Hash[table.raw.map do |attribute,_|
-      [ attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) } ]
+      [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
     end]
   end.uniq!
   expected = Hash[table.raw.map do |attribute, value|
-    value = value.to_i if [ 'fragment_size_required_from', 'fragment_size_required_to' ].include?(attribute)
-    [ attribute, value ]
+    value = value.to_i if ['fragment_size_required_from', 'fragment_size_required_to'].include?(attribute)
+    [attribute, value]
   end]
-  assert_equal([ expected ], results, "Request details are not identical")
+  assert_equal([expected], results, "Request details are not identical")
 end
 
 Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
@@ -243,6 +243,6 @@ end
 
 Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept,plate_name|
   Plate.find_by_name(plate_name).wells.each do |well|
-    well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each {|r| assert_equal accept == 'should', r.request_metadata.customer_accepts_responsibility }
+    well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each { |r| assert_equal accept == 'should', r.request_metadata.customer_accepts_responsibility }
   end
 end

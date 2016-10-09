@@ -68,7 +68,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def printables
-      samples.map {|sample| sample.assets.first}
+      samples.map { |sample| sample.assets.first }
     end
 
   end

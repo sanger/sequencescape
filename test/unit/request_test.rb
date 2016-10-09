@@ -85,8 +85,8 @@ class RequestTest < ActiveSupport::TestCase
         @submission = FactoryHelp::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = create :item, :submission => @submission
 
-        @genotype_pipeline = create :pipeline, :name => "genotyping pipeline", :request_types => [ @genotyping_request_type ]
-        @cherrypick_pipeline = create :pipeline, :name => "cherrypick pipeline", :request_types => [ @cherrypick_request_type ], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
+        @genotype_pipeline = create :pipeline, :name => "genotyping pipeline", :request_types => [@genotyping_request_type]
+        @cherrypick_pipeline = create :pipeline, :name => "cherrypick pipeline", :request_types => [@cherrypick_request_type], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
         @request1 = create(
           :request_without_assets,
@@ -121,7 +121,7 @@ class RequestTest < ActiveSupport::TestCase
           @request2 = create :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
           @request3 = create :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
 
-          @batch = @cherrypick_pipeline.batches.create!(:requests => [ @request1 ])
+          @batch = @cherrypick_pipeline.batches.create!(:requests => [@request1])
 
           @request1.reload
           @request2.reload

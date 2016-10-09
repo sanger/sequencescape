@@ -41,7 +41,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   def stock_plate(tube)
     return nil if tube.requests_as_target.empty?
 
-    assets = [ tube.requests_as_target.first.asset ]
+    assets = [tube.requests_as_target.first.asset]
     until assets.empty?
       asset = assets.shift
       return asset.plate if asset.is_a?(Well) and asset.plate.stock_plate?

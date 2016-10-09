@@ -150,7 +150,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def call(object, options, stream)
-      value = @attribute_path.inject(object) { |o,k| return if o.nil? ; o.send(k) } or return
+      value = @attribute_path.inject(object) { |o,k| return if o.nil?; o.send(k) } or return
       stream.attribute(@name, value.send(@attribute), options)
     end
 

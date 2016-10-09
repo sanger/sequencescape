@@ -42,11 +42,11 @@ class Submission < ActiveRecord::Base
   self.per_page = 500
   scope :including_associations_for_json, -> { includes([
       :uuid_object,
-      {:orders => [
-         {:project => :uuid_object},
-         {:assets => :uuid_object },
-         {:study => :uuid_object },
-         :user]}
+      { :orders => [
+         { :project => :uuid_object },
+         { :assets => :uuid_object },
+         { :study => :uuid_object },
+         :user] }
   ])}
 
   scope :building, -> { where( :state => "building" ) }
@@ -111,7 +111,7 @@ class Submission < ActiveRecord::Base
     end
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
-      order.create_submission({:user_id => order.user_id}.merge(submission_options))
+      order.create_submission({ :user_id => order.user_id }.merge(submission_options))
       order.save! #doesn't save submission id otherwise
       study_name = order.study.try(:name)
       order.submission.update_attributes!(:name => study_name) if study_name
@@ -125,7 +125,7 @@ class Submission < ActiveRecord::Base
   def safe_to_delete?
     ActiveSupport::Deprecation.warn "Submission#safe_to_delete? may not recognise all states"
     unless self.ready?
-      requests_in_progress = self.requests.select {|r| r.state != 'pending' || r.state != 'waiting'}
+      requests_in_progress = self.requests.select { |r| r.state != 'pending' || r.state != 'waiting' }
       requests_in_progress.empty? ? true : false
     else
       return true
@@ -204,7 +204,7 @@ class Submission < ActiveRecord::Base
  end
 
  def request_options_compatible?(a,b)
-   a.request_options.reject {|k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject {|k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) }
+   a.request_options.reject { |k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) }
  end
 
  def check_studies_compatible?(a,b)
@@ -232,7 +232,7 @@ class Submission < ActiveRecord::Base
     if next_request_type_id.nil?
       next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
     end
-    all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).order(id: :asc)
+    all_requests = requests.with_request_type_id([request.request_type_id, next_request_type_id]).order(id: :asc)
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
     if request.request_type.for_multiplexing?
@@ -255,7 +255,7 @@ class Submission < ActiveRecord::Base
       # Now we can take the group of requests from next_possible_requests that tie up.
       divergence_ratio = multipliers.first
       index = sibling_requests.map(&:id).index(request.id)
-      next_possible_requests[index * divergence_ratio,[ 1, divergence_ratio ].max]
+      next_possible_requests[index * divergence_ratio,[1, divergence_ratio].max]
     end
   end
 
@@ -279,7 +279,7 @@ class Submission < ActiveRecord::Base
 
   def study_names
     # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    orders.map {|o| o.study.try(:name) || o.assets.map {|a| a.aliquots.map {|al| al.study.try(:name) }} }.flatten.compact.sort.uniq.join("|")
+    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.aliquots.map { |al| al.study.try(:name) } } }.flatten.compact.sort.uniq.join("|")
   end
 
  def cross_project?

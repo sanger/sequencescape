@@ -12,7 +12,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end
 
     def api_error(response)
-      response.content_error(422, { @attribute => [ self.message ] })
+      response.content_error(422, { @attribute => [self.message] })
     end
   end
 
@@ -51,18 +51,18 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       # b_attributes, c_attributes') and the final model, or rather association, that we end at.
       # 'model' is nil if there is no association and we're assuming that we need a Hash of
       # some form.
-      model, path = trunk.inject([ model_for_input, [] ]) do |(model, parts), step|
+      model, path = trunk.inject([model_for_input, []]) do |(model, parts), step|
         next_model, next_step =
           if model.nil?
-            [ nil, step ]
+            [nil, step]
           elsif association = model.reflections[step]
-            raise StandardError, "Nested attributes only works with belongs_to or has_one" unless [ :belongs_to, :has_one ].include?(association.macro.to_sym)
-            [ association.klass, :"#{step}_attributes" ]
+            raise StandardError, "Nested attributes only works with belongs_to or has_one" unless [:belongs_to, :has_one].include?(association.macro.to_sym)
+            [association.klass, :"#{step}_attributes"]
           else
-            [ nil, step ]
+            [nil, step]
           end
 
-        [ next_model, parts << next_step ]
+        [next_model, parts << next_step]
       end
 
       # Build the necessary structure for the attributes.  The code can also be generated

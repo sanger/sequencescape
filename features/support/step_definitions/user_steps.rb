@@ -23,7 +23,7 @@ end
 
 Then /^the user "([^"]*)" roles should look like:$/ do |user, role_table|
   user = User.find_by_login(user) || User.find_by_email(user)
-  user_role_table = role_table.class.new([["role"], user.roles.map { |r| r.name}])
+  user_role_table = role_table.class.new([["role"], user.roles.map { |r| r.name }])
   role_table.diff!(user_role_table)
 end
 

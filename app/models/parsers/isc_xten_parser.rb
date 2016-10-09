@@ -61,7 +61,7 @@ class Parsers::IscXtenParser
   end
 
   def locations
-    table.sort {|a,b| a[0] <=> b[0] && a[1].to_i <=> b[1].to_i}.map {|l| l[0] + l[1]}
+    table.sort { |a,b| a[0] <=> b[0] && a[1].to_i <=> b[1].to_i }.map { |l| l[0] + l[1] }
   end
 
   def each_well_and_parameters

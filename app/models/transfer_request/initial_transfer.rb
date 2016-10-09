@@ -16,7 +16,7 @@ class TransferRequest::InitialTransfer < TransferRequest
     private :perform_transfer_of_contents
 
     def outer_request
-      asset.requests.detect {|r| r.library_creation? && r.submission_id == self.submission_id}
+      asset.requests.detect { |r| r.library_creation? && r.submission_id == self.submission_id }
     end
   end
 

@@ -26,7 +26,7 @@ class PooledPlateCreation < AssetCreation
   end
 
   def record_creation_of_children
-    parents.each {|parent| parent.events.create_plate!(child_purpose, child, user)}
+    parents.each { |parent| parent.events.create_plate!(child_purpose, child, user) }
   end
   private :record_creation_of_children
 

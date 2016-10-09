@@ -33,7 +33,7 @@ class Qcable < ActiveRecord::Base
 
   scope :include_for_json, -> { includes([:asset,:lot,:stamp,:stamp_qcable]) }
 
-  scope :stamped, -> { includes([:stamp_qcable, :stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC')}
+  scope :stamped, -> { includes([:stamp_qcable, :stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC') }
 
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
@@ -48,7 +48,7 @@ class Qcable < ActiveRecord::Base
       if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
         { :query => 'FALSE' }
       else
-        { :query => '(wam_asset.barcode=? AND wam_asset.barcode_prefix_id=?)', :parameters => [ barcode_number, barcode_prefix.id ] }
+        { :query => '(wam_asset.barcode=? AND wam_asset.barcode_prefix_id=?)', :parameters => [barcode_number, barcode_prefix.id] }
       end
     end.inject({ :query => ['FALSE'], :parameters => [nil], :joins => ['LEFT JOIN assets AS wam_asset ON qcables.asset_id = wam_asset.id'] }) do |building, current|
       building.tap do
@@ -58,7 +58,7 @@ class Qcable < ActiveRecord::Base
       end
     end
 
-    where([ query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact ]).
+    where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact]).
     joins(query_details[:joins].compact.uniq)
   }
 

@@ -27,7 +27,7 @@ Given /^I have an order created with the following details based on the template
       when 'pre_cap_group' then v
       else Uuid.include_resource.lookup_single_uuid(v).resource
       end
-    [ k.to_sym, v ]
+    [k.to_sym, v]
   end
   user = User.find_by(login:'abc123') || FactoryGirl.create(:user,login:'abc123')
   order = template.create_order!({ :user => user }.merge(Hash[order_attributes]))
@@ -56,5 +56,5 @@ end
 
 When /^the order with UUID "([^"]*)" has been added to a submission$/ do |uuid|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
-  Submission.create!(:orders => [ order ], :user => order.user )
+  Submission.create!(:orders => [order], :user => order.user )
 end

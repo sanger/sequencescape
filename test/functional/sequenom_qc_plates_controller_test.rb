@@ -27,7 +27,7 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
       PlateBarcode.stubs(:create).returns(barcode)
 
       barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+      LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
 
       plate1 = create :plate, barcode: "9168137"
       plate2 = create :plate, barcode: "163993"
@@ -35,10 +35,10 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
       RestClient.expects(:post)
 
       post :create, "user_barcode" => "#{Barcode.human_to_machine_barcode(@user.barcode)}",
-        "input_plate_names" => {"1" => "#{plate1.ean13_barcode}", "2" => "#{plate2.ean13_barcode}", "3" => "", "4" => ""},
+        "input_plate_names" => { "1" => "#{plate1.ean13_barcode}", "2" => "#{plate2.ean13_barcode}", "3" => "", "4" => "" },
         "plate_prefix" => "QC",
         "gender_check_bypass" => "1",
-        "barcode_printer" => {"id" => "#{barcode_printer.id}"},
+        "barcode_printer" => { "id" => "#{barcode_printer.id}" },
         "number_of_barcodes" => "1"
     end
   end

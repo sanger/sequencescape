@@ -21,18 +21,18 @@ class QcMetricTest < ActiveSupport::TestCase
   context "A QcMetric #poor_quality_proceed" do
 
     [
-      [ 'passed',          true,  false ],
-      [ 'passed',          false, false ],
-      [ 'failed',          false, false ],
-      [ 'failed',          true,  true  ],
-      [ 'failed',          nil,   false ],
-      [ 'passed',          nil,   false ],
-      [ 'manually_passed', true,  false ],
-      [ 'manually_passed', false, false ],
-      [ 'manually_failed', false, false ],
-      [ 'manually_failed', true,  true  ],
-      [ 'manually_failed', nil,   false ],
-      [ 'manually_passed', nil,   false ],
+      ['passed',          true,  false],
+      ['passed',          false, false],
+      ['failed',          false, false],
+      ['failed',          true,  true],
+      ['failed',          nil,   false],
+      ['passed',          nil,   false],
+      ['manually_passed', true,  false],
+      ['manually_passed', false, false],
+      ['manually_failed', false, false],
+      ['manually_failed', true,  true],
+      ['manually_failed', nil,   false],
+      ['manually_passed', nil,   false],
     ].each do |qc_state,proceed_state,poor_quality_proceed|
         should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
           qc = create :qc_metric, :qc_decision => qc_state, :proceed => proceed_state

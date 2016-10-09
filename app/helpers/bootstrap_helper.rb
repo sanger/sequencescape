@@ -7,15 +7,15 @@
 module BootstrapHelper
 
   def panel(type=:default,options={},&block)
-    bs_custom_panel(type,:div,{:class => "panel-body"},options,&block)
+    bs_custom_panel(type,:div,{ :class => "panel-body" },options,&block)
   end
 
   def list_panel(type=:default,options={},&block)
-    bs_custom_panel(type,:ul,{:class => "list-group"},options,&block)
+    bs_custom_panel(type,:ul,{ :class => "list-group" },options,&block)
   end
 
   def link_panel(type=:default,options={},&block)
-    bs_custom_panel(type,:div,{:class => "list-group"},options,&block)
+    bs_custom_panel(type,:div,{ :class => "list-group" },options,&block)
   end
 
   def bs_custom_panel(type,body_type,body_options,options,&block)
@@ -148,14 +148,14 @@ module BootstrapHelper
       fg = bs_column(4,'md') { label }
       fg << bs_column(5,'md') { field }
       fg << bs_column(3,'md') do
-        help_text("#{friendly_label} help text") { raw(help)}
+        help_text("#{friendly_label} help text") { raw(help) }
       end if help
       fg
     end
   end
 
   def bs_select(*args)
-    hashes = args[-2,2].select {|arg| arg.respond_to?(:keys) }.count
+    hashes = args[-2,2].select { |arg| arg.respond_to?(:keys) }.count
     (2 - hashes).times do
       args << {}
     end

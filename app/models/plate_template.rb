@@ -26,14 +26,14 @@ class PlateTemplate < Plate
   def stamp_to(plate)
     ActiveRecord::Base.transaction do
       self.wells.each do |well|
-        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map {|a| a.dup }
+        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map { |a| a.dup }
       end
     end
   end
 
 
   def set_control_well(result)
-    self.add_descriptor(Descriptor.new({:name => "control_well", :value => result}))
+    self.add_descriptor(Descriptor.new({ :name => "control_well", :value => result }))
     self.save
   end
 

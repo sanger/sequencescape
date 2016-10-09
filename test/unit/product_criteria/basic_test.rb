@@ -12,11 +12,11 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
 
     setup do
       @params = {
-        :concentration              => {:greater_than => 5 },
-        :total_micrograms           => {:greater_than => 10 },
-        :current_volume => {:greater_than => 8, :less_than => 2000 },
-        :gel_pass                   => {:not_equal    => 'degraded' },
-        :conflicting_gender_markers => {:less_than    => 1 }
+        :concentration              => { :greater_than => 5 },
+        :total_micrograms           => { :greater_than => 10 },
+        :current_volume => { :greater_than => 8, :less_than => 2000 },
+        :gel_pass                   => { :not_equal    => 'degraded' },
+        :conflicting_gender_markers => { :less_than    => 1 }
       }
     end
 
@@ -24,7 +24,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
       setup do
         @well_attribute = create :well_attribute, :concentration => 1, :current_volume => 30000, :gel_pass => 'OKAY', :gender_markers => ["M", "M", "U"]
         @well = create :well, :well_attribute => @well_attribute
-        @sample = create :sample, :sample_metadata_attributes => {:gender => 'female' }
+        @sample = create :sample, :sample_metadata_attributes => { :gender => 'female' }
         @well.samples << @sample
         @criteria = ProductCriteria::Basic.new(@params,@well)
       end
@@ -50,7 +50,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
       setup do
         @well_attribute = create :well_attribute, :concentration => 800, :current_volume => 100, :gel_pass => 'OKAY', :gender_markers => ["M", "M", "U"]
         @well = create :well, :well_attribute => @well_attribute
-        @sample = create :sample, :sample_metadata_attributes => {:gender => 'male' }
+        @sample = create :sample, :sample_metadata_attributes => { :gender => 'male' }
         @well.samples << @sample
         @criteria = ProductCriteria::Basic.new(@params,@well)
       end

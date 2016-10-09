@@ -27,7 +27,7 @@ module SampleManifest::InputBehaviour
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index]}].tap do |columns|
+      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index] }].tap do |columns|
         raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
       end
     end
@@ -191,7 +191,7 @@ module SampleManifest::InputBehaviour
 
     column_map = SampleManifest.compute_column_map(headers)
     spreadsheet_offset.upto(csv.size - 1) do |row|
-      yield(Hash[headers.each_with_index.map { |header, column| [ header, csv[row][column] ] }])
+      yield(Hash[headers.each_with_index.map { |header, column| [header, csv[row][column]] }])
     end
   rescue CSV::MalformedCSVError => exception
     raise InvalidManifest, "Invalid CSV file, did you upload an Excel file by accident? - #{exception.message}"
@@ -235,7 +235,7 @@ module SampleManifest::InputBehaviour
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
-          [ attribute, row[csv_column] ]
+          [attribute, row[csv_column]]
         end
       ].merge(
         :is_resubmitted => convert_yes_no_to_boolean(row['IS RE-SUBMITTED SAMPLE?'])

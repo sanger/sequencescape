@@ -9,11 +9,11 @@ class RequestsController < ApplicationController
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :admin_login_required, :only => [ :describe, :undescribe, :destroy ]
-  before_action :set_permitted_params, :only => [ :update ]
+  before_action :admin_login_required, :only => [:describe, :undescribe, :destroy]
+  before_action :set_permitted_params, :only => [:update]
 
   def set_permitted_params
-    @parameters = params[:request].reject {|k,v| !['request_metadata_attributes'].include?(k.to_s)}
+    @parameters = params[:request].reject { |k,v| !['request_metadata_attributes'].include?(k.to_s) }
   end
   attr_reader :parameters
  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
@@ -191,7 +191,7 @@ class RequestsController < ApplicationController
     end
   end
 
-  before_action :find_request, :only => [ :filter_change_decision, :change_decision ]
+  before_action :find_request, :only => [:filter_change_decision, :change_decision]
 
   def find_request
     @request = Request.find(params[:id])
@@ -205,7 +205,7 @@ class RequestsController < ApplicationController
   end
 
   def change_decision
-    @change_decision = Request::ChangeDecision.new({:request => @request, :user => @current_user}.merge(params[:change_decision] || {})).execute!
+    @change_decision = Request::ChangeDecision.new({ :request => @request, :user => @current_user }.merge(params[:change_decision] || {})).execute!
     flash[:notice] = "Update. Below you find the new situation."
     redirect_to filter_change_decision_request_path(params[:id])
    rescue Request::ChangeDecision::InvalidDecision => exception

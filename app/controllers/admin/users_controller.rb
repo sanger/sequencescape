@@ -16,7 +16,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user_roles = @user.roles.select {|r| r.name == "administrator" || r.name == "manager" || r.name == "internal"}
+    @user_roles = @user.roles.select { |r| r.name == "administrator" || r.name == "manager" || r.name == "internal" }
     @all_roles = Role.select(:name).uniq
     @users_roles = @user.study_and_project_roles.sort_by(&:name)
     @studies = Study.order(:id)
@@ -110,10 +110,10 @@ class Admin::UsersController < ApplicationController
 
   def filter
     if params[:q]
-      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',{query: "%#{params[:q].downcase}%"})
+      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',{ query: "%#{params[:q].downcase}%" })
     end
 
-    render :partial => "users", :locals => {:users => @users}
+    render :partial => "users", :locals => { :users => @users }
   end
 
   private

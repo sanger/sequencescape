@@ -22,10 +22,10 @@ class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
         rt.library_types << LibraryType.find_by_name!(name)
       end
       rt.request_type_validators.build([
-        {:request_option => "read_length", :valid_options => [150]},
-        {:request_option => "library_type", :valid_options => RequestType::Validator::LibraryTypeValidator.new(rt.id)},
-        {:request_option => "fragment_size_required_to", :valid_options => ["350", "450"]},
-        {:request_option => "fragment_size_required_from", :valid_options => ["350", "450"]}
+        { :request_option => "read_length", :valid_options => [150] },
+        { :request_option => "library_type", :valid_options => RequestType::Validator::LibraryTypeValidator.new(rt.id) },
+        { :request_option => "fragment_size_required_to", :valid_options => ["350", "450"] },
+        { :request_option => "fragment_size_required_from", :valid_options => ["350", "450"] }
       ])
       rt.save!
       Pipeline.find_by_name('HiSeq X PE (spiked in controls)').request_types << rt

@@ -40,7 +40,7 @@ class QcMetric < ActiveRecord::Base
 
   scope :for_product, ->(product) {
       joins(:qc_report => :product_criteria).
-      where(:product_criteria => { :product_id => product})
+      where(:product_criteria => { :product_id => product })
   }
 
   scope :stock_metric, ->() {

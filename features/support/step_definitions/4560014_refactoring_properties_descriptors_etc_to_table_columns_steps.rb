@@ -96,13 +96,13 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
 
   assets = (1..count.to_i).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
-    param = asset_type == 'well' ? {:id => 90 + i} : {:name => "#{ group_name }, #{ asset_type } #{ i }"}
+    param = asset_type == 'well' ? { :id => 90 + i } : { :name => "#{ group_name }, #{ asset_type } #{ i }" }
     FactoryGirl.create(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param ).tap do |asset|
       if asset.primary_aliquot.present?
-        asset.primary_aliquot.sample.tap { |s| s.name = sample_name ; s.save(:validate => false); s.studies << study }
+        asset.primary_aliquot.sample.tap { |s| s.name = sample_name; s.save(:validate => false); s.studies << study }
       else
         asset.aliquots.create!(:sample => FactoryGirl.create(:sample, :name => sample_name), :study => study)
-        asset.aliquots.each {|a| study.samples << a.sample}
+        asset.aliquots.each { |a| study.samples << a.sample }
       end
     end
   end
@@ -122,7 +122,7 @@ end
 Then /^I should see the following request information:$/ do |expected|
   # The request info is actually a series of tables. fetch_table just grabs the first.
   # This is silly, but attempting to fix it is probably more hassle than its worth.
-  actual = Hash[page.all('.info .property_group_general tr').map {|row| row.all('td').map(&:text) }]
+  actual = Hash[page.all('.info .property_group_general tr').map { |row| row.all('td').map(&:text) }]
   assert_equal expected.rows_hash, actual
 end
 

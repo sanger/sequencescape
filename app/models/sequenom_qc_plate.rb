@@ -23,7 +23,7 @@ class SequenomQcPlate < Plate
       if plate_barcode.blank?
         ordered_source_plates << nil
       else
-        ordered_source_plates << self.parents.select {|plate| plate.barcode == plate_barcode}.first
+        ordered_source_plates << self.parents.select { |plate| plate.barcode == plate_barcode }.first
       end
     end
 

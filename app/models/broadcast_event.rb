@@ -42,7 +42,7 @@ class BroadcastEvent < ActiveRecord::Base
 
   # Returns a hash of all metadata
   def metadata
-    Hash[self.class.metadata_finders.map {|mf| mf.for(seed,self) } ]
+    Hash[self.class.metadata_finders.map { |mf| mf.for(seed,self) }]
   end
 
   def routing_key

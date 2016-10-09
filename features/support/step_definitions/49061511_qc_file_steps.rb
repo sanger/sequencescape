@@ -23,7 +23,7 @@ end
 When /^I make an authorised POST with the QC file to the API path "(.*?)"$/ do |path|
   filename = File.expand_path(File.join(Rails.root, %w{test data example_file.txt}))
   File.open(filename) do |file|
-    file_send(path,file) {|headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'}
+    file_send(path,file) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
   end
 end
 
@@ -41,7 +41,7 @@ def file_send(path, file)
   raise StandardError, "You must explicitly set the API version you are using" if @api_path.nil?
   @cookies ||= {}
 
-  headers = { }
+  headers = {}
   headers.merge!('HTTP_ACCEPT' => 'application/json')
   headers.merge!('CONTENT_TYPE' => 'sequencescape/qc_file')
   headers.merge!('HTTP_CONTENT_DISPOSITION' => 'form-data; filename="example_file.txt"')

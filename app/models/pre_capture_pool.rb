@@ -44,7 +44,7 @@ class PreCapturePool < ActiveRecord::Base
         return if poolable_type.nil?
         grouped_requests.each do |_,requests|
           plex = requests.first.order.request_options['pre_capture_plex_level'].to_i
-          offset.times { requests.map! {|r| submission.next_requests(r) }}
+          offset.times { requests.map! { |r| submission.next_requests(r) } }
           pool(requests, plex)
         end
       end
@@ -53,11 +53,11 @@ class PreCapturePool < ActiveRecord::Base
     private
 
     def poolable_type
-      @pt ||= RequestType.find(submission.request_type_ids).detect {|rt| rt.request_class.include?(Poolable)}
+      @pt ||= RequestType.find(submission.request_type_ids).detect { |rt| rt.request_class.include?(Poolable) }
     end
 
     def library_creation_type
-      submission.request_type_ids.detect {|rt| RequestType.find(rt).request_class <= Request::LibraryCreation }
+      submission.request_type_ids.detect { |rt| RequestType.find(rt).request_class <= Request::LibraryCreation }
     end
 
     def offset
@@ -72,10 +72,10 @@ class PreCapturePool < ActiveRecord::Base
 
     def grouped_requests
       submission.requests.
-        joins(:order,{asset: :map}).
+        joins(:order,{ asset: :map }).
         where(request_type_id: library_creation_type).
         order('maps.column_order ASC, id ASC').
-        group_by {|r| r.order.pre_cap_group || "o#{r.order_id}" }
+        group_by { |r| r.order.pre_cap_group || "o#{r.order_id}" }
     end
 
   end

@@ -8,7 +8,7 @@ module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
     @robots = Robot.all
     set_plate_purpose_options(task)
-    suitable_sizes = @plate_purpose_options.map {|o| o[1] }.uniq
+    suitable_sizes = @plate_purpose_options.map { |o| o[1] }.uniq
     if (@batch.pipeline.control_request_type.nil?)
       @plate_templates = PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
     else
@@ -68,14 +68,14 @@ module Tasks::PlateTemplateHandler
       end
     end
 
-    [ plates, plates.map { |_, barcode, _| barcode }.uniq ]
+    [plates, plates.map { |_, barcode, _| barcode }.uniq]
   end
   private :map_parsed_spreadsheet_to_plate
 
   def self.generate_spreadsheet(batch)
     CSV.generate(:row_sep => "\r\n") do |csv|
       csv << ["Request ID","Sample Name","Plate","Destination Well"]
-      batch.requests.each { |r| csv << [r.id,r.asset.sample.name,"",""]}
+      batch.requests.each { |r| csv << [r.id,r.asset.sample.name,"",""] }
     end
   end
 end

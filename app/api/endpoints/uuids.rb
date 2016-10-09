@@ -33,7 +33,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     class CriteriaInvalid < ::Core::Service::Error
       def initialize(*args)
         super
-        @errors = { :lookup => [ self.message ] }
+        @errors = { :lookup => [self.message] }
       end
 
       def api_error(response)
@@ -101,7 +101,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       uuid = Search.create!(lookup).find
 
       # Hack time ...
-      class << response ; include ::Endpoints::Uuids::Response ; end
+      class << response; include ::Endpoints::Uuids::Response; end
       response.redirect_to(request.service.api_path(uuid.external_id))
 
       {
@@ -119,7 +119,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       uuids = Search.create_bulk!(lookup).map(&:find)
 
       # Hack time ...
-      class << response ; include ::Endpoints::Uuids::Response ; end
+      class << response; include ::Endpoints::Uuids::Response; end
       response.multiple_choices
 
       uuids.map do |uuid|

@@ -9,10 +9,10 @@ tube = BarcodePrinterType.find_by_name('1D Tube')
 plate = BarcodePrinterType.find_by_name('96 Well PLate')
 
 purpose_order = [
-      {:class => QcableLibraryPlatePurpose,    :name => 'Tag PCR', :barcode_printer_type => plate, :size => 96, :asset_shape => AssetShape.find_by_name('Standard')},
-      {:class => PlatePurpose,    :name => 'Tag PCR-XP', :barcode_printer_type => plate, :size => 96, :asset_shape => AssetShape.find_by_name('Standard')},
-      {:class => Tube::StockMx,   :name => 'Tag Stock-MX', :target_type => 'StockMultiplexedLibraryTube', :barcode_printer_type => tube},
-      {:class => Tube::StandardMx,:name => 'Tag MX', :target_type => 'MultiplexedLibraryTube', :barcode_printer_type => tube},
+      { :class => QcableLibraryPlatePurpose,    :name => 'Tag PCR', :barcode_printer_type => plate, :size => 96, :asset_shape => AssetShape.find_by_name('Standard') },
+      { :class => PlatePurpose,    :name => 'Tag PCR-XP', :barcode_printer_type => plate, :size => 96, :asset_shape => AssetShape.find_by_name('Standard') },
+      { :class => Tube::StockMx,   :name => 'Tag Stock-MX', :target_type => 'StockMultiplexedLibraryTube', :barcode_printer_type => tube },
+      { :class => Tube::StandardMx,:name => 'Tag MX', :target_type => 'MultiplexedLibraryTube', :barcode_printer_type => tube },
     ]
 
 shared = {
@@ -49,13 +49,13 @@ SequencingPipeline.create!(:name => "MiSeq sequencing QC") do |pipeline|
     workflow.locale     = 'External'
     workflow.item_limit = 1
   end.tap do |workflow|
-      t1 = SetDescriptorsTask.create!({:name => 'Specify Dilution Volume', :sorted => 0, :workflow => workflow})
-      Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Concentration", :task => t1})
-      t2 = SetDescriptorsTask.create!({:name => 'Cluster Generation', :sorted => 0, :workflow => workflow})
-      Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Chip barcode", :task => t2})
-      Descriptor.create!({:kind => "Text", :sorter => 2, :name => "Cartridge barcode", :task => t2})
-      Descriptor.create!({:kind => "Text", :sorter => 3, :name => "Operator", :task => t2})
-      Descriptor.create!({:kind => "Text", :sorter => 4, :name => "Machine name", :task => t2})
+      t1 = SetDescriptorsTask.create!({ :name => 'Specify Dilution Volume', :sorted => 0, :workflow => workflow })
+      Descriptor.create!({ :kind => "Text", :sorter => 1, :name => "Concentration", :task => t1 })
+      t2 = SetDescriptorsTask.create!({ :name => 'Cluster Generation', :sorted => 0, :workflow => workflow })
+      Descriptor.create!({ :kind => "Text", :sorter => 1, :name => "Chip barcode", :task => t2 })
+      Descriptor.create!({ :kind => "Text", :sorter => 2, :name => "Cartridge barcode", :task => t2 })
+      Descriptor.create!({ :kind => "Text", :sorter => 3, :name => "Operator", :task => t2 })
+      Descriptor.create!({ :kind => "Text", :sorter => 4, :name => "Machine name", :task => t2 })
 
   end
 end.tap do |pipeline|

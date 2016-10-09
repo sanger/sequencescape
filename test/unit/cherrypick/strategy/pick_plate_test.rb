@@ -9,7 +9,7 @@ require 'test_helper'
 class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
   context Cherrypick::Strategy::PickPlate do
     context '#dimension' do
-      [ 96, 384 ].each do |size|
+      [96, 384].each do |size|
         context "when the plate size is #{size}" do
           should 'return plate width if purpose picked in rows' do
             plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => size, :cherrypick_direction => 'row'))
@@ -71,12 +71,12 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
         end
 
         should 'be empty with empty picks' do
-          @target.concat([ Cherrypick::Strategy::Empty ])
+          @target.concat([Cherrypick::Strategy::Empty])
           assert(@target.species.empty?)
         end
 
         should 'be the last pick species if there have been picks' do
-          @target.concat([ OpenStruct.new(:species => [ :last ]) ])
+          @target.concat([OpenStruct.new(:species => [:last])])
           assert_equal([:last], @target.species)
         end
       end
@@ -129,7 +129,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
       context '#to_a' do
         should 'represent the occupied space as empty' do
           assert_equal(
-            ([ Cherrypick::Strategy::Empty ] * 12).map(&:representation),
+            ([Cherrypick::Strategy::Empty] * 12).map(&:representation),
             @target.to_a
           )
         end
@@ -141,12 +141,12 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
         end
 
         should 'be the species in the last non-empty well after empty pick' do
-          @target.concat([ Cherrypick::Strategy::Empty ])
+          @target.concat([Cherrypick::Strategy::Empty])
           assert_equal([:plate], @target.species)
         end
 
         should 'be the last pick species if there have been picks' do
-          @target.concat([ OpenStruct.new(:species => [ :last ]) ])
+          @target.concat([OpenStruct.new(:species => [:last])])
           assert_equal([:last], @target.species)
         end
       end

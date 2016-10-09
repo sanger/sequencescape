@@ -25,7 +25,7 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
   instance do
     has_many(
       :sample_tubes, :json => 'sample_tubes', :to => 'sample_tubes',
-      :include => [ :library_tubes, :requests ]
+      :include => [:library_tubes, :requests]
     )
 
     action(:update, :to => :standard_update!)
@@ -42,7 +42,7 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
 end
 
 module ::Core::Endpoint::BasicHandler::EndpointLookup
-  [ :object, :class ].each do |name|
+  [:object, :class].each do |name|
     line = __LINE__ + 1
     module_eval("
       def endpoint_for_#{name}_with_object_service(target, *args, &block)
