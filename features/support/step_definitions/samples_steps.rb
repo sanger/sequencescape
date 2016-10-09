@@ -29,15 +29,15 @@ end
 
 # TODO[xxx]: This is incredibly slow!
 Then /^the following samples should be in the sample registration fields:$/ do |table|
-  table.hashes.each_with_index do |details,index|
-    with_scope("table#samples_to_register tr.sample_row:nth-child(#{index+1})") do
-      details.each do |label, value|
-        field       = find_field("#{ label } for sample #{ index }")
-        field_value = (field.tag_name == 'textarea') ? field.text : field.value
-        assert_match(/#{value}/, field_value, "Field #{ label.inspect } for sample #{ index } was unexpected")
-      end
-    end
+  number = table.rows.count
+  approved_heads = table.headers
+  heads = find('table#samples_to_register').find_all('thead th').map {|th| th.text }
+  rows = find('table#samples_to_register').find_all("tbody tr:nth-child(-n+#{number})")
+  hashes = rows.map do |tr|
+    hash = Hash[heads.zip(tr.find_all('td').map {|td| td.first('input').try(:value)||td.first('select').try(:value) })]
+    hash.slice(*approved_heads)
   end
+  assert_equal table.hashes, hashes
 end
 
 Given /^the sample "([^\"]+)" has the Taxon ID "([^\"]+)"$/ do |name,id|
