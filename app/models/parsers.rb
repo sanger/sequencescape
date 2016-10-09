@@ -9,7 +9,7 @@ module Parsers
 
   def self.parser_for(filename, content_type, content)
     return nil unless filename.ends_with?('.csv') || content_type == 'text/csv'
- 	# While CSV tries to detect line endings, it isn't so great with some excel
+   # While CSV tries to detect line endings, it isn't so great with some excel
     # exported CSVs, where a mix of \n and \r\n are used in the same document
     # This converts everything to \n before processing
     cleaned_content = content.gsub(/\r\n?/,"\n")

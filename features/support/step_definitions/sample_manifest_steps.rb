@@ -147,18 +147,18 @@ end
 
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   step(%Q{I follow "Create manifest for plates"})
-	step(%Q{I select "#{study_name}" from "Study"})
+  step(%Q{I select "#{study_name}" from "Study"})
   step(%Q{I select "Default Plate" from "Template"})
-	step(%Q{I select "Test supplier name" from "Supplier"})
-	step(%Q{I select "xyz" from "Barcode printer"})
-	step(%Q{I fill in the field labeled "Plates required" with "1"})
+  step(%Q{I select "Test supplier name" from "Supplier"})
+  step(%Q{I select "xyz" from "Barcode printer"})
+  step(%Q{I fill in the field labeled "Plates required" with "1"})
   step(%Q{I select "Default Plate" from "Template"})
-	step(%Q{I press "Create manifest and print labels"})
-	step %Q{I should see "Manifest_"}
-	step %Q{I should see "Download Blank Manifest"}
-	step(%Q{3 pending delayed jobs are processed})
-	step %Q{study "#{study_name}" should have 96 samples}
-	step(%Q{I reset all of the sanger sample ids to a known number sequence})
+  step(%Q{I press "Create manifest and print labels"})
+  step %Q{I should see "Manifest_"}
+  step %Q{I should see "Download Blank Manifest"}
+  step(%Q{3 pending delayed jobs are processed})
+  step %Q{study "#{study_name}" should have 96 samples}
+  step(%Q{I reset all of the sanger sample ids to a known number sequence})
 end
 
 Then /^the sample controls and resubmits should look like:$/ do |table|

@@ -5,21 +5,21 @@ module SampleManifestExcel
   # and used by the validations.
   class RangeList
 
-  	include Enumerable
+    include Enumerable
     include Comparable
 
-  	attr_reader :ranges
+    attr_reader :ranges
 
     ##
     # Creates a hash of ranges.
     # Each key is the range name and each value is a
     # has of range options.
     # The row that the range appears on is defined by the index of the range.
-  	def initialize(ranges_data={})
-  	  @ranges = create(ranges_data)
-  	end
+    def initialize(ranges_data={})
+      @ranges = create(ranges_data)
+    end
 
-  	def each(&block)
+    def each(&block)
       ranges.each(&block)
     end
 
@@ -53,7 +53,7 @@ module SampleManifestExcel
     def create(ranges_data)
       {}.tap do |ranges|
         ranges_data.each_with_index do |(name, options), i|
-        	ranges[name] = SampleManifestExcel::Range.new(options: options, first_row: i+1)
+          ranges[name] = SampleManifestExcel::Range.new(options: options, first_row: i+1)
         end
       end
     end

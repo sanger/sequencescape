@@ -66,7 +66,7 @@ class ContainerAssociation < ActiveRecord::Base
         class_eval(&block) if block_given?
       end
 
-	  self.class_eval do
+    self.class_eval do
         def maps
           Map.where_plate_size(size).where_plate_shape(asset_shape)
         end

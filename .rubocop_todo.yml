@@ -1634,11 +1634,6 @@ Style/SymbolLiteral:
 Style/SymbolProc:
   Enabled: false
 
-# Offense count: 224
-# Cop supports --auto-correct.
-Style/Tab:
-  Enabled: false
-
 # Offense count: 22
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, AllowSafeAssignment.

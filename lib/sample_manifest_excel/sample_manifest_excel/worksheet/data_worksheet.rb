@@ -1,10 +1,10 @@
 module SampleManifestExcel
 
-	module Worksheet
+  module Worksheet
 
     #DataWorksheet creates a data worksheet to be filled in by a client.
 
-	  class DataWorksheet < Base
+    class DataWorksheet < Base
 
        STYLES = {  unlocked: { locked: false, border: { style: :thin, color: "00"}},
                   wrap_text: {alignment: { horizontal: :center, vertical: :center, wrap_text: true},
@@ -34,20 +34,20 @@ module SampleManifestExcel
       #data validations, conditional formattings, freezes panes at required place.
 
       def create_worksheet
-      	insert_axlsx_worksheet("DNA Collections Form")
+        insert_axlsx_worksheet("DNA Collections Form")
       end
 
       #Adds title and description (study abbreviation, supplier name, number of assets sent)
       #to a worksheet.
 
-    	def add_title_and_description
+      def add_title_and_description
         add_row ["DNA Collections Form"]
         add_rows(3)
         add_row ["Study:", sample_manifest.study.abbreviation]
         add_row ["Supplier:", sample_manifest.supplier.name]
         add_row ["No. #{type} Sent:", sample_manifest.count]
         add_rows(1)
-    	end
+      end
 
       #Adds columns with all required data to a worksheet
 
@@ -127,8 +127,8 @@ module SampleManifestExcel
         end
       end
 
-	  end
+    end
 
-	end
+  end
 
 end
