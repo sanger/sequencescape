@@ -45,7 +45,6 @@ module CarrierWave
 
         # Remove the file
         def delete
-          puts "Deleting file from database"
           destroy_file
         end
 
