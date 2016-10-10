@@ -88,7 +88,7 @@ class Project < ActiveRecord::Base
   def ended_billable_lanes(ended)
     events = []
     self.samples.each do |sample|
-      if sample.ended.downcase == ended.downcase
+      if sample.ended.casecmp(ended.downcase).zero?
         events << sample.billable_events
       end
     end

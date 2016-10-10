@@ -390,14 +390,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 40
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Performance/Casecmp:
-  Exclude:
-    - 'app/controllers/application_controller.rb'
-    - 'app/models/lab_event.rb'
-    - 'app/models/project.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Performance/RangeInclude:

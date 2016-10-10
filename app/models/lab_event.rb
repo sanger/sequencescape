@@ -37,7 +37,7 @@ class LabEvent < ActiveRecord::Base
 
   def descriptor_value_for(name)
     self.descriptors.each do |desc|
-      if desc.name.downcase == name.to_s.downcase
+      if desc.name.casecmp(name.to_s.downcase).zero?
         return desc.value
       end
     end

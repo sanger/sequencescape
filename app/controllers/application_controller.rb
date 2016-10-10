@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
 
   def extract_header_info
     exclude_nested_resource = request.headers["HTTP_EXCLUDE_NESTED_RESOURCE"] || params[:exclude_nested_resource]
-    @exclude_nested_resource = exclude_nested_resource && exclude_nested_resource.to_s.downcase == "true"
+    @exclude_nested_resource = exclude_nested_resource && exclude_nested_resource.to_s.casecmp("true").zero?
   end
 
   def set_cache_disabled!
