@@ -12,9 +12,9 @@ class LabEvent < ActiveRecord::Base
 
   before_validation :unescape_for_descriptors
 
- scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
+  scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
- scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
+  scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
 
 
   def unescape_for_descriptors
@@ -37,7 +37,7 @@ class LabEvent < ActiveRecord::Base
 
   def descriptor_value_for(name)
     self.descriptors.each do |desc|
-      if desc.name.casecmp(name.to_s.downcase).zero?
+      if desc.name.casecmp(name.to_s).zero?
         return desc.value
       end
     end
