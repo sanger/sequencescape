@@ -9,9 +9,6 @@ module Core::Service::ErrorHandling
     app.instance_eval do
       helpers Helpers
 
-      # We need hierarchical exception handling, so we rewrite the @errors Hash with our own implementation
-      @errors = HierarchicalExceptionMap.new(@errors)
-
       error([
         ::IllegalOperation,
         ::Core::Service::Error,
@@ -54,19 +51,6 @@ module Core::Service::ErrorHandling
 
     def content_error(code, errors = nil)
       error(code, JsonError.new(content: errors))
-    end
-  end
-
-  class HierarchicalExceptionMap < Hash
-    def initialize(hash)
-      super
-      merge!(hash || {})
-    end
-
-    def [](key)
-      return super[key] unless key.is_a?(Class)
-      key = key.superclass until key.nil? or key?(key)
-      super(key)
     end
   end
 end

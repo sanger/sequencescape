@@ -51,7 +51,7 @@ group :default do
 
   # For the API level
   gem "uuidtools"
-  gem "sinatra", "~>1.1.0", :require => false
+  gem "sinatra", :require => false
   gem "rack-acceptable", :require => 'rack/acceptable'
   # gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
   gem "json"
