@@ -106,8 +106,8 @@ class Map < ActiveRecord::Base
       divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
       return nil if divisor.nil? or multiplier.nil?
       column, row = (well_position - 1).divmod(divisor)
-      return nil unless (0...multiplier).include?(column)
-      return nil unless (0...divisor).include?(row)
+      return nil unless (0...multiplier).cover?(column)
+      return nil unless (0...divisor).cover?(row)
       alternate = (row * multiplier) + column + 1
     end
     private :alternate_position

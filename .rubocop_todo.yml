@@ -390,14 +390,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 40
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Performance/RangeInclude:
-  Exclude:
-    - 'app/controllers/assets/plate_layout.rb'
-    - 'app/models/asset_shape.rb'
-    - 'app/models/map.rb'
-
 # Offense count: 13
 # Cop supports --auto-correct.
 Performance/RedundantBlockCall:
