@@ -27,7 +27,7 @@ class ProductCriteria < ActiveRecord::Base
 
   scope :for_stage, ->(stage) { where(:stage=>stage) }
   scope :stock, ->()          { where(:stage=>STAGE_STOCK) }
-  scope :older_than, ->(id)   { wheere(['id < ?',id]) }
+  scope :older_than, ->(id)   { where(['id < ?',id]) }
 
   before_create :set_version_number
 

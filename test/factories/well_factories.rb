@@ -34,6 +34,12 @@ FactoryGirl.define do
     end
   end
 
+  factory :untagged_well, :parent => :empty_well do |well|
+    after(:build) do |well|
+      well.aliquots << build(:untagged_aliquot, receptacle: well)
+    end
+  end
+
   factory :tagged_well, :parent => :empty_well do |well|
     after(:create) do |well|
       well.aliquots.create!(:sample => create(:sample), :tag => create(:tag))
