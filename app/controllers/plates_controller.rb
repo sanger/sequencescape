@@ -59,7 +59,7 @@ class PlatesController < ApplicationController
   def to_sample_tubes
     @locations = Location.all
     @barcode_printers = BarcodePrinter.all
-    @studies = Study.all.sort { |a, b| a.name <=> b.name }
+    @studies = Study.alphabetical
   end
 
   def create_sample_tubes

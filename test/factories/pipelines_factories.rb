@@ -343,7 +343,7 @@ FactoryGirl.define do
   # Converts i to base 4, then substitutes in ATCG to
   # generate unique tags in sequence
   sequence :oligo do |i|
-    i.to_s(4).gsub('0', 'A').gsub('1', 'T').gsub('2', 'C').gsub('3', 'G')
+    i.to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
   end
 
   factory :tag do |t|

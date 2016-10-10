@@ -73,7 +73,7 @@ class TagLayout < ActiveRecord::Base
 
 
   def wells_in_walking_order
-    plate.wells.send(:"in_#{direction.gsub(' ', '_')}_major_order")
+    plate.wells.send(:"in_#{direction.tr(' ', '_')}_major_order")
   end
   private :wells_in_walking_order
 

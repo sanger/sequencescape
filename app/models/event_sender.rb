@@ -19,7 +19,7 @@ class EventSender
   # </event>
   def self.format_message(hash)
     doc = hash.to_xml(root: "event", skip_types: true)
-    doc.to_s.gsub!('-', '_').gsub!('UTF_8', 'UTF-8')
+    doc.to_s.tr!('-', '_').gsub!('UTF_8', 'UTF-8')
   end
 
   def self.send_fail_event(request_id, reason, comment, batch_id, user = nil, options = nil)

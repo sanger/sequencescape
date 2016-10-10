@@ -318,7 +318,7 @@ module Attributable
     end
 
     def self.find_display_name(klass, name)
-      translation = I18n.t("metadata.#{klass.name.underscore.gsub('/', '.')}.#{name}")
+      translation = I18n.t("metadata.#{klass.name.underscore.tr('/', '.')}.#{name}")
       if translation.is_a?(Hash) # translation found, we return the label
         return translation[:label]
       else

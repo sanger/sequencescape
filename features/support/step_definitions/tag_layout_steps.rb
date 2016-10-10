@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
-  FactoryGirl.create(style.gsub(/ /, '_'), name: name)
+  FactoryGirl.create(style.tr(' ', '_'), name: name)
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|

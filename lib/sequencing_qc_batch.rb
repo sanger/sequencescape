@@ -144,7 +144,7 @@ module SequencingQcBatch
         end
         doc = h_doc.to_xml(root: "criteria", skip_types: true)
         # A *Hacky* solution to get the XML readable for Chainlink
-        doc = doc.to_s.gsub!('-', '_').gsub!('UTF_8', 'UTF-8')
+        doc = doc.to_s.tr!('-', '_').gsub!('UTF_8', 'UTF-8')
         # logger.debug doc
         # Publishing the request to AMQ
         publish :qc_requests, doc

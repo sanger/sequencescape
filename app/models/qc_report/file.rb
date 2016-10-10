@@ -119,7 +119,7 @@ class QcReport::File
   # as it should be a bit faster to capture the most common problems (ie. uploading an xls)
   # The FasterCSV read-mes even indicate that its pretty poor at handling invalid CSVs.
   def is_a_csv?
-    File.extname(filename).gsub('.', '') == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
+    File.extname(filename).delete('.') == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
   end
 
   def is_a_report?

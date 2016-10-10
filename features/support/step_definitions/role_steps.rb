@@ -17,7 +17,7 @@ Given /^I have lab manager role$/ do
 end
 
 Given /^the role "([^"]*)" exists$/ do |role_name|
-  Role.create!(name: role_name.gsub(/ /, "_").downcase)
+  Role.create!(name: role_name.tr(' ', "_").downcase)
 end
 
 Given /^user "([^\"]+)" is an administrator$/ do |login|
