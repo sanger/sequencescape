@@ -61,7 +61,7 @@ class AmqpObserver < ActiveRecord::Observer
       # 2) current buffer is not blank (ie. we have something to broadcast, and aren't in an inner transaction)
       activate_exchange do |exchange|
         current_buffer.each do |record|
-          publish_to(exchange,record)
+          publish_to(exchange, record)
         end
       end if transaction_good and not current_buffer.blank?
       # The transaction is over, if current buffer isn't nil (ie. we're in the outermost transaction)
@@ -146,16 +146,16 @@ class AmqpObserver < ActiveRecord::Observer
             Rails.logger.warn { "AmqpObserver called outside transaction: #{caller.join("\n")}" }
 
             if record.destroyed?
-              publish_to(exchange,record_for_deletion) if record_for_deletion.present?
+              publish_to(exchange, record_for_deletion) if record_for_deletion.present?
             else
-              publish_to(exchange,record_to_broadcast)
+              publish_to(exchange, record_to_broadcast)
             end
           end
         end
       end
     end
 
-    def publish_to(exchange,record)
+    def publish_to(exchange, record)
       exchange.publish(
         MultiJson.dump(record),
         key: record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
@@ -175,7 +175,7 @@ class AmqpObserver < ActiveRecord::Observer
     # the Mongrel process will start killing threads because of too many open files.  This method,
     # therefore, enables transactional support for connecting to an exchange.
     def activate_exchange(&block)
-      client = Bunny.new(configatron.amqp.url, spec: '09', frame_max: configatron.amqp.fetch(:maximum_frame,0))
+      client = Bunny.new(configatron.amqp.url, spec: '09', frame_max: configatron.amqp.fetch(:maximum_frame, 0))
       begin
         client.start
         exchange = client.exchange('psd.sequencescape', passive: true)
@@ -198,5 +198,5 @@ class ActiveRecord::Base
     end
     alias_method_chain(:transaction, :amqp)
   end
-  def routing_key;nil;end
+  def routing_key; nil; end
 end if ActiveRecord::Base.observers.include?(:amqp_observer)

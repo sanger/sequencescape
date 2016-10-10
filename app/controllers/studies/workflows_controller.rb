@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Studies::WorkflowsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :discover_study, :discover_workflow
 
@@ -72,7 +72,7 @@ class Studies::WorkflowsController < ApplicationController
         render partial: "sample_progress"
       when "Assets progress"
         @asset_type = Aliquot::Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
-        @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
+        @asset_type_name = params.fetch(:asset_type, 'All Assets').underscore.humanize
         @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
 
@@ -87,7 +87,7 @@ class Studies::WorkflowsController < ApplicationController
         # The include here doesn't load ALL the requests, only those matching the given request type. Ideally we'd just grab the counts,
         # but unfortunately we need to have at least the request id available for linking to in cases where we have
         # only one request in a particular state.
-        @assets_to_detail = Aliquot::Receptacle.for_study_and_request_type(@study,@request_type).includes(:requests).paginate(page_params)
+        @assets_to_detail = Aliquot::Receptacle.for_study_and_request_type(@study, @request_type).includes(:requests).paginate(page_params)
         # Example group by count which would allow us to do returned_hash[[asset_id,state]] to get the count for a particular asset/state
         # Unfortunately this doesn't let us grab the request id. We could use some custom SQL to achieve this, but we'll see how
         # effective the above is before trying that.

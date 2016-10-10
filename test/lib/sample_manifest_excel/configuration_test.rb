@@ -47,7 +47,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     should "load the columns" do
       columns = SampleManifestExcel::ColumnList.new(configuration.load_file(folder, "columns"), configuration.conditional_formattings)
       assert_equal columns, configuration.columns.all
-      configuration.manifest_types.each do |k,v|
+      configuration.manifest_types.each do |k, v|
         assert_equal columns.extract(v.columns), configuration.columns.send(k)
         assert_equal columns.extract(v.columns), configuration.columns.find(k)
         assert_equal columns.extract(v.columns), configuration.columns.find(k.to_sym)
@@ -72,7 +72,7 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert configuration.ranges.frozen?
       assert configuration.columns.frozen?
       assert configuration.columns.all.frozen?
-      configuration.manifest_types.each do |k,v|
+      configuration.manifest_types.each do |k, v|
         assert configuration.columns.send(k).frozen?
       end
     end

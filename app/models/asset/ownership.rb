@@ -19,7 +19,7 @@ module Asset::Ownership
     end
 
     def assign_owner
-      [target_for_ownership].flatten.map { |target| target.change_owner_to(user,self) }
+      [target_for_ownership].flatten.map { |target| target.change_owner_to(user, self) }
     end
     private :assign_owner
 
@@ -31,7 +31,7 @@ module Asset::Ownership
   end
 
   module Unowned
-    def change_owner_to(owner,source_event)
+    def change_owner_to(owner, source_event)
       # Do nothing
     end
   end
@@ -53,7 +53,7 @@ module Asset::Ownership
       end
     end
 
-    def change_owner_to(owner,source_event)
+    def change_owner_to(owner, source_event)
       if plate_owner.nil?
         self.update_attributes!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
       else

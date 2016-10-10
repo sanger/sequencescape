@@ -8,7 +8,7 @@ require 'test_helper'
 
 class RequestEventTest < ActiveSupport::TestCase
 
-  RequestType.where(key:[
+  RequestType.where(key: [
     'Transfer',
     'illumina_b_std',
     'illumina_b_hiseq_2500_paired_end_sequencing',

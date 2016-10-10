@@ -109,7 +109,7 @@ class RequestTest < ActiveSupport::TestCase
 
       context "where asset hasnt been created for second request" do
         setup do
-          @request2 = create :request, asset: nil, item: @item, submission: @submission,request_type: @genotyping_request_type, pipeline: @genotype_pipeline
+          @request2 = create :request, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
         end
         should "return the correct next request" do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)

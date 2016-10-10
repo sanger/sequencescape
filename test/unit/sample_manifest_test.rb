@@ -19,7 +19,7 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
 
     context 'creates the right assets' do
-      [1,2].each do |count|
+      [1, 2].each do |count|
         context "#{count} plate(s)" do
           setup do
             @initial_samples  = Sample.count
@@ -33,8 +33,8 @@ class SampleManifestTest < ActiveSupport::TestCase
 
           should "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
             assert_equal (count * 96), Sample.count - @initial_samples
-            assert_equal (count * 1 ), Plate.count - @initial_plates
-            assert_equal (count * 96), Well.count  - @initial_wells
+            assert_equal (count * 1), Plate.count - @initial_plates
+            assert_equal (count * 96), Well.count - @initial_wells
             assert_equal (count * 96), @study.samples.count - @initial_in_study
           end
 
@@ -43,7 +43,7 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
 
     context 'for a library' do
-      [3,4].each do |count|
+      [3, 4].each do |count|
         context "#{count} plate(s)" do
           setup do
             @initial_samples       = Sample.count
@@ -92,7 +92,7 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
     context "where a well has a plate" do
       should "add an event to the plate" do
-        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user,[@well_with_sample_and_plate.primary_aliquot.sample])
+        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user, [@well_with_sample_and_plate.primary_aliquot.sample])
         assert_equal Event.last, @well_with_sample_and_plate.plate.events.last
         assert_not_nil @well_with_sample_and_plate.plate.events.last
       end

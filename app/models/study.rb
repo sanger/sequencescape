@@ -78,7 +78,7 @@ class Study < ActiveRecord::Base
   has_many :asset_groups
   has_many :study_reports
 
-  #load all the associated requests with attemps and request type
+  # load all the associated requests with attemps and request type
   has_many :eager_items, ->() { includes(requests: :request_type) }, class_name: "Item", through: :requests, source: :item
 
   has_many :aliquots
@@ -88,7 +88,7 @@ class Study < ActiveRecord::Base
   has_many :requests, through: :assets_through_aliquots, source: :requests_as_source
   has_many :items, ->() { distinct }, through: :requests
 
-  #New version
+  # New version
   has_many :projects, ->() { distinct }, through: :orders
 
   has_many :initial_requests, class_name: "Request", foreign_key: :initial_study_id
@@ -128,17 +128,17 @@ class Study < ActiveRecord::Base
   end
   private :set_default_ethical_approval
 
- scope :for_search_query, ->(query,with_includes) {
+ scope :for_search_query, ->(query, with_includes) {
     joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
   }
 
- scope :with_no_ethical_approval, -> { where( ethically_approved: false ) }
+ scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
 
- scope :is_active,   -> { where( state: 'active' ) }
- scope :is_inactive, -> { where( state: 'inactive' ) }
- scope :is_pending,  -> { where( state: 'pending' ) }
+ scope :is_active,   -> { where(state: 'active') }
+ scope :is_inactive, -> { where(state: 'inactive') }
+ scope :is_pending,  -> { where(state: 'pending') }
 
-  scope :newest_first, -> { order("#{ self.quoted_table_name }.created_at DESC" ) }
+  scope :newest_first, -> { order("#{self.quoted_table_name}.created_at DESC") }
   scope :with_user_included, -> { includes(:user) }
 
   scope :in_assets, ->(assets) {
@@ -146,16 +146,16 @@ class Study < ActiveRecord::Base
     joins([
       'LEFT JOIN aliquots ON aliquots.study_id = studies.id',
     ]).
-    where(['aliquots.receptacle_id IN (?)',assets.map(&:id)])
+    where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
   }
 
-  STOCK_PLATE_PURPOSES = ['Stock Plate','Stock RNA Plate']
+  STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate']
 
-  def each_well_for_qc_report_in_batches(exclude_existing,product_criteria)
+  def each_well_for_qc_report_in_batches(exclude_existing, product_criteria)
     base_scope = Well.on_plate_purpose(PlatePurpose.where(name: STOCK_PLATE_PURPOSES)).
       for_study_through_aliquot(self).
       without_blank_samples.
-      includes(:well_attribute, samples: :sample_metadata ).
+      includes(:well_attribute, samples: :sample_metadata).
       readonly(true)
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
     scope.find_in_batches { |wells| yield wells }
@@ -275,8 +275,8 @@ class Study < ActiveRecord::Base
       study_sra_hold: STUDY_SRA_HOLDS,
       contains_human_dna: YES_OR_NO,
       commercially_available: YES_OR_NO
-    }.inject({}) do |h,(k,v)|
-      h[k] = v.inject({}) { |a,b| a[b.downcase] = b; a }
+    }.inject({}) do |h, (k, v)|
+      h[k] = v.inject({}) { |a, b| a[b.downcase] = b; a }
       h
     end
 
@@ -285,7 +285,7 @@ class Study < ActiveRecord::Base
 
       # Unfortunately it appears that some of the functionality of this implementation relies on non-capitalisation!
       # So we remap the lowercased versions to their proper values here
-      REMAPPED_ATTRIBUTES.each do |attribute,mapping|
+      REMAPPED_ATTRIBUTES.each do |attribute, mapping|
         record[attribute] = mapping.fetch(record[attribute].try(:downcase), record[attribute])
         record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
       end
@@ -324,14 +324,14 @@ class Study < ActiveRecord::Base
     has_one :data_release_non_standard_agreement, class_name: 'Document', as: :documentable
     accepts_nested_attributes_for :data_release_non_standard_agreement
     validates :data_release_non_standard_agreement, presence: true, if: :non_standard_agreement?
-    validates_associated  :data_release_non_standard_agreement, if: :non_standard_agreement?
+    validates_associated :data_release_non_standard_agreement, if: :non_standard_agreement?
 
     validate :valid_policy_url?
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
     def sanity_check_y_separation
-      self.errors.add(:separate_y_chromosome_data,'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
+      self.errors.add(:separate_y_chromosome_data, 'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
       !remove_x_and_autosomes?
     end
 
@@ -356,7 +356,7 @@ class Study < ActiveRecord::Base
       # use the inbuilt ruby URI parser, a bit like here:
       # http://www.simonecarletti.com/blog/2009/04/validating-the-format-of-an-url-with-rails/
       return true if dac_policy.blank?
-      dac_policy.insert(0,"http://") if /:\/\//.match(dac_policy).nil? # Add an http protocol if no protocol is defined
+      dac_policy.insert(0, "http://") if /:\/\//.match(dac_policy).nil? # Add an http protocol if no protocol is defined
       begin
         uri = URI.parse(dac_policy)
         raise URI::InvalidURIError if configatron.invalid_policy_url_domains.include?(uri.host)
@@ -402,17 +402,17 @@ class Study < ActiveRecord::Base
 
   def mark_deactive
     unless self.inactive?
-      logger.warn "Study deactivation failed! #{self.errors.map { |e| e.to_s } }"
+      logger.warn "Study deactivation failed! #{self.errors.map { |e| e.to_s }}"
     end
   end
 
   def mark_active
     unless self.active?
-      logger.warn "Study activation failed! #{self.errors.map { |e| e.to_s } }"
+      logger.warn "Study activation failed! #{self.errors.map { |e| e.to_s }}"
     end
   end
 
-  def completed(workflow=nil)
+  def completed(workflow = nil)
     rts = workflow.present? ? workflow.request_types.map(&:id) : RequestType.all.map(&:id)
     total = self.requests.request_type(rts).count
     failed = self.requests.failed.request_type(rts).count
@@ -446,7 +446,7 @@ class Study < ActiveRecord::Base
     if samples.blank?
       requests.sample_statistics_new
     else
-      yield(requests.where(aliquots:{ sample_id:samples.pluck(:id) }).sample_statistics_new)
+      yield(requests.where(aliquots: { sample_id: samples.pluck(:id) }).sample_statistics_new)
     end
   end
 
@@ -459,7 +459,7 @@ class Study < ActiveRecord::Base
   end
 
   def unprocessed_submissions?
-    #TODO[mb14] optimize if needed
+    # TODO[mb14] optimize if needed
     study.orders.any? { |o| o.submission.nil? || o.submission.unprocessed? }
   end
 
@@ -539,11 +539,11 @@ class Study < ActiveRecord::Base
   end
 
   def dehumanise_abbreviated_name
-    self.abbreviation.downcase.gsub(/ +/,'_')
+    self.abbreviation.downcase.gsub(/ +/, '_')
   end
 
   def approved?
-    #TODO remove
+    # TODO remove
     true
   end
 

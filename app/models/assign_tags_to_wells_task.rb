@@ -131,7 +131,7 @@ class AssignTagsToWellsTask < Task
 
       RequestType.transfer.create!(asset: tagged_well, target_asset: pooled_well, state: 'passed')
       # transfer between pooled_well and tube needs to be at the end, when all the aliquots are present
-      #RequestType.transfer.create!(:asset => pooled_well, :target_asset => tube)
+      # RequestType.transfer.create!(:asset => pooled_well, :target_asset => tube)
     end
 
     tube_to_pool.each do |tube, pooled_well|

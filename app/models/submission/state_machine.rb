@@ -46,7 +46,7 @@ module Submission::StateMachine
     end
 
     def process_callbacks!
-      callbacks.each do |_,callback|
+      callbacks.each do |_, callback|
         callback.call
       end
     end
@@ -55,7 +55,7 @@ module Submission::StateMachine
       @callbacks ||= {}
     end
 
-    def register_callback(key=nil,&block)
+    def register_callback(key = nil, &block)
       key ||= "k#{@callbacks.size}"
       callbacks[key] = block
     end

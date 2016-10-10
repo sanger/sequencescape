@@ -14,7 +14,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     end
 
     def endpoint_details(object, &block)
-      object = @throughs.inject(object) { |t,s| t.send(s) }.send(@name) || return
+      object = @throughs.inject(object) { |t, s| t.send(s) }.send(@name) || return
       block.call(@options[:json].to_s, endpoint_for_object(object), object)
     end
     private :endpoint_details

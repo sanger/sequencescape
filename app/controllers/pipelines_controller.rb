@@ -5,19 +5,19 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PipelinesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_pipeline_by_id, only: [:show, :setup_inbox,
                                    :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
 
-  before_action :lab_manager_login_required, only: [:update_priority,:deactivate,:activate]
+  before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
 
   after_filter :set_cache_disabled!, only: [:show]
 
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical.all
-    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p; h }
+    @grouping  = @pipelines.inject(Hash.new { |h, k| h[k] = [] }) { |h, p| h[p.group_name] << p; h }
 
     respond_to do |format|
       format.html
@@ -44,14 +44,14 @@ class PipelinesController < ApplicationController
 
       if @pipeline.group_by_parent?
         # We use the inbox presenter
-        @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline,current_user,@show_held_requests)
+        @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
       elsif @pipeline.group_by_submission?
-        requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
         @grouped_requests = requests.group_by(&:submission_id)
         @requests_comment_count = Comment.counts_for(requests)
         @assets_comment_count = Comment.counts_for(requests.map(&:asset))
       else
-        @requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        @requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
         # We convert to an array here as otherwise tails tries to be smart
         # and use the scope. Not only does it fail, but we may as well cache
         # the result now anyway.

@@ -10,7 +10,7 @@ class TaskTestBase < ActiveSupport::TestCase
   class << self
     def expected_partial(name)
       context '#partial' do
-        should "return #{ name }" do
+        should "return #{name}" do
           assert_equal @task.partial, name
         end
       end

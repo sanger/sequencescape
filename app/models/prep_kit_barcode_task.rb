@@ -29,7 +29,7 @@ class PrepKitBarcodeTask < Task
   end
 
   def included_for_do_task
-    [:pipeline,{ requests: :target_asset }]
+    [:pipeline, { requests: :target_asset }]
   end
 
   def do_task(workflow, params)

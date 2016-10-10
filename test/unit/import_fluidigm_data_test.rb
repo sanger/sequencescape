@@ -17,7 +17,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       @fluidigm = FluidigmFile.new(@file.read)
       @well_maps = {
         'S06' => {
-          markers: [@XY,@XY,@XY],
+          markers: [@XY, @XY, @XY],
           count: 94
         },
         'S04' => {
@@ -74,7 +74,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       @fluidigm_file = create_fluidigm_file
       @stock_plate = create_stock_plate("87654321")
       @plate1 = create_plate_with_fluidigm("12345671", '1381832088', @stock_plate)
-      @plate2 = create_plate_with_fluidigm( "12345672", "1234567891", @stock_plate)
+      @plate2 = create_plate_with_fluidigm("12345672", "1234567891", @stock_plate)
     end
     context "before uploading the fluidigm file to a corresponding plate" do
       should "we get this plate inside the requiring_fluidigm_data scope" do

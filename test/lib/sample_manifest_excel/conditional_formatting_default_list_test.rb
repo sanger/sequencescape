@@ -7,7 +7,7 @@ class ConditionalFormattingDefaultListTest < ActiveSupport::TestCase
   attr_reader :rules, :yaml, :defaults
 
   def setup
-    folder = File.join("test","data", "sample_manifest_excel", "extract")
+    folder = File.join("test", "data", "sample_manifest_excel", "extract")
     @rules = load_file(folder, "conditional_formattings")
     @defaults = SampleManifestExcel::ConditionalFormattingDefaultList.new(rules)
   end

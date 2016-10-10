@@ -18,6 +18,6 @@ module Core::Logging
   end
 
   def low_level(*args)
-    #debug(*args)
+    # debug(*args)
   end
 end

@@ -20,8 +20,8 @@ module DelegateValidation
     validates_each(*args) do |record, attr, value|
       validator = record.send(:"#{delegation_target}_delegate_validator").new(value)
       validator.valid?.tap do
-        validator.errors.messages.each do |attrib,message|
-          record.errors.add("#{attribute_tag}.#{attrib}",message.join('; '))
+        validator.errors.messages.each do |attrib, message|
+          record.errors.add("#{attribute_tag}.#{attrib}", message.join('; '))
         end
       end
     end
@@ -31,7 +31,7 @@ module DelegateValidation
     include Validateable
 
     class DelegateError < ActiveModel::Errors
-      def initialize(base,target)
+      def initialize(base, target)
         @base     = base
         @messages = target.errors.messages
       end
@@ -52,7 +52,7 @@ module DelegateValidation
 
     def self.delegate_attribute(*args)
       options   = args.extract_options!
-      type_cast = ".#{ options[:type_cast] }"        if options.key?(:type_cast) && options[:type_cast].present?
+      type_cast = ".#{options[:type_cast]}"        if options.key?(:type_cast) && options[:type_cast].present?
       default   = " || #{options[:default].inspect}" if options.key?(:default)
 
       args.each do |attribute|

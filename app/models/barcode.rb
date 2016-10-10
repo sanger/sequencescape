@@ -25,7 +25,7 @@ class Barcode
     end
 
     def broadcast_barcode
-      AmqpObserver.instance << Messenger.new(template: 'BarcodeIO',root: 'barcode',target: self)
+      AmqpObserver.instance << Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self)
     end
 
     def barcode_type
@@ -162,7 +162,7 @@ class Barcode
     if human_prefix.nil? || Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
       raise InvalidBarcode, "The human readable barcode was invalid, perhaps it was mistyped?"
     else
-      calculate_barcode(human_prefix,bcode.to_i)
+      calculate_barcode(human_prefix, bcode.to_i)
     end
   end
 
@@ -180,9 +180,9 @@ class Barcode
   # considered invalid if it does not translate to a Human barcode or, when the optional +prefix+ is specified,
   # its human equivalent does not match.
   def self.barcode_to_human!(code, prefix = nil)
-    human_barcode = barcode_to_human(code) or raise InvalidBarcode, "Barcode #{ code } appears to be invalid"
+    human_barcode = barcode_to_human(code) or raise InvalidBarcode, "Barcode #{code} appears to be invalid"
     unless prefix.nil? or split_human_barcode(human_barcode).first == prefix
-      raise InvalidBarcode, "Barcode #{ code } (#{ human_barcode }) does not match prefix #{ prefix }"
+      raise InvalidBarcode, "Barcode #{code} (#{human_barcode}) does not match prefix #{prefix}"
     end
     human_barcode
   end
@@ -206,8 +206,8 @@ class Barcode
   end
 
   def self.check_EAN(code)
-    #the EAN checksum is calculated so that the EAN of the code with checksum added is 0
-    #except the new column (the checksum) start with a different weight (so the previous column keep the same weight)
+    # the EAN checksum is calculated so that the EAN of the code with checksum added is 0
+    # except the new column (the checksum) start with a different weight (so the previous column keep the same weight)
     calculate_EAN(code, 1) == 0
   end
 
@@ -216,8 +216,8 @@ class Barcode
   end
 
   private
-  def self.calculate_EAN(code, initial_weight=3)
-    #The EAN is calculated by adding each digit modulo 10 ten weighted by 1 or 3 ( in seq)
+  def self.calculate_EAN(code, initial_weight = 3)
+    # The EAN is calculated by adding each digit modulo 10 ten weighted by 1 or 3 ( in seq)
     code = code.to_i
     ean = 0
     weight = initial_weight

@@ -17,7 +17,7 @@ class PulldownLibraryCreationPipelineTest < ActiveSupport::TestCase
     end
 
     should "return false for genotyping?" do
-      assert ! @pipeline.genotyping?
+      assert !@pipeline.genotyping?
     end
 
     should "return true for pulldown?" do

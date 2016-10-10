@@ -19,9 +19,9 @@ class SubmissionsControllerTest < ActionController::TestCase
 
       @plate = build :plate, barcode: 123456
       [
-        'A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12',
-        'B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12',
-        'C1','C2','C3'
+        'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12',
+        'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12',
+        'C1', 'C2', 'C3'
       ].each do |location|
         well = build :well_with_sample_and_without_plate, map: Map.find_by_description(location)
         @plate.wells << well
@@ -49,7 +49,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     should_require_login
 
     context "by sample name" do
-      #Mainly to verify that it isn't the new test that is broken
+      # Mainly to verify that it isn't the new test that is broken
 
       setup do
         samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
@@ -87,9 +87,9 @@ class SubmissionsControllerTest < ActionController::TestCase
         @order_count = Order.count
         @wd_plate = create :working_dilution_plate, barcode: 123457
         [
-          'A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12',
-          'B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12',
-          'C1','C2','C3'
+          'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12',
+          'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12',
+          'C1', 'C2', 'C3'
         ].each do |location|
         well = create :empty_well, map: Map.find_by_description(location)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)

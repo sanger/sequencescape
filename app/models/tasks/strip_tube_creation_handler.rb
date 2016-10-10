@@ -6,7 +6,7 @@
 
 module Tasks::StripTubeCreationHandler
 
-  def render_strip_tube_creation_task(task,params)
+  def render_strip_tube_creation_task(task, params)
 
     @tubes_requested = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).count
     @tubes_available = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).pending.count
@@ -17,18 +17,18 @@ module Tasks::StripTubeCreationHandler
     @default = strip_count.value || @options.last
   end
 
-  def do_strip_tube_creation_task(task,params)
+  def do_strip_tube_creation_task(task, params)
     tubes_to_create = params['tubes_to_create'].to_i
 
     locations_requests = @batch.requests.with_asset_location.pending.group_by { |r| r.asset.map.column_order }
 
-    if locations_requests.any? { |k,v| v.count < tubes_to_create }
+    if locations_requests.any? { |k, v| v.count < tubes_to_create }
       flash[:error] = "There are insufficient requests remaining for the requested number of tubes."
       flash[:error].concat(" Some wells of the plate have different numbers of requests.") if locations_requests.values.map(&:count).uniq.count > 1
       return false
     end
 
-    if locations_requests.keys.sort != [0,1,2,3,4,5,6,7]
+    if locations_requests.keys.sort != [0, 1, 2, 3, 4, 5, 6, 7]
       flash[:error] = "This pipeline only supports wells in the first column."
       return false
     end
@@ -47,8 +47,8 @@ module Tasks::StripTubeCreationHandler
 
     (0...tubes_to_create).each do |tube_number|
 
-      tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}",location: @batch.pipeline.location)
-      AssetLink::Job.create(source_plate,[tube])
+      tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}", location: @batch.pipeline.location)
+      AssetLink::Job.create(source_plate, [tube])
 
       tube.size.times do |index|
         request = locations_requests[index].pop

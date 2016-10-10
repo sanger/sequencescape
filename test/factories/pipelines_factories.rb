@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
@@ -106,7 +106,7 @@ FactoryGirl.define do
   end
 
   factory :batch do |b|
-    item_limit            4
+    item_limit 4
     user
     pipeline
     state                 "pending"
@@ -158,7 +158,7 @@ FactoryGirl.define do
     previous_pipeline_id  nil
     location              { |location| location.association(:location) }
     after(:build)          do |pipeline|
-      pipeline.request_types << create(:request_type )
+      pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
     end
@@ -172,7 +172,7 @@ FactoryGirl.define do
     previous_pipeline_id  nil
     location              { |location| location.association(:location) }
     after(:build)          do |pipeline|
-      pipeline.request_types << create(:request_type )
+      pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
     end
@@ -187,7 +187,7 @@ FactoryGirl.define do
     location
 
     after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type )
+      pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
@@ -202,7 +202,7 @@ FactoryGirl.define do
     location              { |location| location.association(:location) }
 
     after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type )
+      pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
@@ -229,7 +229,7 @@ FactoryGirl.define do
     location              { |location| location.association(:location) }
 
     after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type )
+      pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
@@ -343,7 +343,7 @@ FactoryGirl.define do
   # Converts i to base 4, then substitutes in ATCG to
   # generate unique tags in sequence
   sequence :oligo do |i|
-    i.to_s(4).gsub('0','A').gsub('1','T').gsub('2','C').gsub('3','G')
+    i.to_s(4).gsub('0', 'A').gsub('1', 'T').gsub('2', 'C').gsub('3', 'G')
   end
 
   factory :tag do |t|
@@ -418,7 +418,7 @@ FactoryGirl.define do
   end
 
   factory :cherrypick_task do |t|
-    name                  "New task"
+    name "New task"
     pipeline_workflow_id      { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil

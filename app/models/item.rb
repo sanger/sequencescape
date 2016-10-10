@@ -24,7 +24,7 @@ class Item < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, scope: [:workflow_id, :version], on: :create, message: "already in use (item)"
 
- scope :for_search_query, ->(query,with_includes) {
+ scope :for_search_query, ->(query, with_includes) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
   }
 

@@ -76,7 +76,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         context 'basic behaviour' do
           setup do
-            @mpx_assets = (1..MX_ASSET_COUNT).map { |i| create(:sample_tube, name: "MX-asset#{ i }") }
+            @mpx_assets = (1..MX_ASSET_COUNT).map { |i| create(:sample_tube, name: "MX-asset#{i}") }
             @mpx_asset_group = create :asset_group, name: "MPX", assets: @mpx_assets
 
             @mpx_request_type = create :multiplexed_library_creation_request_type, { target_purpose: @purpose }
@@ -161,7 +161,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
       context 'single-plex submission' do
         setup do
-          @assets = (1..SX_ASSET_COUNT).map { |i| create(:sample_tube, name: "Asset#{ i }") }
+          @assets = (1..SX_ASSET_COUNT).map { |i| create(:sample_tube, name: "Asset#{i}") }
           @asset_group = create :asset_group, name: "non MPX", assets: @assets
 
           @request_type_1 = create :request_type, name: "request type 1"

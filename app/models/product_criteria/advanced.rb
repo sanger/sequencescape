@@ -11,9 +11,9 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
 
   attr_reader :qc_decision
 
-  STATE_ORDER = ['failed','unprocessable']
+  STATE_ORDER = ['failed', 'unprocessable']
 
-  def invalid(attribute,message,decision)
+  def invalid(attribute, message, decision)
     @qc_decision = decision
     @comment << message % attribute.to_s.humanize
     @comment.uniq!
@@ -22,17 +22,17 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
   def assess!
     @qc_decision = 'passed'
     STATE_ORDER.each do |decision|
-      params.fetch(decision,[]).each do |attribute,comparisons|
+      params.fetch(decision, []).each do |attribute, comparisons|
         value = fetch_attribute(attribute)
         values[attribute] = value
 
         if value.blank? && comparisons.present?
-          invalid(attribute,'%s has not been recorded',decision)
+          invalid(attribute, '%s has not been recorded', decision)
           next
         end
 
-        comparisons.each do |comparison,target|
-          value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison),decision)
+        comparisons.each do |comparison, target|
+          value.send(method_for(comparison), target) || invalid(attribute, message_for(comparison), decision)
         end
       end
     end

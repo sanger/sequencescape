@@ -19,13 +19,13 @@ class AddProductCriteriaTable < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_constraint('product_criteria','products')
-    add_constraint('qc_reports','product_criteria',as: 'product_criteria_id')
+    add_constraint('product_criteria', 'products')
+    add_constraint('qc_reports', 'product_criteria', as: 'product_criteria_id')
   end
 
   def self.down
-    drop_constraint('product_criteria','products')
-    drop_constraint('qc_reports','product_criteria')
+    drop_constraint('product_criteria', 'products')
+    drop_constraint('qc_reports', 'product_criteria')
     drop_table :product_criteria
   end
 end

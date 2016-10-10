@@ -46,7 +46,7 @@ class QcDecisionTest < ActiveSupport::TestCase
 
         should "record the decision" do
           assert_equal 2, @qcd.qc_decision_qcables.count
-          assert_equal ['fail','release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
+          assert_equal ['fail', 'release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
         end
 
       end

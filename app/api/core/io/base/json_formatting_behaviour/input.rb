@@ -34,7 +34,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     # handled right now, provided there is not a read_write one that shares their name.
     read_only, read_write = json_to_attribute.partition { |_, v| v.nil? }
     common_keys = read_only.map(&:first) & read_write.map(&:first)
-    read_only.delete_if { |k,_| common_keys.include?(k) }
+    read_only.delete_if { |k, _| common_keys.include?(k) }
     code.concat(read_only.map do |json, _|
       "process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }"
     end)
@@ -111,7 +111,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   # If the specified path is present all of the way to the end then the value at the
   # leaf is yielded, otherwise this method simply returns.
   def process_if_present(json, path)
-    value = path.inject(json) do |current,step|
+    value = path.inject(json) do |current, step|
       return unless current.respond_to?(:key?)    # Could be nested attribute but not present!
       return unless current.key?(step)
       current[step]

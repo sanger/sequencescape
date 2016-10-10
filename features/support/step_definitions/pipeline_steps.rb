@@ -12,7 +12,7 @@ Given /^I have a pipeline called "([^\"]*)"$/ do |name|
 end
 
 Given /^I have a batch in "([^\"]*)"$/ do |pipeline|
-  step  %Q{I have a "pending" batch in "#{pipeline}"}
+  step %Q{I have a "pending" batch in "#{pipeline}"}
 end
 
 Given /^I have a "([^\"]*)" batch in "([^\"]*)"$/ do |state, pipeline|
@@ -34,7 +34,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = FactoryGirl.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryGirl.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
   FactoryGirl.create(:request, request_parameters).tap do |request|
-    request.asset.update_attributes!(location: pipeline.location,barcode: request.asset.id % 9999999)
+    request.asset.update_attributes!(location: pipeline.location, barcode: request.asset.id % 9999999)
   end
 end
 
@@ -72,7 +72,7 @@ Given /^I have data loaded from SNP$/ do
 
 end
 When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
-  #TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
+  # TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
   # do give the pipelin name
   request_number = request_number.to_i
   pipeline = Pipeline.find_by_name(pipeline_name)
@@ -136,7 +136,7 @@ Given /^Microarray genotyping is set up$/ do
   FactoryGirl.create :task, name: "Set Location", sti_type: "SetLocationTask", sorted: 4, workflow: cherrypick_workflow
 #  FactoryGirl.create :task, :name => "Export Plate to SNP", :sti_type => "ExportPlateTask", :sorted => 4, :workflow => cherrypick_workflow
 
-  #Registering submissin template
+  # Registering submissin template
   submission = LinearSubmission.new
   submission.request_type_ids = [dna_qc, cherrypick, genotyping].map { |rt| rt.id }
   submission.info_differential = submission_workflow.id

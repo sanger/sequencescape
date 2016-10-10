@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
@@ -7,7 +7,7 @@ module TubePurposeHelper
   class PurposeMigrator
     attr_reader :purposes, :migration
     delegate :say, to: :migration
-    def initialize(purposes,migration)
+    def initialize(purposes, migration)
       @purposes = purposes
       @migration = migration
     end
@@ -23,7 +23,7 @@ module TubePurposeHelper
   class RequestTypeMigrator
     attr_reader :request_types, :migration
     delegate :say, to: :migration
-    def initialize(request_types,migration)
+    def initialize(request_types, migration)
       @request_types = request_types
       @migration = migration
     end
@@ -35,7 +35,7 @@ module TubePurposeHelper
       end
     end
 
-    def repair_data(old_purpose,new_purpose)
+    def repair_data(old_purpose, new_purpose)
       request_types.each do |key|
         say "Repairing #{key}..."
         rt = RequestType.find_by_key!(key)
@@ -43,7 +43,7 @@ module TubePurposeHelper
         MultiplexedLibraryTube.find_each(
           select: 'DISTINCT assets.*',
           joins: 'LEFT JOIN requests ON requests.target_asset_id = assets.id',
-          conditions: ['assets.plate_purpose_id = ? AND request_type_id = ?',old_purpose.id,rt.id]
+          conditions: ['assets.plate_purpose_id = ? AND request_type_id = ?', old_purpose.id, rt.id]
         ) do |library_tube|
           library_tube.update_attributes!(purpose: new_purpose)
           updated += 1
@@ -54,11 +54,11 @@ module TubePurposeHelper
   end
 
   def migrate_purposes(*purposes)
-    PurposeMigrator.new(purposes,self)
+    PurposeMigrator.new(purposes, self)
   end
 
   def migrate_request_types(*request_types)
-    RequestTypeMigrator.new(request_types,self)
+    RequestTypeMigrator.new(request_types, self)
   end
 
   def new_illumina_mx_tube(name)

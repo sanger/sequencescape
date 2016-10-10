@@ -11,7 +11,7 @@ class StudyTest < ActiveSupport::TestCase
 
     should belong_to :user
 
-    should have_many :samples#, :through => :study_samples
+    should have_many :samples # , :through => :study_samples
 
     context "Request" do
       setup do
@@ -38,7 +38,7 @@ class StudyTest < ActiveSupport::TestCase
         requests << (create :pending_request, study: @study, request_type: @request_type)
         requests << (create :pending_request, study: @study, request_type: @request_type_3)
 
-        #we have to hack t
+        # we have to hack t
         requests.each do |request|
           request.asset.aliquots.each do |a|
             a.update_attributes(study: @study)
@@ -78,23 +78,23 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should "deal with followers" do
-        assert ! @study.followers.empty?
+        assert !@study.followers.empty?
         assert @study.followers.include?(@user1)
         assert @study.followers.include?(@user2)
         assert @another_study.followers.empty?
       end
 
       should "deal with managers" do
-        assert ! @study.managers.empty?
-        assert ! @study.managers.include?(@user1)
+        assert !@study.managers.empty?
+        assert !@study.managers.include?(@user1)
         assert @study.managers.include?(@user2)
         assert @another_study.managers.empty?
       end
 
       should "deal with owners" do
-        assert ! @study.owners.empty?
+        assert !@study.owners.empty?
         assert @study.owners.include?(@user1)
-        assert ! @study.owners.include?(@user2)
+        assert !@study.owners.include?(@user2)
         assert @another_study.owners.empty?
       end
     end
@@ -241,12 +241,12 @@ class StudyTest < ActiveSupport::TestCase
           FactoryHelp::submission study: @study, state: "failed", assets: [@asset]
         end
         should "return false" do
-          assert ! @study.unprocessed_submissions?
+          assert !@study.unprocessed_submissions?
         end
       end
       context "with no submissions at all" do
         should "return false" do
-          assert ! @study.unprocessed_submissions?
+          assert !@study.unprocessed_submissions?
         end
       end
     end
@@ -258,7 +258,7 @@ class StudyTest < ActiveSupport::TestCase
           r = create(:passed_request, request_type: @request_type, initial_study_id: @study.id)
           r.asset.aliquots.each { |al| al.study = @study; al.save! }
         end
-        2.times { create(:order, study: @study ) }
+        2.times { create(:order, study: @study) }
         @study.projects.each do |project|
           project.enforce_quotas = true
         end
@@ -321,14 +321,14 @@ class StudyTest < ActiveSupport::TestCase
 
       should 'accept valid data access group names' do
         # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
-        ['goodname','g00dname','good_name','_goodname','good-name','goodname1  goodname2'].each do |name|
+        ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
           assert @study.study_metadata.update_attributes!(data_access_group: name)
           assert_equal name, @study.study_metadata.data_access_group
         end
       end
 
       should 'reject non-alphanumeric data access groups' do
-        ['b@dname','1badname','averylongbadnamewouldbebadsowesouldblockit','baDname'].each do |name|
+        ['b@dname', '1badname', 'averylongbadnamewouldbebadsowesouldblockit', 'baDname'].each do |name|
           assert_raise ActiveRecord::RecordInvalid do
             @study.study_metadata.update_attributes!(data_access_group: name)
           end

@@ -21,7 +21,7 @@ class NpgActions::AssetsController < ApplicationController
   NPGActionInvalid = Class.new(StandardError)
   rescue_from(NPGActionInvalid, with: :rescue_error_internal_server_error)
 
-  #this procedure build a procedure called "state". In this casa: pass and fail.
+  # this procedure build a procedure called "state". In this casa: pass and fail.
   def self.construct_action_for_qc_state(state)
     line = __LINE__ + 1
     class_eval(%Q{

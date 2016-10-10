@@ -14,7 +14,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
           product_line: ProductLine.find_by_name("Illumina-#{pipeline.upcase}"),
           request_purpose: RequestPurpose.standard
         }).tap do |rt|
-          RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [150,75])
+          RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [150, 75])
         end
         RequestType.create!({
           key: "illumina_#{pipeline}_hiseq_4000_single_end_sequencing",

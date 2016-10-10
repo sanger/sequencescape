@@ -59,7 +59,7 @@ class ProjectsControllerTest < ActionController::TestCase
           }
         end
 
-        should set_flash.to( "Your project has been created")
+        should set_flash.to("Your project has been created")
         should redirect_to("last project page") { project_path(Project.last) }
         should "change Project.count by 1" do
          assert_equal 1, Project.count - @project_counter
@@ -100,7 +100,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should redirect_to("last project added page") { project_path(Project.last) }
-        should set_flash.to( "Your project has been created")
+        should set_flash.to("Your project has been created")
         should "change Project.count by 1" do
          assert_equal 1, Project.count - @project_counter
         end
@@ -134,7 +134,7 @@ class ProjectsControllerTest < ActionController::TestCase
         post :create, ActiveSupport::JSON.decode(@json_data)
       end
 
-      should set_flash.to( "Your project has been created")
+      should set_flash.to("Your project has been created")
     end
   end
 end

@@ -11,9 +11,9 @@ class PipelineTest < ActiveSupport::TestCase
     should have_one  :workflow
     should have_many :batches
     should have_many :controls
-    should have_many :request_information_types#, :through => :pipeline_request_information_types
+    should have_many :request_information_types # , :through => :pipeline_request_information_types
     should have_many :pipeline_request_information_types
-    #should_require_attributes :name
+    # should_require_attributes :name
 
     context "sequencing_pipeline#read length consistency among batch requests" do
       setup do
@@ -126,7 +126,7 @@ class PipelineTest < ActiveSupport::TestCase
         end
 
         should "not return true for non qc_pipeline" do
-          assert ! @pipeline.qc?
+          assert !@pipeline.qc?
         end
       end
 

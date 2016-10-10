@@ -11,16 +11,16 @@ class BroadcastEvent::SequencingStart < BroadcastEvent
   seed_class Batch
 
   # Broadcast when a sequencing request starts:
-  has_subjects(:sequencing_source_labware,:source_labware)
-  has_subjects(:study,:studies)
-  has_subjects(:project,:projects)
-  has_subjects(:stock_plate) { |batch,e| batch.source_labware.map(&:original_stock_plates).flatten.uniq }
-  has_subjects(:library_source_labware) { |batch,e| batch.source_labware.map(&:library_source_plates).flatten.uniq }
-  has_subjects(:sample,:samples)
+  has_subjects(:sequencing_source_labware, :source_labware)
+  has_subjects(:study, :studies)
+  has_subjects(:project, :projects)
+  has_subjects(:stock_plate) { |batch, e| batch.source_labware.map(&:original_stock_plates).flatten.uniq }
+  has_subjects(:library_source_labware) { |batch, e| batch.source_labware.map(&:library_source_plates).flatten.uniq }
+  has_subjects(:sample, :samples)
 
   # Metadata
-  has_metadata(:read_length) { |batch,e| batch.requests.first.request_metadata.read_length }
-  has_metadata(:pipeline) { |batch,e| batch.pipeline.name }
-  has_metadata(:team) { |batch,e| batch.requests.first.product_line }
+  has_metadata(:read_length) { |batch, e| batch.requests.first.request_metadata.read_length }
+  has_metadata(:pipeline) { |batch, e| batch.pipeline.name }
+  has_metadata(:team) { |batch, e| batch.requests.first.product_line }
 
 end

@@ -24,7 +24,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
       @well_maps = {
         'S06' => {
-          markers: [XY,XY,XY],
+          markers: [XY, XY, XY],
           count: 94
         },
         'S04' => {
@@ -69,7 +69,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
     end
 
     should "let us fetch individual wells" do
-      @well_maps.each do |loc,properties|
+      @well_maps.each do |loc, properties|
         well = @fluidigm.well_at(loc)
         assert well.is_a?(FluidigmFile::FluidigmWell)
         assert_equal loc, well.description

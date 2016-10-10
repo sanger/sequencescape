@@ -10,7 +10,7 @@ class Failure < ActiveRecord::Base
 
   def notify_remote
     if self.notify_remote?
-      #Send event to Studies here
+      # Send event to Studies here
     end
   end
 end

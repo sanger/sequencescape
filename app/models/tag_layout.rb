@@ -54,7 +54,7 @@ class TagLayout < ActiveRecord::Base
       'inverse column' => 'TagLayout::InInverseColumns',
       'inverse row'    => 'TagLayout::InInverseRows'
     }[new_direction]
-    errors.add(:base,"#{new_direction} is not a valid direction")if self.direction_algorithm.nil?
+    errors.add(:base, "#{new_direction} is not a valid direction") if self.direction_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.direction_algorithm.nil?
     extend(direction_algorithm.constantize)
   end
@@ -66,7 +66,7 @@ class TagLayout < ActiveRecord::Base
       'manual by pool'  => 'TagLayout::WalkManualWellsByPools',
       'manual by plate' => 'TagLayout::WalkManualWellsOfPlate'
     }[walk]
-    errors.add(:base,"#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
+    errors.add(:base, "#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.walking_algorithm.nil?
     extend(walking_algorithm.constantize)
   end
@@ -86,17 +86,17 @@ class TagLayout < ActiveRecord::Base
     # to the wells.
 
     tag_map_id_to_tag = ActiveSupport::OrderedHash[tag_group.tags.sort_by(&:map_id).map { |tag| [tag.map_id.to_s, tag] }]
-    tags              = tag_map_id_to_tag.map { |k,tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
+    tags              = tag_map_id_to_tag.map { |k, tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
     walk_wells do |well, index|
       tags[(index + initial_tag) % tags.length].tag!(well) unless well.aliquots.empty?
     end
 
     # We can now check that the pools do not contain duplicate tags.
-    pool_to_tag = Hash.new { |h,k| h[k] = [] }
+    pool_to_tag = Hash.new { |h, k| h[k] = [] }
     plate.wells.walk_in_pools do |pool_id, wells|
       pool_to_tag[pool_id] = wells.map { |well| well.aliquots.map(&:tag).uniq }.flatten
     end
-    errors.add(:base,'duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
+    errors.add(:base, 'duplicate tags within a pool') if pool_to_tag.any? { |_, t| t.uniq.size > 1 }
   end
   private :layout_tags_into_wells
 

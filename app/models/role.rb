@@ -41,7 +41,7 @@ class Role < ActiveRecord::Base
         has_many :roles, as: :authorizable
         has_many :users, through: :roles
 
-        scope :with_related_users_included, -> { includes(roles: :users ) }
+        scope :with_related_users_included, -> { includes(roles: :users) }
         scope :of_interest_to, ->(user) { joins(:users).where(users: { id: user }).distinct }
       end
     end
@@ -50,8 +50,8 @@ class Role < ActiveRecord::Base
 
       def role_relation(name, role_name)
         scope name.to_sym, ->(user) {
-          joins(:roles,:users).
-          where(roles:{ name:role_name.to_s },users:{ id:user.id })
+          joins(:roles, :users).
+          where(roles: { name: role_name.to_s }, users: { id: user.id })
         }
       end
 

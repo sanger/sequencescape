@@ -5,14 +5,14 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class BatchesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
   before_action :login_required, except: [:released, :evaluations_counter, :qc_criteria]
-  before_action :find_batch_by_id, only: [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
+  before_action :find_batch_by_id, only: [:show, :edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
   before_action :find_batch_by_batch_id, only: [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
@@ -399,7 +399,7 @@ class BatchesController < ApplicationController
   def print_multiplex_labels
     request = @batch.requests.first
     unless request.tag_number.nil?
-      if ! request.target_asset.nil? && ! request.target_asset.children.empty?
+      if !request.target_asset.nil? && !request.target_asset.children.empty?
         # We are trying to find the MX library tube or the stock MX library
         # tube. I've added a filter so it doesn't pick up Lanes.
         children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) }
@@ -541,7 +541,7 @@ class BatchesController < ApplicationController
     if results
       flash[:notice] = "All of the tubes are in their correct positions."
       redirect_to batch_path(@batch)
-    elsif ! results
+    elsif !results
       flash[:error] = @batch.errors.full_messages.sort
       redirect_to action: :verify, id: @batch.id
     end
@@ -616,7 +616,7 @@ class BatchesController < ApplicationController
         unless @batch.requests.first.target_asset.children.empty?
           multiplexed_library = @batch.requests.first.target_asset.children.first
 
-          if  ! multiplexed_library.has_stock_asset? && ! multiplexed_library.is_a_stock_asset?
+          if  !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
             @batch_assets = [multiplexed_library]
           else
             flash[:error] = "Already has a Stock tube."

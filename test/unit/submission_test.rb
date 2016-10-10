@@ -8,9 +8,9 @@ require "test_helper"
 
 class SubmissionTest < ActiveSupport::TestCase
 
-  def orders_compatible?(a, b, key=nil)
+  def orders_compatible?(a, b, key = nil)
     begin
-      submission = Submission.new(user: create(:user),orders: [a,b])
+      submission = Submission.new(user: create(:user), orders: [a, b])
       submission.save!
       true
     rescue ActiveRecord::RecordInvalid => exception
@@ -62,7 +62,7 @@ class SubmissionTest < ActiveSupport::TestCase
       @reference_genome2 = create :reference_genome, name: "genome 2"
 
       @order1 = create :order, study: @study1, assets: [@asset1], project: @project
-      @order2 = create :order,study: @study2, assets: [@asset2], project: @project
+      @order2 = create :order, study: @study2, assets: [@asset2], project: @project
     end
 
     context "with compatible requests" do

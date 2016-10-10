@@ -23,10 +23,10 @@ module ModelExtensions::Request
         ]
       )}
 
-      scope :include_study, -> { includes( study: :uuid_object ) }
-      scope :include_project, -> { includes( project: :uuid_object ) }
-      scope :include_request_type, -> { includes( :request_type ) }
-      scope :include_submission, -> { includes( submission: :uuid_object ) }
+      scope :include_study, -> { includes(study: :uuid_object) }
+      scope :include_project, -> { includes(project: :uuid_object) }
+      scope :include_request_type, -> { includes(:request_type) }
+      scope :include_submission, -> { includes(submission: :uuid_object) }
 
       # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
       # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.

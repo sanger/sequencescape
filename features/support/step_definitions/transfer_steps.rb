@@ -15,11 +15,11 @@ def transfer_model(name)
   "transfer/#{name}".gsub(/\s+/, '_').camelize.constantize
 end
 
-Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |model,id,uuid_value|
+Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |model, id, uuid_value|
   set_uuid_for(transfer_model(model).find(id), uuid_value)
 end
 
-Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ do |name,id|
+Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ do |name, id|
   FactoryGirl.create(:"transfer_#{name.gsub(/\s+/, '_')}", id: id)
 end
 
@@ -84,7 +84,7 @@ end
 
 def change_request_state(state, targets, direction, request_class)
   association = (direction == 'to') ? :requests_as_target : :requests_as_source
-  Request.where(id:Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id) ).update_all(state: state)
+  Request.where(id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)).update_all(state: state)
 end
 
 {

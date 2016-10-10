@@ -102,7 +102,7 @@ module Rake
     attr_accessor :verbose
 
     # Create the "rails_plugin" task
-    def initialize(name=nil, version=nil)
+    def initialize(name = nil, version = nil)
       init(name, version)
       yield self if block_given?
       define unless name.nil?
@@ -125,9 +125,9 @@ module Rake
       desc "Create Ruby on Rails plug-in package"
       task :rails_plugin do
         @dest = "#@package_dir/#{@name}"
-        makedirs(@dest,verbose: false)
+        makedirs(@dest, verbose: false)
         @plugin_files.each do |fn|
-          cp(fn, @dest,verbose: false)
+          cp(fn, @dest, verbose: false)
           add_file(File.basename(fn))
         end
 
@@ -136,11 +136,11 @@ module Rake
           f = File.join(@dest, fn)
           fdir = File.dirname(f)
           unless File.exist?(fdir)
-            mkdir_p(fdir,verbose: false)
+            mkdir_p(fdir, verbose: false)
             add_folder("#{fdir}/")
           end
           if File.directory?(fn)
-            mkdir_p(f,verbose: false)
+            mkdir_p(f, verbose: false)
             add_folder("#{fn}/")
           else
             cp(fn, f, verbose: false)
@@ -185,7 +185,7 @@ module Rake
   private
     # Add a file to the folders hash
     def add_file(filename)
-      dir = File.dirname(filename).gsub("#{@dest}",".")
+      dir = File.dirname(filename).gsub("#{@dest}", ".")
       fn = File.basename(filename)
       folder = @folders[dir] || @folders[dir] = []
       folder << fn
@@ -193,7 +193,7 @@ module Rake
 
     # Add a folder to the folders hash
     def add_folder(folder_name)
-      dir = File.dirname(folder_name).gsub("#{@dest}",".").gsub("./","")
+      dir = File.dirname(folder_name).gsub("#{@dest}", ".").gsub("./", "")
       fn = File.basename(folder_name) + "/"
       folder = @folders[dir] || @folders[dir] = []
       folder << fn
@@ -204,7 +204,7 @@ module Rake
       return nil unless @extra_links
       x_links = ""
       if (@extra_links.class == Hash)
-        @extra_links.each do |k,v|
+        @extra_links.each do |k, v|
           x_links << "<a href=\"#{v}\">#{k}</a>&nbsp;"
         end
       elsif (@extra_links.class == Array)

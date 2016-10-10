@@ -13,7 +13,7 @@ class AssetLinkTest < ActiveSupport::TestCase
       @source_well      = create :well
       @destination_well = create :well
       @job_count = Delayed::Job.count
-      AssetLink::Job.create(@source_well,[@destination_well])
+      AssetLink::Job.create(@source_well, [@destination_well])
     end
 
     should 'create a job' do

@@ -41,8 +41,8 @@ end
 
 Given /^I have a plate for PacBio$/ do
   PlatePurpose.stock_plate_purpose.create!(:without_wells, barcode: 1234567) do |plate|
-    plate.wells.build(map: Map.find_by_asset_size_and_description(96,'A1'),aliquots: SampleTube.find_by_barcode(111).aliquots.map(&:dup))
-    plate.wells.build(map: Map.find_by_asset_size_and_description(96,'B1'),aliquots: SampleTube.find_by_barcode(222).aliquots.map(&:dup)) if  SampleTube.find_by_barcode(222).present?
+    plate.wells.build(map: Map.find_by_asset_size_and_description(96, 'A1'), aliquots: SampleTube.find_by_barcode(111).aliquots.map(&:dup))
+    plate.wells.build(map: Map.find_by_asset_size_and_description(96, 'B1'), aliquots: SampleTube.find_by_barcode(222).aliquots.map(&:dup)) if  SampleTube.find_by_barcode(222).present?
     plate.location = Location.find_by_name('PacBio library prep freezer')
     AssetGroup.create!(name: "PacBio group", study: Study.find_by_name('Test study')).assets << plate.wells
   end
@@ -125,18 +125,18 @@ Given /^sample tube "([^"]*)" is part of study "([^"]*)"$/ do |barcode, study_na
   Study.find_by_name(study_name).samples << sample_tube.primary_aliquot.sample
 end
 
-When /^set the location of PacBioLibraryTube "([^"]*)" to be in "([^"]*)"$/ do |barcode,freezer|
+When /^set the location of PacBioLibraryTube "([^"]*)" to be in "([^"]*)"$/ do |barcode, freezer|
   Asset.find_from_machine_barcode(barcode).update_attributes!(location: Location.find_by_name(freezer))
 end
 
 Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |number_of_requests, asset_barcode, state|
   library_tube = PacBioLibraryTube.find_by_barcode(asset_barcode)
-  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.id,state:state).count
+  assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.id, state: state).count
 end
 
 Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asset_barcode, state|
   plate_barcode, location = asset_barcode.split(':')
-  well = Plate.find_by_barcode(plate_barcode.gsub(/[A-Z]/,'')).wells.located_at(location).first
+  well = Plate.find_by_barcode(plate_barcode.gsub(/[A-Z]/, '')).wells.located_at(location).first
   assert_equal 1, PacBioSamplePrepRequest.where(asset_id: well.id, state: state).count
 end
 
@@ -150,7 +150,7 @@ Then /^the PacBio manifest for the last batch should look like:$/ do |expected_r
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
   expected_results_table.column_names.each { |c| expected_results_table.map_column!(c) { |d| d.blank? ? nil : d } }
-  actual_table = CSV.parse( csv_rows.map { |c| "#{c}\r\n" }.join(''))
+  actual_table = CSV.parse(csv_rows.map { |c| "#{c}\r\n" }.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -160,7 +160,7 @@ Given /^the UUID for well "([^"]*)" on plate "([^"]*)" is "([^"]*)"$/ do |well_p
   step(%Q{the UUID for the well with ID #{well.id} is "#{uuid}"})
 end
 
-Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode,uuid|
+Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode, uuid|
   step(%Q{the UUID for the asset with ID #{Asset.find_by_barcode(barcode).id} is "#{uuid}"})
 end
 
@@ -176,7 +176,7 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
   worksheet = page.source
   csv_rows = worksheet.split(/\r\n/)
   csv_rows.shift(2)
-  actual_table = CSV.parse( csv_rows.map { |c| "#{c}\r\n" }.join(''))
+  actual_table = CSV.parse(csv_rows.map { |c| "#{c}\r\n" }.join(''))
   expected_results_table.diff!(actual_table)
 end
 
@@ -223,7 +223,7 @@ Then /^the PacBio manifest should be:$/ do |expected_results_table|
   pac_bio_run_file = page.source
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
-  actual_table = CSV.parse( csv_rows.map { |c| "#{c}\r\n" }.join(''))
+  actual_table = CSV.parse(csv_rows.map { |c| "#{c}\r\n" }.join(''))
   expected_results_table.column_names.each { |c| expected_results_table.map_column!(c) { |d| d.blank? ? nil : d } }
   expected_results_table.diff!(actual_table)
 end

@@ -14,7 +14,7 @@ class StockLibraryTubeTest < ActiveSupport::TestCase
 
     context "#has_stock_asset?" do
       should "return false" do
-        assert ! @stock_library.has_stock_asset?
+        assert !@stock_library.has_stock_asset?
       end
     end
 

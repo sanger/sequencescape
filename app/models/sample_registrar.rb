@@ -18,8 +18,8 @@ require 'rexml/text'
 class SampleRegistrar < ActiveRecord::Base
 
   # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
-  def initialize(attributes = {},what = {})
-    super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys),what)
+  def initialize(attributes = {}, what = {})
+    super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys), what)
   end
 
   # Raised if the call to SampleRegistrar.register! fails for any reason, and so that calling code
@@ -58,7 +58,7 @@ class SampleRegistrar < ActiveRecord::Base
       # We perform this in a database wide transaction because it is altering several tables.  It also locks
       # the tables from change whilst we validate our instances.
       ActiveRecord::Base.transaction do
-        all_valid = registrars.inject(true) { |all_valid_so_far,registrar| registrar.valid? && all_valid_so_far }
+        all_valid = registrars.inject(true) { |all_valid_so_far, registrar| registrar.valid? && all_valid_so_far }
         raise RegistrationError, registrars unless all_valid
         registrars.each { |registrar| registrar.save! }
       end
@@ -166,7 +166,7 @@ class SampleRegistrar < ActiveRecord::Base
     # needs to be decoded using CGI HTML unescaping (the old format), and the other needs the column decoded
     # using the XML encoding (the new format).  Every column is mapped using both encodings, with the XML version
     # being the preferred decoding.
-    definitions = Sample::Metadata.attribute_details.inject({}) do |hash,attribute|
+    definitions = Sample::Metadata.attribute_details.inject({}) do |hash, attribute|
       label   = attribute.to_field_info.display_name
       handler = ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][attribute.name] = value }
       hash.tap do
@@ -182,7 +182,7 @@ class SampleRegistrar < ActiveRecord::Base
 
     # Map the headers to their attribute handlers.  Ensure that the required headers are present.
     used_definitions, headers = [], []
-    column_index, column_name = 0, worksheet.cell(0, 0).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
+    column_index, column_name = 0, worksheet.cell(0, 0).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
     until column_name.empty?
       column_name = REMAPPED_COLUMN_NAMES.fetch(column_name, column_name)
       handler     = definitions[column_name]
@@ -192,7 +192,7 @@ class SampleRegistrar < ActiveRecord::Base
       end
 
       column_index = column_index + 1
-      column_name  = worksheet.cell(0, column_index).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
+      column_name  = worksheet.cell(0, column_index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
     end
 
     if (headers & REQUIRED_COLUMNS) != REQUIRED_COLUMNS
@@ -213,7 +213,7 @@ class SampleRegistrar < ActiveRecord::Base
 
       used_definitions.each_with_index do |handler, index|
         next if handler.nil?
-        value = worksheet.cell(row,index).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
+        value = worksheet.cell(row, index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
         handler.call(attributes, value) unless value.blank?
       end
       next if attributes[:sample_attributes][:name].blank?

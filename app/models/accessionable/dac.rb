@@ -36,7 +36,7 @@ class Accessionable::Dac < Accessionable::Base
       xml.DAC(alias: self.alias, accession: self.accession_number, center_name: self.center_name) {
       xml.CONTACTS {
       self.contacts.each do |contact|
-      xml.CONTACT( {
+      xml.CONTACT({
         name: contact[:name],
         email: contact[:email],
         organisation: contact[:organisation]

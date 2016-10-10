@@ -22,7 +22,7 @@ class CherrypickForPulldownRequest < TransferRequest
 
     # State Machine events
     event :start do
-      transitions to: :started, from: [:pending,:hold]
+      transitions to: :started, from: [:pending, :hold]
     end
 
     event :pass do
@@ -38,7 +38,7 @@ class CherrypickForPulldownRequest < TransferRequest
     end
 
     event :cancel_before_started do
-      transitions to: :cancelled, from: [:pending,:hold]
+      transitions to: :cancelled, from: [:pending, :hold]
     end
 
     event :submission_cancelled do

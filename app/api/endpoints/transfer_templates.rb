@@ -20,11 +20,11 @@ class ::Endpoints::TransferTemplates < ::Core::Endpoint::Base
       end
     end
 
-    action(:create) do |request,response|
+    action(:create) do |request, response|
       response.status(201)
       build_transfer(request, &request.target.method(:create!))
     end
-    bind_action(:create, as: 'preview', to: 'preview') do |_,request,response|
+    bind_action(:create, as: 'preview', to: 'preview') do |_, request, response|
       response.status(200)
       build_transfer(request, &request.target.method(:preview!))
     end

@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 module Tasks::CherrypickGroupBySubmissionHandler
-  def do_cherrypick_group_by_submission_task(task,params)
-    if ! task.valid_params?(params)
+  def do_cherrypick_group_by_submission_task(task, params)
+    if !task.valid_params?(params)
       flash[:warning] = "Invalid values typed in"
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (0).to_s
       return false
@@ -45,7 +45,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
     false
   end
 
-  def render_cherrypick_group_by_submission_task(task,params)
+  def render_cherrypick_group_by_submission_task(task, params)
     @plate_purpose_options = task.plate_purpose_options(@batch)
   end
 end

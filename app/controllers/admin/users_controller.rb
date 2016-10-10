@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Admin::UsersController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :admin_login_required
   before_action :setup_user, only: [:edit, :show, :grant_user_role, :remove_user_role]
@@ -110,7 +110,7 @@ class Admin::UsersController < ApplicationController
 
   def filter
     if params[:q]
-      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',{ query: "%#{params[:q].downcase}%" })
+      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query', { query: "%#{params[:q].downcase}%" })
     end
 
     render partial: "users", locals: { users: @users }

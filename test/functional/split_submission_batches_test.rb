@@ -86,7 +86,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
             @seq_batch = Batch.create!(requests: @sequencing_group, pipeline: @sequencing_pipeline)
 
             @seq_batch.requests.map(&:start!)
-            @seq_batch.fail('just','because')
+            @seq_batch.fail('just', 'because')
             @seq_batch.requests.each { |r| @seq_batch.detach_request(r) }
           end
 
@@ -106,7 +106,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
          setup do
            # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
            # However, as this seems to relate to the multiplier, it may be related to out problem.
-           #@asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
+           # @asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
            @submission_template = SubmissionTemplate.find_by_name!('Illumina-C - Multiplexed Library Creation - Single ended sequencing')
            @library_pipeline = Pipeline.find_by_name!('Illumina-B MX Library Preparation')
 

@@ -33,7 +33,7 @@ class QcMetricTest < ActiveSupport::TestCase
       ['manually_failed', true,  true],
       ['manually_failed', nil,   false],
       ['manually_passed', nil,   false],
-    ].each do |qc_state,proceed_state,poor_quality_proceed|
+    ].each do |qc_state, proceed_state, poor_quality_proceed|
         should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
           qc = create :qc_metric, qc_decision: qc_state, proceed: proceed_state
           assert_equal poor_quality_proceed, qc.poor_quality_proceed
@@ -45,8 +45,8 @@ class QcMetricTest < ActiveSupport::TestCase
     [
       ['passed',         true],
       ['failed',         true],
-      ['manually_passed',true],
-      ['manually_failed',true],
+      ['manually_passed', true],
+      ['manually_failed', true],
       ['unprocessable',  false],
     ].each do |qc_state, proceedable|
 

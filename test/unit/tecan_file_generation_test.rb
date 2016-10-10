@@ -133,7 +133,7 @@ class GeneratorTest < ActiveSupport::TestCase
 
     @testcases << { data_object: data_object, expected_output: expected_output }
 
-    @testcases.each_with_index do |testcase,index|
+    @testcases.each_with_index do |testcase, index|
       context ".mapping for testcase #{index}" do
         setup do
           @data_object = (testcase)[:data_object]
@@ -186,7 +186,7 @@ class GeneratorTest < ActiveSupport::TestCase
       end
       should "remap barcode ids to start at 1" do
         @plate_index_lookup = Sanger::Robots::Tecan::Generator.barcode_to_plate_index(@barcodes)
-        @barcodes.each do |key,value|
+        @barcodes.each do |key, value|
           assert @plate_index_lookup[key].is_a?(Integer)
           assert @plate_index_lookup[key] > 0
           assert @plate_index_lookup[key] <= @barcodes.length
@@ -213,7 +213,7 @@ class GeneratorTest < ActiveSupport::TestCase
     end
 
     should "remap barcodes to start at 1" do
-      @expected_order.each do |source_barcode,index|
+      @expected_order.each do |source_barcode, index|
         assert @source_index[source_barcode].is_a?(Integer)
         assert @source_index[source_barcode] > 0
         assert @source_index[source_barcode] <= @expected_order.length

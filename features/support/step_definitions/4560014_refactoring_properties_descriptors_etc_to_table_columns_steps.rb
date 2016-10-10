@@ -22,7 +22,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
   )
   request.id = additional_options[:id] if additional_options.key?(:id)    # Force ID hack!
 
-  #should be on target asset when we'll use target_asset
+  # should be on target asset when we'll use target_asset
   asset.aliquots.each do |a|
     a.update_attributes!(study_id: study.id)
   end
@@ -40,33 +40,33 @@ def create_request(request_type, study, project, asset, target_asset, additional
 end
 
 Given /^the (sample|library) tube "([^\"]+)" has been involved in a "([^\"]+)" request within the study "([^\"]+)" for the project "([^\"]+)"$/ do |tube_type, tube_name, request_type_name, study_name, project_name|
-  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{ study_name.inspect }"
-  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{ project_name.inspect }"
-  request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find request type #{ request_type_name.inspect }"
-  asset = "#{ tube_type }_tube".camelize.constantize.find_by_name(tube_name) or raise StandardError, "Cannot find #{ tube_type } tube named #{ tube_name.inspect }"
-  target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{ study_name } - Target asset")
+  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
+  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
+  request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
+  asset = "#{tube_type}_tube".camelize.constantize.find_by_name(tube_name) or raise StandardError, "Cannot find #{tube_type} tube named #{tube_name.inspect}"
+  target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
 
   create_request(request_type, study, project, asset, target_asset)
 end
 
 Given /^I have already made a "([^\"]+)" request within the study "([^\"]+)" for the project "([^\"]+)"$/ do |type, study_name, project_name|
-  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{ study_name.inspect }"
-  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{ project_name.inspect }"
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{ type.inspect }"
-  asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{ study_name } - Source asset")
-  target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{ study_name } - Target asset")
+  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
+  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
+  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
+  asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset")
+  target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
 
   create_request(request_type, study, project, asset, target_asset)
 end
 
 Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+) within the study "([^\"]+)" for the project "([^\"]+)"$/ do |count, type, id, study_name, project_name|
-  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{ study_name.inspect }"
-  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{ project_name.inspect }"
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{ type.inspect }"
+  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
+  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
+  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
 
   (0...count.to_i).each do |index|
-    asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{ study_name } - Source asset #{index + 1}")
-    target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{ study_name } - Target asset #{index + 1}")
+    asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset #{index + 1}")
+    target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset #{index + 1}")
     create_request(request_type, study, project, asset, target_asset, id: id.to_i + index)
   end
 end
@@ -75,7 +75,7 @@ Given /^I have already made a "([^\"]+)" request with ID (\d+) within the study 
   step(%Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
 end
 
-Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the study "([^\"]+)"$/ do |_,asset_name, study_name|
+Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the study "([^\"]+)"$/ do |_, asset_name, study_name|
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{tube_name.inspect}"
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   study.samples << asset.aliquots.map(&:sample)
@@ -92,12 +92,12 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+
 end
 
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" called "([^\"]+)"$/ do |study_name, count, asset_type, group_name|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{ study_name.inspect }"
+  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
 
   assets = (1..count.to_i).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
-    param = asset_type == 'well' ? { id: 90 + i } : { name: "#{ group_name }, #{ asset_type } #{ i }" }
-    FactoryGirl.create(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param ).tap do |asset|
+    param = asset_type == 'well' ? { id: 90 + i } : { name: "#{group_name}, #{asset_type} #{i}" }
+    FactoryGirl.create(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param).tap do |asset|
       if asset.primary_aliquot.present?
         asset.primary_aliquot.sample.tap { |s| s.name = sample_name; s.save(validate: false); s.studies << study }
       else
@@ -110,7 +110,7 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
 end
 Then /^I should see the submission request types of:$/ do |list|
   list.raw.each do |row|
-    assert(page.has_css?('#request_types_for_submission li', text: row.first), "Expected row with #{ row.first.inspect }")
+    assert(page.has_css?('#request_types_for_submission li', text: row.first), "Expected row with #{row.first.inspect}")
   end
 end
 

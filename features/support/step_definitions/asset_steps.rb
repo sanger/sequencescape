@@ -29,10 +29,10 @@ end
 Given /^there is an asset link between "([^"]*)" and "([^"]*)"$/ do |source, target|
   source_plate = Plate.find_by_name(source)
   target_plate = Plate.find_by_name(target)
-  AssetLink.create_edge(source_plate,target_plate)
+  AssetLink.create_edge(source_plate, target_plate)
   target_plate.wells.each do |target_well|
     source_well = source_plate.wells.located_at(target_well.map_description).first
-    Well::Link.create!(target_well: target_well,source_well: source_well,type: 'stock')
+    Well::Link.create!(target_well: target_well, source_well: source_well, type: 'stock')
   end
 end
 

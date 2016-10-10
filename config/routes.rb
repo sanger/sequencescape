@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 Sequencescape::Application.routes.draw do
-  root to:'homes#show'
+  root to: 'homes#show'
   resource :home, only: [:show]
 
   mount Api::RootService.new => '/api/1'
@@ -38,8 +38,8 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  match '/login' => 'sessions#login', :as => :login, :via => [:get,:post]
-  match '/logout' => 'sessions#logout', :as => :logout, :via => [:get,:post]
+  match '/login' => 'sessions#login', :as => :login, :via => [:get, :post]
+  match '/logout' => 'sessions#logout', :as => :logout, :via => [:get, :post]
 
   resources :plate_summaries, only: [:index, :show] do
     collection do
@@ -145,7 +145,7 @@ Sequencescape::Application.routes.draw do
 
     resources :assets
 
-    resources :sample_registration, only: [:index,:new,:create], controller: "studies/sample_registration" do
+    resources :sample_registration, only: [:index, :new, :create], controller: "studies/sample_registration" do
       collection do
         post :spreadsheet
         # get :new
@@ -189,7 +189,7 @@ Sequencescape::Application.routes.draw do
         post :remove_wells
       end
 
-      resources :wells, expect: [:destroy,:edit]
+      resources :wells, expect: [:destroy, :edit]
     end
 
     resources :workflows, controller: "studies/workflows" do
@@ -206,7 +206,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :documents, controller: "studies/documents", only: [:show,:destroy]
+    resources :documents, controller: "studies/documents", only: [:show, :destroy]
 
   end
 
@@ -266,7 +266,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :studies, except:[:destroy]  do
+    resources :studies, except: [:destroy]  do
       collection do
         get :index
         post :filter
@@ -277,7 +277,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :projects, except:[:destroy] do
+    resources :projects, except: [:destroy] do
       collection do
         get :index
         post :filter
@@ -308,7 +308,7 @@ Sequencescape::Application.routes.draw do
 
     end
 
-    resources :roles, only: [:index,:show,:new,:create] do
+    resources :roles, only: [:index, :show, :new, :create] do
       resources :users, only: :index
     end
 
@@ -417,7 +417,7 @@ Sequencescape::Application.routes.draw do
   resources :tasks
   resources :asset_audits
 
-  resources :qc_reports, except: [:delete,:update] do
+  resources :qc_reports, except: [:delete, :update] do
     collection do
       post :qc_file
     end

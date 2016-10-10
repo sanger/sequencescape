@@ -14,7 +14,7 @@ class Event < ActiveRecord::Base
   after_create :update_request,          if: :need_to_know_exceptions?
 
  scope :family_pass_and_fail, -> { where(family: ["pass", "fail"]).order('id DESC') }
- scope :npg_events, ->(*args) { where(created_by:'npg',eventful_id:args[0]) }
+ scope :npg_events, ->(*args) { where(created_by: 'npg', eventful_id: args[0]) }
 
   attr_writer :need_to_know_exceptions
   def need_to_know_exceptions?
@@ -40,7 +40,7 @@ class Event < ActiveRecord::Base
       unless request.nil? or request.failed? or request.cancelled?
         if self.family == "fail"
           request.fail!
-        elsif self.family == "pass"# && !request.project.nil?
+        elsif self.family == "pass" # && !request.project.nil?
           request.pass!
         end
       end

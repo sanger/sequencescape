@@ -71,13 +71,13 @@ class ActiveSupport::TestCase
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
-  #fixtures :all
+  # fixtures :all
   # Fixtures have been deprecated because they are brittle and rubbish.
   # Use Factories and mocks to *explicity* setup what your test requires
 
   # Used by Quiet Backtrace pluging to reduce testing noise
-  #self.backtrace_silencers << :rails_vendor
-  #self.backtrace_filters   << :Rails.root
+  # self.backtrace_silencers << :rails_vendor
+  # self.backtrace_filters   << :Rails.root
   # Add more helper methods to be used by all tests here...
 end
 

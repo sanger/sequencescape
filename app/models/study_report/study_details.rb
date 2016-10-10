@@ -14,7 +14,7 @@ module StudyReport::StudyDetails
     handle_wells(
       "INNER JOIN requests ON requests.asset_id=assets.id",
       "requests.initial_study_id",
-      PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES ).pluck(:id),
+      PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES).pluck(:id),
       &block
     )
 
@@ -22,18 +22,18 @@ module StudyReport::StudyDetails
     handle_wells(
       "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
       "aliquots.study_id",
-      PlatePurpose.where(name:['Aliquot 1','Aliquot 2','Aliquot 3','Aliquot 4','Aliquot 1', 'Pre-Extracted Plate']).pluck(:id),
+      PlatePurpose.where(name: ['Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 1', 'Pre-Extracted Plate']).pluck(:id),
       &block
     )
   end
 
   # Similar to find in batches, we pluck out the relevant asset ids in batches of 1000
   def handle_wells(join, study_condition, plate_purpose_id, &block)
-    asset_ids = well_batch_from(0,join, study_condition, plate_purpose_id)
+    asset_ids = well_batch_from(0, join, study_condition, plate_purpose_id)
     while asset_ids.any?
       yield asset_ids
       break if asset_ids.length < BATCH_SIZE
-      asset_ids = well_batch_from(asset_ids.last,join, study_condition, plate_purpose_id)
+      asset_ids = well_batch_from(asset_ids.last, join, study_condition, plate_purpose_id)
     end
   end
   private :handle_wells
@@ -55,14 +55,14 @@ module StudyReport::StudyDetails
 
   def progress_report_header
     [
-      "Status","Study","Supplier","Sanger Sample Name","Supplier Sample Name","Plate","Well","Supplier Volume",
-      "Supplier Gender", "Concentration","Initial Volume","Measured Volume","Total Micrograms","Sequenome Count", "Sequenome Gender",
-      "Pico","Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date","Seq stamp date","Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode","Genotyping Well", "Cohort", "Country of Origin",
-      "Geographical Region","Ethnicity","DNA Source","Is Resubmitted","Control","Is in Fluidigm"
+      "Status", "Study", "Supplier", "Sanger Sample Name", "Supplier Sample Name", "Plate", "Well", "Supplier Volume",
+      "Supplier Gender", "Concentration", "Initial Volume", "Measured Volume", "Total Micrograms", "Sequenome Count", "Sequenome Gender",
+      "Pico", "Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date", "Seq stamp date", "Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode", "Genotyping Well", "Cohort", "Country of Origin",
+      "Geographical Region", "Ethnicity", "DNA Source", "Is Resubmitted", "Control", "Is in Fluidigm"
       ]
   end
 
-  def progress_report_on_all_assets (&block)
+  def progress_report_on_all_assets(&block)
     block.call(progress_report_header)
     each_stock_well_id_in_study_in_batches do |asset_ids|
 

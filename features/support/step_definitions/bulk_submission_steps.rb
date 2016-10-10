@@ -5,12 +5,12 @@
 # Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 def upload_submission_spreadsheet(name)
-  attach_file("bulk_submission_spreadsheet", File.join(Rails.root,'features', 'submission', 'csv', "#{name}.csv"))
+  attach_file("bulk_submission_spreadsheet", File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
   click_button "Create Bulk submission"
 end
 
 def upload_custom_row_submission
-  attach_file("bulk_submission_spreadsheet", File.join(Rails.root,'features', 'submission', 'csv', "template_for_bulk_submission.csv"))
+  attach_file("bulk_submission_spreadsheet", File.join(Rails.root, 'features', 'submission', 'csv', "template_for_bulk_submission.csv"))
   click_button "Create Bulk submission"
 end
 
@@ -53,7 +53,7 @@ Then /^the sample '(.*)' should not belong to study '(.*)'$/ do |sample_name, st
 end
 
 
-When /^I upload a file with (.*) data for (\d+) submissions$/ do |type,number|
+When /^I upload a file with (.*) data for (\d+) submissions$/ do |type, number|
   upload_submission_spreadsheet("#{number}_#{type}_rows")
 end
 
@@ -100,9 +100,9 @@ Then /^there should be an order with the gigabases expected set to "(.*?)"$/ do 
 end
 
 Then /^the last submission should contain two assets$/ do
-  assert_equal 2, Submission.last.orders.reduce(0) { |total,order| total + order.assets.count }
+  assert_equal 2, Submission.last.orders.reduce(0) { |total, order| total + order.assets.count }
 end
 
 Then /^the last submission should contain the tube with barcode "(.*?)"$/ do |barcode|
-  assert Submission.last.orders.reduce([]) { |assets,order| assets.concat(order.assets) }.detect { |a| a.barcode == barcode }
+  assert Submission.last.orders.reduce([]) { |assets, order| assets.concat(order.assets) }.detect { |a| a.barcode == barcode }
 end

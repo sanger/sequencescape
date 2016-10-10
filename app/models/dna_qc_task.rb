@@ -131,7 +131,7 @@ class DnaQcTask < Task
         logger.debug "SENDING PASS FOR REQUEST #{request.id}, BATCH #{batch.id}"
         EventSender.send_pass_event(request.id, "", "Passed DNQ QC", batch.id)
 
-        #activate the next requets
+        # activate the next requets
         request.next_requests(batch.pipeline).each do |next_request|
           if next_request.blocked? and next_request.unblock
             next_request.save
@@ -143,7 +143,7 @@ class DnaQcTask < Task
         logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{batch.id}"
         EventSender.send_fail_event(request.id, "", "failed DNQ QC", batch.id)
 
-        #cancel next request
+        # cancel next request
         request.next_requests(batch.pipeline).each do |next_request|
           next_request.cancel_before_started!
         end

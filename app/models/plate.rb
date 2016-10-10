@@ -73,7 +73,7 @@ class Plate < Asset
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
   delegate :supports_multiple_submissions?, to: :plate_purpose
   delegate :fluidigm_barcode, to: :plate_metadata
-  delegate :dilution_factor,:dilution_factor=, to: :plate_metadata
+  delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
 
   validates_length_of :fluidigm_barcode, is: 10, allow_blank: true
 
@@ -85,14 +85,14 @@ class Plate < Asset
   def submission_ids
     @siat ||=  container_associations.
       joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id').
-      where.not(requests:{ submission_id:nil }).where.not(requests:{ state: Request::Statemachine::INACTIVE }).
+      where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE }).
       uniq.pluck(:submission_id)
   end
 
   def submission_ids_as_source
     @sias ||= container_associations.
       joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id').
-      where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)',Request::Statemachine::INACTIVE]).
+      where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE]).
       uniq.pluck(:submission_id)
   end
 
@@ -116,14 +116,14 @@ class Plate < Asset
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
       ]).
-      where(['caplp.container_id = ?',self.id])
+      where(['caplp.container_id = ?', self.id])
     return s unless s.blank?
     Submission.select('submissions.*',).uniq.
       joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ]).
-      where(['caplp.container_id = ?',self.id])
+      where(['caplp.container_id = ?', self.id])
   end
 
   def barcode_dilution_factor_created_at_hash
@@ -148,8 +148,8 @@ class Plate < Asset
       @asn ||= Comment.for_plate(plate)
     end
 
-    def method_missing(method,*args)
-      comment_assn.send(method,*args)
+    def method_missing(method, *args)
+      comment_assn.send(method, *args)
     end
 
     ##
@@ -157,12 +157,12 @@ class Plate < Asset
     # At time of writing, submissions add comments to each request, so there are a lot of comments
     # getting created here. (The intent is to change this so requests are treated similarly to plates)
     def create!(options)
-      plate.submissions.each { |s| s.add_comment(options[:description],options[:user]) }
+      plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
       Comment.create!(options.merge(commentable: plate))
     end
 
     def create(options)
-      plate.submissions.each { |s| s.add_comment(options[:description],options[:user]) }
+      plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
       Comment.create(options.merge(commentable: plate))
     end
 
@@ -194,20 +194,20 @@ class Plate < Asset
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
       ]).
-      where(['caplp.container_id = ?',self.id]).first.try(:priority) ||
+      where(['caplp.container_id = ?', self.id]).first.try(:priority) ||
     Submission.select('MAX(submissions.priority) AS priority').
       joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ]).
-      where(['caplp.container_id = ?',self.id]).first.try(:priority) || 0
+      where(['caplp.container_id = ?', self.id]).first.try(:priority) || 0
   end
 
   def study
     wells.first.try(:study)
   end
 
-  contains :wells do #, :order => '`assets`.map_id ASC' do
+  contains :wells do # , :order => '`assets`.map_id ASC' do
 
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
     def post_import(links_data)
@@ -278,7 +278,7 @@ class Plate < Asset
 
   scope :include_wells_and_attributes, -> { includes(wells: [:map, :well_attribute]) }
 
-  #has_many :wells, :as => :holder, :class_name => "Well"
+  # has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
   self.prefix = "DN"
 
@@ -291,7 +291,7 @@ class Plate < Asset
     joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
     where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id]).
     order('assets.id DESC').
-    includes(:events,:asset_audits)
+    includes(:events, :asset_audits)
   }
 
   # TODO: Make these more railsy
@@ -328,7 +328,7 @@ class Plate < Asset
           }
         }
       }).
-      where(['batches.id = ?',batch.id])
+      where(['batches.id = ?', batch.id])
 
   }
 
@@ -377,12 +377,12 @@ class Plate < Asset
   end
 
   def children_and_holded
-    ( children | wells )
+    (children | wells)
   end
 
   def find_map_by_rowcol(row, col)
     # Count from 0
-    description = asset_shape.location_from_row_and_column(row,col + 1,size)
+    description = asset_shape.location_from_row_and_column(row, col + 1, size)
     Map.where(
       description: description,
       asset_size: size,
@@ -391,7 +391,7 @@ class Plate < Asset
   end
 
   def find_well_by_rowcol(row, col)
-    map = self.find_map_by_rowcol(row,col)
+    map = self.find_map_by_rowcol(row, col)
     return nil if map.nil?
     self.find_well_by_name(map.description)
   end
@@ -401,20 +401,20 @@ class Plate < Asset
     well.plate = self
   end
 
-  def add_well(well, row=nil, col=nil)
+  def add_well(well, row = nil, col = nil)
     add_well_holder(well)
     if row
       well.map = find_map_by_rowcol(row, col)
     end
   end
 
-  def add_well_by_map_description(well,map_description)
+  def add_well_by_map_description(well, map_description)
     add_well_holder(well)
-    well.map = Map.find_by_description_and_asset_size(map_description,size)
+    well.map = Map.find_by_description_and_asset_size(map_description, size)
     well.save!
   end
 
-  def add_and_save_well(well, row=nil, col=nil)
+  def add_and_save_well(well, row = nil, col = nil)
     self.add_well(well, row, col)
     well.save!
   end
@@ -545,7 +545,7 @@ class Plate < Asset
 
   def self.create_plates_with_barcodes(params)
     begin
-      params[:snp_plates].each do |index,plate_barcode_id|
+      params[:snp_plates].each do |index, plate_barcode_id|
         next if plate_barcode_id.blank?
         plate = Plate.create(barcode: "#{plate_barcode_id}", name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
         storage_location = Location.find(params[:asset][:location_id])
@@ -604,7 +604,7 @@ class Plate < Asset
 
     project.save
     plates.each do |plate|
-      plate.generate_plate_submission(project, study, user,current_time)
+      plate.generate_plate_submission(project, study, user, current_time)
     end
 
     true
@@ -631,7 +631,7 @@ class Plate < Asset
     wells.map(&:create_child_sample_tube)
   end
 
-  def create_sample_tubes_and_print_barcodes(barcode_printer,location = nil)
+  def create_sample_tubes_and_print_barcodes(barcode_printer, location = nil)
     sample_tubes = create_sample_tubes
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                           LabelPrinter::Label::PlateToTubes,
@@ -693,7 +693,7 @@ class Plate < Asset
   end
 
   def children_of_dilution_plates(parent_model, child_model)
-    child_dilution_plates_filtered_by_type(parent_model).map { |dilution_plate| dilution_plate.children.select { |p| p.is_a?(child_model) } }.flatten.select { |p| ! p.nil? }
+    child_dilution_plates_filtered_by_type(parent_model).map { |dilution_plate| dilution_plate.children.select { |p| p.is_a?(child_model) } }.flatten.select { |p| !p.nil? }
   end
 
   def child_pico_assay_plates
@@ -796,8 +796,8 @@ class Plate < Asset
   # This method returns a map from the wells on the plate to their stock well.
   def stock_wells
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
-    return Hash[wells.with_pool_id.map { |w| [w,[w]] }] if stock_plate?
-    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.sort_by { |sw| sw.map.column_order }] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
+    return Hash[wells.with_pool_id.map { |w| [w, [w]] }] if stock_plate?
+    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.sort_by { |sw| sw.map.column_order }] }.reject { |_, v| v.empty? }].tap do |stock_wells_hash|
       raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
     end
   end
@@ -812,7 +812,7 @@ class Plate < Asset
 
   def update_concentrations_from(parser)
     ActiveRecord::Base.transaction do
-      parser.each_well_and_parameters do |position,concentration,molarity|
+      parser.each_well_and_parameters do |position, concentration, molarity|
         wells.include_map.detect { |w| w.map_description == position }.tap do |well|
           well.set_concentration(concentration)
           well.set_molarity(molarity)
@@ -824,11 +824,11 @@ class Plate < Asset
   end
 
   def samples_in_order(order_id)
-    Sample.for_plate_and_order(self.id,order_id)
+    Sample.for_plate_and_order(self.id, order_id)
   end
 
   def samples_in_order_by_target(order_id)
-    Sample.for_plate_and_order_as_target(self.id,order_id)
+    Sample.for_plate_and_order_as_target(self.id, order_id)
   end
 
   def team
@@ -837,7 +837,7 @@ class Plate < Asset
         'INNER JOIN requests ON requests.request_type_id = request_types.id',
         'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
         'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
-      ]).where(['ca.container_id = ?',self.id]).first.try(:name) || 'UNKNOWN'
+      ]).where(['ca.container_id = ?', self.id]).first.try(:name) || 'UNKNOWN'
   end
 
   # Barcode is stored as a string, jet in a number of places is treated as

@@ -27,7 +27,7 @@ if false
       end
 
       should "login_in_user" do
-        assert_equal true, User.authenticate_with_ldap("someone","password")
+        assert_equal true, User.authenticate_with_ldap("someone", "password")
       end
 
     end
@@ -62,7 +62,7 @@ if false
       end
 
       should "not be able to access admin functions" do
-        assert ! @user.administrator?
+        assert !@user.administrator?
       end
 
       should "be able to access manager functions" do
@@ -90,15 +90,15 @@ if false
       end
 
       should "not be able to access admin functions" do
-        assert ! @user.administrator?
+        assert !@user.administrator?
       end
 
       should "not be able to access manager functions" do
-        assert ! @user.manager_or_administrator?
+        assert !@user.manager_or_administrator?
       end
 
       should "not have access to privileged functions generally" do
-        assert ! @user.privileged?
+        assert !@user.privileged?
       end
 
       # should "not have access to privileged functions when not owner" do
@@ -166,7 +166,7 @@ if false
     end
     context "#profile_complete? with no api_key" do
       setup do
-        @user = create :user, first_name: "Alan", last_name: "Brown", email: "ab1",api_key: nil
+        @user = create :user, first_name: "Alan", last_name: "Brown", email: "ab1", api_key: nil
         @old_api_key = @user.api_key
         @profile_complete = @user.profile_complete?
       end
@@ -178,7 +178,7 @@ if false
     end
     context "#profile_complete? with preexisting api_key" do
       setup do
-        @user = create :user, first_name: "Alan", last_name: "Brown", email: "ab1",api_key: 'da57c7a7e600b-2736f3329f3d99cdb2e52d4f184f39f1'
+        @user = create :user, first_name: "Alan", last_name: "Brown", email: "ab1", api_key: 'da57c7a7e600b-2736f3329f3d99cdb2e52d4f184f39f1'
         @old_api_key = @user.api_key
         @profile_complete = @user.profile_complete?
       end

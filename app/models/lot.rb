@@ -47,7 +47,7 @@ class Lot < ActiveRecord::Base
 
     asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
 
-    includes(:qcables).where(qcables:{ asset_id:asset_ids }).where.not(qcables:{ state: 'exhausted' })
+    includes(:qcables).where(qcables: { asset_id: asset_ids }).where.not(qcables: { state: 'exhausted' })
   }
 
   private
@@ -55,7 +55,7 @@ class Lot < ActiveRecord::Base
   def valid_template?
     return false unless lot_type.present?
     return true if template.is_a?(valid_template_class)
-    errors.add(:template,"is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
+    errors.add(:template, "is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
     false
   end
 

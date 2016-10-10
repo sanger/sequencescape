@@ -16,7 +16,7 @@ class SetCharacterisationDescriptorsTask < Task
 
 
   def do_task(workflows_controller, params)
-    workflows_controller.do_set_characterisation_descriptors_task(self,params)
+    workflows_controller.do_set_characterisation_descriptors_task(self, params)
   end
 
   def sub_events_for_event(event)

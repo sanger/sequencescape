@@ -9,7 +9,7 @@ Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/
 
   plate = FactoryGirl.create(:plate)
   study.asset_groups.create!(name: group_name).tap do |asset_group|
-    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, plate: plate, map: Map.map_96wells[index - 1] ) }
+    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, plate: plate, map: Map.map_96wells[index - 1]) }
   end
 end
 

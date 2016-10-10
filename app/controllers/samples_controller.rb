@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class SamplesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
-  #require 'curb'
+  # require 'curb'
 
   before_action :admin_login_required, only: [:administer, :destroy]
 
@@ -56,7 +56,7 @@ class SamplesController < ApplicationController
 
   def show
     @sample  = Sample.includes(:assets).find(params[:id])
-    @studies = Study.where(state:["pending", "active"]).alphabetical
+    @studies = Study.where(state: ["pending", "active"]).alphabetical
 
     respond_to do |format|
       format.html
@@ -82,7 +82,7 @@ class SamplesController < ApplicationController
   def edit
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
-      if @sample.released? && ! current_user.is_administrator?
+      if @sample.released? && !current_user.is_administrator?
         flash[:error] = "Cannot edit publically released sample"
         redirect_to sample_path(@sample)
         return
@@ -133,7 +133,7 @@ class SamplesController < ApplicationController
   def remove_from_study
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
-    StudySample.find_by(study_id: params[:study_id],sample_id: params[:id]).destroy
+    StudySample.find_by(study_id: params[:study_id], sample_id: params[:id]).destroy
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end
@@ -151,7 +151,7 @@ class SamplesController < ApplicationController
     @sample.validate_ena_required_fields!
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
 
-    flash[:notice] = "Accession number generated: #{ @sample.sample_metadata.sample_ebi_accession_number }"
+    flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
     redirect_to(sample_path(@sample))
   rescue ActiveRecord::RecordInvalid => exception
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
@@ -182,7 +182,7 @@ class SamplesController < ApplicationController
        RestClient.proxy = configatron.proxy
        rc.headers["User-Agent"] = "Internet Explorer 5.0"
      end
-     #rc.verbose = true
+     # rc.verbose = true
      body = rc.get.body
 
      respond_to do |format|

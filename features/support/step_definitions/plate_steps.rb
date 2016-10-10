@@ -52,7 +52,7 @@ Then /^plate with barcode "([^"]*)" should exist$/ do |plate_barcode|
   assert_not_nil plate
 end
 
-Then /^plate with barcode "([^"]*)" is part of study "([^"]*)"$/ do |plate_barcode,study_name|
+Then /^plate with barcode "([^"]*)" is part of study "([^"]*)"$/ do |plate_barcode, study_name|
   plate = Plate.find_from_machine_barcode(plate_barcode)
   assert_not_nil plate
   study = Study.find_by_name(study_name)
@@ -73,7 +73,7 @@ end
 
 Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
       current_volume: 10 + (index % 30),
       concentration: 205 + (index % 50)
@@ -83,7 +83,7 @@ end
 
 Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
       current_volume: 10 + (index % 30),
       concentration: 50 + (index % 50)
@@ -199,9 +199,9 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose.create!(name: plate_name)
 end
 
-Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name,barcode|
+Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by_name!(name)
-  plate_purpose.create!(name: plate_name,barcode:barcode)
+  plate_purpose.create!(name: plate_name, barcode: barcode)
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, plate_name, parent_name|
@@ -227,8 +227,8 @@ Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
   end
 end
 
-Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number,plate|
-  plate.wells.in_column_major_order[0,number.to_i].each do |well|
+Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
+  plate.wells.in_column_major_order[0, number.to_i].each do |well|
     well.aliquots.create!(sample: FactoryGirl.create(:sample))
   end
 end
@@ -252,9 +252,9 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   destination = Plate.find_by_name(dest_name)
   (0...count.to_i).each do |i|
     RequestType.transfer.create!(asset: source.wells.in_row_major_order[i], target_asset: destination.wells.in_row_major_order[i], state: state)
-    Well::Link.create!(source_well: source.wells.in_row_major_order[i],target_well: destination.wells.in_row_major_order[i], type: 'stock')
+    Well::Link.create!(source_well: source.wells.in_row_major_order[i], target_well: destination.wells.in_row_major_order[i], type: 'stock')
   end
-  AssetLink.create(ancestor: source,descendant: destination)
+  AssetLink.create(ancestor: source, descendant: destination)
 end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|

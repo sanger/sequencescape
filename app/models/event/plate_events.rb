@@ -35,7 +35,7 @@ module Event::PlateEvents
   end
 
   def event_from_database(key)
-    events.where(family:key).pluck(:content).last
+    events.where(family: key).pluck(:content).last
   end
   private :event_from_database
 

@@ -39,7 +39,7 @@ module Core::Service::ErrorHandling
 
       def each(&block)
         yield JSON.generate(@error)
-        #Yajl::Encoder.new.encode(@error, &block)
+        # Yajl::Encoder.new.encode(@error, &block)
       end
     end
 
@@ -103,7 +103,7 @@ class ActiveRecord::RecordInvalid
   end
 
   def errors_grouped_by_attribute
-    Hash[record.errors.map { |k,v| [yield(k), [v].flatten.uniq] }]
+    Hash[record.errors.map { |k, v| [yield(k), [v].flatten.uniq] }]
   end
   private :errors_grouped_by_attribute
 end

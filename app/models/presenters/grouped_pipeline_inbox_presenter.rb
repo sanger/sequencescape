@@ -13,8 +13,8 @@ module Presenters
         @fields ||= []
       end
 
-      def add_field(name,method,options={})
-        fields << [name,method,options[:if]]
+      def add_field(name, method, options = {})
+        fields << [name, method, options[:if]]
       end
 
     end
@@ -36,7 +36,7 @@ module Presenters
 
     attr_reader :pipeline, :user
 
-    def initialize(pipeline,user,show_held_requests=false)
+    def initialize(pipeline, user, show_held_requests = false)
       @pipeline = pipeline
       @user = user
       @show_held_requests = show_held_requests
@@ -56,9 +56,9 @@ module Presenters
 
     # Yields a line presenter
     def each_line
-      grouped_requests.each_with_index do |request,index|
+      grouped_requests.each_with_index do |request, index|
         group = [request.container_id, request.submission_id]
-        yield GroupLinePresenter.new(group, request,index,pipeline,self)
+        yield GroupLinePresenter.new(group, request, index, pipeline, self)
       end
     end
 
@@ -73,7 +73,7 @@ module Presenters
     end
 
     def valid_fields
-      @valid_fields ||= self.class.fields.select { |n,m,c| c.nil? || self.send(c) }
+      @valid_fields ||= self.class.fields.select { |n, m, c| c.nil? || self.send(c) }
     end
 
     def purpose_important?
@@ -103,8 +103,8 @@ module Presenters
     include PipelinesHelper
 
     attr_reader :group, :request, :index, :pipeline, :inbox
-    def initialize(group,request,index,pipeline,inbox)
-      @group, @request, @index,@pipeline,@inbox = group,request,index,pipeline,inbox
+    def initialize(group, request, index, pipeline, inbox)
+      @group, @request, @index, @pipeline, @inbox = group, request, index, pipeline, inbox
     end
 
     def group_id
@@ -112,7 +112,7 @@ module Presenters
     end
 
     def request_group_id
-      "request_group_#{ group_id.gsub(/[^a-z0-9]+/, '_') }"
+      "request_group_#{group_id.gsub(/[^a-z0-9]+/, '_')}"
     end
 
     def parent

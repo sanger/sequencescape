@@ -49,7 +49,7 @@ class LocationsControllerTest < ActionController::TestCase
     context "#create_Location" do
       setup do
         @old_count = Location.count
-        post  :create, {}
+        post :create, {}
       end
 
       should "render create_Location" do

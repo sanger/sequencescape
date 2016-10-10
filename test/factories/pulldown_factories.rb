@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
@@ -24,7 +24,7 @@ FactoryGirl.define do
 
     after(:create) do |plate|
       plate.wells.import(
-        ['A1', 'B1', 'C1', 'D1', 'E1','F1'].map do |location|
+        ['A1', 'B1', 'C1', 'D1', 'E1', 'F1'].map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map)
         end
@@ -83,7 +83,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0,48).map { |map| create(:well, map: map) })
+      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0, 48).map { |map| create(:well, map: map) })
     end
   end
 
@@ -95,7 +95,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0,16).map { |map| create(:well, map: map) })
+      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0, 16).map { |map| create(:well, map: map) })
     end
   end
 
@@ -235,12 +235,12 @@ FactoryGirl.define do
       mock_request_type                  = create(:library_creation_request_type)
 
       # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
-      stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, barcode: '999999') { |p| p.wells = [create(:empty_well),create(:empty_well)] }
+      stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, barcode: '999999') { |p| p.wells = [create(:empty_well), create(:empty_well)] }
       stock_wells = stock_plate.wells
 
       AssetLink.create!(ancestor: stock_plate, descendant: tube_creation.parent)
 
-      tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size / 2).each_with_index do |pool,i|
+      tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size / 2).each_with_index do |pool, i|
         submission = Submission.create!(user: user)
         pool.each do |well|
           RequestType.transfer.create!(asset: stock_wells[i], target_asset: well, submission: submission);

@@ -12,7 +12,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
   # All of the following models have some affect on the batch XML that we're caching
   observe Batch, BatchRequest, Request, LibraryTube, MultiplexedLibraryTube, Lane, Aliquot, Tag
 
-  # The controller we're caching
+  #  The controller we're caching
   set_caching_for_controller 'batches'
   set_caching_for_model 'batches'
 
@@ -51,7 +51,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
   private :handle
 
   def messengers_for(record)
-    Messenger.where(target_type: 'Batch',target_id: ids_for(record))
+    Messenger.where(target_type: 'Batch', target_id: ids_for(record))
   end
 
 end

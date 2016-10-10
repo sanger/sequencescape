@@ -1,10 +1,10 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2013 Genome Research Ltd.
 module FluidigmHelper
 
-  def self.map_configuration_for(width,height,plate_layout)
+  def self.map_configuration_for(width, height, plate_layout)
     wells = []
     size = width * height
     digit_count = Math.log10(size + 1).ceil

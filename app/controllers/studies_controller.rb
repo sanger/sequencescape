@@ -7,8 +7,8 @@
 require "rexml/document"
 
 class StudiesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   include REXML
   include Informatics::Globals
@@ -167,7 +167,7 @@ class StudiesController < ApplicationController
     @studies = current_user.interesting_studies
     @studies.reject { |s| s == @study }
 
-    #TODO create a proper ReversedStudyRelation
+    # TODO create a proper ReversedStudyRelation
     @relations = @study.study_relations.map { |r| [r.related_study, r.name] } +
       @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
 
@@ -287,7 +287,7 @@ class StudiesController < ApplicationController
        @study.validate_ena_required_fields!
        @study.accession_service.submit_study_for_user(@study, current_user)
 
-       flash[:notice] = "Accession number generated: #{ @study.ebi_accession_number }"
+       flash[:notice] = "Accession number generated: #{@study.ebi_accession_number}"
        redirect_to(study_path(@study))
      end
    end
@@ -297,7 +297,7 @@ class StudiesController < ApplicationController
        @study = Study.find(params[:id])
        @study.accession_service.submit_dac_for_user(@study, current_user)
 
-       flash[:notice] = "Accession number generated: #{ @study.dac_accession_number }"
+       flash[:notice] = "Accession number generated: #{@study.dac_accession_number}"
        redirect_to(study_path(@study))
      end
    end
@@ -307,7 +307,7 @@ class StudiesController < ApplicationController
        @study = Study.find(params[:id])
        @study.accession_service.submit_policy_for_user(@study, current_user)
 
-       flash[:notice] = "Accession number generated: #{ @study.policy_accession_number }"
+       flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
        redirect_to(study_path(@study))
        end
    end
@@ -389,8 +389,8 @@ class StudiesController < ApplicationController
      end
    end
 
-   role_helper(:grant, "added", "adding")     { |user,study,name| user.has_role(name, study) }
-   role_helper(:remove, "remove", "removing") { |user,study,name| user.has_no_role(name, study) }
+   role_helper(:grant, "added", "adding")     { |user, study, name| user.has_role(name, study) }
+   role_helper(:remove, "remove", "removing") { |user, study, name| user.has_no_role(name, study) }
 
    def projects
      @study = Study.find(params[:id])
@@ -436,7 +436,7 @@ class StudiesController < ApplicationController
     when "inactive"                    then Study.is_inactive
     when "collaborations"              then Study.collaborated_with(current_user)
     when "all"                         then Study
-    else                               raise StandardError, "Unknown scope '#{ scope }'" # Study.of_interest_to(current_user)
+    else                               raise StandardError, "Unknown scope '#{scope}'" # Study.of_interest_to(current_user)
     end
 
     return studies.newest_first

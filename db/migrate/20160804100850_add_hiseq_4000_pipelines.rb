@@ -52,18 +52,18 @@ class AddHiseq4000Pipelines < ActiveRecord::Migration
     Location.find_by_name 'Cluster formation freezer'
   end
 
-  def build_tasks_for(workflow, paired_only=false)
+  def build_tasks_for(workflow, paired_only = false)
     AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, workflow: workflow)
     SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 1, workflow: workflow) do |task|
       task.descriptors.build([
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name:'Operator' },
-        { kind: 'Text', sorter: 3, name:'Pipette Carousel #' },
-        { kind: 'Text', sorter: 4, name:'CBOT' },
-        { kind: 'Text', sorter: 5, name:'-20 Temp. Read 1 Cluster Kit Lot #' },
-        { kind: 'Text', sorter: 6, name:'-20 Temp. Read 1 Cluster Kit RGT #' },
-        { kind: 'Text', sorter: 7, name:'Pipette Carousel #' },
-        { kind: 'Text', sorter: 8, name:'Comment' }
+        { kind: 'Text', sorter: 2, name: 'Operator' },
+        { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
+        { kind: 'Text', sorter: 4, name: 'CBOT' },
+        { kind: 'Text', sorter: 5, name: '-20 Temp. Read 1 Cluster Kit Lot #' },
+        { kind: 'Text', sorter: 6, name: '-20 Temp. Read 1 Cluster Kit RGT #' },
+        { kind: 'Text', sorter: 7, name: 'Pipette Carousel #' },
+        { kind: 'Text', sorter: 8, name: 'Comment' }
       ])
     end
 

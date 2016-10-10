@@ -52,7 +52,7 @@ module Batch::PipelineBehaviour
     @efct ||= if lab_events.loaded
       lab_events.select { |le| le.description == "Complete" }
     else
-      lab_events.where(description:"Complete")
+      lab_events.where(description: "Complete")
     end
   end
 
@@ -64,7 +64,7 @@ module Batch::PipelineBehaviour
 
   def last_completed_task
     unless complete_events.empty?
-      pipeline.workflow.tasks.order(:sorted).where(id:completed_task_ids).last
+      pipeline.workflow.tasks.order(:sorted).where(id: completed_task_ids).last
     end
   end
 

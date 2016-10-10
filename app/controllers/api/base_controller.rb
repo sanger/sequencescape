@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Api::BaseController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   class_attribute :model_class
   before_action { |controller| Uuid.translate_uuids_to_ids_in_params(controller.params) }
@@ -18,7 +18,7 @@ class Api::BaseController < ApplicationController
   # Exception handling code
   #++
   rescue_from ActiveRecord::RecordInvalid do |exception|
-    errors = exception.record.errors.inject(Hash.new { |h,k| h[k] = [] }) do |hash, field_and_error_pair|
+    errors = exception.record.errors.inject(Hash.new { |h, k| h[k] = [] }) do |hash, field_and_error_pair|
       hash.tap { hash[field_and_error_pair.first].push(field_and_error_pair.last) }
     end
     respond_to do |format|

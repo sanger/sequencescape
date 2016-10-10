@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class ContainerAssociation < ActiveRecord::Base
-  #We don't define the class, so will get an error if being used directly
+  # We don't define the class, so will get an error if being used directly
   # in fact , the class need to be definend otherwise, eager loading through doesn't work
   belongs_to :container, class_name: "Asset"
   belongs_to :content, class_name: "Asset"
@@ -89,7 +89,7 @@ class ContainerAssociation < ActiveRecord::Base
       has_one :container, through: :container_association
       has_one(container_name, through: :container_association, source: :container, &block)
 
-      #delegate :location, :to => :container
+      # delegate :location, :to => :container
     end
   end
 end

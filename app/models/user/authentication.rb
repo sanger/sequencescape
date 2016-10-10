@@ -20,13 +20,13 @@ module User::Authentication
   def update_profile_via_ldap
     ldap = Net::LDAP.new(host: configatron.ldap_server, port: configatron.ldap_port)
 
-    filter = Net::LDAP::Filter.eq( "uid", self.login )
+    filter = Net::LDAP::Filter.eq("uid", self.login)
     treebase = "ou=people,dc=sanger,dc=ac,dc=uk"
 
-    ldap_profile = ldap.search( base: treebase, filter: filter )[0]
+    ldap_profile = ldap.search(base: treebase, filter: filter)[0]
     # If we have two or more records, something is off with LDAP
 
-    { email: "mail", first_name: "givenname", last_name: "sn" }.each do |attr,ldap_attr|
+    { email: "mail", first_name: "givenname", last_name: "sn" }.each do |attr, ldap_attr|
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
     self.save if self.changed?
@@ -45,7 +45,7 @@ module User::Authentication
         authenticated = authenticate_by_local(login, password)
       end
       if authenticated
-        u = find_or_create_by(login:login)
+        u = find_or_create_by(login: login)
         if u.nil?
           logger.error "Failed to find or create user #{login}"
         else

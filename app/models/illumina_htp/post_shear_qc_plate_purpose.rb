@@ -9,7 +9,7 @@ class IlluminaHtp::PostShearQcPlatePurpose < PlatePurpose
 
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     nudge_parent_plate(plate, state, user, contents)
-    default_transition_to(plate, state, user, contents,customer_accepts_responsibility)
+    default_transition_to(plate, state, user, contents, customer_accepts_responsibility)
   end
 
   def nudge_parent_plate(plate, state, contents)

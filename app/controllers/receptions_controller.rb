@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class ReceptionsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_asset_by_id, only: [:print, :snp_register]
 
@@ -29,7 +29,7 @@ class ReceptionsController < ApplicationController
 
     all_barcodes_blank = true
 
-    barcodes.each do |index,barcode_ws|
+    barcodes.each do |index, barcode_ws|
 
       # We don't perform strip! as this results in modification of the parameters themselves, which affects logging and
       # exception notification. This can hinder investigation of any issues, as it changes apparent user input.
@@ -84,12 +84,12 @@ class ReceptionsController < ApplicationController
       @errors = []
       asset_count = 0
 
-      assets.each do |index,asset_id|
+      assets.each do |index, asset_id|
         asset = Asset.find_by(id: asset_id)
         if asset.nil?
           @errors << "Asset not found with asset ID #{asset_id}"
         else
-          asset.update_attributes(location:location)
+          asset.update_attributes(location: location)
           asset_count += 1
           asset.events.create_scanned_into_lab!(location)
         end

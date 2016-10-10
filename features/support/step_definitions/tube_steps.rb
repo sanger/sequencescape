@@ -6,7 +6,7 @@
 
 
 Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
-  purpose = Tube::Purpose.find_by!(name:tube_purpose)
+  purpose = Tube::Purpose.find_by!(name: tube_purpose)
   test = purpose.target_type.constantize.create!(
     name: tube_name,
     purpose: purpose
@@ -58,7 +58,7 @@ def request_defaults(type)
   }[type] || {}
 end
 
-Given /^the transfer requests on "([^"]*)" are (pending|passed|started)$/ do |source_id,state|
+Given /^the transfer requests on "([^"]*)" are (pending|passed|started)$/ do |source_id, state|
   unless state == 'pending'
     Asset.find(source_id).requests.each do |request|
       if request.is_a?(TransferRequest)

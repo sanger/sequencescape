@@ -14,7 +14,7 @@ class ApiRoutingTest < ActionController::TestCase
       should matcher.description do
         exception_class = defined?(Test::Unit::AssertionFailedError) ? Test::Unit::AssertionFailedError : MiniTest::Assertion
         # Not only can we not be allowed the method, we also might not even have the route!
-        assert_raises(ActionController::MethodNotAllowed,exception_class) do
+        assert_raises(ActionController::MethodNotAllowed, exception_class) do
           assert_accepts matcher.in_context(self), self
         end
       end
@@ -47,7 +47,7 @@ class ApiRoutingTest < ActionController::TestCase
     def read_only_routes(*resources)
       context 'read only resources' do
         resource_routes(*resources) do |context, core_path, controller|
-          context.should route(:get, core_path).to(controller.merge(action: :index ))
+          context.should route(:get, core_path).to(controller.merge(action: :index))
           context.should route(:get, "#{core_path}/12345").to(controller.merge(action: :show, id: '12345'))
 
           context.should_not_route :post, core_path,            action: :create
@@ -59,10 +59,10 @@ class ApiRoutingTest < ActionController::TestCase
     def crud_routes(*resources)
       context 'CRUD resources' do
         resource_routes(*resources) do |context, core_path, controller|
-          context.should route(:get,  core_path).to(controller.merge(            action: :index ))
-          context.should route(:get,  "#{core_path}/12345").to(controller.merge( action: :show, id: '12345'))
-          context.should route(:post, core_path).to(controller.merge(             action: :create ))
-          context.should route(:put,  "#{core_path}/12345").to(controller.merge(  action: :update, id: '12345'))
+          context.should route(:get,  core_path).to(controller.merge(action: :index))
+          context.should route(:get,  "#{core_path}/12345").to(controller.merge(action: :show, id: '12345'))
+          context.should route(:post, core_path).to(controller.merge(action: :create))
+          context.should route(:put,  "#{core_path}/12345").to(controller.merge(action: :update, id: '12345'))
         end
       end
     end
@@ -106,8 +106,8 @@ class ApiRoutingTest < ActionController::TestCase
         :wells,
         samples: [:sample_tubes]
       ) do |context, core_path, controller|
-        context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(   action: :parents,  id: '12345' ))
-        context.should route(:get, "#{core_path}/12345/children").to(controller.merge(  action: :children, id: '12345' ))
+        context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(action: :parents,  id: '12345'))
+        context.should route(:get, "#{core_path}/12345/children").to(controller.merge(action: :children, id: '12345'))
 
         # No other method should be allowed to these resources:
         [:put, :post, :delete].each do |method|

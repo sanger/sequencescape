@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
@@ -7,7 +7,7 @@ module Validateable
   [:save, :save!, :update_attribute].each { |attr| define_method(attr) {} }
 
   def method_missing(symbol, *params)
-    if(symbol.to_s =~ /(.*)_before_type_cast$/)
+    if symbol.to_s =~ /(.*)_before_type_cast$/
       send($1)
     end
   end

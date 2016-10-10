@@ -127,10 +127,10 @@ ActiveRecord::Base.transaction do
 
   [
     { pulldown_requests: ["Illumina-B STD"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Multiplexed WGS' },
-    { pulldown_requests: ["Shared Library Creation","Illumina-B Pooled"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pooled PATH', label: 'ILB PATH' },
-    { pulldown_requests: ["Shared Library Creation","Illumina-B Pippin"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pippin PATH', label: 'ILB PATH' },
-    { pulldown_requests: ["Shared Library Creation","Illumina-B Pooled"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pooled HWGS', label: 'ILB HWGS' },
-    { pulldown_requests: ["Shared Library Creation","Illumina-B Pippin"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pippin HWGS', label: 'ILB HWGS' }
+    { pulldown_requests: ["Shared Library Creation", "Illumina-B Pooled"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pooled PATH', label: 'ILB PATH' },
+    { pulldown_requests: ["Shared Library Creation", "Illumina-B Pippin"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pippin PATH', label: 'ILB PATH' },
+    { pulldown_requests: ["Shared Library Creation", "Illumina-B Pooled"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pooled HWGS', label: 'ILB HWGS' },
+    { pulldown_requests: ["Shared Library Creation", "Illumina-B Pippin"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, name: 'Pippin HWGS', label: 'ILB HWGS' }
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
@@ -148,7 +148,7 @@ ActiveRecord::Base.transaction do
   end
 
   [
-    { pulldown_requests: ["Illumina-A Shared Library Creation","Illumina-A ISC"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => "8" }, name: 'HTP ISC', label: 'ILA ISC' }
+    { pulldown_requests: ["Illumina-A Shared Library Creation", "Illumina-A ISC"], defaults: { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => "8" }, name: 'HTP ISC', label: 'ILA ISC' }
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
@@ -166,7 +166,7 @@ ActiveRecord::Base.transaction do
 
     end
   end
-  IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose,request|
+  IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose, request|
     RequestType.find_by_key(request).acceptable_plate_purposes << Purpose.find_by_name(purpose)
   end
 
@@ -182,7 +182,7 @@ re_request = RequestType.create!(
     product_line: ProductLine.find_by_name('Illumina-A'),
     target_purpose: Purpose.find_by_name('Standard MX')
   ) do |rt|
-    rt.acceptable_plate_purposes << Purpose.find_by!(name:'Lib PCR-XP')
+    rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Lib PCR-XP')
      RequestType::Validator.create!(request_type: rt, request_option: "library_type", valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id))
   end
 
@@ -204,13 +204,13 @@ re_request = RequestType.create!(
           pooling_behaviour: 'PlateRow',
           pooling_options: { pool_count: 8 }
         )
-      rt.acceptable_plate_purposes << Purpose.find_by!(name:"PF Cherrypicked")
+      rt.acceptable_plate_purposes << Purpose.find_by!(name: "PF Cherrypicked")
       RequestType::Validator.create!(
         request_type: rt,
         request_option: 'library_type',
         valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
       )
-      rt.library_types << LibraryType.find_or_create_by(name:"HiSeqX PCR free")
+      rt.library_types << LibraryType.find_or_create_by(name: "HiSeqX PCR free")
     end
 
   RequestType.create!(
@@ -230,7 +230,7 @@ re_request = RequestType.create!(
     workflow: Submission::Workflow.find_by_key!('short_read_sequencing'),
     product_line: ProductLine.find_by_name!('Illumina-HTP')
     ) do |rt|
-      rt.acceptable_plate_purposes << Purpose.find_by!(name:"PF Cherrypicked")
+      rt.acceptable_plate_purposes << Purpose.find_by!(name: "PF Cherrypicked")
     end
 
     RequestType.create!(
@@ -287,7 +287,7 @@ StripTubeCreationPipeline.create!(
     )
     stct.descriptors.create!(
       name: 'Strips to create',
-      selection: [1,2,4,6,12],
+      selection: [1, 2, 4, 6, 12],
       kind: 'Selection',
       key: 'strips_to_create'
     )

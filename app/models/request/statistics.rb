@@ -42,7 +42,7 @@ module Request::Statistics
 
   class Counter
     def initialize
-      @statistics = Hash.new { |h,k| h[k] = 0 }
+      @statistics = Hash.new { |h, k| h[k] = 0 }
     end
 
     delegate :[], :[]=, to: :@statistics
@@ -71,7 +71,7 @@ module Request::Statistics
 
   class Summary
     def initialize
-      @counters = Hash.new { |h,k| h[k] = Counter.new }
+      @counters = Hash.new { |h, k| h[k] = Counter.new }
     end
 
     delegate :[], :[]=, to: :@counters
@@ -94,7 +94,7 @@ module Request::Statistics
   # states.  This is effectively summary data that can be displayed in a tabular format for the user.
   def progress_statistics
     counters  = select('request_type_id, state, count(distinct requests.id) as total').group('request_type_id, state').includes(:request_type)
-    tabulated = Hash.new { |h,k| h[k] = Counter.new }
+    tabulated = Hash.new { |h, k| h[k] = Counter.new }
     tabulated.tap do
       counters.each do |request_type_state_count|
         tabulated[request_type_state_count.request_type][request_type_state_count.state] = request_type_state_count.total.to_i
@@ -104,7 +104,7 @@ module Request::Statistics
 
   def asset_statistics(wheres)
     counters = select('asset_id,request_type_id,state, count(*) as total').group('asset_id, request_type_id, state').includes(:request_type).where(wheres)
-    tabulated = Hash.new { |h,k| h[k] = Summary.new }
+    tabulated = Hash.new { |h, k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |asset_request_type_state_count|
         tabulated[asset_request_type_state_count.asset_id.to_i][asset_request_type_state_count.request_type_id.to_i][asset_request_type_state_count.state] = asset_request_type_state_count.total.to_i
@@ -114,7 +114,7 @@ module Request::Statistics
 
   def sample_statistics_new
     counters = join_asset.select('sample_id,request_type_id,state,count(*) as total').group('sample_id, request_type_id, state').includes(:request_type)
-    tabulated = Hash.new { |h,k| h[k] = Summary.new }
+    tabulated = Hash.new { |h, k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |sample_request_type_state_count|
         tabulated[sample_request_type_state_count.sample_id.to_i][sample_request_type_state_count.request_type_id.to_i][sample_request_type_state_count.state] = sample_request_type_state_count.total.to_i

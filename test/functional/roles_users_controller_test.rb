@@ -23,7 +23,7 @@ class Admin::Roles::UsersControllerTest < ActionController::TestCase
       'user', {
         parent: 'role',
         actions: ['index'],
-        ignore_actions: ['show','create'],
+        ignore_actions: ['show', 'create'],
         user: -> { user = FactoryGirl.create(:user); user.is_administrator; user },
         formats: ['html']
       }

@@ -32,4 +32,4 @@ ARGV.each do |arg|
   end
 end
 
-Daemons.run(script_file,options)
+Daemons.run(script_file, options)

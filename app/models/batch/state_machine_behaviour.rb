@@ -52,7 +52,7 @@ module Batch::StateMachineBehaviour
   end
 
   def start_with_user!(user)
-    pipeline.on_start_batch(self,user)
+    pipeline.on_start_batch(self, user)
     start_without_user!
   end
 

@@ -76,7 +76,7 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:contaminated_human_dna)
     map_attribute_to_json_attribute(:contains_human_dna)
     map_attribute_to_json_attribute(:commercially_available)
-    with_association(:data_release_study_type, lookup_by: :name ) do
+    with_association(:data_release_study_type, lookup_by: :name) do
       map_attribute_to_json_attribute(:name, 'data_release_sort_of_study')
     end
     map_attribute_to_json_attribute(:remove_x_and_autosomes?, 'remove_x_and_autosomes')
@@ -95,7 +95,7 @@ class Api::StudyIO < Api::Base
 
     map_attribute_to_json_attribute(:bam, 'alignments_in_bam')
     map_attribute_to_json_attribute(:prelim_id)
-    map_attribute_to_json_attribute(:hmdmc_approval_number,'hmdmc_number')
+    map_attribute_to_json_attribute(:hmdmc_approval_number, 'hmdmc_number')
   end
 
   self.related_resources = [:samples, :projects]

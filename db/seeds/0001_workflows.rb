@@ -45,7 +45,7 @@ ProductLine.create(name: 'Illumina-HTP')
 # flow from left to right, if you get what I mean!
 def set_pipeline_flow_to(sequence)
   sequence.each do |current_name, next_name|
-    current_pipeline, next_pipeline = [current_name, next_name].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{ name }'" }
+    current_pipeline, next_pipeline = [current_name, next_name].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{name}'" }
     current_pipeline.update_attribute(:next_pipeline_id, next_pipeline.id)
     next_pipeline.update_attribute(:previous_pipeline_id, current_pipeline.id)
   end
@@ -64,7 +64,7 @@ locations_data = [
 locations_data.each do |location|
   Location.create!(name: location)
 end
-#import [ :name ], locations_data, :validate => false
+# import [ :name ], locations_data, :validate => false
 
 
 #### RequestInformationTypes
@@ -293,7 +293,7 @@ PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do
   end
 end
 
-cluster_formation_se_request_type = ['a','b','c'].map do |pl|
+cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(
     workflow: next_gen_sequencing,
     key: "illumina_#{pl}_single_ended_sequencing",
@@ -320,7 +320,7 @@ end << RequestType.create!(
     request_type.request_class = SequencingRequest
   end
 
-SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', request_types: cluster_formation_se_request_type ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', request_types: cluster_formation_se_request_type) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -349,7 +349,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation SE', request_types: cluster_formation_se_request_type ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE', request_types: cluster_formation_se_request_type) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -377,7 +377,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation SE (no controls)', request_types: cluster_formation_se_request_type ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE (no controls)', request_types: cluster_formation_se_request_type) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -405,8 +405,8 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-single_ended_hi_seq_sequencing = ['a','b','c'].map do |pl|
-  RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_single_ended_hi_seq_sequencing", name: "Illumina-#{pl.upcase} Single ended hi seq sequencing",product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+single_ended_hi_seq_sequencing = ['a', 'b', 'c'].map do |pl|
+  RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_single_ended_hi_seq_sequencing", name: "Illumina-#{pl.upcase} Single ended hi seq sequencing", product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -456,7 +456,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)', request_types: single_ended_hi_seq_sequencing ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)', request_types: single_ended_hi_seq_sequencing) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -484,7 +484,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-cluster_formation_pe_request_types = ['a','b','c'].map do |pl|
+cluster_formation_pe_request_types = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_paired_end_sequencing", name: "Illumina-#{pl.upcase} Paired end sequencing", product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
@@ -507,7 +507,7 @@ end << RequestType.create!(
     request_type.request_class = SequencingRequest
   end
 
-hiseq_2500_request_types = ['a','b','c'].map do |pl|
+hiseq_2500_request_types = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_paired_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Paired end sequencing",
@@ -521,7 +521,7 @@ hiseq_2500_request_types = ['a','b','c'].map do |pl|
   )
 end
 
-hiseq_2500_se_request_types = ['a','b','c'].map do |pl|
+hiseq_2500_se_request_types = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_single_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Single end sequencing",
@@ -535,7 +535,7 @@ hiseq_2500_se_request_types = ['a','b','c'].map do |pl|
   )
 end
 
-SequencingPipeline.create!(name: 'Cluster formation PE', request_types: cluster_formation_pe_request_types ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation PE', request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 3
   pipeline.automated  = false
@@ -562,7 +562,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation PE (no controls)', request_types: cluster_formation_pe_request_types ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation PE (no controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -589,7 +589,7 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
 end
 
-SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -618,7 +618,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types ) do |pipeline|
+SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.automated       = false
@@ -647,7 +647,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)', request_types: hiseq_2500_request_types ) do |pipeline|
+SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)', request_types: hiseq_2500_request_types) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.max_size        = 2
@@ -676,7 +676,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)', request_types: hiseq_2500_se_request_types ) do |pipeline|
+SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)', request_types: hiseq_2500_se_request_types) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.max_size        = 2
@@ -704,7 +704,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(pipeline: pipeline, request_information_type: RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls)', request_types: cluster_formation_pe_request_types ) do |pipeline|
+SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls)', request_types: cluster_formation_pe_request_types) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -741,7 +741,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.group_by_parent = false
   pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
-  ['a','b','c'].each do |pl|
+  ['a', 'b', 'c'].each do |pl|
     pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
@@ -869,7 +869,7 @@ DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
   pipeline.active              = true
   pipeline.group_by_parent     = true
 
-  pipeline.location = Location.find_by(name: 'Sample logistics freezer' ) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
+  pipeline.location = Location.find_by(name: 'Sample logistics freezer') or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: microarray_genotyping, key: 'dna_qc', name: 'DNA QC', no_target_asset: true) do |request_type|
     request_type.initial_state     = 'pending'
@@ -957,7 +957,7 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.asset_type           = 'PacBioLibraryTube'
   pipeline.group_by_parent      = true
 
-  pipeline.location = Location.find_by(name: 'PacBio library prep freezer' ) or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
+  pipeline.location = Location.find_by(name: 'PacBio library prep freezer') or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pacbio_sample_prep', name: 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
@@ -999,10 +999,10 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
     request_type.request_class     = PacBioSequencingRequest
     request_type.request_type_validators.build([
       { request_option: 'insert_size',
-      valid_options: RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
+      valid_options: RequestType::Validator::ArrayWithDefault.new([500, 1000, 2000, 5000, 10000, 20000], 500),
       request_type: request_type },
       { request_option: 'sequencing_type',
-      valid_options: RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
+      valid_options: RequestType::Validator::ArrayWithDefault.new(['Standard', 'MagBead', 'MagBead OneCellPerWell v1'], 'Standard'),
       request_type: request_type }
     ])
   end
@@ -1022,7 +1022,7 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
   Task.find_by_name('Movie Lengths').descriptors.create!(
       name: 'Movie length',
       kind: 'Selection',
-      selection: [30, 60, 90, 120, 180,210,240, 270, 300, 330, 360],
+      selection: [30, 60, 90, 120, 180, 210, 240, 270, 300, 330, 360],
       value: 180
     )
 
@@ -1042,7 +1042,7 @@ end
 set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
-['Pulldown','Illumina-A Pulldown'].each do |lab|
+['Pulldown', 'Illumina-A Pulldown'].each do |lab|
   [
     'WGS',
     'SC',
@@ -1092,7 +1092,7 @@ SequencingPipeline.create!(name: "MiSeq sequencing") do |pipeline|
     request_type.request_class_name = MiSeqSequencingRequest.name
   end
 
-  ['a','b','c'].each do |pl|
+  ['a', 'b', 'c'].each do |pl|
     pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_miseq_sequencing", name: "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
@@ -1244,7 +1244,7 @@ CherrypickPipeline.create!(
   summary: true,
   group_name: 'Sample Logistics',
   workflow: liw,
-  request_types: RequestType.where(key: ['pick_to_sta','pick_to_sta2','pick_to_snp_type','pick_to_fluidigm']),
+  request_types: RequestType.where(key: ['pick_to_sta', 'pick_to_sta2', 'pick_to_snp_type', 'pick_to_fluidigm']),
   control_request_type_id: 0,
   max_size: 192
 ) do |pipeline|
@@ -1321,7 +1321,7 @@ st_x10 = [RequestType.create!({
   })]
 
 
-v4_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
+v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq v4 PE #{type}",
       automated: false,
@@ -1394,7 +1394,7 @@ v4_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
 end
 
 
-x10_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
+x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
       automated: false,
@@ -1476,7 +1476,7 @@ end
     product_line: ProductLine.find_by_name("Illumina-#{pipeline.upcase}"),
     request_purpose: RequestPurpose.standard
   }).tap do |rt|
-    RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [150,75])
+    RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [150, 75])
   end
   RequestType.create!({
     key: "illumina_#{pipeline}_hiseq_4000_single_end_sequencing",
@@ -1494,17 +1494,17 @@ end
   end
 end
 
-  def build_4000_tasks_for(workflow, paired_only=false)
+  def build_4000_tasks_for(workflow, paired_only = false)
     AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, workflow: workflow)
     SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 1, workflow: workflow) do |task|
       task.descriptors.build([
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name:'Operator' },
-        { kind: 'Text', sorter: 3, name:'Pipette Carousel #' },
-        { kind: 'Text', sorter: 4, name:'CBOT' },
-        { kind: 'Text', sorter: 5, name:'-20 Temp. Read 1 Cluster Kit (Box 1 of 2) Lot #' },
-        { kind: 'Text', sorter: 6, name:'-20 Temp. Read 1 Cluster Kit (Box 1 of 2) RGT #' },
-        { kind: 'Text', sorter: 8, name:'Comment' }
+        { kind: 'Text', sorter: 2, name: 'Operator' },
+        { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
+        { kind: 'Text', sorter: 4, name: 'CBOT' },
+        { kind: 'Text', sorter: 5, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) Lot #' },
+        { kind: 'Text', sorter: 6, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) RGT #' },
+        { kind: 'Text', sorter: 8, name: 'Comment' }
       ])
     end
 

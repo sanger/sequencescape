@@ -87,7 +87,7 @@ end
       should 'move the requests to different positions' do
         @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
 
-        expected = Hash[@requests.reverse.each_with_index.map { |request,index| [request.id, index + 1] }]
+        expected = Hash[@requests.reverse.each_with_index.map { |request, index| [request.id, index + 1] }]
         actual   = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
         assert_equal(expected, actual, "Positions of requests do not match")
       end
@@ -102,7 +102,7 @@ end
         @batch.shift_item_positions(5, 2)
 
         positions = [1, 2, 3, 4, 7, 8, 9, 10, 11, 12]
-        expected  = Hash[@requests.each_with_index.map { |request,index| [request.id, positions[index]] }]
+        expected  = Hash[@requests.each_with_index.map { |request, index| [request.id, positions[index]] }]
         actual    = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
         assert_equal(expected, actual, "Positions of requests do not match")
       end
@@ -135,7 +135,7 @@ end
         context "where 1 needs to be removed" do
           setup do
             @batch_requests_count = @batch.requests.count
-            @batch.remove_request_ids([@request2.id],'Reason','Comment')
+            @batch.remove_request_ids([@request2.id], 'Reason', 'Comment')
           end
           should "leave 2 requests behind" do
             assert_not_nil @batch.requests.find(@request2.id)
@@ -279,7 +279,7 @@ end
         assert @batch.plate_ids_in_study(@study1).include?(@plate2.id)
       end
       should "not return a plate id where they are not in the given study" do
-        assert ! @batch.plate_ids_in_study(@study2).include?(@plate1.id)
+        assert !@batch.plate_ids_in_study(@study2).include?(@plate1.id)
       end
     end
   end
@@ -483,15 +483,15 @@ end
 
       should "return false and add errors to the batch if the tubes are not in the correct order" do
         number_of_batch_events = @batch.lab_events.size
-        assert ! @batch.verify_tube_layout({ "1" => "123456", "2" => "654321" })
-        assert ! @batch.errors.empty?
+        assert !@batch.verify_tube_layout({ "1" => "123456", "2" => "654321" })
+        assert !@batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
       end
 
       should "reorder requests by increasing request.position if it's > 3" do
         create :batch_request, batch: @batch, position: 6
         create :batch_request, batch: @batch, position: 8
-        @batch.shift_item_positions(4,1)
+        @batch.shift_item_positions(4, 1)
         v = @batch.ordered_requests
         # assert_equal 3, v[2].id # make sure that requests are the same
         # assert_equal 4, v[3].id # make sure that requests are the same
@@ -664,7 +664,7 @@ end
         end
 
         should 'transition to discarded' do
-          assert_equal('discarded',@batch.state)
+          assert_equal('discarded', @batch.state)
         end
       end
 
@@ -723,7 +723,7 @@ end
         end
 
         should 'transition to discarded' do
-          assert_equal('discarded',@batch.state)
+          assert_equal('discarded', @batch.state)
         end
       end
     end
@@ -904,13 +904,13 @@ end
 
       # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
       # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
-      #@request_type = RequestType.find_by_key("single_ended_sequencing")
+      # @request_type = RequestType.find_by_key("single_ended_sequencing")
 
       @pipeline = create :sequencing_pipeline
 
       @batch = @pipeline.batches.build
       @request_type = @batch.pipeline.request_types.first
-      @request_type_validator = RequestType::Validator.create!(request_type: @request_type,request_option: 'read_length',valid_options: [76])
+      @request_type_validator = RequestType::Validator.create!(request_type: @request_type, request_option: 'read_length', valid_options: [76])
       @request_type.request_type_validators << @request_type_validator
       @sequencing_request = create(:sequencing_request, { asset: @library_tube, request_type: @request_type })
       @batch.requests << @sequencing_request

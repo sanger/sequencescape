@@ -42,9 +42,9 @@ class  EgaAccessionService < AccessionService
     true
   end
 
-  #def submit(user, *accessionables)
-    #accessionables.each(&:protect)
+  # def submit(user, *accessionables)
+    # accessionables.each(&:protect)
 
-    #super(user, *accessionables)
-  #end
+    # super(user, *accessionables)
+  # end
 end

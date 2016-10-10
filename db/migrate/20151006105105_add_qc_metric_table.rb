@@ -19,14 +19,14 @@ class AddQcMetricTable < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_constraint('qc_metrics','qc_reports')
-    add_constraint('qc_metrics','assets')
+    add_constraint('qc_metrics', 'qc_reports')
+    add_constraint('qc_metrics', 'assets')
 
   end
 
   def self.down
-    drop_constraint('qc_metrics','qc_reports')
-    drop_constraint('qc_metrics','assets')
+    drop_constraint('qc_metrics', 'qc_reports')
+    drop_constraint('qc_metrics', 'assets')
     drop_table :qc_metrics
   end
 end

@@ -2,12 +2,12 @@ require 'test_helper'
 
 class LabwhereReceptionTest < ActiveSupport::TestCase
 
-  MockResponse = Struct.new(:valid?,:error)
+  MockResponse = Struct.new(:valid?, :error)
 
   attr_reader :user, :plate_1, :plate_2, :location, :labware_barcodes_in_ss, :labware_barcodes_not_in_ss, :labware_barcodes_both
 
   def setup
-    @user = create(:user, barcode:'ID123', swipecard_code:'02face')
+    @user = create(:user, barcode: 'ID123', swipecard_code: '02face')
     @plate_1 = create(:plate, barcode: 1)
     @plate_2 = create(:plate, barcode: 2)
     @location = create(:location)
@@ -18,51 +18,51 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
 
   test 'it should scan the labware into the location' do
     LabWhereClient::Scan.expects(:create).with(
-            location_barcode:'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_in_ss
-          ).returns(MockResponse.new(true,''))
+            location_barcode: 'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_in_ss
+          ).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, labware_barcodes_in_ss)
     assert labwhere_reception.save
   end
 
   test 'it should scan the labware into the location if the labware is not in ss' do
     LabWhereClient::Scan.expects(:create).with(
-            location_barcode:'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_not_in_ss
-          ).returns(MockResponse.new(true,''))
+            location_barcode: 'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_not_in_ss
+          ).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, labware_barcodes_not_in_ss)
     assert_equal true, labwhere_reception.save
   end
 
   test 'it should scan the labware into the location if labware is or is not in ss' do
     LabWhereClient::Scan.expects(:create).with(
-            location_barcode:'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_both
-          ).returns(MockResponse.new(true,''))
+            location_barcode: 'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_both
+          ).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, labware_barcodes_both)
     assert_equal true, labwhere_reception.save
   end
 
   test 'it should not scan the labware into the location if the location is not in ss' do
-    LabWhereClient::Scan.stubs(:create).returns(MockResponse.new(true,''))
+    LabWhereClient::Scan.stubs(:create).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', Location.last.id + 1, labware_barcodes_in_ss)
     assert_equal false, labwhere_reception.save
     assert_equal 1, labwhere_reception.errors.count
   end
 
   test 'it should not scan the labware into the location if no user supplied' do
-    LabWhereClient::Scan.stubs(:create).returns(MockResponse.new(true,''))
+    LabWhereClient::Scan.stubs(:create).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new('', 'labwhere_location', location.id, labware_barcodes_in_ss)
     assert_equal false, labwhere_reception.save
     assert_equal 1, labwhere_reception.errors.count
   end
 
   test 'it should not scan the labware into the location if no barcodes scanned' do
-    LabWhereClient::Scan.stubs(:create).returns(MockResponse.new(true,''))
+    LabWhereClient::Scan.stubs(:create).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, [])
     assert_equal false, labwhere_reception.save
     assert_equal 1, labwhere_reception.errors.count
   end
 
   test 'it should not scan the labware into the location if scan was not created' do
-    LabWhereClient::Scan.expects(:create).returns(MockResponse.new(false,''))
+    LabWhereClient::Scan.expects(:create).returns(MockResponse.new(false, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, labware_barcodes_in_ss)
     assert_equal false, labwhere_reception.save
   end

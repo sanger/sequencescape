@@ -10,9 +10,9 @@ class RequestEvent < ActiveRecord::Base
 
   validates :request, :to_state, :current_from, :event_name, presence: true
 
-  validates_inclusion_of :event_name, in: ['created','state_changed','destroyed']
+  validates_inclusion_of :event_name, in: ['created', 'state_changed', 'destroyed']
 
- scope :current, -> { where( current_to: nil ) }
+ scope :current, -> { where(current_to: nil) }
 
   def expire!(date_time)
     raise StandardError, 'This event has already expired!' unless current_to.nil?

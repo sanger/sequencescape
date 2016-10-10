@@ -8,7 +8,7 @@ module Core::Endpoint::BasicHandler::Paged
   def self.page_accessor(action, will_paginate_method, default_value = nil)
     lambda do |object|
       page = object.send(will_paginate_method) || default_value
-      page.nil? ? nil : [action, [1,page].max]
+      page.nil? ? nil : [action, [1, page].max]
     end
   end
 
@@ -34,8 +34,8 @@ module Core::Endpoint::BasicHandler::Paged
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    actions_to_details = [[:first,1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
-    Hash[actions_to_details.map { |action,page| [action,core_path(page, options)] }]
+    actions_to_details = [[:first, 1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
+    Hash[actions_to_details.map { |action, page| [action, core_path(page, options)] }]
   end
   private :pages_to_actions
 

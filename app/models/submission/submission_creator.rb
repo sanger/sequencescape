@@ -36,13 +36,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     begin
       submission.built!
     rescue AASM::InvalidTransition
-      submission.errors.add(:base,"Submissions can not be edited once they are submitted for building.")
+      submission.errors.add(:base, "Submissions can not be edited once they are submitted for building.")
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
-        submission.errors.add(:base,message)
+        submission.errors.add(:base, message)
       end
     rescue Submission::ProjectValidation::Error => exception
-      submission.errors.add(:base,exception.message)
+      submission.errors.add(:base, exception.message)
     end
   end
 
@@ -131,14 +131,14 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       end
 
     rescue Submission::ProjectValidation::Error => project_exception
-      order.errors.add(:base,project_exception.message)
+      order.errors.add(:base, project_exception.message)
     rescue InvalidInputException => input_exception
-      order.errors.add(:base,input_exception.message)
+      order.errors.add(:base, input_exception.message)
     rescue IncorrectParamsException => exception
-      order.errors.add(:base,exception.message)
+      order.errors.add(:base, exception.message)
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
-        order.errors.add(:base,message)
+        order.errors.add(:base, message)
       end
     end
 
@@ -220,12 +220,12 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
       well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
 
-      find_wells_in_array(plate,well_array)
+      find_wells_in_array(plate, well_array)
     end.flatten
   end
   private :find_assets_from_text
 
-  def find_wells_in_array(plate,well_array)
+  def find_wells_in_array(plate, well_array)
     return plate.wells.with_aliquots.select('DISTINCT assets.*').all if well_array.empty?
     well_array.map do |map_description|
       case map_description
@@ -237,9 +237,9 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
           well
         end
       when /^[a-z,A-Z]$/ # A row
-        plate.wells.with_aliquots.in_plate_row(map_description,plate.size).select('DISTINCT assets.*').all
+        plate.wells.with_aliquots.in_plate_row(map_description, plate.size).select('DISTINCT assets.*').all
       when /^[0-9]+$/ # A column
-        plate.wells.with_aliquots.in_plate_column(map_description,plate.size).select('DISTINCT assets.*').all
+        plate.wells.with_aliquots.in_plate_column(map_description, plate.size).select('DISTINCT assets.*').all
       else
         raise InvalidInputException, "#{map_description} is not a valid well location"
       end

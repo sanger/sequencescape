@@ -27,10 +27,10 @@ class ProductCatalogue < ActiveRecord::Base
     def construct!(arguments)
       ActiveRecord::Base.transaction do
         products = arguments.delete(:products)
-        product_assocations = products.map do |criterion,product_name|
+        product_assocations = products.map do |criterion, product_name|
           {
             selection_criterion: criterion,
-            product: Product.find_or_create_by(name:product_name)
+            product: Product.find_or_create_by(name: product_name)
           }
         end
         self.create!(arguments) do |catalogue|
@@ -42,7 +42,7 @@ class ProductCatalogue < ActiveRecord::Base
   end
 
   def product_for(submission_attributes)
-    selection_class.new(self,submission_attributes).product
+    selection_class.new(self, submission_attributes).product
   end
 
   def product_with_criteria(criteria)
@@ -58,7 +58,7 @@ class ProductCatalogue < ActiveRecord::Base
     ProductCatalogue.const_get(selection_behaviour)
     true
   rescue NameError
-    errors.add(:selection_behaviour,"#{selection_behaviour} is not recognized")
+    errors.add(:selection_behaviour, "#{selection_behaviour} is not recognized")
     false
   end
 

@@ -29,7 +29,7 @@ class Plate::Creator < ActiveRecord::Base
   has_many :plate_creator_purposes, class_name: 'Plate::Creator::PurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
   has_many :plate_purposes, through: :plate_creator_purposes
 
-  has_many :parent_purpose_relationships, class_name: 'Plate::Creator::ParentPurposeRelationship',dependent: :destroy, foreign_key: :plate_creator_id
+  has_many :parent_purpose_relationships, class_name: 'Plate::Creator::ParentPurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
   has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
   # If there are no barcodes supplied then we use the plate purpose we represent
@@ -42,7 +42,7 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters=nil)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
@@ -64,7 +64,7 @@ class Plate::Creator < ActiveRecord::Base
     return [plate]
   end
 
-  def create_plates(source_plate_barcodes, current_user, creator_parameters=nil)
+  def create_plates(source_plate_barcodes, current_user, creator_parameters = nil)
     return create_plate_without_parent(creator_parameters) if source_plate_barcodes.blank?
 
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)
@@ -85,7 +85,7 @@ class Plate::Creator < ActiveRecord::Base
   end
   private :create_plates
 
-  def create_child_plates_from(plate, current_user,creator_parameters)
+  def create_child_plates_from(plate, current_user, creator_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|

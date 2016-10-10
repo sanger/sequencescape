@@ -52,23 +52,23 @@ RequestType.find_each do |request_type|
 
   if library_types.present?
     library_types.each do |library_type|
-      LibraryTypesRequestType.create!(request_type: request_type,library_type: library_type,is_default: library_type.name == SetupLibraryTypes.existing_defaults_for(request_type))
+      LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: library_type.name == SetupLibraryTypes.existing_defaults_for(request_type))
     end
-    RequestType::Validator.create!(request_type: request_type,request_option: 'library_type',valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id))
+    RequestType::Validator.create!(request_type: request_type, request_option: 'library_type', valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id))
   end
 
     # By Key
     read_lengths = {
-      'illumina_a_hiseq_2500_paired_end_sequencing' => [75,100],
-      'illumina_b_hiseq_2500_paired_end_sequencing' => [75,100],
-      'illumina_c_hiseq_2500_paired_end_sequencing' => [75,100],
+      'illumina_a_hiseq_2500_paired_end_sequencing' => [75, 100],
+      'illumina_b_hiseq_2500_paired_end_sequencing' => [75, 100],
+      'illumina_c_hiseq_2500_paired_end_sequencing' => [75, 100],
       'illumina_a_hiseq_2500_single_end_sequencing' => [50],
       'illumina_b_hiseq_2500_single_end_sequencing' => [50],
       'illumina_c_hiseq_2500_single_end_sequencing' => [50],
-      'illumina_a_hiseq_v4_paired_end_sequencing' => [75,125],
-      'illumina_b_hiseq_v4_paired_end_sequencing' => [75,125],
-      'illumina_c_hiseq_v4_paired_end_sequencing' => [75,125],
-      'illumina_c_hiseq_v4_single_end_sequencing' => [19,50],
+      'illumina_a_hiseq_v4_paired_end_sequencing' => [75, 125],
+      'illumina_b_hiseq_v4_paired_end_sequencing' => [75, 125],
+      'illumina_c_hiseq_v4_paired_end_sequencing' => [75, 125],
+      'illumina_c_hiseq_v4_single_end_sequencing' => [19, 50],
       'illumina_a_hiseq_x_paired_end_sequencing' => [150],
       'illumina_b_hiseq_x_paired_end_sequencing' => [150],
       'bespoke_hiseq_x_paired_end_sequencing' => [150]
@@ -80,13 +80,13 @@ RequestType.find_each do |request_type|
     }[request_type.request_class_name]
 
   if read_lengths.present?
-    RequestType::Validator.create!(request_type: request_type,request_option: 'read_length',valid_options: read_lengths)
+    RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths)
   end
 end
 
 ['a', 'b', 'c'].each do |pipeline|
   rt = RequestType.find_by_key("illumina_#{pipeline}_hiseq_v4_paired_end_sequencing")
-  RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [125,75])
+  RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [125, 75])
 end
 
 rt = RequestType.find_by_key("illumina_c_hiseq_v4_single_end_sequencing")
@@ -103,7 +103,7 @@ library_types = LibraryType.create!([
 [:illumina_c_multiplexed_library_creation, :illumina_c_library_creation].each do |request_class_symbol|
   request_type = RequestType.find_by_key(request_class_symbol.to_s)
   library_types.each do |library_type|
-    LibraryTypesRequestType.create!(request_type: request_type,library_type: library_type,is_default: false)
+    LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: false)
   end
 end
 
@@ -116,12 +116,12 @@ end
 libs_ribozero.each do |lib|
   [:illumina_c_pcr, :illumina_c_pcr_no_pool].each do |request_class_symbol|
     request_type = RequestType.find_by_key(request_class_symbol.to_s)
-    LibraryTypesRequestType.create!(request_type: request_type,library_type: lib, is_default: false)
+    LibraryTypesRequestType.create!(request_type: request_type, library_type: lib, is_default: false)
   end
 end
 
 # PCR Free Hiseq X10 RequestTypeValidator
-lt = LibraryType.find_or_create_by(name:"HiSeqX PCR free")
+lt = LibraryType.find_or_create_by(name: "HiSeqX PCR free")
 rt_pf = RequestType.find_by_key("htp_pcr_free_lib")
 rt_v = RequestType::Validator.create!(
   request_type: rt_pf,

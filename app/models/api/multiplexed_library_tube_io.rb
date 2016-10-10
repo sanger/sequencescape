@@ -21,7 +21,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
     end
 
     def related_resources
-      ['parents','children','requests']
+      ['parents', 'children', 'requests']
     end
 
     def url_name

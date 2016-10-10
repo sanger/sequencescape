@@ -26,12 +26,12 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
         @well = create :well, well_attribute: @well_attribute
         @sample = create :sample, sample_metadata_attributes: { gender: 'female' }
         @well.samples << @sample
-        @criteria = ProductCriteria::Basic.new(@params,@well)
+        @criteria = ProductCriteria::Basic.new(@params, @well)
       end
 
       should '#passed? should return false' do
         assert_equal 'failed', @criteria.qc_decision, 'Well passed when it should have failed'
-        assert_equal ['Concentration too low','Current volume too high','Conflicting gender markers too high'], @criteria.comment
+        assert_equal ['Concentration too low', 'Current volume too high', 'Conflicting gender markers too high'], @criteria.comment
       end
 
       should 'store all values' do
@@ -52,7 +52,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
         @well = create :well, well_attribute: @well_attribute
         @sample = create :sample, sample_metadata_attributes: { gender: 'male' }
         @well.samples << @sample
-        @criteria = ProductCriteria::Basic.new(@params,@well)
+        @criteria = ProductCriteria::Basic.new(@params, @well)
       end
 
       should '#pass? should return false' do

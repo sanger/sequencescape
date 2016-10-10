@@ -15,7 +15,7 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
     end
 
     has_many(:wells,                     json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order')
-    has_many(:submission_pools,          json: 'submission_pools', to: 'submission_pools' )
+    has_many(:submission_pools,          json: 'submission_pools', to: 'submission_pools')
     has_many(:requests,                  json: 'requests', to: 'requests')
     belongs_to(:plate_purpose,           json: 'plate_purpose')
 
@@ -25,9 +25,9 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
           QcFile.create!(request.attributes.merge({ asset: request.target }))
         end
       end
-      action(:create_from_file, as: 'create') do |request,_|
+      action(:create_from_file, as: 'create') do |request, _|
         ActiveRecord::Base.transaction do
-          request.target.add_qc_file(request.file,request.filename)
+          request.target.add_qc_file(request.file, request.filename)
         end
       end
     end

@@ -5,7 +5,7 @@ namespace :working do
    self.site = configatron.plate_barcode_service
    def self.create
      if @barcode.nil?
-       @barcode = Plate.where.not(barcode:nil).where.not(barcode:"9999999").where('length(barcode)=7').
+       @barcode = Plate.where.not(barcode: nil).where.not(barcode: "9999999").where('length(barcode)=7').
        order(barcode: :desc).first.try(:barcode).to_i
        @barcode = 9000000 if @barcode.zero? and not Plate.count.zero?
      end
@@ -21,21 +21,21 @@ namespace :working do
    program = Program.find_by_name('General')
 
    # Admin full barcode will be: Barcode.human_to_machine_barcode("ID99A")
-   user = User.create!(login: 'admin',password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A')
+   user = User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A')
    user.is_administrator
    faculty_sponsor = FacultySponsor.create!(name: 'Faculty Sponsor')
 
-   project = Project.create!(name: 'A project',enforce_quotas: false, project_metadata_attributes: { project_cost_code: '1111', project_funding_model: 'Internal' })
+   project = Project.create!(name: 'A project', enforce_quotas: false, project_metadata_attributes: { project_cost_code: '1111', project_funding_model: 'Internal' })
    project.activate!
-   study = Study.create!(name: 'A study',study_metadata_attributes: { faculty_sponsor: faculty_sponsor,data_release_study_type: DataReleaseStudyType.first, study_type: StudyType.first,study_description: 'A seeded test study',contaminated_human_dna: 'No',contains_human_dna: 'No',commercially_available: 'No', program_id: program.id })
+   study = Study.create!(name: 'A study', study_metadata_attributes: { faculty_sponsor: faculty_sponsor, data_release_study_type: DataReleaseStudyType.first, study_type: StudyType.first, study_description: 'A seeded test study', contaminated_human_dna: 'No', contains_human_dna: 'No', commercially_available: 'No', program_id: program.id })
    study.activate!
-   study_b = Study.create!(name: 'B study',study_metadata_attributes: { faculty_sponsor: faculty_sponsor,data_release_study_type: DataReleaseStudyType.first, study_type: StudyType.first,study_description: 'A seeded test study',contaminated_human_dna: 'No',contains_human_dna: 'No',commercially_available: 'No', program_id: program.id })
+   study_b = Study.create!(name: 'B study', study_metadata_attributes: { faculty_sponsor: faculty_sponsor, data_release_study_type: DataReleaseStudyType.first, study_type: StudyType.first, study_description: 'A seeded test study', contaminated_human_dna: 'No', contains_human_dna: 'No', commercially_available: 'No', program_id: program.id })
    study_b.activate!
 
    user.is_owner(study)
    user.is_owner(study_b)
 
-   SampleRegistrar.register!([sample_named('sample_a',study,user),sample_named('sample_b',study,user),sample_named('sample_c',study,user),sample_named('sample_d',study,user)])
+   SampleRegistrar.register!([sample_named('sample_a', study, user), sample_named('sample_b', study, user), sample_named('sample_c', study, user), sample_named('sample_d', study, user)])
 
    Purpose.find(2).create!.tap do |plate|
       plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_stock_well_#{w.map.description}", studies: [study])) }
@@ -81,14 +81,14 @@ namespace :working do
       user: user,
       received_at: DateTime.now
     )
-   qcc = QcableCreator.create!(lot: lot,user: user,count: 30)
-   qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); qcable.asset.update_attributes!(location: locations[:htp]);puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
+   qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
+   qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); qcable.asset.update_attributes!(location: locations[:htp]); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
 
  end
  end
 end
 
-  def sample_named(name,study,user)
+  def sample_named(name, study, user)
     {
         "sample_tube_attributes" => { "two_dimensional_barcode" => "" },
         "study" => study,

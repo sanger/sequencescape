@@ -9,7 +9,7 @@ require "test_helper"
 class PlateTemplateTest < ActiveSupport::TestCase
 
   context "A plate template" do
-    [1,0,"1"].each_with_index do |i,index|
+    [1, 0, "1"].each_with_index do |i, index|
       context "with a control well set to #{i} - #{index}" do
         setup do
           @template = create :plate_template
@@ -72,7 +72,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
         @template = create :plate_template
         @old_wells = Well.count
         @old_asset_link = AssetLink.count
-        @template.update_params!(name: "a", value: "2", wells: { "A1" => "123","B3" => "345" })
+        @template.update_params!(name: "a", value: "2", wells: { "A1" => "123", "B3" => "345" })
       end
       should "be added" do
         assert_equal @old_wells + 2, Well.count

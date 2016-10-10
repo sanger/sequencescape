@@ -44,7 +44,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     context "#create_workflow" do
       setup do
         @old_count = LabInterface::Workflow.count
-        post :create, :workflow => { name: "Workflow 42", item_limit: 1, locale: "Internal" },"commit" => "Create"
+        post :create, :workflow => { name: "Workflow 42", item_limit: 1, locale: "Internal" }, "commit" => "Create"
       end
 
       should "#create_workflow" do
@@ -141,7 +141,7 @@ class WorkflowsControllerTest < ActionController::TestCase
         setup do
           @batch_lab_events = Batch.find(@batch.id).lab_events.size
           request_data = @batch.requests(true).map { |r| r.id }.inject({}) { |result, element| result[element.to_s] = "1"; result }
-          post :stage, { :controller => "workflows", :id => 0, :action => "stage","next_stage" => "true", "fields" => { "1" => "Passed?", "2" => "Operator", "3" => "Chip Barcode", "4" => "Comment" }, "descriptors" => { "Comment" => "Some Comment", "Chip Barcode" => "3290000006714", "Operator" => "2470000002799", "Passed?" => "Yes" }, :batch_id => @batch.id,  :workflow_id => @ws1.id, :request => request_data }
+          post :stage, { :controller => "workflows", :id => 0, :action => "stage", "next_stage" => "true", "fields" => { "1" => "Passed?", "2" => "Operator", "3" => "Chip Barcode", "4" => "Comment" }, "descriptors" => { "Comment" => "Some Comment", "Chip Barcode" => "3290000006714", "Operator" => "2470000002799", "Passed?" => "Yes" }, :batch_id => @batch.id,  :workflow_id => @ws1.id, :request => request_data }
         end
 
 

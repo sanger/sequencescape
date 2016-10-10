@@ -49,7 +49,7 @@ class QcReport < ActiveRecord::Base
         # Call generate_without_delay! to bypass delayed job, although make sure there aren't
         # any existing jobs first.
         event :generate do
-          transitions from: [:queued,:requeued], to: :generating
+          transitions from: [:queued, :requeued], to: :generating
         end
 
         # Called on report failure. Generally the delayed job will cycle it through a few times
@@ -65,7 +65,7 @@ class QcReport < ActiveRecord::Base
 
           # A QC report might be uploaded multiple times
           event :proceed_decision do
-            transitions from: [:complete,:awaiting_proceed], to: :complete
+            transitions from: [:complete, :awaiting_proceed], to: :complete
           end
 
         end
@@ -91,7 +91,7 @@ class QcReport < ActiveRecord::Base
     # This bypasses the delayed job, but ensures that the state machine is obeyed.
     def generate_report
       begin
-        study.each_well_for_qc_report_in_batches(exclude_existing,product_criteria) do |assets|
+        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria) do |assets|
           # This transaction is inside the block as otherwise large reports experience issues
           # with high memory usage. In the event that an exception is raised the most
           # recent set of decisions will be rolled back, and the report will be re-queued.
@@ -100,7 +100,7 @@ class QcReport < ActiveRecord::Base
           ActiveRecord::Base.transaction do
             assets.each do |asset|
               criteria = product_criteria.assess(asset)
-              QcMetric.create!(asset: asset,qc_decision: criteria.qc_decision,metrics: criteria.metrics,qc_report: self)
+              QcMetric.create!(asset: asset, qc_decision: criteria.qc_decision, metrics: criteria.metrics, qc_report: self)
             end
           end
         end
@@ -169,7 +169,7 @@ class QcReport < ActiveRecord::Base
       study.abbreviation,
       product_criteria.product.name,
       DateTime.now.to_formatted_s(:number)
-    ].compact.join('_').downcase.gsub(/[^\w]/,'_')
+    ].compact.join('_').downcase.gsub(/[^\w]/, '_')
     self.report_identifier = rid
   end
 

@@ -60,7 +60,7 @@ module Tasks::CherrypickHandler
     @map_info = if @spreadsheet_layout
       @spreadsheet_layout
                 elsif @plate.present?
-      @task.pick_onto_partial_plate(@requests,plate_template,@robot,@batch,@plate)
+      @task.pick_onto_partial_plate(@requests, plate_template, @robot, @batch, @plate)
                 else
       @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
                 end
@@ -121,12 +121,12 @@ module Tasks::CherrypickHandler
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
-      wells = Hash[Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).map { |w| [w.id,w] }]
+      wells = Hash[Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).map { |w| [w.id, w] }]
       request_and_well = Hash[@batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
-      used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
+      used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h, k| h[k] = [] }, Hash.new { |h, k| h[k] = [] }
 
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
-      plates_with_samples = plates.reject { |pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
+      plates_with_samples = plates.reject { |pid, rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
       if fluidigm_plate.present? && plates_with_samples.count > 1
         raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
@@ -150,7 +150,7 @@ module Tasks::CherrypickHandler
             request, well = case
               when request_id.blank?           then next
               when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
-              else request_and_well[request_id.gsub('well_','').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
+              else request_and_well[request_id.gsub('well_', '').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
             end
 
             # NOTE: Performance enhancement here
@@ -176,9 +176,9 @@ module Tasks::CherrypickHandler
         plate.wells.attach(wells)
       end
 
-      plate_and_requests.each do |target_plate,requests|
+      plate_and_requests.each do |target_plate, requests|
         Plate.with_requests(requests).each do |source_plate|
-          AssetLink::Job.create(source_plate,[target_plate])
+          AssetLink::Job.create(source_plate, [target_plate])
         end
       end
 
@@ -190,7 +190,7 @@ module Tasks::CherrypickHandler
     end
   end
 
-  def create_control_request_and_add_to_batch(task,control_param)
+  def create_control_request_and_add_to_batch(task, control_param)
     control_request = task.create_control_request_from_well(control_param) or raise StandardError, "Control request not created!"
     @batch.requests << control_request
     [control_request, control_request.target_asset]

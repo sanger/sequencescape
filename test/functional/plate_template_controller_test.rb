@@ -40,17 +40,17 @@ class PlateTemplatesControllerTest < ActionController::TestCase
           post :create
         end
         should respond_with :redirect
-        should set_flash.to( "Please enter a name")
+        should set_flash.to("Please enter a name")
       end
 
       context "with valid parameters" do
         setup do
           @old_count_plate = PlateTemplate.count
           @old_count_wells = Well.count
-          post :create, name: "test",user_id: @user.id, rows: 8,  cols: 12, empty_well: { "A1" => 1,"H12" => 96 }
+          post :create, name: "test", user_id: @user.id, rows: 8,  cols: 12, empty_well: { "A1" => 1, "H12" => 96 }
         end
         should respond_with :redirect
-        should set_flash.to( "Template saved")
+        should set_flash.to("Template saved")
         should "increment plate templates" do
           assert_equal @old_count_plate + 1, PlateTemplate.count
         end
@@ -71,7 +71,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
         assert_equal "updated", PlateTemplate.find(@plate.id).name
       end
       should "not change number of plate templates" do
-        assert_equal @count_plate,PlateTemplate.count
+        assert_equal @count_plate, PlateTemplate.count
       end
     end
   end

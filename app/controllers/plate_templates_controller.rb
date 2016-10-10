@@ -5,13 +5,13 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class PlateTemplatesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :slf_manager_login_required
 
   def index
-    @patterns = PlateTemplate.paginate(page:params[:page],per_page:50)
+    @patterns = PlateTemplate.paginate(page: params[:page], per_page: 50)
   end
 
   def new
@@ -37,7 +37,7 @@ class PlateTemplatesController < ApplicationController
     end
 
     pattern = PlateTemplate.new
-    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well],control_well: params[:control_well], rows: params[:rows],  cols: params[:cols])
+    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], control_well: params[:control_well], rows: params[:rows],  cols: params[:cols])
     flash[:notice] = "Template saved"
     redirect_to plate_templates_path
   end

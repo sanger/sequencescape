@@ -16,8 +16,8 @@
   # assert_select 'ol li:last-child', :text => /#{ entry_text }/
 # end
 
-Then /^I should see a dropdown labeled "([^\"]+)" with:$/ do |label_text,select_options|
-  options = select_options.raw.inject([]) { |options,option| options << option }
+Then /^I should see a dropdown labeled "([^\"]+)" with:$/ do |label_text, select_options|
+  options = select_options.raw.inject([]) { |options, option| options << option }
   page.has_select?(label_text, options)
 end
 
@@ -29,6 +29,6 @@ Then /^I should see a field marked "([^\"]+)"$/ do |field_label_text|
   assert find_field(field_label_text)
 end
 
-When /^I fill in "([^\"]+)" with the human barcode "(..)(.+)."$/ do |field,prefix,number|
-  step(%Q{I fill in "#{ field }" with "#{ Barcode.calculate_barcode(prefix, number.to_i) }"})
+When /^I fill in "([^\"]+)" with the human barcode "(..)(.+)."$/ do |field, prefix, number|
+  step(%Q{I fill in "#{field}" with "#{Barcode.calculate_barcode(prefix, number.to_i)}"})
 end

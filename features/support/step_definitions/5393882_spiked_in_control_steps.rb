@@ -31,7 +31,7 @@ Then /^(.+) asset (?:called|named) "([^\"]+)"(.*)$/ do |pre, name, post|
   step %Q{#{pre} asset "#{asset.id}"#{post}}
 end
 
-Given /^(.+) the (\w+) asset of the asset "([^\"]+)"(.*)$/ do |pre,relation, id, post|
+Given /^(.+) the (\w+) asset of the asset "([^\"]+)"(.*)$/ do |pre, relation, id, post|
   asset = Asset.find(id)
   related = asset.send(relation)
 

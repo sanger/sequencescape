@@ -22,7 +22,7 @@ class AssetGroupTest < ActiveSupport::TestCase
       @assets = []
       @study = create :study
       @asset_group = create :asset_group, study_id: @study.id
-      @asset_group.stubs(:assets).returns([@asset1,@asset2])
+      @asset_group.stubs(:assets).returns([@asset1, @asset2])
     end
 
     should "return the number of assets" do
@@ -58,12 +58,12 @@ class AssetGroupTest < ActiveSupport::TestCase
       @assets = []
       @study = create :study
       @asset_group = create :asset_group, study_id: @study.id
-      @asset_group.stubs(:assets).returns([@asset1,@asset2])
+      @asset_group.stubs(:assets).returns([@asset1, @asset2])
     end
 
 
     should "report its asset types" do
-      assert_equal ['Tube','Well'], @asset_group.asset_types
+      assert_equal ['Tube', 'Well'], @asset_group.asset_types
     end
 
     should "not support automatic_move?" do
@@ -85,7 +85,7 @@ class AssetGroupTest < ActiveSupport::TestCase
       @assets = []
       @study = create :study
       @asset_group = create :asset_group, study_id: @study.id
-      @asset_group.stubs(:assets).returns([@asset1,@asset2])
+      @asset_group.stubs(:assets).returns([@asset1, @asset2])
     end
 
     should "not support automatic_move?" do
@@ -149,7 +149,7 @@ class AssetGroupTest < ActiveSupport::TestCase
             @asset_group.assets << asset
           end
           should "return false" do
-            assert ! @asset_group.all_samples_have_accession_numbers?
+            assert !@asset_group.all_samples_have_accession_numbers?
           end
         end
       end

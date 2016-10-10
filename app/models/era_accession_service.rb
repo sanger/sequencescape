@@ -19,14 +19,14 @@ class EraAccessionService < AccessionService
   end
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
   def sample_visibility(sample)
-    #sample_hold = sample.sample_sra_hold
-    #sample_hold.blank? ? 'hold' : sample_hold
+    # sample_hold = sample.sample_sra_hold
+    # sample_hold.blank? ? 'hold' : sample_hold
     Hold
   end
 
   def study_visibility(study)
-    #study_hold = study.study_sra_hold
-    #study_hold.blank? ? 'hold' : study_hold
+    # study_hold = study.study_sra_hold
+    # study_hold.blank? ? 'hold' : study_hold
     Hold
   end
 

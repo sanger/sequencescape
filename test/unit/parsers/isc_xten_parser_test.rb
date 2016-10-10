@@ -27,7 +27,7 @@ class IscXtenParserTest < ActiveSupport::TestCase
 
       should "return a Parsers::IscXtenParser" do
 
-        assert_equal true, (!Parsers.parser_for(@filename,nil,@content).nil?)
+        assert_equal true, (!Parsers.parser_for(@filename, nil, @content).nil?)
       end
     end
 
@@ -38,7 +38,7 @@ class IscXtenParserTest < ActiveSupport::TestCase
       end
 
       should "not return a Parsers::IscXtenParser" do
-        assert_equal nil, Parsers.parser_for(@filename,nil,@content)
+        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
       end
     end
 
@@ -49,7 +49,7 @@ class IscXtenParserTest < ActiveSupport::TestCase
       end
 
       should "not return a Parsers::IscXtenParser" do
-        assert_equal nil, Parsers.parser_for(@filename,nil,@content)
+        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
       end
     end
   end
@@ -63,15 +63,15 @@ class IscXtenParserTest < ActiveSupport::TestCase
         @parser = Parsers::IscXtenParser.new(CSV.parse(content))
       end
 
-      #should "parse last sample of testing file correctly" do
+      # should "parse last sample of testing file correctly" do
       #  assert_equal "1", @parser.parse_overall([157,158])
-      #end
+      # end
 
-      #should "use get_groups method to find matching regexp" do
+      # should "use get_groups method to find matching regexp" do
       #  test_data = [[24, 25], [37, 38], [49, 50], [61, 62], [73, 74], [85, 86],
       #  [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157,158]]
       #  assert_equal test_data, @parser.get_groups(/Overall.*/m)
-      #end
+      # end
 
       should "parses a CSV example file" do
         assert_equal "75.783", @parser.concentration("A1")
@@ -80,18 +80,18 @@ class IscXtenParserTest < ActiveSupport::TestCase
 
       should "map by well" do
         results = [
-          ["A1","75.783"],
-          ["B1","70.487"],
-          ["C1","78.785"],
-          ["D1","59.62"],
-          ["E1","38.78"],
-          ["F1","34.294"],
-          ["G1","25.496"],
-          ["H1","32.952"],
-          ["A2","76.92"],
-          ["B2","29.055"],
-          ["C2","76.69"],
-          ["D2","80.721"]
+          ["A1", "75.783"],
+          ["B1", "70.487"],
+          ["C1", "78.785"],
+          ["D1", "59.62"],
+          ["E1", "38.78"],
+          ["F1", "34.294"],
+          ["G1", "25.496"],
+          ["H1", "32.952"],
+          ["A2", "76.92"],
+          ["B2", "29.055"],
+          ["C2", "76.69"],
+          ["D2", "80.721"]
         ]
         results.each do |location, conc|
           assert_equal @parser.concentration(location), conc

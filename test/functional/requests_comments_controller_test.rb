@@ -26,7 +26,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
       setup do
         @rq = create :request
 
-        ['this','is','a','test'].each do |description|
+        ['this', 'is', 'a', 'test'].each do |description|
           create :comment, description: description, commentable: @rq
         end
       end

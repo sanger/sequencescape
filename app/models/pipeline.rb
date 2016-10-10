@@ -55,14 +55,14 @@ class Pipeline < ActiveRecord::Base
   validates_uniqueness_of :name, on: :create, message: "name already in use"
 
 
-  scope :externally_managed, -> { where( externally_managed: true ) }
-  scope :internally_managed, -> { where( externally_managed: false ) }
-  scope :active,             -> { where( active: true  ) }
-  scope :inactive,           -> { where( active: false ) }
+  scope :externally_managed, -> { where(externally_managed: true) }
+  scope :internally_managed, -> { where(externally_managed: false) }
+  scope :active,             -> { where(active: true) }
+  scope :inactive,           -> { where(active: false) }
 
   scope :for_request_type, ->(rt) {
     joins(:pipelines_request_types).
-    where(pipelines_request_types:{ request_type_id: rt } )
+    where(pipelines_request_types: { request_type_id: rt })
   }
 
   def request_types_including_controls
@@ -90,7 +90,7 @@ class Pipeline < ActiveRecord::Base
     true
   end
 
-  #This needs to be re-done a better way
+  # This needs to be re-done a better way
   def qc?
     false
   end
@@ -122,7 +122,7 @@ class Pipeline < ActiveRecord::Base
     request.remove_unused_assets
   end
 
-  def grouped_requests(show_held_requests=true)
+  def grouped_requests(show_held_requests = true)
     inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)).for_group_by(grouping_attributes)
   end
 
@@ -152,7 +152,7 @@ class Pipeline < ActiveRecord::Base
   private :grouping_attributes
 
   # to overwrite by subpipeline if needed
-  def group_requests(requests, option={})
+  def group_requests(requests, option = {})
     requests.group_requests(:all, option).group_by(&grouping_function(option))
   end
 
@@ -214,7 +214,7 @@ class Pipeline < ActiveRecord::Base
   end
   private :selected_values_from
 
-  def extract_requests_from_input_params(params ={})
+  def extract_requests_from_input_params(params = {})
     if (request_ids = params["request"]).present?
       requests.inputs(true).order(:id).find(selected_values_from(request_ids).map(&:first))
     elsif (selected_groups = params["request_group"]).present?
@@ -228,7 +228,7 @@ class Pipeline < ActiveRecord::Base
     self[:max_number_of_groups] || 0
   end
 
-  def valid_number_of_checked_request_groups?(params ={})
+  def valid_number_of_checked_request_groups?(params = {})
     return true if max_number_of_groups.zero?
     return true if (selected_groups = params['request_group']).blank?
     grouping_parser.count(selected_values_from(selected_groups)) <= max_number_of_groups

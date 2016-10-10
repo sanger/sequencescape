@@ -9,7 +9,7 @@ ProjectInfo = {
 
 ReleaseFiles = FileList[
   "lib/**/*.rb", "*.txt", "README", "Rakefile", "rakeconfig.rb",
-  "rake/**/*","test/**/*.rb", "*.rb", "test/**/*.xml", "doc/**/*", "html/**/*"
+  "rake/**/*", "test/**/*.rb", "*.rb", "test/**/*.xml", "doc/**/*", "html/**/*"
 ].exclude(/\bCVS\b|~$/)
 
 PluginPackageFiles = FileList[

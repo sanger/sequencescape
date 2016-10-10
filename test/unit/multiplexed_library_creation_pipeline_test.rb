@@ -34,7 +34,7 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
       end
 
       should 'not error if all of the target asset aliquots are tagged' do
-        @batch.requests.each_with_index { |r,i| create(:tag, map_id: i).tag!(r.target_asset) }
+        @batch.requests.each_with_index { |r, i| create(:tag, map_id: i).tag!(r.target_asset) }
         @batch.complete!(@user)
 
         assert(@batch.errors.empty?, "There are errors on the batch")

@@ -12,16 +12,16 @@ module SubmissionsHelper
     projects_array.inspect
   end
 
-  #<label for="submission_order_params_field_info_key">field_info.display_name/label>
+  # <label for="submission_order_params_field_info_key">field_info.display_name/label>
   def order_input_label(field_info)
-    label('submission[order_params]',field_info.key, field_info.display_name,class: 'control-label col-sm-6')
+    label('submission[order_params]', field_info.key, field_info.display_name, class: 'control-label col-sm-6')
   end
 
   # Returns a either a text input or a selection tag based on the 'kind'
   # of the order parameter passed in.
   # field_info is expected to be FieldInfo [sic]
   def order_input_tag(order, field_info)
-    content_tag(:div,class: 'col-sm-6') do
+    content_tag(:div, class: 'col-sm-6') do
       case field_info.kind
       when "Selection" then order_selection_tag(order, field_info)
       when "Text"      then order_text_tag(order, field_info)
@@ -125,7 +125,7 @@ module SubmissionsHelper
         edit_submission_path(submission)
       ) + button_to("Edit Submission", edit_submission_path(submission), method: :get, class: 'button')
     when 'pending' then
-      display_user_guide( "Your submission is currently pending.") +
+      display_user_guide("Your submission is currently pending.") +
       content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
@@ -152,9 +152,9 @@ module SubmissionsHelper
     content_tag(:em, pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
   end
 
-  def submission_link(submission,options)
-    link_text = content_tag(:strong,submission.name) << ' ' <<
-    content_tag(:span,submission.state,class: "batch-state label label-#{bootstrapify_submission_state(submission.state)}")
+  def submission_link(submission, options)
+    link_text = content_tag(:strong, submission.name) << ' ' <<
+    content_tag(:span, submission.state, class: "batch-state label label-#{bootstrapify_submission_state(submission.state)}")
     link_to(link_text, submission_path(submission), options)
   end
 end

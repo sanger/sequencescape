@@ -13,13 +13,13 @@ class QcReportsController < ApplicationController
   def index
     # Build a conditions hash of acceptable parameters, ignoring those that are blank
 
-    @qc_reports = QcReport.for_report_page(conditions).page(params[:page]).includes(:study,:product)
-    @qc_report = QcReport.new(exclude_existing: true,study_id: params[:study_id])
-    @studies = Study.alphabetical.pluck(:name,:id)
-    @states = QcReport.available_states.map { |s| [s.humanize,s] }
+    @qc_reports = QcReport.for_report_page(conditions).page(params[:page]).includes(:study, :product)
+    @qc_report = QcReport.new(exclude_existing: true, study_id: params[:study_id])
+    @studies = Study.alphabetical.pluck(:name, :id)
+    @states = QcReport.available_states.map { |s| [s.humanize, s] }
 
-    @all_products = Product.alphabetical.all.map { |product| [product.display_name,product.id] }
-    @active_products = Product.with_stock_report.active.alphabetical.all.map { |product| [product.display_name,product.id] }
+    @all_products = Product.alphabetical.all.map { |product| [product.display_name, product.id] }
+    @active_products = Product.with_stock_report.active.alphabetical.all.map { |product| [product.display_name, product.id] }
   end
 
   def create
@@ -47,7 +47,7 @@ class QcReportsController < ApplicationController
   def qc_file
     qc_file = params[:qc_report_file]
     overide_qc = params[:overide_qc_decision] == "1"
-    file = QcReport::File.new(qc_file,overide_qc,qc_file.original_filename,qc_file.content_type)
+    file = QcReport::File.new(qc_file, overide_qc, qc_file.original_filename, qc_file.content_type)
     if file.process
       redirect_to file.qc_report
     else
@@ -59,7 +59,7 @@ class QcReportsController < ApplicationController
   def show
     qc_report = QcReport.find_by_report_identifier(params[:id])
     queue_count = qc_report.queued? ? Delayed::Job.count : 0
-    @report_presenter = Presenters::QcReportPresenter.new(qc_report,queue_count)
+    @report_presenter = Presenters::QcReportPresenter.new(qc_report, queue_count)
 
     respond_to do |format|
       format.html

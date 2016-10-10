@@ -43,7 +43,7 @@ module Sequencescape
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    config.filter_parameters += [:password,:credential_1, :uploaded_data]
+    config.filter_parameters += [:password, :credential_1, :uploaded_data]
 
     config.assets.prefix = '/public'
 
@@ -54,11 +54,11 @@ module Sequencescape
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W{ #{Rails.root}/app/observers }
-    config.autoload_paths += %W{ #{Rails.root}/app/metal }
-    config.autoload_paths += %W{ #{Rails.root}/app }
-    config.autoload_paths += %W{ #{Rails.root}/lib }
-    config.autoload_paths += %W{ #{Rails.root}/lib/sample_manifest_excel }
+    config.autoload_paths += %W{#{Rails.root}/app/observers}
+    config.autoload_paths += %W{#{Rails.root}/app/metal}
+    config.autoload_paths += %W{#{Rails.root}/app}
+    config.autoload_paths += %W{#{Rails.root}/lib}
+    config.autoload_paths += %W{#{Rails.root}/lib/sample_manifest_excel}
 
     config.middleware.insert_after ActionDispatch::ParamsParser, ActionDispatch::XmlParamsParser
 

@@ -58,7 +58,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
         context "with attached file" do
           setup do
             session[:user] = @user.id
-            post :spreadsheet, study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls','')
+            post :spreadsheet, study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls', '')
           end
 
           should "respond successfully and render the new template" do
@@ -69,10 +69,10 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "with invalid file" do
           setup do
-            post :spreadsheet, study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/config/environment.rb','text/csv')
+            post :spreadsheet, study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/config/environment.rb', 'text/csv')
           end
 
-          should set_flash.to( "Problems processing your file. Only Excel spreadsheets accepted")
+          should set_flash.to("Problems processing your file. Only Excel spreadsheets accepted")
           should redirect_to("upload study sample registration") { upload_study_sample_registration_index_path }
         end
       end

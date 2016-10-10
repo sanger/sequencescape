@@ -26,7 +26,7 @@ class GenerateManifestTaskTest < ActiveSupport::TestCase
                                                                  "⁀and no more"
           @task = DummyTaskGroup.new(study_id: @study.id, batch_id: @batch.id)
           name = 'Study_name_with_any_content.......-_and_no_more_1_manifest.csv'
-          assert_equal name, @task.manifest_filename(@study.name,@batch.id)
+          assert_equal name, @task.manifest_filename(@study.name, @batch.id)
         end
       end
     end

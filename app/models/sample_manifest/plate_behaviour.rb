@@ -60,7 +60,7 @@ module SampleManifest::PlateBehaviour
       # Generate the wells, samples & requests asynchronously.
       generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
         @manifest.generate_wells_asynchronously(
-          this_plates_well_data.map { |map,sample_id| [map.id, sample_id] },
+          this_plates_well_data.map { |map, sample_id| [map.id, sample_id] },
           plate.id
         )
       end
@@ -70,7 +70,7 @@ module SampleManifest::PlateBehaviour
       @plates  = plates.sort_by(&:barcode)
       @details = []
       plates.each do |plate|
-        well_data.slice!(0, plate.size).each do |map,sample_id|
+        well_data.slice!(0, plate.size).each do |map, sample_id|
           @details << {
             barcode: plate.sanger_human_barcode,
             position: map.description,
@@ -147,7 +147,7 @@ module SampleManifest::PlateBehaviour
     ActiveRecord::Base.transaction do
       # Ensure the order of the wells are maintained
       maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [map.id, map] }]
-      well_data = well_data_with_ids.map { |map_id,sample_id| [maps[map_id], sample_id] }
+      well_data = well_data_with_ids.map { |map_id, sample_id| [maps[map_id], sample_id] }
 
       generate_wells(well_data, Plate.find(plate_id))
     end
@@ -179,7 +179,7 @@ module SampleManifest::PlateBehaviour
   end
 
   def generate_wells(wells_for_plate, plate)
-    study.samples << wells_for_plate.map do |map,sanger_sample_id|
+    study.samples << wells_for_plate.map do |map, sanger_sample_id|
       create_sample(sanger_sample_id).tap do |sample|
         plate.wells.create!(map: map, well_attribute: WellAttribute.new).tap do |well|
           well.aliquots.create!(sample: sample)

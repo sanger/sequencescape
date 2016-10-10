@@ -6,7 +6,7 @@
 
 class Api::Messages::FlowcellIO < Api::Base
 
-  MANUAL_QC_BOOLS = { 'passed' => true,'failed' => false }
+  MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
 
   module LaneExtensions # Included in SequencingRequest
 
@@ -179,9 +179,9 @@ class Api::Messages::FlowcellIO < Api::Base
   renders_model(::Batch)
 
   map_attribute_to_json_attribute(:flowcell_barcode)
-  map_attribute_to_json_attribute(:id,'flowcell_id')
-  map_attribute_to_json_attribute(:read_length,'forward_read_length')
-  map_attribute_to_json_attribute(:reverse_read_length,'reverse_read_length')
+  map_attribute_to_json_attribute(:id, 'flowcell_id')
+  map_attribute_to_json_attribute(:read_length, 'forward_read_length')
+  map_attribute_to_json_attribute(:reverse_read_length, 'reverse_read_length')
 
   map_attribute_to_json_attribute(:updated_at)
 
@@ -190,11 +190,11 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:manual_qc)
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
-    map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
-    map_attribute_to_json_attribute(:external_release,'external_release')
+    map_attribute_to_json_attribute(:mx_library, 'id_pool_lims')
+    map_attribute_to_json_attribute(:external_release, 'external_release')
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
-    map_attribute_to_json_attribute(:product_line,'team')
-    map_attribute_to_json_attribute(:request_purpose_key,'purpose')
+    map_attribute_to_json_attribute(:product_line, 'team')
+    map_attribute_to_json_attribute(:request_purpose_key, 'purpose')
 
     with_nested_has_many_association(:samples) do # actually aliquots
 
@@ -234,7 +234,7 @@ class Api::Messages::FlowcellIO < Api::Base
       end
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
-      map_attribute_to_json_attribute(:aliquot_type,'entity_type')
+      map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
     end
 
     with_nested_has_many_association(:controls) do
@@ -255,7 +255,7 @@ class Api::Messages::FlowcellIO < Api::Base
       end
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
-      map_attribute_to_json_attribute(:control_aliquot_type,'entity_type')
+      map_attribute_to_json_attribute(:control_aliquot_type, 'entity_type')
     end
   end
 

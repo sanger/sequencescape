@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2014 Genome Research Ltd.
@@ -8,11 +8,11 @@ module ViewsSchema
     all_views.each do |name|
       query = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}")
       if query.respond_to?(:fetch_hash)
-        query.fetch_hash["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /,'')
+        query.fetch_hash["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
       else
-        definition = query.first["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /,'')
+        definition = query.first["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
       end
-      yield(name,definition)
+      yield(name, definition)
     end
   rescue ActiveRecord::StatementInvalid => exception
       puts "\e[1;31m
@@ -46,13 +46,13 @@ module ViewsSchema
     end.flatten
   end
 
-  def self.create_view(name,definition)
+  def self.create_view(name, definition)
     ActiveRecord::Base.connection.execute(definition)
   end
 
-  def self.update_view(name,definition)
+  def self.update_view(name, definition)
     raise "Invalid name" unless /^[a-z0-9_]*$/ === name
     ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
-    create_view(name,definition)
+    create_view(name, definition)
   end
 end

@@ -66,7 +66,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
   end
 
   def guard_for(name)
-    @guards ||= Hash.new { |h,k| h[k] = GuardChain.new }
+    @guards ||= Hash.new { |h, k| h[k] = GuardChain.new }
     @guards[name.to_sym]
   end
   private :guard_for

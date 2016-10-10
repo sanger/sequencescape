@@ -22,7 +22,7 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
 
     should 'shorten plexes to the available space on the plate' do
       plexes = [mock('plex 1'), mock('plex 2')]
-      plexes.each_with_index { |p,i| p.expects(:slice).with(0, 10).returns("short #{i + 1}") }
+      plexes.each_with_index { |p, i| p.expects(:slice).with(0, 10).returns("short #{i + 1}") }
 
       assert_equal(
         ["short 1", "short 2"],
@@ -114,7 +114,7 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
     end
 
     should 'order the plexes so that any of the same species plexes are first' do
-      @plate, @expected = plate('snail','human'), [@plexes[0], @plexes[2], @plexes[1]]
+      @plate, @expected = plate('snail', 'human'), [@plexes[0], @plexes[2], @plexes[1]]
     end
 
     should 'give back the plexes unchanged if there are no matching species plexes' do

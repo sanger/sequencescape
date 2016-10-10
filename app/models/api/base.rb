@@ -26,7 +26,7 @@ class Api::Base
     # Maps the attribute names in the errors to their JSON counterparts, so that the end user gets
     # the correct information.
     def map_attribute_to_json_attribute_in_errors(attribute_errors)
-      Hash[attribute_errors.map { |a,v| [json_attribute_for_attribute(*a.to_s.split('.')), v] }]
+      Hash[attribute_errors.map { |a, v| [json_attribute_for_attribute(*a.to_s.split('.')), v] }]
     end
   end
 
@@ -260,12 +260,12 @@ class Api::Base
         # an association, then we'll look it up without the '_id' and return that value.
         if attribute_or_association.to_s =~ /_id$/ and rest.empty?
           association = self.associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
-          raise StandardError, "Unexpected association #{ attribute_or_association.inspect }" if association.nil?
+          raise StandardError, "Unexpected association #{attribute_or_association.inspect}" if association.nil?
           return association.json_attribute_for_attribute(:name)
         end
         json_attribute = self.associations[attribute_or_association.to_sym].json_attribute_for_attribute(*rest)
       end
-      raise StandardError, "Unexpected attribute #{ attribute_or_association.inspect } does not appear to be mapped" if json_attribute.blank?
+      raise StandardError, "Unexpected attribute #{attribute_or_association.inspect} does not appear to be mapped" if json_attribute.blank?
       json_attribute
     end
   end

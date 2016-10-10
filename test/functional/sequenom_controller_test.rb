@@ -9,10 +9,10 @@ require "test_helper"
 class SequenomControllerTest < ActionController::TestCase
   should_require_login
 
-  should route(:get, '/sequenom/index').to( controller: 'sequenom', action: 'index')
-  should route(:post, '/sequenom/search').to( controller: 'sequenom', action: 'search')
-  should route(:get, '/sequenom/12345').to( controller: 'sequenom', action: 'show', id: '12345')
-  should route(:put, '/sequenom/12345').to( controller: 'sequenom', action: 'update', id: '12345')
+  should route(:get, '/sequenom/index').to(controller: 'sequenom', action: 'index')
+  should route(:post, '/sequenom/search').to(controller: 'sequenom', action: 'search')
+  should route(:get, '/sequenom/12345').to(controller: 'sequenom', action: 'show', id: '12345')
+  should route(:put, '/sequenom/12345').to(controller: 'sequenom', action: 'update', id: '12345')
 
   context 'when logged in' do
     setup do
@@ -131,9 +131,9 @@ class SequenomControllerTest < ActionController::TestCase
 
       context 'when the plate exists' do
         SequenomController::STEPS.each do |step|
-          context "and marking '#{ step.name }' completed" do
+          context "and marking '#{step.name}' completed" do
             setup do
-              @plate, @user = FactoryGirl.create(:plate),FactoryGirl.create(:user, barcode: 'ID99999D')
+              @plate, @user = FactoryGirl.create(:plate), FactoryGirl.create(:user, barcode: 'ID99999D')
               post :update, id: @plate.id, sequenom_step: step.name, user_barcode: '2470099999680'
             end
 
@@ -148,7 +148,7 @@ class SequenomControllerTest < ActionController::TestCase
             end
 
             should 'add the Sequenom step completed event' do
-              assert_not_nil Plate.find(@plate.id).events.find_by_message_and_created_by("#{ step.name } step completed", @user.login)
+              assert_not_nil Plate.find(@plate.id).events.find_by_message_and_created_by("#{step.name} step completed", @user.login)
             end
           end
         end

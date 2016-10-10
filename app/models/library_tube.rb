@@ -21,10 +21,10 @@ class LibraryTube < Tube
     true
   end
 
-  scope :include_tag, -> { includes( aliquots: { tag: [:uuid_object, { tag_group: :uuid_object }] } ) }
+  scope :include_tag, -> { includes(aliquots: { tag: [:uuid_object, { tag_group: :uuid_object }] }) }
 
   def sorted_tags_for_select
-    self.get_tag.tag_group.tags.sort { |a,b| a.map_id <=> b.map_id }.collect { |t| [t.name, t.id] }
+    self.get_tag.tag_group.tags.sort { |a, b| a.map_id <=> b.map_id }.collect { |t| [t.name, t.id] }
   end
 
   # A library tube is created with request options that come from the request in which it is the target asset.
@@ -67,7 +67,7 @@ class LibraryTube < Tube
   end
 
   def library_source_plates
-    purpose.try(:library_source_plates,self) || []
+    purpose.try(:library_source_plates, self) || []
   end
 
   def find_tag(tag_info)

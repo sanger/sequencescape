@@ -49,7 +49,7 @@ class Tag2Layout < ActiveRecord::Base
 
   def record_template_use
     plate.submissions.each do |submission|
-      TemplateSubmission.create!(submission: submission,tag2_layout_template: layout_template)
+      TemplateSubmission.create!(submission: submission, tag2_layout_template: layout_template)
     end
   end
 

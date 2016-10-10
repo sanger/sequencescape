@@ -18,11 +18,11 @@ class AddQcReportTable < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_constraint('qc_reports','studies')
+    add_constraint('qc_reports', 'studies')
   end
 
   def self.down
-    drop_constraint('qc_reports','studies')
+    drop_constraint('qc_reports', 'studies')
     drop_table :qc_reports
   end
 end

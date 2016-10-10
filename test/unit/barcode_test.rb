@@ -10,11 +10,11 @@ class BarcodeTest < ActiveSupport::TestCase
 
   context "A prefix and a number" do
     setup do
-      #Input
+      # Input
       @prefix = "PR"
       @number = 1234
 
-      #Expected results
+      # Expected results
       @checksum = "K"
       @human = "#{@prefix}#{@number}#{@checksum}"
     end
@@ -105,7 +105,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should "convert to the correct machine barcode" do
-      assert_equal(@expected_machine_barcode,Barcode.human_to_machine_barcode(@human_readable_barcode))
+      assert_equal(@expected_machine_barcode, Barcode.human_to_machine_barcode(@human_readable_barcode))
     end
 
     should "raise an exception with an invalid barcode" do

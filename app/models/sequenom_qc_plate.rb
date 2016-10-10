@@ -59,7 +59,7 @@ class SequenomQcPlate < Plate
     if new_record?
 
       input_plate_barcodes = input_plate_names.values.reject(&:blank?)
-      #validate input_plate_names
+      # validate input_plate_names
       if do_gender_checks? and !source_plates_genders_valid?(input_plate_names)
         return false
       end
@@ -94,7 +94,7 @@ class SequenomQcPlate < Plate
 
   def destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
     row_offset, col_offset = quadrant_row_col_offset(quadrant)
-    self.find_map_by_rowcol( (row * 2) + row_offset, (col * 2) + col_offset )
+    self.find_map_by_rowcol((row * 2) + row_offset, (col * 2) + col_offset)
   end
 
   # ---------------------------
@@ -151,13 +151,13 @@ class SequenomQcPlate < Plate
   end
 
   def input_plates_exist?(input_plate_names)
-    input_plate_names.each do |source_plate_number,source_plate_barcode|
+    input_plate_names.each do |source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
 
       if source_plate.nil?
-        errors.add(:base,"Source Plate: #{source_plate_barcode} cannot be found")
+        errors.add(:base, "Source Plate: #{source_plate_barcode} cannot be found")
         return false
       end
     end
@@ -166,7 +166,7 @@ class SequenomQcPlate < Plate
 
   def at_least_one_source_plate?(input_plate_barcodes)
     if input_plate_barcodes.empty?
-      errors.add(:base,"At least one source input plate barcode must be entered.")
+      errors.add(:base, "At least one source input plate barcode must be entered.")
     else
       true
     end
@@ -174,7 +174,7 @@ class SequenomQcPlate < Plate
 
 def user_barcode_exist?(user_barcode)
   if User.lookup_by_barcode(user_barcode).nil?
-    errors.add(:base,"Please scan your user barcode") if User.lookup_by_barcode(user_barcode).nil?
+    errors.add(:base, "Please scan your user barcode") if User.lookup_by_barcode(user_barcode).nil?
     false
   else
     true
@@ -188,19 +188,19 @@ end
 
   # Source plates should exist, obviously, and have contain at least one sample with a gender
   def source_plates_genders_valid?(input_plate_names)
-    input_plate_names.each do |source_plate_number,source_plate_barcode|
+    input_plate_names.each do |source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
 
       if source_plate.nil?
-        errors.add(:base,"Source Plate: #{source_plate_barcode} cannot be found")
+        errors.add(:base, "Source Plate: #{source_plate_barcode} cannot be found")
         return false
       end
       # Unless our source plates all contain some samples with gender then
       # add an error to say things went wrong.
       unless source_plate.contains_gendered_samples?
-        errors.add(:base,"Failed to create Sequenom QC Plate - Source Plate: #{source_plate_barcode} lacks gender information")
+        errors.add(:base, "Failed to create Sequenom QC Plate - Source Plate: #{source_plate_barcode} lacks gender information")
         return false
       end
     end
@@ -222,7 +222,7 @@ end
   # Return the matching plates human barcode padded out to 8 charactors
   # or just 8 space charactors if there's no input plate that position.
   def plate_label(plate_number)
-    (label_match[plate_number] || "").ljust(7,"\s")
+    (label_match[plate_number] || "").ljust(7, "\s")
   end
 
   # Should join the values of the input_plate_names hash using underscores,

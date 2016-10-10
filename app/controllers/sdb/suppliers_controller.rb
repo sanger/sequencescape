@@ -23,7 +23,7 @@ class Sdb::SuppliersController < Sdb::BaseController
     respond_to do |format|
       if @supplier.save
         flash[:notice] = 'Supplier was successfully created.'
-        format.html { redirect_to( '/sdb/') }
+        format.html { redirect_to('/sdb/') }
       else
         format.html { render action: "new" }
       end

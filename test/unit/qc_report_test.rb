@@ -28,7 +28,7 @@ class QcReportTest < ActiveSupport::TestCase
         @other_study = create :study
         @stock_plate = create :plate
 
-        [@study,@other_study].each do |study|
+        [@study, @other_study].each do |study|
           2.times do |i|
             @attribute = create :well_attribute, current_volume: 500, concentration: 200
             sample = create(:study_sample, study: study).sample

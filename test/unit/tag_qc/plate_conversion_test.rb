@@ -20,7 +20,7 @@ class PlateConversionTest < ActiveSupport::TestCase
         @user  = create :user
         @purpose_b = PlatePurpose.new(name: 'test_purpose')
 
-        PlateConversion.create!(target: @plate,user: @user,purpose: @purpose_b)
+        PlateConversion.create!(target: @plate, user: @user, purpose: @purpose_b)
 
         assert_equal @purpose_b, @plate.purpose
 
@@ -32,7 +32,7 @@ class PlateConversionTest < ActiveSupport::TestCase
         @user = create :user
         @purpose_b = PlatePurpose.new(name: 'test_purpose')
 
-        PlateConversion.create!(target: @plate,user: @user,purpose: @purpose_b,parent: @parent)
+        PlateConversion.create!(target: @plate, user: @user, purpose: @purpose_b, parent: @parent)
 
         assert_equal @parent, @plate.parents.first
 

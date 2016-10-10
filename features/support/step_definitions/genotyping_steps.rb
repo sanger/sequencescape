@@ -36,12 +36,12 @@ end
 Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |study_name, plate_barcode, expected_results_table|
   study = Study.find_by_name(study_name)
   plate = Plate.find_by_barcode(plate_barcode)
-  manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id],study))
+  manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id], study))
   manifest.shift(3)
   expected_results_table.diff!(manifest)
 end
 
-Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/ do |plate_barcode, study_name, number_of_samples,asset_group_name|
+Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/ do |plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by_name(study_name)
   plate = FactoryGirl.create(:plate, barcode: plate_barcode, location: Location.find_by_name("Sample logistics freezer"))
 
@@ -57,7 +57,7 @@ end
 Given /^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/ do |plate_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
   plate = Plate.find_by_barcode(plate_barcode)
-  asset_group = AssetGroup.find_or_create_by(name:asset_group_name, study_id:study.id)
+  asset_group = AssetGroup.find_or_create_by(name: asset_group_name, study_id: study.id)
   plate.wells.each do |well|
     asset_group.assets << well
   end
@@ -141,7 +141,7 @@ Given /^I have a DNA QC submission for plate "([^"]*)"$/ do |plate_barcode|
   step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
 end
 
-Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name,plate_barcode, project_name, study_name|
+Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name, plate_barcode, project_name, study_name|
   plate = Plate.find_by_barcode(plate_barcode)
   project = Project.find_by_name(project_name)
   study = Study.find_by_name(study_name)

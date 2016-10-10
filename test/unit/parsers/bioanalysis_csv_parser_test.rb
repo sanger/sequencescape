@@ -27,7 +27,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
 
       should "return a BioanalysisCsvParser" do
         Parsers::BioanalysisCsvParser.expects(:new).with(@csv).returns(:pass)
-        assert_equal :pass, Parsers.parser_for(@filename,nil,@content)
+        assert_equal :pass, Parsers.parser_for(@filename, nil, @content)
       end
     end
 
@@ -38,7 +38,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should "not return a BioanalysisCsvParser" do
-        assert_equal nil, Parsers.parser_for(@filename,nil,@content)
+        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
       end
     end
 
@@ -49,7 +49,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should "return a BioanalysisCsvParser" do
-        assert_equal nil, Parsers.parser_for(@filename,nil,@content)
+        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
       end
     end
   end
@@ -64,12 +64,12 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should "parse last sample of testing file correctly" do
-        assert_equal "1", @parser.parse_overall([157,158])
+        assert_equal "1", @parser.parse_overall([157, 158])
       end
 
       should "use get_groups method to find matching regexp" do
         test_data = [[24, 25], [37, 38], [49, 50], [61, 62], [73, 74], [85, 86],
-        [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157,158]]
+        [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157, 158]]
         assert_equal test_data, @parser.get_groups(/Overall.*/m)
       end
 
@@ -84,18 +84,18 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
 
       should "map by well" do
         results = [
-          ["A1","25.65","72.5"],
-          ["B1","18.06","50.5"],
-          ["C1","27.44","80.2"],
-          ["D1","26.69","77.6"],
-          ["E1","27.06","79.8"],
-          ["F1","17.60","50.2"],
-          ["G1","27.24","78.2"],
-          ["H1","15.67","43.9"],
-          ["A2","22.59","66.4"],
-          ["B2","26.26","77.2"],
-          ["C2","10.65","30.0"],
-          ["D2","25.38","73.2"]
+          ["A1", "25.65", "72.5"],
+          ["B1", "18.06", "50.5"],
+          ["C1", "27.44", "80.2"],
+          ["D1", "26.69", "77.6"],
+          ["E1", "27.06", "79.8"],
+          ["F1", "17.60", "50.2"],
+          ["G1", "27.24", "78.2"],
+          ["H1", "15.67", "43.9"],
+          ["A2", "22.59", "66.4"],
+          ["B2", "26.26", "77.2"],
+          ["C2", "10.65", "30.0"],
+          ["D2", "25.38", "73.2"]
         ]
         @parser.each_well_and_parameters do |*args|
           assert results.delete(args).present?, "#{args.inspect} was an unexpected result"

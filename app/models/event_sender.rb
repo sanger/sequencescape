@@ -22,7 +22,7 @@ class EventSender
     doc.to_s.gsub!('-', '_').gsub!('UTF_8', 'UTF-8')
   end
 
-  def self.send_fail_event(request_id, reason, comment, batch_id, user=nil, options = nil)
+  def self.send_fail_event(request_id, reason, comment, batch_id, user = nil, options = nil)
     hash = { eventful_id: request_id, eventful_type: 'Request', family: "fail", content: reason, message: comment, identifier: batch_id, key: "failure", created_by: user }
     self.publishing_to_queue(hash.merge(options || {}))
   end
@@ -32,7 +32,7 @@ class EventSender
     self.publishing_to_queue(hash.merge(options || {}))
   end
 
-  def self.send_pass_event(request_id, reason, comment, batch_id, user=nil, options = nil)
+  def self.send_pass_event(request_id, reason, comment, batch_id, user = nil, options = nil)
     hash = { eventful_id: request_id, eventful_type: 'Request', family: "pass", content: reason, message: comment, identifier: batch_id, key: "pass", created_by: user }
     self.publishing_to_queue(hash.merge(options || {}))
   end

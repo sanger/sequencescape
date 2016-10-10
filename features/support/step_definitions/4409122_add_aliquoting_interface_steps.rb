@@ -4,13 +4,13 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-Given /^sample "([^\"]+)" is in a sample tube named "([^\"]+)" with a two dimensional barcode "([^\"]+)"$/ do |sample_name,sample_tube_name, two_dimensional_barcode|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Could not find a sample named '#{ sample_name }'"
-  FactoryGirl.create(:sample_tube, name: sample_tube_name, sample: sample, two_dimensional_barcode: two_dimensional_barcode) or raise StandardError, "Could not create sample tube named '#{ sample_tube_name }'"
+Given /^sample "([^\"]+)" is in a sample tube named "([^\"]+)" with a two dimensional barcode "([^\"]+)"$/ do |sample_name, sample_tube_name, two_dimensional_barcode|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Could not find a sample named '#{sample_name}'"
+  FactoryGirl.create(:sample_tube, name: sample_tube_name, sample: sample, two_dimensional_barcode: two_dimensional_barcode) or raise StandardError, "Could not create sample tube named '#{sample_tube_name}'"
 end
 
 Given /^a sample tube named "([^\"]*)" exists with a two dimensional barcode "([^\"]*)"$/ do |sample_tube_name, two_dimensional_barcode|
-  FactoryGirl.create(:sample_tube, name: sample_tube_name, two_dimensional_barcode: two_dimensional_barcode) or raise StandardError, "Could not create sample tube named '#{ sample_tube_name }'"
+  FactoryGirl.create(:sample_tube, name: sample_tube_name, two_dimensional_barcode: two_dimensional_barcode) or raise StandardError, "Could not create sample tube named '#{sample_tube_name}'"
 end
 
 Given /^study "([^\"]+)" has the following registered samples in sample tubes( with a request)?:$/ do |study_name, with_a_request, table|

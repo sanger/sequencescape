@@ -20,7 +20,7 @@ class ProjectTest < ActiveSupport::TestCase
         assert_equal false, @project.project_metadata.valid?, "Validation not working"
         assert_equal false, @project.valid?, "Validation not delegating"
         assert_equal false, @project.save, "Save behaving badly"
-        assert  @project.errors.full_messages.include?("Project metadata project cost code can't be blank")
+        assert @project.errors.full_messages.include?("Project metadata project cost code can't be blank")
       end
 
     end

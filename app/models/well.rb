@@ -21,7 +21,7 @@ class Well < Aliquot::Receptacle
     belongs_to :target_well, class_name: 'Well'
     belongs_to :source_well, class_name: 'Well'
   end
-  has_many :stock_well_links,  ->() { where(type:'stock') }, class_name: 'Well::Link', foreign_key: :target_well_id
+  has_many :stock_well_links,  ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :target_well_id
 
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
@@ -69,10 +69,10 @@ class Well < Aliquot::Receptacle
       'LEFT OUTER JOIN product_criteria AS wr_pc ON wr_pc.id = wr_qcr.product_criteria_id'
     ]).
     group('assets.id').
-    having("NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)",product_criteria.product_id,product_criteria.stage)
+    having("NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)", product_criteria.product_id, product_criteria.stage)
   }
 
-  has_many :target_well_links,  ->() { where(type:'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
+  has_many :target_well_links,  ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
   scope :stock_wells_for, ->(wells) {
@@ -113,15 +113,15 @@ class Well < Aliquot::Receptacle
   scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select('assets.*, column_order') }
   scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select('assets.*, row_order') }
 
-  scope :in_plate_column, ->(col,size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col,size), asset_size: size }) }
-  scope :in_plate_row,    ->(row,size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row,size), asset_size: size }) }
+  scope :in_plate_column, ->(col, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size }) }
+  scope :in_plate_row,    ->(row, size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size), asset_size: size }) }
 
   scope :with_blank_samples, -> {
     joins([
       "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
       "INNER JOIN samples ON aliquots.sample_id=samples.id"
     ]).
-    where(['samples.empty_supplier_sample_name=?',true])
+    where(['samples.empty_supplier_sample_name=?', true])
   }
 
   scope :without_blank_samples, ->() {
@@ -159,7 +159,7 @@ class Well < Aliquot::Receptacle
     display_name
   end
 
-  #hotfix
+  # hotfix
   def well_attribute_with_creation
     self.well_attribute_without_creation || self.build_well_attribute
   end
@@ -195,7 +195,7 @@ class Well < Aliquot::Receptacle
 
   def update_gender_markers!(gender_markers, resource)
     if self.well_attribute.gender_markers == gender_markers
-      gender_marker_event = self.events.where(family:'update_gender_markers').order('id desc').first
+      gender_marker_event = self.events.where(family: 'update_gender_markers').order('id desc').first
       if gender_marker_event.blank?
         self.events.update_gender_markers!(resource)
       elsif resource == 'SNP' && gender_marker_event.content != resource

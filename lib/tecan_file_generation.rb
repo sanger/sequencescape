@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
@@ -19,14 +19,14 @@ module Sanger
             output_file_contents << buffer_seperator
           end
           output_file_contents << dyn_mappings(data_object)
-          output_file_contents << footer(source_barcode_index,dest_barcode_index)
+          output_file_contents << footer(source_barcode_index, dest_barcode_index)
 
-          output_file_contents.join("\n").gsub(/\n\n/,"\n")
+          output_file_contents.join("\n").gsub(/\n\n/, "\n")
         end
 
         def self.barcode_to_plate_index(plates)
           barcode_lookup = {}
-          plates.each_with_index do |plate,index|
+          plates.each_with_index do |plate, index|
             barcode_lookup[plate[0]] = index + 1
           end
           barcode_lookup
@@ -41,7 +41,7 @@ module Sanger
               all_barcodes << well[0]
             end
           end
-          all_barcodes.uniq.each_with_index do |plate,index|
+          all_barcodes.uniq.each_with_index do |plate, index|
             barcode_lookup[plate] = index + 1
           end
           barcode_lookup
@@ -57,14 +57,14 @@ module Sanger
         end
 
         def self.each_mapping(data_object)
-          data_object["destination"].each do |dest_plate_barcode,plate_details|
-            mapping_by_well = Hash.new { |h,i| h[i] = [] }
+          data_object["destination"].each do |dest_plate_barcode, plate_details|
+            mapping_by_well = Hash.new { |h, i| h[i] = [] }
             plate_details["mapping"].each do |mapping|
-              destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
+              destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"], plate_details["plate_size"])
               mapping_by_well[destination_position] << mapping
             end
 
-            mapping_by_well.sort { |a,b| a[0] <=> b[0] }.each do |dest_position, mappings|
+            mapping_by_well.sort { |a, b| a[0] <=> b[0] }.each do |dest_position, mappings|
               mappings.each do |mapping|
                 yield(mapping, dest_plate_barcode, plate_details)
               end
@@ -74,11 +74,11 @@ module Sanger
 
         def self.dyn_mappings(data_object)
           dyn_mappings = ""
-          each_mapping(data_object) do |mapping,dest_plate_barcode,plate_details|
+          each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
             source_barcode = "#{mapping["src_well"][0]}"
             source_name = data_object["source"]["#{mapping["src_well"][0]}"]["name"]
-            source_position = Map::Coordinate.description_to_vertical_plate_position(mapping["src_well"][1],data_object["source"]["#{mapping["src_well"][0]}"]["plate_size"])
-            destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
+            source_position = Map::Coordinate.description_to_vertical_plate_position(mapping["src_well"][1], data_object["source"]["#{mapping["src_well"][0]}"]["plate_size"])
+            destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"], plate_details["plate_size"])
             temp = [
               "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",
               "D;#{dest_plate_barcode};;#{plate_details["name"]};#{destination_position};;#{tecan_precision_value(mapping['volume'])}",
@@ -94,24 +94,24 @@ module Sanger
 
         def self.buffers(data_object, total_volume)
           buffer = []
-          each_mapping(data_object) do |mapping,dest_plate_barcode,plate_details|
+          each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
             if total_volume > mapping["volume"]
               dest_name = data_object["destination"][dest_plate_barcode]["name"]
-              volume = [(total_volume - mapping["volume"]),configatron.tecan_minimum_volume].max
-              vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
+              volume = [(total_volume - mapping["volume"]), configatron.tecan_minimum_volume].max
+              vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"], plate_details["plate_size"])
               buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
             end
           end
           buffer.join("\n")
         end
 
-        def self.footer(source_barcode_index,dest_barcode_index)
+        def self.footer(source_barcode_index, dest_barcode_index)
           footer = "C;\n"
-          source_barcode_index.sort { |a,b| a[1] <=> b[1] }.each do |barcode,index|
+          source_barcode_index.sort { |a, b| a[1] <=> b[1] }.each do |barcode, index|
             footer += "C; SCRC#{index} = #{barcode}\n"
           end
           footer += "C;\n"
-          dest_barcode_index.sort { |a,b| a[1] <=> b[1] }.each do |barcode,index|
+          dest_barcode_index.sort { |a, b| a[1] <=> b[1] }.each do |barcode, index|
             footer += "C; DEST#{index} = #{barcode}\n"
           end
           footer

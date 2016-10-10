@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'lib/event_factory'
 class RequestsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :admin_login_required, only: [:describe, :undescribe, :destroy]
   before_action :set_permitted_params, only: [:update]
 
   def set_permitted_params
-    @parameters = params[:request].reject { |k,v| !['request_metadata_attributes'].include?(k.to_s) }
+    @parameters = params[:request].reject { |k, v| !['request_metadata_attributes'].include?(k.to_s) }
   end
   attr_reader :parameters
  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
@@ -23,7 +23,7 @@ class RequestsController < ApplicationController
 
     # Ok, here we pick the initial source for the Requests.  They either come from Request (as in all Requests), or they
     # are limited by the Asset / Item.
-    request_source = Request.order(created_at: :desc).includes(:asset,:request_type).where(search_params).paginate(per_page: 200, page:params[:page])
+    request_source = Request.order(created_at: :desc).includes(:asset, :request_type).where(search_params).paginate(per_page: 200, page: params[:page])
 
     @item = Item.find(params[:item_id]) if params[:item_id]
     @item ||= @asset_id = Asset.find(params[:asset_id]) if params[:asset_id]
@@ -215,7 +215,7 @@ class RequestsController < ApplicationController
   end
 
   def search_params
-    permitted = params.permit(:asset_id,:item_id,:state,:request_type_id,:workflow_id)
+    permitted = params.permit(:asset_id, :item_id, :state, :request_type_id, :workflow_id)
     permitted[:initial_study_id] = params[:study_id] if params[:study_id]
   end
 end

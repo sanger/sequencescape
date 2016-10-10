@@ -12,7 +12,7 @@ module LabelPrinter
         @batch = options[:batch]
       end
 
-      def top_right(plate=nil)
+      def top_right(plate = nil)
         batch.study.abbreviation
       end
 

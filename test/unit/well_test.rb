@@ -14,27 +14,27 @@ class WellTest < ActiveSupport::TestCase
 
     context "with gender_markers results" do
       setup do
-        @well.well_attribute.update_attributes!(gender_markers: ['M','F','F'])
+        @well.well_attribute.update_attributes!(gender_markers: ['M', 'F', 'F'])
       end
       should "create an event if nothings changed and there are no previous events" do
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 1, @well.events.count
       end
 
       should "an event for each resource if nothings changed" do
-        @well.update_gender_markers!(['M','F','F'], 'MSPEC')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'MSPEC')
         assert_equal 1, @well.events.count
         assert 'MSPEC', @well.events.last.content
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 2, @well.events.count
         assert 'SNP', @well.events.last.content
       end
 
       should "only 1 event if nothings changed for the same resource" do
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 1, @well.events.count
         assert 'SNP', @well.events.last.content
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 1, @well.events.count
         assert 'SNP', @well.events.last.content
       end
@@ -42,10 +42,10 @@ class WellTest < ActiveSupport::TestCase
 
     context "without gender_markers results" do
       should "an event for each resource if its changed" do
-        @well.update_gender_markers!(['M','F','F'], 'MSPEC')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'MSPEC')
         assert_equal 1, @well.events.count
         assert 'MSPEC', @well.events.last.content
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 2, @well.events.count
         assert 'SNP', @well.events.last.content
       end
@@ -138,7 +138,7 @@ class WellTest < ActiveSupport::TestCase
       should "have a parent plate" do
         parent = @well.plate
         assert parent.is_a?(Plate)
-        assert_equal parent.id,@plate.id
+        assert_equal parent.id, @plate.id
       end
 
       context "for a tecan" do
@@ -173,7 +173,7 @@ class WellTest < ActiveSupport::TestCase
      [1000, 250, 50, 4, 6],
      [10000, 250, 50, 40, 0],
      [10000, 250, 30, 30, 0]
-    ].each do |target_ng,  measured_concentration, measured_volume, stock_to_pick, buffer_added|
+    ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added|
     context "cherrypick by nano grams" do
       setup do
         @source_well = create :well

@@ -14,7 +14,7 @@ module ApplicationHelper
         differential: differential
       )
 
-      #.debug
+      # .debug
       #  "No custom text found for #{identifier} #{differential}." if custom_text.nil?
 
       custom_text.try(:content) || ""
@@ -47,14 +47,14 @@ module ApplicationHelper
   end
 
   def required_marker
-    content_tag(:span,"&raquo;".html_safe,class: 'required')
+    content_tag(:span, "&raquo;".html_safe, class: 'required')
   end
 
   def render_flashes
     output = String.new.html_safe
     flash.each do |key, message|
-      output << alert(key,id: "message_#{key}") do
-        Array(message).reduce(String.new.html_safe) { |buffer,m| buffer << content_tag(:div, m) }
+      output << alert(key, id: "message_#{key}") do
+        Array(message).reduce(String.new.html_safe) { |buffer, m| buffer << content_tag(:div, m) }
       end
     end
     return output
@@ -64,20 +64,20 @@ module ApplicationHelper
     { api_version: RELEASE.api_version }
   end
 
-  def display_user_guide(display_text, link=nil)
+  def display_user_guide(display_text, link = nil)
     alert(:info) do
       link.present? ? link_to(display_text, link) : display_text
     end
   end
 
-  def display_user_error(display_text, link=nil)
+  def display_user_error(display_text, link = nil)
     alert(:danger) do
       link.present? ? link_to(display_text, link) : display_text
     end
   end
 
   def display_status(status)
-    content_tag(:span,status,class: "request-state label label-#{bootstrapify_request_state(status)}")
+    content_tag(:span, status, class: "request-state label label-#{bootstrapify_request_state(status)}")
   end
 
   def dynamic_link_to(summary_item)
@@ -93,7 +93,7 @@ module ApplicationHelper
 
   def request_count_link(study, asset, state, request_type)
     matching_requests   = asset.requests.select { |request| (request.request_type_id == request_type.id) and request.state == state }
-    html_options, count = { title: "#{ asset.display_name } #{ state }" }, matching_requests.size
+    html_options, count = { title: "#{asset.display_name} #{state}" }, matching_requests.size
 
     # 0 requests => no link, just '0'
     # 1 request  => request summary page
@@ -142,9 +142,9 @@ module ApplicationHelper
     end
 
     # TODO: Refactor this to use the bootstrap styles
-    content_tag(:span,count,style:"display:none") <<
-    content_tag(:div,style:"width: 100px; background-color: #CCCCCC; color: inherit;") do
-      content_tag(:div,"#{count}%",style:"width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
+    content_tag(:span, count, style: "display:none") <<
+    content_tag(:div, style: "width: 100px; background-color: #CCCCCC; color: inherit;") do
+      content_tag(:div, "#{count}%", style: "width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
     end
   end
 
@@ -191,7 +191,7 @@ module ApplicationHelper
     end
   end
 
-  def display_empty_table(display_text, link=nil)
+  def display_empty_table(display_text, link = nil)
     unless link.nil?
       content_tag(:div, link_to(display_text, link), class: "empty_table", id: "empty_table")
     else
@@ -230,7 +230,7 @@ module ApplicationHelper
 
   def horizontal_tab(name, key, related_div, tab_no, selected = false)
     link_to raw("#{name}"), "javascript:void(0);", 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: "#{key}", class: "#{selected ? "selected " : ""}tab#{tab_no}"
-    #link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
+    # link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
   end
 
   def item_status(item)

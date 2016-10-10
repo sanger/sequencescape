@@ -7,7 +7,7 @@
 module Submission::Priorities
 
   def self.priorities
-    ['None','Low','Medium','High']
+    ['None', 'Low', 'Medium', 'High']
   end
 
   def self.options

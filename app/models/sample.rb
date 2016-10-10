@@ -75,8 +75,8 @@ class Sample < ActiveRecord::Base
 
   def safe_to_destroy
     return true unless receptacles.present? || has_submission?
-    errors.add(:base,"Remove '#{name}' from assets before destroying") if receptacles.present?
-    errors.add(:base,"You can't delete '#{name}' because is linked to a submission.") if has_submission?
+    errors.add(:base, "Remove '#{name}' from assets before destroying") if receptacles.present?
+    errors.add(:base, "You can't delete '#{name}' because is linked to a submission.") if has_submission?
     return false
   end
   private :safe_to_destroy
@@ -84,7 +84,7 @@ class Sample < ActiveRecord::Base
   scope :with_name, ->(*names) { where(name: names.flatten) }
 
 
-  scope :for_search_query, ->(query,with_includes) {
+  scope :for_search_query, ->(query, with_includes) {
 
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
@@ -93,32 +93,32 @@ class Sample < ActiveRecord::Base
 
     # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
 
-    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact',left:"#{query}%",exact:query).pluck(:sample_id)
+    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact', left: "#{query}%", exact: query).pluck(:sample_id)
 
     # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
     # of numbers seems to massively increase the query length.
-    where('name LIKE :wild OR id IN (:sm_ids) OR id = :query',wild:"%#{query}%",sm_ids:md,query:query)
+    where('name LIKE :wild OR id IN (:sm_ids) OR id = :query', wild: "%#{query}%", sm_ids: md, query: query)
   }
 
   scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }
 
-  scope :for_plate_and_order, ->(plate_id,order_id) {
+  scope :for_plate_and_order, ->(plate_id, order_id) {
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
       'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
     ]).
-    where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
+    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
-  scope :for_plate_and_order_as_target, ->(plate_id,order_id) {
+  scope :for_plate_and_order_as_target, ->(plate_id, order_id) {
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
     ]).
-    where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
+    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   def self.by_name(sample_id)
@@ -176,7 +176,7 @@ class Sample < ActiveRecord::Base
     has_ebi_accession_number = false
 
     self.studies.each do |study|
-      if ! study.ebi_accession_number.blank?
+      if !study.ebi_accession_number.blank?
         has_ebi_accession_number = true
       end
     end
@@ -265,7 +265,7 @@ class Sample < ActiveRecord::Base
 
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
   GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
-  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
+  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
   SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
@@ -313,23 +313,23 @@ class Sample < ActiveRecord::Base
     # Array Express
     attribute(:genotype)
     attribute(:phenotype)
-    #attribute(:strain_or_line) strain
-    #TODO: split age in two fields and use a composed_of
+    # attribute(:strain_or_line) strain
+    # TODO: split age in two fields and use a composed_of
     attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
     attribute(:developmental_stage)
-    #attribute(:sex) gender
+    # attribute(:sex) gender
     attribute(:cell_type)
     attribute(:disease_state)
-    attribute(:compound) #TODO : yes/no?
+    attribute(:compound) # TODO : yes/no?
     attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
     attribute(:immunoprecipitate)
     attribute(:growth_condition)
     attribute(:rnai)
     attribute(:organism_part)
-    #attribute(:species) common name
+    # attribute(:species) common name
     attribute(:time_point)
 
-    #EGA
+    # EGA
     attribute(:treatment)
     attribute(:subject)
     attribute(:disease)
@@ -349,8 +349,8 @@ class Sample < ActiveRecord::Base
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
 #      :reference_genome        => ??
-    }.inject({}) do |h,(k,v)|
-      h[k] = v.inject({}) { |a,b| a[b.downcase] = b; a }
+    }.inject({}) do |h, (k, v)|
+      h[k] = v.inject({}) { |a, b| a[b.downcase] = b; a }
       h
     end
 
@@ -359,7 +359,7 @@ class Sample < ActiveRecord::Base
 
       # Unfortunately it appears that some of the functionality of this implementation relies on non-capitalisation!
       # So we remap the lowercased versions to their proper values here
-      REMAPPED_ATTRIBUTES.each do |attribute,mapping|
+      REMAPPED_ATTRIBUTES.each do |attribute, mapping|
         record[attribute] = mapping.fetch(record[attribute].try(:downcase), record[attribute])
         record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
       end
@@ -403,7 +403,7 @@ class Sample < ActiveRecord::Base
     def reference_genome_name=(reference_genome_name)
       return unless reference_genome_name.present?
       @reference_genome_set_by_name = reference_genome_name
-      self.reference_genome = ReferenceGenome.find_by(name:reference_genome_name)
+      self.reference_genome = ReferenceGenome.find_by(name: reference_genome_name)
     end
 
     # If we set a reference genome via its name, we want to validate that we found it.
@@ -415,7 +415,7 @@ class Sample < ActiveRecord::Base
       # A reference genome of nil automatically get converted to the reference genome named "", so
       # we need to explicitly check the name has been set as expected.
       return true if reference_genome.name == reference_genome_set_by_name
-      errors.add(:base,"Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
+      errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
       false
     end
 
@@ -424,7 +424,7 @@ class Sample < ActiveRecord::Base
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
   validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, attr, value|
-    record.errors.add(:base,'Sample has no study') if value.blank?
+    record.errors.add(:base, 'Sample has no study') if value.blank?
   end
   validates_associated(:ena_study, allow_blank: true, if: :validating_ena_required_fields?)
 
@@ -444,7 +444,7 @@ class Sample < ActiveRecord::Base
     self.valid? or raise ActiveRecord::RecordInvalid, self
   rescue ActiveRecord::RecordInvalid => exception
     @ena_study.errors.full_messages.each do |message|
-      self.errors.add(:base,"#{ message } on study")
+      self.errors.add(:base, "#{message} on study")
     end unless @ena_study.nil?
     raise exception
   ensure

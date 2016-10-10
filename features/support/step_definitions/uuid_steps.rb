@@ -57,16 +57,16 @@ PLURAL_MODELS_BASED_ON_NAME_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_N
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
-Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is "([^\"]+)"$/ do |model,name,uuid_value|
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by_name(name) or raise "Cannot find #{ model } #{ name.inspect }"
+Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is "([^\"]+)"$/ do |model, name, uuid_value|
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by_name(name) or raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object, uuid_value)
 end
 
-Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUID "([^\"]+)"$/ do |model,name,uuid_value|
+Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUID "([^\"]+)"$/ do |model, name, uuid_value|
   set_uuid_for(FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, name: name), uuid_value)
 end
 
-Given /^a tube purpose called "([^\"]+)" with UUID "([^\"]+)"$/ do |name,uuid_value|
+Given /^a tube purpose called "([^\"]+)" with UUID "([^\"]+)"$/ do |name, uuid_value|
   set_uuid_for(FactoryGirl.create(:tube_purpose, name: name), uuid_value)
 end
 
@@ -145,7 +145,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
 PLURAL_MODELS_BASED_ON_ID_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.map(&:pluralize).join('|')
 
-Given /^a (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with UUID "([^"]*)" exists$/ do |model,uuid_value|
+Given /^a (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with UUID "([^"]*)" exists$/ do |model, uuid_value|
   set_uuid_for(FactoryGirl.create(model.gsub(/\s+/, '_').to_sym), uuid_value)
 end
 
@@ -153,11 +153,11 @@ Given /^the UUID for the last (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULA
   set_uuid_for(model.gsub(/\s+/, '_').camelize.constantize.last, uuid_value)
 end
 
-Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |model,id,uuid_value|
+Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |model, id, uuid_value|
   set_uuid_for(model.gsub(/\s+/, '_').camelize.constantize.find(id), uuid_value)
 end
 
-Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^\"]+)"$/ do |model,core_uuid|
+Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^\"]+)"$/ do |model, core_uuid|
   core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
   core_uuid << "%0#{36 - core_uuid.length}d"
@@ -167,7 +167,7 @@ Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_R
   end
 end
 
-Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created will be "([^\"]+)"$/ do |model,uuid_value|
+Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created will be "([^\"]+)"$/ do |model, uuid_value|
   model_class = model.gsub(/\s+/, '_').classify.constantize
   root_class = model_class.base_class
   query = ActiveRecord::Base.connection.execute("SHOW TABLE STATUS WHERE `name` = '#{model_class.table_name}'")
@@ -184,7 +184,7 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
   uuid.save(validate: false)
 end
 
-Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|
+Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id, core_uuid|
   core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
   core_uuid << "%0#{36 - core_uuid.length}d"
@@ -194,7 +194,7 @@ Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$
   end
 end
 
-Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|
+Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model, uuid_value|
   target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
   target.uuid_object.update_attributes!(external_id: uuid_value)
 end
@@ -207,11 +207,11 @@ end
 
 
 # TODO: It's 'UUID' not xxxing 'uuid'.
-Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model,uuid_value|
-  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/,'_').camelize.constantize.create!(message: model), uuid_value)
+Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model, uuid_value|
+  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/, '_').camelize.constantize.create!(message: model), uuid_value)
 end
 
-Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model,uuid_value|
+Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model, uuid_value|
   set_uuid_for(FactoryGirl.create(model.to_sym), uuid_value)
 end
 
@@ -258,5 +258,5 @@ end
 
 Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
   plate = Plate.find_by_name(plate_name) || Plate.find_by_barcode(plate_name)
-  set_uuid_for(plate.wells[well_id.to_i - 1],uuid)
+  set_uuid_for(plate.wells[well_id.to_i - 1], uuid)
 end

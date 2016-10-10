@@ -11,7 +11,7 @@ module ModelExtensions::Batch
       # This is the new stuff ...
       accepts_nested_attributes_for :requests
 
-      scope :include_pipeline, -> { includes( pipeline: :uuid_object ) }
+      scope :include_pipeline, -> { includes(pipeline: :uuid_object) }
       scope :include_user, -> { includes(:user) }
       scope :include_requests, -> { includes(
         requests: [

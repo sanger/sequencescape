@@ -24,6 +24,6 @@ class GenotypingPipeline < Pipeline
   end
 
   def request_actions
-    [:fail,:remove]
+    [:fail, :remove]
   end
 end

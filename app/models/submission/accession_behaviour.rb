@@ -23,13 +23,13 @@ module Submission::AccessionBehaviour
     return if configatron.disable_accession_check == true
 
     if not study.valid_data_release_properties?
-      errors.add(:study,"#{study.name}: Please fill in the study data release information")
+      errors.add(:study, "#{study.name}: Please fill in the study data release information")
     elsif not study.ena_accession_required?
       # Nothing to do here because the study does not require ENA accessioning
     elsif not study.accession_number?
-      errors.add(:study,"#{study.name} and all samples must have accession numbers")
+      errors.add(:study, "#{study.name} and all samples must have accession numbers")
     elsif not all_samples_have_accession_numbers?
-      errors.add(:base,"Samples #{unaccessioned_samples} are missing accession numbers")
+      errors.add(:base, "Samples #{unaccessioned_samples} are missing accession numbers")
     end
   end
 

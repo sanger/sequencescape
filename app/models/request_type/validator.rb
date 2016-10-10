@@ -40,14 +40,14 @@ class RequestType::Validator < ActiveRecord::Base
   class ArrayWithDefault
     attr_accessor :default
 
-    def initialize(array,default)
+    def initialize(array, default)
       raise StandardError, "Default is not in array" unless array.include?(default)
       @default = default
       @array = array
     end
 
-    def method_missing(method,*args,&block)
-      @array.send(method,*args,&block)
+    def method_missing(method, *args, &block)
+      @array.send(method, *args, &block)
     end
 
     def include?(option)

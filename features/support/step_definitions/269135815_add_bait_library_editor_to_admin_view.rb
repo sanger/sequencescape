@@ -34,7 +34,7 @@ Given /^I have a bait library type called "([^\"]*)"$/ do |name|
 end
 
 Given /^I have a supplier called "([^\"]*)"$/ do |name|
-  BaitLibrary::Supplier.create!(name: name )
+  BaitLibrary::Supplier.create!(name: name)
 end
 
 Then /^the "([^\"]*)" called "([^\"]*)" should exist$/ do |class_name, name|

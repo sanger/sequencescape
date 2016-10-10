@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 class Studies::AssetGroupsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   def index
@@ -94,7 +94,7 @@ class Studies::AssetGroupsController < ApplicationController
     @study = Study.find(params[:study_id])
     query = params[:q]
     if query.blank? or query.length < 2
-      #We should not blame the user, we should instead help.
+      # We should not blame the user, we should instead help.
       # - By returning the X most recent ones together with an explanation.
       flash[:error] = "Search too wide. Please make your query more specific."
       redirect_to study_asset_groups_path(@study)
@@ -119,7 +119,7 @@ class Studies::AssetGroupsController < ApplicationController
     end
 
     respond_to do |format|
-       format.html { redirect_to(study_asset_group_url(@study,@asset_group)) }
+       format.html { redirect_to(study_asset_group_url(@study, @asset_group)) }
        format.xml  { render xml: @assets }
        format.json { render json: @assets }
      end

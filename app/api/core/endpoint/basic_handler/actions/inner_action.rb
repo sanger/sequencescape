@@ -15,8 +15,8 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
 
   def separate(_, actions)
     actions[@options[:to].to_s] = lambda do |object, options, stream|
-      actions(object, options.merge(target: object)).map do |action,url|
-        stream.attribute(action,url)
+      actions(object, options.merge(target: object)).map do |action, url|
+        stream.attribute(action, url)
       end
     end
   end

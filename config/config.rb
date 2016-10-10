@@ -51,10 +51,10 @@ configatron.tecan_files_location = "#{Rails.root}/data"
 configatron.tecan_minimum_volume = 1.0
 
 configatron.external_applications = [
-  ['High Throughput Pipeline','http://www.example.com'],
-  ['Generic Lims','http://www.example.com'],
-  ['Gatekeeper','http://www.example.com'],
-  ['Crier','http://www.example.com']
+  ['High Throughput Pipeline', 'http://www.example.com'],
+  ['Generic Lims', 'http://www.example.com'],
+  ['Gatekeeper', 'http://www.example.com'],
+  ['Crier', 'http://www.example.com']
 ]
 
 if Rails.env == 'development'

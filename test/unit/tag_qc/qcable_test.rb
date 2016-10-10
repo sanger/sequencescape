@@ -31,7 +31,7 @@ class QcableTest < ActiveSupport::TestCase
 
     context "#qcable" do
       setup do
-        @mock_purpose = mock('Purpose',default_state: 'created')
+        @mock_purpose = mock('Purpose', default_state: 'created')
         @mock_purpose.expects('create!').returns(Asset.new).once
         @mock_lot = create :lot
         @mock_lot.expects(:target_purpose).returns(@mock_purpose).twice

@@ -10,7 +10,7 @@ class Uuid < ActiveRecord::Base
       base.class_eval do
         # We need to add some class level changes to this model because the ar-extensions gem might be
         # used.
-        #extend ArExtensionsFix
+        # extend ArExtensionsFix
 
         # Ensure that the resource has a UUID and that it's always created when the instance is created.
         # It seems better not to do this but the performance of the API is directly affected by having to
@@ -19,7 +19,7 @@ class Uuid < ActiveRecord::Base
         after_create :ensure_uuid_created
 
         # Some named scopes ...
-        scope :include_uuid, -> { includes(:uuid_object ) }
+        scope :include_uuid, -> { includes(:uuid_object) }
       end
     end
 
@@ -70,7 +70,7 @@ class Uuid < ActiveRecord::Base
       end
 
       def generate_missing_uuids
-        records_for_missing_uuids { |id| Uuid.create!(resouce_type: self.name, resource_id: id, external_id: Uuid.generate_uuid ) }
+        records_for_missing_uuids { |id| Uuid.create!(resouce_type: self.name, resource_id: id, external_id: Uuid.generate_uuid) }
       end
       private :generate_missing_uuids
 
@@ -99,11 +99,11 @@ class Uuid < ActiveRecord::Base
     self.resource
   end
 
-  scope :with_resource_type, ->(type) { where(resource_type: type.to_s ) }
+  scope :with_resource_type, ->(type) { where(resource_type: type.to_s) }
 
   scope :include_resource, -> { includes(:resource) }
   scope :with_external_id, ->(external_id) { where(external_id: external_id) }
-  scope :with_resource_by_type_and_id, ->(t,id) { where(resource_type: t, resource_id: id ) }
+  scope :with_resource_by_type_and_id, ->(t, id) { where(resource_type: t, resource_id: id) }
 
   before_validation do |record|
     record.external_id = Uuid.generate_uuid if record.new_record? and record.external_id.blank?
@@ -162,7 +162,7 @@ class Uuid < ActiveRecord::Base
     return if resource_ids.empty?
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
     uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: self.generate_uuid) }
-    #Uuid.import uuids_to_create unless uuids_to_create.empty?
+    # Uuid.import uuids_to_create unless uuids_to_create.empty?
 
     nil
   end
@@ -184,7 +184,7 @@ class Uuid < ActiveRecord::Base
   # @param resource_name [String] the name of the external project
   # @return [String, nil]
   # @raise Response::Exception if system doesn't macth.
-  def self.find_id(uuid, resource_type=nil)
+  def self.find_id(uuid, resource_type = nil)
     begin
       uuid_object = with_external_id(uuid).first or raise ActiveRecord::RecordNotFound, "Could not find UUID #{uuid.inspect}"
 

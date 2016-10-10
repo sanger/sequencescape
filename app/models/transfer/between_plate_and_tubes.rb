@@ -43,7 +43,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, class_name: 'Transfer::BetweenPlateAndTubes::WellToTube', foreign_key: :transfer_id
   has_many :destinations, ->() { uniq }, through: :well_to_tubes
-  scope :include_transfers, -> { includes( well_to_tubes: DESTINATION_INCLUDES ) }
+  scope :include_transfers, -> { includes(well_to_tubes: DESTINATION_INCLUDES) }
 
   def transfers
     Hash[well_to_tubes.include_destination.map { |t| [t.source, tube_to_hash(t.destination)] }]
@@ -102,7 +102,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   after_create :build_well_to_tube_transfers
   def build_well_to_tube_transfers
-    tube_to_stock_wells = Hash.new { |h,k| h[k] = [] }
+    tube_to_stock_wells = Hash.new { |h, k| h[k] = [] }
     self.well_to_tubes.build(@transfers.map do |source, (destination, stock_wells)|
       tube_to_stock_wells[destination].concat(stock_wells)
       { source: source, destination: destination }
@@ -117,11 +117,11 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
   # creating an appropriate range.
   def tube_name_for(stock_wells)
-    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort { |w1,w2| w1.map.column_order <=> w2.map.column_order }
+    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort { |w1, w2| w1.map.column_order <=> w2.map.column_order }
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, "There appears to be no stock plate!" if stock_plates.empty?
     raise StandardError, "Cannot handle cross plate pooling!" if stock_plates.size > 1
-    first,last = source_wells.first.map_description, source_wells.last.map_description
+    first, last = source_wells.first.map_description, source_wells.last.map_description
     "#{stock_plates.first.sanger_human_barcode} #{first}:#{last}"
   end
   private :tube_name_for

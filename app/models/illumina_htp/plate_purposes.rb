@@ -60,19 +60,19 @@ module IlluminaHtp::PlatePurposes
   BRANCHES = [
     ['PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
     ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
-    ['PF MiSeq Stock','PF MiSeq QCR'],
-    ['Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
-    ['Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm'],
-    ['Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin'],
-    ['Lib PCR-XP','ISC lib pool'],
-    ['Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
-    ['Lib PCRR-XP','ISC lib pool'],
+    ['PF MiSeq Stock', 'PF MiSeq QCR'],
+    ['Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP', 'Lib Pool', 'Lib Pool Norm'],
+    ['Lib PCR-XP', 'Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm'],
+    ['Lib PCRR', 'Lib PCRR-XP', 'Lib Pool Pippin'],
+    ['Lib PCR-XP', 'ISC lib pool'],
+    ['Lib PCR-XP', 'Lib Norm', 'Lib Norm 2', 'Lib Norm 2 Pool'],
+    ['Lib PCRR-XP', 'ISC lib pool'],
     ['Post Shear', 'Post Shear XP', 'AL Libs']
   ]
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'
 
-  OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP','Lib PCRR-XP']
+  OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP', 'Lib PCRR-XP']
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
     'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm', 'PF EM Pool'
@@ -232,7 +232,7 @@ module IlluminaHtp::PlatePurposes
 
     def request_type_between(parent, child)
       std = RequestPurpose.find_by_key('standard')
-      _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
+      _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a, b, _| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
       return RequestType.initial_transfer if request_class == :initial
       request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"

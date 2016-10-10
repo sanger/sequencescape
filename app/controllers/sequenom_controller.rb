@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class SequenomController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   EmptyBarcode = Class.new(StandardError)
 
@@ -28,7 +28,7 @@ class SequenomController < ApplicationController
   STEPS = ['PCR Mix', 'SAP Mix', 'IPLEX Mix', 'HPLC Water'].map { |name| SequenomStep.new(name) }
   class << STEPS
     def for(step_name)
-      self.find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{ step_name }'"
+      self.find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{step_name}'"
     end
   end
 
@@ -86,31 +86,31 @@ private
     define_method(filter_name) do
       begin
         barcode = params[:"#{ name }_barcode"]
-        raise EmptyBarcode, "The #{ name } barcode appears to be empty" if barcode.blank?
+        raise EmptyBarcode, "The #{name} barcode appears to be empty" if barcode.blank?
         human_barcode = Barcode.barcode_to_human!(barcode, model_class.prefix)
         object = model_class.find_by_barcode(block.call(barcode, human_barcode))
-        raise ActiveRecord::RecordNotFound, "Could not find a #{ name } with barcode #{ barcode }" if object.nil?
-        instance_variable_set("@#{ name }", object)
+        raise ActiveRecord::RecordNotFound, "Could not find a #{name} with barcode #{barcode}" if object.nil?
+        instance_variable_set("@#{name}", object)
       rescue StandardError => exception
         send(rescue_exception_for_filter, exception, barcode, human_barcode)
       end
     end
-    define_method(rescue_exception_for_filter) do |exception,barcode,human_barcode|
+    define_method(rescue_exception_for_filter) do |exception, barcode, human_barcode|
       case
       when ActiveRecord::RecordNotFound === exception
-        flash[:error] = I18n.t("sequenom.errors.#{ name }.not_found_by_barcode", barcode: barcode, human_barcode: human_barcode)
+        flash[:error] = I18n.t("sequenom.errors.#{name}.not_found_by_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
       when Barcode::InvalidBarcode === exception
-        flash[:error] = I18n.t("sequenom.errors.#{ name }.invalid_barcode", barcode: barcode, human_barcode: human_barcode)
+        flash[:error] = I18n.t("sequenom.errors.#{name}.invalid_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
       when EmptyBarcode === exception
-        flash[:error] = I18n.t("sequenom.errors.#{ name }.empty_barcode")
+        flash[:error] = I18n.t("sequenom.errors.#{name}.empty_barcode")
         redirect_to sequenom_root_path
 
       else
-        flash[:error] = I18n.t("sequenom.errors.#{ name }.unknown")
+        flash[:error] = I18n.t("sequenom.errors.#{name}.unknown")
         redirect_to sequenom_root_path
       end
     end
@@ -118,8 +118,8 @@ private
     before_action(filter_name, filter_options)
   end
 
-  find_by_barcode_filter(User,  only: [:update, :quick_update]) { |barcode,human_barcode| human_barcode }
-  find_by_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode,human_barcode| Barcode.number_to_human(barcode) }
+  find_by_barcode_filter(User,  only: [:update, :quick_update]) { |barcode, human_barcode| human_barcode }
+  find_by_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, human_barcode| Barcode.number_to_human(barcode) }
 
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!

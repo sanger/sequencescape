@@ -24,12 +24,12 @@ class AliquotTest < ActiveSupport::TestCase
 
     should "not match aliquots with different tags" do
       assert Aliquot.new(tag: @tag1, tag2: @tag1) !~ Aliquot.new(tag: @tag2, tag2: @tag1)
-      assert ! Aliquot.new(tag: @tag1, tag2: @tag1).matches?(Aliquot.new(tag: @tag2, tag2: @tag1))
+      assert !Aliquot.new(tag: @tag1, tag2: @tag1).matches?(Aliquot.new(tag: @tag2, tag2: @tag1))
     end
 
     should "not match aliquots with different tag 2" do
       assert Aliquot.new(tag: @tag1, tag2: @tag1) !~ Aliquot.new(tag: @tag1, tag2: @tag2)
-      assert ! Aliquot.new(tag: @tag1, tag2: @tag1).matches?(Aliquot.new(tag: @tag1, tag2: @tag2))
+      assert !Aliquot.new(tag: @tag1, tag2: @tag1).matches?(Aliquot.new(tag: @tag1, tag2: @tag2))
     end
 
     should " match aliquots with missing tags " do
@@ -54,7 +54,7 @@ class AliquotTest < ActiveSupport::TestCase
 
     should "not match aliquots with different samples" do
       assert Aliquot.new(tag: @tag1, sample: @sample1) !~ Aliquot.new(tag: @tag1, sample: @sample2)
-      assert ! Aliquot.new(tag: @tag1, sample: @sample1).matches?(Aliquot.new(tag: @tag1, sample: @sample2))
+      assert !Aliquot.new(tag: @tag1, sample: @sample1).matches?(Aliquot.new(tag: @tag1, sample: @sample2))
     end
 
     should "allow mixing different tags with no tag2" do

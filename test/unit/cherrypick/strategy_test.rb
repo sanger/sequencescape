@@ -8,7 +8,7 @@ require 'test_helper'
 
 class Cherrypick::StrategyTest < ActiveSupport::TestCase
   def request(submission_id, barcode = 1)
-    OpenStruct.new(submission_id: submission_id, barcode: barcode,representation: "request_#{submission_id}")
+    OpenStruct.new(submission_id: submission_id, barcode: barcode, representation: "request_#{submission_id}")
   end
   private :request
 
@@ -104,7 +104,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           @filter.expects(:call).with([[requests.last]], anything).returns([[requests.last]]).twice
 
           pick_list = @strategy.send(:_pick, requests, OpenStruct.new(max_beds: 1))
-          assert_equal([['request_1'],['request_2']], pick_list)
+          assert_equal([['request_1'], ['request_2']], pick_list)
         end
       end
     end

@@ -14,51 +14,51 @@ class Map < ActiveRecord::Base
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
-    PLATE_DIMENSIONS = Hash.new { |h,k| [] }.merge(
+    PLATE_DIMENSIONS = Hash.new { |h, k| [] }.merge(
       96  => [12, 8],
       384 => [24, 16]
     )
 
-    def self.location_from_row_and_column(row, column,_=nil,__=nil)
+    def self.location_from_row_and_column(row, column, _ = nil, __ = nil)
       "#{(?A.getbyte(0) + row).chr}#{column}"
     end
 
-    def self.description_to_horizontal_plate_position(well_description,plate_size)
-      return nil unless Map.valid_well_description_and_plate_size?(well_description,plate_size)
+    def self.description_to_horizontal_plate_position(well_description, plate_size)
+      return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
       split_well = Map.split_well_description(well_description)
       width = self.plate_width(plate_size)
       return nil if width.nil?
       (width * split_well[:row]) + split_well[:col]
     end
 
-    def self.description_to_vertical_plate_position(well_description,plate_size)
-      return nil unless Map.valid_well_description_and_plate_size?(well_description,plate_size)
+    def self.description_to_vertical_plate_position(well_description, plate_size)
+      return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
       split_well = Map.split_well_description(well_description)
       length = self.plate_length(plate_size)
       return nil if length.nil?
       (length * (split_well[:col] - 1)) + split_well[:row] + 1
     end
 
-    def self.horizontal_plate_position_to_description(well_position,plate_size)
-      return nil unless Map.valid_plate_position_and_plate_size?(well_position,plate_size)
+    def self.horizontal_plate_position_to_description(well_position, plate_size)
+      return nil unless Map.valid_plate_position_and_plate_size?(well_position, plate_size)
       width = plate_width(plate_size)
       return nil if width.nil?
       horizontal_position_to_description(well_position, width)
     end
 
-    def self.vertical_plate_position_to_description(well_position,plate_size)
-      return nil unless Map.valid_plate_position_and_plate_size?(well_position,plate_size)
+    def self.vertical_plate_position_to_description(well_position, plate_size)
+      return nil unless Map.valid_plate_position_and_plate_size?(well_position, plate_size)
       length = plate_length(plate_size)
       return nil if length.nil?
       vertical_position_to_description(well_position, length)
     end
 
-    def self.descriptions_for_row(row,size)
+    def self.descriptions_for_row(row, size)
       (1..plate_width(size)).map { |column| "#{row}#{column}" }
     end
 
-    def self.descriptions_for_column(column,size)
-      (0...plate_length(size)).map { |row| Map.location_from_row_and_column(row,column) }
+    def self.descriptions_for_column(column, size)
+      (0...plate_length(size)).map { |row| Map.location_from_row_and_column(row, column) }
     end
 
     def self.plate_width(plate_size)
@@ -81,16 +81,16 @@ class Map < ActiveRecord::Base
       (desc_letter + (desc_number.to_s))
     end
 
-    def self.horizontal_to_vertical(well_position,plate_size)
+    def self.horizontal_to_vertical(well_position, plate_size)
       alternate_position(well_position, plate_size, :width, :length)
     end
 
-    def self.vertical_to_horizontal(well_position,plate_size)
+    def self.vertical_to_horizontal(well_position, plate_size)
       alternate_position(well_position, plate_size, :length, :width)
     end
 
     def self.location_from_index(index, size)
-      horizontal_plate_position_to_description(index - 1,size)
+      horizontal_plate_position_to_description(index - 1, size)
     end
 
   class << self
@@ -129,7 +129,7 @@ class Map < ActiveRecord::Base
 
   end
 
- scope :for_position_on_plate, ->(position,plate_size,asset_shape) {
+ scope :for_position_on_plate, ->(position, plate_size, asset_shape) {
     where(
         row_order: position - 1,
         asset_size: plate_size,
@@ -149,14 +149,14 @@ class Map < ActiveRecord::Base
     plate_size.is_a?(Integer) && plate_size > 0
   end
 
-  def self.valid_plate_position_and_plate_size?(well_position,plate_size)
+  def self.valid_plate_position_and_plate_size?(well_position, plate_size)
     return false unless valid_well_position?(well_position)
     return false unless valid_plate_size?(plate_size)
     return false if well_position > plate_size
     true
   end
 
-  def self.valid_well_description_and_plate_size?(well_description,plate_size)
+  def self.valid_well_description_and_plate_size?(well_description, plate_size)
     return false if well_description.blank?
     return false unless valid_plate_size?(plate_size)
     true
@@ -215,12 +215,12 @@ class Map < ActiveRecord::Base
     ).first
   end
 
-  def self.horizontal_to_vertical(well_position,plate_size,plate_shape=nil)
-    Map::Coordinate.horizontal_to_vertical(well_position,plate_size)
+  def self.horizontal_to_vertical(well_position, plate_size, plate_shape = nil)
+    Map::Coordinate.horizontal_to_vertical(well_position, plate_size)
   end
 
-  def self.vertical_to_horizontal(well_position,plate_size,plate_shape=nil)
-    Map::Coordinate.vertical_to_horizontal(well_position,plate_size)
+  def self.vertical_to_horizontal(well_position, plate_size, plate_shape = nil)
+    Map::Coordinate.vertical_to_horizontal(well_position, plate_size)
   end
 
   def self.next_vertical_map_position(current_map_id)
@@ -243,7 +243,7 @@ class Map < ActiveRecord::Base
     Map.where(asset_size: 384)
   end
 
-  def self.snp_map_id_to_pipelines_map_id(snp_map_id,plate_size)
+  def self.snp_map_id_to_pipelines_map_id(snp_map_id, plate_size)
     # We're only going to be getting standard plates in through SNP
     Map.where(
       asset_size: plate_size,
@@ -258,7 +258,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.split_well_description(well_description)
-    { row: well_description.getbyte(0) - 65, col: well_description[1,well_description.size].to_i }
+    { row: well_description.getbyte(0) - 65, col: well_description[1, well_description.size].to_i }
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
@@ -272,10 +272,10 @@ class Map < ActiveRecord::Base
     map.description
   end
 
-   scope :in_row_major_order,            -> { order('row_order ASC' ) }
-   scope :in_reverse_row_major_order,    -> { order('row_order DESC' ) }
-   scope :in_column_major_order,         -> { order('column_order ASC' ) }
-   scope :in_reverse_column_major_order, -> { order('column_order DESC' ) }
+   scope :in_row_major_order,            -> { order('row_order ASC') }
+   scope :in_reverse_row_major_order,    -> { order('row_order DESC') }
+   scope :in_column_major_order,         -> { order('column_order ASC') }
+   scope :in_reverse_column_major_order, -> { order('column_order DESC') }
 
   class << self
     # Caution! Only use for seeds. Not valid elsewhere
@@ -288,7 +288,7 @@ class Map < ActiveRecord::Base
     end
 
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
-    def walk_plate_in_column_major_order(size, asset_shape=nil, &block)
+    def walk_plate_in_column_major_order(size, asset_shape = nil, &block)
       asset_shape ||= AssetShape.default_id
       where(asset_size: size, asset_shape_id: asset_shape).order(:column_order).each do |position|
         yield(position, position.column_order)
@@ -297,7 +297,7 @@ class Map < ActiveRecord::Base
     alias_method(:walk_plate_vertically, :walk_plate_in_column_major_order)
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
-    def walk_plate_in_row_major_order(size, asset_shape=nil, &block)
+    def walk_plate_in_row_major_order(size, asset_shape = nil, &block)
       asset_shape ||= AssetShape.default_id
       where(asset_size: size, asset_shape_id: asset_shape).order(:row_order).each do |position|
         yield(position, position.row_order)

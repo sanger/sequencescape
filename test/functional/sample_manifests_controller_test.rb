@@ -19,7 +19,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
       session[:user] = @user.id
 
       SampleManifestExcel.configure do |config|
-        config.folder = File.join("test","data", "sample_manifest_excel")
+        config.folder = File.join("test", "data", "sample_manifest_excel")
         config.load!
       end
     end

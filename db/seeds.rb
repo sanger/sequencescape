@@ -16,7 +16,7 @@ unless [:development, :test, :seeding].include?(Rails.env.to_sym)
 **********************************************************************************************************
 ********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************
 
-You are quite clearly either wreckless, incompetent or insane.  You are trying to seed the #{ Rails.env }
+You are quite clearly either wreckless, incompetent or insane.  You are trying to seed the #{Rails.env}
 database which should never be done.  Please recheck your shell environment to ensure that Rails.env
 is not set, or is set to either 'development' or 'test'.
 
@@ -29,9 +29,9 @@ ActiveRecord::Base.transaction do
 
   # Here is a proc that will do the seeding.
   handler = lambda do |seed_data_file|
-    Rails.logger.info("Loading seed data from #{ seed_data_file } ...")
+    Rails.logger.info("Loading seed data from #{seed_data_file} ...")
     require seed_data_file
-    Rails.logger.info("Seed data loaded from #{ seed_data_file }")
+    Rails.logger.info("Seed data loaded from #{seed_data_file}")
   end
 
   # If we have an environment variable that defines the seed version to use then we need to filter

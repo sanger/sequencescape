@@ -9,12 +9,12 @@ Given /^I am using "(.*)" to authenticate$/ do |auth_method|
 end
 
 Given /^I am logged in as "(.*)"$/ do |login|
-  step(%Q{I am an "internal" user logged in as "#{ login }"})
+  step(%Q{I am an "internal" user logged in as "#{login}"})
 end
 
 Given /^user "(.*)" has a workflow "(.*)"$/ do |login, workflow_name|
-  user = @current_user = User.find_by_login(login) or raise StandardError, "Cannot find a user with login '#{ login }'"
-  workflow = Submission::Workflow.find_by_name(workflow_name) or raise StandardError, "Cannot find the workflow #{ workflow_name.inspect }"
+  user = @current_user = User.find_by_login(login) or raise StandardError, "Cannot find a user with login '#{login}'"
+  workflow = Submission::Workflow.find_by_name(workflow_name) or raise StandardError, "Cannot find the workflow #{workflow_name.inspect}"
   user.workflow_id = workflow.id
   user.save
 end
@@ -28,7 +28,7 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
     last_name: "Doe",
     password: 'generic',
     password_confirmation: 'generic',
-    email: "#{ login }@example.com",
+    email: "#{login}@example.com",
     workflow_id: wk.id
   )
 

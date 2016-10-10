@@ -21,7 +21,7 @@ Given /^I have an "([^\"]*)" project called "([^\"]*)"$/ do |approval, project|
 end
 
 Given /^project "([^\"]*)" has enforced quotas$/ do |name|
-  project = Project.find_by_name(name) or raise StandardError, "Cannot find project with name #{ name.inspect }"
+  project = Project.find_by_name(name) or raise StandardError, "Cannot find project with name #{name.inspect}"
   project.update_attributes!(enforce_quotas: true)
 end
 
@@ -30,10 +30,10 @@ Given /^last submission is processed$/ do
 end
 
 Given /^the project "([^\"]+)" has an active study called "([^\"]+)"$/ do |project_name, study_name|
-  step(%Q{I have an "active" study called "#{ study_name }"})
+  step(%Q{I have an "active" study called "#{study_name}"})
 
-  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{ project_name.inspect }"
-  study   = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{ study_name.inspect }"
+  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{project_name.inspect}"
+  study   = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   project.studies << study
 end
 
@@ -42,8 +42,8 @@ Then /^I should see the project information:$/ do |expected_table|
 end
 
 Given /^the project "([^\"]*)" a budget division "([^\"]*)"$/ do |project_name, budget_division_name|
-  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{ project_name.inspect }"
-  budget_division = BudgetDivision.find_by_name(budget_division_name ) or raise StandardError, "Cannot find budget division #{ budget_division_name.inspect }"
+  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{project_name.inspect}"
+  budget_division = BudgetDivision.find_by_name(budget_division_name) or raise StandardError, "Cannot find budget division #{budget_division_name.inspect}"
 
   project.update_attributes!(project_metadata_attributes: {
     budget_division: budget_division

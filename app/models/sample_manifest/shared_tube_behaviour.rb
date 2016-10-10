@@ -20,20 +20,20 @@ module SampleManifest::SharedTubeBehaviour
 
     self.barcodes = tubes.map(&:sanger_human_barcode)
 
-    tube_sample_creation(samples_data,self.study.id)
+    tube_sample_creation(samples_data, self.study.id)
     delayed_generate_asset_requests(tubes.map(&:id), self.study.id)
     save!
     tubes
   end
 
-  def delayed_generate_asset_requests(asset_ids,study_id)
+  def delayed_generate_asset_requests(asset_ids, study_id)
     # TODO: Refactor?
     RequestFactory.create_assets_requests(Asset.find(asset_ids), Study.find(study_id))
   end
   handle_asynchronously :delayed_generate_asset_requests
 
 
-  def tube_sample_creation(samples_data,study_id)
+  def tube_sample_creation(samples_data, study_id)
     study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
       create_sample(sanger_sample_id).tap do |sample|
         sample_tube = Tube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"

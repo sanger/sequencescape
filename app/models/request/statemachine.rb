@@ -15,7 +15,7 @@ module Request::Statemachine
   INACTIVE = QUOTA_EXEMPTED = ['failed', 'cancelled']
 
   module ClassMethods
-    def redefine_aasm(options={},&block)
+    def redefine_aasm(options = {}, &block)
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine
@@ -29,8 +29,8 @@ module Request::Statemachine
         end
       end
       # Wipe out the inherited state machine. Can't use unregister.
-      AASM::StateMachineStore.register(self,true)
-      aasm(options,&block)
+      AASM::StateMachineStore.register(self, true)
+      aasm(options, &block)
     end
 
     # Determines the most likely event that should be fired when transitioning between the two states.  If there is
@@ -124,7 +124,7 @@ module Request::Statemachine
         end
 
         event :submission_cancelled do
-          transitions to: :cancelled, from: [:pending,:cancelled]
+          transitions to: :cancelled, from: [:pending, :cancelled]
         end
 
         event :fail_from_upstream do

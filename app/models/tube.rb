@@ -52,7 +52,7 @@ class Tube < Aliquot::Receptacle
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
-    ancestors.order(created_at: :desc).where(plate_purpose_id:ancestor_purpose_id).first
+    ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id).first
   end
 
   def original_stock_plates

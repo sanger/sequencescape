@@ -9,7 +9,7 @@ module Tasks::AssignTubesToWellsHandler
 
   def render_assign_tubes_to_wells_task(task, params)
     available_tubes = uniq_assets_from_requests
-    @available_tubes_options = [['',nil]] | available_tubes.map { |t| [t.name, t.id] }
+    @available_tubes_options = [['', nil]] | available_tubes.map { |t| [t.name, t.id] }
 
     @tubes = calculate_number_of_wells_library_needs_to_use(task, params)
   end
@@ -46,7 +46,7 @@ module Tasks::AssignTubesToWellsHandler
 
     plate ||= find_or_create_plate(task.purpose)
 
-    well_hash = Hash[plate.wells.located_at(params[:request_locations].values.uniq).map { |w| [w.map_description,w] }]
+    well_hash = Hash[plate.wells.located_at(params[:request_locations].values.uniq).map { |w| [w.map_description, w] }]
 
     problem_wells = wells_with_duplicates(params)
 
@@ -83,10 +83,10 @@ module Tasks::AssignTubesToWellsHandler
   # First filters out any equivalent aliquots. (ie. same sample, tag, library_type, etc.)
   def wells_with_duplicates(params)
     invalid_wells = []
-    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well,requests|
+    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
       all_aliquots = requests.map { |r| r.asset.aliquots }.flatten
       # Push each aliquot onto an array as long as it doesn't match an aliquot already on the array
-      unique_aliquots = all_aliquots.reduce([]) do |selected_aliquots,candidate|
+      unique_aliquots = all_aliquots.reduce([]) do |selected_aliquots, candidate|
         selected_aliquots << candidate unless selected_aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate) }
         selected_aliquots
       end
@@ -100,7 +100,7 @@ module Tasks::AssignTubesToWellsHandler
 
   def find_incompatible_wells(params)
     invalid_wells = []
-    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well,requests|
+    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
       next if requests.map { |r| r.shared_attributes }.uniq.count <= 1
       invalid_wells << well
     end
@@ -114,10 +114,10 @@ module Tasks::AssignTubesToWellsHandler
   end
 
   def find_target_asset_from_requests(requests)
-    requests.map { |request| request.target_asset }.select { |asset| ! asset.nil? }.first
+    requests.map { |request| request.target_asset }.select { |asset| !asset.nil? }.first
   end
 
-  def assign_requests_to_well(requests,well)
+  def assign_requests_to_well(requests, well)
     requests.each do |request|
       request.update_attributes!(target_asset: well)
     end
@@ -146,7 +146,7 @@ module Tasks::AssignTubesToWellsHandler
   end
 
   def assets_from_requests_sorted_by_id
-    @asbi ||= assets_from_requests.sort { |a,b| a.id <=> b.id }
+    @asbi ||= assets_from_requests.sort { |a, b| a.id <=> b.id }
   end
 
   def calculate_number_of_wells_library_needs_to_use(task, params)

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-Given /^a state "([^"]*)" to lane named "([^"]*)"$/ do |status,name|
+Given /^a state "([^"]*)" to lane named "([^"]*)"$/ do |status, name|
   FactoryGirl.create(:lane, name: name, qc_state: status)
 end
 

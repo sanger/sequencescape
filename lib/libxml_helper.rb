@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012 Genome Research Ltd.
@@ -72,11 +72,11 @@ class XML::Node
     (@default_namespaces ||= []) << name_and_href
   end
 
-  def find_with_default_ns(xpath_expr, namespace=nil)
+  def find_with_default_ns(xpath_expr, namespace = nil)
     find_base(xpath_expr, namespace || default_namespaces)
   end
 
-  def find_first_with_default_ns(xpath_expr, namespace=nil)
+  def find_first_with_default_ns(xpath_expr, namespace = nil)
     find_first_base(xpath_expr, namespace || default_namespaces)
   end
 

@@ -7,7 +7,7 @@
 require "net/ldap"
 require "openssl"
 require "digest/sha1"
-#require 'curb'
+# require 'curb'
 
 class User < ActiveRecord::Base
   include Authentication
@@ -24,8 +24,8 @@ class User < ActiveRecord::Base
   has_many :settings
   has_many :roles
   has_many :submissions
-  has_many :project_roles, ->() { where(authorizable_type:'Project') }, class_name: 'Role'
-  has_many :study_roles,   ->() { where(authorizable_type:'Study') },   class_name: 'Role'
+  has_many :project_roles, ->() { where(authorizable_type: 'Project') }, class_name: 'Role'
+  has_many :study_roles,   ->() { where(authorizable_type: 'Study') },   class_name: 'Role'
   has_many :study_roles
   has_many :batches
   has_many :assigned_batches, class_name: 'Batch', foreign_key: :assignee_id, inverse_of: :assignee
@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
 
   validates_confirmation_of :password, if: :password_required?
 
-  scope :with_login, ->(*logins) { where(login:logins.flatten) }
+  scope :with_login, ->(*logins) { where(login: logins.flatten) }
   scope :all_administrators, -> { joins(:roles).where(roles: { name: 'administrator' }) }
 
   acts_as_authorized_user
@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   end
 
   def user_roles(authorizable_class_name)
-    roles.where(authorizable_type:authorizable_class_name)
+    roles.where(authorizable_type: authorizable_class_name)
   end
 
   def following?(item)
@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
   def projects
     return Project.all if self.is_administrator?
     atuhorized = authorized_projects
-    return Project.all if ( (atuhorized.blank?) && (privileged?) )
+    return Project.all if ((atuhorized.blank?) && (privileged?))
     atuhorized
   end
 
@@ -113,11 +113,11 @@ class User < ActiveRecord::Base
   end
 
   def sorted_project_names_and_ids
-    projects.alphabetical.pluck(:name,:id)
+    projects.alphabetical.pluck(:name, :id)
   end
 
   def sorted_valid_project_names_and_ids
-    valid_projects.pluck(:name,:id)
+    valid_projects.pluck(:name, :id)
   end
 
   def valid_projects
@@ -126,7 +126,7 @@ class User < ActiveRecord::Base
 
 
   def sorted_study_names_and_ids
-    interesting_studies.alphabetical.pluck(:name,:id)
+    interesting_studies.alphabetical.pluck(:name, :id)
   end
 
   def workflow_name
@@ -137,7 +137,7 @@ class User < ActiveRecord::Base
     setting_for?(key)
   end
 
-  def privileged?(item=nil)
+  def privileged?(item = nil)
     manager_or_administrator? || owner?(item)
   end
 

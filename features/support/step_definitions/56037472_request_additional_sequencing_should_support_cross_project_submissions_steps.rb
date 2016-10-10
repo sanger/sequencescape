@@ -5,7 +5,7 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 Given /^I have a multiplexed library tube called "(.*?)"$/ do |name|
-  Purpose.find_by_name('Standard MX').create!(name: name,qc_state: 'pending')
+  Purpose.find_by_name('Standard MX').create!(name: name, qc_state: 'pending')
 end
 
 Then /^the "(.*?)" requests on "(.*?)" should have no study or project$/ do |request_type, asset_name|

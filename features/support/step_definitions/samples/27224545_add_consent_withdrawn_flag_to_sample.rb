@@ -30,8 +30,8 @@ Given /^I try to create a "([^\"]*)" order with the following setup:$/ do |templ
   submission_template = SubmissionTemplate.find_by_name(template_name)
   params = table.rows_hash
   request_options = {}
-  params.each do |k,v|
-    key = k.underscore.gsub(/\W+/,"_")
+  params.each do |k, v|
+    key = k.underscore.gsub(/\W+/, "_")
     request_options[key] = v
   end
 
@@ -81,7 +81,7 @@ Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "(
       target_asset: target_asset,
       request_metadata_attributes: { fragment_size_required_from: 100, fragment_size_required_to: 200, read_length: 76 }
     )
-    #request = FactoryGilr.build :request, :asset => asset, :target_asset => target_asset, :request_type => pipeline.request_type, :pipeline => pipeline
+    # request = FactoryGilr.build :request, :asset => asset, :target_asset => target_asset, :request_type => pipeline.request_type, :pipeline => pipeline
     request.save
     requests << request
   end

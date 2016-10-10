@@ -47,7 +47,7 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
         pipeline: @pulldown_pipeline
       )
 
-      #@request1.request_metadata.bait_library = create(:bait_library)
+      # @request1.request_metadata.bait_library = create(:bait_library)
     end
 
     should 'have a bait library type' do

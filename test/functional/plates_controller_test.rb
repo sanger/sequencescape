@@ -69,7 +69,7 @@ class PlatesControllerTest < ActionController::TestCase
             assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
           end
           should respond_with :redirect
-          should set_flash.to( /Created/)
+          should set_flash.to(/Created/)
         end
 
         context "Create a Plate" do
@@ -308,7 +308,7 @@ class PlatesControllerTest < ActionController::TestCase
               end
             end
             should respond_with :redirect
-            should set_flash.to( /Created/)
+            should set_flash.to(/Created/)
           end
         end
 

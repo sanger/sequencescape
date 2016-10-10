@@ -114,7 +114,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               project: @project,
               workflow: @workflow,
               user: @user,
-              assets: @assets.slice(0,8),
+              assets: @assets.slice(0, 8),
               request_types: @request_type_ids,
               request_options: @request_options
             )
@@ -123,7 +123,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               project: @project_b,
               workflow: @workflow,
               user: @user,
-              assets: @assets.slice(8,8),
+              assets: @assets.slice(8, 8),
               request_types: @request_type_ids,
               request_options: @request_options,
               submission: @xs_mpx_submission
@@ -251,7 +251,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               rows = (0...8).to_a
               used_assets = []
 
-              @assets.group_by { |well| well.map.row }.each do |row,wells|
+              @assets.group_by { |well| well.map.row }.each do |row, wells|
                 assert rows.delete(row).present?, "Row #{row} was unexpected"
                 unique_target_assets = wells.map { |w| w.requests.first.target_asset }.uniq
                 assert_equal unique_target_assets.count, 1

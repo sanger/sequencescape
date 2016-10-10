@@ -123,7 +123,7 @@ Given /^H12 on (the plate .+) is empty$/ do |plate|
   plate.wells.located_at('H12').first.aliquots.clear
 end
 
-def work_pipeline_for(submissions, name, template=nil)
+def work_pipeline_for(submissions, name, template = nil)
   final_plate_type = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template       ||= TransferTemplate.find_by_name('Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
 
@@ -146,7 +146,7 @@ def work_pipeline_for(submissions, name, template=nil)
 end
 
 def finalise_pipeline_for(plate)
-  plate.purpose.connect_requests(plate,'qc_complete')
+  plate.purpose.connect_requests(plate, 'qc_complete')
   plate.wells.each do |well|
     well.requests_as_target.each do |r|
       target_state = r.library_creation? ? 'passed' : 'qc_complete'
@@ -172,7 +172,7 @@ Given /^(all submissions) have been worked until the last plate of the "Illumina
   work_pipeline_for(submissions, 'ILB_STD_PCRXP')
 end
 Given /^(all submissions) have been worked until the last plate of the "Illumina-B HTP" pipeline$/ do |submissions|
-  plate = work_pipeline_for(submissions, 'Lib PCR-XP',TransferTemplate.find_by_name!('Transfer columns 1-1'))
+  plate = work_pipeline_for(submissions, 'Lib PCR-XP', TransferTemplate.find_by_name!('Transfer columns 1-1'))
   finalise_pipeline_for(plate)
 end
 
@@ -181,7 +181,7 @@ Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
 end
 
 Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
-  Plate.find_by(name:name) || raise(ActiveRecord::RecordNotFound, "Could not find Plate names #{name} in #{Plate.all.pluck(:name)}")
+  Plate.find_by(name: name) || raise(ActiveRecord::RecordNotFound, "Could not find Plate names #{name} in #{Plate.all.pluck(:name)}")
 end
 
 Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
@@ -189,7 +189,7 @@ Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
 end
 
 Transform /^the study "([^\"]+)"$/ do |name|
-  Study.find_by!(name:name)
+  Study.find_by!(name: name)
 end
 
 Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|
@@ -205,7 +205,7 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
   results = request_type.requests.all.map do |request|
-    Hash[table.raw.map do |attribute,_|
+    Hash[table.raw.map do |attribute, _|
       [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
     end]
   end.uniq!
@@ -241,7 +241,7 @@ Given /^(the plate .+) will pool into 1 tube$/ do |plate|
   end
 end
 
-Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept,plate_name|
+Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept, plate_name|
   Plate.find_by_name(plate_name).wells.each do |well|
     well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each { |r| assert_equal accept == 'should', r.request_metadata.customer_accepts_responsibility }
   end

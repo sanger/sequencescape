@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class AccessionServiceTest < ActiveSupport::TestCase
 
-  def assert_tag(tag_label,value)
+  def assert_tag(tag_label, value)
     acc = Accessionable::Sample.new(@sample)
     tag = acc.tags.detect { |tag| tag.label == tag_label }
     assert tag, "Could not find #{tag} in #{acc.tags.map(&:label).join(',')}"
@@ -25,7 +25,7 @@ class AccessionServiceTest < ActiveSupport::TestCase
     end
 
     should "expose strain in ERA xml" do
-      assert_tag('strain','my strain')
+      assert_tag('strain', 'my strain')
     end
   end
 
@@ -38,7 +38,7 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
 
     should "expose gender in EGA xml" do
-      assert_tag('gender','male')
+      assert_tag('gender', 'male')
     end
   end
 
@@ -51,11 +51,11 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
 
     should "expose donor_id as subject_id in EGA xml" do
-      assert_tag('subject_id','123456789')
+      assert_tag('subject_id', '123456789')
     end
 
     should "dupe test" do
-      assert_tag('subject_id','123456789')
+      assert_tag('subject_id', '123456789')
     end
   end
 end

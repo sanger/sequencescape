@@ -11,7 +11,7 @@ class Aliquot < ActiveRecord::Base
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
 
-  TAG_COUNT_NAMES = ['Untagged','Single','Dual']
+  TAG_COUNT_NAMES = ['Untagged', 'Single', 'Dual']
 
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
@@ -117,7 +117,7 @@ class Aliquot < ActiveRecord::Base
 
   # return all aliquots originated from the current one
   # ie aliquots sharing the sample, tag information, descending the requess graph
-  def descendants(include_self=false)
+  def descendants(include_self = false)
     (include_self ? self : requests).walk_objects({
       Aliquot => :receptacle,
       Receptacle => [:aliquots, :requests_as_source],
@@ -148,7 +148,7 @@ class Aliquot < ActiveRecord::Base
     when object.bait_library_id.present? && (self.bait_library_id != object.bait_library_id)  then return false # We have different bait libraries
     when self.untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.untagged? && object.no_tag2?                                             then return true # The upstream aliquot was untagged, we don't need to check tags
-    else (object.untagged? || (self.tag_id == object.tag_id)) && (object.no_tag2? || (self.tag2_id == object.tag2_id ))  # Both aliquots are tagged, we need to check if they match
+    else (object.untagged? || (self.tag_id == object.tag_id)) && (object.no_tag2? || (self.tag2_id == object.tag2_id))  # Both aliquots are tagged, we need to check if they match
     end
   end
 

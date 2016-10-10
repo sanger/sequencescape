@@ -45,7 +45,7 @@ class Request::ChangeDecision
   validates_presence_of(:request)
 
   def initialize(attributes)
-    attributes.each { |k,v| self.send(:"#{k}=", v) }
+    attributes.each { |k, v| self.send(:"#{k}=", v) }
   end
 
   def state_change?
@@ -92,7 +92,7 @@ private
   def perform_decision_change_asset_qc_state!
     previous_state = self.request.target_asset.qc_state
     self.request.target_asset.set_qc_state(self.asset_qc_state)
-    #self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
+    # self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
     self.request.target_asset.comments.create!(description: self.comment, user_id: self.user.id)
   end
 

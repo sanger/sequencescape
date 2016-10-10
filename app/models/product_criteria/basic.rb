@@ -19,12 +19,12 @@ class ProductCriteria::Basic
   attr_reader :passed, :params, :comment, :values
   alias_method :passed?, :passed
 
-  Comparison = Struct.new(:method,:message)
+  Comparison = Struct.new(:method, :message)
 
   METHOD_ALIAS = {
-    greater_than: Comparison.new(:>,    '%s too low' ),
+    greater_than: Comparison.new(:>,    '%s too low'),
     less_than: Comparison.new(:<,    '%s too high'),
-    at_least: Comparison.new(:>=,   '%s too low' ),
+    at_least: Comparison.new(:>=,   '%s too low'),
     at_most: Comparison.new(:<=,   '%s too high'),
     equals: Comparison.new(:==,   '%s not suitable'),
     not_equal: Comparison.new(:'!=', '%s not suitable')
@@ -42,11 +42,11 @@ class ProductCriteria::Basic
     end
 
     def headers(configuration)
-      configuration.map { |k,v| k } + [:comment]
+      configuration.map { |k, v| k } + [:comment]
     end
   end
 
-  def initialize(params,well)
+  def initialize(params, well)
     @params = params
     @well_or_metric = well
     @comment = []
@@ -122,7 +122,7 @@ class ProductCriteria::Basic
     GENDER_MARKER_MAPS.values.include?(marker)
   end
 
-  def invalid(attribute,message)
+  def invalid(attribute, message)
     @passed = false
     @comment << message % attribute.to_s.humanize
     @comment.uniq!
@@ -130,17 +130,17 @@ class ProductCriteria::Basic
 
   def assess!
     @passed = true
-    params.each do |attribute,comparisons|
+    params.each do |attribute, comparisons|
       value = fetch_attribute(attribute)
       values[attribute] = value
 
       if value.blank? && comparisons.present?
-        invalid(attribute,'%s has not been recorded')
+        invalid(attribute, '%s has not been recorded')
         next
       end
 
-      comparisons.each do |comparison,target|
-        value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison))
+      comparisons.each do |comparison, target|
+        value.send(method_for(comparison), target) || invalid(attribute, message_for(comparison))
       end
     end
   end

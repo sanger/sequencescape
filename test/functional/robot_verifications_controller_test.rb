@@ -32,11 +32,11 @@ class RobotVerificationsControllerTest < ActionController::TestCase
     context "#download" do
       setup do
         @expected_layout = [{ "142334" => 1 }, { "127168" => 3, "134443" => 4, "127162" => 1, "127167" => 2 }]
-        @expected_layout[0].each do |barcode,bed_number|
+        @expected_layout[0].each do |barcode, bed_number|
           @robot.robot_properties.create(key: "DEST#{bed_number}", value: "5")
         end
         count = 1;
-        @expected_layout[1].each do |barcode,bed_number|
+        @expected_layout[1].each do |barcode, bed_number|
           @robot.robot_properties.create(key: "SCRC#{bed_number}", value: bed_number)
           @source_plate = FactoryGirl.create :plate, barcode: barcode
           well = FactoryGirl.create :well, map_id: Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id

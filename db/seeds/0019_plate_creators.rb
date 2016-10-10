@@ -33,7 +33,7 @@ ActiveRecord::Base.transaction do
     ]
 
 
-  purposes_config.each do |creator,purpose|
+  purposes_config.each do |creator, purpose|
     creator.parent_plate_purposes << purpose
   end
 

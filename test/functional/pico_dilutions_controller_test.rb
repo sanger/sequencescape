@@ -20,8 +20,8 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         @pico_dilution_plate = FactoryGirl.create :pico_dilution_plate, barcode: "2222"
         @assay_plate_a = FactoryGirl.create :pico_assay_a_plate, barcode: "9999"
         @assay_plate_b = FactoryGirl.create :pico_assay_b_plate, barcode: "8888"
-        AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_a)
-        AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_b)
+        AssetLink.create_edge!(@pico_dilution_plate, @assay_plate_a)
+        AssetLink.create_edge!(@pico_dilution_plate, @assay_plate_b)
       end
 
       context "#index" do
@@ -77,12 +77,12 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         @sequenom_plate_a = create :sequenom_qc_plate, barcode: "7777", name: 'a'
         @sequenom_plate_b = create :sequenom_qc_plate, barcode: "6666", name: 'b'
 
-        AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_a)
-        AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_b)
-        AssetLink.create_edge!(@working_dilution_plate_a,@sequenom_plate_a)
-        AssetLink.create_edge!(@working_dilution_plate_b,@sequenom_plate_b)
-        AssetLink.create_edge!(@sequenom_plate_b,@assay_plate_c) # Ignore indirect links
-        AssetLink.create_edge!(@assay_plate_a,@assay_plate_d) # Ignore indirect children
+        AssetLink.create_edge!(@working_dilution_plate_a, @assay_plate_a)
+        AssetLink.create_edge!(@working_dilution_plate_a, @assay_plate_b)
+        AssetLink.create_edge!(@working_dilution_plate_a, @sequenom_plate_a)
+        AssetLink.create_edge!(@working_dilution_plate_b, @sequenom_plate_b)
+        AssetLink.create_edge!(@sequenom_plate_b, @assay_plate_c) # Ignore indirect links
+        AssetLink.create_edge!(@assay_plate_a, @assay_plate_d) # Ignore indirect children
       end
 
       context "#index" do

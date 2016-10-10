@@ -32,7 +32,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
 
   def association_from(request)
     association = request.target.send(@association)
-    association = @options[:scoped].split('.').inject(association) { |c,m| c.send(m) } if @options.key?(:scoped)
+    association = @options[:scoped].split('.').inject(association) { |c, m| c.send(m) } if @options.key?(:scoped)
     association
   end
   private :association_from
@@ -75,8 +75,8 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
           actions(
             count_of_pages(association),
             options.merge(target: object)
-          ).map do |action,url|
-            action_stream.attribute(action,url)
+          ).map do |action, url|
+            action_stream.attribute(action, url)
           end
         end
       end

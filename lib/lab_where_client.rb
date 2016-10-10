@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
@@ -27,13 +27,13 @@ module LabWhereClient
     end
 
     def get(instance, target)
-      parse_json(RestClient.get(path_to(instance,target)))
+      parse_json(RestClient.get(path_to(instance, target)))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end
 
     def post(instance, target, payload)
-      parse_json(RestClient.post(path_to(instance,target), payload))
+      parse_json(RestClient.post(path_to(instance, target), payload))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     rescue RestClient::UnprocessableEntity => e
@@ -41,7 +41,7 @@ module LabWhereClient
     end
 
     def put(instance, target, payload)
-      parse_json(RestClient.put(path_to(instance,target), payload))
+      parse_json(RestClient.put(path_to(instance, target), payload))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end

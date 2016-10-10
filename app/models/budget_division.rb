@@ -7,10 +7,10 @@
 class BudgetDivision < ActiveRecord::Base
   extend Attributable::Association::Target
 
-  validates_presence_of  :name
+  validates_presence_of :name
   has_many :project
 
-  validates_presence_of  :name
+  validates_presence_of :name
   validates_uniqueness_of :name, message: "of budget division already present in database"
 
 

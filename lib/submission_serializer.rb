@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
@@ -20,8 +20,8 @@
 
 module SubmissionSerializer
 
-  STRAIGHT_CLONE = ['name','submission_class_name']
-  SP_STRAIGHT_CLONE = [:info_differential,:asset_input_methods,:request_options]
+  STRAIGHT_CLONE = ['name', 'submission_class_name']
+  SP_STRAIGHT_CLONE = [:info_differential, :asset_input_methods, :request_options]
 
   def self.serialize(st)
     attributes = st.attributes
@@ -45,7 +45,7 @@ module SubmissionSerializer
    end
 
    if ensp[:request_options] && ensp[:request_options][:initial_state]
-     new_initial = Hash[ensp[:request_options][:initial_state].map { |k,v| [RequestType.find(k).key,v] }]
+     new_initial = Hash[ensp[:request_options][:initial_state].map { |k, v| [RequestType.find(k).key, v] }]
      ensp[:request_options][:initial_state] = new_initial
    end
 
@@ -64,8 +64,8 @@ module SubmissionSerializer
      st[key.to_sym] = hash[key.to_sym]
     end
 
-    st[:product_line_id] = ProductLine.find_or_create_by(name:hash[:product_line]).id if hash[:product_line]
-    st[:product_catalogue_id] = ProductCatalogue.find_or_create_by(name:hash[:product_catalogue]).id if hash[:product_catalogue]
+    st[:product_line_id] = ProductLine.find_or_create_by(name: hash[:product_line]).id if hash[:product_line]
+    st[:product_catalogue_id] = ProductCatalogue.find_or_create_by(name: hash[:product_catalogue]).id if hash[:product_catalogue]
     st[:superceded_by_id] = hash.has_key?(:superceded_by) ? SubmissionTemplate.find_by_name(hash[:superceded_by]).try(:id) || -2 : hash[:superceded_by_id] || -1
     st[:superceded_at] =  DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
 
@@ -77,13 +77,13 @@ module SubmissionSerializer
     end
 
     if sp[:request_options] && sp[:request_options][:initial_state]
-     new_initial = Hash[sp[:request_options][:initial_state].map { |k,v| [RequestType.find_by_key(k).id,v] }]
+     new_initial = Hash[sp[:request_options][:initial_state].map { |k, v| [RequestType.find_by_key(k).id, v] }]
      sp[:request_options][:initial_state] = new_initial
     end
 
     sp[:request_type_ids_list] = ensp[:request_types].map { |rtk| [RequestType.find_by_key!(rtk).id] }
     sp[:workflow_id] = Submission::Workflow.find_by_key!(ensp[:workflow]).id if ensp[:workflow]
-    sp[:order_role_id] = Order::OrderRole.find_or_create_by(role:ensp[:order_role]).id if ensp[:order_role]
+    sp[:order_role_id] = Order::OrderRole.find_or_create_by(role: ensp[:order_role]).id if ensp[:order_role]
 
     SubmissionTemplate.create!(st)
   end

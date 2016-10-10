@@ -1,10 +1,10 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2013,2014 Genome Research Ltd.
 module Hiseq2500Helper
 
-  def self.create_request_type(pl, ended='paired')
+  def self.create_request_type(pl, ended = 'paired')
     RequestType.create!(
         key: "illumina_#{pl}_hiseq_2500_#{ended}_end_sequencing",
         name: "Illumina-#{pl.upcase} HiSeq 2500 #{ended.titleize} end sequencing",
@@ -45,16 +45,16 @@ module Hiseq2500Helper
     rts << [library_request_type(settings).id] << [sequencing_request_type(settings).id]
   end
 
-  def self.input_fields(sizes,libraries)
+  def self.input_fields(sizes, libraries)
     [
-          FieldInfo.new(kind: "Text",default_value: "",parameters: {},display_name: "Fragment size required (from)",key: "fragment_size_required_from"),
-          FieldInfo.new(kind: "Text",default_value: "",parameters: {},display_name: "Fragment size required (to)",key: "fragment_size_required_to"),
+          FieldInfo.new(kind: "Text", default_value: "", parameters: {}, display_name: "Fragment size required (from)", key: "fragment_size_required_from"),
+          FieldInfo.new(kind: "Text", default_value: "", parameters: {}, display_name: "Fragment size required (to)", key: "fragment_size_required_to"),
           FieldInfo.new(
-            kind: "Selection",default_value: "Standard",parameters: { selection: libraries },
+            kind: "Selection", default_value: "Standard", parameters: { selection: libraries },
             display_name: "Library type",
             key: "library_type"
           ),
-          FieldInfo.new(kind: "Selection",default_value: sizes.last,parameters: { selection: sizes },display_name: "Read length",key: "read_length")
+          FieldInfo.new(kind: "Selection", default_value: sizes.last, parameters: { selection: sizes }, display_name: "Read length", key: "read_length")
         ]
   end
 

@@ -20,7 +20,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
     resource_test(
       'user', {
         ignore_actions: ['update'],
-        actions: ['show','edit','index'],
+        actions: ['show', 'edit', 'index'],
         formats: ['html'],
         defaults: { login: "abc1234" },
         user: -> { FactoryGirl.create(:admin) },

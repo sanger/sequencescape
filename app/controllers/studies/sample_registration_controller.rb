@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Studies::SampleRegistrationController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :load_study
 
@@ -16,7 +16,7 @@ class Studies::SampleRegistrationController < ApplicationController
   def create
     # We have to remap the contents of the 'sample_registrars' parameter from a hash to an array, because
     # that's what it actually is: a map from index to attributes for that SampleRegistrar instance.
-    attributes = clean_params_from_check(params['sample_registrars']).inject([]) do |attributes,(index_as_string,parameters)|
+    attributes = clean_params_from_check(params['sample_registrars']).inject([]) do |attributes, (index_as_string, parameters)|
       attributes[index_as_string.to_i] = parameters.merge(study: @study, user: current_user)
       attributes
     end.compact
@@ -54,7 +54,7 @@ class Studies::SampleRegistrationController < ApplicationController
   end
 
   def upload
-    @workflow = @current_user.workflow if ! @current_user.nil? && ! @current_user.workflow.nil?
+    @workflow = @current_user.workflow if !@current_user.nil? && !@current_user.workflow.nil?
   end
 
 private

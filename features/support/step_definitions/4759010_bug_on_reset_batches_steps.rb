@@ -46,7 +46,7 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
   end
 
 
-  pipeline = Pipeline.find_by_name("Cluster formation PE") or raise StandardError, "Cannot find pipeline '#{ name }'"
+  pipeline = Pipeline.find_by_name("Cluster formation PE") or raise StandardError, "Cannot find pipeline '#{name}'"
 
   request  = FactoryGirl.create :request, request_type: pipeline.request_types.last, submission_id: submission.id, asset: FactoryGirl.create(asset_type)
   request.asset.location = pipeline.location

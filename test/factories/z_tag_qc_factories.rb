@@ -28,7 +28,7 @@ FactoryGirl.define do
   end
 
   factory :qcable_creator do |qcable_creator|
-    count    0
+    count 0
     user
     lot
   end
@@ -72,6 +72,6 @@ FactoryGirl.define do
     name      "testtemplate2"
     value     96
     size      96
-    wells    { [create(:well_with_sample_and_without_plate,map: create(:map))] }
+    wells    { [create(:well_with_sample_and_without_plate, map: create(:map))] }
   end
 end

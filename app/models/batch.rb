@@ -74,7 +74,7 @@ class Batch < ActiveRecord::Base
   include ::Batch::TecanBehaviour
 
   # Named scope for search by query string behavior
- scope :for_search_query, ->(query,with_includes) {
+ scope :for_search_query, ->(query, with_includes) {
     conditions = ['id=?', query]
     if user = User.find_by_login(query)
       conditions = ['user_id=?', user.id]
@@ -83,11 +83,11 @@ class Batch < ActiveRecord::Base
   }
 
   scope :includes_for_ui,    -> { limit(5).includes(:user) }
-  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil   ).latest_first }
-  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil   ).latest_first }
-  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil   ).latest_first }
-  scope :failed_for_ui,      -> { where(                       production_state: 'fail').latest_first }
-  scope :in_progress_for_ui, -> { where(state: 'started',   production_state: nil   ).latest_first }
+  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
+  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
+  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
+  scope :failed_for_ui,      -> { where(production_state: 'fail').latest_first }
+  scope :in_progress_for_ui, -> { where(state: 'started',   production_state: nil).latest_first }
 
   scope :latest_first,       -> { order('created_at DESC') }
   scope :most_recent,     ->(number) { latest_first.limit(number) }
@@ -95,7 +95,7 @@ class Batch < ActiveRecord::Base
   delegate :size, to: :requests
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
-  def fail(reason, comment, ignore_requests=false)
+  def fail(reason, comment, ignore_requests = false)
     # We've deprecated the ability to fail a batch but not its requests.
     # Keep this check here until we're sure we haven't missed anything.
     raise StandardError, "Can not fail batch without failing requests" if ignore_requests
@@ -114,7 +114,7 @@ class Batch < ActiveRecord::Base
   end
 
   # Fail specific items on this batch
-  def fail_batch_items(requests, reason, comment, fail_but_charge=false)
+  def fail_batch_items(requests, reason, comment, fail_but_charge = false)
     checkpoint = true
 
     requests.each do |key, value|
@@ -275,7 +275,7 @@ class Batch < ActiveRecord::Base
     mpx_name = ""
     if self.multiplexed? && self.requests.size > 0
       mpx_library_tube = self.requests[0].target_asset.child
-      if ! mpx_library_tube.nil?
+      if !mpx_library_tube.nil?
         mpx_name = mpx_library_tube.name
       end
     end
@@ -318,7 +318,7 @@ class Batch < ActiveRecord::Base
       barcode = barcodes["#{request.position}"]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
-          self.errors.add(:base,"The tube at position #{request.position} is incorrect.")
+          self.errors.add(:base, "The tube at position #{request.position} is incorrect.")
         end
       end
     end
@@ -339,7 +339,7 @@ class Batch < ActiveRecord::Base
   end
 
   # Remove the request from the batch and remove asset information
-  def remove_request_ids(request_ids, reason=nil, comment=nil)
+  def remove_request_ids(request_ids, reason = nil, comment = nil)
     ActiveRecord::Base.transaction do
       request_ids.each do |request_id|
         request = Request.find(request_id)
@@ -354,14 +354,14 @@ class Batch < ActiveRecord::Base
 
   # Remove a request from the batch and reset it to a point where it can be put back into
   # the pending queue.
-  def detach_request(request, current_user=nil)
+  def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
       request.add_comment("Used to belong to Batch #{self.id} removed at #{Time.now()}", current_user) unless current_user.nil?
       self.pipeline.detach_request_from_batch(self, request)
     end
   end
 
-  def return_request_to_inbox(request, current_user=nil)
+  def return_request_to_inbox(request, current_user = nil)
     ActiveRecord::Base.transaction do
       request.add_comment("Used to belong to Batch #{self.id} returned to inbox unstarted at #{Time.now}", current_user) unless current_user.nil?
       request.return_pending_to_inbox!
@@ -382,7 +382,7 @@ class Batch < ActiveRecord::Base
       end
 
       if requests.last.submission_id.present?
-        Request.where(submission_id: requests.last.submission_id,state: 'pending').
+        Request.where(submission_id: requests.last.submission_id, state: 'pending').
           where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
             request.asset_id = nil
             request.save!
@@ -492,13 +492,13 @@ class Batch < ActiveRecord::Base
   end
 
   def pulldown_batch_report
-    report_data = CSV.generate( row_sep: "\r\n") do |csv|
+    report_data = CSV.generate(row_sep: "\r\n") do |csv|
       csv << pulldown_report_headers
 
       self.requests.each do |request|
         raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
         well = request.asset
-        #TODO[mb14] DRY it
+        # TODO[mb14] DRY it
         tagged_well = well
         while transfer_requests = tagged_well.requests.select { |r| r.is_a?(TransferRequest) } and transfer_requests.size == 1
           target_well = transfer_requests.first.target_asset
@@ -533,7 +533,7 @@ class Batch < ActiveRecord::Base
   end
 
   def pulldown_report_headers
-    ['Plate', 'Well', 'Study','Pooled Tube', 'Tag Group', 'Tag', 'Expected Sequence', 'Sample Name', 'Measured Volume', 'Measured Concentration']
+    ['Plate', 'Well', 'Study', 'Pooled Tube', 'Tag Group', 'Tag', 'Expected Sequence', 'Sample Name', 'Measured Volume', 'Measured Concentration']
   end
 
   def show_actions?

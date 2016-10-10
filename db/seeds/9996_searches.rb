@@ -22,15 +22,15 @@ Search::FindPulldownPlatesForUser.create!(name: 'Find pulldown plates for user')
 Search::FindPulldownStockPlates.create!(name: 'Find pulldown stock plates')
 Search::FindIlluminaAPlates.create!(name: 'Find Illumina-A plates')
 Search::FindIlluminaAStockPlates.create!(name: 'Find Illumina-A stock plates')
-Search::FindIlluminaCTubes.create!(name: 'Find Illumina-C tubes' )
+Search::FindIlluminaCTubes.create!(name: 'Find Illumina-C tubes')
 Search::FindIlluminaCPlates.create!(name: 'Find Illumina-C plates')
 Search::FindLotByLotNumber.create!(name: 'Find lot by lot number')
 Search::FindQcableByBarcode.create!(name: 'Find qcable by barcode')
 Search::FindRobotByBarcode.create!(name: 'Find robot by barcode')
 Search::FindLotByBatchId.create!(name: 'Find lot by batch id')
-plate_purposes = Purpose.where(name:['ILC Stock',
+plate_purposes = Purpose.where(name: ['ILC Stock',
       'ILC AL Libs',
       'ILC Lib PCR',
       'ILC Lib PCR-XP',
       'ILC AL Libs Tagged']).pluck(:id)
-Search::FindPlatesForUser.create!(name:"Find Illumina-C plates for user",default_parameters:{ plate_purpose_ids:plate_purposes,limit:30,include_used:true })
+Search::FindPlatesForUser.create!(name: "Find Illumina-C plates for user", default_parameters: { plate_purpose_ids: plate_purposes, limit: 30, include_used: true })

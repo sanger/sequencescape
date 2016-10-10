@@ -6,8 +6,8 @@
 
 class GenerateManifestsTask < Task
 
-  def self.generate_manifests(batch,study)
-    ManifestGenerator.generate_manifests(batch,study)
+  def self.generate_manifests(batch, study)
+    ManifestGenerator.generate_manifests(batch, study)
   end
 
   def partial

@@ -1,5 +1,5 @@
 #!/usr/bin/env script/runner
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2011,2012 Genome Research Ltd.
@@ -47,7 +47,7 @@ end
       nil
     end
   end
-#TODO put in a module
+# TODO put in a module
 class Renderer
   def render(objects, options, &block)
          render_objects(objects.walk_objects(options, &block))
@@ -67,7 +67,7 @@ end
 
 
 class GraphRenderer < Renderer
-  def initialize(rankdir="LR")
+  def initialize(rankdir = "LR")
     @rankdir = rankdir
   end
 
@@ -94,7 +94,7 @@ class GraphRenderer < Renderer
     edges.each do |edge|
       nodes << edge.parent
       nodes << edge.object unless edge.is_a?(HiddenEdge) or edge.is_a?(Ellipsis) or edge.is_a?(CutEdge)
-      #nodes << edge.object unless edge.is_a?(HiddenEdge) or edge.is_a?(Ellipsis)
+      # nodes << edge.object unless edge.is_a?(HiddenEdge) or edge.is_a?(Ellipsis)
     end
     return nodes.to_a.compact
   end
@@ -104,13 +104,13 @@ class GraphRenderer < Renderer
 
 
       layouts.each do |layout|
-        #layout.transform!(nodes, edges).each { |e| graph << e }
+        # layout.transform!(nodes, edges).each { |e| graph << e }
       end
 
       drawn_nodes = add_nodes(graph, nodes, edges)
       add_edges(graph, drawn_nodes, edges)
 
-      #hack
+      # hack
       all_requests = drawn_nodes.select { |n| n.is_a?(Request) }
       all_requests = []
 
@@ -129,7 +129,7 @@ class GraphRenderer < Renderer
   end
 
   def add_nodes(graph, major_nodes, edges)
-    #normal node
+    # normal node
     hidden = Set.new()
     normal = Set.new()
     cut = Set.new()
@@ -174,7 +174,7 @@ class GraphRenderer < Renderer
         end
         next unless dot_node
          if @root_object.include?(node)
-           dot_node.options.merge!( "penwidth" => "5")
+           dot_node.options.merge!("penwidth" => "5")
          end
         graph << dot_node
       end
@@ -241,23 +241,23 @@ class Edge
   attr_reader :parent, :object, :index, :max_index
   def initialize(*args)
     @parent, @object, @index, @max_index = args
-    #if @parent and @parent.is_a?(Request)
-      #request = @parent
-      #@name = request.class.name
-      #if @object == request.asset
-        #@parent = request.target_asset
-      #elsif @object == request.target_asset
-        #@parent = request.asset
-      #end
-    #elsif @object and @object.is_a?(Request) and (not @parent or @parent.is_a?(Asset))
-      #request = @object
-      #@name = request.class.name
-      #if @parent == request.asset
-        #@object = request.target_asset
-      #elsif parent == request.target_asset
-        #@object = request.asset
-      #end
-    #end
+    # if @parent and @parent.is_a?(Request)
+      # request = @parent
+      # @name = request.class.name
+      # if @object == request.asset
+        # @parent = request.target_asset
+      # elsif @object == request.target_asset
+        # @parent = request.asset
+      # end
+    # elsif @object and @object.is_a?(Request) and (not @parent or @parent.is_a?(Asset))
+      # request = @object
+      # @name = request.class.name
+      # if @parent == request.asset
+        # @object = request.target_asset
+      # elsif parent == request.target_asset
+        # @object = request.asset
+      # end
+    # end
   end
 
   def label()
@@ -303,7 +303,7 @@ class Edge
       { "style" => "dashed", "dir" => "both" }.merge(
         { "arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name }
       )
-      #Aliquot
+      # Aliquot
     when object.is_a?(Aliquot) && parent.is_a?(Asset)
         { "arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both" }
     when parent.is_a?(Aliquot) && object.is_a?(Asset)
@@ -341,7 +341,7 @@ end
 
 class Ellipsis < CutEdge
   def label
-     #"#{[max_index+1-3, 1].max} x #{object.class.name}"
+     # "#{[max_index+1-3, 1].max} x #{object.class.name}"
      " ... x #{object.class.name}"
   end
 end
@@ -350,24 +350,24 @@ class NodeToCluster
   def initialize(*args)
     @classes = args
   end
-  #we could return new nodes and edges, but we modify them instead ... evil
+  # we could return new nodes and edges, but we modify them instead ... evil
   def  transform!(nodes, edges)
     clusters = []
     selected_nodes = nodes.select { |n| @classes.any? { |c| n.is_a?(c) } }
 
-    #create a cluster for each node
-    selected_nodes.each do | node|
+    # create a cluster for each node
+    selected_nodes.each do |node|
       cluster_name = "luster_#{node.node_name}"
       cluster = DOT::Subgraph.new("name" => cluster_name, "label" => node.node_name, "fillcolor" => "yellow", "color" => "lightcyan", "style" => "filled")
       cluster << DOT::Node.new("name" => node.node_name)
       clusters << cluster
-      #node.instance_eval "def node_name(); '#{cluster_name}'; end"
+      # node.instance_eval "def node_name(); '#{cluster_name}'; end"
 
         edges.each do |edge|
         next if edge.is_a?(HiddenEdge)
-          #debugger  if edge.parent == node
+          # debugger  if edge.parent == node
 
-          #i edge.parent == node and edge.object and nodes.include?(edge.object) #!edge.is_a?(HiddenEdge)
+          # i edge.parent == node and edge.object and nodes.include?(edge.object) #!edge.is_a?(HiddenEdge)
           if edge.parent == node and edge.object and !edge.is_a?(HiddenEdge)
             cluster << DOT::Node.new("name" => edge.object.node_name)
           else if edge.object == node and edge.parent and !edge.is_a?(HiddenEdge)
@@ -419,7 +419,7 @@ Models = {
   Asset => [:requests, :children, :parents],
   Well => [:container_association],
   ContainerAssociation => [:container, :content],
-  Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
+  Request => [:submission, :asset, :item,  :target_asset, :request_metadata, :user],
   Submission => [:asset_group]
 ),
   asset_up_and_down: [AssetUp, AssetDown],
@@ -459,7 +459,7 @@ optparse = OptionParser.new do |opts|
     $objects << [Submission, submission]
   end
 
-  opts.on('-rt','--request_type', 'request types') do |request_types|
+  opts.on('-rt', '--request_type', 'request types') do |request_types|
     $objects << [RequestType, request_types]
   end
 
@@ -496,7 +496,7 @@ def set_graph_filter_option(type)
                              # things been removed
                              RubyWalk::Cut.new(Ellipsis.new(parent, object, index, max_index))
                            else
-                             Edge.new(parent, object, index, max_index) if [0,max_index].include?(index) or not parent
+                             Edge.new(parent, object, index, max_index) if [0, max_index].include?(index) or not parent
                            end
                          end
                        when "3center"
@@ -507,13 +507,13 @@ def set_graph_filter_option(type)
                            case index || kept_index
                            when kept_index
                              Edge.new(parent, object, index, max_index)
-                           when 0,max_index
+                           when 0, max_index
                                # things been removed
-                               #RubyWalk::Cut.new({ parent => [object, object.class.name]})
-                               RubyWalk::Cut.new(CutEdge.new(parent,object, index, max_index))
+                               # RubyWalk::Cut.new({ parent => [object, object.class.name]})
+                               RubyWalk::Cut.new(CutEdge.new(parent, object, index, max_index))
                            when 2
-                               #RubyWalk::Cut.new({ parent => [object, "..."]})
-                               RubyWalk::Cut.new(Ellipsis.new(parent,object, index, max_index))
+                               # RubyWalk::Cut.new({ parent => [object, "..."]})
+                               RubyWalk::Cut.new(Ellipsis.new(parent, object, index, max_index))
                            else
                                RubyWalk::Cut.new(HiddenEdge.new(parent, object, index, max_index))
                            end
@@ -529,7 +529,7 @@ def load_objects(objects)
     model, name = object
     name.split(",").each do |name|
       if name =~ /\A\d+\Z/
-        #name is an id
+        # name is an id
         object =  model.find_by_id(name)
       elsif name =~ /\A:(first|last)\Z/
         object = model.find(name)
@@ -548,13 +548,13 @@ def load_objects(objects)
 end
 
 def object_to_hash(object)
-  att = object.attributes.reject { |k,v| [:created_at, :updated_at].include?(k.to_sym) }
-  att.each do |k,v|
+  att = object.attributes.reject { |k, v| [:created_at, :updated_at].include?(k.to_sym) }
+  att.each do |k, v|
     if k =~ /name|login|email|decription|abstract|title/i and v.is_a?(String) and (k !~ /class_?name/)
       att[k] = "#{object.class.name}_#{object.id}_#{k}"
     end
   end
-  att.reject { |k,v| !v }
+  att.reject { |k, v| !v }
 end
 
 def find_model(model_name)
@@ -565,8 +565,8 @@ end
 
 ARGV.shift  # to remove the -- needed using script/runner
 optparse.parse!
-#puts $options.to_yaml
-#puts $objects.to_yaml
+# puts $options.to_yaml
+# puts $objects.to_yaml
 #
 
 #---------------
@@ -582,9 +582,9 @@ class ActiveRecord::Base
   end
 end
 
-[Submission, Project,Study, Tag].each do |klass|
+[Submission, Project, Study, Tag].each do |klass|
   klass.class_eval do
-    #include ProjectLike
+    # include ProjectLike
   def node_options_with_lyellow()
     node_options_without_lyellow.merge("shape" => "note", "fillcolor" => "lightyellow")
   end
@@ -680,7 +680,7 @@ class Request
     { "passed" => "green4", "failed" => "firebrick4", "pending" => "dodgerblue4", "started" => "darkorchid4" }.fetch(state, "gray22")
   end
   def node_options_with_state_color()
-    node_options_without_state_color.merge("fontcolor" => color() )
+    node_options_without_state_color.merge("fontcolor" => color())
   end
   alias_method_chain :node_options, :state_color
 end

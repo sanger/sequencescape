@@ -20,7 +20,7 @@ class QcReport::File
 
   attr_reader :errors, :filename, :mime_type
 
-  def initialize(file,set_decision,filename=nil,mime_type=ACCEPTED_MIMETYPE)
+  def initialize(file, set_decision, filename = nil, mime_type = ACCEPTED_MIMETYPE)
     @file = file
     @filename = filename || File.basename(file.path)
     @mime_type = mime_type
@@ -73,7 +73,7 @@ class QcReport::File
   # This should ONLY be called after the headers have been read out.
   # This puts the column headers at the top of the remaining csv file
   def body_csv
-    @body_csv ||= CSV.new(@file,headers: :first_row, header_converters: [:symbol] )
+    @body_csv ||= CSV.new(@file, headers: :first_row, header_converters: [:symbol])
   end
 
   def each_group_of_decisions
@@ -119,7 +119,7 @@ class QcReport::File
   # as it should be a bit faster to capture the most common problems (ie. uploading an xls)
   # The FasterCSV read-mes even indicate that its pretty poor at handling invalid CSVs.
   def is_a_csv?
-    File.extname(filename).gsub('.','') == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
+    File.extname(filename).gsub('.', '') == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
   end
 
   def is_a_report?

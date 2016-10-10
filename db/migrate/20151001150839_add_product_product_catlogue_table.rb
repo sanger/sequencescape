@@ -18,13 +18,13 @@ class AddProductProductCatlogueTable < ActiveRecord::Migration
       t.string  :selection_criterion
       t.timestamps
     end
-    add_constraint('product_product_catalogues','products')
-    add_constraint('product_product_catalogues','product_catalogues')
+    add_constraint('product_product_catalogues', 'products')
+    add_constraint('product_product_catalogues', 'product_catalogues')
   end
 
   def self.down
-    drop_constraint('product_product_catalogues','products')
-    drop_constraint('product_product_catalogues','product_catalogues')
+    drop_constraint('product_product_catalogues', 'products')
+    drop_constraint('product_product_catalogues', 'product_catalogues')
     drop_table :product_product_catalogues
   end
 end

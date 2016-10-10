@@ -16,8 +16,8 @@ class Task < ActiveRecord::Base
 
   # BEGIN descriptor_to_attribute, could be move into a mixin
 
-  #TODO move into SetDescriptorsTask
-  def get_descriptor_value(name, default=nil)
+  # TODO move into SetDescriptorsTask
+  def get_descriptor_value(name, default = nil)
     name_s = name.to_s
     self.descriptors.each do |desc|
       if desc.name.eql?(name_s)
@@ -27,7 +27,7 @@ class Task < ActiveRecord::Base
     return default
   end
 
-  def set_descriptor_value(name, value, kind=nil)
+  def set_descriptor_value(name, value, kind = nil)
     name_s = name.to_s
     self.descriptors.each do |desc|
       if desc.name.eql?(name_s)
@@ -42,7 +42,7 @@ class Task < ActiveRecord::Base
 
   # BEGIN subclass_to_attribute, could be move into a mixin
   has_many :subclass_attributes, as: :attributable, dependent: :destroy, autosave: true
-  def get_subclass_attribute_value(name, default=nil)
+  def get_subclass_attribute_value(name, default = nil)
     name_s = name.to_s
     self.subclass_attributes.each do |desc|
       if desc.name.eql?(name_s)
@@ -52,7 +52,7 @@ class Task < ActiveRecord::Base
     return default
   end
 
-  def set_subclass_attribute_value(name, value, kind=nil)
+  def set_subclass_attribute_value(name, value, kind = nil)
     name_s = name.to_s
     self.subclass_attributes.each do |desc|
       if desc.name.eql?(name_s)

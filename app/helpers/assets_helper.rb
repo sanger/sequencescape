@@ -18,7 +18,7 @@ module AssetsHelper
     elsif plate_layout.bad_well_at?(row, column)
       ["Error", "#{well[:error]}", ""]
     else
-      raise StandardError, "Unknown well status ((#{ plate_layout.location_for_well_at(row, column) }) = #{ plate_layout.well_at(row, column).inspect })"
+      raise StandardError, "Unknown well status ((#{plate_layout.location_for_well_at(row, column)}) = #{plate_layout.well_at(row, column).inspect})"
     end
   end
 
@@ -66,7 +66,7 @@ module AssetsHelper
     return false unless asset.is_sequenceable?                      # Asset must be sequenceable ...
     return true if current_user.is_administrator?                   # ... user could be an administrator ...
     return true if current_user.is_manager?
-    #asset.studies.any? { |study| current_user.is_manager?(study) }  # ... or a manager of any study related to the asset
+    # asset.studies.any? { |study| current_user.is_manager?(study) }  # ... or a manager of any study related to the asset
   end
 
   # Returns true if the current user can request an additional library on the asset, otherwise false

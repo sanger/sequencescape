@@ -26,7 +26,7 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
 
   context "A QcReportPresenter" do
 
-    STATE_ARRAY = ['passed','failed']
+    STATE_ARRAY = ['passed', 'failed']
 
     setup do
       @product = create :product, name: 'Demo Product'
@@ -37,7 +37,7 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
       end
       @asset_ids = []
       2.times do |i|
-        m = create :qc_metric, qc_report: @report, qc_decision: STATE_ARRAY[i], metrics: { total_micrograms: 10,comment: 'X',sanger_sample_id: 'EG' }
+        m = create :qc_metric, qc_report: @report, qc_decision: STATE_ARRAY[i], metrics: { total_micrograms: 10, comment: 'X', sanger_sample_id: 'EG' }
         @asset_ids << m.asset_id
       end
     end

@@ -19,7 +19,7 @@ class Tag2LayoutTemplate < ActiveRecord::Base
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
-    Tag2Layout.create!(attributes.merge(default_attributes),&block)
+    Tag2Layout.create!(attributes.merge(default_attributes), &block)
   end
 
   def stamp_to(_)
@@ -29,6 +29,6 @@ class Tag2LayoutTemplate < ActiveRecord::Base
   private
 
   def default_attributes
-    { tag: tag,layout_template: self }
+    { tag: tag, layout_template: self }
   end
 end

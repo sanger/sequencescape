@@ -27,7 +27,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       setup do
         @well_attribute = create :well_attribute, concentration: 800, measured_volume: 200
         @well = create :well, well_attribute: @well_attribute
-        @criteria = ProductCriteria::Advanced.new(@params,@well)
+        @criteria = ProductCriteria::Advanced.new(@params, @well)
       end
 
       should '#qc_decision should return "passed"' do
@@ -40,12 +40,12 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       setup do
         @well_attribute = create :well_attribute, concentration: 200, measured_volume: 50
         @well = create :well, well_attribute: @well_attribute
-        @criteria = ProductCriteria::Advanced.new(@params,@well)
+        @criteria = ProductCriteria::Advanced.new(@params, @well)
       end
 
       should '#qc_decision should return "failed"' do
         assert_equal 'failed', @criteria.qc_decision, 'Well passed when it should have failed'
-        assert_equal ['Concentration too low','Measured volume too low'], @criteria.comment
+        assert_equal ['Concentration too low', 'Measured volume too low'], @criteria.comment
       end
     end
 
@@ -53,7 +53,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       setup do
         @well_attribute = create :well_attribute, concentration: 1, measured_volume: 30000
         @well = create :well, well_attribute: @well_attribute
-        @criteria = ProductCriteria::Advanced.new(@params,@well)
+        @criteria = ProductCriteria::Advanced.new(@params, @well)
       end
 
       should '#qc_decision should return "unprocessable"' do

@@ -28,7 +28,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
     end
 
     context 'with invalid behaviour' do
-      should 'reject non-existant behaviours'do
+      should 'reject non-existant behaviours' do
         assert_raise(ActiveRecord::RecordInvalid) do
           create :product_catalogue, selection_behaviour: 'InvalidSelectionBehaviour'
         end

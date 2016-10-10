@@ -26,14 +26,14 @@ module LabelPrinter
       def tubes
         @tubes ||=  if stock.present?
                       if batch.multiplexed?
-                        #all info on a label including barcode is about target_asset first child
+                        # all info on a label including barcode is about target_asset first child
                         requests.map { |request| request.target_asset.children.first }
                       else
-                        #all info on a label including barcode is about target_asset stock asset
+                        # all info on a label including barcode is about target_asset stock asset
                         requests.map { |request| request.target_asset.stock_asset }
                       end
                     else
-                      #all info on a label including barcode is about target_asset
+                      # all info on a label including barcode is about target_asset
                       requests.map { |request| request.target_asset }
                     end
       end

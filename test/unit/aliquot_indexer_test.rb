@@ -12,11 +12,11 @@ class AliquotIndexerTest < ActiveSupport::TestCase
     setup do
       @pre_count = AliquotIndex.count
       @lane = create :lane
-      @tags = [1,8,2,4].map { |map_id| create :tag, map_id: map_id }
-      @tag2s = [1,2].map { |map_id| create :tag, map_id: map_id } * 2
+      @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
+      @tag2s = [1, 2].map { |map_id| create :tag, map_id: map_id } * 2
       @aliquots = 4.times.map { |i| create :aliquot, receptacle: @lane, tag: @tags[i], tag2: @tag2s[i] }
 
-      @aliquot_index = [1,4,2,3]
+      @aliquot_index = [1, 4, 2, 3]
     end
 
     should "Apply consecutive tags from 1" do
@@ -45,7 +45,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         a = create :aliquot, receptacle: @phix, tag: @tags[2]
         @phix.aliquots = [a]
         @lane.parents << @phix
-        @aliquot_index = [1,5,3,4]
+        @aliquot_index = [1, 5, 3, 4]
       end
 
       should "skip the phix map_id" do

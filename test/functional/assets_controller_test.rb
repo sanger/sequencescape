@@ -29,7 +29,7 @@ class AssetsControllerTest < ActionController::TestCase
       post :create, ActiveSupport::JSON.decode(@json_data)
     end
 
-    should set_flash.to(  /Asset was successfully created/)
+    should set_flash.to(/Asset was successfully created/)
 
      should "change Asset.count by 1" do
        assert_equal 1,  Asset.count - @asset_count, "Expected Asset.count to change by 1"
@@ -46,7 +46,7 @@ class AssetsControllerTest < ActionController::TestCase
       @project = create :project, enforce_quotas: true
       @request_type = create :request_type
       @workflow = create :submission_workflow
-      @json_data = valid_json_create_request(@asset,@request_type,@study, @project)
+      @json_data = valid_json_create_request(@asset, @request_type, @study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
       post :create_request, ActiveSupport::JSON.decode(@json_data)
@@ -56,7 +56,7 @@ class AssetsControllerTest < ActionController::TestCase
       assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
     end
     should "set a priority" do
-      assert_equal(3,Submission.last.priority)
+      assert_equal(3, Submission.last.priority)
     end
   end
 
@@ -83,7 +83,7 @@ class AssetsControllerTest < ActionController::TestCase
     end
   end
 
-  def valid_json_create_request(asset,request_type,study, project)
+  def valid_json_create_request(asset, request_type, study, project)
     %Q{
       {
         "api_version": "#{RELEASE.api_version}",
@@ -108,7 +108,7 @@ class AssetsControllerTest < ActionController::TestCase
   end
 
   def json_new_asset(barcode)
-    #/assets
+    # /assets
     %Q{
       {
         "api_version": "#{RELEASE.api_version}",

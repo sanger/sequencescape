@@ -45,8 +45,8 @@ class RequestType < ActiveRecord::Base
   belongs_to :product_line
 
   # Couple of named scopes for finding billable types
- scope :billable, -> { where( billable: true ) }
- scope :non_billable, -> { where( billable: false ) }
+ scope :billable, -> { where(billable: true) }
+ scope :non_billable, -> { where(billable: false) }
 
   # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
@@ -142,7 +142,7 @@ class RequestType < ActiveRecord::Base
     attributes = request_options.symbolize_keys
     common_attributes = request_class::Metadata.attribute_details.map(&:name)
     common_attributes.concat(request_class::Metadata.association_details.map(&:assignable_attribute_name))
-    attributes.delete_if { |k,_| not common_attributes.include?(k) }
+    attributes.delete_if { |k, _| not common_attributes.include?(k) }
   end
 
   def targets_lanes?

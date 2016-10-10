@@ -14,9 +14,9 @@ class ::Endpoints::MultiplexedLibraryTubes < ::Endpoints::LibraryTubes
           QcFile.create!(request.attributes.merge({ asset: request.target }))
         end
       end
-      action(:create_from_file, as: 'create') do |request,_|
+      action(:create_from_file, as: 'create') do |request, _|
         ActiveRecord::Base.transaction do
-          request.target.add_qc_file(request.file,request.filename)
+          request.target.add_qc_file(request.file, request.filename)
         end
       end
     end

@@ -19,7 +19,7 @@ class QcDecision < ActiveRecord::Base
     validates :qc_decision, presence: true
     validates :decision, presence: true
 
-    validates_inclusion_of :decision, in: Qcable.aasm.state_machine.events.map { |i,j| i.to_s }
+    validates_inclusion_of :decision, in: Qcable.aasm.state_machine.events.map { |i, j| i.to_s }
 
     after_create :make_decision
 
@@ -47,7 +47,7 @@ class QcDecision < ActiveRecord::Base
 
   def user_has_permission
     return true if user.qa_manager?
-    errors.add(:user,'does not have permission to make qc decisions.')
+    errors.add(:user, 'does not have permission to make qc decisions.')
     false
   end
 end

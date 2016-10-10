@@ -57,7 +57,7 @@ class ColumnTest < ActiveSupport::TestCase
     detail = { barcode: 'barcode', sanger_id: 'sanger_id', position: 'position' }
     assert_equal detail[:barcode], SampleManifestExcel::Column.new(options).attribute_value(detail)
     assert_equal options[:value], SampleManifestExcel::Column.new(options.except(:attribute)).attribute_value(detail)
-    refute  SampleManifestExcel::Column.new(options.except(:value, :attribute)).attribute_value(detail)
+    refute SampleManifestExcel::Column.new(options.except(:value, :attribute)).attribute_value(detail)
   end
 
   test "should have a number" do
@@ -138,7 +138,7 @@ class ColumnTest < ActiveSupport::TestCase
 
   end
 
-  #TODO: Need to improve way keys are found to reduce brittleness of tests.
+  # TODO: Need to improve way keys are found to reduce brittleness of tests.
   # would break if column names changed.
   context "argument builder" do
 
@@ -147,7 +147,7 @@ class ColumnTest < ActiveSupport::TestCase
     attr_reader :columns, :defaults
 
     setup do
-      folder = File.join("test","data", "sample_manifest_excel", "extract")
+      folder = File.join("test", "data", "sample_manifest_excel", "extract")
       @columns = load_file(folder, "columns")
       @defaults = SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, "conditional_formattings"))
     end

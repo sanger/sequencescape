@@ -20,14 +20,14 @@ module SampleManifest::InputBehaviour
       nil
     end
 
-    def read_column_by_name(csv, row, name, column_map, default_value=nil)
+    def read_column_by_name(csv, row, name, column_map, default_value = nil)
       col = column_map[name]
       return default_value unless col
       return csv[row][col]
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index] }].tap do |columns|
+      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/, " "), index] }].tap do |columns|
         raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
       end
     end
@@ -43,7 +43,7 @@ module SampleManifest::InputBehaviour
           # These need to be checked when updating from a sample manifest.  We need to be able to display
           # the sample ID so this can't be done with validates_presence_of
           validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, value|
-            record.errors.add_on_blank(attr, message:"can't be blank for #{record.sample.sanger_sample_id}")
+            record.errors.add_on_blank(attr, message: "can't be blank for #{record.sample.sanger_sample_id}")
           end
 
         end
@@ -64,7 +64,7 @@ module SampleManifest::InputBehaviour
 
         # You cannot create a sample through updating the sample manifest
         validates_each(:id, on: :create, if: :updating_from_manifest?) do |record, attr, value|
-          record.errors.add(:base,"Could not find sample #{record.sanger_sample_id}") if value.blank?
+          record.errors.add(:base, "Could not find sample #{record.sanger_sample_id}") if value.blank?
         end
 
         # We ensure that certain fields are updated properly if we're doing so through a manifest
@@ -225,7 +225,7 @@ module SampleManifest::InputBehaviour
           sample_errors.push(message)
           errors = true
         end
-        validate_specialized_fields(sample,row) do |message|
+        validate_specialized_fields(sample, row) do |message|
           sample_errors.push(message)
           errors = true
         end
@@ -246,8 +246,8 @@ module SampleManifest::InputBehaviour
           id: sample.id,
           sanger_sample_id: sanger_sample_id,
           control: convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
-          sample_metadata_attributes: metadata.delete_if { |_,v| v.nil? }
-        }.merge( specialized_fields(row) )
+          sample_metadata_attributes: metadata.delete_if { |_, v| v.nil? }
+        }.merge(specialized_fields(row))
       ])
     end
 
@@ -264,7 +264,7 @@ module SampleManifest::InputBehaviour
     self.last_errors = nil
     self.finished!
   rescue ActiveRecord::RecordInvalid => exception
-    errors.add(:base,exception.message)
+    errors.add(:base, exception.message)
     fail_with_errors!(errors.full_messages)
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)
@@ -285,7 +285,7 @@ module SampleManifest::InputBehaviour
         user_performing_manifest_update: user,
         override_previous_manifest: (override_previous_manifest? || attributes[:override_previous_manifest])
       )
-      sample_attributes[:sample_metadata_attributes].delete_if { |_,v| v.nil? }
+      sample_attributes[:sample_metadata_attributes].delete_if { |_, v| v.nil? }
       sample_attributes[:sample_metadata_attributes][:updating_from_manifest] = true
     end
   end

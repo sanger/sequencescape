@@ -14,7 +14,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
     context 'given a non-csv file' do
       setup do
         @file = ::File.open("#{Rails.root}/test/data/190_tube_sample_info.xls")
-        @qcr_file = QcReport::File.new(@file,false,'190_tube_sample_info.xls','application/excel')
+        @qcr_file = QcReport::File.new(@file, false, '190_tube_sample_info.xls', 'application/excel')
       end
 
       should 'fail processing' do
@@ -30,7 +30,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
     context 'given a non-compatible csv file' do
       setup do
         @file = ::File.open("#{Rails.root}/test/data/fluidigm.csv")
-        @qcr_file = QcReport::File.new(@file,false,'fluidigm.csv','text/csv')
+        @qcr_file = QcReport::File.new(@file, false, 'fluidigm.csv', 'text/csv')
       end
 
       should 'fail processing' do
@@ -46,7 +46,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
     context 'given a file with no report' do
       setup do
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
-        @qcr_file = QcReport::File.new(@file,false)
+        @qcr_file = QcReport::File.new(@file, false)
       end
 
       should 'fail processing' do
@@ -74,11 +74,11 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, qc_report: @report, qc_decision: ['passed','failed'][i], asset: create(:well, id: i + 1)
+          create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
-        @qcr_file = QcReport::File.new(@file,false,'qc_report.csv','text/csv')
+        @qcr_file = QcReport::File.new(@file, false, 'qc_report.csv', 'text/csv')
       end
 
       should 'pass processing' do
@@ -95,7 +95,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should "not adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['passed','failed'], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
+        assert_equal ['passed', 'failed'], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
       end
 
       teardown do
@@ -118,17 +118,17 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          m = create :qc_metric, qc_report: @report, qc_decision: ['passed','failed'][i], asset: create(:well, id: i + 1)
+          m = create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
           @asset_ids << m.asset_id
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
-        @qcr_file = QcReport::File.new(@file,true,'qc_report.csv','text/csv')
+        @qcr_file = QcReport::File.new(@file, true, 'qc_report.csv', 'text/csv')
       end
 
       should "adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['passed','manually_passed'], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
+        assert_equal ['passed', 'manually_passed'], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 
       teardown do
@@ -151,11 +151,11 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, qc_report: @report, qc_decision: ['passed','failed'][i]
+          create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i]
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
-        @qcr_file = QcReport::File.new(@file,true,'qc_report.csv','text/csv')
+        @qcr_file = QcReport::File.new(@file, true, 'qc_report.csv', 'text/csv')
       end
 
       should "adjust the qc_decision flag" do

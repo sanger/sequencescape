@@ -147,7 +147,7 @@ Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |co
   submission   = Submission.last or raise StandardError, "There appear to be no submissions"
   request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
   submission.request_options              ||= {}
-  submission.request_options[:multiplier] ||= Hash[submission.request_types.map { |t| [t,1] }]
+  submission.request_options[:multiplier] ||= Hash[submission.request_types.map { |t| [t, 1] }]
   submission.request_options[:multiplier][request_type.id.to_i] = count.to_i
   submission.save!
 end
@@ -170,7 +170,7 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
   request_options = {}
   request_type_ids = submission_template.new_order.request_types
 
-  params.each do |k,v|
+  params.each do |k, v|
     case k
     when /^multiplier#(\d+)/
       multiplier_hash = request_options[:multiplier]
@@ -178,7 +178,7 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
       index = $1.to_i - 1
       multiplier_hash[request_type_ids[index].to_s] = v.to_i
     else
-      key = k.underscore.gsub(/\W+/,"_")
+      key = k.underscore.gsub(/\W+/, "_")
       request_options[key] = v
     end
   end
@@ -193,7 +193,7 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
     request_options: request_options
   )
 
-  #step(%Q{1 pending delayed jobs are processed})
+  # step(%Q{1 pending delayed jobs are processed})
 end
 
 Then /^the last submission should have a priority of (\d+)$/ do |priority|

@@ -49,9 +49,9 @@ module ModelExtensions::Order
 
       before_validation :merge_in_structured_request_options
 
-      scope :include_study, -> { includes( study: :uuid_object ) }
-      scope :include_project, -> { includes( project: :uuid_object ) }
-      scope :include_assets, -> { includes( assets: :uuid_object ) }
+      scope :include_study, -> { includes(study: :uuid_object) }
+      scope :include_project, -> { includes(project: :uuid_object) }
+      scope :include_assets, -> { includes(assets: :uuid_object) }
 
       has_many :submitted_assets
       has_many :assets, through: :submitted_assets, before_add: :validate_new_record
@@ -62,7 +62,7 @@ module ModelExtensions::Order
 
       validate :extended_validation
       def extended_validation
-        extended_validators.reduce(true) { |valid,validator| validator.validate_order(self) && valid }
+        extended_validators.reduce(true) { |valid, validator| validator.validate_order(self) && valid }
       end
 
       # The API can create submissions but we have to prevent someone from changing the study
@@ -114,7 +114,7 @@ module ModelExtensions::Order
 
     def node_and_leaf(*keys, &block)
       leaf = keys.pop
-      node = keys.inject(@store) { |h,k| h[k] ||= ActiveSupport::HashWithIndifferentAccess.new }
+      node = keys.inject(@store) { |h, k| h[k] ||= ActiveSupport::HashWithIndifferentAccess.new }
       yield(node, leaf)
     end
     private :node_and_leaf

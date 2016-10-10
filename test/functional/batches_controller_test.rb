@@ -29,7 +29,7 @@ class BatchesControllerTest < ActionController::TestCase
         setup do
           pipeline = Pipeline.find_by_name('Cluster formation PE (no controls)') or raise StandardError, "Cannot find 'Cluster formation PE (no controls)' pipeline"
 
-          @study, @project = FactoryGirl.create(:study),FactoryGirl.create(:project)
+          @study, @project = FactoryGirl.create(:study), FactoryGirl.create(:project)
           @sample = FactoryGirl.create :sample
           @submission = FactoryGirl.create :submission_without_order, { priority: 3 }
 
@@ -156,7 +156,7 @@ class BatchesControllerTest < ActionController::TestCase
         context "#create" do
           setup do
             @old_count = Batch.count
-            #@user.expects(:batches).returns(Batch.all)
+            # @user.expects(:batches).returns(Batch.all)
 
             @request_three = @pipeline.request_types.first.create!(asset: @library1, project: FactoryGirl.create(:project))
             @request_four  = @pipeline.request_types.first.create!(asset: @library2, project: FactoryGirl.create(:project))
@@ -220,7 +220,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           should "render fail reasons when external" do
             get :fail, id: @batch_two.id
-            assert ! @batch_two.workflow.source_is_internal?
+            assert !@batch_two.workflow.source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
           end

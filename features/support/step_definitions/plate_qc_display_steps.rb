@@ -26,7 +26,7 @@ end
 
 Given /^plate "([^"]*)" has QC results$/ do |barcode|
   plate = Plate.find_by_barcode(barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
     measured_volume: 5 * index,
     concentration: 10 * index,

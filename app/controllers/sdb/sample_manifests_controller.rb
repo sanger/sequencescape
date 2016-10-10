@@ -12,7 +12,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   # Upload the manifest and store it for later processing
   def upload
-    if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank? )
+    if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank?)
       flash[:error] = "No CSV file uploaded"
       return
     end

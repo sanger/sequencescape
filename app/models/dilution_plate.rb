@@ -6,7 +6,7 @@
 
 class DilutionPlate < Plate
 
-  has_many :pico_descendants, ->() { where(sti_type: [PicoAssayPlate,PicoAssayAPlate,PicoAssayBPlate].map(&:name)) },
+  has_many :pico_descendants, ->() { where(sti_type: [PicoAssayPlate, PicoAssayAPlate, PicoAssayBPlate].map(&:name)) },
     through: :links_as_ancestor, source: :descendant
 
   # We have to put the asset_links.direct condition on here, rather than go through :links_as_parent as it seems that
@@ -19,7 +19,7 @@ class DilutionPlate < Plate
   }
 
   def pico_children
-    pico_descendants.where(['asset_links.direct = ?',true])
+    pico_descendants.where(['asset_links.direct = ?', true])
   end
 
   def to_pico_hash

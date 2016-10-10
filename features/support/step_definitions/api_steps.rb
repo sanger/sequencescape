@@ -9,7 +9,7 @@
 def recursive_diff(h1, h2)
   if h1.is_a?(Hash) && h2.is_a?(Hash)
     result = {}
-    h1.each do |k,v|
+    h1.each do |k, v|
       diff = recursive_diff(v, h2[k])
       result[k] = diff if diff
     end
@@ -30,14 +30,14 @@ end
 def assert_hash_equal(h1, h2, *args)
   d1 = recursive_diff(h1, h2)
   d2 = recursive_diff(h2, h1)
-  assert_equal(d1,d2, *args)
+  assert_equal(d1, d2, *args)
 end
 
-#def assert_hash_equal(*args) assert_equal(*args) end
+# def assert_hash_equal(*args) assert_equal(*args) end
 
 def walk_hash_structure(hash_data, &block)
   if hash_data.is_a?(Hash)
-    hash_data.inject({}) do |hash,(key,value)|
+    hash_data.inject({}) do |hash, (key, value)|
       hash[key] = walk_hash_structure(value, &block) unless block.call(key)
       hash
     end
@@ -56,7 +56,7 @@ def assert_json_equal(expected, received, &block)
   )
 end
 
-Given /^all HTTP requests to the API have the cookie "([^\"]+)" set to "([^\"]+)"$/ do |cookie,value|
+Given /^all HTTP requests to the API have the cookie "([^\"]+)" set to "([^\"]+)"$/ do |cookie, value|
   @cookies ||= {}
   @cookies[cookie] = value
 end
@@ -66,7 +66,7 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |key, login|
-  User.find_or_create_by(login:login).update_attributes!(api_key: key)
+  User.find_or_create_by(login: login).update_attributes!(api_key: key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
@@ -80,7 +80,7 @@ def api_request(action, path, body)
   headers = {}
   headers.merge!('HTTP_ACCEPT' => 'application/json')
   headers.merge!('CONTENT_TYPE' => 'application/json') unless body.nil?
-  headers.merge!('HTTP_COOKIE' => @cookies.map { |k,v| "#{k}=#{v}" }.join(';')) unless @cookies.blank?
+  headers.merge!('HTTP_COOKIE' => @cookies.map { |k, v| "#{k}=#{v}" }.join(';')) unless @cookies.blank?
   yield(headers) if block_given?
 
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
@@ -140,7 +140,7 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.new(name: 'test_api',key: key,privilege: permission,contact: 'none').save(validate: false)
+  ApiApplication.new(name: 'test_api', key: key, privilege: permission, contact: 'none').save(validate: false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
@@ -148,18 +148,18 @@ When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
 end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
-  tube = "#{ tube_type }_tube".classify.constantize.find_by_name(name) or raise StandardError, "Cannot find #{ tube_type } tube called #{ name.inspect }"
+  tube = "#{tube_type}_tube".classify.constantize.find_by_name(name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
   visit(url_for(:controller => "api/requests", :action => 'index', :"#{ tube_type }_tube_id" => tube.id, :format => :json))
 end
 
-When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model,name|
-  object = model.classify.constantize.find_by_name(name) or raise "Cannot find #{ model } #{ name.inspect }"
+When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model, name|
+  object = model.classify.constantize.find_by_name(name) or raise "Cannot find #{model} #{name.inspect}"
   visit(url_for(controller: "api/#{model.pluralize}", action: 'show', id: object, format: :json))
 end
 
 When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
-  study = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{ name.inspect }"
-  raise StandardError, "It appears there are no requests for study #{ name.inspect }" if study.requests.empty?
+  study = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{name.inspect}"
+  raise StandardError, "It appears there are no requests for study #{name.inspect}" if study.requests.empty?
   visit(url_for(controller: "api/requests", action: 'show', id: study.requests.last, format: :json))
 end
 
@@ -190,11 +190,11 @@ end
 
 def strip_extraneous_fields(left, right)
   if left.is_a?(Hash) and right.is_a?(Hash)
-    right.delete_if { |k,_| not left.keys.include?(k) }
-    left.each { |key,value| strip_extraneous_fields(value, right[key]) }
+    right.delete_if { |k, _| not left.keys.include?(k) }
+    left.each { |key, value| strip_extraneous_fields(value, right[key]) }
     right
   elsif left.is_a?(Array) and right.is_a?(Array)
-    left.each_with_index do |value,index|
+    left.each_with_index do |value, index|
       strip_extraneous_fields(value, right[index])
     end
     right
@@ -221,7 +221,7 @@ end
 Then /^the JSON "([^\"]+)" should be exactly:$/ do |path, serialised_json|
   expected = decode_json(serialised_json, 'Expected')
   received = decode_json(page.source, 'Received')
-  target   = path.split('.').inject(received) { |json,key| json[key] }
+  target   = path.split('.').inject(received) { |json, key| json[key] }
   assert_equal(expected, target, 'JSON differs in the specified key path')
 end
 
@@ -229,7 +229,7 @@ Then /^the JSON "([^\"]+)" should not exist$/ do |path|
   received = decode_json(page.source, 'Received')
   steps    = path.split('.')
   leaf     = steps.pop
-  target   = steps.inject(received) { |json,key| json.try(:[], key) }
+  target   = steps.inject(received) { |json, key| json.try(:[], key) }
   assert(!target.key?(leaf), "#{path} should not exist") unless target.nil?
 end
 
@@ -254,7 +254,7 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
 
 end
 
-Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header,value|
+Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header, value|
   assert_equal(value, page.driver.response_headers[header])
 end
 
@@ -268,7 +268,7 @@ end
 
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
   json = decode_json(page.source, 'Received')
-  target = path.split('.').inject(json) { |s,p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
+  target = path.split('.').inject(json) { |s, p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
   case target
   when Array
     target.each_with_index do |record, index|
@@ -288,7 +288,7 @@ Given /^the sample named "([^\"]+)" exists with ID (\d+)$/ do |name, id|
 end
 
 # deprecated
-Given /^(\d+) samples exist with the core name "([^\"]+)" and IDs starting at (\d+)$/ do |count,name,id|
+Given /^(\d+) samples exist with the core name "([^\"]+)" and IDs starting at (\d+)$/ do |count, name, id|
   step(%Q{#{count} samples exist with names based on "#{name}" and IDs starting at #{id}})
 end
 
@@ -303,7 +303,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   end
 end
 
-Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do | child_name, parent_name|
+Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, parent_name|
   parent = Uuid.find_by_external_id(parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
   child  = Uuid.find_by_external_id(child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child

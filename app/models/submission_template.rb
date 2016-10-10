@@ -31,7 +31,7 @@ class SubmissionTemplate < ActiveRecord::Base
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
   scope :hidden,               -> { order('product_line_id ASC').where(['superceded_by_id != ?', LATEST_VERSION]) }
-  scope :visible,              -> { order('product_line_id ASC').where( superceded_by_id: LATEST_VERSION ) }
+  scope :visible,              -> { order('product_line_id ASC').where(superceded_by_id: LATEST_VERSION) }
   scope :include_product_line, -> { includes(:product_line) }
 
   def visible
@@ -71,7 +71,7 @@ class SubmissionTemplate < ActiveRecord::Base
   end
 
   # create a new submission of the good subclass and with pre-set attributes
-  def new_order(params={})
+  def new_order(params = {})
     duped_params = safely_duplicate(params)
     # NOTE: Stringifying request_option keys here is NOT a good idea as it affects multipliers
     attributes = submission_attributes.with_indifferent_access.deep_merge(duped_params)
@@ -101,7 +101,7 @@ class SubmissionTemplate < ActiveRecord::Base
   # the ActiveRecord::Base derived classes when params contains their instances.  It'll appear as insecure
   # method errors somewhere else in the code.
   def safely_duplicate(params)
-    params.inject({}) do |cloned, (k,v)|
+    params.inject({}) do |cloned, (k, v)|
       cloned[k] = if v.is_a?(ActiveRecord::Base)
         v
                   elsif v.is_a?(Array) and v.first.is_a?(ActiveRecord::Base)
@@ -130,8 +130,8 @@ class SubmissionTemplate < ActiveRecord::Base
 
   def submission_class
     klass = submission_class_name.constantize
-    #TODO[mb14] Hack. This is to avoid to have to rename it in database or seen
-    #The hack is not needed for subclasses as they inherits from Order
+    # TODO[mb14] Hack. This is to avoid to have to rename it in database or seen
+    # The hack is not needed for subclasses as they inherits from Order
     klass == Submission ? Order : klass
   end
 

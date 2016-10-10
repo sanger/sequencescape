@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.
@@ -46,9 +46,9 @@ Sample.requiring_accession_number.includes(:sample_metadata, { studies: :study_m
     sample.validate_ena_required_fields!
     sample.accession_service.submit_sample_for_user(sample, current_user) unless sample.accession_service.nil?
   rescue ActiveRecord::RecordInvalid => exception
-    #warn "Please fill in the required fields for sample: #{sample.name}"
+    # warn "Please fill in the required fields for sample: #{sample.name}"
   rescue AccessionService::NumberNotRequired => exception
-    #warn "An accession number is not required for this study.  Study name: #{sample.study.name}"
+    # warn "An accession number is not required for this study.  Study name: #{sample.study.name}"
   rescue AccessionService::NumberNotGenerated => exception
     warn 'No accession number was generated'
   rescue AccessionService::AccessionServiceError => exception

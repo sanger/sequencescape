@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Cherrypick::VolumeByNanoGramsPerMicroLitre
-  def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,concentration_required,source_concentration,robot_minimum_picking_volume=0.0)
+  def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required, concentration_required, source_concentration, robot_minimum_picking_volume = 0.0)
     robot_minimum_picking_volume ||= 0
-    check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required,concentration_required,source_concentration)
+    check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required, concentration_required, source_concentration)
 
     source_volume = well_attribute.current_volume
     well_attribute.concentration    = concentration_required
@@ -28,7 +28,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     volume_to_pick
   end
 
-  def check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required,concentration_required,source_concentration)
+  def check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required, concentration_required, source_concentration)
     raise Cherrypick::VolumeError, "Volume required (#{volume_required.inspect}) is invalid for cherrypick by nano grams per micro litre"                      if volume_required.blank? || volume_required.to_f <= 0.0
     raise Cherrypick::ConcentrationError, "Concentration required (#{concentration_required.inspect}) is invalid for cherrypick by nano grams per micro litre" if concentration_required.blank? || concentration_required.to_f <= 0.0
     raise Cherrypick::ConcentrationError, "Source concentration (#{source_concentration.inspect}) is invalid for cherrypick by nano grams per micro litre"     if source_concentration.blank? || source_concentration.to_f < 0.0

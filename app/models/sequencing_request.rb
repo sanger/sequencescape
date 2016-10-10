@@ -11,11 +11,11 @@ class SequencingRequest < CustomerRequest
   include Api::Messages::FlowcellIO::LaneExtensions
 
   has_metadata as: Request  do
-    #redundant with library creation , but THEY are using it .
+    # redundant with library creation , but THEY are using it .
     attribute(:fragment_size_required_from, required: true, integer: true)
     attribute(:fragment_size_required_to, required: true, integer: true)
 
-    attribute(:read_length, integer: true, validator: true, required: true, selection: true )
+    attribute(:read_length, integer: true, validator: true, required: true, selection: true)
   end
 
   include Request::CustomerResponsibility

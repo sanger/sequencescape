@@ -76,7 +76,7 @@ module ::Core::Io::Json
 
     def hash_encode(hash, options)
       open do |stream|
-        hash.each do |k,v|
+        hash.each do |k, v|
           stream.attribute(k.to_s, v, options)
         end
       end

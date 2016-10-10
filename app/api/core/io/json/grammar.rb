@@ -45,7 +45,7 @@ module ::Core::Io::Json::Grammar
           else raise "Odd, how did that happen?"
           end
 
-          [k,cloned]
+          [k, cloned]
         end
       ]
     end
@@ -55,7 +55,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def duplicate(&block)
-      yield(Hash[@children.map { |k,v| [k,v.dup] }])
+      yield(Hash[@children.map { |k, v| [k, v.dup] }])
     end
     private :duplicate
   end
@@ -150,7 +150,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def call(object, options, stream)
-      value = @attribute_path.inject(object) { |o,k| return if o.nil?; o.send(k) } or return
+      value = @attribute_path.inject(object) { |o, k| return if o.nil?; o.send(k) } or return
       stream.attribute(@name, value.send(@attribute), options)
     end
 
@@ -177,8 +177,8 @@ module ::Core::Io::Json::Grammar
   module Resource
     def resource_details(endpoint, object, options, stream)
       stream.block('actions') do |nested_stream|
-        endpoint.send(:actions, object, options.merge(target: object)).map do |action,url|
-          nested_stream.attribute(action,url)
+        endpoint.send(:actions, object, options.merge(target: object)).map do |action, url|
+          nested_stream.attribute(action, url)
         end
         actions(object, options, nested_stream)
       end

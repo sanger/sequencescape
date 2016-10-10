@@ -3,7 +3,7 @@ namespace :uat do
   desc "Establishes an environment for UAT..."
   # Built from this task as the seeds don't guarantee an accurate reflection of some key production tables
   # Plus there a whole load of useful things in the database that nonetheless don't belong in seeds
-  task :setup, [:db_file,:expected_env] => :environment do |t,args|
+  task :setup, [:db_file, :expected_env] => :environment do |t, args|
 
     class PlateBarcode < ActiveResource::Base
      self.site = configatron.plate_barcode_service
@@ -20,7 +20,7 @@ namespace :uat do
      end
     end
 
-    def sample_named(name,study,user)
+    def sample_named(name, study, user)
       {
           "sample_tube_attributes" => { "two_dimensional_barcode" => "" },
           "study" => study,
@@ -119,17 +119,17 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       # Kept tables
       kept = [
-            'asset_shapes','bait_libraries','bait_library_layouts','bait_library_suppliers','bait_library_types',
-            'barcode_prefixes','barcode_printer_types','barcode_printers','budget_divisions','controls',
-            'custom_texts','data_release_study_types','descriptors','families','lab_interface_workflows',
-            'library_types','library_types_request_types','locations','lot_types','maps','order_roles',
-            'pipeline_request_information_types','pipelines','pipelines_request_types','plate_creator_purposes',
-            'plate_creators','plate_purpose_relationships','plate_purposes','product_lines','project_managers',
-            'reference_genomes','request_information_types','request_type_plate_purposes','request_type_validators',
-            'request_types','robot_properties','robots','roles','roles_users','sample_manifest_templates','schema_migrations',
-            'searches','study_relation_types','study_relations','study_types','subclass_attributes','submission_templates',
-            'submission_workflows','suppliers','tag_groups','tag_layout_templates','tags','task_request_types',
-            'tasks','transfer_templates','users'
+            'asset_shapes', 'bait_libraries', 'bait_library_layouts', 'bait_library_suppliers', 'bait_library_types',
+            'barcode_prefixes', 'barcode_printer_types', 'barcode_printers', 'budget_divisions', 'controls',
+            'custom_texts', 'data_release_study_types', 'descriptors', 'families', 'lab_interface_workflows',
+            'library_types', 'library_types_request_types', 'locations', 'lot_types', 'maps', 'order_roles',
+            'pipeline_request_information_types', 'pipelines', 'pipelines_request_types', 'plate_creator_purposes',
+            'plate_creators', 'plate_purpose_relationships', 'plate_purposes', 'product_lines', 'project_managers',
+            'reference_genomes', 'request_information_types', 'request_type_plate_purposes', 'request_type_validators',
+            'request_types', 'robot_properties', 'robots', 'roles', 'roles_users', 'sample_manifest_templates', 'schema_migrations',
+            'searches', 'study_relation_types', 'study_relations', 'study_types', 'subclass_attributes', 'submission_templates',
+            'submission_workflows', 'suppliers', 'tag_groups', 'tag_layout_templates', 'tags', 'task_request_types',
+            'tasks', 'transfer_templates', 'users'
       ]
 
       db_file = args[:db_file]
@@ -160,8 +160,8 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         project_metadata_attributes: {
           project_cost_code: 'UATA',
           project_funding_model: 'Internal',
-          project_manager_id: ProjectManager.find_or_create_by(name:'UAT manager').id,
-          budget_division_id: BudgetDivision.find_or_create_by(name:'UAT internal division').id
+          project_manager_id: ProjectManager.find_or_create_by(name: 'UAT manager').id,
+          budget_division_id: BudgetDivision.find_or_create_by(name: 'UAT internal division').id
         }
       )
       Project.create!(
@@ -172,8 +172,8 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         project_metadata_attributes: {
           project_cost_code: 'UATA',
           project_funding_model: 'External',
-          project_manager_id: ProjectManager.find_or_create_by(name:'UAT manager').id,
-          budget_division_id: BudgetDivision.find_or_create_by(name:'UAT external division').id
+          project_manager_id: ProjectManager.find_or_create_by(name: 'UAT manager').id,
+          budget_division_id: BudgetDivision.find_or_create_by(name: 'UAT external division').id
         }
       )
 
@@ -235,7 +235,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       Study.find_each do |study|
         print '.'
-        SampleRegistrar.register!((1..96).map { |i| sample_named("sample_#{study.id}_#{i}",study,user) })
+        SampleRegistrar.register!((1..96).map { |i| sample_named("sample_#{study.id}_#{i}", study, user) })
         print '.'
         stock = Purpose.find(2).create!(barcode: (10 * study.id)).tap do |plate|
           plate.wells.each { |w| w.aliquots.create!(
@@ -252,12 +252,12 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('Cherrypicked').create!(barcode: i + (10 * study.id),location: Location.find_by_name('Illumina high throughput freezer'))
+          child = Purpose.find_by_name('Cherrypicked').create!(barcode: i + (10 * study.id), location: Location.find_by_name('Illumina high throughput freezer'))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('ILC Stock').create!(barcode: i + 4 + (10 * study.id),location: Location.find_by_name('Illumina high throughput freezer'))
+          child = Purpose.find_by_name('ILC Stock').create!(barcode: i + 4 + (10 * study.id), location: Location.find_by_name('Illumina high throughput freezer'))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
@@ -270,7 +270,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         user: user,
         received_at: DateTime.now
       )
-     qcc = QcableCreator.create!(lot: lot,user: user,count: 30)
+     qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
      qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
 
     else

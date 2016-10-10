@@ -9,21 +9,21 @@ require_dependency 'attributable'
 module Metadata
   def has_metadata(options = {}, &block)
     as_class = options.delete(:as) || self
-    table_name = options.delete(:table_name) || "#{ as_class.name.demodulize.underscore }_metadata"
+    table_name = options.delete(:table_name) || "#{as_class.name.demodulize.underscore}_metadata"
     construct_metadata_class(table_name, as_class, &block)
     build_association(as_class, options)
   end
 
   SECTION_FIELDS = [:edit_info, :help, :label, :unspecified]
-  Section = Struct.new(*SECTION_FIELDS,:label_options)
+  Section = Struct.new(*SECTION_FIELDS, :label_options)
 
 private
 
   def build_association(as_class, options)
     # First we build the association into the current ActiveRecord::Base class
     as_name = as_class.name.demodulize.underscore
-    association_name = "#{ as_name }_metadata".underscore.to_sym
-    class_name = "#{ self.name}::Metadata"
+    association_name = "#{as_name}_metadata".underscore.to_sym
+    class_name = "#{self.name}::Metadata"
 
     has_one(association_name, { class_name: class_name, dependent: :destroy, validate: true, autosave: true, inverse_of: :owner }.merge(options).merge(foreign_key: "#{as_name}_id", inverse_of: :owner))
     accepts_nested_attributes_for(association_name, update_only: true)
@@ -44,7 +44,7 @@ private
 
       def validating_ena_required_fields=(state)
         @validating_ena_required_fields = !!state
-        self.#{ association_name }.validating_ena_required_fields = state
+        self.#{association_name}.validating_ena_required_fields = state
       end
 
       def validating_ena_required_fields?
@@ -64,20 +64,20 @@ private
         @tags ||= []
       end
 
-      before_validation { |record| record.#{association_name } }
+      before_validation { |record| record.#{association_name} }
 
     ", __FILE__, line)
 
     def self.required_tags
-      @required_tags ||= Hash.new { |h,k| h[k] = Array.new }
+      @required_tags ||= Hash.new { |h, k| h[k] = Array.new }
     end
   end
 
-  def include_tag(tag,options=Hash.new)
-    tags << AccessionedTag.new(tag,options[:as],options[:services],options[:downcase])
+  def include_tag(tag, options = Hash.new)
+    tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
   end
 
-  def require_tag(tag,services=:all)
+  def require_tag(tag, services = :all)
     [services].flatten.each do |service|
       required_tags[service] << tag
     end
@@ -86,7 +86,7 @@ private
 
   class AccessionedTag
     attr_reader :tag, :name, :downcase
-    def initialize(tag, as=nil, services=[],downcase=false)
+    def initialize(tag, as = nil, services = [], downcase = false)
       @tag = tag
       @name = as || tag
       @services = [services].flatten.compact
@@ -99,7 +99,7 @@ private
   end
 
   def construct_metadata_class(table_name, as_class, &block)
-    metadata = Class.new( self == as_class ? Base : as_class::Metadata)
+    metadata = Class.new(self == as_class ? Base : as_class::Metadata)
     metadata.instance_eval(&block) if block_given?
 
     as_name = as_class.name.demodulize.underscore
@@ -108,7 +108,7 @@ private
     # is correctly set.
     metadata.instance_eval "
       self.table_name =('#{table_name}')
-      belongs_to :#{as_name}, :class_name => #{ self.name.inspect }, :validate => false, :autosave => false
+      belongs_to :#{as_name}, :class_name => #{self.name.inspect}, :validate => false, :autosave => false
       belongs_to :owner, :foreign_key => :#{as_name}_id, :class_name => #{self.name.inspect}, :validate => false, :autosave => false, :inverse_of => :#{as_name}_metadata
     "
 
@@ -124,7 +124,7 @@ private
     # preserved for the future, unlike the original properties information which didn't store values when
     # nil which lead to us having to guess.
     def initialize(attributes = {}, *args, &block)
-      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}),*args, &block)
+      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), *args, &block)
     end
 
     before_validation :merge_instance_defaults, on: :create
@@ -148,14 +148,14 @@ private
 
     def service_specific_fields
       owner.required_tags.uniq.select do |tag|
-        owner.errors.add(:base,"#{tag} is required") if send(tag).blank?
+        owner.errors.add(:base, "#{tag} is required") if send(tag).blank?
       end.empty?
     end
 
     class << self
 
       def metadata_attribute_path_store
-        @md_a_p ||= Hash.new { |h,field| h[field] = metadata_attribute_path_generator(field) }
+        @md_a_p ||= Hash.new { |h, field| h[field] = metadata_attribute_path_generator(field) }
       end
 
       def metadata_attribute_path_generator(field)
@@ -167,7 +167,7 @@ private
       end
 
       def localised_sections_store
-        @loc_sec ||= Hash.new { |h,field| h[field] = localised_sections_generator(field) }
+        @loc_sec ||= Hash.new { |h, field| h[field] = localised_sections_generator(field) }
       end
 
       def localised_sections_generator(field)

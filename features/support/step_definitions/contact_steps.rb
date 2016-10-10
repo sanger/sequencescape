@@ -37,9 +37,9 @@ Then /^I (should|should not) see the following contacts$/ do |assertion, table|
 end
 
 When /^I delete the attached file "([^"]+)"$/ do |filename|
-  click_link("Delete #{ filename }")
+  click_link("Delete #{filename}")
 end
 
 When /^I delete the attached Listing Document for "([^"]*)"$/ do |file_name|
-  step(%Q{I delete the attached file "#{ file_name }"})
+  step(%Q{I delete the attached file "#{file_name}"})
 end

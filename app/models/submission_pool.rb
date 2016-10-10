@@ -70,7 +70,7 @@ class SubmissionPool < ActiveRecord::Base
     where([
       'spw.container_id =? AND our.sti_type NOT IN (?) AND our.state IN (?)',
       stock_plate.id,
-      [TransferRequest,*TransferRequest.descendants].map(&:name),
+      [TransferRequest, *TransferRequest.descendants].map(&:name),
       Request::Statemachine::ACTIVE
     ]).
     group('submissions.id')
@@ -101,7 +101,7 @@ class SubmissionPool < ActiveRecord::Base
   end
 
   def used_tag2_layout_templates
-    tag2_layout_templates.map { |template| { "uuid" => template.uuid,"name" => template.name } }
+    tag2_layout_templates.map { |template| { "uuid" => template.uuid, "name" => template.name } }
   end
 
 end

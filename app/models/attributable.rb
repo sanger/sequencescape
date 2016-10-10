@@ -32,7 +32,7 @@ module Attributable
   class CustomValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       valid = record.validator_for(attribute).valid_options.include?(value)
-      record.errors.add(attribute,"is not a valid option") unless valid
+      record.errors.add(attribute, "is not a valid option") unless valid
       valid
     end
   end
@@ -61,7 +61,7 @@ module Attributable
 
   def field_infos
     self.class.attribute_details.map do |detail|
-      detail.to_field_info(nil,self)
+      detail.to_field_info(nil, self)
     end
   end
 
@@ -116,7 +116,7 @@ module Attributable
       end
 
       def for_select_association
-        for_selection.pluck(:name,:id)
+        for_selection.pluck(:name, :id)
       end
 
       def default
@@ -184,7 +184,7 @@ module Attributable
     end
 
     def get_scoped_selection
-      @scope.inject(@owner.reflections[@name.to_s].klass) { |k,v| k.send(v.to_sym) }
+      @scope.inject(@owner.reflections[@name.to_s].klass) { |k, v| k.send(v.to_sym) }
     end
     private :get_scoped_selection
 
@@ -219,7 +219,7 @@ module Attributable
       record[self.name]
     end
 
-    def default_from(origin=nil)
+    def default_from(origin = nil)
       return nil if origin.nil?
       return origin.validator_for(name).default if validator?
     end
@@ -318,7 +318,7 @@ module Attributable
     end
 
     def self.find_display_name(klass, name)
-      translation = I18n.t("metadata.#{ klass.name.underscore.gsub('/', '.') }.#{ name }")
+      translation = I18n.t("metadata.#{klass.name.underscore.gsub('/', '.')}.#{name}")
       if translation.is_a?(Hash) # translation found, we return the label
         return translation[:label]
       else
@@ -360,7 +360,7 @@ module Attributable
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         display_name: display_name,
         key: assignable_attribute_name,
-        default_value: find_default(object,metadata),
+        default_value: find_default(object, metadata),
         kind: kind,
         required: required?
       }

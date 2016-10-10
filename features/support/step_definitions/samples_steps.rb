@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 def GivenSampleMetadata(attribute, regexp)
-  Given(regexp) do |name,value|
-    sample = Sample.find_by_name(name) or raise StandardError, "There appears to be no sample named '#{ name }'"
+  Given(regexp) do |name, value|
+    sample = Sample.find_by_name(name) or raise StandardError, "There appears to be no sample named '#{name}'"
     sample.sample_metadata.send(:"#{ attribute }=", value.blank? ? nil : value)
     sample.save!
   end
@@ -41,66 +41,66 @@ Then /^the following samples should be in the sample registration fields:$/ do |
   assert_equal table.hashes, hashes
 end
 
-Given /^the sample "([^\"]+)" has the Taxon ID "([^\"]+)"$/ do |name,id|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+Given /^the sample "([^\"]+)" has the Taxon ID "([^\"]+)"$/ do |name, id|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.sample_taxon_id = id
   sample.save!
 end
 
-Given /^the sample "([^\"]+)" has the common name "([^\"]*)"$/ do |name,common_name|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+Given /^the sample "([^\"]+)" has the common name "([^\"]*)"$/ do |name, common_name|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.sample_common_name = common_name
   sample.save!
 end
 
-Given /^the sample "([^\"]+)" has the gender "([^\"]*)"$/ do |name,gender|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+Given /^the sample "([^\"]+)" has the gender "([^\"]*)"$/ do |name, gender|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.gender = gender
   sample.save!
 end
 
-Given /^the sample "([^\"]+)" has the donor id "([^\"]*)"$/ do |name,donor_id|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+Given /^the sample "([^\"]+)" has the donor id "([^\"]*)"$/ do |name, donor_id|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.donor_id = donor_id
   sample.save!
 end
 
-Given /^the sample "([^\"]+)" has the phenotype "([^\"]*)"$/ do |name,phenotype|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+Given /^the sample "([^\"]+)" has the phenotype "([^\"]*)"$/ do |name, phenotype|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.phenotype = phenotype
   sample.save!
 end
 
 Given /^the sample "([^\"]+)" belongs to the study "([^\"]+)"$/ do |sample_name, study_name|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
-  study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study with name #{ study_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
+  study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study with name #{study_name.inspect}"
   study.samples << sample
 end
 
 Then /^the reference genome for the sample "([^\"]+)" should be "([^\"]+)"$/ do |name, genome|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
 Then /^the UUID for the sample "([^\"]+)" should be "([^\"]+)"$/ do |name, uuid|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   assert_equal(uuid, sample.uuid)
 end
 
 Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").length == 0)
 end
 
 Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
 end
 
 Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/ do |sample_name, schema|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
   # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
   xsd = Nokogiri::XML::Schema(File.open(schema))
@@ -109,36 +109,36 @@ Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/
 end
 
 Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").length == 0)
 end
 
 Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
 end
 
 Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").text)
 end
 
 Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").text)
 end
 
 Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   sample.sample_metadata.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
 end
 
 Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
-  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   sample.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
 end
 
@@ -147,12 +147,12 @@ Then /^the sample "([^\"]+)" should exist$/ do |name|
 end
 
 Then /^the sample "([^\"]+)" should have an associated sample tube$/ do |name|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   assert(!sample.assets.empty?, 'No associated sample tubes')
 end
 
 When /^I get the XML for the sample "([^\"]+)"$/ do |name|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   visit(url_for(controller: 'samples', action: 'show', id: sample, format: :xml))
 end
 

@@ -11,8 +11,8 @@ module StudyReport::WellDetails
         :map,
         :well_attribute,
         :events,
-        { plate: [:plate_purpose,:events], primary_aliquot: { sample: [:sample_metadata,{ sample_manifest: :supplier },:external_properties] } },
-        { latest_child_well: [:map, { plate: [:plate_purpose,:plate_metadata] }] }
+        { plate: [:plate_purpose, :events], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }, :external_properties] } },
+        { latest_child_well: [:map, { plate: [:plate_purpose, :plate_metadata] }] }
       ])}
     end
   end
@@ -41,7 +41,7 @@ module StudyReport::WellDetails
       pico_date: self.pico_date,
       qc_started_date: self.plate.qc_started_date,
       sequenom_stamp_date: self.plate.sequenom_stamp_date,
-      quantity: self.well_attribute.quantity_in_micro_grams.try(:round,3),
+      quantity: self.well_attribute.quantity_in_micro_grams.try(:round, 3),
       initial_volume: self.well_attribute.initial_volume
     })
     qc_data[:genotyping_status] = self.genotyping_status

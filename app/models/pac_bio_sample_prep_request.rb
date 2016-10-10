@@ -22,7 +22,7 @@ class PacBioSamplePrepRequest < CustomerRequest
   private
 
   def on_started
-    target_asset.generate_name(asset.display_name.gsub(':','-'))
+    target_asset.generate_name(asset.display_name.gsub(':', '-'))
     target_asset.save
   end
 

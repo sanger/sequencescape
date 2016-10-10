@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
@@ -72,7 +72,7 @@ module SequencingQcBatch
 
   def self.adjacent_state_helper(direction, offset, delimiter)
     define_method(:"qc_#{ direction }_state") do
-      raise StandardError, "Current QC state appears to be invalid: '#{ self.qc_state }'" unless qc_states.include?(self.qc_state.to_s)
+      raise StandardError, "Current QC state appears to be invalid: '#{self.qc_state}'" unless qc_states.include?(self.qc_state.to_s)
       return nil if self.qc_state.to_s == qc_states.send(delimiter)
       return qc_states[qc_states.index(self.qc_state.to_s) + offset]
     end

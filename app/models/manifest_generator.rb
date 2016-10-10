@@ -12,19 +12,19 @@ class ManifestGenerator
   DEFAULT_SPECIES = "Homo sapiens"
   DEFAULT_IS_CONTROL = 0
 
-  def self.generate_manifests(batch,study)
-    generate_manifest_for_plate_ids(batch.plate_ids_in_study(study),study)
+  def self.generate_manifests(batch, study)
+    generate_manifest_for_plate_ids(batch.plate_ids_in_study(study), study)
   end
 
-  def self.generate_manifest_for_plate_ids(plate_ids,study)
+  def self.generate_manifest_for_plate_ids(plate_ids, study)
     csv_string = CSV.generate(row_sep: "\n", quote_char: "#{QUOTE_CHAR}") do |csv|
-      create_header(csv,study)
+      create_header(csv, study)
       row = 1
       plate_ids.each do |plate_id|
         plate = Plate.find(plate_id)
         plate_label = institute_plate_label(plate)
         plate.wells_sorted_by(&:id).each do |well|
-          csv << self.generate_manifest_row(well,plate.barcode,plate_label).unshift(row)
+          csv << self.generate_manifest_row(well, plate.barcode, plate_label).unshift(row)
           row = row + 1
         end
       end
@@ -34,7 +34,7 @@ class ManifestGenerator
     csv_string
   end
 
-  def self.generate_manifest_row(well,plate_barcode,plate_label)
+  def self.generate_manifest_row(well, plate_barcode, plate_label)
     comments          = ""
     extraction_method = "-"
     wga_method        = ""
@@ -134,9 +134,9 @@ class ManifestGenerator
     plate_barcode + "_" + well_map_description(well) + "_" + well.primary_aliquot.sample.sanger_sample_id
   end
 
-  def self.create_header(csv_obj,study)
+  def self.create_header(csv_obj, study)
     now = Time.new
-    csv_obj << ["Institute Name:", "WTSI","","","","","","","","","","","","","","","",""]
+    csv_obj << ["Institute Name:", "WTSI", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
     csv_obj << ["Date:", "#{now.year}-#{now.month}-#{now.day}"]
     csv_obj << ["Comments:", "#{study.abbreviation}"]
     csv_obj << ["Row", "Institute Plate Label", "Well", "Is Control", "Institute Sample Label", "Species", "Sex", "Comments", "Volume (ul)", "Conc (ng/ul)", "Extraction Method", "WGA Method (if Applicable)", "Mass of DNA used in WGA", "Parent 1", "Parent 2", "Replicate(s)", "Tissue Source"]

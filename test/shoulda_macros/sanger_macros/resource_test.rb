@@ -12,14 +12,14 @@ module Sanger
           params.symbolize_keys!
           resource_name = resource_name.to_sym
 
-          restful_actions = ['index','new','create','show','update','destroy','edit']
+          restful_actions = ['index', 'new', 'create', 'show', 'update', 'destroy', 'edit']
           ignore_actions  = params[:ignore_actions] || []
           actions         = params[:actions] || (restful_actions - ignore_actions)
           path_prefix     = params[:with_prefix] || ""
           raise Exception.new, ":actions need to be an Array" unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
-          formats         = params[:formats] || ['html','xml', 'json']
+          formats         = params[:formats] || ['html', 'xml', 'json']
 
           context 'should be a resource' do
             setup do
@@ -80,7 +80,7 @@ module Sanger
                 @user = case
                   when user_details.is_a?(Symbol) then create(user_details)
                   when user_details.is_a?(Proc) then user_details.call
-                  else raise StandardError, "You are potentially creating objects outside of a transaction: #{ user_details.inspect }"
+                  else raise StandardError, "You are potentially creating objects outside of a transaction: #{user_details.inspect}"
                 end
 
                 # All our things need a user to be logged in
@@ -113,7 +113,7 @@ module Sanger
                     local_params[resource_name] = @create_options
                     post :create, local_params
                   end
-                  #assert eval "@object".valid?
+                  # assert eval "@object".valid?
                   should redirect_to("show page") { eval(show_url) }
                 end
               end

@@ -106,13 +106,13 @@ class Transfer < ActiveRecord::Base
               ]
 
 
-              joins(join_options).where(transfer_requests_as_target:{ state:states })
+              joins(join_options).where(transfer_requests_as_target: { state: states })
             else
               all
             end
           }
          scope :without_finished_tubes, ->(purpose) {
-            where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'",purpose.map(&:id)])
+            where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'", purpose.map(&:id)])
           }
         end
       end
@@ -174,7 +174,7 @@ class Transfer < ActiveRecord::Base
   # You can only transfer from one plate to another once, anything else is an error.
   belongs_to :source, class_name: 'Plate'
   validates_presence_of :source
-  scope :include_source, -> { includes( source: ModelExtensions::Plate::PLATE_INCLUDES ) }
+  scope :include_source, -> { includes(source: ModelExtensions::Plate::PLATE_INCLUDES) }
 
   # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.

@@ -6,8 +6,8 @@
 
 
 class AssetsController < ApplicationController
-  #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-  #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
@@ -346,7 +346,7 @@ class AssetsController < ApplicationController
 
   def lookup
     if params[:asset] && params[:asset][:barcode]
-      id = params[:asset][:barcode][3,7]
+      id = params[:asset][:barcode][3, 7]
       @assets = Asset.where(barcode: id).limit(50).page(params[:page])
 
       if @assets.size == 1
@@ -374,7 +374,7 @@ class AssetsController < ApplicationController
   end
 
   def lab_view
-    barcode = params.fetch(:barcode,'').strip
+    barcode = params.fetch(:barcode, '').strip
 
     if barcode.blank?
       redirect_to action: "find_by_barcode"
@@ -383,7 +383,7 @@ class AssetsController < ApplicationController
       @asset = Asset.with_machine_barcode(barcode).first
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
-      @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2],prefix.id) if prefix
+      @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2], prefix.id) if prefix
     elsif /\A[0-9]{1,7}\z/.match(barcode) # Just a number
       @asset = Asset.find_by_barcode(barcode)
     else

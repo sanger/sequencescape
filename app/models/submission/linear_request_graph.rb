@@ -25,9 +25,9 @@ module Submission::LinearRequestGraph
   # Generates a list of RequestType and multiplier pairs for the instance.
   def build_request_type_multiplier_pairs
     # Ensure that the keys of the multipliers hash are strings, otherwise we get weirdness!
-    multipliers = Hash.new { |h,k| h[k] = 1 }.tap do |multipliers|
+    multipliers = Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
       requested_multipliers = request_options.try(:[], :multiplier) || {}
-      requested_multipliers.each { |k,v| multipliers[k.to_s] = v.to_i }
+      requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
     end
 
     request_types.dup.map do |request_type_id|
@@ -110,7 +110,7 @@ module Submission::LinearRequestGraph
           associate_built_requests(target_assets.uniq.compact); []
         end
       else
-        target_assets.each_with_index.map do |asset,index|
+        target_assets.each_with_index.map do |asset, index|
           source_asset = request_type.no_target_asset? ? source_asset_qc_metric_and_item[index].first : asset
           [source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last]
         end

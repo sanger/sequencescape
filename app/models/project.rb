@@ -52,7 +52,7 @@ class Project < ActiveRecord::Base
   scope :in_assets, ->(assets) {
     select('projects.*').uniq.
     joins(:aliquots).
-    where(aliquots:{ receptacle_id: assets })
+    where(aliquots: { receptacle_id: assets })
   }
 
   has_many :roles, as: :authorizable
@@ -65,14 +65,14 @@ class Project < ActiveRecord::Base
   validates_presence_of :name, :state
   validates_uniqueness_of :name, on: :create, message: "already in use (#{self.name})"
 
-  scope :for_search_query, ->(query,with_includes) {
+  scope :for_search_query, ->(query, with_includes) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
   }
 
   # Allow us to pass in nil or '' if we don't want to filter state.
   # State is required so we don't need to look up an actual null state
   scope :in_state, ->(state) {
-    state.present? ? where(state:state) : all
+    state.present? ? where(state: state) : all
   }
 
   scope :approved,     ->()     { where(approved: true) }
@@ -158,7 +158,7 @@ class Project < ActiveRecord::Base
 
   def submittable?
     return true if project_metadata.project_funding_model.present?
-    errors.add(:base,"No funding model specified")
+    errors.add(:base, "No funding model specified")
     false
   end
 

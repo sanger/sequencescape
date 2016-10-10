@@ -45,7 +45,7 @@ module Qcable::Statemachine
         end
 
         event :destroy_labware do
-          transitions to: :destroyed, from: [:pending,:available], allow_automated?: true
+          transitions to: :destroyed, from: [:pending, :available], allow_automated?: true
         end
 
         event :qc do
@@ -61,7 +61,7 @@ module Qcable::Statemachine
         end
 
         event :fail do
-          transitions to: :failed, from: [:qc_in_progress,:pending]
+          transitions to: :failed, from: [:qc_in_progress, :pending]
         end
 
         event :use do
@@ -73,7 +73,7 @@ module Qcable::Statemachine
      scope :for_state, ->(state) { where(state: state) }
 
      scope :available,   -> { where(state: :available) }
-     scope :unavailable, -> { where(state: [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]) }
+     scope :unavailable, -> { where(state: [:created, :pending, :failed, :passed, :destroyed, :qc_in_progress, :exhausted]) }
 
     end
   end

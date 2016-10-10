@@ -21,4 +21,4 @@ rt = RequestType.create!(
   ) do |rt|
   Pipeline.find_by_name('MiSeq sequencing').request_types << rt
 end
-RequestType::Validator.create!(request_type: rt,request_option: 'read_length',valid_options: [11,25])
+RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [11, 25])

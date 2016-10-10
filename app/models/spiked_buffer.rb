@@ -21,7 +21,7 @@ class SpikedBuffer < LibraryTube
   end
 
   def self.phiX_sample
-    Sample.find_by(name:'phiX_for_spiked_buffers') or raise StandardError, "Cannot find phiX_for_spiked_buffers sample"
+    Sample.find_by(name: 'phiX_for_spiked_buffers') or raise StandardError, "Cannot find phiX_for_spiked_buffers sample"
   end
 
   def percentage_of_index

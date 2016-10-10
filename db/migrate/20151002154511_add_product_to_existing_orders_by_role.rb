@@ -33,7 +33,7 @@ class AddProductToExistingOrdersByRole < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       say 'Setting for roles...'
-      ORDER_ROLE_PRODUCT.each do |rolename,product_name|
+      ORDER_ROLE_PRODUCT.each do |rolename, product_name|
         role = OrderRole.find_by_role(rolename)
         next if role.nil?
         product = Product.find_by_name!(product_name)

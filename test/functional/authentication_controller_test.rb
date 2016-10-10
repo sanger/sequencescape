@@ -48,7 +48,7 @@ class AuthenticationControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @request.host = "www.example.com"
-      #skip_routing
+      # skip_routing
     end
 
     context "with configatron disable_api_authentication set to true" do

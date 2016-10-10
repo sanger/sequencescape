@@ -23,7 +23,7 @@ Given /^the manifests are successfully processed$/ do
   step("1 pending delayed jobs are processed")
 
   manifests = SampleManifest.all
-  assert(manifests.all? { |m| m.last_errors.blank? }, "There are sample manifests with errors: #{ manifests.inspect }")
+  assert(manifests.all? { |m| m.last_errors.blank? }, "There are sample manifests with errors: #{manifests.inspect}")
 end
 
 When /^I create a submission with plate "([^\"]+)" for study "([^\"]+)" under project "([^\"]+)"$/ do |plate, study, project|

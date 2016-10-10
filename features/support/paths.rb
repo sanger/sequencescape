@@ -8,8 +8,8 @@ module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
     object = model.find_by_name!(name)
-    routing_method = "#{ model.name.underscore }_path"
-    routing_method = "#{ page }_#{ routing_method }" unless page == 'show'
+    routing_method = "#{model.name.underscore}_path"
+    routing_method = "#{page}_#{routing_method}" unless page == 'show'
     send(routing_method.to_sym, object)
   end
 
@@ -72,11 +72,11 @@ module NavigationHelpers
 
     when /the (show|edit|related studies) page for study "([^\"]+)"/
       page, name = $1, $2
-      page_for_model(Study, page.sub(" ", "_"), name )
+      page_for_model(Study, page.sub(" ", "_"), name)
 
     when /the show accession page for study named "([^\"]+)"/
       study_name = $1
-      study = Study.find_by!( name: study_name )
+      study = Study.find_by!(name: study_name)
       study_show_accession_path(study)
 
     when /the page for editing the last request/
@@ -85,17 +85,17 @@ module NavigationHelpers
 
     when /the update page for sample "([^\"]+)"/
       sample_name = $1
-      sample      = Sample.find_by!( name: sample_name )
+      sample      = Sample.find_by!(name: sample_name)
       sample_path(sample)
 
     when /the study workflow page for "([^\"]+)"/, /the workflow page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by!( name: study_name )
+      study      = Study.find_by!(name: study_name)
       study_workflow_path(study, @current_user.workflow)
 
     when /the study named "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by!( name: study_name )
+      study      = Study.find_by!(name: study_name)
       study_path(study)
 
     when /the edit page for the last batch/
@@ -145,22 +145,22 @@ module NavigationHelpers
     # displayed if there is something wrong!  So it goes "choose how" -> "sample registration" -> "sample error".
     when /the page for choosing how to register samples for study "([^\"]+)"$/, /the sample error page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       study_sample_registration_index_path(study)
 
     when /the sample registration page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       new_study_sample_registration_path(study)
 
     when /the spreadsheet sample registration page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       spreadsheet_study_sample_registration_index_path(study)
 
     when /the sample error page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.find_by( name: study_name ) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       study_sample_registration_index_path(study)
 
     when /the Submissions Inbox page/
@@ -170,11 +170,11 @@ module NavigationHelpers
     when /the show page for the last submission/
       submission = Submission.last or raise StandardError, "There are no submissions!"
       order = submission.orders.first
-      #study_workflow_submission_path(order.study, order.workflow, submission)
+      # study_workflow_submission_path(order.study, order.workflow, submission)
       submission_path(submission)
 
     when /the submissions page for study "([^\"]+)"/
-      study = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
+      study = Study.find_by_name($1) or raise StandardError, "No study defined with name #{$1.inspect}"
       study_workflow_submissions_path(study, @current_user.workflow)
 
     when /the Qc reports homepage/
@@ -207,22 +207,22 @@ module NavigationHelpers
 
     when /the details page for (study) "([^"]+)"/
       page, name = $1, $2
-      page_for_model(Study, "properties", name )
+      page_for_model(Study, "properties", name)
 
     when /the asset group "([^"]+)" page for study "([^"]+)"$/
       asset_group_name, study_name = $1, $2
-      study = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       asset_group = study.asset_groups.find_by_name(asset_group_name) or raise StandardError, "No asset group defined with name '#{asset_group_name}'"
       study_asset_group_path(study, asset_group)
 
     when /the samples page for study "([^"]+)"$/
       study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       study_samples_path(study)
 
     when /the show page for pipeline "([^"]+)"/
       pipeline_name = $1
-      pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "No Pipeline defined with name '#{ pipeline_name} '"
+      pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "No Pipeline defined with name '#{pipeline_name} '"
       pipeline_path(pipeline)
 
     when /the show page for batch "(\d+)"/
@@ -238,7 +238,7 @@ module NavigationHelpers
 
     when /the edit page for the first tag in "([^"]+)"/
       tag_group = TagGroup.find_by_name($1)
-      edit_tag_group_tag_path(tag_group,tag_group.tags.first)
+      edit_tag_group_tag_path(tag_group, tag_group.tags.first)
 
     when /the Tag Group new page/
       new_tag_group_path

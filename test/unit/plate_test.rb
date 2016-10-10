@@ -11,7 +11,7 @@ class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = "12345678"
     purpose = create :plate_purpose
-    purpose.create!(:do_not_create_wells,{ name: "Cherrypicked #{barcode}", size: 192,barcode: barcode,plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode } })
+    purpose.create!(:do_not_create_wells, { name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode } })
   end
 
   context "" do
@@ -37,7 +37,7 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     context "#add_well" do
-      [[96,7,11], [384,15,23]].each do |plate_size, row_size,col_size|
+      [[96, 7, 11], [384, 15, 23]].each do |plate_size, row_size, col_size|
         context "for #{plate_size} plate" do
           setup do
             @well = Well.new
@@ -74,7 +74,7 @@ class PlateTest < ActiveSupport::TestCase
     context "#control_well_exists?" do
       setup do
         @control_plate = create :control_plate, barcode: 134443
-        map = Map.find_by_description_and_asset_size("A1",96)
+        map = Map.find_by_description_and_asset_size("A1", 96)
         @control_well_asset = Well.new(map: map)
         @control_plate.add_and_save_well @control_well_asset
         @control_plate.reload
@@ -128,8 +128,8 @@ class PlateTest < ActiveSupport::TestCase
       end
       context "with a valid well assets" do
         should "return a single plate ID" do
-          assert Plate.plate_ids_from_requests([@request1,@request2]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request2,@request1]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request1, @request2]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request2, @request1]).include?(@plate1.id)
         end
       end
     end
@@ -146,10 +146,10 @@ class PlateTest < ActiveSupport::TestCase
       end
       context "with a valid well assets" do
         should "return 2 plate IDs" do
-          assert Plate.plate_ids_from_requests([@request1,@request2,@request3]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request1,@request2,@request3]).include?(@plate2.id)
-          assert Plate.plate_ids_from_requests([@request3,@request1,@request2]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request3,@request1,@request2]).include?(@plate2.id)
+          assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate2.id)
+          assert Plate.plate_ids_from_requests([@request3, @request1, @request2]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request3, @request1, @request2]).include?(@plate2.id)
         end
       end
     end
@@ -160,7 +160,7 @@ class PlateTest < ActiveSupport::TestCase
     setup do
       @plate = create :transfer_plate
       user = create(:user)
-      @plate.wells.each_with_index do |well,index|
+      @plate.wells.each_with_index do |well, index|
         create :request, asset: well, submission: Submission.create!(priority: index + 1, user: user)
       end
     end
@@ -175,7 +175,7 @@ class PlateTest < ActiveSupport::TestCase
       @plate1 = create :plate
       @plate2 = create :plate
       @plate3 = create :plate
-      @workflow = create :submission_workflow,key: 'microarray_genotyping'
+      @workflow = create :submission_workflow, key: 'microarray_genotyping'
       @request_type_1 = create :well_request_type, workflow: @workflow
       @request_type_2 = create :well_request_type, workflow: @workflow
       @workflow.request_types << @request_type_1
@@ -185,7 +185,7 @@ class PlateTest < ActiveSupport::TestCase
       @user = create :user
       @current_time = Time.now
 
-      [@plate1, @plate2,@plate3].each do |plate|
+      [@plate1, @plate2, @plate3].each do |plate|
         2.times do
           plate.add_and_save_well(Well.new)
         end
@@ -247,7 +247,7 @@ end
             @event_count =  Event.count
           @submission_count = Submission.count
           @request_count =  Request.count
-            Plate.create_plates_submission(@project, @study, [@plate1,@plate3,@plate2], @user)
+            Plate.create_plates_submission(@project, @study, [@plate1, @plate3, @plate2], @user)
           end
 
  should "change Event.count by 3" do
@@ -382,8 +382,8 @@ end
 
       class MockParser
         def each_well_and_parameters
-          yield('B1','2','3')
-          yield('C1','4','5')
+          yield('B1', '2', '3')
+          yield('C1', '4', '5')
         end
       end
 

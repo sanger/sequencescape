@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
@@ -18,11 +18,11 @@ class UnifyInitialTransferRequests < ActiveRecord::Migration
         request_purpose: RequestPurpose.find_by_key('internal')
       )
 
-      deprecate_class('IlluminaB::Requests::InputToCovaris',new_type:initial_transfer)
-      deprecate_class('IlluminaC::Requests::InitialTransfer',new_type:initial_transfer)
-      deprecate_class('IlluminaC::Requests::StockToAlLibsTagged',new_type:initial_transfer)
-      deprecate_class('IlluminaHtp::Requests::CherrypickedToShear',new_type:initial_transfer)
-      deprecate_class('Pulldown::Requests::StockToCovaris',new_type:initial_transfer)
+      deprecate_class('IlluminaB::Requests::InputToCovaris', new_type: initial_transfer)
+      deprecate_class('IlluminaC::Requests::InitialTransfer', new_type: initial_transfer)
+      deprecate_class('IlluminaC::Requests::StockToAlLibsTagged', new_type: initial_transfer)
+      deprecate_class('IlluminaHtp::Requests::CherrypickedToShear', new_type: initial_transfer)
+      deprecate_class('Pulldown::Requests::StockToCovaris', new_type: initial_transfer)
 
     end
   end

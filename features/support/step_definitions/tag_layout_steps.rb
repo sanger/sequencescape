@@ -98,7 +98,7 @@ end
 Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
     name, WellRange.new('A1', 'H12'),
-    ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
+    ('A'..'H').to_a.zip(table.raw).inject({}) do |h, (row_a, row)|
       h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i + 1}"] = cell } }
     end
   )
@@ -107,7 +107,7 @@ end
 Then /^the tag 2 layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag2_layout(
     name, WellRange.new('A1', 'H12'),
-    ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
+    ('A'..'H').to_a.zip(table.raw).inject({}) do |h, (row_a, row)|
       h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i + 1}"] = cell } }
     end
   )
@@ -138,8 +138,8 @@ def pool_by_strategy(source, destination, pooling_strategy)
   Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}") unless pooling_strategy.sum == source.size
 
   source_wells, destination_wells = [], []
-  source.wells.walk_in_column_major_order { |well,_| source_wells << well }
-  destination.wells.walk_in_column_major_order { |well,_| destination_wells << well }
+  source.wells.walk_in_column_major_order { |well, _| source_wells << well }
+  destination.wells.walk_in_column_major_order { |well, _| destination_wells << well }
 
   pooling_strategy.each_with_index do |pool, submission_id|
     submission_id = Submission.create!(user: User.first || User.create!(login: 'a')).id

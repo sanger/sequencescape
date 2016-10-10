@@ -31,7 +31,7 @@ class Qcable < ActiveRecord::Base
 
   delegate :bed, :order, to: :stamp_qcable, nil: true
 
-  scope :include_for_json, -> { includes([:asset,:lot,:stamp,:stamp_qcable]) }
+  scope :include_for_json, -> { includes([:asset, :lot, :stamp, :stamp_qcable]) }
 
   scope :stamped, -> { includes([:stamp_qcable, :stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC') }
 

@@ -15,7 +15,7 @@ class StudyRelation < ActiveRecord::Base
 
   validates_uniqueness_of :study_relation_type_id, scope: [:study_id, :related_study_id]
 
-  delegate :name, :reversed_name,to: :study_relation_type
+  delegate :name, :reversed_name, to: :study_relation_type
 
 
   module Associations
@@ -23,7 +23,7 @@ class StudyRelation < ActiveRecord::Base
       # Related studies
       base.has_many :study_relations
       base.has_many :related_studies, through: :study_relations, class_name: "Study"
-      #Inverse
+      # Inverse
       base.has_many :reversed_study_relations, class_name: "StudyRelation", foreign_key: :related_study_id
       base.has_many :reversed_related_studies, through: :reversed_study_relations, class_name: "Study",  source: :study
     end

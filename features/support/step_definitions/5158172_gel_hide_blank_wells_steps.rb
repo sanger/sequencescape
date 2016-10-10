@@ -6,7 +6,7 @@
 
 Given /^all wells on plate "([^"]*)" have non\-empty sample names$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.each_with_index do |well, index|
     well.aliquots.clear
     well.aliquots.create!(sample: Sample.create!(name: "Sample_#{index}_on_#{plate_barcode}"))
   end

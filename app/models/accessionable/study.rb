@@ -138,7 +138,7 @@ module Accessionable
     end
 
     def db_label
-      I18n.t("metadata.study.metadata.#{ @role }.ebi_db", default: "")
+      I18n.t("metadata.study.metadata.#{@role}.ebi_db", default: "")
     end
   end
 end

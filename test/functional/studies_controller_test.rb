@@ -89,7 +89,7 @@ class StudiesControllerTest < ActionController::TestCase
           }
         end
 
-        should set_flash.to( "Your study has been created")
+        should set_flash.to("Your study has been created")
         should redirect_to("study path") { study_path(Study.last) }
         should "change Study.count by 1" do
           assert_equal 1, Study.count - @study_count
@@ -113,7 +113,7 @@ class StudiesControllerTest < ActionController::TestCase
 
       context "create a new study with a program specified" do
         setup do
-          #Program.new(:name => 'testing program').save
+          # Program.new(:name => 'testing program').save
           post :create, "study" => {
             "name" => "hello 4",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
@@ -183,7 +183,7 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal 1, Study.count - @study_count
         end
         should redirect_to("study path") { study_path(Study.last) }
-        should set_flash.to( "Your study has been created")
+        should set_flash.to("Your study has been created")
       end
 
     end

@@ -33,9 +33,9 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
       @fake_plate = mock('plate', wells: @wells)
       @workflows_controller.stubs(:find_or_create_plate).returns(@fake_plate)
 
-      @dest_wells = ["A1","B1","C1","D1","E1","F1","G1"]
+      @dest_wells = ["A1", "B1", "C1", "D1", "E1", "F1", "G1"]
 
-      @mock_wells = @dest_wells.map { |loc| mock('well',map_description: loc) }
+      @mock_wells = @dest_wells.map { |loc| mock('well', map_description: loc) }
     end
 
     context "#do_assign_requests_to_multiplexed_wells_task" do
@@ -54,35 +54,35 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
       end
       context "with no tag clashes" do
         setup do
-          request_target = [:none,0,1,2,3,4,5,6,6]
-          tag_hash = Hash.new { |h,i| h[i] = create :tag }
-          @tags = [1,2,3,4,5,5,7,8].map { |i| tag_hash[i] }
+          request_target = [:none, 0, 1, 2, 3, 4, 5, 6, 6]
+          tag_hash = Hash.new { |h, i| h[i] = create :tag }
+          @tags = [1, 2, 3, 4, 5, 5, 7, 8].map { |i| tag_hash[i] }
           @requests = (1..8).map do |i|
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
             mock("request_#{i}",
               asset: asset
             ).tap do |request|
-              request.expects(:target_asset=).with( @mock_wells[request_target[i]] )
+              request.expects(:target_asset=).with(@mock_wells[request_target[i]])
               request.expects(:save!)
               request.expects(:id).at_least_once.returns(i)
               request.expects(:shared_attributes).at_least_once.returns("match")
             end
           end
-          @wells.expects(:located_at).with(['A1','B1','C1','D1','E1','F1','G1']).returns(@mock_wells)
+          @wells.expects(:located_at).with(['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1']).returns(@mock_wells)
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch
         end
         should "set target assets appropriately" do
-          assert @task.do_task(@workflows_controller,@params)
+          assert @task.do_task(@workflows_controller, @params)
         end
       end
 
       context "with tag clashes" do
         setup do
-          tag_hash = Hash.new { |h,i| h[i] = create :tag }
-          @tags = [1,2,3,4,5,5,6,6].map { |i| tag_hash[i] }
+          tag_hash = Hash.new { |h, i| h[i] = create :tag }
+          @tags = [1, 2, 3, 4, 5, 5, 6, 6].map { |i| tag_hash[i] }
           @requests = (1..8).map do |i|
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
@@ -92,18 +92,18 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
               request.expects(:id).at_least_once.returns(i)
             end
           end
-          @wells.expects(:located_at).with(['A1','B1','C1','D1','E1','F1','G1']).returns(@mock_wells)
+          @wells.expects(:located_at).with(['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1']).returns(@mock_wells)
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch
         end
 
         should "return false" do
-          assert !@task.do_task(@workflows_controller,@params)
+          assert !@task.do_task(@workflows_controller, @params)
         end
 
         should "set a flash[:notice] for failure" do
-          @task.do_task(@workflows_controller,@params)
+          @task.do_task(@workflows_controller, @params)
           assert_not_nil @workflows_controller.flash[:error]
           assert_equal "Duplicate tags in G1", @workflows_controller.flash[:error]
         end
@@ -111,8 +111,8 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
 
       context "with incompatible attributes" do
         setup do
-          tag_hash = Hash.new { |h,i| h[i] = create :tag }
-          @tags = [1,2,3,4,5,5,7,8].map { |i| tag_hash[i] }
+          tag_hash = Hash.new { |h, i| h[i] = create :tag }
+          @tags = [1, 2, 3, 4, 5, 5, 7, 8].map { |i| tag_hash[i] }
           @requests = (1..8).map do |i|
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
@@ -123,18 +123,18 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
               request.expects(:shared_attributes).at_least_once.returns("clash#{i}")
             end
           end
-          @wells.expects(:located_at).with(['A1','B1','C1','D1','E1','F1','G1']).returns(@mock_wells)
+          @wells.expects(:located_at).with(['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1']).returns(@mock_wells)
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch
         end
 
         should "return false" do
-          assert !@task.do_task(@workflows_controller,@params)
+          assert !@task.do_task(@workflows_controller, @params)
         end
 
         should "set a flash[:notice] for failure" do
-          @task.do_task(@workflows_controller,@params)
+          @task.do_task(@workflows_controller, @params)
           assert_not_nil @workflows_controller.flash[:error]
           assert_equal "Incompatible requests in G1", @workflows_controller.flash[:error]
         end

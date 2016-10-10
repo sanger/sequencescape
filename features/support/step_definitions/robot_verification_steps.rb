@@ -107,7 +107,7 @@ Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do
   generated_lines.shift(2)
   assert_not_nil generated_lines
   tecan_file_lines = tecan_file.split(/\n/)
-  generated_lines.each_with_index do |line,index|
+  generated_lines.each_with_index do |line, index|
     assert_equal tecan_file_lines[index], line
   end
 end

@@ -29,7 +29,7 @@ class Accessionable::Base
   end
 
   def schema_type
-    #raise NotImplementedError, "abstract method"
+    # raise NotImplementedError, "abstract method"
     self.class.name.split("::").last.downcase
   end
 
@@ -88,7 +88,7 @@ class Accessionable::Base
     end
 
     def label
-      I18n.t("#{@scope}.#{ @name }.label").gsub(' ','_').downcase
+      I18n.t("#{@scope}.#{@name}.label").gsub(' ', '_').downcase
     end
 
     def build(xml)

@@ -6,7 +6,7 @@
 
 class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
   model do
-    action(:create) do |request,_|
+    action(:create) do |request, _|
       request.target.create!(request.attributes.tap do |attributes|
         attributes[:decisions] = (attributes[:decisions] || []).map do |d|
           d.merge({ 'qcable' => Uuid.find_by_external_id(d['qcable']).resource })

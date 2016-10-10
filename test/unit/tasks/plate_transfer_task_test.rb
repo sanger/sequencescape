@@ -29,9 +29,9 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @batch                = create :batch
       @workflows_controller.batch = @batch
       @source_plate         = create :plate
-      @source_plate.wells   = ['A1','B1','C1'].map do |loc|
+      @source_plate.wells   = ['A1', 'B1', 'C1'].map do |loc|
         create(:well_with_sample_and_without_plate).tap do |w|
-          w.map = Map.find_by_description_and_asset_size(loc,96)
+          w.map = Map.find_by_description_and_asset_size(loc, 96)
           request = create :pac_bio_sample_prep_request, asset: w
           @batch.requests << request
         end
@@ -109,7 +109,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         setup do
           plate_b = create :plate
           plate_b.wells << create(:well_with_sample_and_without_plate).tap do |w|
-            w.map = Map.find_by_description_and_asset_size('A1',96)
+            w.map = Map.find_by_description_and_asset_size('A1', 96)
             request = create :well_request, asset: w, target_asset: create(:pac_bio_library_tube)
             w.requests << request
             @batch.requests << request

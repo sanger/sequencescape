@@ -11,7 +11,7 @@ class Order < ActiveRecord::Base
 
   module InstanceMethods
     def complete_building
-      #nothing just so mixin can use super
+      # nothing just so mixin can use super
     end
   end
   include InstanceMethods
@@ -48,7 +48,7 @@ class Order < ActiveRecord::Base
 
   belongs_to :submission, inverse_of: :orders
   scope :include_for_study_view, -> { includes(:submission) }
-  #validates_presence_of :submission
+  # validates_presence_of :submission
 
   before_destroy :is_building_submission?
   after_destroy :on_delete_destroy_submission
@@ -86,7 +86,7 @@ class Order < ActiveRecord::Base
   def no_consent_withdrawl
     return true unless all_samples.any?(&:consent_withdrawn?)
     withdrawn_samples = all_samples.select(&:consent_withdrawn?).map(&:friendly_name)
-    errors.add(:samples,"in this submission have had patient consent withdrawn: #{withdrawn_samples.to_sentence}")
+    errors.add(:samples, "in this submission have had patient consent withdrawn: #{withdrawn_samples.to_sentence}")
     false
   end
   private :no_consent_withdrawl
@@ -103,7 +103,7 @@ class Order < ActiveRecord::Base
   # TODO: Figure out why eager loading aliquots/samples returns [] even when
   # we limit order_assets to receptacles.
   def samples
-    #naive way
+    # naive way
     assets.map(&:samples).flatten.uniq
   end
 
@@ -158,7 +158,7 @@ class Order < ActiveRecord::Base
 
   # only needed to note
   def self.build!(options)
-    #call submission with appropriate Order subclass
+    # call submission with appropriate Order subclass
     Submission.build!({ template: self }.merge(options))
   end
 
@@ -203,7 +203,7 @@ class Order < ActiveRecord::Base
 
   def duplicate(&block)
     create_parameters = template_parameters
-    new_order = Order.create(create_parameters.merge( study: self.study,workflow: self.workflow,
+    new_order = Order.create(create_parameters.merge(study: self.study, workflow: self.workflow,
           user: self.user, assets: self.assets, state: self.state,
           request_types: self.request_types,
           request_options: self.request_options,
@@ -223,7 +223,7 @@ class Order < ActiveRecord::Base
   attr_accessor :info_differential # aggrement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
   DefaultAssetInputMethods = ["select an asset group"]
-  #DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
+  # DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
   attr_writer :asset_input_methods
   def asset_input_methods; @asset_input_methods ||= DefaultAssetInputMethods; end
 
@@ -241,7 +241,7 @@ class Order < ActiveRecord::Base
       info_differential: info_differential,
       customize_partial: customize_partial,
       asset_input_methods: asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
-    }.reject { |k,v| v.nil? }
+    }.reject { |k, v| v.nil? }
   end
 
   def request_types_list
@@ -261,10 +261,10 @@ class Order < ActiveRecord::Base
     def initialize(key)
       @key = key
     end
-    def add(attribute,metadata)
+    def add(attribute, metadata)
       @display_name ||= attribute.display_name
       @key            = attribute.assignable_attribute_name
-      @default      ||= attribute.find_default(nil,metadata)
+      @default      ||= attribute.find_default(nil, metadata)
       @kind           = attribute.kind if @kind.nil? || attribute.required?
       if attribute.selection?
         new_options   = attribute.selection_options(metadata)
@@ -291,14 +291,14 @@ class Order < ActiveRecord::Base
   end
 
   def request_attributes
-    attributes = ActiveSupport::OrderedHash.new { |hash,value| hash[value] = CompositeAttribute.new(value) }
+    attributes = ActiveSupport::OrderedHash.new { |hash, value| hash[value] = CompositeAttribute.new(value) }
     request_types_list.flatten.each do |request_type|
       mocked = mock_metadata_for(request_type)
       request_type.request_class::Metadata.attribute_details.each do |att|
-        attributes[att.name].add(att,mocked)
+        attributes[att.name].add(att, mocked)
       end
       request_type.request_class::Metadata.association_details.each do |att|
-        attributes[att.name].add(att,nil)
+        attributes[att.name].add(att, nil)
       end
     end
 
@@ -312,7 +312,7 @@ class Order < ActiveRecord::Base
     # a) Start from scratch
     # b) Not bother
     mock_request = request_type.request_class.new(request_type: request_type)
-    request_type.request_class::Metadata.new(request: mock_request,owner: mock_request)
+    request_type.request_class::Metadata.new(request: mock_request, owner: mock_request)
   end
 
   # Return the list of input fields to edit when creating a new submission
@@ -385,6 +385,6 @@ class Order < ActiveRecord::Base
   end
 
   def generate_broadcast_event
-    BroadcastEvent::OrderMade.create!(seed: self,user: user)
+    BroadcastEvent::OrderMade.create!(seed: self, user: user)
   end
 end
