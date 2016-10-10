@@ -16,10 +16,9 @@ class Tag < ActiveRecord::Base
   self.per_page = 500
   include Uuid::Uuidable
 
-
-
   belongs_to :tag_group
-  has_many :assets, as: :material
+  has_many :aliquots
+  has_many :assets, through: :aliquots, source: :receptacle
   has_many :requests, ->() { distinct }, through: :assets
 
   scope :sorted, ->() { order("map_id ASC") }
@@ -27,12 +26,6 @@ class Tag < ActiveRecord::Base
   def name
     "Tag #{map_id}"
   end
-
-  # Creates an instance of this tag that can be attached to a well.
-  def create!
-    TagInstance.create!(tag: self)
-  end
-  deprecate :create!
 
   # Connects a tag instance to the specified asset
   def tag!(asset)

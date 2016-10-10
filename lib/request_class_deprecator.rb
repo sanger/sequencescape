@@ -2,6 +2,16 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
+
+# Use in migrations to degrecate request classes
+# Usage:
+# include RequestClassDeprecator
+# deprecate_class('ClassName',options)
+# options an otional hash
+# {
+# new_type: The new request type for affected requests. 'transfer' by default
+# state_change: Hash of from_state => to_state applied to affected requests
+# }
 module RequestClassDeprecator
 
   class Request < ActiveRecord::Base

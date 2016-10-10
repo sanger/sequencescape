@@ -57,7 +57,7 @@ module ActiveRecord # :nodoc:
           end
 
           def delete_descriptors
-            self.descriptors.clear
+            descriptors.clear
           end
         end
 
@@ -74,7 +74,7 @@ module ActiveRecord # :nodoc:
             xml.instruct! unless options[:skip_instruct]
 
             xml.descriptors {
-              self.descriptors.each do |field|
+              descriptors.each do |field|
                 xml.descriptor {
                   descriptor.name  field.name.to_s
                   descriptor.value field.value

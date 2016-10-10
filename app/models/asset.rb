@@ -168,7 +168,7 @@ class Asset < ActiveRecord::Base
   # Key/value stores and attributes
   include ExternalProperties
   acts_as_descriptable :serialized
-  include PolymorphicAttributable
+
   include Uuid::Uuidable
 
   # Links to other databases
@@ -176,8 +176,6 @@ class Asset < ActiveRecord::Base
 
   include Commentable
   include Event::PlateEvents
-
-  # set_polymorphic_attributes :sample
 
   # Returns the request options used to create this asset.  By default assumed to be empty.
   def created_with_request_options
