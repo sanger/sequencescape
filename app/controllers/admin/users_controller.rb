@@ -61,11 +61,11 @@ class Admin::UsersController < ApplicationController
   def grant_user_role
     if request.xhr?
       if params[:role]
-        if params[:role][:authorizable_type] == "Project"
-          authorizable_object = Project.find(params[:role][:authorizable_id])
-        else
-          authorizable_object = Study.find(params[:role][:authorizable_id])
-        end
+        authorizable_object = if params[:role][:authorizable_type] == "Project"
+          Project.find(params[:role][:authorizable_id])
+                              else
+          Study.find(params[:role][:authorizable_id])
+                              end
         @user.has_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.sort_by(&:name)
 
@@ -86,11 +86,11 @@ class Admin::UsersController < ApplicationController
   def remove_user_role
     if request.xhr?
       if params[:role]
-        if params[:role][:authorizable_type] == "project"
-          authorizable_object = Project.find(params[:role][:authorizable_id])
-        else
-          authorizable_object = Study.find(params[:role][:authorizable_id])
-        end
+        authorizable_object = if params[:role][:authorizable_type] == "project"
+          Project.find(params[:role][:authorizable_id])
+                              else
+          Study.find(params[:role][:authorizable_id])
+                              end
         @user.has_no_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.sort_by(&:name)
 

@@ -57,13 +57,13 @@ module Tasks::CherrypickHandler
     flash.now[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
 
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
-    if @spreadsheet_layout
-      @map_info = @spreadsheet_layout
-    elsif @plate.present?
-      @map_info = @task.pick_onto_partial_plate(@requests,plate_template,@robot,@batch,@plate)
-    else
-      @map_info = @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
-    end
+    @map_info = if @spreadsheet_layout
+      @spreadsheet_layout
+                elsif @plate.present?
+      @task.pick_onto_partial_plate(@requests,plate_template,@robot,@batch,@plate)
+                else
+      @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
+                end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
 

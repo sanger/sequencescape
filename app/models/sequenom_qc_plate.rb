@@ -20,11 +20,11 @@ class SequenomQcPlate < Plate
     return [] if self.parents.empty?
     ordered_source_plates = []
     source_barcodes.each do |plate_barcode|
-      if plate_barcode.blank?
-        ordered_source_plates << nil
-      else
-        ordered_source_plates << self.parents.select { |plate| plate.barcode == plate_barcode }.first
-      end
+      ordered_source_plates << if plate_barcode.blank?
+        nil
+                               else
+        self.parents.select { |plate| plate.barcode == plate_barcode }.first
+                               end
     end
 
     ordered_source_plates

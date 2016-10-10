@@ -9,11 +9,11 @@ module Tasks::PlateTemplateHandler
     @robots = Robot.all
     set_plate_purpose_options(task)
     suitable_sizes = @plate_purpose_options.map { |o| o[1] }.uniq
-    if (@batch.pipeline.control_request_type.nil?)
-      @plate_templates = PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
-    else
-      @plate_templates = PlateTemplate.with_sizes(suitable_sizes)
-    end
+    @plate_templates = if (@batch.pipeline.control_request_type.nil?)
+      PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
+                       else
+      PlateTemplate.with_sizes(suitable_sizes)
+                       end
   end
 
   def set_plate_purpose_options(task)
@@ -23,11 +23,11 @@ module Tasks::PlateTemplateHandler
   def do_plate_template_task(task, params)
     return true if params[:file].blank?
 
-    if params[:plate_template].blank?
-      plate_size = PlatePurpose.find(params[:plate_purpose_id]).size
-    else
-      plate_size = PlateTemplate.find(params[:plate_template]["0"].to_i).size
-    end
+    plate_size = if params[:plate_template].blank?
+      PlatePurpose.find(params[:plate_purpose_id]).size
+                 else
+      PlateTemplate.find(params[:plate_template]["0"].to_i).size
+                 end
 
     parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read,plate_size)
     @spreadsheet_layout = map_parsed_spreadsheet_to_plate(parsed_plate_details,@batch,plate_size)

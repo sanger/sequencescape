@@ -623,40 +623,6 @@ end
             }
             @evaluations = [@evaluation]
           end
-
-          context 'checking stuff' do
-            setup do
-              @labevent_count = LabEvent.count
-              @rc = Batch.qc_evaluations_update({ 'evaluation' => @evaluation })
-            end
-
-            should "change LabEvent.count by 2" do
-              assert_equal 2,  LabEvent.count - @labevent_count, "Expected LabEvent.count to change by 2"
-            end
-
-            should 'return no errors' do
-              assert_equal({ 'evaluation' => @evaluation }, @rc)
-            end
-
-            should "event should include passed params" do
-              @event = LabEvent.last
-              assert_equal @event.description,       @evaluations.last["check"]
-              assert_equal @event.descriptor_fields, @evaluations.last["checks"]["check"].keys
-              assert_equal @event.descriptors.size,  @evaluations.last["checks"]["check"].size
-            end
-
-            should "update batches pipeline to manual qc_pipeline" do
-              assert_equal @pipeline_next.id, Batch.find(@batch).qc_pipeline_id
-            end
-          end
-
-          ['qc_pending', 'qc_submitted', 'qc_manual'].each do |initial_state|
-            should "changing state from #{initial_state}" do
-              @batch.update_attributes!(:qc_state => initial_state)
-              Batch.qc_evaluations_update({ 'evaluation' => @evaluation })
-              assert_equal('qc_manual', Batch.find(@batch).qc_state)
-            end
-          end
         end
       end
     end

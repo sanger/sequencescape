@@ -33,13 +33,13 @@ module Authorization
         def has_role( role_name, authorizable_obj = nil )
           role = get_role( role_name, authorizable_obj )
           if role.nil?
-            if authorizable_obj.is_a? Class
-              role = Role.create( :name => role_name, :authorizable_type => authorizable_obj.to_s )
-            elsif authorizable_obj
-              role = Role.create( :name => role_name, :authorizable => authorizable_obj )
-            else
-              role = Role.create( :name => role_name )
-            end
+            role = if authorizable_obj.is_a? Class
+              Role.create( :name => role_name, :authorizable_type => authorizable_obj.to_s )
+                   elsif authorizable_obj
+              Role.create( :name => role_name, :authorizable => authorizable_obj )
+                   else
+              Role.create( :name => role_name )
+                   end
           end
           self.roles << role if role and not self.roles.exists?( role.id )
         end

@@ -102,15 +102,15 @@ class SubmissionTemplate < ActiveRecord::Base
   # method errors somewhere else in the code.
   def safely_duplicate(params)
     params.inject({}) do |cloned, (k,v)|
-      if v.is_a?(ActiveRecord::Base)
-        cloned[k] = v
-      elsif v.is_a?(Array) and v.first.is_a?(ActiveRecord::Base)
-        cloned[k] = v.dup                           # Duplicate the array, but not the contents
-      elsif v.is_a?(Array) or v.is_a?(Hash)
-        cloned[k] = Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
-      else
-        cloned[k] = v
-      end
+      cloned[k] = if v.is_a?(ActiveRecord::Base)
+        v
+                  elsif v.is_a?(Array) and v.first.is_a?(ActiveRecord::Base)
+        v.dup                           # Duplicate the array, but not the contents
+                  elsif v.is_a?(Array) or v.is_a?(Hash)
+        Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
+                  else
+        v
+                  end
       cloned
     end
   end

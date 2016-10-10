@@ -11,7 +11,7 @@ end
 
 Given /^project "([^\"]*)" approval is "([^\"]*)"$/ do |project, approval|
   proj = Project.find_by_name(project)
-  approval == "approved" ? proj.approved = true : proj.approved = false
+  proj.approved = (approval == "approved" ? true : false)
   proj.save
 end
 

@@ -301,11 +301,11 @@ class BulkSubmission
       else
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
-        if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-          found_assets    = []
-        else
-          found_assets    = Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
-        end
+        found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
+          []
+                       else
+          Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                       end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
         raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
