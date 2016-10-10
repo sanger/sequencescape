@@ -14,7 +14,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       @lane = create :lane
       @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
       @tag2s = [1, 2].map { |map_id| create :tag, map_id: map_id } * 2
-      @aliquots = 4.times.map { |i| create :aliquot, receptacle: @lane, tag: @tags[i], tag2: @tag2s[i] }
+      @aliquots = Array.new(4) { |i| create :aliquot, receptacle: @lane, tag: @tags[i], tag2: @tag2s[i] }
 
       @aliquot_index = [1, 4, 2, 3]
     end

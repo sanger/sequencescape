@@ -185,7 +185,7 @@ module Submission::FlexibleRequestGraph
       @target_assets_qc_metrics ||= chain.multiplexing_assets do
         # We yield only if we don't have any multiplexing assets
         all_qc_metrics = source_assets_qc_metrics.map { |doublet| doublet.qc_metric }.flatten.uniq
-        request_type.pool_count.times.map { Doublet.new(create_target_asset, all_qc_metrics) }
+        Array.new(request_type.pool_count) { Doublet.new(create_target_asset, all_qc_metrics) }
       end
     end
 

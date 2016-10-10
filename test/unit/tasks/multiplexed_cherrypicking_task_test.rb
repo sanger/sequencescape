@@ -128,7 +128,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
       context "with no tag clashes" do
         setup do
 
-          @tags = 8.times.map { create :tag }
+          @tags = Array.new(8) { create :tag }
           @requests = (1..8).map do |i|
             r = create :pooled_cherrypick_request
             r.asset.aliquots.first.update_attributes!(tag: @tags[i])

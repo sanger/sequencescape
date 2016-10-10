@@ -459,15 +459,6 @@ Performance/StringReplacement:
     - 'lib/sequencing_qc_batch.rb'
     - 'test/factories/pipelines_factories.rb'
 
-# Offense count: 4
-# Cop supports --auto-correct.
-Performance/TimesMap:
-  Exclude:
-    - 'app/models/submission/flexible_request_graph.rb'
-    - 'test/factories/well_factories.rb'
-    - 'test/unit/aliquot_indexer_test.rb'
-    - 'test/unit/tasks/multiplexed_cherrypicking_task_test.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, Include.

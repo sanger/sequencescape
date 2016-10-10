@@ -42,7 +42,7 @@ FactoryGirl.define do
     map
     plate
     after(:build) do |well|
-      als = 2.times.map {
+      als = Array.new(2) {
         {
           sample:  create(:sample),
           study:   create(:study),
