@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Task < ActiveRecord::Base
   belongs_to :workflow, :class_name => "LabInterface::Workflow", :foreign_key => :pipeline_workflow_id
@@ -33,7 +35,7 @@ class Task < ActiveRecord::Base
         return
       end
     end
-    self.descriptors <<  Descriptor.new(:name => name_s, :value => value)
+    self.descriptors << Descriptor.new(:name => name_s, :value => value)
 #    self.descriptors.save
   end
   # END descriptors
@@ -58,7 +60,7 @@ class Task < ActiveRecord::Base
         return
       end
     end
-    self.subclass_attributes <<  SubclassAttribute.new(:name => name_s, :value => value)
+    self.subclass_attributes << SubclassAttribute.new(:name => name_s, :value => value)
 #    self.subclass.save
   end
 
@@ -152,7 +154,7 @@ class Task < ActiveRecord::Base
   def subassets_for_asset(asset)
     return [] unless asset
     sub_assets = []
-    family_map  = families.index_by(&:name)
+    family_map = families.index_by(&:name)
     return asset.children.select { |a| family_map[a.sti_type] }
   end
 

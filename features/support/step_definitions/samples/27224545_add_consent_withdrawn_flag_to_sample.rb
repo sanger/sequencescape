@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.
 
 Given /^the patient has withdrawn consent for "([^"]*)"$/ do |sample|
   Sample.find_by_name(sample).withdraw_consent
@@ -10,7 +12,7 @@ Given /^the study "([^"]*)" has the sample "([^"]*)" in a sample tube and asset 
   step(%Q{the study "#{study}" has an asset group called "#{sample}_group"})
   step(%Q{I have a sample called "#{sample}" with metadata})
   step(%Q{the sample "#{sample}" belongs to the study "#{study}"})
-  step(%Q{a sample tube called "#{sample}_tube" with ID #{Asset.count+1}})
+  step(%Q{a sample tube called "#{sample}_tube" with ID #{Asset.count + 1}})
   step(%Q{the sample "#{sample}" is in the sample tube "#{sample}_tube"})
   step(%Q{the sample tube "#{sample}_tube" is in the asset group "#{sample}_group"})
 end
@@ -19,7 +21,7 @@ Given /^the study "([^"]*)" has the sample "([^"]*)" in a well and asset group$/
   step(%Q{the study "#{study}" has an asset group called "#{sample}_group"})
   step(%Q{I have a sample called "#{sample}" with metadata})
   step(%Q{the sample "#{sample}" belongs to the study "#{study}"})
-  step(%Q{a well called "#{sample}_well" with ID #{Asset.count+1}})
+  step(%Q{a well called "#{sample}_well" with ID #{Asset.count + 1}})
   step(%Q{the sample "#{sample}" is in the well "#{sample}_well"})
   step(%Q{the well "#{sample}_well" is in the asset group "#{sample}_group"})
 end
@@ -30,7 +32,7 @@ Given /^I try to create a "([^\"]*)" order with the following setup:$/ do |templ
   request_options = {}
   params.each do |k,v|
     key = k.underscore.gsub(/\W+/,"_")
-    request_options[key]=v
+    request_options[key] = v
   end
 
   @order = submission_template.new_order(
@@ -63,8 +65,8 @@ Then /^the last error should contain "([^\"]*)"$/ do |text|
 end
 
 Then /^the order should (not |)be built$/ do |n|
-  assert Order.last == @order unless n =='not '
-  assert Order.last != @order if n =='not '
+  assert Order.last == @order unless n == 'not '
+  assert Order.last != @order if n == 'not '
 end
 
 Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "([^"]*)" for feature 27224545$/ do |id, asset_group|

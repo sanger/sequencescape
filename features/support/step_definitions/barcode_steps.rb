@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Then /^I should see barcode "([^"]*)"$/ do |machine_barcode|
   barcode = Barcode.barcode_to_human(machine_barcode)
@@ -61,7 +63,7 @@ end
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   SampleTube.order(:id).each do |asset|
-    asset.update_attributes!(:barcode=>counter)
+    asset.update_attributes!(:barcode => counter)
     counter += 1
   end
 end
@@ -69,7 +71,7 @@ end
 Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   LibraryTube.order(:id).each do |asset|
-    asset.update_attributes!(:barcode=>counter)
+    asset.update_attributes!(:barcode => counter)
     counter += 1
   end
 end

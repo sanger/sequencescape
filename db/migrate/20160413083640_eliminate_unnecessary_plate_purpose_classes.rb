@@ -1,10 +1,11 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
 
   class Purpose < ActiveRecord::Base
-    self.table_name='plate_purposes'
+    self.table_name = 'plate_purposes'
     self.inheritance_column = nil
   end
 
@@ -26,7 +27,7 @@ class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
       conversions.each do |name,(old_type,new_type)|
         purpose = Purpose.find_by_name(name)
         raise StandardError, "Unexpected class for #{name}: #{purpose.type} (expected #{old_type})" unless purpose.type == old_type
-        purpose.update_attributes!(:type=>new_type)
+        purpose.update_attributes!(:type => new_type)
       end
     end
   end
@@ -36,7 +37,7 @@ class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
       conversions.each do |name,(old_type,new_type)|
         purpose = Purpose.find_by_name(name)
         raise StandardError, "Unexpected class for #{name}: #{purpose.type} (expected #{new_type})" unless purpose.type == new_type
-        purpose.update_attributes!(:type=>old_type)
+        purpose.update_attributes!(:type => old_type)
       end
     end
   end

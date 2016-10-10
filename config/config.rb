@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 require 'configatron'
 
 configatron.amqp.url = "amqp://guest:guest@localhost:5672"
@@ -22,6 +24,9 @@ configatron.api_url = "http://localhost:3000"
 
 configatron.authentication = "local"
 configatron.barcode_service_url = "http://localhost:9998/barcode_service.wsdl"
+
+configatron.pmb_api = "http://localhost:9292/v1"
+
 configatron.default_policy_text = "https://www.example.com/"
 configatron.default_policy_title = "Default Policy Title"
 configatron.fluidigm_data.source = "directory"
@@ -98,7 +103,7 @@ if Rails.env == 'development'
   configatron.api.authorisation_code = "development"
   configatron.api.flush_response_at = 32768
 end
-if (Rails.env == 'test')||(Rails.env == 'cucumber')
+if (Rails.env == 'test') || (Rails.env == 'cucumber')
 
   # configatron.asset_audits_url = NOT DEFINED
 

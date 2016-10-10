@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 module Pipeline::InboxExtensions
   def inbox(show_held_requests = true, current_page = 1, action = nil)
@@ -8,10 +10,10 @@ module Pipeline::InboxExtensions
     requests = proxy_association.scope
     pipeline = proxy_association.owner
     # Build a list of methods to invoke to build the correct request list
-    actions = [ :unbatched ]
+    actions = [:unbatched]
     actions.concat(pipeline.custom_inbox_actions)
     actions << ((pipeline.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
-    actions << [ (pipeline.group_by_parent? ? :holder_located : :located), pipeline.location_id ]
+    actions << [(pipeline.group_by_parent? ? :holder_located : :located), pipeline.location_id]
 
     if action != :count
       actions << :include_request_metadata
@@ -20,9 +22,9 @@ module Pipeline::InboxExtensions
     end
 
     if action.present?
-      actions << [ action ]
+      actions << [action]
     elsif pipeline.paginate?
-      actions << [ :paginate, { :per_page => 50, :page => current_page } ]
+      actions << [:paginate, { :per_page => 50, :page => current_page }]
     end
 
     actions.inject(requests) { |context, action| context.send(*Array(action)) }

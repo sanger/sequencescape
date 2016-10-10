@@ -1,12 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 require 'test_helper'
 
 class Cherrypick::StrategyTest < ActiveSupport::TestCase
   def request(submission_id, barcode = 1)
-    OpenStruct.new(:submission_id => submission_id, :barcode => barcode,:representation=>"request_#{submission_id}")
+    OpenStruct.new(:submission_id => submission_id, :barcode => barcode,:representation => "request_#{submission_id}")
   end
   private :request
 
@@ -68,7 +70,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
       context '#pick' do
         setup do
           @filter = mock('filter')
-          @purpose.stubs(:cherrypick_filters).returns([ OpenStruct.new(:new => @filter) ])
+          @purpose.stubs(:cherrypick_filters).returns([OpenStruct.new(:new => @filter)])
         end
 
         should 'return empty plates for no requests' do
@@ -79,14 +81,14 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
         should 'raise an error if there is no pick for an empty plate' do
           assert_raises(Cherrypick::Strategy::PickFailureError) do
             request = request(1)
-            @filter.expects(:call).with([ [request] ], anything).returns([]).once
+            @filter.expects(:call).with([[request]], anything).returns([]).once
             @strategy.send(:_pick, [request], OpenStruct.new(:max_beds => 1))
           end
         end
 
         should 'return a single plate with one request' do
           request = request(1)
-          @filter.expects(:call).with([ [request] ], anything).returns([ [request] ]).once
+          @filter.expects(:call).with([[request]], anything).returns([[request]]).once
 
           pick_list = @strategy.send(:_pick, [request], OpenStruct.new(:max_beds => 1))
           assert_equal([['request_1']], pick_list)
@@ -98,8 +100,8 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           # 2. From remaining request pick the request, can't put it on plate as robot too large, try again
           # 4. From remaining request pick the request, put it on plate
           requests = [request(1, 1), request(2, 2)]
-          @filter.expects(:call).with([ [requests.first], [requests.last] ], anything).returns([ [requests.first], [requests.last] ]).once
-          @filter.expects(:call).with([ [requests.last] ], anything).returns([ [requests.last] ]).twice
+          @filter.expects(:call).with([[requests.first], [requests.last]], anything).returns([[requests.first], [requests.last]]).once
+          @filter.expects(:call).with([[requests.last]], anything).returns([[requests.last]]).twice
 
           pick_list = @strategy.send(:_pick, requests, OpenStruct.new(:max_beds => 1))
           assert_equal([['request_1'],['request_2']], pick_list)

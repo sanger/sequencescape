@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2015 Genome Research Ltd.
 
 # It's such a common pattern in the code to have a guard on some our validations that this module provides
 # that facility.  You can declare a guard with:
@@ -21,7 +23,7 @@ module ValidationStateGuard
     guard = guard.to_sym
 
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       attr_accessor #{guard.inspect}
       alias_method(#{guard.inspect}?, #{guard.inspect})
       private #{guard.inspect}, #{guard.inspect}?
@@ -30,7 +32,7 @@ module ValidationStateGuard
 
       # Do not remove the 'true' from this otherwise the return value is false, which will fail the save!
       after_save { |record| record.send(#{guard.inspect}=, false) ; true }
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def validation_guarded_by(method, guard)
@@ -40,7 +42,7 @@ module ValidationStateGuard
     unguarded_name      = :"#{core_name}_unguarded_by_#{guard}#{extender}"
 
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       alias_method(#{unguarded_name.inspect}, #{method.to_sym.inspect})
       def #{method}(*args, &block)
         send(#{guard.to_sym.inspect}=, true)
@@ -48,6 +50,6 @@ module ValidationStateGuard
       ensure
         send(#{guard.to_sym.inspect}=, false)
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 end

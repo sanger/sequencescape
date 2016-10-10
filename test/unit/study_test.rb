@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -13,7 +15,7 @@ class StudyTest < ActiveSupport::TestCase
 
     context "Request" do
       setup do
-        @study         = create :study
+        @study = create :study
         @request_type    = create :request_type
         @request_type_2  = create :request_type, :name => "request_type_2", :key => "request_type_2"
         @request_type_3  = create :request_type, :name => "request_type_3", :key => "request_type_3"
@@ -253,12 +255,12 @@ class StudyTest < ActiveSupport::TestCase
       setup do
         @study, @request_type = create(:study), create(:request_type)
         2.times do
-          r=create(:passed_request, :request_type => @request_type, :initial_study_id => @study.id)
-          r.asset.aliquots.each {|al| al.study=@study; al.save!}
+          r = create(:passed_request, :request_type => @request_type, :initial_study_id => @study.id)
+          r.asset.aliquots.each { |al| al.study = @study; al.save! }
         end
         2.times { create(:order, :study => @study ) }
         @study.projects.each do |project|
-          project.enforce_quotas=true
+          project.enforce_quotas = true
         end
         @study.save!
 
@@ -283,30 +285,30 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should 'accept valid urls' do
-        assert @study.study_metadata.update_attributes!(:dac_policy=>'http://www.example.com')
+        assert @study.study_metadata.update_attributes!(:dac_policy => 'http://www.example.com')
         assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
       end
 
       should 'reject free text' do
         assert_raise ActiveRecord::RecordInvalid do
-         @study.study_metadata.update_attributes!(:dac_policy=>'Not a URL')
+         @study.study_metadata.update_attributes!(:dac_policy => 'Not a URL')
         end
       end
 
       should 'reject invalid domains' do
         # In this context invalid domains refers to those on internal domains inaccessible outside the unit
         assert_raise ActiveRecord::RecordInvalid do
-          @study.study_metadata.update_attributes!(:dac_policy=>'http://internal.example.com')
+          @study.study_metadata.update_attributes!(:dac_policy => 'http://internal.example.com')
         end
       end
 
       should 'add http:// before testing a url' do
-        assert @study.study_metadata.update_attributes!(:dac_policy=>'www.example.com')
+        assert @study.study_metadata.update_attributes!(:dac_policy => 'www.example.com')
         assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
       end
 
       should 'not add http for eg. https' do
-        assert @study.study_metadata.update_attributes!(:dac_policy=>'https://www.example.com')
+        assert @study.study_metadata.update_attributes!(:dac_policy => 'https://www.example.com')
         assert_equal 'https://www.example.com', @study.study_metadata.dac_policy
       end
     end
@@ -320,7 +322,7 @@ class StudyTest < ActiveSupport::TestCase
       should 'accept valid data access group names' do
         # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
         ['goodname','g00dname','good_name','_goodname','good-name','goodname1  goodname2'].each do |name|
-          assert @study.study_metadata.update_attributes!(:data_access_group=>name)
+          assert @study.study_metadata.update_attributes!(:data_access_group => name)
           assert_equal name, @study.study_metadata.data_access_group
         end
       end
@@ -328,7 +330,7 @@ class StudyTest < ActiveSupport::TestCase
       should 'reject non-alphanumeric data access groups' do
         ['b@dname','1badname','averylongbadnamewouldbebadsowesouldblockit','baDname'].each do |name|
           assert_raise ActiveRecord::RecordInvalid do
-            @study.study_metadata.update_attributes!(:data_access_group=>name)
+            @study.study_metadata.update_attributes!(:data_access_group => name)
           end
         end
       end
@@ -342,21 +344,20 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should 'accept names shorter than 200 characters' do
-        assert @study.update_attributes!(:name=>'Short name')
+        assert @study.update_attributes!(:name => 'Short name')
       end
 
       should 'reject names longer than 200 characters' do
         assert_raise(ActiveRecord::RecordInvalid) do
-          @study.update_attributes!(:name=>'a'*201)
+          @study.update_attributes!(:name => 'a' * 201)
         end
       end
 
       should ' squish whitespace' do
-        assert @study.update_attributes!(:name=>'   Squish   double spaces and flanking whitespace but not double letters ')
+        assert @study.update_attributes!(:name => '   Squish   double spaces and flanking whitespace but not double letters ')
         assert_equal 'Squish double spaces and flanking whitespace but not double letters', @study.name
       end
     end
 
   end
 end
-

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -48,7 +50,7 @@ class RequestcreateTest < ActiveSupport::TestCase
   context '.create_assets_requests' do
     setup do
       @study  = create(:study)
-      @assets = [ create(:sample_tube), create(:sample_tube) ]
+      @assets = [create(:sample_tube), create(:sample_tube)]
 
       RequestFactory.create_assets_requests(@assets, @study)
     end

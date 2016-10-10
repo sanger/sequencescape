@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 require 'test_helper'
 require 'unit/illumina_b/request_statemachine_checks'
@@ -15,8 +17,8 @@ class TransferRequestTest < ActiveSupport::TestCase
 
   def self.shared_tests
     should 'duplicate the aliquots' do
-      expected_aliquots = @source.aliquots.map { |a| [ a.sample_id, a.tag_id ] }
-      target_aliquots   = @destination.aliquots.map { |a| [ a.sample_id, a.tag_id ] }
+      expected_aliquots = @source.aliquots.map { |a| [a.sample_id, a.tag_id] }
+      target_aliquots   = @destination.aliquots.map { |a| [a.sample_id, a.tag_id] }
       assert_equal(expected_aliquots, target_aliquots)
     end
 
@@ -57,9 +59,9 @@ class TransferRequestTest < ActiveSupport::TestCase
       end
 
       should 'raise an exception' do
-        @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_1.receptacle.reload, :target_asset =>  @target_asset)
+        @transfer_request = RequestType.transfer.create!(:asset => @aliquot_1.receptacle.reload, :target_asset => @target_asset)
         assert_raise Aliquot::TagClash do
-          @transfer_request = RequestType.transfer.create!(:asset =>  @aliquot_2.receptacle.reload, :target_asset =>  @target_asset)
+          @transfer_request = RequestType.transfer.create!(:asset => @aliquot_2.receptacle.reload, :target_asset => @target_asset)
         end
       end
     end

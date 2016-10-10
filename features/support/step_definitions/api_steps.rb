@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
@@ -64,18 +66,18 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |key, login|
-  User.find_or_create_by(login:login).update_attributes!(:api_key=>key)
+  User.find_or_create_by(login:login).update_attributes!(:api_key => key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
-  User.find_by_api_key(cookie).update_attributes!(:api_key=>nil)
+  User.find_by_api_key(cookie).update_attributes!(:api_key => nil)
 end
 
 def api_request(action, path, body)
   raise StandardError, "You must explicitly set the API version you are using" if @api_path.nil?
-  @cookies  ||= {}
+  @cookies ||= {}
 
-  headers = { }
+  headers = {}
   headers.merge!('HTTP_ACCEPT' => 'application/json')
   headers.merge!('CONTENT_TYPE' => 'application/json') unless body.nil?
   headers.merge!('HTTP_COOKIE' => @cookies.map { |k,v| "#{k}=#{v}" }.join(';')) unless @cookies.blank?
@@ -138,7 +140,7 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.new(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none').save(:validate => false)
+  ApiApplication.new(:name => 'test_api',:key => key,:privilege => permission,:contact => 'none').save(:validate => false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
@@ -156,7 +158,7 @@ When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model,name|
 end
 
 When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
-  study        = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{ name.inspect }"
+  study = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{ name.inspect }"
   raise StandardError, "It appears there are no requests for study #{ name.inspect }" if study.requests.empty?
   visit(url_for(:controller => "api/requests", :action => 'show', :id => study.requests.last, :format => :json))
 end
@@ -246,7 +248,7 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   begin
   assert_equal(match[1].to_i, page.driver.status_code)
   rescue MiniTest::Assertion => e
-    step %Q{show me the HTTP response body}
+    step "show me the HTTP response body"
     raise e
   end
 
@@ -294,7 +296,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by_name(parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
   child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by_name(child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? {|a| a.is_a?(Aliquot::Receptacle)}
+  if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
     child.aliquots = []
     RequestType.transfer.create!(:asset => parent, :target_asset => child)
     child.save!
@@ -305,7 +307,7 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do | child_name,
   parent = Uuid.find_by_external_id(parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
   child  = Uuid.find_by_external_id(child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? {|a| a.is_a?(Aliquot::Receptacle)}
+  if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
     child.aliquots = []
     RequestType.transfer.create!(:asset => parent, :target_asset => child)
     child.save!
@@ -327,10 +329,10 @@ Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
     :project_manager => ProjectManager.find_by_name('Unallocated'),
     :project_cost_code => "ABC",
     :funding_comments => "External funding",
-    :collaborators  => "No collaborators",
-    :external_funding_source  => "EU",
-    :budget_division  => BudgetDivision.find_by_name('Pathogen (including malaria)'),
-    :sequencing_budget_cost_centre  => "Sanger",
+    :collaborators => "No collaborators",
+    :external_funding_source => "EU",
+    :budget_division => BudgetDivision.find_by_name('Pathogen (including malaria)'),
+    :sequencing_budget_cost_centre => "Sanger",
     :project_funding_model => "Internal"
   })
 end

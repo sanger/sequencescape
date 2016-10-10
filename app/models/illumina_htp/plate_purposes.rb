@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
@@ -56,16 +58,16 @@ module IlluminaHtp::PlatePurposes
   ]
 
   BRANCHES = [
-    [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
-    [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
-    [ 'PF MiSeq Stock','PF MiSeq QCR'],
-    [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
-    [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
-    [ 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
-    [ 'Lib PCR-XP','ISC lib pool' ],
-    [ 'Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
-    [ 'Lib PCRR-XP','ISC lib pool' ],
-    [ 'Post Shear', 'Post Shear XP', 'AL Libs']
+    ['PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
+    ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
+    ['PF MiSeq Stock','PF MiSeq QCR'],
+    ['Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
+    ['Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm'],
+    ['Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin'],
+    ['Lib PCR-XP','ISC lib pool'],
+    ['Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
+    ['Lib PCRR-XP','ISC lib pool'],
+    ['Post Shear', 'Post Shear XP', 'AL Libs']
   ]
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'
@@ -77,7 +79,7 @@ module IlluminaHtp::PlatePurposes
   ]
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
-    'Cherrypicked'  => 'illumina_b_shared'
+    'Cherrypicked' => 'illumina_b_shared'
   }
 
   PF_PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
@@ -89,12 +91,12 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'PF Cherrypicked', 'PF Shear',            :initial   ],
-    [ 'Cherrypicked',    'Shear',               :initial   ],
-    [ 'Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'           ],
-    [ 'Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'           ],
-    [ 'Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ],
-    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ]
+    ['PF Cherrypicked', 'PF Shear',            :initial],
+    ['Cherrypicked',    'Shear',               :initial],
+    ['Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'],
+    ['Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'],
+    ['Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'],
+    ['Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream']
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -253,7 +255,7 @@ module IlluminaHtp::PlatePurposes
         :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
         :asset_shape_id => AssetShape.default.id
       )).tap do |plate_purpose|
-        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
+        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type
       end
     end
     private :create_plate_purpose

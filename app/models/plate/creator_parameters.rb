@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 require 'bigdecimal'
 require 'bigdecimal/util'
 
@@ -43,8 +45,7 @@ class Plate::CreatorParameters
     params.delete(:dilution_factor) if params[:dilution_factor].nil?
 
     # Remove any symbol not valid for plate creation (just dilution factor at now)
-    params.delete_if{|k,v| k.to_sym != :dilution_factor}
+    params.delete_if { |k,v| k.to_sym != :dilution_factor }
   end
 
 end
-

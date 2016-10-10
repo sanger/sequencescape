@@ -5,7 +5,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
         RequestType.create!({
           :key => "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing",
           :name => "Illumina-#{pipeline.upcase} HiSeq 4000 Paired end sequencing",
-          :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+          :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
           :asset_type => "LibraryTube",
           :order => 2,
           :initial_state => "pending",
@@ -14,12 +14,12 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
           :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}"),
           :request_purpose => RequestPurpose.standard
         }).tap do |rt|
-          RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150,75])
+          RequestType::Validator.create!(:request_type => rt, :request_option => "read_length", :valid_options => [150,75])
         end
         RequestType.create!({
           :key => "illumina_#{pipeline}_hiseq_4000_single_end_sequencing",
           :name => "Illumina-#{pipeline.upcase} HiSeq 4000 Single end sequencing",
-          :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+          :workflow => Submission::Workflow.find_by_key("short_read_sequencing"),
           :asset_type => "LibraryTube",
           :order => 2,
           :initial_state => "pending",
@@ -28,7 +28,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
           :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}"),
           :request_purpose => RequestPurpose.standard
         }).tap do |rt|
-          RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[50])
+          RequestType::Validator.create!(:request_type => rt, :request_option => "read_length", :valid_options => [50])
         end
       end
     end

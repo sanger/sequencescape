@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 module Core::Endpoint::BasicHandler::Actions
   class UnsupportedAction < StandardError
@@ -31,7 +33,7 @@ module Core::Endpoint::BasicHandler::Actions
 
   ACTIONS_WITH_SUCCESS_CODES.each do |action, status_code|
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def #{action}(request, path, &block)
         current, *rest = path
         handler = handler_for(current)
@@ -51,7 +53,7 @@ module Core::Endpoint::BasicHandler::Actions
       def _#{action}(request, response)
         raise ::Core::Service::UnsupportedAction
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def check_request_io_class!(request)
@@ -59,17 +61,17 @@ module Core::Endpoint::BasicHandler::Actions
   end
 
   def does_not_require_an_io_class
-    self.singleton_class.class_eval(%Q{def check_request_io_class!(_) ; end}, __FILE__, __LINE__)
+    self.singleton_class.class_eval("def check_request_io_class!(_) ; end", __FILE__, __LINE__)
   end
 
   def disable(*actions)
     actions.each do |action|
       line = __LINE__ + 1
-      singleton_class.class_eval(%Q{
+      singleton_class.class_eval("
         def _#{action}(request, response)
           raise ::Core::Service::UnsupportedAction
         end
-      }, __FILE__, line)
+      ", __FILE__, line)
       @actions.delete(action.to_sym)
     end
   end
@@ -92,12 +94,12 @@ module Core::Endpoint::BasicHandler::Actions
       end
 
     line = __LINE__ + 1
-    singleton_class.class_eval(%Q{
+    singleton_class.class_eval("
       def _#{name}(request, response)
         object = #{action_implementation_method}(request, response)
         yield(endpoint_for_object(object).instance_handler, object)
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
   private :declare_action
 

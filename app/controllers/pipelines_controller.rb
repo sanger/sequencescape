@@ -1,12 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PipelinesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_pipeline_by_id, :only => [ :show, :setup_inbox,
+  before_action :find_pipeline_by_id, :only => [:show, :setup_inbox,
                                    :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
 
   before_action :lab_manager_login_required, :only => [:update_priority,:deactivate,:activate]
@@ -15,11 +17,11 @@ class PipelinesController < ApplicationController
 
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical.all
-    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p ; h }
+    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p; h }
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @pipelines.to_xml}
+      format.xml { render :xml => @pipelines.to_xml }
     end
   end
 
@@ -34,7 +36,7 @@ class PipelinesController < ApplicationController
     @released_batches    = @pipeline.batches.released_for_ui.includes_for_ui
     @failed_batches      = @pipeline.batches.failed_for_ui.includes_for_ui
 
-    @batches = @last_5_batches = @pipeline.batches.latest_first.includes_for_ui
+    @batches = @last5_batches = @pipeline.batches.latest_first.includes_for_ui
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types.shown_in_inbox
@@ -45,7 +47,7 @@ class PipelinesController < ApplicationController
         @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline,current_user,@show_held_requests)
       elsif @pipeline.group_by_submission?
         requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
-        @grouped_requests  = requests.group_by(&:submission_id)
+        @grouped_requests = requests.group_by(&:submission_id)
         @requests_comment_count = Comment.counts_for(requests)
         @assets_comment_count = Comment.counts_for(requests.map(&:asset))
       else
@@ -82,7 +84,7 @@ class PipelinesController < ApplicationController
   end
 
 
-  before_action :prepare_batch_and_pipeline, :only => [ :summary, :finish ]
+  before_action :prepare_batch_and_pipeline, :only => [:summary, :finish]
   def prepare_batch_and_pipeline
     @batch    = Batch.find(params[:id])
     @pipeline = @batch.pipeline

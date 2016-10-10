@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
@@ -133,7 +135,7 @@ class Aliquot < ActiveRecord::Base
 
   # Aliquot are similar if they share the same sample AND the same tag (if they have one: nil acts as a wildcard))
   def =~(object)
-    a, b = [self, object].map { |o| [o.tag_id, o.sample_id, o.tag2_id < 0 ? nil : o.tag2_id ] }
+    a, b = [self, object].map { |o| [o.tag_id, o.sample_id, o.tag2_id < 0 ? nil : o.tag2_id] }
     a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
   end
 
@@ -146,7 +148,7 @@ class Aliquot < ActiveRecord::Base
     when object.bait_library_id.present? && (self.bait_library_id != object.bait_library_id)  then return false # We have different bait libraries
     when self.untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.untagged? && object.no_tag2?                                             then return true # The upstream aliquot was untagged, we don't need to check tags
-    else (object.untagged?||(self.tag_id == object.tag_id)) && (object.no_tag2?||(self.tag2_id == object.tag2_id ))  # Both aliquots are tagged, we need to check if they match
+    else (object.untagged? || (self.tag_id == object.tag_id)) && (object.no_tag2? || (self.tag2_id == object.tag2_id ))  # Both aliquots are tagged, we need to check if they match
     end
   end
 

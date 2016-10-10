@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 require 'lib/event_factory'
 class Admin::ProjectsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -51,7 +53,7 @@ before_action :evil_parameter_hack!
 
     by_scope = BY_SCOPES[filters[:by]]
 
-    base_scope =  Project.send(by_scope).in_state(filters[:status]).alphabetical
+    base_scope = Project.send(by_scope).in_state(filters[:status]).alphabetical
 
     # arel_table is used to generate the more complex like query
     projects = Project.arel_table
@@ -86,7 +88,7 @@ before_action :evil_parameter_hack!
       flash[:notice] = "Your project has been updated"
       redirect_to :controller => "admin/projects", :action => "update", :id => @project.id
     else
-      logger.warn "Failed to update attributes: #{@project.errors.map {|e| e.to_s }}"
+      logger.warn "Failed to update attributes: #{@project.errors.map { |e| e.to_s }}"
       flash[:error] = "Failed to update attributes for project!"
       render :action => :show, :id => @project.id and return
     end
@@ -95,7 +97,7 @@ before_action :evil_parameter_hack!
   def sort
     @projects = Project.all.sort_by { |project| project.name }
     if params[:sort] == "date"
-      @projects = @projects.sort_by { |project| project.created_at}
+      @projects = @projects.sort_by { |project| project.created_at }
     elsif params[:sort] == "owner"
       @projects = @projects.sort_by { |project| project.user_id }
     end

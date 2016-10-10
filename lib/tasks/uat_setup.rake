@@ -21,52 +21,52 @@ namespace :uat do
 
     def sample_named(name,study,user)
       {
-          "sample_tube_attributes"=>{"two_dimensional_barcode"=>""},
-          "study"=>study,
-          "asset_group_name"=>"asset_group_#{study.id}",
-          "sample_attributes"=>{
-            "name"=>name,
-            "sample_metadata_attributes"=>{
-              "replicate"=>"",
-              "organism"=>"",
-              "sample_strain_att"=>"",
-              "cell_type"=>"",
-              "immunoprecipitate"=>"",
-              "ethnicity"=>"",
-              "gc_content"=>"Neutral",
-              "compound"=>"",
-              "dna_source"=>"Genomic",
-              "supplier_plate_id"=>"",
-              "mother"=>"",
-              "sample_public_name"=>"",
-              "sample_common_name"=>"",
-              "sample_ebi_accession_number"=>"XXX",
-              "disease_state"=>"",
-              "reference_genome_id"=>"1",
-              "organism_part"=>"",
-              "gender"=>"",
-              "country_of_origin"=>"",
-              "sample_taxon_id"=>"",
-              "genotype"=>"",
-              "growth_condition"=>"",
-              "subject"=>"",
-              "volume"=>"100",
-              "treatment"=>"",
-              "geographical_region"=>"",
-              "sample_sra_hold"=>"Hold",
-              "rnai"=>"", "time_point"=>"",
-              "sample_description"=>"",
-              "age"=>"",
-              "developmental_stage"=>"",
-              "dose"=>"",
-              "cohort"=>"",
-              "father"=>"",
-              "phenotype"=>"",
-              "disease"=>""
+          "sample_tube_attributes" => { "two_dimensional_barcode" => "" },
+          "study" => study,
+          "asset_group_name" => "asset_group_#{study.id}",
+          "sample_attributes" => {
+            "name" => name,
+            "sample_metadata_attributes" => {
+              "replicate" => "",
+              "organism" => "",
+              "sample_strain_att" => "",
+              "cell_type" => "",
+              "immunoprecipitate" => "",
+              "ethnicity" => "",
+              "gc_content" => "Neutral",
+              "compound" => "",
+              "dna_source" => "Genomic",
+              "supplier_plate_id" => "",
+              "mother" => "",
+              "sample_public_name" => "",
+              "sample_common_name" => "",
+              "sample_ebi_accession_number" => "XXX",
+              "disease_state" => "",
+              "reference_genome_id" => "1",
+              "organism_part" => "",
+              "gender" => "",
+              "country_of_origin" => "",
+              "sample_taxon_id" => "",
+              "genotype" => "",
+              "growth_condition" => "",
+              "subject" => "",
+              "volume" => "100",
+              "treatment" => "",
+              "geographical_region" => "",
+              "sample_sra_hold" => "Hold",
+              "rnai" => "", "time_point" => "",
+              "sample_description" => "",
+              "age" => "",
+              "developmental_stage" => "",
+              "dose" => "",
+              "cohort" => "",
+              "father" => "",
+              "phenotype" => "",
+              "disease" => ""
             }
           },
-          "user"=> user,
-          "ignore"=>"0"
+          "user" => user,
+          "ignore" => "0"
         }
     end
 
@@ -148,14 +148,14 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       puts "Creating basic template..."
 
-      PlateTemplate.create!(:name=>'Empty Template')
+      PlateTemplate.create!(:name => 'Empty Template')
 
       puts "Setting up projects..."
       Project.create!(
-        :name=>'UAT project A',
+        :name => 'UAT project A',
         :enforce_quotas => true,
         :approved => true,
-        :state=>'active',
+        :state => 'active',
         :project_metadata_attributes => {
           :project_cost_code => 'UATA',
           :project_funding_model => 'Internal',
@@ -164,10 +164,10 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         }
       )
       Project.create!(
-        :name=>'UAT project B',
+        :name => 'UAT project B',
         :enforce_quotas => true,
         :approved => true,
-        :state=>'active',
+        :state => 'active',
         :project_metadata_attributes => {
           :project_cost_code => 'UATA',
           :project_funding_model => 'External',
@@ -178,49 +178,49 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       puts "Faking a sponsor..."
 
-      FacultySponsor.create!(:name=>'UAT Sponsor')
+      FacultySponsor.create!(:name => 'UAT Sponsor')
 
       puts "Setting up studies..."
 
       Study.create!(
-        :name=>'UAT study A',
-        :study_metadata_attributes=>{
+        :name => 'UAT study A',
+        :study_metadata_attributes => {
           :study_ebi_accession_number => 'YYYY',
-          :study_type=>StudyType.find_by_name('Exome Sequencing'),
-          :faculty_sponsor=>FacultySponsor.last,
-          :data_release_study_type=>DataReleaseStudyType.find_by_name('genomic sequencing'),
-          :study_description=>'A seeded test study',
-          :contaminated_human_dna=>'No',
-          :contains_human_dna=>'No',
-          :commercially_available=>'No'
+          :study_type => StudyType.find_by_name('Exome Sequencing'),
+          :faculty_sponsor => FacultySponsor.last,
+          :data_release_study_type => DataReleaseStudyType.find_by_name('genomic sequencing'),
+          :study_description => 'A seeded test study',
+          :contaminated_human_dna => 'No',
+          :contains_human_dna => 'No',
+          :commercially_available => 'No'
         }
       ).activate!
 
       Study.create!(
-        :name=>'UAT study B',
-        :study_metadata_attributes=>{
+        :name => 'UAT study B',
+        :study_metadata_attributes => {
           :study_ebi_accession_number => 'YYYY',
-          :study_type=>StudyType.find_by_name('Exome Sequencing'),
-          :faculty_sponsor=>FacultySponsor.last,
-          :data_release_study_type=>DataReleaseStudyType.find_by_name('genomic sequencing'),
-          :study_description=>'A seeded test study',
-          :contaminated_human_dna=>'No',
-          :contains_human_dna=>'No',
-          :commercially_available=>'No'
+          :study_type => StudyType.find_by_name('Exome Sequencing'),
+          :faculty_sponsor => FacultySponsor.last,
+          :data_release_study_type => DataReleaseStudyType.find_by_name('genomic sequencing'),
+          :study_description => 'A seeded test study',
+          :contaminated_human_dna => 'No',
+          :contains_human_dna => 'No',
+          :commercially_available => 'No'
         }
       ).activate!
 
       Study.create!(
-        :name=>'UAT study C',
-        :study_metadata_attributes=>{
+        :name => 'UAT study C',
+        :study_metadata_attributes => {
           :study_ebi_accession_number => 'YYYY',
-          :study_type=>StudyType.find_by_name('Exome Sequencing'),
-          :faculty_sponsor=>FacultySponsor.last,
-          :data_release_study_type=>DataReleaseStudyType.find_by_name('genomic sequencing'),
-          :study_description=>'A seeded test study with mock human data',
-          :contaminated_human_dna=>'No',
-          :contains_human_dna=>'Yes',
-          :commercially_available=>'No'
+          :study_type => StudyType.find_by_name('Exome Sequencing'),
+          :faculty_sponsor => FacultySponsor.last,
+          :data_release_study_type => DataReleaseStudyType.find_by_name('genomic sequencing'),
+          :study_description => 'A seeded test study with mock human data',
+          :contaminated_human_dna => 'No',
+          :contains_human_dna => 'Yes',
+          :commercially_available => 'No'
         }
       ).activate!
 
@@ -234,16 +234,16 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       Study.find_each do |study|
         print '.'
-        SampleRegistrar.register!((1..96).map {|i| sample_named("sample_#{study.id}_#{i}",study,user)})
+        SampleRegistrar.register!((1..96).map { |i| sample_named("sample_#{study.id}_#{i}",study,user) })
         print '.'
-        stock = Purpose.find(2).create!(:barcode=>(10*study.id)).tap do |plate|
+        stock = Purpose.find(2).create!(:barcode => (10 * study.id)).tap do |plate|
           plate.wells.each { |w| w.aliquots.create!(
             :sample => Sample.create!(
               :name => "sample_in_#{w.plate.sanger_human_barcode}#{w.map.description}",
-              :studies=>[study],
+              :studies => [study],
               :sample_metadata_attributes => {
                 :sample_ebi_accession_number => 'XXX',
-                :sample_taxon_id => 9603+study.id
+                :sample_taxon_id => 9603 + study.id
               }
             ),
             :study => study
@@ -251,13 +251,13 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('Cherrypicked').create!(:barcode=>i+(10*study.id),:location=>Location.find_by_name('Illumina high throughput freezer'))
-          child.wells.each {|w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
+          child = Purpose.find_by_name('Cherrypicked').create!(:barcode => i + (10 * study.id),:location => Location.find_by_name('Illumina high throughput freezer'))
+          child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('ILC Stock').create!(:barcode=>i+4+(10*study.id),:location=>Location.find_by_name('Illumina high throughput freezer'))
-          child.wells.each {|w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
+          child = Purpose.find_by_name('ILC Stock').create!(:barcode => i + 4 + (10 * study.id),:location => Location.find_by_name('Illumina high throughput freezer'))
+          child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
       end
@@ -269,8 +269,8 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         :user => user,
         :received_at => DateTime.now
       )
-     qcc =  QcableCreator.create!(:lot=>lot,:user=>user,:count=>30)
-     qcc.qcables.each {|qcable| qcable.update_attributes!(:state=>'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}"}
+     qcc = QcableCreator.create!(:lot => lot,:user => user,:count => 30)
+     qcc.qcables.each { |qcable| qcable.update_attributes!(:state => 'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
 
     else
       # We should never be hitting here
@@ -278,4 +278,3 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
     end
   end
 end
-

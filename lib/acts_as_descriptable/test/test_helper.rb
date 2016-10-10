@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column :created_at, :datetime
     t.column :updated_at, :datetime
   end
-  
+
   create_table :descriptors do |t|
     t.column :name, :string
     t.column :value, :string

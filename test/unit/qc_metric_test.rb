@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -19,20 +21,20 @@ class QcMetricTest < ActiveSupport::TestCase
   context "A QcMetric #poor_quality_proceed" do
 
     [
-      [ 'passed',          true,  false ],
-      [ 'passed',          false, false ],
-      [ 'failed',          false, false ],
-      [ 'failed',          true,  true  ],
-      [ 'failed',          nil,   false ],
-      [ 'passed',          nil,   false ],
-      [ 'manually_passed', true,  false ],
-      [ 'manually_passed', false, false ],
-      [ 'manually_failed', false, false ],
-      [ 'manually_failed', true,  true  ],
-      [ 'manually_failed', nil,   false ],
-      [ 'manually_passed', nil,   false ],
+      ['passed',          true,  false],
+      ['passed',          false, false],
+      ['failed',          false, false],
+      ['failed',          true,  true],
+      ['failed',          nil,   false],
+      ['passed',          nil,   false],
+      ['manually_passed', true,  false],
+      ['manually_passed', false, false],
+      ['manually_failed', false, false],
+      ['manually_failed', true,  true],
+      ['manually_failed', nil,   false],
+      ['manually_passed', nil,   false],
     ].each do |qc_state,proceed_state,poor_quality_proceed|
-        should "return #{poor_quality_proceed.to_s} when the qc_state is #{qc_state.to_s} and proceed is #{proceed_state.to_s}" do
+        should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
           qc = create :qc_metric, :qc_decision => qc_state, :proceed => proceed_state
           assert_equal poor_quality_proceed, qc.poor_quality_proceed
         end

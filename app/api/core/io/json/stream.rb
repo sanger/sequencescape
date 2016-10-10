@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2014,2015,2016 Genome Research Ltd.
 
 module ::Core::Io::Json
   class Stream
@@ -86,7 +88,7 @@ module ::Core::Io::Json
       # Use length rather than size, as otherwise we perform
       # a count query. Not only is this unnecessary, but seems
       # to generate inaccurate numbers in some cases.
-      array.zip([',']*(array.length-1)).each do |value, separator|
+      array.zip([','] * (array.length - 1)).each do |value, separator|
         yield(value)
         unencoded(separator) unless separator.nil?
       end unless array.empty?

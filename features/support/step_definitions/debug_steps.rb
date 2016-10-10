@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 Then /^log "([^\"]+)" for debugging$/ do |message|
   Rails.logger.debug("#{('=' * 19)} #{message} #{('=' * 19)}")
@@ -18,6 +20,6 @@ Then /^debug the javascript$/ do
 end
 
 Then /^stop$/ do
-  step %q{show me the page}
-  step %q{launch the debugger}
+  step 'show me the page'
+  step 'launch the debugger'
 end

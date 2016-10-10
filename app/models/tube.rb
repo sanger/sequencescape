@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Tube < Aliquot::Receptacle
   include LocationAssociation::Locatable
@@ -25,6 +27,11 @@ class Tube < Aliquot::Receptacle
 
   def subject_type
     'tube'
+  end
+
+  def barcode!
+    self.barcode ||= AssetBarcode.new_barcode
+    save!
   end
 
   has_many :submissions, ->() { distinct }, :through => :requests_as_target
@@ -56,7 +63,7 @@ class Tube < Aliquot::Receptacle
 
   def self.delegate_to_purpose(*methods)
     methods.each do |method|
-      class_eval(%Q{def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end})
+      class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end")
     end
   end
 
@@ -70,7 +77,7 @@ class Tube < Aliquot::Receptacle
   end
 
   def details
-    purpose.try(:name)||'Tube'
+    purpose.try(:name) || 'Tube'
   end
 
   def transfer_request_type_from(source)
@@ -82,7 +89,7 @@ class Tube < Aliquot::Receptacle
     attributes = args.extract_options!
     barcode    = args.first || attributes[:barcode]
     raise "Barcode: #{barcode} already used!" if barcode.present? and find_by_barcode(barcode).present?
-    barcode  ||= AssetBarcode.new_barcode
+    barcode ||= AssetBarcode.new_barcode
     create!(attributes.merge(:barcode => barcode), &block)
   end
 

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -162,16 +164,16 @@ class WellTest < ActiveSupport::TestCase
     end
 
     [
-     [1000 , 10  , 50, 50, 0],
-     [1000 , 10  , 10, 10, 0],
-     [100  , 100 , 50, 1 , 9],
-     [1000 , 1000, 50, 1 , 9],
-     [5000 , 1000, 50, 5 , 5],
-     [10   , 100 , 50, 1 , 9],
-     [1000 , 250 , 50, 4 , 6],
-     [10000, 250 , 50, 40, 0],
-     [10000, 250 , 30, 30, 0]
-    ].each do |target_ng ,  measured_concentration , measured_volume , stock_to_pick , buffer_added|
+     [1000, 10, 50, 50, 0],
+     [1000, 10, 10, 10, 0],
+     [100, 100, 50, 1, 9],
+     [1000, 1000, 50, 1, 9],
+     [5000, 1000, 50, 5, 5],
+     [10, 100, 50, 1, 9],
+     [1000, 250, 50, 4, 6],
+     [10000, 250, 50, 40, 0],
+     [10000, 250, 30, 30, 0]
+    ].each do |target_ng,  measured_concentration, measured_volume, stock_to_pick, buffer_added|
     context "cherrypick by nano grams" do
       setup do
         @source_well = create :well
@@ -272,13 +274,13 @@ class WellTest < ActiveSupport::TestCase
       end
 
       [
-        [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0, 'Standard scenario, sufficient material, buffer and dna both added' ],
-        [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0, 'Insufficeint source materia for concentration or volume. Make up with buffer' ],
-        [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme' ],
-        [100.0, 5.0,  100.0,  5.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick' ],
-        [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0, 'Lowish concentration, non zero, but less than robot buffer required' ],
-        [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA' ],
-        [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximun DNA, no buffer' ]
+        [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0, 'Standard scenario, sufficient material, buffer and dna both added'],
+        [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0, 'Insufficeint source materia for concentration or volume. Make up with buffer'],
+        [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme'],
+        [100.0, 5.0,  100.0,  5.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick'],
+        [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0, 'Lowish concentration, non zero, but less than robot buffer required'],
+        [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA'],
+        [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximun DNA, no buffer']
       ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, volume_obtained, buffer_volume_obtained, scenario|
         context "when testing #{scenario}" do
           setup do

@@ -1,12 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class ContainerAssociation < ActiveRecord::Base
   #We don't define the class, so will get an error if being used directly
   # in fact , the class need to be definend otherwise, eager loading through doesn't work
-  belongs_to :container , :class_name => "Asset"
-  belongs_to :content , :class_name => "Asset"
+  belongs_to :container, :class_name => "Asset"
+  belongs_to :content, :class_name => "Asset"
 
   # NOTE: This was originally on the content asset but this causes massive performance issues.
   # It causes the plate and it's metadata to be loaded for each well, which would be cached if
@@ -33,7 +35,7 @@ class ContainerAssociation < ActiveRecord::Base
         # the DB can choose to ignore the ordering. To get round this we perform one query in the correct order and
         # then limit it, rather than doing these two steps together.
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def import(records)
             ActiveRecord::Base.transaction do
               records.map(&:save!)
@@ -41,7 +43,7 @@ class ContainerAssociation < ActiveRecord::Base
               post_import(records.map { |r| [proxy_association.owner.id, r['id']] })
             end
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
 
         def attach(records)
           ActiveRecord::Base.transaction do
@@ -64,7 +66,7 @@ class ContainerAssociation < ActiveRecord::Base
         class_eval(&block) if block_given?
       end
 
-	  self.class_eval do
+    self.class_eval do
         def maps
           Map.where_plate_size(size).where_plate_shape(asset_shape)
         end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 ########################################################################################
 # TODO: Remove these from the features and replace them with the new versions
@@ -34,12 +36,7 @@ Then /^option "([^"]*)" in the menu labeled "([^"]*)" should be selected$/ do |a
 end
 
 When /^I press exactly "([^\"]*)"$/ do |button|
-  begin
-    click_button(/\A#{button}\z/)
-  rescue
-    save_and_open_page
-    raise
-  end
+  click_button(/\A#{button}\z/)
 end
 
 Then /^the field "([^\"]*)" should be empty$/ do |field|
@@ -62,7 +59,7 @@ end
 
 def assert_label_exists(label_text, required = false)
   selector = 'label' << (required ? '.required' : ':not(.required)')
-  assert(page.has_css?(selector,:visible=>:all,:text=>label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
+  assert(page.has_css?(selector,:visible => :all,:text => label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
 end
 
 def locate_labeled_field_type(label_text, field_type)
@@ -94,35 +91,35 @@ Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   options.split('/').each do |option|
-    element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+    element.all("option").detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
   end
 end
 Then /^I should see the (required )?select field "([^\"]+)" without options "([^\"]+(?:\/[^\"]+)+)"$/ do |required, field, options|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   options.split('/').each do |option|
-    element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
+    element.all("option").none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
   end
 end
 Then /^I should see the (required )?select field "([^\"]+)" with the option "([^\"]+)"$/ do |required, field, option|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
-  element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+  element.all("option").detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 Then /^I should see the (required )?select field "([^\"]+)" without the option "([^\"]+)"$/ do |required, field, option|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
-  element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
+  element.all("option").none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
 end
 
 Then /^the select field "([^\"]+)" should have the option "([^\"]+)"$/ do |field, option|
-  element = page.find_field(field, :visible=>:all,:disabled=>true)
-  element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+  element = page.find_field(field, :visible => :all,:disabled => true)
+  element.all("option").detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
 Then /^the select field "([^\"]+)" should not have the option "([^\"]+)"$/ do |field, option|
-  element = page.find_field(field, :visible=>:all,:disabled=>true)
-  element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+  element = page.find_field(field, :visible => :all,:disabled => true)
+  element.all("option").none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
 Then /^the "([^\"]+)" field should be marked in error$/ do |field|
@@ -157,12 +154,12 @@ end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
   selected = find_field(name).find('option[selected]').text
-  assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
+  assert_equal( value, selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^"([^\"]+)" should be selected from a disabled "([^\"]+)"$/ do |value, name|
   selected = find_field(name,disabled:true).find('option[selected]').text
-  assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
+  assert_equal( value, selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|

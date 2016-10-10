@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # A plate that has exactly the right number of wells!
 FactoryGirl.define do
   factory(:transfer_plate, :class => Plate) do |plate|
@@ -8,7 +9,7 @@ FactoryGirl.define do
 
     after(:create) do |plate|
       plate.wells.import(
-        [ 'A1', 'B1', 'C1' ].map do |location|
+        ['A1', 'B1', 'C1'].map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, :map => map)
         end
@@ -23,7 +24,7 @@ FactoryGirl.define do
 
     after(:create) do |plate|
       plate.wells.import(
-        [ 'A1', 'B1', 'C1', 'D1', 'E1','F1' ].map do |location|
+        ['A1', 'B1', 'C1', 'D1', 'E1','F1'].map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, :map => map)
         end
@@ -116,7 +117,7 @@ FactoryGirl.define do
     user        { |target| target.association(:user) }
     source      { |target| target.association(:source_transfer_plate) }
     destination { |target| target.association(:library_tube)   }
-    transfers([ 'A1', 'B1' ])
+    transfers(['A1', 'B1'])
 
     after(:build) do |transfer|
       transfer.source.plate_purpose.child_relationships.create!(:child => transfer.destination.purpose, :transfer_request_type => RequestType.transfer)
@@ -142,8 +143,8 @@ FactoryGirl.define do
     name { |_| FactoryGirl.generate(:tag_group_for_layout_name) }
 
     after(:create) do |tag_group|
-      [ 'ACGT', 'TGCA' ].each_with_index do |oligo, index|
-        tag_group.tags.create!(:map_id => index+1, :oligo => oligo)
+      ['ACGT', 'TGCA'].each_with_index do |oligo, index|
+        tag_group.tags.create!(:map_id => index + 1, :oligo => oligo)
       end
     end
   end
@@ -186,11 +187,11 @@ FactoryGirl.define do
       plate_purpose.child_relationships.create!(:child => create(:child_plate_purpose), :transfer_request_type => RequestType.transfer)
     end
   end
-  factory(:pooling_transfer, :class=>RequestType) do |pooling_transfer|
+  factory(:pooling_transfer, :class => RequestType) do |pooling_transfer|
     asset_type 'Well'
     order 1
     request_class_name 'TransferRequest::InitialDownstream'
-    request_purpose {|rp| rp.association(:request_purpose) }
+    request_purpose { |rp| rp.association(:request_purpose) }
   end
   # Plate creations
   factory(:pooling_plate_purpose, :class => PlatePurpose) do |plate_purpose|
@@ -204,7 +205,7 @@ FactoryGirl.define do
   factory(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|
     name 'Child plate purpose'
   end
-  factory(:initial_downstream_plate_purpose, :class=>Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
+  factory(:initial_downstream_plate_purpose, :class => Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
      plate_purpose.name 'Initial Downstream plate purpose'
   end
   factory(:plate_creation) do |plate_creation|
@@ -235,16 +236,16 @@ FactoryGirl.define do
 
       # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
       stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, :barcode => '999999') { |p| p.wells = [create(:empty_well),create(:empty_well)] }
-      stock_wells  = stock_plate.wells
+      stock_wells = stock_plate.wells
 
       AssetLink.create!(:ancestor => stock_plate, :descendant => tube_creation.parent)
 
-      tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size/2).each_with_index do |pool,i|
-        submission  = Submission.create!(:user => user)
+      tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size / 2).each_with_index do |pool,i|
+        submission = Submission.create!(:user => user)
         pool.each do |well|
           RequestType.transfer.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission);
-          mock_request_type.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission, :request_metadata_attributes=>create(:request_metadata_for_library_creation).attributes);
-          Well::Link.create!(:type=>'stock', :target_well=>well, :source_well=>stock_wells[i])
+          mock_request_type.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission, :request_metadata_attributes => create(:request_metadata_for_library_creation).attributes);
+          Well::Link.create!(:type => 'stock', :target_well => well, :source_well => stock_wells[i])
         end
       end
     end
@@ -271,7 +272,7 @@ FactoryGirl.define do
       request.request_metadata.fragment_size_required_from = 300
       request.request_metadata.fragment_size_required_to   = 500
     end
-    request_purpose {|rp| rp.association(:request_purpose) }
+    request_purpose { |rp| rp.association(:request_purpose) }
   end
   factory(:pulldown_sc_request, :class => Pulldown::Requests::ScLibraryRequest) do |request|
     request_type { |target| RequestType.find_by_name('Pulldown SC') or raise StandardError, "Could not find 'Pulldown SC' request type" }
@@ -282,17 +283,17 @@ FactoryGirl.define do
       request.request_metadata.fragment_size_required_to   = 400
       request.request_metadata.bait_library                = create(:bait_library)
     end
-    request_purpose {|rp| rp.association(:request_purpose) }
+    request_purpose { |rp| rp.association(:request_purpose) }
   end
   factory(:pulldown_isc_request, :class => Pulldown::Requests::IscLibraryRequest) do |request|
     request_type { |target| RequestType.find_by_name('Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose {|rp| rp.association(:request_purpose) }
+    request_purpose { |rp| rp.association(:request_purpose) }
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
-      request.request_metadata.bait_library                = BaitLibrary.first||create(:bait_library)
+      request.request_metadata.bait_library                = BaitLibrary.first || create(:bait_library)
     end
   end
 
@@ -305,6 +306,6 @@ FactoryGirl.define do
   factory(:plate_owner) do
     user
     plate
-    eventable { |eventable| eventable.association(:state_change)}
+    eventable { |eventable| eventable.association(:state_change) }
   end
 end

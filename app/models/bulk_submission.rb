@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class ActiveRecord::Base
   class << self
@@ -79,7 +81,7 @@ class BulkSubmission
   private :headers
 
   def csv_data_rows
-    @csv_rows.slice(header_index+1...@csv_rows.length)
+    @csv_rows.slice(header_index + 1...@csv_rows.length)
   end
   private :csv_data_rows
 
@@ -100,7 +102,7 @@ class BulkSubmission
   private :start_row
 
   def header_row?(row)
-    row.each {|col| col.try(:downcase!)}
+    row.each { |col| col.try(:downcase!) }
     (row & COMMON_FIELDS).length > 0
   end
   private :header_row?
@@ -114,7 +116,7 @@ class BulkSubmission
 
   def max_priority(orders)
     orders.inject(0) do |max,order|
-      priority = Submission::Priorities.priorities.index(order['priority'])||order['priority'].to_i
+      priority = Submission::Priorities.priorities.index(order['priority']) || order['priority'].to_i
       priority > max ? priority.to_i : max
     end
   end
@@ -148,7 +150,7 @@ class BulkSubmission
             end
 
             begin
-              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority=>max_priority(orders))
+              submission = Submission.create!(:name => submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority => max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
@@ -193,12 +195,12 @@ class BulkSubmission
   }
 
   def translate(header)
-    ALIAS_FIELDS[header]||header
+    ALIAS_FIELDS[header] || header
   end
 
   def validate_entry(header,pos,row,index)
     return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
-    errors.add(:spreadsheet, "Row #{index}, column #{pos+1} contains data but no heading.")
+    errors.add(:spreadsheet, "Row #{index}, column #{pos + 1} contains data but no heading.")
   end
   private :validate_entry
 
@@ -207,10 +209,10 @@ class BulkSubmission
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
   def submission_structure
-    Hash.new {|h,i| h[i] = Array.new}.tap do |submission|
+    Hash.new { |h,i| h[i] = Array.new }.tap do |submission|
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
-        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
+        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index + start_row) }].merge('row' => index + start_row)
         submission[details['submission name']] << details
       end
     end.map do |submission_name, rows|
@@ -235,7 +237,7 @@ class BulkSubmission
   def shared_options!(rows)
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
-      option = rows.map {|r| r[field] }.uniq
+      option = rows.map { |r| r[field] }.uniq
       self.errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
       [field, option.first]
     end
@@ -262,7 +264,7 @@ class BulkSubmission
         :user => user,
         :comments => details['comments'],
         :request_options => {
-          :read_length  => details['read length']
+          :read_length => details['read length']
         },
         :pre_cap_group => details['pre-capture group']
       }

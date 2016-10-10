@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -24,7 +26,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#new_project" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         admin = create :role, :name => "administrator"
         user1 = create :user, :login => "abc123"
         user1.roles << admin
@@ -32,7 +34,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
      should "change Event.count by 1" do
-       assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+       assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
      end
 
       context "send 1 email to 1 recipient" do
@@ -45,9 +47,9 @@ class EventFactoryTest < ActiveSupport::TestCase
         should 'Have sent an email' do
           assert_equal 1, emails.count
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project/ === last_mail.subject
+          assert_match(/Project/,last_mail.subject)
           assert last_mail.bcc.include?("abc123@example.com")
-          assert /Project registered/, last_mail.body
+          assert_match(/Project registered/, last_mail.text_part.body.to_s)
           assert_equal 1, last_mail.bcc.size
         end
       end
@@ -55,7 +57,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#project_approved" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         role = create :manager_role, :authorizable => @project
         role.users << @user
         admin = create :role, :name => "administrator"
@@ -71,23 +73,23 @@ class EventFactoryTest < ActiveSupport::TestCase
 
 
       should "change Event.count by 1" do
-        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+        assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
       end
 
       context "send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project approved/ === last_mail.subject
+          assert_match(/Project approved/, last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
           assert !last_mail.bcc.include?("")
-          assert /Project approved/, last_mail.body
+          assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
     end
 
     context "#project_approved by administrator" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ::ActionMailer::Base.deliveries = [] # reset the queue
         admin = create :role, :name => "administrator"
         @user1 = create :user, :login => "west"
@@ -100,18 +102,18 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       should "change Event.count by 1" do
-        assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+        assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
       end
 
       context ": send emails to everyone administrators" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project approved/ === last_mail.subject
+          assert_match(/Project approved/, last_mail.subject)
           assert last_mail.bcc.include?("north@example.com")
           assert last_mail.bcc.include?("south@example.com")
           assert last_mail.bcc.include?("west@example.com")
           assert !last_mail.bcc.include?("")
-          assert /Project approved/, last_mail.body
+          assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
 
@@ -119,7 +121,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#project_approved but not by administrator" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ActionMailer::Base.deliveries.clear
         admin = create :role, :name => "administrator"
         @user1 = create :user, :login => "west"
@@ -140,10 +142,10 @@ class EventFactoryTest < ActiveSupport::TestCase
       context ": send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Project approved/ === last_mail.subject
+          assert_match(/Project approved/,last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
           assert !last_mail.bcc.include?("")
-          assert /Project approved/, last_mail.body
+          assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
 
@@ -158,7 +160,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#study has samples added" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ::ActionMailer::Base.deliveries = []
         role = create :manager_role, :authorizable => @project
         role.users << @user
@@ -182,8 +184,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       context "send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Sample/ === last_mail.subject
-          assert /registered/ === last_mail.subject
+          assert_match(/Sample/, last_mail.subject)
+          assert_match(/registered/,last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
         end
       end
@@ -192,7 +194,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#request update failed" do
       setup do
-        @event_count =  Event.count
+        @event_count = Event.count
         ::ActionMailer::Base.deliveries = []
         role = create :manager_role, :authorizable => @project
         role.users << @user
@@ -217,8 +219,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       context "send email to project manager" do
         should 'Have sent an email' do
           last_mail = ActionMailer::Base.deliveries.last
-          assert /Request update/ === last_mail.subject
-          assert /failed/ === last_mail.subject
+          assert_match(/Request update/,last_mail.subject)
+          assert_match(/failed/,last_mail.subject)
           assert last_mail.bcc.include?("south@example.com")
         end
       end

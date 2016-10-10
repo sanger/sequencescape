@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 module SampleManifest::PlateBehaviour
   module ClassMethods
@@ -15,6 +17,8 @@ module SampleManifest::PlateBehaviour
 
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
+    attr_reader :plates
+
     def initialize(manifest)
       @manifest = manifest
     end
@@ -23,12 +27,6 @@ module SampleManifest::PlateBehaviour
     alias_method(:generate, :generate_plates)
 
     delegate :samples, :to => :@manifest
-
-    def print_labels_for(plates, &block)
-      plates              = plates.sort_by(&:barcode)
-      stock_plate_purpose = PlatePurpose.stock_plate_purpose
-      yield(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", stock_plate_purpose.name.to_s)
-    end
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
     # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
@@ -82,12 +80,16 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def print_labels(&block)
-      print_labels_for(@plates, &block)
-    end
-
     def details(&block)
       @details.map(&block.method(:call))
+    end
+
+    def details_array
+      @details
+    end
+
+    def printables
+      plates
     end
   end
 
@@ -109,10 +111,6 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def print_labels(&block)
-      print_labels_for(self.samples.map { |s| s.primary_receptacle.plate }.uniq, &block)
-    end
-
     def updated_by!(user, samples)
       # It's more efficient to look for the wells with the samples than to look for the assets from the samples
       # themselves as the former can use named_scopes where as the latter is an array that needs iterating over.
@@ -123,13 +121,17 @@ module SampleManifest::PlateBehaviour
 
     def details(&block)
       samples.each do |sample|
-        well = sample.wells.includes([ :container, :map ]).first
+        well = sample.wells.includes([:container, :map]).first
         yield({
           :barcode   => well.plate.sanger_human_barcode,
           :position  => well.map.description,
           :sample_id => sample.sanger_sample_id
         })
       end
+    end
+
+    def printables
+      samples.map { |s| s.primary_receptacle.plate }.uniq
     end
   end
 
@@ -144,8 +146,8 @@ module SampleManifest::PlateBehaviour
   def generate_wells_asynchronously(well_data_with_ids, plate_id)
     ActiveRecord::Base.transaction do
       # Ensure the order of the wells are maintained
-      maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [ map.id, map ] }]
-      well_data = well_data_with_ids.map { |map_id,sample_id| [ maps[map_id], sample_id ] }
+      maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [map.id, map] }]
+      well_data = well_data_with_ids.map { |map_id,sample_id| [maps[map_id], sample_id] }
 
       generate_wells(well_data, Plate.find(plate_id))
     end

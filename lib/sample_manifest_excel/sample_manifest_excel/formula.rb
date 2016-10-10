@@ -12,7 +12,7 @@ module SampleManifestExcel
 
     include HashAttributes
 
-    set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: ">", operand: 999}
+    set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: ">", operand: 999 }
 
     def initialize(attributes = {})
       create_attributes(attributes)
@@ -38,7 +38,7 @@ module SampleManifestExcel
       when :len
         "LEN(#{first_cell_reference})#{operator}#{operand}"
       when :is_error
-        "ISERROR(MATCH(#{first_cell_reference},#{absolute_reference},0)>0)"
+        "AND(NOT(ISBLANK(#{first_cell_reference})),ISERROR(MATCH(#{first_cell_reference},#{absolute_reference},0)>0))"
       end
     end
 

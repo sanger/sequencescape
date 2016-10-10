@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 module Tasks::GenerateManifestHandler
   def manifest_filename(name,number)
@@ -13,7 +15,7 @@ module Tasks::GenerateManifestHandler
     csv_string = GenerateManifestsTask.generate_manifests(batch,study)
     send_data csv_string,
       :type => "text/csv",
-      :filename=> manifest_filename(study.name,batch.id),
+      :filename => manifest_filename(study.name,batch.id),
       :disposition => 'attachment'
   end
 

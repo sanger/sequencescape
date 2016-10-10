@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 #--
 # This is a complete hack of the standard behaviour and quite rightly so: people shouldn't be using it and
@@ -31,7 +33,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     class CriteriaInvalid < ::Core::Service::Error
       def initialize(*args)
         super
-        @errors = { :lookup => [ self.message ] }
+        @errors = { :lookup => [self.message] }
       end
 
       def api_error(response)
@@ -51,13 +53,13 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     def self.attribute_delegate(*names)
       names.each do |name|
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def #{name}
             return nil unless lookup.respond_to?(:fetch)
             lookup[#{name.to_s.inspect}]
           end
           protected #{name.to_sym.inspect}
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
     end
 
@@ -99,7 +101,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       uuid = Search.create!(lookup).find
 
       # Hack time ...
-      class << response ; include ::Endpoints::Uuids::Response ; end
+      class << response; include ::Endpoints::Uuids::Response; end
       response.redirect_to(request.service.api_path(uuid.external_id))
 
       {
@@ -117,7 +119,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       uuids = Search.create_bulk!(lookup).map(&:find)
 
       # Hack time ...
-      class << response ; include ::Endpoints::Uuids::Response ; end
+      class << response; include ::Endpoints::Uuids::Response; end
       response.multiple_choices
 
       uuids.map do |uuid|

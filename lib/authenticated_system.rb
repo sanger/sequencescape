@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013 Genome Research Ltd.
 module AuthenticatedSystem
   protected
     # Returns true or false if the user is logged in.
@@ -158,10 +159,10 @@ module AuthenticatedSystem
           redirect_to :controller => '/sessions', :action => 'login'
         end
         accepts.xml do
-          render :xml  => {:error => "Couldn't authenticate you"}, :status => :unauthorized
+          render :xml => { :error => "Couldn't authenticate you" }, :status => :unauthorized
         end
         accepts.json do
-          render :json  => {:error => "Couldn't authenticate you"}, :status => :unauthorized
+          render :json => { :error => "Couldn't authenticate you" }, :status => :unauthorized
         end
       end
       false
@@ -195,7 +196,7 @@ module AuthenticatedSystem
       if user && user.remember_token?
         user.remember_me
         self.current_user = user
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+        cookies[:auth_token] = { :value => self.current_user.remember_token, :expires => self.current_user.remember_token_expires_at }
         flash[:notice] = "Logged in successfully"
       end
     end

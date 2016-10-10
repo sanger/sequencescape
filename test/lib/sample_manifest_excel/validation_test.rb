@@ -1,11 +1,11 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class ValidationTest < ActiveSupport::TestCase
 
   attr_reader :validation, :options, :range
 
   def setup
-    @options = {option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth'}
+    @options = { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' }
     @range = build(:range)
   end
 
@@ -34,7 +34,7 @@ class ValidationTest < ActiveSupport::TestCase
 
     should "should not add a range" do
       validation.update(range: range)
-      refute_equal range.absolute_reference, validation.formula1 
+      refute_equal range.absolute_reference, validation.formula1
     end
 
   end

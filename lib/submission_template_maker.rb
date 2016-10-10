@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012 Genome Research Ltd.
 module SubmissionTemplateMaker
   def make_new_templates!(product_line, old_template)
     ActiveRecord::Base.transaction do
@@ -36,7 +37,7 @@ module SubmissionTemplateMaker
 
   def new_request_types(product_line, old_request_types_list)
     old_request_types_list.map do |old_rtype|
-      [ new_request_type(product_line, old_rtype).id ]
+      [new_request_type(product_line, old_rtype).id]
     end
   end
 end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -17,9 +19,9 @@ class AssetsControllerTest < ActionController::TestCase
 
   context "#create a new asset with JSON input" do
     setup do
-      @asset_count =  Asset.count
+      @asset_count = Asset.count
 
-      @barcode  = FactoryGirl.generate :sanger_barcode
+      @barcode = FactoryGirl.generate :sanger_barcode
 
       @json_data = json_new_asset(@barcode)
 
@@ -30,13 +32,13 @@ class AssetsControllerTest < ActionController::TestCase
     should set_flash.to(  /Asset was successfully created/)
 
      should "change Asset.count by 1" do
-       assert_equal 1,  Asset.count  - @asset_count, "Expected Asset.count to change by 1"
+       assert_equal 1,  Asset.count - @asset_count, "Expected Asset.count to change by 1"
     end
   end
 
   context "create request with JSON input" do
     setup do
-      @submission_count =  Submission.count
+      @submission_count = Submission.count
       @asset = create(:sample_tube)
       @sample = @asset.primary_aliquot.sample
 
@@ -51,10 +53,33 @@ class AssetsControllerTest < ActionController::TestCase
     end
 
     should "change Submission.count by 1" do
-      assert_equal 1,  Submission.count  - @submission_count, "Expected Submission.count to change by 1"
+      assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
     end
     should "set a priority" do
       assert_equal(3,Submission.last.priority)
+    end
+  end
+
+  context "print requests" do
+
+    attr_reader :barcode_printer
+
+    setup do
+      @user = create :user
+      @controller.stubs(:current_user).returns(@user)
+      @barcode_printer = create :barcode_printer
+      LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+    end
+
+    should "#print_assets should send print request" do
+      asset = create :child_plate
+      RestClient.expects(:post)
+      post :print_assets, printables: asset, printer: barcode_printer.name, id: "#{asset.id}"
+    end
+    should "#print_labels should send print request" do
+      asset = create :sample_tube
+      RestClient.expects(:post)
+      post :print_labels, printables: { "#{asset.id}" => "true" }, printer: barcode_printer.name, id: "#{asset.id}"
     end
   end
 

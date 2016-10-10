@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
   FactoryGirl.create(style.gsub(/ /, '_'), :name => name)
@@ -52,12 +54,12 @@ def plate_view_of_oligos(label, mapping)
   plate = []
   mapping.each do |location, oligo|
     location =~ /^([A-H])(\d+)$/ or raise StandardError, "Could not match well location #{location.inspect}"
-    row, column = $1.bytes.first-'A'.bytes.first, $2.to_i-1
-    plate[(row*12)+column] = oligo
+    row, column = $1.bytes.first - 'A'.bytes.first, $2.to_i - 1
+    plate[(row * 12) + column] = oligo
   end
 
   plate_layout = (1..8).map { |_| [] }
-  plate.each_with_index { |oligo, i| plate_layout[i/12][i%12] = oligo }
+  plate.each_with_index { |oligo, i| plate_layout[i / 12][i % 12] = oligo }
 
   $stderr.puts "#{label}:"
   plate_layout.map(&:inspect).map(&$stderr.method(:puts))
@@ -68,7 +70,7 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
-      [ w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || "" ]
+      [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || ""]
     end.compact
   ]
   if expected_wells_to_oligos != wells_to_oligos
@@ -83,7 +85,7 @@ def check_tag2_layout(name, well_range, expected_wells_to_oligos)
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
-      [ w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || "" ]
+      [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || ""]
     end.compact
   ]
   if expected_wells_to_oligos != wells_to_oligos
@@ -97,7 +99,7 @@ Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
     name, WellRange.new('A1', 'H12'),
     ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
-      h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }
+      h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i + 1}"] = cell } }
     end
   )
 end
@@ -106,7 +108,7 @@ Then /^the tag 2 layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag2_layout(
     name, WellRange.new('A1', 'H12'),
     ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
-      h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }
+      h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i + 1}"] = cell } }
     end
   )
 end
@@ -114,7 +116,7 @@ end
 Then /^the tags assigned to the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
     name, WellRange.new('A1', 'H12'),
-    Hash[table.hashes.map { |a| [ a['well'], a['tag'] ] }]
+    Hash[table.hashes.map { |a| [a['well'], a['tag']] }]
   )
 end
 
@@ -140,7 +142,7 @@ def pool_by_strategy(source, destination, pooling_strategy)
   destination.wells.walk_in_column_major_order { |well,_| destination_wells << well }
 
   pooling_strategy.each_with_index do |pool, submission_id|
-    submission_id = Submission.create!(:user=>User.first||User.create!(:login=>'a')).id
+    submission_id = Submission.create!(:user => User.first || User.create!(:login => 'a')).id
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
     wells_for_source.zip(wells_for_destination).each do |w|
       RequestType.transfer.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id)
@@ -153,7 +155,7 @@ end
 # that the source plate is pooled in columns to the destination plate (it's not actually pooled, it's just the
 # indication of what pools will occur).
 Given /^the wells for (the plate.+) have been pooled in columns to (the plate.+)$/ do |source, destination|
-  pool_by_strategy(source, destination, [ 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 ])
+  pool_by_strategy(source, destination, [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8])
 end
 
 Given /^the wells for (the plate.+) have been pooled to (the plate.+) according to the pooling strategy (\d+(?:,\s*\d+)*)$/ do |source, destination, pooling_strategy|
@@ -161,7 +163,7 @@ Given /^the wells for (the plate.+) have been pooled to (the plate.+) according 
 end
 
 Given /^the tag group "(.*?)" exists$/ do |name|
-  TagGroup.create!(:name=>name)
+  TagGroup.create!(:name => name)
 end
 
 Given /^the tag group "(.*?)" has (\d+) tags$/ do |group, count|

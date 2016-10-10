@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Accessionable
   class Study < Base
@@ -36,7 +38,7 @@ module Accessionable
         @related_studies << RelatedStudy.new(r.related_study, r.name)
       end
       study.reversed_study_relations.each do |r|
-        rs=RelatedStudy.new(r.study, r.reversed_name)
+        rs = RelatedStudy.new(r.study, r.reversed_name)
         @related_studies << rs if rs.to_send?
       end
     end
@@ -63,7 +65,7 @@ module Accessionable
         if StudyType.include?(study_type)
           xml.STUDY_TYPE(:existing_study_type => study_type)
         else
-          xml.STUDY_TYPE(:existing_study_type => ::Study::Other_type , :new_study_type => study_type)
+          xml.STUDY_TYPE(:existing_study_type => ::Study::Other_type, :new_study_type => study_type)
         end
 
         xml.RELATED_STUDIES {

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class PacBio::SampleSheet
   def header_metadata(batch)
@@ -25,7 +27,7 @@ class PacBio::SampleSheet
 
   def create_csv_from_batch(batch)
     csv_string = CSV.generate( :row_sep => "\r\n") do |csv|
-      header_metadata(batch).each{ |header_row| csv << header_row }
+      header_metadata(batch).each { |header_row| csv << header_row }
       csv << column_headers
       requests_by_wells(batch).each do |requests|
         csv << row(requests, batch)
@@ -35,8 +37,8 @@ class PacBio::SampleSheet
 
   def requests_by_wells(batch)
     requests = batch.requests.for_pacbio_sample_sheet
-    sorted_well_requests = requests.group_by {|r| r.target_asset.map.column_order }.sort
-    sorted_well_requests.map {|well_index,requests| requests }
+    sorted_well_requests = requests.group_by { |r| r.target_asset.map.column_order }.sort
+    sorted_well_requests.map { |well_index,requests| requests }
   end
 
   def replace_non_alphanumeric(protocol)
@@ -93,4 +95,3 @@ class PacBio::SampleSheet
   end
 
 end
-

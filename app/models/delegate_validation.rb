@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 # Delegate validation is all about enabling one class to validate the information within an instance of
 # another class.  The case driving this is the ability for a Submission to validate that the request options
@@ -55,7 +57,7 @@ module DelegateValidation
 
       args.each do |attribute|
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def #{attribute}_before_type_cast
             #{options[:to]}.#{attribute} #{default}
           end
@@ -67,7 +69,7 @@ module DelegateValidation
           def #{attribute}_needs_checking?
             #{attribute}_before_type_cast.present? or include_unset_values?
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
     end
   end
@@ -86,7 +88,7 @@ module DelegateValidation
 
     def self.CompositeValidator(*validator_classes)
       Class.new(CompositeValidator).tap do |sub_class|
-        sub_class.validator_classes =  validator_classes
+        sub_class.validator_classes = validator_classes
       end
     end
 
@@ -106,4 +108,3 @@ module DelegateValidation
 
   end
 end
-

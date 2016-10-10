@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 class ProductCriteria::Basic
 
@@ -40,7 +42,7 @@ class ProductCriteria::Basic
     end
 
     def headers(configuration)
-      configuration.map {|k,v| k } + [:comment]
+      configuration.map { |k,v| k } + [:comment]
     end
   end
 
@@ -58,11 +60,11 @@ class ProductCriteria::Basic
   end
 
   def conflicting_gender_markers
-    (gender_markers||[]).select {|marker| conflicting_marker?(marker)}.count
+    (gender_markers || []).select { |marker| conflicting_marker?(marker) }.count
   end
 
   def metrics
-    values.merge({:comment => @comment.join(';')})
+    values.merge({ :comment => @comment.join(';') })
   end
 
   def well_location
@@ -90,7 +92,7 @@ class ProductCriteria::Basic
   # Return the sample gender, returns nil if it can't be determined
   # ie. mixed input, or not male/female
   def sample_gender
-    markers = @well_or_metric.samples.map {|s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
+    markers = @well_or_metric.samples.map { |s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
     return nil if markers.count > 1
     GENDER_MARKER_MAPS[markers.first]
   end
@@ -168,7 +170,7 @@ class ProductCriteria::Basic
   private
 
   def comparison_for(comparison)
-    METHOD_ALIAS.fetch(comparison)||raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
+    METHOD_ALIAS.fetch(comparison) || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
   end
 
 

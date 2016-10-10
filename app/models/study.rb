@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 
 require 'aasm'
@@ -127,7 +129,7 @@ class Study < ActiveRecord::Base
   private :set_default_ethical_approval
 
  scope :for_search_query, ->(query,with_includes) {
-    joins(:study_metadata).where([ 'name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query ])
+    joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
   }
 
  scope :with_no_ethical_approval, -> { where( :ethically_approved => false ) }
@@ -156,20 +158,20 @@ class Study < ActiveRecord::Base
       includes(:well_attribute, samples: :sample_metadata ).
       readonly(true)
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
-    scope.find_in_batches {|wells| yield wells }
+    scope.find_in_batches { |wells| yield wells }
   end
 
   YES = 'Yes'
   NO  = 'No'
-  YES_OR_NO = [ YES, NO ]
+  YES_OR_NO = [YES, NO]
   Other_type = "Other"
 
-  STUDY_SRA_HOLDS = [ 'Hold', 'Public' ]
+  STUDY_SRA_HOLDS = ['Hold', 'Public']
 
   DATA_RELEASE_STRATEGY_OPEN = 'open'
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'
   DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'
-  DATA_RELEASE_STRATEGIES = [ DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE ]
+  DATA_RELEASE_STRATEGIES = [DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE]
 
   DATA_RELEASE_TIMING_STANDARD = 'standard'
   DATA_RELEASE_TIMING_NEVER    = 'never'
@@ -196,8 +198,8 @@ class Study < ActiveRecord::Base
     DATA_RELEASE_DELAY_FOR_OTHER
   ]
 
-  DATA_RELEASE_DELAY_LONG  = [ '6 months', '9 months', '12 months' ]
-  DATA_RELEASE_DELAY_SHORT = [ '3 months' ]
+  DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months']
+  DATA_RELEASE_DELAY_SHORT = ['3 months']
   DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
 
   extend Metadata
@@ -218,7 +220,7 @@ class Study < ActiveRecord::Base
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
-    attribute(:separate_y_chromosome_data, :required => true, :default=> false, :boolean => true)
+    attribute(:separate_y_chromosome_data, :required => true, :default => false, :boolean => true)
     attribute(:study_project_id)
     attribute(:study_abstract)
     attribute(:study_study_title)
@@ -231,7 +233,7 @@ class Study < ActiveRecord::Base
     attribute(:data_release_strategy, :required => true, :in => DATA_RELEASE_STRATEGIES, :default => DATA_RELEASE_STRATEGY_MANAGED)
     attribute(:data_release_standard_agreement, :default => YES, :in => YES_OR_NO, :if => :managed?)
 
-    attribute(:data_release_timing, :required => true, :default => DATA_RELEASE_TIMING_STANDARD, :in => DATA_RELEASE_TIMINGS + [ DATA_RELEASE_TIMING_NEVER ])
+    attribute(:data_release_timing, :required => true, :default => DATA_RELEASE_TIMING_STANDARD, :in => DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER])
     attribute(:data_release_delay_reason, :required => true, :in => DATA_RELEASE_DELAY_REASONS_ASSAY, :if => :delayed_release?)
     attribute(:data_release_delay_period, :required => true, :in => DATA_RELEASE_DELAY_PERIODS, :if => :delayed_release?)
     attribute(:bam, :default => true)
@@ -257,7 +259,7 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_reason_comment)
     end
 
-    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
+    attribute(:data_access_group, :with => /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
 
     # SNP information
     attribute(:snp_study_id, :integer => true)
@@ -274,7 +276,7 @@ class Study < ActiveRecord::Base
       :contains_human_dna         => YES_OR_NO,
       :commercially_available     => YES_OR_NO
     }.inject({}) do |h,(k,v)|
-      h[k] = v.inject({}) { |a,b| a[b.downcase] = b ; a }
+      h[k] = v.inject({}) { |a,b| a[b.downcase] = b; a }
       h
     end
 
@@ -400,13 +402,13 @@ class Study < ActiveRecord::Base
 
   def mark_deactive
     unless self.inactive?
-      logger.warn "Study deactivation failed! #{self.errors.map{|e| e.to_s} }"
+      logger.warn "Study deactivation failed! #{self.errors.map { |e| e.to_s } }"
     end
   end
 
   def mark_active
     unless self.active?
-      logger.warn "Study activation failed! #{self.errors.map{|e| e.to_s} }"
+      logger.warn "Study activation failed! #{self.errors.map { |e| e.to_s } }"
     end
   end
 
@@ -416,7 +418,7 @@ class Study < ActiveRecord::Base
     failed = self.requests.failed.request_type(rts).count
     cancelled = self.requests.cancelled.request_type(rts).count
     if (total - failed - cancelled) > 0
-      completed_percent = ((self.requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f)*100)
+      completed_percent = ((self.requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f) * 100)
       completed_percent.to_i
     else
       return 0
@@ -434,8 +436,8 @@ class Study < ActiveRecord::Base
 
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil, &block)
-    wheres = { }
-    wheres = {asset_id: assets.map(&:id)} unless assets.blank?
+    wheres = {}
+    wheres = { asset_id: assets.map(&:id) } unless assets.blank?
     yield(self.initial_requests.asset_statistics(wheres))
   end
 
@@ -444,7 +446,7 @@ class Study < ActiveRecord::Base
     if samples.blank?
       requests.sample_statistics_new
     else
-      yield(requests.where(aliquots:{sample_id:samples.pluck(:id)}).sample_statistics_new)
+      yield(requests.where(aliquots:{ sample_id:samples.pluck(:id) }).sample_statistics_new)
     end
   end
 
@@ -458,7 +460,7 @@ class Study < ActiveRecord::Base
 
   def unprocessed_submissions?
     #TODO[mb14] optimize if needed
-    study.orders.any? { |o| o.submission.nil?  || o.submission.unprocessed?}
+    study.orders.any? { |o| o.submission.nil? || o.submission.unprocessed? }
   end
 
   # Used by EventfulMailer
@@ -533,7 +535,7 @@ class Study < ActiveRecord::Base
 
   def abbreviation
     abbreviation = self.study_metadata.study_name_abbreviation
-    abbreviation.blank? ?  "#{self.id}STDY" : abbreviation
+    abbreviation.blank? ? "#{self.id}STDY" : abbreviation
   end
 
   def dehumanise_abbreviated_name
@@ -568,7 +570,7 @@ class Study < ActiveRecord::Base
 
   def mailing_list_of_managers
     receiver = self.managers.pluck(:email).compact.uniq
-    receiver =  User.all_administrators_emails if receiver.empty?
+    receiver = User.all_administrators_emails if receiver.empty?
     return receiver
   end
 

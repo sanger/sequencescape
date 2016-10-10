@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 # Lays out the tags in the specified tag group in a particular pattern.
 #
@@ -86,7 +88,7 @@ class TagLayout < ActiveRecord::Base
     tag_map_id_to_tag = ActiveSupport::OrderedHash[tag_group.tags.sort_by(&:map_id).map { |tag| [tag.map_id.to_s, tag] }]
     tags              = tag_map_id_to_tag.map { |k,tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
     walk_wells do |well, index|
-      tags[(index+initial_tag) % tags.length].tag!(well) unless well.aliquots.empty?
+      tags[(index + initial_tag) % tags.length].tag!(well) unless well.aliquots.empty?
     end
 
     # We can now check that the pools do not contain duplicate tags.

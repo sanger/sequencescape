@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PipelinesRequestType < ActiveRecord::Base
   belongs_to :pipeline, :inverse_of => :pipelines_request_types
@@ -39,7 +41,7 @@ class Pipeline < ActiveRecord::Base
   has_many :tasks, :through => :workflows
   has_many :pipelines_request_types, :inverse_of => :pipeline
   has_many :request_types, :through => :pipelines_request_types, :validate => false
-  has_many :requests, :through => :request_types, :extend => [ Pipeline::InboxExtensions, Pipeline::RequestsInStorage]
+  has_many :requests, :through => :request_types, :extend => [Pipeline::InboxExtensions, Pipeline::RequestsInStorage]
   has_many :batches do
     def build(attributes = nil)
       attributes ||= {}

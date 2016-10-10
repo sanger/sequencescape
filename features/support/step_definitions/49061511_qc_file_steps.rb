@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015 Genome Research Ltd.
 
 Given /^the plate with ID (\d+) has attatched QC data with a UUID of "(.*?)"$/ do |id, uuid|
   filename = File.expand_path(File.join(Rails.root, %w{test data example_file.txt}))
@@ -21,7 +23,7 @@ end
 When /^I make an authorised POST with the QC file to the API path "(.*?)"$/ do |path|
   filename = File.expand_path(File.join(Rails.root, %w{test data example_file.txt}))
   File.open(filename) do |file|
-    file_send(path,file) {|headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'}
+    file_send(path,file) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
   end
 end
 
@@ -37,9 +39,9 @@ end
 
 def file_send(path, file)
   raise StandardError, "You must explicitly set the API version you are using" if @api_path.nil?
-  @cookies  ||= {}
+  @cookies ||= {}
 
-  headers = { }
+  headers = {}
   headers.merge!('HTTP_ACCEPT' => 'application/json')
   headers.merge!('CONTENT_TYPE' => 'sequencescape/qc_file')
   headers.merge!('HTTP_CONTENT_DISPOSITION' => 'form-data; filename="example_file.txt"')

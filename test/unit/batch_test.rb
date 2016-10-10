@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -9,7 +11,7 @@ class BatchTest < ActiveSupport::TestCase
     @pipeline = create :pipeline,
       :name          => 'Test pipeline',
       :workflow      => LabInterface::Workflow.create!(:item_limit => 8),
-      :request_types => [ create(:request_type, :request_class      => Request, :order => 1) ]
+      :request_types => [create(:request_type, :request_class => Request, :order => 1)]
   end
 
   context "A batch" do
@@ -56,14 +58,14 @@ class BatchTest < ActiveSupport::TestCase
 
   context "Batch#add_control" do
     setup do
-      @batchrequest_count =  BatchRequest.count
+      @batchrequest_count = BatchRequest.count
       @control = create :control
       @batch = @pipeline.batches.create!
       @batch.add_control(@control.name, 2)
     end
 
     should "change BatchRequest.count by 2" do
-   assert_equal 2,  BatchRequest.count  - @batchrequest_count, "Expected BatchRequest.count to change by 2"
+   assert_equal 2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by 2"
 end
   end
 
@@ -85,8 +87,8 @@ end
       should 'move the requests to different positions' do
         @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
 
-        expected = Hash[@requests.reverse.each_with_index.map { |request,index| [ request.id, index+1 ] }]
-        actual   = Hash[@batch.batch_requests.map { |batch_request| [ batch_request.request_id, batch_request.position ] }]
+        expected = Hash[@requests.reverse.each_with_index.map { |request,index| [request.id, index + 1] }]
+        actual   = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
         assert_equal(expected, actual, "Positions of requests do not match")
       end
     end
@@ -99,9 +101,9 @@ end
       should 'move the requests that are at, and after, the position by the number and have no asset' do
         @batch.shift_item_positions(5, 2)
 
-        positions = [ 1, 2, 3, 4, 7, 8, 9, 10, 11, 12 ]
-        expected  = Hash[@requests.each_with_index.map { |request,index| [ request.id, positions[index] ] }]
-        actual    = Hash[@batch.batch_requests.map { |batch_request| [ batch_request.request_id, batch_request.position ] }]
+        positions = [1, 2, 3, 4, 7, 8, 9, 10, 11, 12]
+        expected  = Hash[@requests.each_with_index.map { |request,index| [request.id, positions[index]] }]
+        actual    = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
         assert_equal(expected, actual, "Positions of requests do not match")
       end
     end
@@ -113,7 +115,7 @@ end
       @request1 = @pipeline.request_types.last.create!(:asset => create(:sample_tube), :target_asset => create(:empty_library_tube))
       @request2 = @pipeline.request_types.last.create!(:asset => create(:sample_tube), :target_asset => create(:empty_library_tube))
 
-      @batch = @pipeline.batches.create!(:requests => [ @request1, @request2 ])
+      @batch = @pipeline.batches.create!(:requests => [@request1, @request2])
     end
     should "be able to call start_requests" do
       assert_nothing_raised do
@@ -133,7 +135,7 @@ end
         context "where 1 needs to be removed" do
           setup do
             @batch_requests_count = @batch.requests.count
-            @batch.remove_request_ids([ @request2.id],'Reason','Comment')
+            @batch.remove_request_ids([@request2.id],'Reason','Comment')
           end
           should "leave 2 requests behind" do
             assert_not_nil @batch.requests.find(@request2.id)
@@ -146,13 +148,13 @@ end
 
     context "create requests" do
       setup do
-        @asset_count =  Asset.count
+        @asset_count = Asset.count
         @requests    = (1..4).map { |_| create(:request, :request_type => @pipeline.request_types.last) }
         @batch       = @pipeline.batches.create!(:requests => @requests)
       end
 
       should "change Asset.count by 8" do
-        assert_equal 8,  Asset.count  - @asset_count, "Expected Asset.count to change by 8"
+        assert_equal 8,  Asset.count - @asset_count, "Expected Asset.count to change by 8"
       end
 
       should "not have same asset name" do
@@ -182,7 +184,7 @@ end
       end
       should "it should only return if the description is set" do
         assert_equal false, @batch.has_event("Tube layout verified")
-        @lab_event.description ="Tube layout verified"
+        @lab_event.description = "Tube layout verified"
         @batch.lab_events << @lab_event
         assert_equal true, @batch.has_event("Tube layout verified")
       end
@@ -298,19 +300,19 @@ end
       @pipeline_next = create :pipeline, :name => 'Next pipeline'
       @pipeline      = create :pipeline, :name => 'Pipeline for BatchTest', :automated => false, :next_pipeline_id => @pipeline_next.id, :asset_type => "LibraryTube"
       @sequencing_pipeline = create :sequencing_pipeline, :name => 'SequencingPipeline for BatchTest', :automated => false, :asset_type => "Lane"
-      @pipeline_qc   = create :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_next.id
+      @pipeline_qc = create :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_next.id
     end
 
     context "create requests" do
       setup do
-        @asset_count =  Asset.count
+        @asset_count = Asset.count
         @requests = (1..4).map { |_| create(:request, :request_type => @pipeline.request_types.last) }
         @batch = @pipeline.batches.create!(:requests => @requests)
       end
 
 
       should "change Asset.count by 12" do
-        assert_equal 12,  Asset.count  - @asset_count, "Expected Asset.count to change by 12"
+        assert_equal 12,  Asset.count - @asset_count, "Expected Asset.count to change by 12"
       end
 
       should "not have same asset name" do
@@ -318,12 +320,12 @@ end
       end
 
       should "have the good number of request associated" do
-        assert_equal @requests.size , @batch.batch_requests.count
+        assert_equal @requests.size, @batch.batch_requests.count
       end
 
       should "have request position corresponding to the request creation order" do
         @batch.batch_requests.each do |br|
-          assert_equal @requests[br.position-1].id ,  br.request_id
+          assert_equal @requests[br.position - 1].id,  br.request_id
         end
       end
     end
@@ -333,7 +335,7 @@ end
         # send_fail_event will be used once since only one request is not a resource /@request1
 #        EventSender.expects(:send_fail_event).returns(true).times(1)
         EventSender.stubs(:send_fail_event).returns(true)
-        @control  = create :sample_tube, :resource => true
+        @control = create :sample_tube, :resource => true
 
         @batch = @pipeline.batches.create!
         @request1, @request2 = @batch.requests = [
@@ -398,7 +400,7 @@ end
       context "fail requests" do
         setup do
           EventSender.expects(:send_fail_event)
-          @requests = { "#{@request1.id}"=>"on" }
+          @requests = { "#{@request1.id}" => "on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
 
@@ -420,7 +422,7 @@ end
           EventSender.expects(:send_fail_event).returns(true).times(1)
           @asset = create :sample_tube, :resource => 1
           @request3 = create :request, :batches => [@batch], :id => 789, :asset => @asset
-          @requests = { "#{@request1.id}"=>"on", "control"=>"on" }
+          @requests = { "#{@request1.id}" => "on", "control" => "on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
           assert_equal @request3, @batch.control
         end
@@ -430,7 +432,7 @@ end
       end
 
       should "not fail requests if value passed is not set to ON" do
-        @requests = { "#{@request1.id}"=>"blue" }
+        @requests = { "#{@request1.id}" => "blue" }
         @batch.fail_batch_items(@requests, @reason, @comment)
         assert_equal 0, @batch.requests.first.failures.size
       end
@@ -438,7 +440,7 @@ end
       context "fail the batch" do
         setup do
           EventSender.expects(:send_fail_event).returns(true).times(2)
-          @requests = { "#{@request1.id}"=>"on", "#{@request2.id}"=>"on" }
+          @requests = { "#{@request1.id}" => "on", "#{@request2.id}" => "on" }
           @request1.expects(:terminated?).returns(true).times(1)
           @request2.expects(:terminated?).returns(true).times(1)
           @batch.fail_batch_items(@requests, @reason, @comment)
@@ -475,13 +477,13 @@ end
 
       should "return true if the tubes are scanned in in the correct order" do
         number_of_batch_events = @batch.lab_events.size
-        assert @batch.verify_tube_layout({"1" => "654321", "2" => "123456"})
+        assert @batch.verify_tube_layout({ "1" => "654321", "2" => "123456" })
         assert_equal number_of_batch_events + 1, @batch.lab_events.size
       end
 
       should "return false and add errors to the batch if the tubes are not in the correct order" do
         number_of_batch_events = @batch.lab_events.size
-        assert ! @batch.verify_tube_layout({"1" => "123456", "2" => "654321"})
+        assert ! @batch.verify_tube_layout({ "1" => "123456", "2" => "654321" })
         assert ! @batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
       end
@@ -594,42 +596,42 @@ end
         context "when evaluations tag contains 1 evaluation" do
           setup do
             @evaluation = {
-              "result"=>"pass",
-              "checks"=>{
-                "check"=>{
-                  "results"=>"Some free form data (no html please)",
-                  "criteria"=>{
-                    "criterion"=>[
-                      {"value"=>"Greater than 80mb", "key"=>"yield"},
-                      {"value"=>"Greater than Q20", "key"=>"count"}
+              "result" => "pass",
+              "checks" => {
+                "check" => {
+                  "results" => "Some free form data (no html please)",
+                  "criteria" => {
+                    "criterion" => [
+                      { "value" => "Greater than 80mb", "key" => "yield" },
+                      { "value" => "Greater than Q20", "key" => "count" }
                     ]
                   },
-                  "data_source"=>"/somewhere.fastq",
-                  "links"=>{
-                    "link"=>{
-                      "href"=>"http://example.com/some_interesting_image_or_table",
-                      "label"=>"display text for hyperlink"
+                  "data_source" => "/somewhere.fastq",
+                  "links" => {
+                    "link" => {
+                      "href" => "http://example.com/some_interesting_image_or_table",
+                      "label" => "display text for hyperlink"
                     }
                   },
-                  "comment"=>"All good",
-                  "pass"=>"true"
+                  "comment" => "All good",
+                  "pass" => "true"
                 }
               },
               "check"      => "Auto QC",
               "identifier" => @batch.id,
               "location"   => 1
             }
-            @evaluations = [ @evaluation ]
+            @evaluations = [@evaluation]
           end
 
           context 'checking stuff' do
             setup do
-              @labevent_count =  LabEvent.count
+              @labevent_count = LabEvent.count
               @rc = Batch.qc_evaluations_update({ 'evaluation' => @evaluation })
             end
 
             should "change LabEvent.count by 2" do
-              assert_equal 2,  LabEvent.count  - @labevent_count, "Expected LabEvent.count to change by 2"
+              assert_equal 2,  LabEvent.count - @labevent_count, "Expected LabEvent.count to change by 2"
             end
 
             should 'return no errors' do
@@ -648,7 +650,7 @@ end
             end
           end
 
-          [ 'qc_pending', 'qc_submitted', 'qc_manual' ].each do |initial_state|
+          ['qc_pending', 'qc_submitted', 'qc_manual'].each do |initial_state|
             should "changing state from #{initial_state}" do
               @batch.update_attributes!(:qc_state => initial_state)
               Batch.qc_evaluations_update({ 'evaluation' => @evaluation })
@@ -659,7 +661,7 @@ end
 
         context "when evaluations tag contains more than 1 evaluation" do
           setup do
-            @info = {"evaluation"=>[{"result"=>"pass", "checks"=>{"check"=>[{"results"=>"Some free form data (no html please)", "criteria"=>{"criterion"=>[{"value"=>"Greater than 80mb", "key"=>"yield"}, {"value"=>"Greater than Q20", "key"=>"count"}]}, "data_source"=>"/somewhere.fastq", "links"=>{"link"=>{"href"=>"http://example.com/some_interesting_image_or_table", "label"=>"display text for hyperlink"}}, "comment"=>"All good", "pass"=>"true"}, {"results"=>"Some free form data (no html please)", "criteria"=>{"criterion"=>[{"value"=>"Greater than 80mb", "key"=>"yield"}, {"value"=>"Greater than Q20", "key"=>"count"}]}, "data_source"=>"/somewhere.fastq", "links"=>{"link"=>{"href"=>"http://example.com/some_interesting_image_or_table", "label"=>"display text for hyperlink"}}, "comment"=>"All good", "pass"=>"true"}]}, "check"=>"Auto QC", "identifier"=>@batch.id, "location"=>1}, {"result"=>"fail", "checks"=>{"check"=>{"results"=>"Some free form data (no html please)", "criteria"=>{"criterion"=>[{"value"=>"Greater than 80mb", "key"=>"yield"}, {"value"=>"Greater than Q20", "key"=>"count"}]}, "data_source"=>"/somewhere.fastq", "links"=>{"link"=>{"href"=>"http://example.com/some_interesting_image_or_table", "label"=>"display text for hyperlink"}}, "comment"=>"All good", "pass"=>"true"}}, "check"=>"Auto QC", "identifier"=>@batch.id, "location"=>2}]}
+            @info = { "evaluation" => [{ "result" => "pass", "checks" => { "check" => [{ "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" }, { "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" }] }, "check" => "Auto QC", "identifier" => @batch.id, "location" => 1 }, { "result" => "fail", "checks" => { "check" => { "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" } }, "check" => "Auto QC", "identifier" => @batch.id, "location" => 2 }] }
             @events_count = LabEvent.count
             @requests_count = Request.count
           end
@@ -695,8 +697,8 @@ end
     context "#reset!" do
       setup do
         @batch = @pipeline.batches.create!
-        @pending_request   = @pipeline.request_types.last.create!(:state => 'pending', :asset=> create(:sample_tube), :target_asset => create(:sample_tube))
-        @pending_request_2 = @pipeline.request_types.last.create!(:state => 'pending', :asset=> create(:sample_tube), :target_asset => create(:sample_tube))
+        @pending_request   = @pipeline.request_types.last.create!(:state => 'pending', :asset => create(:sample_tube), :target_asset => create(:sample_tube))
+        @pending_request_2 = @pipeline.request_types.last.create!(:state => 'pending', :asset => create(:sample_tube), :target_asset => create(:sample_tube))
         @pending_request.asset.children << @pending_request.target_asset
         @pending_request_2.asset.children << @pending_request_2.target_asset
         @batch.requests << @pending_request << @pending_request_2
@@ -705,27 +707,27 @@ end
       # Separate context because we need to setup the DB first and we cannot check the changes made.
       context 'checking DB changes' do
         setup do
-          @asset_count =  Asset.count
-          @batchrequest_count =  BatchRequest.count
+          @asset_count = Asset.count
+          @batchrequest_count = BatchRequest.count
           @batch.reset!(@user)
-          @request_count =  Request.count
-          @batch_count =  Batch.count
+          @request_count = Request.count
+          @batch_count = Batch.count
         end
 
          should "change BatchRequest.count by -2" do
-           assert_equal -2,  BatchRequest.count  - @batchrequest_count, "Expected BatchRequest.count to change by -2"
+           assert_equal(-2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by -2")
          end
 
          should "change Asset.count by -2" do
-           assert_equal -2,  Asset.count  - @asset_count, "Expected Asset.count to change by -2"
+           assert_equal(-2,  Asset.count - @asset_count, "Expected Asset.count to change by -2")
          end
 
         should "change Request.count by 0" do
-          assert_equal 0,  Request.count  - @request_count, "Expected Request.count to change by 0"
+          assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
         end
 
         should "change Batch.count by 0" do
-          assert_equal 0,  Batch.count  - @batch_count, "Expected Batch.count to change by 0"
+          assert_equal 0,  Batch.count - @batch_count, "Expected Batch.count to change by 0"
         end
 
         should 'transition to discarded' do
@@ -735,7 +737,7 @@ end
 
       context 'once started' do
         setup do
-         @batch.update_attributes!(:state=>'started')
+         @batch.update_attributes!(:state => 'started')
        end
 
        should 'raise an exception' do
@@ -750,8 +752,8 @@ end
       setup do
         @batch = @sequencing_pipeline.batches.create!
         @ancestor = create :sample_tube
-        @pending_request   = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset=> create(:library_tube), :target_asset => create(:lane))
-        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset=> create(:library_tube), :target_asset => create(:lane))
+        @pending_request   = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset => create(:library_tube), :target_asset => create(:lane))
+        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset => create(:library_tube), :target_asset => create(:lane))
         @ancestor.children = [@pending_request.asset, @pending_request_2.asset]
         @pending_request.asset.children << @pending_request.target_asset
         @pending_request_2.asset.children << @pending_request_2.target_asset
@@ -761,30 +763,30 @@ end
       # Separate context because we need to setup the DB first and we cannot check the changes made.
       context 'checking DB changes' do
         setup do
-          @batchrequest_count =  BatchRequest.count
-          @asset_count =  Asset.count
-          @request_count =  Request.count
-          @batch_count =  Batch.count
+          @batchrequest_count = BatchRequest.count
+          @asset_count = Asset.count
+          @request_count = Request.count
+          @batch_count = Batch.count
           @batch.reset!(@user)
         end
 
 
  should "change BatchRequest.count by -2" do
- assert_equal -2,  BatchRequest.count  - @batchrequest_count, "Expected BatchRequest.count to change by -2"
+ assert_equal(-2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by -2")
  end
 
 
  should "change Asset.count by -2" do
- assert_equal -2,  Asset.count  - @asset_count, "Expected Asset.count to change by -2"
+ assert_equal(-2,  Asset.count - @asset_count, "Expected Asset.count to change by -2")
  end
 
         should "change Request.count by 0" do
-          assert_equal 0,  Request.count  - @request_count, "Expected Request.count to change by 0"
+          assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
         end
 
 
         should "change Batch.count by 0" do
-          assert_equal 0,  Batch.count  - @batch_count, "Expected Batch.count to change by 0"
+          assert_equal 0,  Batch.count - @batch_count, "Expected Batch.count to change by 0"
         end
 
         should 'transition to discarded' do
@@ -811,9 +813,9 @@ end
     context "#swap" do
       # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
       [
-        [ 3, 4 ],
-        [ 4, 4 ],
-        [ 2, 1 ]
+        [3, 4],
+        [4, 4],
+        [2, 1]
       ].each do |left_position, right_position|
         context "when swapping #{left_position} and #{right_position}" do
           setup do
@@ -834,8 +836,8 @@ end
             assert(
               @left_batch.swap(
                 @user, {
-                  "batch_1" => {"id" => @left_batch.id.to_s,  "lane" => left_position.to_s },
-                  "batch_2" => {"id" => @right_batch.id.to_s, "lane" => right_position.to_s }
+                  "batch_1" => { "id" => @left_batch.id.to_s,  "lane" => left_position.to_s },
+                  "batch_2" => { "id" => @right_batch.id.to_s, "lane" => right_position.to_s }
                 }
              )
             )
@@ -975,7 +977,7 @@ end
 
       @batch = @pipeline.batches.build
       @request_type = @batch.pipeline.request_types.first
-      @request_type_validator = RequestType::Validator.create!(:request_type=>@request_type,:request_option=>'read_length',:valid_options=>[76])
+      @request_type_validator = RequestType::Validator.create!(:request_type => @request_type,:request_option => 'read_length',:valid_options => [76])
       @request_type.request_type_validators << @request_type_validator
       @sequencing_request = create(:sequencing_request, { :asset => @library_tube, :request_type => @request_type })
       @batch.requests << @sequencing_request

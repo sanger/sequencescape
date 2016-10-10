@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class AssetsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -14,12 +16,12 @@ class AssetsController < ApplicationController
 
     def initialize(width, height)
       @width, @height = width, height
-      @wells = (1..@width*@height).map { |_| DEFAULT_WELL.dup }
+      @wells = (1..@width * @height).map { |_| DEFAULT_WELL.dup }
     end
 
     def set_details_for_well_at(location_id, details)
       assert_valid_location(location_id)
-      @wells[ location_id-1 ] = details
+      @wells[location_id - 1] = details
     end
 
     def size
@@ -37,7 +39,7 @@ class AssetsController < ApplicationController
     def well_at(row, column)
       location_id = location_for_well_at(row, column)
       assert_valid_location(location_id)
-      @wells[ location_id-1 ]
+      @wells[location_id - 1]
     end
 
     def empty_well_at?(row, column)
@@ -46,7 +48,7 @@ class AssetsController < ApplicationController
 
     def good_well_at?(row, column)
       well = well_at(row, column)
-      [:request, :asset].all? { |field| not well[ field ].nil? }
+      [:request, :asset].all? { |field| not well[field].nil? }
     end
 
     def bad_well_at?(row, column)
@@ -60,4 +62,3 @@ class AssetsController < ApplicationController
   end
 
 end
-

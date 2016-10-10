@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 # This module can be included into ActiveRecord::Base classes to get the ability to specify the attributes
 # that are present.  You can think of this as metadata being stored about the column in the table: it's
@@ -20,9 +22,9 @@ module Attributable
     base.class_eval do
       # NOTE: Do not use 'attributes' because that's an ActiveRecord internal name
       class_attribute :attribute_details, :instance_writer => false
-      self.attribute_details =  []
+      self.attribute_details = []
       class_attribute :association_details, :instance_writer => false
-      self.association_details =  []
+      self.association_details = []
     end
   end
 
@@ -41,7 +43,7 @@ module Attributable
 
   def instance_defaults
     self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.validator? }
+      hash.tap { hash[attribute.name] = attribute.default_from(self) if attribute.validator? }
     end
   end
 
@@ -52,10 +54,10 @@ module Attributable
   end
 
   def association_value_pairs
-     self.class.association_details.inject({}) do |hash, attribute|
-       hash.tap { hash[attribute] = attribute.from(self) }
-     end
-   end
+    self.class.association_details.inject({}) do |hash, attribute|
+      hash.tap { hash[attribute] = attribute.from(self) }
+    end
+  end
 
   def field_infos
     self.class.attribute_details.map do |detail|
@@ -91,7 +93,7 @@ module Attributable
 
     def defaults
       attribute_details.inject({}) do |hash, attribute|
-        hash.tap { hash[ attribute.name ] = attribute.default }
+        hash.tap { hash[attribute.name] = attribute.default }
       end
     end
 
@@ -123,7 +125,7 @@ module Attributable
 
       module InstanceMethods
         def for_select_dropdown
-          [ self.name, self.id ]
+          [self.name, self.id]
         end
       end
     end
@@ -182,7 +184,7 @@ module Attributable
     end
 
     def get_scoped_selection
-      @scope.inject(@owner.reflections[@name.to_s].klass){|k,v| k.send(v.to_sym) }
+      @scope.inject(@owner.reflections[@name.to_s].klass) { |k,v| k.send(v.to_sym) }
     end
     private :get_scoped_selection
 
@@ -251,7 +253,7 @@ module Attributable
     end
 
     def selection?
-      fixed_selection?||@options.key?(:selection)
+      fixed_selection? || @options.key?(:selection)
     end
 
     def method?
@@ -263,7 +265,7 @@ module Attributable
     end
 
     def minimum
-      @options[:minimum]||0
+      @options[:minimum] || 0
     end
 
     def selection_values
@@ -298,20 +300,20 @@ module Attributable
       end
 
       unless save_blank_value
-        model.class_eval(%Q{
+        model.class_eval("
           before_validation do |record|
             value = record.#{name}
             record.#{name}= nil if value and value.blank?
           end
-        })
+        ")
       end
 
       unless (condition = conditions[:if]).nil?
-        model.class_eval(%Q{
+        model.class_eval("
           before_validation do |record|
             record.#{name}= nil unless record.#{condition}
           end
-        })
+        ")
       end
     end
 
@@ -350,7 +352,7 @@ module Attributable
     end
 
     def selection_options(metadata)
-      self.selection_values||selection_from_metadata(metadata)||[]
+      self.selection_values || selection_from_metadata(metadata) || []
     end
 
     def to_field_info(object = nil, metadata = nil)

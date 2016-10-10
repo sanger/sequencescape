@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler
   include Core::Endpoint::BasicHandler::Paged
@@ -10,15 +12,15 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
     @association, @options = association, options
   end
 
-  [ :create, :update, :delete ].each do |action|
+  [:create, :update, :delete].each do |action|
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def #{action}(request, path)
         nested_action(request, path, request.target.send(@association)) do
           super
         end
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def association_details_for(request)

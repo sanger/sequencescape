@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 module Request::Statistics
   module DeprecatedMethods
@@ -50,15 +52,15 @@ module Request::Statistics
     end
 
     def completed
-      [ 'passed', 'failed' ].map(&method(:[])).sum
+      ['passed', 'failed'].map(&method(:[])).sum
     end
 
     def pending
-      [ 'pending', 'blocked' ].map(&method(:[])).sum
+      ['pending', 'blocked'].map(&method(:[])).sum
     end
 
-    [ :started, :passed, :failed, :cancelled ].each do |direct_type|
-      class_eval(%Q{def #{direct_type} ; self[#{direct_type.to_s.inspect}] ; end})
+    [:started, :passed, :failed, :cancelled].each do |direct_type|
+      class_eval("def #{direct_type} ; self[#{direct_type.to_s.inspect}] ; end")
     end
 
     def progress
@@ -76,14 +78,14 @@ module Request::Statistics
 
     def self.summary_counter(name)
       line = __LINE__ + 1
-      class_eval(%Q{
+      class_eval("
         def #{name}
           @counters.values.map(&#{name.to_sym.inspect}).sum
         end
-      }, __FILE__, line)
+      ", __FILE__, line)
     end
 
-    [ :started, :passed, :failed, :cancelled, :completed, :pending ].each do |name|
+    [:started, :passed, :failed, :cancelled, :completed, :pending].each do |name|
       summary_counter(name)
     end
   end

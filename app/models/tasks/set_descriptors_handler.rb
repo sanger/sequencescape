@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 module Tasks::SetDescriptorsHandler
 
@@ -64,7 +66,7 @@ module Tasks::SetDescriptorsHandler
                 params[:upload].each_key do |key|
                   event.filename = params[:upload][key].original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
                   event.data = params[:upload][key].read
-                  event.add_descriptor Descriptor.new({:name => key, :value => event.filename})
+                  event.add_descriptor Descriptor.new({ :name => key, :value => event.filename })
                 end
               end
 

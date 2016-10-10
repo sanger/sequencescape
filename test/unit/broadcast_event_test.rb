@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -58,9 +60,9 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
   def assert_subject(subject,role_type)
     assert @event.subjects, "No subjects found"
-    test_subject = @event.subjects.detect {|s| s.uuid == subject.uuid }
+    test_subject = @event.subjects.detect { |s| s.uuid == subject.uuid }
 
-    assert test_subject, "Could not find #{subject.uuid} in: #{@event.subjects.map {|s| s.try(:uuid) }.join(', ')}"
+    assert test_subject, "Could not find #{subject.uuid} in: #{@event.subjects.map { |s| s.try(:uuid) }.join(', ')}"
 
     assert_equal subject.friendly_name, test_subject.friendly_name
     assert_equal subject.subject_type, test_subject.subject_type
@@ -91,7 +93,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
     has_metadata :data_a, :data_method_a
     has_metadata(:data_b) { |ts,e| ts.dynamic_relation.data_method_b }
 
-    has_metadata(:data_c) {|ts,e| e.accessible }
+    has_metadata(:data_c) { |ts,e| e.accessible }
 
     def accessible
       'value_c'
@@ -132,7 +134,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
           dynamic_relation:@dynamic,
           id:1,
           data_method_a:@value_a)
-        @event = ExampleEvent.new(:seed=>@seed,:user=>@user,:created_at=>@time)
+        @event = ExampleEvent.new(:seed => @seed,:user => @user,:created_at => @time)
       end
 
       should 'find subjects with a 1 to 1 relationship' do
@@ -170,7 +172,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
       end
 
       should 'find all metadata as a hash' do
-        assert_equal({'data_a' => @value_a, 'data_b' => @value_b, 'data_c' => 'value_c'}, @event.metadata)
+        assert_equal({ 'data_a' => @value_a, 'data_b' => @value_b, 'data_c' => 'value_c' }, @event.metadata)
       end
 
       # Put it all together

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.
 
 class BarcodePrintersController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -73,40 +75,5 @@ class BarcodePrintersController < ApplicationController
       format.html { redirect_to(barcode_printers_url) }
     end
   end
-  # This module define common behavior used by other controller to print things
-  module Print
-    def print_asset_labels(succes_url, failure_url)
-      assets = params[:printables]
-      prefix = nil
-      unless assets.nil?
-        printables = []
-        assets = assets.keys
-        assets.sort{ |a,b| b.to_i <=> a.to_i }.each do |id|
-          asset = Asset.find(id)
-          prefix = asset.prefix
-          unless asset.barcode.present?
-          asset.barcode = AssetBarcode.new_barcode
-          asset.save!
-          end
-          printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => asset.name_for_label.to_s, :prefix => prefix, :suffix => "" })
-         end
 
-         unless printables.empty?
-           BarcodePrinter.print(printables, params[:printer], prefix)
-        end
-      end
-      flash[:notice] = "Your labels have been sent to printer #{params[:printer]}."
-      redirect_to succes_url
-
-    rescue Savon::Error, Sanger::Barcode::Printing::BarcodeException => e
-      if e.kind_of? Savon::Error
-        flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-      else
-        flash[:error] = "There was a problem with the printer. Select another and try again."
-      end
-      Rails.logger.error($!)
-
-      redirect_to failure_url
-    end
-  end
 end

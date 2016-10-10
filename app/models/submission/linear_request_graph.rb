@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
 # This module can be included where the submission has a linear behaviour, with no branching.
 module Submission::LinearRequestGraph
@@ -13,7 +15,7 @@ module Submission::LinearRequestGraph
     ActiveRecord::Base.transaction do
       create_request_chain!(
         build_request_type_multiplier_pairs,
-        assets.map { |asset| [ asset, asset.latest_stock_metrics(product), create_item_for!(asset) ] },
+        assets.map { |asset| [asset, asset.latest_stock_metrics(product), create_item_for!(asset)] },
         multiplexing_assets,
         &block
       )
@@ -29,7 +31,7 @@ module Submission::LinearRequestGraph
     end
 
     request_types.dup.map do |request_type_id|
-      [ RequestType.find(request_type_id), multipliers[request_type_id.to_s] ]
+      [RequestType.find(request_type_id), multipliers[request_type_id.to_s]]
     end
   end
   private :build_request_type_multiplier_pairs
@@ -100,17 +102,17 @@ module Submission::LinearRequestGraph
       # they don't get disrupted by the shift operation at the start of this method.
       next if request_type_and_multiplier_pairs.empty?
 
-      target_assets_items =  if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
+      target_assets_items = if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
         if multiplexing_assets.nil?
-          criteria = source_asset_qc_metric_and_item.map {|sci| sci[1] }.flatten.uniq
-          target_assets.uniq.map { |asset| [ asset, criteria, nil ] }
+          criteria = source_asset_qc_metric_and_item.map { |sci| sci[1] }.flatten.uniq
+          target_assets.uniq.map { |asset| [asset, criteria, nil] }
         else
           associate_built_requests(target_assets.uniq.compact); []
         end
       else
         target_assets.each_with_index.map do |asset,index|
           source_asset = request_type.no_target_asset? ? source_asset_qc_metric_and_item[index].first : asset
-          [ source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last ]
+          [source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last]
         end
       end
 
@@ -136,7 +138,7 @@ module Submission::LinearRequestGraph
     item = asset.requests.first.item unless asset.requests.empty?
     return item if item.present?
 
-    Item.create!(:workflow => workflow, :name => "#{asset.display_name} #{id.to_s}", :submission => self.submission)
+    Item.create!(:workflow => workflow, :name => "#{asset.display_name} #{id}", :submission => self.submission)
   end
   private :create_item_for!
 

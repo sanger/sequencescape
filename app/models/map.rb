@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class Map < ActiveRecord::Base
 
@@ -13,12 +15,12 @@ class Map < ActiveRecord::Base
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
     PLATE_DIMENSIONS = Hash.new { |h,k| [] }.merge(
-      96  => [ 12, 8 ],
-      384 => [ 24, 16 ]
+      96  => [12, 8],
+      384 => [24, 16]
     )
 
     def self.location_from_row_and_column(row, column,_=nil,__=nil)
-      "#{(?A.getbyte(0)+row).chr}#{column}"
+      "#{(?A.getbyte(0) + row).chr}#{column}"
     end
 
     def self.description_to_horizontal_plate_position(well_description,plate_size)
@@ -26,7 +28,7 @@ class Map < ActiveRecord::Base
       split_well = Map.split_well_description(well_description)
       width = self.plate_width(plate_size)
       return nil if width.nil?
-      (width*split_well[:row]) + split_well[:col]
+      (width * split_well[:row]) + split_well[:col]
     end
 
     def self.description_to_vertical_plate_position(well_description,plate_size)
@@ -34,7 +36,7 @@ class Map < ActiveRecord::Base
       split_well = Map.split_well_description(well_description)
       length = self.plate_length(plate_size)
       return nil if length.nil?
-      (length*(split_well[:col]-1)) + split_well[:row]+1
+      (length * (split_well[:col] - 1)) + split_well[:row] + 1
     end
 
     def self.horizontal_plate_position_to_description(well_position,plate_size)
@@ -52,11 +54,11 @@ class Map < ActiveRecord::Base
     end
 
     def self.descriptions_for_row(row,size)
-      (1..plate_width(size)).map {|column| "#{row}#{column}"}
+      (1..plate_width(size)).map { |column| "#{row}#{column}" }
     end
 
     def self.descriptions_for_column(column,size)
-      (0...plate_length(size)).map {|row| Map.location_from_row_and_column(row,column)}
+      (0...plate_length(size)).map { |row| Map.location_from_row_and_column(row,column) }
     end
 
     def self.plate_width(plate_size)
@@ -68,15 +70,15 @@ class Map < ActiveRecord::Base
     end
 
     def self.vertical_position_to_description(well_position, length)
-      desc_letter = (((well_position-1)%length) + 65).chr
-      desc_number = ((well_position-1)/length) + 1
-      (desc_letter+(desc_number.to_s))
+      desc_letter = (((well_position - 1) % length) + 65).chr
+      desc_number = ((well_position - 1) / length) + 1
+      (desc_letter + (desc_number.to_s))
     end
 
     def self.horizontal_position_to_description(well_position, width)
-      desc_letter = (((well_position-1)/width) + 65).chr
-      desc_number = ((well_position-1)%width) + 1
-      (desc_letter+(desc_number.to_s))
+      desc_letter = (((well_position - 1) / width) + 65).chr
+      desc_number = ((well_position - 1) % width) + 1
+      (desc_letter + (desc_number.to_s))
     end
 
     def self.horizontal_to_vertical(well_position,plate_size)
@@ -88,7 +90,7 @@ class Map < ActiveRecord::Base
     end
 
     def self.location_from_index(index, size)
-      horizontal_plate_position_to_description(index-1,size)
+      horizontal_plate_position_to_description(index - 1,size)
     end
 
   class << self
@@ -103,7 +105,7 @@ class Map < ActiveRecord::Base
       return nil unless Map.valid_well_position?(well_position)
       divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
       return nil if divisor.nil? or multiplier.nil?
-      column, row = (well_position-1).divmod(divisor)
+      column, row = (well_position - 1).divmod(divisor)
       return nil unless (0...multiplier).include?(column)
       return nil unless (0...divisor).include?(row)
       alternate = (row * multiplier) + column + 1
@@ -116,20 +118,20 @@ class Map < ActiveRecord::Base
   module Sequential
 
     def self.location_from_row_and_column(row, column, width, size)
-      digit_count = Math.log10(size+1).ceil
-      "S%0#{digit_count}d" % [(row)*width + column]
+      digit_count = Math.log10(size + 1).ceil
+      "S%0#{digit_count}d" % [(row) * width + column]
     end
 
     def self.location_from_index(index, size)
-      digit_count = Math.log10(size+1).ceil
-      "S%0#{digit_count}d" % [index+1]
+      digit_count = Math.log10(size + 1).ceil
+      "S%0#{digit_count}d" % [index + 1]
     end
 
   end
 
  scope :for_position_on_plate, ->(position,plate_size,asset_shape) {
     where(
-        :row_order    => position - 1,
+        :row_order => position - 1,
         :asset_size     => plate_size,
         :asset_shape_id => asset_shape.id
     )
@@ -137,14 +139,14 @@ class Map < ActiveRecord::Base
 
   scope :where_description, ->(*descriptions) { where(:description => descriptions.flatten) }
   scope :where_plate_size,  ->(size) { where(:asset_size => size) }
-  scope :where_plate_shape, ->(asset_shape) { where(:asset_shape_id => asset_shape)}
-  scope :where_vertical_plate_position, ->(*positions) { where(:column_order => positions.map {|v| v-1}) }
+  scope :where_plate_shape, ->(asset_shape) { where(:asset_shape_id => asset_shape) }
+  scope :where_vertical_plate_position, ->(*positions) { where(:column_order => positions.map { |v| v - 1 }) }
 
   belongs_to :asset_shape, :class_name => 'AssetShape'
   delegate :standard?, :to => :asset_shape
 
   def self.valid_plate_size?(plate_size)
-    plate_size.is_a?(Integer) && plate_size >0
+    plate_size.is_a?(Integer) && plate_size > 0
   end
 
   def self.valid_plate_position_and_plate_size?(well_position,plate_size)
@@ -161,7 +163,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.valid_well_position?(well_position)
-    well_position.is_a?(Integer) && well_position >0
+    well_position.is_a?(Integer) && well_position > 0
   end
 
   def vertical_plate_position
@@ -179,13 +181,13 @@ class Map < ActiveRecord::Base
   ##
   # Column of particular map location. Zero indexed integer
   def column
-    self.row_order%width
+    self.row_order % width
   end
 
   ##
   # Row of particular map location. Zero indexed integer
   def row
-    self.column_order%height
+    self.column_order % height
   end
 
   def horizontal_plate_position
@@ -198,7 +200,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.location_from_row_and_column(row, column)
-    "#{('A'.getbyte(0)+row).chr}#{column}"
+    "#{('A'.getbyte(0) + row).chr}#{column}"
   end
 
   def self.next_map_position(current_map_id)
@@ -207,9 +209,9 @@ class Map < ActiveRecord::Base
 
   def next_map_position
     Map.where(
-      :asset_size=> asset_size,
-      :asset_shape_id=> asset_shape_id,
-      :row_order => row_order+1
+      :asset_size => asset_size,
+      :asset_shape_id => asset_shape_id,
+      :row_order => row_order + 1
     ).first
   end
 
@@ -227,9 +229,9 @@ class Map < ActiveRecord::Base
 
   def next_vertical_map_position
     Map.where(
-      :asset_size=> asset_size,
-      :asset_shape_id=> asset_shape_id,
-      :column_order => column_order+1
+      :asset_size => asset_size,
+      :asset_shape_id => asset_shape_id,
+      :column_order => column_order + 1
     ).first
   end
 
@@ -245,7 +247,7 @@ class Map < ActiveRecord::Base
     # We're only going to be getting standard plates in through SNP
     Map.where(
       :asset_size  => plate_size,
-      :row_order   => snp_map_id.to_i+1,
+      :row_order   => snp_map_id.to_i + 1,
       :asset_shape => AssetShape.default_id
     ).pluck(:id).first
   end
@@ -256,7 +258,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.split_well_description(well_description)
-    { :row=> well_description.getbyte(0) - 65, :col=> well_description[1,well_description.size].to_i}
+    { :row => well_description.getbyte(0) - 65, :col => well_description[1,well_description.size].to_i }
   end
 
   def self.find_for_cell_location(cell_location, asset_size)

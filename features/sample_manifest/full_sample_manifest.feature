@@ -6,6 +6,7 @@ Feature: Full sample manifest
 
   Background:
     Given I am an "External" user logged in as "john"
+    And the configuration exists for creating sample manifest Excel spreadsheets
     And the "96 Well Plate" barcode printer "xyz" exists
     And the plate barcode webservice returns "1234567"
     Given a supplier called "Test supplier name" exists

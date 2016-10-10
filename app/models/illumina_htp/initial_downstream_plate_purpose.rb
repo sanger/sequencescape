@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlatePurpose
   # Initial plates in the pulldown pipelines change the state of the pulldown requests they are being
@@ -19,7 +21,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
 
       stock_wells(plate,contents).each do |source_well|
         # Only transitions from last submission
-        source_well.requests.select {|r| r.library_creation? && active_submissions.include?(r.submission_id) }.each do |request|
+        source_well.requests.select { |r| r.library_creation? && active_submissions.include?(r.submission_id) }.each do |request|
           request.transition_to(new_outer_state) if request.pending?
         end
       end

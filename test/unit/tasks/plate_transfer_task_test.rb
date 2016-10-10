@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -47,24 +49,24 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         setup do
           @plate_count =  Plate.count
-          @transferrequest_count =  TransferRequest.count
+          @transferrequest_count = TransferRequest.count
           params = { :batch_id => @batch.id }
           @task.render_task(@workflows_controller, params)
         end
 
 
          should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
         end
 
 
          should "change TransferRequest.count by 6" do
-           assert_equal 6,  TransferRequest.count  - @transferrequest_count, "Expected TransferRequest.count to change by 6"
+           assert_equal 6,  TransferRequest.count - @transferrequest_count, "Expected TransferRequest.count to change by 6"
         end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
-            assert_equal w.aliquots.map{|a| a.sample.name}, Plate.last.wells.located_at(w.map_description).first.aliquots.map{|a| a.sample.name}
+            assert_equal w.aliquots.map { |a| a.sample.name }, Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name }
           end
         end
 
@@ -86,7 +88,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       context 'when used subsequently' do
 
         setup do
-          @plate_count =  Plate.count
+          @plate_count = Plate.count
           params = { :batch_id => @batch.id }
           @task.render_task(@workflows_controller, params)
           @task.render_task(@workflows_controller, params)
@@ -94,7 +96,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
 
          should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
         end
 
         should 'find the existing plate' do
@@ -131,7 +133,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         plate_barcode.stubs(:barcode).returns("1234567")
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
-        params = {:plate_transfer_task => {}, :batch_id => @batch.id}
+        params = { :plate_transfer_task => {}, :batch_id => @batch.id }
         # @workflows_controller.batch = mock("Batch")
 
                   params = { :batch_id => @batch.id }

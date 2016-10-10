@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 
 module Asset::Ownership
@@ -45,7 +47,7 @@ module Asset::Ownership
 
          scope :for_user, ->(user) {
             joins(:plate_owner).
-            where(:plate_owners => {:user_id => user })
+            where(:plate_owners => { :user_id => user })
           }
 
       end
@@ -53,7 +55,7 @@ module Asset::Ownership
 
     def change_owner_to(owner,source_event)
       if plate_owner.nil?
-        self.update_attributes!(:plate_owner=>PlateOwner.create!(:user => owner, :eventable => source_event, :plate => self))
+        self.update_attributes!(:plate_owner => PlateOwner.create!(:user => owner, :eventable => source_event, :plate => self))
       else
         plate_owner.update_attributes!(:user => owner, :eventable => source_event)
       end

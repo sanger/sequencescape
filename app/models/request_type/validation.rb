@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 module RequestType::Validation
 
@@ -13,13 +15,13 @@ module RequestType::Validation
 
     Class.new(RequestTypeValidator) do
       request_type.request_type_validators.each do |validator|
-        message = "is '%{value}' should be #{validator.valid_options.to_sentence(:last_word_connector=>' or ')}"
+        message = "is '%{value}' should be #{validator.valid_options.to_sentence(:last_word_connector => ' or ')}"
         vro = :"#{validator.request_option}"
         delegate_attribute(vro, :to => :target, :default => validator.default, :type_cast => validator.type_cast)
         validates_inclusion_of vro, :in => validator.valid_options, :if => :"#{validator.request_option}_needs_checking?", :message => message
       end
     end.tap do |sub_class|
-      sub_class.request_type =  request_type
+      sub_class.request_type = request_type
     end
 
   end

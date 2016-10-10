@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -31,7 +33,7 @@ class AttachInfiniumBarcodeTest < TaskTestBase
       end
       context "with valid parameters" do
         setup do
-          params = { :barcodes => {"#{@plate1.id}" => "111", "#{@plate2.id}" => "222"}}
+          params = { :barcodes => { "#{@plate1.id}" => "111", "#{@plate2.id}" => "222" } }
           @task.do_task(@workflow, params)
         end
 
@@ -45,7 +47,7 @@ class AttachInfiniumBarcodeTest < TaskTestBase
       end
       context "with plate that doesnt exist" do
         setup do
-          params = { :barcodes => {"99999" => "111"}}
+          params = { :barcodes => { "99999" => "111" } }
           @returned_task_value = @task.do_task(@workflow, params)
         end
 

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -15,7 +17,7 @@ class MapTest < ActiveSupport::TestCase
       end
     end
 
-    {1=>1, 2=>9, 96=>96, 51=>21,85=>8}.each do |hor,vert|
+    { 1 => 1, 2 => 9, 96 => 96, 51 => 21,85 => 8 }.each do |hor,vert|
       should "map horizontal #{hor} to vertical #{vert}" do
         assert_equal vert, Map.horizontal_to_vertical(hor,96)
       end
@@ -25,7 +27,7 @@ class MapTest < ActiveSupport::TestCase
     end
 
     context "Invalid well position" do
-      {0=>nil, -1=>nil, 97=>nil, 384 => nil, "1"=>nil}.each do |position, result|
+      { 0 => nil, -1 => nil, 97 => nil, 384 => nil, "1" => nil }.each do |position, result|
         should "return nil for #{position.inspect}" do
           assert_equal result, Map.horizontal_to_vertical(position,96)
         end
@@ -43,7 +45,7 @@ class MapTest < ActiveSupport::TestCase
       end
     end
 
-    {1=>1, 2=>17, 384=>384, 370=>160,26=>18}.each do |hor,vert|
+    { 1 => 1, 2 => 17, 384 => 384, 370 => 160,26 => 18 }.each do |hor,vert|
       should "map horizontal #{hor} to vertical #{vert}" do
         assert_equal vert, Map.horizontal_to_vertical(hor,384)
       end
@@ -52,7 +54,7 @@ class MapTest < ActiveSupport::TestCase
       end
     end
     context "Invalid well position" do
-      {0=>nil, -1=>nil, 385 => nil}.each do |position, result|
+      { 0 => nil, -1 => nil, 385 => nil }.each do |position, result|
         should "return nil for #{position}" do
           assert_equal result, Map.horizontal_to_vertical(position,384)
         end
@@ -61,7 +63,7 @@ class MapTest < ActiveSupport::TestCase
   end
 
   context "Invalid plate_size" do
-    {0=>nil, 1=>nil, -1=>nil, 95=> nil, 97=>nil, 383 => nil, 385=> nil}.each do |plate_size, result|
+    { 0 => nil, 1 => nil, -1 => nil, 95 => nil, 97 => nil, 383 => nil, 385 => nil }.each do |plate_size, result|
       should "return nil for #{plate_size}" do
         assert_equal result, Map.horizontal_to_vertical(1,plate_size)
       end

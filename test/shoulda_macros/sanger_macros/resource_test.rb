@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Sanger
   module Testing
@@ -13,7 +15,7 @@ module Sanger
           restful_actions = ['index','new','create','show','update','destroy','edit']
           ignore_actions  = params[:ignore_actions] || []
           actions         = params[:actions] || (restful_actions - ignore_actions)
-          path_prefix     = params[:with_prefix]||""
+          path_prefix     = params[:with_prefix] || ""
           raise Exception.new, ":actions need to be an Array" unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
@@ -54,7 +56,7 @@ module Sanger
               index_url = "#{parent_resource}_#{resource_name.to_s.pluralize}_path(@#{parent_resource})"
 
               setup do
-                parent       = create parent_resource
+                parent = create parent_resource
 
                 @factory_options.merge!(
                   parent_resource.to_sym => parent
@@ -112,7 +114,7 @@ module Sanger
                     post :create, local_params
                   end
                   #assert eval "@object".valid?
-                  should redirect_to("show page"){ eval(show_url) }
+                  should redirect_to("show page") { eval(show_url) }
                 end
               end
 
@@ -149,7 +151,7 @@ module Sanger
                     local_params[:id] = @object.id
                     put :update, local_params
                   end
-                  should redirect_to("show page"){ eval(show_url) }
+                  should redirect_to("show page") { eval(show_url) }
                 end
               end
 
@@ -161,7 +163,7 @@ module Sanger
                     local_params[:id] = @object.id
                     delete :destroy, local_params
                   end
-                  should redirect_to("index page"){ eval(index_url) }
+                  should redirect_to("index page") { eval(index_url) }
                 end
 
                 # context "destroy without object in database" do
@@ -209,7 +211,7 @@ module Sanger
                       end
                       should respond_with :success
                       should "have api version attribute on root object" do
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}", :attributes => {:api_version => "0.6"}
+                        assert_tag :tag => "#{resource_name.to_s.pluralize}", :attributes => { :api_version => "0.6" }
                         assert_tag :tag => "#{resource_name.to_s.pluralize}"
                       end
                     end
@@ -225,7 +227,7 @@ module Sanger
                       end
                       should respond_with :success
                       should "show xml" do
-                        assert_tag :tag => "#{resource_name}", :attributes => {:api_version => RELEASE.api_version}
+                        assert_tag :tag => "#{resource_name}", :attributes => { :api_version => RELEASE.api_version }
                         assert_tag :tag => "#{resource_name}"
                       end
                     end

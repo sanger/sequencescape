@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require File.join(File.dirname(__FILE__), 'sanger_macros', 'resource_test')
 
@@ -23,7 +25,7 @@ module Sanger
           #should redirect_to("study workflow submission page"){ study_workflow_submission_url(@study, @workflow, @submission) }
           should "have a successful submission" do
             assert_not_nil @controller.session.try(:[], :flash).try(:[], :notice).try(:include?, "Submission successfully created")
-            assert_equal @submission_count + 1 , Submission.count
+            assert_equal @submission_count + 1, Submission.count
           end
         end
 
@@ -63,7 +65,7 @@ module Sanger
                     flunk "Testing for an unknown action: #{action}"
                   end
                 end
-                should redirect_to("login page"){login_path}
+                should redirect_to("login page") { login_path }
               end
             end
           end

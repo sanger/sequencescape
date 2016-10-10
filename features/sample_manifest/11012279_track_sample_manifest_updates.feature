@@ -4,6 +4,7 @@ Feature: Track when a sample and its plate has been updated by a manifest
   Background:
     Given I freeze time at "Mon Jul 12 10:23:58 UTC 2010"
     Given I am an "External" user logged in as "john"
+    And the configuration exists for creating sample manifest Excel spreadsheets
     And the "96 Well Plate" barcode printer "xyz" exists
     And the plate barcode webservice returns "1234567"
     Given a supplier called "Test supplier name" exists

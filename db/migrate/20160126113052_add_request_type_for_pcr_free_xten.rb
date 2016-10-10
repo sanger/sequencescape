@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do |t|
@@ -43,7 +45,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         :name => "IHTP - PCR Free Auto - HiSeq-X sequencing",
         :submission_class_name => "FlexibleSubmission",
         :product_line => "Illumina-HTP",
-        :product_catalogue  => "PFHSqX",
+        :product_catalogue => "PFHSqX",
         :submission_parameters => {
           :request_types => [
             'htp_pcr_free_lib',
@@ -64,7 +66,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
           rt = RequestType.find_by_key(rt_name)
           lib_types = rt.library_types
           unless lib_types.nil?
-            rt.library_types = lib_types.reject{|lt| lt == hiseqlt }
+            rt.library_types = lib_types.reject { |lt| lt == hiseqlt }
           end
         end
         hiseqlt.destroy

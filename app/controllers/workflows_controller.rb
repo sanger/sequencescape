@@ -1,12 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class WorkflowsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+  before_action :find_workflow_by_id, :only => [:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
@@ -38,7 +40,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @workflows.to_xml}
+      format.xml { render :xml => @workflows.to_xml }
     end
   end
 
@@ -77,7 +79,7 @@ class WorkflowsController < ApplicationController
   def batches
     @workflow = LabInterface::Workflow.find(params[:id])
     #TODO association broken here - something to do with the attachables polymorph?
-    @batches = Batch.where(workflow_id: @workflow.id).sort_by {|batch| batch.id}.reverse
+    @batches = Batch.where(workflow_id: @workflow.id).sort_by { |batch| batch.id }.reverse
   end
 
   def create
@@ -160,7 +162,7 @@ class WorkflowsController < ApplicationController
         if @task.do_task(self, params)
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task,params)
-          @stage +=  1
+          @stage += 1
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
         end
@@ -191,7 +193,7 @@ class WorkflowsController < ApplicationController
 
   def ordered_fields(fields)
     response = Array.new
-    fields.keys.sort_by{|key| key.to_i}.each do |key|
+    fields.keys.sort_by { |key| key.to_i }.each do |key|
       response.push fields[key]
     end
     response

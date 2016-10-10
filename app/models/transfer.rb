@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class Transfer < ActiveRecord::Base
   module Associations
@@ -30,11 +32,11 @@ class Transfer < ActiveRecord::Base
     # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
     # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
     # are failed).
-    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'passed', 'failed', 'cancelled' ]
+    ALL_STATES = ['started', 'qc_complete', 'pending', 'passed', 'failed', 'cancelled']
 
     def self.state_helper(names)
       Array(names).each do |name|
-        module_eval(%Q{def #{name}? ; state == #{name.to_s.inspect} ; end})
+        module_eval("def #{name}? ; state == #{name.to_s.inspect} ; end")
       end
     end
 
@@ -80,9 +82,9 @@ class Transfer < ActiveRecord::Base
                 query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.can_be_considered_a_stock_plate=TRUE)'
               end
 
-              joins(join_options).where([ query_conditions, states ])
+              joins(join_options).where([query_conditions, states])
             else
-              { }
+              {}
             end
           }
         end
@@ -104,7 +106,7 @@ class Transfer < ActiveRecord::Base
               ]
 
 
-              joins(join_options).where(transfer_requests_as_target:{state:states})
+              joins(join_options).where(transfer_requests_as_target:{ state:states })
             else
               all
             end
@@ -134,7 +136,7 @@ class Transfer < ActiveRecord::Base
       base.class_eval do
         belongs_to :destination, :polymorphic => true
         validates_presence_of :destination
-        validates_uniqueness_of :destination_id, :scope => [ :destination_type, :source_id ], :message => 'can only be transferred to once from the source'
+        validates_uniqueness_of :destination_id, :scope => [:destination_type, :source_id], :message => 'can only be transferred to once from the source'
       end
     end
   end
@@ -162,7 +164,7 @@ class Transfer < ActiveRecord::Base
 
   include Uuid::Uuidable
 
-  self.inheritance_column   = "sti_type"
+  self.inheritance_column = "sti_type"
 
   # So we can track who is requesting the transfer
   belongs_to :user
@@ -184,7 +186,7 @@ class Transfer < ActiveRecord::Base
       request_type_between(source, destination).create!(
         :asset         => source,
         :target_asset  => destination,
-        :submission_id => submission||source.pool_id
+        :submission_id => submission || source.pool_id
       )
     end
   end

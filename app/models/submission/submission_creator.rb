@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
 
 require 'aasm'
@@ -94,7 +96,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     if order.input_field_infos.flatten.empty?
       order.request_type_ids_list = order.request_types.map { |rt| [rt] }
     end
-    order.input_field_infos.reject {|info| per_order_settings.include?(info.key)}
+    order.input_field_infos.reject { |info| per_order_settings.include?(info.key) }
   end
 
   # Return the submission's orders or a blank array
@@ -121,7 +123,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
           submission.orders << new_order
         else
-          @submission = new_order.create_submission(:user => order.user, :priority=>priority)
+          @submission = new_order.create_submission(:user => order.user, :priority => priority)
         end
 
         new_order.save!
@@ -145,7 +147,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def order_assets
-    input_methods = [ :asset_group_id, :sample_names_text, :barcodes_wells_text ].select { |input_method| send(input_method).present? }
+    input_methods = [:asset_group_id, :sample_names_text, :barcodes_wells_text].select { |input_method| send(input_method).present? }
 
     raise InvalidInputException, "No Samples found" if input_methods.empty?
     raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
@@ -195,10 +197,10 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
     names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
-    samples = Sample.includes(:assets).where([ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ])
+    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { :names => names }])
 
     name_set  = Set.new(names)
-    found_set = Set.new(samples.map { |s| [ s.name, s.sanger_sample_id ] }.flatten)
+    found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
     not_found = name_set - found_set
     raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
     return samples
@@ -216,7 +218,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
         raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
       end
       raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
-      well_array = (well_locations||'').split(',').reject(&:blank?).map(&:strip)
+      well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
 
       find_wells_in_array(plate,well_array)
     end.flatten
@@ -250,7 +252,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def studies
-    @studies ||= [ study ] if study.present?
+    @studies ||= [study] if study.present?
     @studies ||= @user.interesting_studies.alphabetical
   end
 
@@ -262,7 +264,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
     # We can't get the template from a saved order, have to find by name.... :(
-    @template =  SubmissionTemplate.find_by_name(order.template_name) if try(:submission).try(:orders).present?
+    @template = SubmissionTemplate.find_by_name(order.template_name) if try(:submission).try(:orders).present?
     @template ||= SubmissionTemplate.find(@template_id)
   end
 
@@ -271,7 +273,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def product_lines
-    templates.group_by {|t| t.product_line.try(:name)||'General' }
+    templates.group_by { |t| t.product_line.try(:name) || 'General' }
   end
 
   def template_id

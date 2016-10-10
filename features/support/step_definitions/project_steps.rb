@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^I have a project called "([^\"]*)"$/ do |project|
 #  proj = FactoryGirl.create :project_with_order, :name => project
@@ -24,7 +26,7 @@ Given /^project "([^\"]*)" has enforced quotas$/ do |name|
 end
 
 Given /^last submission is processed$/ do
-  step(%Q{1 pending delayed jobs are processed})
+  step("1 pending delayed jobs are processed")
 end
 
 Given /^the project "([^\"]+)" has an active study called "([^\"]+)"$/ do |project_name, study_name|
@@ -44,6 +46,6 @@ Given /^the project "([^\"]*)" a budget division "([^\"]*)"$/ do |project_name, 
   budget_division = BudgetDivision.find_by_name(budget_division_name ) or raise StandardError, "Cannot find budget division #{ budget_division_name.inspect }"
 
   project.update_attributes!(:project_metadata_attributes => {
-    :budget_division  => budget_division
+    :budget_division => budget_division
   })
 end

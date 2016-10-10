@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 require "test_helper"
@@ -14,7 +16,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     setup do
       @product_a = create :product
-      @criteria_a = create :product_criteria, :product => @product_a, :configuration => {:total_micrograms=>{:greater_than=>50}}
+      @criteria_a = create :product_criteria, :product => @product_a, :configuration => { :total_micrograms => { :greater_than => 50 } }
     end
 
 
@@ -55,7 +57,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'be otherwise immutable' do
-      @criteria_a.configuration = {:something=>'else'}
+      @criteria_a.configuration = { :something => 'else' }
       assert_raise(ActiveRecord::RecordNotSaved) { @criteria_a.save! }
     end
 

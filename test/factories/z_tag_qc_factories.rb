@@ -1,11 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 FactoryGirl.define do
 
   factory :lot_type do
-    sequence(:name) {|n| "lot_type#{n}" }
+    sequence(:name) { |n| "lot_type#{n}" }
     template_class 'PlateTemplate'
     target_purpose { Tube::Purpose.stock_library_tube }
 
@@ -32,7 +34,7 @@ FactoryGirl.define do
   end
 
   factory :lot do |lot|
-    sequence(:lot_number)  {|n| "lot#{n}" }
+    sequence(:lot_number)  { |n| "lot#{n}" }
     lot_type
     template    { create :plate_template_with_well }
     user
@@ -58,18 +60,18 @@ FactoryGirl.define do
     # the object before setting attributes, which messes up the state machine
     # callbacks.
     lot { create :lot }
-    qcable_creator { create :qcable_creator}
+    qcable_creator { create :qcable_creator }
 
     factory :qcable_with_asset do |qcable|
       state  'created'
-      asset  {create :full_plate }
+      asset  { create :full_plate }
     end
   end
 
-  factory :plate_template_with_well, :class=>PlateTemplate do |p|
+  factory :plate_template_with_well, :class => PlateTemplate do |p|
     name      "testtemplate2"
     value     96
     size      96
-    wells    { [create(:well_with_sample_and_without_plate,:map=>create(:map))] }
+    wells    { [create(:well_with_sample_and_without_plate,:map => create(:map))] }
   end
 end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class Cherrypick::Strategy
   PickFailureError = Class.new(StandardError)
@@ -40,7 +42,7 @@ class Cherrypick::Strategy
         comparator = ->(l,r) { r.size <=> l.size }
         comparator = lambda do |left, right|
           left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
-          sorted_fill =  left_fill <=> right_fill
+          sorted_fill = left_fill <=> right_fill
           sorted_fill = right.size <=> left.size if sorted_fill.zero?
           sorted_fill
         end unless current_plate.overlap.zero?
@@ -246,7 +248,7 @@ class Cherrypick::Strategy
     last_well, species = plate.wells.in_preferred_order.reject { |w| w.aliquots.empty? }.last, []
     species = last_well.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }.uniq.sort if last_well.present?
 
-    PickPlate.new(@purpose, boundary_index+1, species)
+    PickPlate.new(@purpose, boundary_index + 1, species)
   end
   private :wrap_plate
 
@@ -295,8 +297,8 @@ class Cherrypick::Strategy
       filter.call(plexes, current_plate)
     end
 
-    return [ [Cherrypick::Strategy::Empty] * current_plate.remainder, requests ] if candidate_plexes.empty?
-    [ candidate_plexes.first, requests - candidate_plexes.first ]
+    return [[Cherrypick::Strategy::Empty] * current_plate.remainder, requests] if candidate_plexes.empty?
+    [candidate_plexes.first, requests - candidate_plexes.first]
   end
   private :choose_next_plex_from
 end

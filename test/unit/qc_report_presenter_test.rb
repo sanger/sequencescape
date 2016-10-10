@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 require "test_helper"
 require "timecop"
@@ -29,13 +31,13 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
     setup do
       @product = create :product, :name => 'Demo Product'
       @criteria = create :product_criteria, :product => @product, :version => 1
-      @study  = create :study, :name => 'Example study'
+      @study = create :study, :name => 'Example study'
       Timecop.freeze(DateTime.parse('01/01/2015')) do
         @report = create :qc_report, :study => @study, :exclude_existing => false, :created_at => DateTime.parse('01/01/2015 00:00:00'), :product_criteria => @criteria
       end
       @asset_ids = []
       2.times do |i|
-        m = create :qc_metric, :qc_report => @report, :qc_decision => STATE_ARRAY[i], :metrics =>{:total_micrograms=>10,:comment=>'X',:sanger_sample_id=>'EG'}
+        m = create :qc_metric, :qc_report => @report, :qc_decision => STATE_ARRAY[i], :metrics => { :total_micrograms => 10,:comment => 'X',:sanger_sample_id => 'EG' }
         @asset_ids << m.asset_id
       end
     end

@@ -26,7 +26,7 @@ module SampleManifestExcel
 
         options = attributes.extract_options!
 
-        attr_accessor *attributes
+        attr_accessor(*attributes)
 
         define_method :attributes do
           attributes

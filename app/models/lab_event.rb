@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class LabEvent < ActiveRecord::Base
   belongs_to :batch
@@ -10,14 +12,14 @@ class LabEvent < ActiveRecord::Base
 
   before_validation :unescape_for_descriptors
 
- scope :with_descriptor, ->(k,v) { where([ 'descriptors LIKE ?', "%#{k.to_s}: #{v.to_s}%" ]) }
+ scope :with_descriptor, ->(k,v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
  scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
 
 
   def unescape_for_descriptors
     self[:descriptors] = (self[:descriptors] || {}).inject({}) do |hash,(key,value)|
-      hash[ CGI.unescape(key) ] = value
+      hash[CGI.unescape(key)] = value
       hash
     end
   end

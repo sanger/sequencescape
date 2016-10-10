@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module StudyReport::AssetDetails
 
@@ -22,7 +24,7 @@ module StudyReport::AssetDetails
         :sample_name          => supplier_sample_name,
         :sanger_sample_id     => sample.sanger_sample_id,
         :control              => sample.control,
-        :status               => (sample.updated_by_manifest ? 'Updated by manifest' : 'Awaiting manifest') ,
+        :status               => (sample.updated_by_manifest ? 'Updated by manifest' : 'Awaiting manifest'),
 
         :supplier_gender      => sample.sample_metadata.gender,
         :cohort               => sample.sample_metadata.cohort,

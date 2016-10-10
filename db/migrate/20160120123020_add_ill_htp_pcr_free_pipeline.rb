@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
   def up
 
@@ -11,10 +13,10 @@ class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
 
       stock_name = 'PF Cherrypicked'
 
-      branches =  [[ stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
-        [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],['PF MiSeq Stock','PF MiSeq QCR']]
+      branches = [[stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
+        ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],['PF MiSeq Stock','PF MiSeq QCR']]
 
-      plate_flow = [ stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm']
+      plate_flow = [stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm']
 
       tube_flow = ['PF MiSeq Stock','PF MiSeq QC']
 

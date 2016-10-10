@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 require "test_helper"
 require 'submissions_controller'
@@ -24,7 +26,7 @@ class SubmissionsControllerTest < ActionController::TestCase
         well = build :well_with_sample_and_without_plate, :map => Map.find_by_description(location)
         @plate.wells << well
       end
-      build(:well, :map => Map.find_by_description('C5'), :plate=>@plate)
+      build(:well, :map => Map.find_by_description('C5'), :plate => @plate)
       @plate.save
       @study = create :study, :name => 'A study'
       @project = create :project, :name => 'A project'
@@ -35,8 +37,8 @@ class SubmissionsControllerTest < ActionController::TestCase
 
       setup do
         @user.is_lab_manager
-        @submission = Submission.create!(:priority=>1, :user=>@user)
-        post :change_priority, {:id=> @submission.id, :submission=>{:priority=>3}}
+        @submission = Submission.create!(:priority => 1, :user => @user)
+        post :change_priority, { :id => @submission.id, :submission => { :priority => 3 } }
       end
 
       should 'allow update of priorities' do
@@ -50,9 +52,9 @@ class SubmissionsControllerTest < ActionController::TestCase
       #Mainly to verify that it isn't the new test that is broken
 
       setup do
-        samples = Well.with_aliquots.each.map {|w| w.aliquots.first.sample.name}
+        samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
-        post(:create, :submission => {:is_a_sequencing_order=>"false", :comments=>"", :template_id=>@submission_template.id.to_s, :order_params=>{"read_length"=>"37", "fragment_size_required_to"=>"400", "bait_library_name"=>"Human all exon 50MB", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}, :asset_group_id=>"", :study_id=>@study.id.to_s, :sample_names_text=>samples[1..4].join("\n"), :plate_purpose_id=>@plate.plate_purpose.id.to_s, :project_name=>"A project"})
+        post(:create, :submission => { :is_a_sequencing_order => "false", :comments => "", :template_id => @submission_template.id.to_s, :order_params => { "read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" }, :asset_group_id => "", :study_id => @study.id.to_s, :sample_names_text => samples[1..4].join("\n"), :plate_purpose_id => @plate.plate_purpose.id.to_s, :project_name => "A project" })
 
       end
 
@@ -66,7 +68,7 @@ class SubmissionsControllerTest < ActionController::TestCase
 
       setup do
         @order_count = Order.count
-        @wd_plate = create :working_dilution_plate, :barcode=> 123457
+        @wd_plate = create :working_dilution_plate, :barcode => 123457
         [
           'A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12',
           'B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12',
@@ -76,24 +78,24 @@ class SubmissionsControllerTest < ActionController::TestCase
           well.aliquots.create(:sample => @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
-        samples = @wd_plate.wells.with_aliquots.each.map {|w| w.aliquots.first.sample.name}
+        samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create, :submission => {
-          :is_a_sequencing_order=>"false",
-          :comments=>"",
-          :template_id=>@submission_template.id.to_s,
-          :order_params=>{
-            "read_length"=>"37",
-            "fragment_size_required_to"=>"400",
-            "bait_library_name"=>"Human all exon 50MB",
-            "fragment_size_required_from"=>"100",
-            "library_type"=>"Agilent Pulldown"
+          :is_a_sequencing_order => "false",
+          :comments => "",
+          :template_id => @submission_template.id.to_s,
+          :order_params => {
+            "read_length" => "37",
+            "fragment_size_required_to" => "400",
+            "bait_library_name" => "Human all exon 50MB",
+            "fragment_size_required_from" => "100",
+            "library_type" => "Agilent Pulldown"
           },
-          :asset_group_id=>"",
-          :study_id=>@study.id.to_s,
-          :sample_names_text=>samples[1..4].join("\n"),
-          :plate_purpose_id=>@wd_plate.plate_purpose.id.to_s,
-          :project_name=>"A project"})
+          :asset_group_id => "",
+          :study_id => @study.id.to_s,
+          :sample_names_text => samples[1..4].join("\n"),
+          :plate_purpose_id => @wd_plate.plate_purpose.id.to_s,
+          :project_name => "A project" })
 
       end
 
@@ -121,7 +123,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     context "by plate barcode with pools" do
 
       setup do
-        @plate.wells.first.aliquots.create!(:sample=>FactoryGirl.create(:sample), :tag_id=>Tag.first.id)
+        @plate.wells.first.aliquots.create!(:sample => FactoryGirl.create(:sample), :tag_id => Tag.first.id)
         post :create, plate_submission('DN123456P')
       end
 
@@ -173,6 +175,6 @@ class SubmissionsControllerTest < ActionController::TestCase
 
 
   def plate_submission(text)
-    {:submission => {:is_a_sequencing_order=>"false", :comments=>"", :template_id=>@submission_template.id.to_s, :order_params=>{"read_length"=>"37", "fragment_size_required_to"=>"400", "bait_library_name"=>"Human all exon 50MB", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}, :asset_group_id=>"", :study_id=>@study.id.to_s, :sample_names_text=>'', :barcodes_wells_text => text, :plate_purpose_id=>@plate.plate_purpose.id.to_s, :project_name=>"A project"}}
+    { :submission => { :is_a_sequencing_order => "false", :comments => "", :template_id => @submission_template.id.to_s, :order_params => { "read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" }, :asset_group_id => "", :study_id => @study.id.to_s, :sample_names_text => '', :barcodes_wells_text => text, :plate_purpose_id => @plate.plate_purpose.id.to_s, :project_name => "A project" } }
   end
 end

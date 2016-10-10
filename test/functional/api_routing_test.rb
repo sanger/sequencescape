@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -23,7 +25,7 @@ class ApiRoutingTest < ActionController::TestCase
 
       resources.each do |resource|
         with_options(:controller => "api/#{resource}") do |check|
-          yield(check, "/0_5/#{resource}", {:controller=>"api/#{resource}"})
+          yield(check, "/0_5/#{resource}", { :controller => "api/#{resource}" })
 
           # We absolutely, never, ever expose :destroy
           check.should_not_route :delete, "/0_5/#{resource}/12345", :action => :destroy
@@ -33,7 +35,7 @@ class ApiRoutingTest < ActionController::TestCase
       resources_with_nesting.each do |parent, resources|
         resources.each do |resource|
           with_options(:"#{parent.to_s.singularize}_id" => '67890', :controller => "api/#{resource}") do |check|
-            yield(check, "/0_5/#{parent}/67890/#{resource}", {:"#{parent.to_s.singularize}_id" => '67890', :controller => "api/#{resource}"})
+            yield(check, "/0_5/#{parent}/67890/#{resource}", { :"#{parent.to_s.singularize}_id" => '67890', :controller => "api/#{resource}" })
 
             # We absolutely, never, ever expose :destroy
             check.should_not_route :delete, "/0_5/#{parent}/67890/#{resource}/12345", :action => :destroy
@@ -82,16 +84,16 @@ class ApiRoutingTest < ActionController::TestCase
       :tags,
       :wells,
       :submissions,
-      :sample_tubes  => [ :library_tubes, :requests ],
-      :samples       => [ :sample_tubes ],
-      :library_tubes => [ :lanes, :requests ]
+      :sample_tubes  => [:library_tubes, :requests],
+      :samples       => [:sample_tubes],
+      :library_tubes => [:lanes, :requests]
     )
 
     crud_routes(
       :requests,
       :samples,
-      :projects => [ :studies ],
-      :studies  => [ :samples, :projects ]
+      :projects => [:studies],
+      :studies  => [:samples, :projects]
     )
 
     context 'parent/child relationships' do
@@ -102,13 +104,13 @@ class ApiRoutingTest < ActionController::TestCase
         :multiplexed_library_tubes,
         :plates,
         :wells,
-        :samples => [ :sample_tubes ]
+        :samples => [:sample_tubes]
       ) do |context, core_path, controller|
         context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(   :action => :parents,  :id => '12345' ))
         context.should route(:get, "#{core_path}/12345/children").to(controller.merge(  :action => :children, :id => '12345' ))
 
         # No other method should be allowed to these resources:
-        [ :put, :post, :delete ].each do |method|
+        [:put, :post, :delete].each do |method|
           context.should_not_route method, "#{core_path}/12345/parents",  :action => :parents,  :id => '12345'
           context.should_not_route method, "#{core_path}/12345/children", :action => :children, :id => '12345'
         end

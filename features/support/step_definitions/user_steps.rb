@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 Given /^user "([^"]*)" exists$/ do |user_name|
   FactoryGirl.create :user, :login => user_name, :first_name => user_name.titlecase, :last_name => "Smith"
@@ -21,7 +23,7 @@ end
 
 Then /^the user "([^"]*)" roles should look like:$/ do |user, role_table|
   user = User.find_by_login(user) || User.find_by_email(user)
-  user_role_table = role_table.class.new([["role"], user.roles.map { |r| r.name}])
+  user_role_table = role_table.class.new([["role"], user.roles.map { |r| r.name }])
   role_table.diff!(user_role_table)
 end
 
@@ -34,7 +36,7 @@ Given /^user "([^"]*)" exists with barcode "([^"]*)"$/ do |user_name, barcode|
 end
 
 Given /^the user with login "([^\"]+)" exists$/ do |login|
-  User.find_by(login:login)||FactoryGirl.create(:user, :login => login)
+  User.find_by(login:login) || FactoryGirl.create(:user, :login => login)
 end
 
 

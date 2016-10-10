@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 
 class QcReportsController < ApplicationController
@@ -14,10 +16,10 @@ class QcReportsController < ApplicationController
     @qc_reports = QcReport.for_report_page(conditions).page(params[:page]).includes(:study,:product)
     @qc_report = QcReport.new(:exclude_existing => true,:study_id => params[:study_id])
     @studies = Study.alphabetical.pluck(:name,:id)
-    @states = QcReport.available_states.map {|s| [s.humanize,s] }
+    @states = QcReport.available_states.map { |s| [s.humanize,s] }
 
-    @all_products = Product.alphabetical.all.map {|product| [product.display_name,product.id]}
-    @active_products = Product.with_stock_report.active.alphabetical.all.map {|product| [product.display_name,product.id]}
+    @all_products = Product.alphabetical.all.map { |product| [product.display_name,product.id] }
+    @active_products = Product.with_stock_report.active.alphabetical.all.map { |product| [product.display_name,product.id] }
   end
 
   def create
@@ -25,7 +27,7 @@ class QcReportsController < ApplicationController
     study = Study.find_by_id(params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == "1"
 
-    qc_report = QcReport.new(:study=>study, :product_criteria => @product.stock_criteria, :exclude_existing => exclude_existing)
+    qc_report = QcReport.new(:study => study, :product_criteria => @product.stock_criteria, :exclude_existing => exclude_existing)
 
     if qc_report.save
       flash[:notice] = 'Your report has been requested and will be presented on this page when complete.'
@@ -44,7 +46,7 @@ class QcReportsController < ApplicationController
   # the report identifier from the file.
   def qc_file
     qc_file = params[:qc_report_file]
-    overide_qc =  params[:overide_qc_decision] == "1"
+    overide_qc = params[:overide_qc_decision] == "1"
     file = QcReport::File.new(qc_file,overide_qc,qc_file.original_filename,qc_file.content_type)
     if file.process
       redirect_to file.qc_report
@@ -96,7 +98,7 @@ class QcReportsController < ApplicationController
   def conditions
     conds = {}
     conds[:study_id] = params[:study_id] if params[:study_id].present?
-    conds[:product_criteria] = {:product_id => params[:product_id]} if params[:product_id].present?
+    conds[:product_criteria] = { :product_id => params[:product_id] } if params[:product_id].present?
     conds[:state] = params[:state] if params[:state].present?
     conds
   end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 class Parsers::IscXtenParser
   class InvalidFile < StandardError; end
 
@@ -13,10 +15,10 @@ class Parsers::IscXtenParser
   end
 
   def get_row(location)
-    letter=location[0].chr
+    letter = location[0].chr
     num = location.slice(1, location.length)
     table.detect do |row|
-      row[0]==letter && row[1]== num
+      row[0] == letter && row[1] == num
     end
   end
 
@@ -59,7 +61,7 @@ class Parsers::IscXtenParser
   end
 
   def locations
-    table.sort {|a,b| a[0] <=> b[0] && a[1].to_i <=> b[1].to_i}.map {|l| l[0]+l[1]}
+    table.sort { |a,b| a[0] <=> b[0] && a[1].to_i <=> b[1].to_i }.map { |l| l[0] + l[1] }
   end
 
   def each_well_and_parameters

@@ -1,5 +1,5 @@
 module SampleManifestExcel
-  
+
   class Configuration
 
     include SampleManifestExcel::Helpers
@@ -41,7 +41,7 @@ module SampleManifestExcel
     end
 
     def manifest_types=(manifest_types)
-      @manifest_types = manifest_types.with_indifferent_access.freeze
+      @manifest_types = ManifestTypeList.new(manifest_types).freeze
     end
 
     def loaded?
@@ -64,11 +64,22 @@ module SampleManifestExcel
       def initialize(columns, conditional_formattings, manifest_types)
         @all = ColumnList.new(columns, conditional_formattings).freeze
 
-        manifest_types.each do |key, column_names|
-          instance_variable_set "@#{key}", all.extract(column_names).freeze
+        manifest_types.each do |key, manifest_type|
+          extract = all.extract(manifest_type.columns).freeze
+          instance_variable_set "@#{key}", extract
           self.class_eval { attr_reader key }
+          self.manifest_types[key] = extract
         end
       end
+
+      def manifest_types
+        @manifest_types ||= {}
+      end
+
+      def find(key)
+        manifest_types[key] || manifest_types[key.to_s]
+      end
+
 
       def ==(other)
         return false unless other.is_a?(self.class)

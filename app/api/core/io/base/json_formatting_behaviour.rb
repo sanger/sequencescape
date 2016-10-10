@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Core::Io::Base::JsonFormattingBehaviour
   def self.extended(base)
@@ -9,7 +11,7 @@ module Core::Io::Base::JsonFormattingBehaviour
       extend ::Core::Io::Base::JsonFormattingBehaviour::Output
 
       class_attribute :attribute_to_json_field, :instance_writer => false
-      self.attribute_to_json_field =  {}
+      self.attribute_to_json_field = {}
       delegate :json_field_for, :to => 'self.class'
     end
   end
@@ -70,8 +72,8 @@ module Core::Io::Base::JsonFormattingBehaviour
     StringIO.new(mapping).each_line do |line|
       next if line.blank? or line =~ /^\s*#/
       match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
-      attribute_to_json.push([ match[1], match[3] ]) if (match[2] =~ /<?=>/)
-      json_to_attribute.push([ match[3], (match[2] =~ /<=>?/) ? match[1] : nil ])
+      attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)
+      json_to_attribute.push([match[3], (match[2] =~ /<=>?/) ? match[1] : nil])
     end
     yield(attribute_to_json, json_to_attribute)
   end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Studies::WorkflowsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -8,7 +10,7 @@ class Studies::WorkflowsController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :discover_study, :discover_workflow
 
-  before_action :setup_tabs, :only => [ :show, :show_summary ]
+  before_action :setup_tabs, :only => [:show, :show_summary]
 
   def setup_tabs
     @total_requests = compute_total_request(@study)
@@ -54,9 +56,9 @@ class Studies::WorkflowsController < ApplicationController
     params.each do |key, value|
       new_key = key.sub(/^amp;/, "")
       next if new_key == key
-      params[new_key]=value
+      params[new_key] = value
     end
-    page_params= { :page => params[:page] || 1, :per_page => params[:per_page] || 50 }
+    page_params = { :page => params[:page] || 1, :per_page => params[:per_page] || 50 }
 
     if request.xhr?
       @default_tab_label = "Assets progress"
@@ -69,15 +71,15 @@ class Studies::WorkflowsController < ApplicationController
         sample_ids      = @page_elements.map(&:id)
         render :partial => "sample_progress"
       when "Assets progress"
-        @asset_type = Aliquot::Receptacle.descendants.detect {|cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
+        @asset_type = Aliquot::Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
         @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
-        @page_elements= @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
+        @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
 
         @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)
         render :partial => "asset_progress"
       when "Summary"
-        @page_elements= @study.assets_through_requests.for_summary.paginate(page_params)
+        @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
         render :partial => "summary"
       else
@@ -97,7 +99,7 @@ class Studies::WorkflowsController < ApplicationController
         end
       end
     else
-      page_params[:summary]= params[:summary]
+      page_params[:summary] = params[:summary]
       redirect_to study_workflow_path(@study, @workflow, page_params)
     end
   end
@@ -112,20 +114,20 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   def compute_total_request(study)
-    total_requests = { }
-    report =  @study.total_requests_report
+    total_requests = {}
+    report = @study.total_requests_report
     @workflow.request_types.each do |rt|
-      total_requests[rt] = report[rt.id]||0
+      total_requests[rt] = report[rt.id] || 0
     end
     total_requests
   end
 
   def group_count(enumerable)
-    map = Hash.new { |hash, key| hash[key]= Hash.new 0 } # defining default value for nested hash
+    map = Hash.new { |hash, key| hash[key] = Hash.new 0 } # defining default value for nested hash
     enumerable.each do |e|
       groups = yield(e)
       groups.each do  |g_id, count|
-        map[g_id.to_i][e]= count
+        map[g_id.to_i][e] = count
       end
     end
     map
@@ -133,7 +135,7 @@ class Studies::WorkflowsController < ApplicationController
 
   private
   def discover_study
-    @study  = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 # Specialised implementation of the plate purpose for the initial plate types in the Pulldown pipelines:
 # WGS Covaris, SC Covaris, ISC Covaris.
@@ -21,6 +23,6 @@ class Pulldown::InitialPlatePurpose < PlatePurpose
     transfer_request_sti = [TransferRequest, *TransferRequest.descendants].map(&:name)
     Request.select("requests.*").
       joins("INNER JOIN requests AS asctf ON asctf.asset_id = requests.asset_id").
-      where(asctf:{target_asset_id:well_ids,sti_type:transfer_request_sti}).where.not(sti_type: transfer_request_sti)
+      where(asctf:{ target_asset_id:well_ids,sti_type:transfer_request_sti }).where.not(sti_type: transfer_request_sti)
   end
 end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 module PlatePurpose::Initial
   def self.included(base)
@@ -31,7 +33,7 @@ module PlatePurpose::Initial
 
   def generate_events_for(plate,orders,user)
     orders.each do |order_id|
-      BroadcastEvent::LibraryStart.create!(:seed=>plate,:user=>user,:properties=>{:order_id=>order_id})
+      BroadcastEvent::LibraryStart.create!(:seed => plate,:user => user,:properties => { :order_id => order_id })
     end
   end
   private :generate_events_for

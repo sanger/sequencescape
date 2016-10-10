@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class PlatesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -57,7 +59,7 @@ class PlatesController < ApplicationController
   def to_sample_tubes
     @locations = Location.all
     @barcode_printers = BarcodePrinter.all
-    @studies = Study.all.sort{ |a,b| a.name <=> b.name }
+    @studies = Study.all.sort { |a,b| a.name <=> b.name }
   end
 
   def create_sample_tubes
@@ -72,9 +74,9 @@ class PlatesController < ApplicationController
         # makes request properties partial show
         @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
         @current_user.save!
-        format.html { redirect_to(new_submission_path(:study_id=>asset_group.study.id)) }
-        format.xml  { render :xml  => asset_group, :status => :created}
-        format.json { render :json => asset_group, :status => :created}
+        format.html { redirect_to(new_submission_path(:study_id => asset_group.study.id)) }
+        format.xml  { render :xml  => asset_group, :status => :created }
+        format.json { render :json => asset_group, :status => :created }
       else
         flash[:error] = 'Failed to create sample tubes'
         format.html { redirect_to(to_sample_tubes_plates_path) }
@@ -95,5 +97,3 @@ class PlatesController < ApplicationController
   end
 
 end
-
-

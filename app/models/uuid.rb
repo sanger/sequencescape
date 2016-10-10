@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Uuid < ActiveRecord::Base
   module Uuidable
@@ -68,7 +70,7 @@ class Uuid < ActiveRecord::Base
       end
 
       def generate_missing_uuids
-        records_for_missing_uuids { |id| Uuid.create!(:resouce_type=>self.name, :resource_id=>id, :external_id=>Uuid.generate_uuid ) }
+        records_for_missing_uuids { |id| Uuid.create!(:resouce_type => self.name, :resource_id => id, :external_id => Uuid.generate_uuid ) }
       end
       private :generate_missing_uuids
 
@@ -77,7 +79,7 @@ class Uuid < ActiveRecord::Base
           SELECT r.id AS id
           FROM #{self.quoted_table_name} r
           LEFT OUTER JOIN #{Uuid.quoted_table_name} u
-          ON r.id=u.resource_id AND u.resource_type="#{self.to_s}"
+          ON r.id=u.resource_id AND u.resource_type="#{self}"
           WHERE u.id IS NULL
         }).map { |r| block.call(r['id']) }
       end
@@ -159,7 +161,7 @@ class Uuid < ActiveRecord::Base
   def self.generate_uuids!(resource_type, resource_ids)
     return if resource_ids.empty?
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
-    uuids_to_create = ids_missing_uuids.map {|id| create!(:resource_type => resource_type, :resource_id => id, :external_id => self.generate_uuid) }
+    uuids_to_create = ids_missing_uuids.map { |id| create!(:resource_type => resource_type, :resource_id => id, :external_id => self.generate_uuid) }
     #Uuid.import uuids_to_create unless uuids_to_create.empty?
 
     nil

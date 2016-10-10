@@ -1,19 +1,21 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 module BootstrapHelper
 
   def panel(type=:default,options={},&block)
-    bs_custom_panel(type,:div,{:class=>"panel-body"},options,&block)
+    bs_custom_panel(type,:div,{ :class => "panel-body" },options,&block)
   end
 
   def list_panel(type=:default,options={},&block)
-    bs_custom_panel(type,:ul,{:class=>"list-group"},options,&block)
+    bs_custom_panel(type,:ul,{ :class => "list-group" },options,&block)
   end
 
   def link_panel(type=:default,options={},&block)
-    bs_custom_panel(type,:div,{:class=>"list-group"},options,&block)
+    bs_custom_panel(type,:div,{ :class => "list-group" },options,&block)
   end
 
   def bs_custom_panel(type,body_type,body_options,options,&block)
@@ -22,8 +24,8 @@ module BootstrapHelper
     options[:class] << " panel panel-#{type}"
     content_tag(:div,options) do
       out = String.new.html_safe
-      out << content_tag(:div,:class=>"panel-heading") do
-        content_tag(:h3,title,:class=>"panel-title")
+      out << content_tag(:div,:class => "panel-heading") do
+        content_tag(:h3,title,:class => "panel-title")
       end unless title.nil?
       out << content_tag(body_type,body_options,&block)
     end
@@ -55,16 +57,16 @@ module BootstrapHelper
   # </div>
   def summary(type=:default,options={},&block)
     bs_type = bootstrapify(type.to_s)
-    title = options.delete(:title)||'Summary'
-    size = options.delete(:size)||'6'
+    title = options.delete(:title) || 'Summary'
+    size = options.delete(:size) || '6'
     options[:class] ||= String.new
     options[:class] << " panel panel-#{bs_type}"
-    content_tag(:div, :class=>"col-md-#{size}") do
+    content_tag(:div, :class => "col-md-#{size}") do
       content_tag(:div,options) do
-        content_tag(:div,:class=>"panel-heading") do
-          content_tag(:h3,title,:class=>"panel-title")
+        content_tag(:div,:class => "panel-heading") do
+          content_tag(:h3,title,:class => "panel-title")
         end <<
-        content_tag(:table,:class=>"table table-summary") do
+        content_tag(:table,:class => "table table-summary") do
           String.new.html_safe.tap do |rows|
             yield.each do |key,value|
               rows << content_tag(:tr) do
@@ -81,7 +83,7 @@ module BootstrapHelper
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
   def page_title(title,subtitle=nil)
-    content_tag(:div, :class=>"page-header") do
+    content_tag(:div, :class => "page-header") do
       content_tag(:h1) do
         core = escape_once(title.titleize).html_safe
         core << " " << content_tag(:small,subtitle) if subtitle.present?
@@ -96,11 +98,11 @@ module BootstrapHelper
 
   #<div class="col-md-size form-group"></div>
   def form_group(size=12,&block)
-    content_tag(:div,:class=>"form-group col-md-#{size}",&block)
+    content_tag(:div,:class => "form-group col-md-#{size}",&block)
   end
 
   def bs_column(size=6,screen='md',&block)
-    content_tag(:div,:class=>"col-#{screen}-#{size}",&block)
+    content_tag(:div,:class => "col-#{screen}-#{size}",&block)
   end
 
   # def progress_bar(percent = 100, hidden=true, identifier = "loading")
@@ -127,13 +129,13 @@ module BootstrapHelper
 
   def render_section(form,field_name,sections,field)
     form_group do
-      fg = content_tag(:div,:class=>"col-md-4") do
+      fg = content_tag(:div,:class => "col-md-4") do
         label = form.label(field_name, sections.label, sections.label_options)
         label << content_tag(:br)
         label << content_tag(:span, sections.edit_info, :class => 'property_edit_info') if sections.edit_info
       end
-      fg << content_tag(:div,field,:class=>'col-md-5')
-      fg << content_tag(:div,:class=>'col-md-3') do
+      fg << content_tag(:div,field,:class => 'col-md-5')
+      fg << content_tag(:div,:class => 'col-md-3') do
         help_text("#{sections.label} help text", field.hash) do
           raw(sections.help)
         end if sections.help.present?
@@ -146,14 +148,14 @@ module BootstrapHelper
       fg = bs_column(4,'md') { label }
       fg << bs_column(5,'md') { field }
       fg << bs_column(3,'md') do
-        help_text("#{friendly_label} help text") { raw(help)}
+        help_text("#{friendly_label} help text") { raw(help) }
       end if help
       fg
     end
   end
 
   def bs_select(*args)
-    hashes = args[-2,2].select {|arg| arg.respond_to?(:keys) }.count
+    hashes = args[-2,2].select { |arg| arg.respond_to?(:keys) }.count
     (2 - hashes).times do
       args << {}
     end
@@ -166,10 +168,10 @@ module BootstrapHelper
   def bootstrapify(level)
     {
       'notice' => 'success','error' => 'danger',
-      'pending' => 'muted', 'started'=> 'primary',
+      'pending' => 'muted', 'started' => 'primary',
       'passed' => 'success', 'failed' => 'danger',
       'cancelled' => 'warning'
-    }[level]||level
+    }[level] || level
   end
 
 
@@ -182,7 +184,7 @@ module BootstrapHelper
       'pending' => 'warning',
       'passed' => 'success',
       'started' => 'primary'
-    }[state]||'default'
+    }[state] || 'default'
   end
 
   def bootstrapify_batch_state(state)
@@ -193,7 +195,7 @@ module BootstrapHelper
       'pending' => 'warning',
       'released' => 'success',
       'started' => 'primary'
-    }[state]||'default'
+    }[state] || 'default'
   end
 
 
@@ -202,7 +204,7 @@ module BootstrapHelper
       'pending' => 'warning',
       'active'  => 'success',
       'inactive' => 'danger'
-    }[state.downcase]||'default'
+    }[state.downcase] || 'default'
   end
 
   def bootstrapify_submission_state(state)
@@ -213,7 +215,7 @@ module BootstrapHelper
       'pending' => 'warning',
       'processing' => 'primary',
       'ready' => 'success'
-    }[state]||'default'
+    }[state] || 'default'
   end
 
 

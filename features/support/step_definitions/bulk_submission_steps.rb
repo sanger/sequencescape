@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 def upload_submission_spreadsheet(name)
   attach_file("bulk_submission_spreadsheet", File.join(Rails.root,'features', 'submission', 'csv', "#{name}.csv"))
@@ -98,9 +100,9 @@ Then /^there should be an order with the gigabases expected set to "(.*?)"$/ do 
 end
 
 Then /^the last submission should contain two assets$/ do
-  assert_equal 2, Submission.last.orders.reduce(0) {|total,order| total + order.assets.count }
+  assert_equal 2, Submission.last.orders.reduce(0) { |total,order| total + order.assets.count }
 end
 
 Then /^the last submission should contain the tube with barcode "(.*?)"$/ do |barcode|
-  assert Submission.last.orders.reduce([]) {|assets,order| assets.concat(order.assets) }.detect {|a| a.barcode == barcode}
+  assert Submission.last.orders.reduce([]) { |assets,order| assets.concat(order.assets) }.detect { |a| a.barcode == barcode }
 end

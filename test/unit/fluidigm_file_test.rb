@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 require 'csv'
@@ -22,16 +24,16 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
       @well_maps = {
         'S06' => {
-          :markers => [ XY,XY,XY ],
+          :markers => [XY,XY,XY],
           :count   => 94
         },
         'S04' => {
-          :markers=> [ NC, XX, XX ],
-          :count=>   92
+          :markers => [NC, XX, XX],
+          :count => 92
         },
         'S43' => {
-          :markers=> [ XX, XX, XX ],
-          :count=>   94
+          :markers => [XX, XX, XX],
+          :count => 94
         }
       }
     end
@@ -56,14 +58,14 @@ class FluidigmFileTest < ActiveSupport::TestCase
         next if @well_maps[well.description].nil?
         assert_equal @well_maps[well.description][:markers].sort, well.gender_markers.sort
         assert_equal @well_maps[well.description][:count], well.count
-        checked+=1
+        checked += 1
       end
       assert_equal @well_maps.size, checked
     end
 
     should "let us grab all well locations" do
       assert_equal 95, @fluidigm.well_locations.count
-      @fluidigm.well_locations.each {|l| assert l.is_a?(String)}
+      @fluidigm.well_locations.each { |l| assert l.is_a?(String) }
     end
 
     should "let us fetch individual wells" do

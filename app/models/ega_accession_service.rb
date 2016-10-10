@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class  EgaAccessionService < AccessionService
   def accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type)
@@ -32,7 +34,7 @@ class  EgaAccessionService < AccessionService
   end
 
   def submit_policy_for_user(study, user)
-    policy =  Accessionable::Policy.new(study)
+    policy = Accessionable::Policy.new(study)
     submit(user, policy)
   end
 

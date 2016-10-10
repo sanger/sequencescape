@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'lib/eventful_record'
 require 'lib/external_properties'
@@ -29,7 +31,7 @@ class Asset < ActiveRecord::Base
   end
   include InstanceMethods
 
-  class VolumeError< StandardError
+  class VolumeError < StandardError
   end
 
   def summary_hash
@@ -59,14 +61,14 @@ class Asset < ActiveRecord::Base
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
-  scope :where_is_a?,     ->(clazz) { where( sti_type: [ clazz, *clazz.descendants ].map(&:name) ) }
-  scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
+  scope :where_is_a?,     ->(clazz) { where( sti_type: [clazz, *clazz.descendants].map(&:name) ) }
+  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
 
   #Orders
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
 
-  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(:requests => { :sti_type => [ t, *t.descendants ].map(&:name) }) }
+  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(:requests => { :sti_type => [t, *t.descendants].map(&:name) }) }
 
   extend ContainerAssociation::Extension
 
@@ -106,18 +108,18 @@ class Asset < ActiveRecord::Base
 
   # All studies related to this asset
   def related_studies
-    (orders.map(&:study)+studies).compact.uniq
+    (orders.map(&:study) + studies).compact.uniq
   end
   # Named scope for search by query string behaviour
  scope :for_search_query, ->(query,with_includes) {
 
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
-    arguments = {:name => "%#{query}%"}
+    arguments = { :name => "%#{query}%" }
 
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
     if /\A\d+\z/ === query
       search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
-      arguments.merge!({:id => query.to_i, :barcode => query.to_s})
+      arguments.merge!({ :id => query.to_i, :barcode => query.to_s })
     end
 
     # If We're a Sanger Human barcode
@@ -125,7 +127,7 @@ class Asset < ActiveRecord::Base
       prefix_id = BarcodePrefix.find_by_prefix(match[1]).try(:id)
       number = match[2]
       search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
-      arguments.merge!({:barcode => number, :prefix_id => prefix_id})
+      arguments.merge!({ :barcode => number, :prefix_id => prefix_id })
     end
 
     search << ')'
@@ -240,7 +242,7 @@ class Asset < ActiveRecord::Base
     if asset_group.study
       wells.each do |well|
         next unless well.sample
-        well.sample.studies<< asset_group.study
+        well.sample.studies << asset_group.study
         well.sample.save!
       end
     end
@@ -295,21 +297,21 @@ class Asset < ActiveRecord::Base
     nil
   end
 
-  QC_STATES =  [
-    [ 'passed',  'pass' ],
-    [ 'failed',  'fail' ],
-    [ 'pending', 'pending' ],
-    [  nil, '']
+  QC_STATES = [
+    ['passed',  'pass'],
+    ['failed',  'fail'],
+    ['pending', 'pending'],
+    [nil, '']
   ]
 
   QC_STATES.reject { |k,v| k.nil? }.each do |state, qc_state|
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def qc_#{qc_state}
         self.qc_state = #{state.inspect}
         self.save!
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def compatible_qc_state
@@ -333,7 +335,7 @@ class Asset < ActiveRecord::Base
       when state == 'passed'  then self.external_release = true
       when state == 'pending' then self # Do nothing
       when state.nil?         then self # TODO: Ignore for the moment, correct later
-      when [ 'scanned_into_lab' ].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
+      when ['scanned_into_lab'].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
       else raise StandardError, "Invalid external release state #{state.inspect}"
       end
     end
@@ -371,22 +373,6 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  def self.print_assets(assets, barcode_printer)
-    printables = []
-    assets.each do |asset|
-      printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => asset.tube_name, :suffix => "", :prefix => asset.prefix })
-    end
-    begin
-      unless printables.empty?
-        barcode_printer.print_labels(printables)
-      end
-    rescue
-      return false
-    end
-
-    true
-  end
-
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
   # to their appropriate query conditions (as though they operated on their own) and then we join
@@ -402,14 +388,14 @@ class Asset < ActiveRecord::Base
         if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
           { :query => 'FALSE' }
         else
-          { :query => '(barcode=? AND barcode_prefix_id=?)', :parameters => [ barcode_number, barcode_prefix.id ] }
+          { :query => '(barcode=? AND barcode_prefix_id=?)', :parameters => [barcode_number, barcode_prefix.id] }
         end
       when /^\d{10}$/ # A Fluidigm barcode
-        { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query=>'(pmmb.fluidigm_barcode=?)', :parameters => source_barcode.to_s }
+        { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query => '(pmmb.fluidigm_barcode=?)', :parameters => source_barcode.to_s }
       else
         { :query => 'FALSE' }
       end
-    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins=>[] }) do |building, current|
+    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins => [] }) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]
@@ -417,7 +403,7 @@ class Asset < ActiveRecord::Base
       end
     end
 
-      where([ query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact ]).
+      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact]).
       joins(query_details[:joins].compact.uniq)
   }
 
@@ -483,7 +469,7 @@ class Asset < ActiveRecord::Base
   def transfer(max_transfer_volume)
 
     transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
-    raise VolumeError, "not enough volume left" if transfer_volume <=0
+    raise VolumeError, "not enough volume left" if transfer_volume <= 0
 
     self.class.create!(:name => self.name) do |new_asset|
       new_asset.aliquots = self.aliquots.map(&:dup)

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_ids$/ do |study_name|
   study = Study.find_by_name(study_name)
@@ -26,7 +28,7 @@ end
 
 
 Then /^there should be no submissions to be processed$/ do
-  step %Q{there should be no delayed jobs to be processed}
+  step "there should be no delayed jobs to be processed"
 end
 
 Then /^the submission with UUID "([^\"]+)" is ready$/ do |uuid|
@@ -87,8 +89,8 @@ SENSIBLE_DEFAULTS_HISEQ = SENSIBLE_DEFAULTS_FOR_SEQUENCING.merge(
 )
 SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   # Non-HiSeq defaults
-  "Library creation"             => SENSIBLE_DEFAULTS_STANDARD,
-  "Illumina-C Library creation"             => SENSIBLE_DEFAULTS_STANDARD,
+  "Library creation" => SENSIBLE_DEFAULTS_STANDARD,
+  "Illumina-C Library creation" => SENSIBLE_DEFAULTS_STANDARD,
   "Multiplexed library creation" => SENSIBLE_DEFAULTS_STANDARD,
   "Pulldown library creation"    => SENSIBLE_DEFAULTS_STANDARD,
   "Single ended sequencing"      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
@@ -152,13 +154,13 @@ end
 
 Given /^the sample tubes are part of submission "([^\"]*)"$/ do |submission_uuid|
   submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
-  Asset.all.map{ |asset| submission.orders.first.assets << asset }
+  Asset.all.map { |asset| submission.orders.first.assets << asset }
 end
 
 Then /^I create the order and submit the submission/ do
-  step %q{I choose "build_submission_yes"}
-  step %q{I press "Create Order"}
-  step %q{I press "Submit"}
+  step 'I choose "build_submission_yes"'
+  step 'I press "Create Order"'
+  step 'I press "Submit"'
 end
 
 
@@ -172,17 +174,17 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
     case k
     when /^multiplier#(\d+)/
       multiplier_hash = request_options[:multiplier]
-      multiplier_hash = request_options[:multiplier]={} unless multiplier_hash
-      index = $1.to_i-1
-      multiplier_hash[request_type_ids[index].to_s]=v.to_i
+      multiplier_hash = request_options[:multiplier] = {} unless multiplier_hash
+      index = $1.to_i - 1
+      multiplier_hash[request_type_ids[index].to_s] = v.to_i
     else
       key = k.underscore.gsub(/\W+/,"_")
-      request_options[key]=v
+      request_options[key] = v
     end
   end
 
   Submission.build!(
-    :template=>submission_template,
+    :template => submission_template,
     :project => Project.find_by_name(params['Project']),
     :study => Study.find_by_name(params['Study']),
     :asset_group => AssetGroup.find_by_name(params['Asset Group']),
@@ -195,9 +197,9 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
 end
 
 Then /^the last submission should have a priority of (\d+)$/ do |priority|
-  Submission.last.update_attributes!(:priority=>priority)
+  Submission.last.update_attributes!(:priority => priority)
 end
 
 Given /^all the requests in the last submission are cancelled$/ do
-  Submission.last.requests.each {|r| r.update_attributes!(:state=>'cancelled') }
+  Submission.last.requests.each { |r| r.update_attributes!(:state => 'cancelled') }
 end

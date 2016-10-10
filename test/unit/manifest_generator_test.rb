@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -82,7 +84,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           @well.save
         end
         should "return inputted volume" do
-          volume= ManifestGenerator.well_volume(@well)
+          volume = ManifestGenerator.well_volume(@well)
           assert_equal 567,volume
           assert volume.is_a?(Integer)
         end
@@ -193,7 +195,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           {
             'M' => 'Male',
             'F' => 'Female',
-            'U' => [ 'not applicable', 'mixed', 'hermaphrodite', nil ]
+            'U' => ['not applicable', 'mixed', 'hermaphrodite', nil]
           }.each do |expected, genders|
             Array(genders).each do |gender|
               should "see #{gender.inspect} as #{expected.inspect}" do

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015 Genome Research Ltd.
 
 module SampleManifest::Headers
 
@@ -9,13 +11,13 @@ module SampleManifest::Headers
   end
 
   def self.renamed(h)
-    RENAMED[h]||h
+    RENAMED[h] || h
   end
 
   # If a field name changes (Such as when it changes from optional to required)
   # remap it here to preserve compatibility with older manifests
   RENAMED = {
-    'DONOR ID (required for cancer samples)'=>'DONOR ID (required for EGA)',
+    'DONOR ID (required for cancer samples)' => 'DONOR ID (required for EGA)',
     'PHENOTYPE' => 'PHENOTYPE (required for EGA)'
   }
 

@@ -1,14 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 
 class AssetsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  include BarcodePrintersController::Print
-   before_action :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
+  before_action :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
   def index
     @assets_without_requests = []
@@ -30,7 +31,7 @@ class AssetsController < ApplicationController
           format.xml  { render :xml => Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml  { render :xml => ["relations" => {"parents" => @asset.parents, "children" => @asset.children}].to_xml }
+        format.xml  { render :xml => ["relations" => { "parents" => @asset.parents, "children" => @asset.children }].to_xml }
       end
     end
   end
@@ -104,7 +105,7 @@ class AssetsController < ApplicationController
       ActiveRecord::Base.transaction do
         @assets = (1..count).map do |n|
           asset = asset_class.new(params[:asset]) do |asset|
-            asset.name += " ##{n}" if count !=1
+            asset.name += " ##{n}" if count != 1
           end
           # from asset
           if parent.present?
@@ -153,7 +154,7 @@ class AssetsController < ApplicationController
     respond_to do |format|
       if saved
         flash[:notice] = 'Asset was successfully created.'
-        format.html { render :action => :create}
+        format.html { render :action => :create }
         format.xml  { render :xml => @assets, :status => :created, :location => assets_url(@assets) }
         format.json { render :json => @assets, :status => :created, :location => assets_url(@assets) }
       else
@@ -174,7 +175,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if (@asset.update_attributes(params[:asset]) &&  @asset.update_attributes(params[:lane]))
+      if (@asset.update_attributes(params[:asset]) && @asset.update_attributes(params[:lane]))
         flash[:notice] = 'Asset was successfully updated.'
         unless params[:lab_view]
           format.html { redirect_to(:action => :show, :id => @asset.id) }
@@ -199,7 +200,7 @@ class AssetsController < ApplicationController
   end
 
   def summary
-    @summary = UiHelper::Summary.new({:per_page => 25, :page => params[:page]})
+    @summary = UiHelper::Summary.new({ :per_page => 25, :page => params[:page] })
     @summary.load_item(@asset)
   end
 
@@ -228,18 +229,35 @@ class AssetsController < ApplicationController
   end
 
   def print_labels
-    print_asset_labels(new_asset_url, new_asset_url)
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: params[:printables])
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
+
+    redirect_to new_asset_url
   end
 
   def print_assets
-    params[:printables]={@asset =>1}
-    return print_asset_labels(asset_url(@asset), asset_url(@asset))
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: @asset)
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
+    redirect_to asset_url(@asset)
+
   end
 
   def show_plate
   end
 
-  before_action :prepare_asset, :only => [ :new_request, :create_request ]
+  before_action :prepare_asset, :only => [:new_request, :create_request]
 
   def prepare_asset
     @asset = Asset.find(params[:id])
@@ -247,7 +265,7 @@ class AssetsController < ApplicationController
   private :prepare_asset
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, {:study_id => @study.try(:id), :project_id => @project.try(:id), :request_type_id => @request_type.try(:id)})
+    new_request_asset_path(@asset, { :study_id => @study.try(:id), :project_id => @project.try(:id), :request_type_id => @request_type.try(:id) })
   end
   private :new_request_for_current_asset
 
@@ -269,8 +287,8 @@ class AssetsController < ApplicationController
       :project         => @project,
       :workflow        => @request_type.workflow,
       :user            => current_user,
-      :assets          => [ @asset ],
-      :request_types   => [ @request_type.id ],
+      :assets          => [@asset],
+      :request_types   => [@request_type.id],
       :request_options => request_options,
       :comments        => params[:comments],
       :priority        => params[:priority]

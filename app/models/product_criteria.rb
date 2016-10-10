@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 class ProductCriteria < ActiveRecord::Base
@@ -11,7 +13,7 @@ class ProductCriteria < ActiveRecord::Base
   # By default rails will try and name the table 'product_criterias'
   # We don't use the singular 'ProductCriterion' as the class name
   # as a single record may define multiple criteria.
-  self.table_name=('product_criteria')
+  self.table_name = ('product_criteria')
 
   belongs_to :product
   validates_presence_of :product, :stage, :behaviour
@@ -21,8 +23,8 @@ class ProductCriteria < ActiveRecord::Base
 
   serialize :configuration
 
-  scope :for_stage, ->(stage) { where(:stage=>stage) }
-  scope :stock, ->()          { where(:stage=>STAGE_STOCK) }
+  scope :for_stage, ->(stage) { where(:stage => stage) }
+  scope :stock, ->()          { where(:stage => STAGE_STOCK) }
   scope :older_than, ->(id)   { wheere(['id < ?',id]) }
 
   before_create :set_version_number

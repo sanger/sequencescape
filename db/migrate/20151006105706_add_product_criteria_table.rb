@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class AddProductCriteriaTable < ActiveRecord::Migration
 
@@ -18,7 +20,7 @@ class AddProductCriteriaTable < ActiveRecord::Migration
     end
 
     add_constraint('product_criteria','products')
-    add_constraint('qc_reports','product_criteria',:as=>'product_criteria_id')
+    add_constraint('qc_reports','product_criteria',:as => 'product_criteria_id')
   end
 
   def self.down

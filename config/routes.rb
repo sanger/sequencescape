@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 Sequencescape::Application.routes.draw do
   root to:'homes#show'
@@ -87,7 +89,7 @@ Sequencescape::Application.routes.draw do
     end
 
   end
-  resources :uuids, :only => [ :show ]
+  resources :uuids, :only => [:show]
 
   match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch, :via => :post
   match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch, :via => :post
@@ -306,11 +308,13 @@ Sequencescape::Application.routes.draw do
 
     end
 
-    resources :roles, only: [:index,:show,:new,:create]
-
-    scope :module => :roles do
+    resources :roles, only: [:index,:show,:new,:create] do
       resources :users, only: :index
     end
+
+    # scope :module => :roles do
+    #   resources :users, only: :index
+    # end
 
     resources :robots do
       resources :robot_properties
@@ -428,7 +432,7 @@ Sequencescape::Application.routes.draw do
 
   resources :families
 
-  resources :tag_groups, :excpet=>[:destroy] do
+  resources :tag_groups, :excpet => [:destroy] do
     resources :tags, :except => [:destroy, :index, :create, :new, :edit]
   end
 

@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 module RequestClassDeprecator
 
   class Request < ActiveRecord::Base
@@ -26,7 +27,7 @@ module RequestClassDeprecator
 
         state_changes.each do |from_state,to_state|
           say "Moving #{rt.name} from #{from_state} to #{to_state}", true
-          mig =rt_requests.where(state:from_state).update_all(state:to_state)
+          mig = rt_requests.where(state:from_state).update_all(state:to_state)
           say "Moved: #{mig}", true
         end
 

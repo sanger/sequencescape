@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class AssetGroup < ActiveRecord::Base
 
@@ -18,7 +20,7 @@ class AssetGroup < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
   validates :study, :presence => true
 
- scope :for_search_query, ->(query,with_includes) { where([ 'name LIKE ?', "%#{query}%" ]) }
+ scope :for_search_query, ->(query,with_includes) { where(['name LIKE ?', "%#{query}%"]) }
 
   def all_samples_have_accession_numbers?
     unaccessioned_samples.count == 0
@@ -26,7 +28,7 @@ class AssetGroup < ActiveRecord::Base
 
   def unaccessioned_samples
     Sample.joins(:aliquots,:sample_metadata).
-      where(aliquots:{receptacle_id:assets.map(&:id)}, sample_metadata: { sample_ebi_accession_number: nil})
+      where(aliquots:{ receptacle_id:assets.map(&:id) }, sample_metadata: { sample_ebi_accession_number: nil })
   end
 
   def self.find_or_create_asset_group(new_assets_name, study)

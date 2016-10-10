@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class AmqpObserver < ActiveRecord::Observer
   # Observe not only the records but their metadata too, otherwise we may miss changes.
@@ -20,8 +22,8 @@ class AmqpObserver < ActiveRecord::Observer
   # Ensure we capture records being saved as well as deleted.
   #
   # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
-    class_eval(%Q{def after_save(record) ; self << record ; true ; end})
-    class_eval(%Q{def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end})
+    class_eval("def after_save(record) ; self << record ; true ; end")
+    class_eval("def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end")
 
   # To prevent ActiveRecord::Observer doing something insane when we test this, we pull
   # out the implementation in a module (which can be tested) and leave the rest behind.
@@ -111,7 +113,7 @@ class AmqpObserver < ActiveRecord::Observer
       def <<(record)
         self.tap do
           determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
-            pair = [ record_to_broadcast.class, record_to_broadcast.id ]
+            pair = [record_to_broadcast.class, record_to_broadcast.id]
             if record.destroyed?
               @updated.delete(pair)
               @deleted << record_for_deletion if record_for_deletion.present?
@@ -156,7 +158,7 @@ class AmqpObserver < ActiveRecord::Observer
     def publish_to(exchange,record)
       exchange.publish(
         MultiJson.dump(record),
-        :key        => record.routing_key||"#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
+        :key        => record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
         :persistent => configatron.amqp.persistent
       )
     end

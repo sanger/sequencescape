@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015,2016 Genome Research Ltd.
 
 class SampleCacheSweeper < ActiveRecord::Observer
   include XmlCacheHelper
@@ -17,9 +19,9 @@ class SampleCacheSweeper < ActiveRecord::Observer
   # a JOIN against their table, considering we go through a JOIN table anyway.
   def through(record, &block)
     model, conditions = case
-      when record.is_a?(StudySample)         then [ 'study',      query_conditions_for(record)          ]
-      when record.is_a?(Aliquot)             then [ 'receptacle', query_conditions_for(record)          ]
-      when record.is_a?(Aliquot::Receptacle) then [ 'receptacle', "aliquots.receptacle_id=#{record.id}" ]
+      when record.is_a?(StudySample)         then ['study',      query_conditions_for(record)]
+      when record.is_a?(Aliquot)             then ['receptacle', query_conditions_for(record)]
+      when record.is_a?(Aliquot::Receptacle) then ['receptacle', "aliquots.receptacle_id=#{record.id}"]
     end
     yield(Array(THROUGH_JOINS[model]), conditions)
   end

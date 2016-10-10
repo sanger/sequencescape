@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class AliquotIndexer
 
@@ -38,7 +40,7 @@ class AliquotIndexer
   end
 
   def aliquots
-    @aliquots ||= lane.aliquots.sorted_for_indexing.reject {|a| a.untagged? }
+    @aliquots ||= lane.aliquots.sorted_for_indexing.reject { |a| a.untagged? }
   end
 
   def next_index
@@ -48,7 +50,7 @@ class AliquotIndexer
   end
 
   def index
-    @lane.aliquot_indicies.build(aliquots.each_with_index.map {|a,i| {:aliquot=>a, :aliquot_index => next_index } })
+    @lane.aliquot_indicies.build(aliquots.each_with_index.map { |a,i| { :aliquot => a, :aliquot_index => next_index } })
     @lane.save
   end
 end

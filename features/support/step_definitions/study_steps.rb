@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_name,property_name,value|
   study = Study.first(:conditions => { :name => study_name }) or raise StandardError, "Study '#{ study_name }' does not exist"
@@ -36,27 +38,27 @@ Given /^study "([^\"]*)" has samples registered$/ do |study|
   user = User.find_by_login 'user'
   new_sample_group = FactoryGirl.create :sample_group, :name => "new_sample_group", :user => user, :study => proj
   samples = {
-    "0"=>{
-      "name"=>"SUPPLIER SAMPLE NAME",
-      "sample_metadata_attributes"=>{
-        "organism"=>"COHORT",
-        "gc_content"=>"Neutral",
-        "scientific_rationale"=>"GEOGRAPHICAL REGION",
-        "concentration"=>"COUNTRY OF ORIGIN"
+    "0" => {
+      "name" => "SUPPLIER SAMPLE NAME",
+      "sample_metadata_attributes" => {
+        "organism" => "COHORT",
+        "gc_content" => "Neutral",
+        "scientific_rationale" => "GEOGRAPHICAL REGION",
+        "concentration" => "COUNTRY OF ORIGIN"
       }
     },
-    "1"=>{
-      "name"=>"Sample_987654",
-      "sample_metadata_attributes"=>{
-        "organism"=>"BSP",
-        "gc_content"=>"Neutral",
-        "scientific_rationale"=>"north ",
-        "concentration"=>"123456"
+    "1" => {
+      "name" => "Sample_987654",
+      "sample_metadata_attributes" => {
+        "organism" => "BSP",
+        "gc_content" => "Neutral",
+        "scientific_rationale" => "north ",
+        "concentration" => "123456"
       }
     }
   }
   sample_registrar = SampleRegistrar.new
-  sample_registrar.create({"samples" => samples, "study_id" => proj.id, "sample_group" => {"id" => new_sample_group.id.to_s}, "current_user" => user})
+  sample_registrar.create({ "samples" => samples, "study_id" => proj.id, "sample_group" => { "id" => new_sample_group.id.to_s }, "current_user" => user })
 end
 
 Given /^study "([^\"]*)" has assets registered$/ do |study|
@@ -149,7 +151,7 @@ end
 Given /^the study "([^\"]+)" belongs to the program "([^\"]*)"$/ do |study_name, program_name|
   study = Study.find_by_name(study_name) or raise StandardError, "There appears to be no study named '#{study_name }'"
   program = Program.find_by_name(program_name) or raise StandardError, "Program not valid: '#{program_name}'"
-  study.study_metadata.program=program
+  study.study_metadata.program = program
   study.save!
 end
 
@@ -178,7 +180,7 @@ end
 def GivenFacultySponsor(attribute, regexp)
   Given(regexp) do |name,value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
-    faculty_sponsor = FacultySponsor.create!({:name => value})
+    faculty_sponsor = FacultySponsor.create!({ :name => value })
     study.study_metadata.send(:"#{ attribute }=", faculty_sponsor)
     study.save!
   end
@@ -221,7 +223,7 @@ end
 
 Given /^the study "([^\"]*)" has the following contacts$/ do |study, table|
   table.hashes.each do |hash|
-    step 'user "'+hash['login']+'" is a "'+hash['role']+'" of study "'+study+'"'
+    step 'user "' + hash['login'] + '" is a "' + hash['role'] + '" of study "' + study + '"'
   end
 end
 
@@ -327,7 +329,7 @@ Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, ab
   assert_not_nil study.abbreviation.match(Regexp.new(abbreviation_regex))
 end
 When /^I get the XML accession for the study *"([^\"]+)"$/ do |name|
-  study= Study.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  study = Study.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
   visit(url_for(:controller => 'studies', :action => 'show_accession', :id => study.id, :format => :xml))
 end
 
@@ -349,19 +351,19 @@ Then /^I should exactly see "([^"]*)"$/ do |text|
 end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|
- type = {"dac" => "DAC", "policy" => "Policy", "array express" => ""}.fetch(type, type)
+ type = { "dac" => "DAC", "policy" => "Policy", "array express" => "" }.fetch(type, type)
  step %Q{I am on the workflow page for study "#{study_name}"}
  step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, " ")
 end
 
 When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
  step %Q{I am on the workflow page for study "#{study_name}"}
- step(%Q{I follow "Generate Accession Number"})
+ step('I follow "Generate Accession Number"')
 end
 
 When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
  step %Q{I am on the workflow page for study "#{study_name}"}
- step(%Q{I follow "Update EBI Study data"})
+ step('I follow "Update EBI Study data"')
 end
 
 Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
@@ -370,7 +372,7 @@ Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
 end
 
 Given /^the study "([^\"]+)" has a valid dac$/ do |study_name|
-  step(%Q{user "dac" exists})
+  step('user "dac" exists')
   step(%Q{user "dac" is an "Data Access Contact" of study "#{study_name}"})
 end
 
@@ -405,13 +407,13 @@ Given /^study "([^"]*)" has an ENA project ID of "([^"]*)"$/ do |study_name, ena
 end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
-  step(%Q{I am on the homepage})
-  step(%Q{I follow "Create Study"})
+  step("I am on the homepage")
+  step('I follow "Create Study"')
   step(%Q{I fill in "Study name" with "#{study_name}"})
-  step(%Q{I select "Not suitable for alignment" from "Reference genome"})
-  step(%Q{I fill in "Study description" with "some description"})
+  step('I select "Not suitable for alignment" from "Reference genome"')
+  step('I fill in "Study description" with "some description"')
   step(%Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"})
-  step(%Q{I press "Create"})
+  step('I press "Create"')
 end
 
 
@@ -441,6 +443,5 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
 end
 
 Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
-  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group=>dag)
+  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group => dag)
 end
-

@@ -1,12 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
     @robots = Robot.all
     set_plate_purpose_options(task)
-    suitable_sizes = @plate_purpose_options.map {|o| o[1] }.uniq
+    suitable_sizes = @plate_purpose_options.map { |o| o[1] }.uniq
     if (@batch.pipeline.control_request_type.nil?)
       @plate_templates = PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
     else
@@ -35,7 +37,7 @@ module Tasks::PlateTemplateHandler
 
   def parse_uploaded_spreadsheet_layout(layout_data,plate_size)
     (Hash.new { |h,k| h[k] = {} }).tap do |parsed_plates|
-      CSV.parse(layout_data, :headers=>:first_row) do |row|
+      CSV.parse(layout_data, :headers => :first_row) do |row|
         parse_spreadsheet_row(plate_size, row["Request ID"],row["Sample Name"],row["Plate"],row["Destination Well"]) do |plate_key, request_id, location|
           parsed_plates[plate_key][location.column_order] = [location,request_id]
         end
@@ -66,14 +68,14 @@ module Tasks::PlateTemplateHandler
       end
     end
 
-    [ plates, plates.map { |_, barcode, _| barcode }.uniq ]
+    [plates, plates.map { |_, barcode, _| barcode }.uniq]
   end
   private :map_parsed_spreadsheet_to_plate
 
   def self.generate_spreadsheet(batch)
     CSV.generate(:row_sep => "\r\n") do |csv|
       csv << ["Request ID","Sample Name","Plate","Destination Well"]
-      batch.requests.each{ |r| csv << [r.id,r.asset.sample.name,"",""]}
+      batch.requests.each { |r| csv << [r.id,r.asset.sample.name,"",""] }
     end
   end
 end

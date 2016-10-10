@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module ::Core::Io::Base::JsonFormattingBehaviour::Input
   class ReadOnlyAttribute < ::Core::Service::Error
@@ -10,7 +12,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end
 
     def api_error(response)
-      response.content_error(422, { @attribute => [ self.message ] })
+      response.content_error(422, { @attribute => [self.message] })
     end
   end
 
@@ -22,7 +24,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   end
 
   def set_model_for_input(model)
-    self.model_for_input =  model
+    self.model_for_input = model
   end
 
   def generate_json_to_object_mapping(json_to_attribute)
@@ -34,7 +36,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     common_keys = read_only.map(&:first) & read_write.map(&:first)
     read_only.delete_if { |k,_| common_keys.include?(k) }
     code.concat(read_only.map do |json, _|
-      %Q{process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }}
+      "process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }"
     end)
 
     # Now the harder bit: for attribute we need to work out how we would fill in the attribute
@@ -49,18 +51,18 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       # b_attributes, c_attributes') and the final model, or rather association, that we end at.
       # 'model' is nil if there is no association and we're assuming that we need a Hash of
       # some form.
-      model, path = trunk.inject([ model_for_input, [] ]) do |(model, parts), step|
+      model, path = trunk.inject([model_for_input, []]) do |(model, parts), step|
         next_model, next_step =
           if model.nil?
-            [ nil, step ]
+            [nil, step]
           elsif association = model.reflections[step]
-            raise StandardError, "Nested attributes only works with belongs_to or has_one" unless [ :belongs_to, :has_one ].include?(association.macro.to_sym)
-            [ association.klass, :"#{step}_attributes" ]
+            raise StandardError, "Nested attributes only works with belongs_to or has_one" unless [:belongs_to, :has_one].include?(association.macro.to_sym)
+            [association.klass, :"#{step}_attributes"]
           else
-            [ nil, step ]
+            [nil, step]
           end
 
-        [ next_model, parts << next_step ]
+        [next_model, parts << next_step]
       end
 
       # Build the necessary structure for the attributes.  The code can also be generated

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class AssetShape < ActiveRecord::Base
 
@@ -22,16 +24,16 @@ class AssetShape < ActiveRecord::Base
   end
 
   def multiplier(size)
-    ((size/(vertical_ratio*horizontal_ratio))**0.5).to_i
+    ((size / (vertical_ratio * horizontal_ratio))**0.5).to_i
   end
   private :multiplier
 
   def plate_height(size)
-    multiplier(size)*vertical_ratio
+    multiplier(size) * vertical_ratio
   end
 
   def plate_width(size)
-    multiplier(size)*horizontal_ratio
+    multiplier(size) * horizontal_ratio
   end
 
   def horizontal_to_vertical(well_position,plate_size)
@@ -51,15 +53,15 @@ class AssetShape < ActiveRecord::Base
   end
 
   def interlace(i,size)
-    m,d = (i-1).divmod(size/2)
-    2*d+1+m
+    m,d = (i - 1).divmod(size / 2)
+    2 * d + 1 + m
   end
   private :interlace
 
   def alternate_position(well_position, size, *dimensions)
     return nil unless Map.valid_well_position?(well_position)
     divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
-    column, row = (well_position-1).divmod(divisor)
+    column, row = (well_position - 1).divmod(divisor)
     return nil unless (0...multiplier).include?(column)
     return nil unless (0...divisor).include?(row)
     alternate = (row * multiplier) + column + 1
@@ -82,9 +84,9 @@ class AssetShape < ActiveRecord::Base
         Map.create!(
           :asset_size     => size,
           :asset_shape_id => self.id,
-          :location_id    => i+1,
+          :location_id    => i + 1,
           :row_order      => i,
-          :column_order   => horizontal_to_vertical(i,size)||0,
+          :column_order   => horizontal_to_vertical(i,size) || 0,
           :description    => location_from_index(i,size)
         )
       end

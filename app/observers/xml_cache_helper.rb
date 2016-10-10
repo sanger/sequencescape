@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015,2016 Genome Research Ltd.
 
 module XmlCacheHelper
   # Include this module into the controller and use cache_xml_response to cache the XML response
@@ -83,11 +85,11 @@ module XmlCacheHelper
   # Finds all of the batches that the specified record relates to
   def ids_for(record)
     query_details_for(record) do |joins, conditions|
-      query = %Q{
+      query = "
         SELECT DISTINCT #{caching_for_model}.id AS id
         FROM #{caching_for_model} #{Array(joins).uniq.join(' ')}
         WHERE #{Array(conditions).uniq.join(' AND ')}
-      }
+      "
       ActiveRecord::Base.connection.select_all(query).map { |result| result['id'] }
     end
   end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015 Genome Research Ltd.
 
 class PreCapturePool < ActiveRecord::Base
 
@@ -41,8 +43,8 @@ class PreCapturePool < ActiveRecord::Base
       ActiveRecord::Base.transaction do
         return if poolable_type.nil?
         grouped_requests.each do |_,requests|
-          plex   = requests.first.order.request_options['pre_capture_plex_level'].to_i
-          offset.times { requests.map!{|r| submission.next_requests(r) }}
+          plex = requests.first.order.request_options['pre_capture_plex_level'].to_i
+          offset.times { requests.map! { |r| submission.next_requests(r) } }
           pool(requests, plex)
         end
       end
@@ -51,11 +53,11 @@ class PreCapturePool < ActiveRecord::Base
     private
 
     def poolable_type
-      @pt ||= RequestType.find(submission.request_type_ids).detect {|rt| rt.request_class.include?(Poolable)}
+      @pt ||= RequestType.find(submission.request_type_ids).detect { |rt| rt.request_class.include?(Poolable) }
     end
 
     def library_creation_type
-      submission.request_type_ids.detect {|rt| RequestType.find(rt).request_class <= Request::LibraryCreation }
+      submission.request_type_ids.detect { |rt| RequestType.find(rt).request_class <= Request::LibraryCreation }
     end
 
     def offset
@@ -64,16 +66,16 @@ class PreCapturePool < ActiveRecord::Base
 
     def pool(requests,plex)
       requests.flatten.each_slice(plex) do |pooled_requests|
-        PreCapturePool.create!(:requests=>pooled_requests)
+        PreCapturePool.create!(:requests => pooled_requests)
       end
     end
 
     def grouped_requests
       submission.requests.
-        joins(:order,{asset: :map}).
+        joins(:order,{ asset: :map }).
         where(request_type_id: library_creation_type).
         order('maps.column_order ASC, id ASC').
-        group_by {|r| r.order.pre_cap_group||"o#{r.order_id}" }
+        group_by { |r| r.order.pre_cap_group || "o#{r.order_id}" }
     end
 
   end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 require "test_helper"
 require 'timecop'
@@ -61,7 +63,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
       setup do
         @product = create :product, :name => 'Demo Product'
         @criteria = create :product_criteria, :product => @product, :version => 1
-        @study  = create :study, :name => 'Example study'
+        @study = create :study, :name => 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
             :study => @study,
@@ -72,7 +74,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id=>i+1)
+          create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id => i + 1)
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
@@ -88,7 +90,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @qcr_file.process
         @report.reload
         assert_equal "complete", @report.state
-        assert @report.qc_metrics.all? {|met| met.proceed }, "Not all metrics are proceed"
+        assert @report.qc_metrics.all? { |met| met.proceed }, "Not all metrics are proceed"
       end
 
       should "not adjust the qc_decision flag" do
@@ -105,7 +107,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
       setup do
         @product = FactoryGirl.build :product, :name => 'Demo Product'
         @criteria = FactoryGirl.build :product_criteria, :product => @product, :version => 1
-        @study  = FactoryGirl.build :study, :name => 'Example study'
+        @study = FactoryGirl.build :study, :name => 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
             :study => @study,
@@ -116,7 +118,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          m = create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id=>i+1)
+          m = create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id => i + 1)
           @asset_ids << m.asset_id
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
@@ -138,7 +140,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
       setup do
         @product = FactoryGirl.build :product, :name => 'Demo Product'
         @criteria = FactoryGirl.build :product_criteria, :product => @product, :version => 1
-        @study  = FactoryGirl.build :study, :name => 'Example study'
+        @study = FactoryGirl.build :study, :name => 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
             :study => @study,

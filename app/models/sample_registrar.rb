@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require 'rexml/text'
 # An instance of this class is responsible for the registration of a sample and its sample tube.
@@ -97,7 +99,7 @@ class SampleRegistrar < ActiveRecord::Base
     record.sample_tube.name = record.sample.name
   end
   after_create do |record|
-    record.sample_tube.aliquots.create!(:sample => record.sample, :study=>record.study)
+    record.sample_tube.aliquots.create!(:sample => record.sample, :study => record.study)
   end
 
   # SampleTubes are registered within an AssetGroup, unless the AssetGroup is unspecified.
@@ -143,7 +145,7 @@ class SampleRegistrar < ActiveRecord::Base
   REMAPPED_COLUMN_NAMES = { 'Asset group name' => 'Asset group' }
 
   # Columns that are required for the spreadsheet to be considered valid.
-  REQUIRED_COLUMNS = [ 'Asset group', 'Sample name' ]
+  REQUIRED_COLUMNS = ['Asset group', 'Sample name']
   REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ')
 
   def self.from_spreadsheet(file, study, user)
@@ -204,9 +206,9 @@ class SampleRegistrar < ActiveRecord::Base
       attributes = {
         :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
         :sample_attributes => {
-          :sample_metadata_attributes => { }
+          :sample_metadata_attributes => {}
         },
-        :sample_tube_attributes => { }
+        :sample_tube_attributes => {}
       }
 
       used_definitions.each_with_index do |handler, index|

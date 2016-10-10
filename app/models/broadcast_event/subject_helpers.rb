@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 module BroadcastEvent::SubjectHelpers
 
@@ -18,7 +20,7 @@ module BroadcastEvent::SubjectHelpers
     end
 
     def as_json(*args)
-      Hash[json_fields.map {|f| [f,send(f)] }]
+      Hash[json_fields.map { |f| [f,send(f)] }]
     end
 
     delegate :friendly_name, :uuid, :subject_type, :to => :target
@@ -62,7 +64,7 @@ module BroadcastEvent::SubjectHelpers
 
   module MultiTarget
     def for(seed,event)
-      target_for(seed,event).map {|t| Subject.new(name,t) }
+      target_for(seed,event).map { |t| Subject.new(name,t) }
     end
   end
 

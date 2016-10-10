@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 class LibraryEvent < BroadcastEvent
 
   def event_type
@@ -31,6 +32,6 @@ class LibraryEvent < BroadcastEvent
   # Not perfect, but our order type is almost always the same
   has_metadata(:order_type,:role)
 
-  has_metadata(:team) {|plate,e| plate.team }
+  has_metadata(:team) { |plate,e| plate.team }
 
 end

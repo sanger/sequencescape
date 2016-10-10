@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 module AssetsHelper
   def well_identifier(plate_layout, row, column)
@@ -50,11 +52,11 @@ module AssetsHelper
   # Returns a select tag that has it's options ordered by name (assumes present of sorted_by_name function)
   # and disabled if a value has been pre-selected.
   def select_field_sorted_by_name(field, select_options_source, selected, options = {})
-    content_tag(:div, :class=>'col-md-5') do
+    content_tag(:div, :class => 'col-md-5') do
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.map { |x| [x.name, x.id] }, selected.try(:to_i)),
-        options.merge(:disabled => (selected.present? and not current_user.is_administrator?), :class=>'form-control select2')
+        options.merge(:disabled => (selected.present? and not current_user.is_administrator?), :class => 'form-control select2')
       )
     end
   end
@@ -95,7 +97,7 @@ module AssetsHelper
   end
 
   def asset_types_for_select
-    asset_types.map {|at| [at.underscore.humanize, at] }
+    asset_types.map { |at| [at.underscore.humanize, at] }
   end
 
 end

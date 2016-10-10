@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -56,17 +58,17 @@ class AliquotTest < ActiveSupport::TestCase
     end
 
     should "allow mixing different tags with no tag2" do
-      @asset.aliquots << Aliquot.new(:tag => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag2, :sample=>@sample2)
+      @asset.aliquots << Aliquot.new(:tag => @tag1, :sample => @sample1) << Aliquot.new(:tag => @tag2, :sample => @sample2)
       @asset.save!
     end
 
     should "allow mixing different tags with a tag 2" do
-      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag2, :tag2 => @tag1, :sample=>@sample2)
+      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag1, :sample => @sample1) << Aliquot.new(:tag => @tag2, :tag2 => @tag1, :sample => @sample2)
       @asset.save!
     end
 
     should "allow mixing same tags with a different tag 2" do
-      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag2 => @tag2, :sample=>@sample2)
+      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag1, :sample => @sample1) << Aliquot.new(:tag => @tag1, :tag2 => @tag2, :sample => @sample2)
       @asset.save!
     end
 

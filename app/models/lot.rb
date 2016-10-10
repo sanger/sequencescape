@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 ##
 # A lot represents a received batch of consumables (eg. tag plates)
@@ -45,7 +47,7 @@ class Lot < ActiveRecord::Base
 
     asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
 
-    includes(:qcables).where(qcables:{asset_id:asset_ids}).where.not(qcables:{state: 'exhausted'})
+    includes(:qcables).where(qcables:{ asset_id:asset_ids }).where.not(qcables:{ state: 'exhausted' })
   }
 
   private

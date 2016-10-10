@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Then /^I should see qc reports table:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#study_list')))
@@ -39,7 +41,7 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
     well = Well.create!(:plate => plate, :map_id => i)
     well.aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
     well.well_attribute.update_attributes!(
-      :gender_markers  => [ 'F', 'F', 'F', 'F' ],
+      :gender_markers  => ['F', 'F', 'F', 'F'],
       :sequenom_count  => 29,
       :concentration   => 1,
       :pico_pass       => "Pass",
@@ -73,7 +75,7 @@ end
 Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report = StudyReport.create!(:study => Study.find_by_name(study_name))
   study_report.perform
-  step(%Q{2 pending delayed jobs are processed})
+  step("2 pending delayed jobs are processed")
 end
 
 

@@ -1,13 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/ do |study_name, group_name, count|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 
   plate = FactoryGirl.create(:plate)
   study.asset_groups.create!(:name => group_name).tap do |asset_group|
-    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, :plate => plate, :map => Map.map_96wells[index-1] ) }
+    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, :plate => plate, :map => Map.map_96wells[index - 1] ) }
   end
 end
 
@@ -16,14 +18,14 @@ Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "
 
   # NOTE: Working with Submission from the code at this point is a nightmare, so use the UI!
   step(%Q{I am on the show page for study "#{asset_group.study.name}"})
-  step(%Q{I follow "Create Submission"})
+  step('I follow "Create Submission"')
   step(%Q{I select "#{template_name}" from "Template"})
-  step(%Q{I press "Next"})
+  step('I press "Next"')
   step(%Q{I select "#{project_name}" from "Select a financial project"})
   step(%Q{I select "#{group_name}" from "Select a group to submit"})
-  step(%Q{I create the order and submit the submission})
+  step("I create the order and submit the submission")
 
-  step(%Q{all pending delayed jobs are processed})
+  step("all pending delayed jobs are processed")
 end
 
 Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
@@ -57,7 +59,7 @@ Then /^the batch (input|output) asset table should be:$/ do |name, expected_tabl
 end
 
 Then /^the batch input asset table should have 1 row with (\d+) wells$/ do |count|
-  Cucumber::Ast::Table.new([ { 'Wells' => count } ]).diff!(table(fetch_table("##{name}_assets")))
+  Cucumber::Ast::Table.new([{ 'Wells' => count }]).diff!(table(fetch_table("##{name}_assets")))
 end
 
 Given /^the plate template "([^\"]+)" exists$/ do |name|
@@ -94,7 +96,7 @@ def build_batch_for(name, count, &block)
   user = FactoryGirl.create(:user)
 
   assets = (1..count.to_i).map do |_|
-    asset_attributes = { }
+    asset_attributes = {}
     if submission_details.key?(:holder_type)
       asset_attributes[:container] = FactoryGirl.create(submission_details[:holder_type], :location_id => pipeline.location_id)
       asset_attributes[:map_id] = 1
@@ -121,13 +123,13 @@ def build_batch_for(name, count, &block)
     # Request parameter options
     :request_options => submission_details[:request_options]
   )
-  step(%Q{all pending delayed jobs are processed})
+  step("all pending delayed jobs are processed")
 
   # step build a batch that will hold all of these requests, ensuring that it appears to be at least started
   # in some form.
   requests = pipeline.requests.ready_in_storage.all
   raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
-  batch    = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
+  batch = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
 end
 
 def requests_for_pipeline(name, count, &block)

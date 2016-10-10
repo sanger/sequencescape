@@ -1,12 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Core::Endpoint::BasicHandler::Actions::InnerAction
   def initialize(name, options, &block)
     raise StandardError, "Cannot declare inner action #{name.inspect} without a block" unless block_given?
 
-    super() { }
+    super() {}
     @options, @handler = options, block
     action(name, options)
   end
@@ -37,12 +39,12 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
 
   def declare_action(name, options)
     line = __LINE__ + 1
-    singleton_class.class_eval(%Q{
+    singleton_class.class_eval("
       def _#{name}(request, response)
         object = @handler.call(self, request, response)
         yield(owner_for(request, object), object)
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
   private :declare_action
 

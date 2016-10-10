@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Core::Service::ErrorHandling
   def self.registered(app)
@@ -15,13 +17,13 @@ module Core::Service::ErrorHandling
         ::Core::Service::Error,
         ActiveRecord::ActiveRecordError
       ]) do
-        buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
+        buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
 
         exception_thrown.api_error(self)
       end
-      error([ ::Exception ]) do
-        buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
+      error([::Exception]) do
+        buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
 
         self.general_error(501)
@@ -46,7 +48,7 @@ module Core::Service::ErrorHandling
     end
 
     def general_error(code, errors = nil)
-      errors ||= [ exception_thrown.message ]
+      errors ||= [exception_thrown.message]
       error(code, JsonError.new(:general => errors))
     end
 
@@ -101,7 +103,7 @@ class ActiveRecord::RecordInvalid
   end
 
   def errors_grouped_by_attribute
-    Hash[record.errors.map { |k,v| [ yield(k), [v].flatten.uniq ] }]
+    Hash[record.errors.map { |k,v| [yield(k), [v].flatten.uniq] }]
   end
   private :errors_grouped_by_attribute
 end

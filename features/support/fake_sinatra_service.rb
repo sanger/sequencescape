@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'singleton'
 require 'sinatra'
 class FakeSinatraService
@@ -13,7 +15,7 @@ class FakeSinatraService
     if @ports.nil?
       initial_port = 16000 + (ENV['TEST_ENV_NUMBER'].to_i * 1000)  # Base it at some sane port
       initial_port += (($$ % 100) * 10)  # Use pid and use a range
-      @ports       = (1..100).to_a.shuffle.map { |p| initial_port + p }
+      @ports = (1..100).to_a.shuffle.map { |p| initial_port + p }
     end
     @ports.shift
   end
@@ -137,4 +139,3 @@ private
     end
   end
 end unless self.class.const_defined?(:FakeSinatraService)
-

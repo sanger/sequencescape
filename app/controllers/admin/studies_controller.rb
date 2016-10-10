@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 class Admin::StudiesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -28,7 +30,7 @@ class Admin::StudiesController < ApplicationController
     @request_types = RequestType.order(name: :asc)
     if params[:id] != "0"
       @study = Study.find(params[:id])
-	  flash.now[:warning] = @study.warnings if @study.warnings.present?
+    flash.now[:warning] = @study.warnings if @study.warnings.present?
       render :partial => "edit", :locals => { :study => @study }
     else
       render :nothing => true
@@ -39,7 +41,7 @@ class Admin::StudiesController < ApplicationController
   def filter
     unless params[:filter].nil?
       if params[:filter][:by] == "not approved"
-        filter_conditions = {:approved => false}
+        filter_conditions = { :approved => false }
       end
     end
 
@@ -78,7 +80,7 @@ class Admin::StudiesController < ApplicationController
       redirect_to :controller => "admin/studies", :action => "update", :id => @study.id
     end
   rescue ActiveRecord::RecordInvalid => exception
-    logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+    logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
     flash[:error] = "Failed to update attributes for study!"
     render :action => :show, :id => @study.id and return
   end
@@ -86,7 +88,7 @@ class Admin::StudiesController < ApplicationController
   def sort
     @studies = Study.all.sort_by { |study| study.name }
     if params[:sort] == "date"
-      @studies = @studies.sort_by { |study| study.created_at}
+      @studies = @studies.sort_by { |study| study.created_at }
     elsif params[:sort] == "owner"
       @studies = @studies.sort_by { |study| study.user_id }
     end

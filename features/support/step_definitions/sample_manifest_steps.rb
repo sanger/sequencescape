@@ -1,9 +1,11 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
-  Supplier.create!({:name => supplier_name })
+  Supplier.create!({ :name => supplier_name })
 end
 
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
@@ -22,7 +24,7 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
         :sample_sra_hold  => "Hold"
       }
     )
-    sample.name = "#{study.abbreviation}#{index+1}"
+    sample.name = "#{study.abbreviation}#{index + 1}"
     sample.save(validate: false)
   end
 end
@@ -53,15 +55,15 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   index = 0
   Plate.order(:id).each do |plate|
     sequence_sanger_sample_ids_for(plate) do |well_index|
-      "sample_#{index+well_index}"
+      "sample_#{index + well_index}"
     end
     index += plate.size
   end
   SampleTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
+    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id => "tube_sample_#{idx + 1}")
   end
   LibraryTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
+    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id => "tube_sample_#{idx + 1}")
   end
 end
 
@@ -125,15 +127,15 @@ Then /^the sample reference genomes should be:$/ do |table|
 end
 
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
-  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map {|a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id]}
+  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
   table.hashes.each do |expected_data|
     lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT',''))
     assert_equal 1, lt.aliquots.count, "Wrong number of aliquots"
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
     assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id), "tag_index: #{expected_data[:tag_index]} #{lt.aliquots.first.tag.try(:map_id)}"
-    assert_equal expected_data[:tag2_group], lt.aliquots.first.tag2.try(:tag_group).try(:name)||'', "tag2_group: #{expected_data[:tag2_group]} #{lt.aliquots.first.tag2.try(:tag_group).try(:name)||''}"
-    assert_equal expected_data[:tag2_index].to_i, lt.aliquots.first.tag2.try(:map_id)||0, "tag2_index: #{expected_data[:tag2_index]} #{lt.aliquots.first.tag2.try(:map_id)||''}"
+    assert_equal expected_data[:tag2_group], lt.aliquots.first.tag2.try(:tag_group).try(:name) || '', "tag2_group: #{expected_data[:tag2_group]} #{lt.aliquots.first.tag2.try(:tag_group).try(:name) || ''}"
+    assert_equal expected_data[:tag2_index].to_i, lt.aliquots.first.tag2.try(:map_id) || 0, "tag2_index: #{expected_data[:tag2_index]} #{lt.aliquots.first.tag2.try(:map_id) || ''}"
     assert_equal expected_data[:library_type], lt.aliquots.first.library_type, "library_type: #{expected_data[:library_type]} #{lt.aliquots.first.library_type}"
     assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from, "insert_size_from: #{expected_data[:insert_size_from]} #{lt.aliquots.first.insert_size_from}"
     assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to, "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
@@ -144,19 +146,19 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
 end
 
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
-  step(%Q{I follow "Create manifest for plates"})
-	step(%Q{I select "#{study_name}" from "Study"})
-  step(%Q{I select "default layout" from "Template"})
-	step(%Q{I select "Test supplier name" from "Supplier"})
-	step(%Q{I select "xyz" from "Barcode printer"})
-	step(%Q{I fill in the field labeled "Plates required" with "1"})
-  step(%Q{I select "default layout" from "Template"})
-	step(%Q{I press "Create manifest and print labels"})
-	step %Q{I should see "Manifest_"}
-	step %Q{I should see "Download Blank Manifest"}
-	step(%Q{3 pending delayed jobs are processed})
-	step %Q{study "#{study_name}" should have 96 samples}
-	step(%Q{I reset all of the sanger sample ids to a known number sequence})
+  step('I follow "Create manifest for plates"')
+  step(%Q{I select "#{study_name}" from "Study"})
+  step('I select "Default Plate" from "Template"')
+  step('I select "Test supplier name" from "Supplier"')
+  step('I select "xyz" from "Barcode printer"')
+  step('I fill in the field labeled "Plates required" with "1"')
+  step('I select "Default Plate" from "Template"')
+  step('I press "Create manifest and print labels"')
+  step 'I should see "Manifest_"'
+  step 'I should see "Download Blank Manifest"'
+  step("3 pending delayed jobs are processed")
+  step %Q{study "#{study_name}" should have 96 samples}
+  step("I reset all of the sanger sample ids to a known number sequence")
 end
 
 Then /^the sample controls and resubmits should look like:$/ do |table|
@@ -164,7 +166,7 @@ Then /^the sample controls and resubmits should look like:$/ do |table|
     sample = Sample.find_by_sanger_sample_id(expected_data[:sanger_sample_id]) or raise StandardError, "Cannot find sample by sanger ID #{expected_data[:sanger_sample_id]}"
     {
       'sanger_sample_id' => expected_data[:sanger_sample_id],
-      'supplier_name'             => sample.sample_metadata.supplier_name,
+      'supplier_name' => sample.sample_metadata.supplier_name,
       'is_control'       => sample.control.to_s,
       'is_resubmit'      => sample.sample_metadata.is_resubmitted.to_s
     }
@@ -184,19 +186,19 @@ end
 
 Then /^the last created sample manifest should be:$/ do |table|
   offset = 9
-  Tempfile.open('testfile.xls') do |tempfile|
+  Tempfile.open(['testfile', '.xlsx']) do |tempfile|
     tempfile.binmode
     tempfile.write(SampleManifest.last.generated_document.current_data)
     tempfile.flush
     tempfile.open
 
-    spreadsheet = Spreadsheet.open(tempfile.path)
-    @worksheet   =spreadsheet.worksheets.first
+    spreadsheet = Roo::Spreadsheet.open(tempfile.path)
+    @worksheet = spreadsheet.sheet(0)
   end
 
   table.rows.each_with_index do |row,index|
-    expected = [ Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1] ]
-    got      = [ @worksheet[offset+index,0], @worksheet[offset+index,1] ]
+    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1]]
+    got      = [@worksheet.cell(offset + index + 1,1), @worksheet.cell(offset + index + 1,2)]
     assert_equal(expected, got, "Unexpected manifest row #{index}")
   end
 end
@@ -231,25 +233,32 @@ end
 Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
   manifest = SampleManifest.find(id)
   manifest.generate
-  step(%Q{3 pending delayed jobs are processed})
+  step("3 pending delayed jobs are processed")
 end
 
 Given /^sample tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(:barcodes=>SampleTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(:barcodes => SampleTube.all.map(&:sanger_human_barcode))
 end
 
 Given /^library tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(:barcodes=>LibraryTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(:barcodes => LibraryTube.all.map(&:sanger_human_barcode))
 end
 
 Then /^print any manifest errors for debugging$/ do
   if SampleManifest.last.last_errors.present?
-    puts "="*80
-    SampleManifest.last.last_errors.each {|error| puts error}
-    puts "="*80
+    puts "=" * 80
+    SampleManifest.last.last_errors.each { |error| puts error }
+    puts "=" * 80
   end
 end
 
 Then /^library_id should be set as required$/ do
   pending # express the regexp above with the code you wish you had
+end
+
+Given(/^the configuration exists for creating sample manifest Excel spreadsheets$/) do
+  SampleManifestExcel.configure do |config|
+    config.folder = File.join("test","data", "sample_manifest_excel")
+    config.load!
+  end
 end

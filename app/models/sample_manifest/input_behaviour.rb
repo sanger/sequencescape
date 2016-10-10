@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module SampleManifest::InputBehaviour
 
@@ -9,10 +11,10 @@ module SampleManifest::InputBehaviour
       csv        = CSV.parse(spreadsheet_file.read)
       column_map = compute_column_map(csv[spreadsheet_header_row])
 
-      spreadsheet_offset.upto(csv.size-1) do |n|
+      spreadsheet_offset.upto(csv.size - 1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
-        sample           = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
+        sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
         return sample.sample_manifest
       end
       nil
@@ -25,7 +27,7 @@ module SampleManifest::InputBehaviour
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index]}].tap do |columns|
+      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index] }].tap do |columns|
         raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
       end
     end
@@ -151,7 +153,7 @@ module SampleManifest::InputBehaviour
 
   def clean_up_sheet(csv)
     # Clean up CSV
-    0.upto(csv.size-1) do |row|
+    0.upto(csv.size - 1) do |row|
       0.upto(csv[row].size) do |col|
         csv[row][col] = clean_up_value(csv[row][col])
       end
@@ -188,8 +190,8 @@ module SampleManifest::InputBehaviour
     end
 
     column_map = SampleManifest.compute_column_map(headers)
-    spreadsheet_offset.upto(csv.size-1) do |row|
-      yield(Hash[headers.each_with_index.map { |header, column| [ header, csv[row][column] ] }])
+    spreadsheet_offset.upto(csv.size - 1) do |row|
+      yield(Hash[headers.each_with_index.map { |header, column| [header, csv[row][column]] }])
     end
   rescue CSV::MalformedCSVError => exception
     raise InvalidManifest, "Invalid CSV file, did you upload an Excel file by accident? - #{exception.message}"
@@ -233,7 +235,7 @@ module SampleManifest::InputBehaviour
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
-          [ attribute, row[csv_column] ]
+          [attribute, row[csv_column]]
         end
       ].merge(
         :is_resubmitted => convert_yes_no_to_boolean(row['IS RE-SUBMITTED SAMPLE?'])

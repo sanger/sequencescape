@@ -16,4 +16,3 @@ PluginPackageFiles = FileList[
   "lib/**/*.rb", "*.txt", "README", "Rakefile", "rakeconfig.rb",
   "rake/**/*", "test/**/*.rb", "*.rb", "test/**/*.xml"
 ].exclude(/\bCVS\b|~$/)
- 

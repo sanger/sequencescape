@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 Given /^I have a pipeline called "([^\"]*)"$/ do |name|
   request_type = FactoryGirl.create :request_type
@@ -32,7 +34,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = FactoryGirl.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(:request_type => pipeline.request_types.last, :asset => FactoryGirl.create(pipeline_name_to_asset_type(pipeline_name)), :request_metadata => request_metadata)
   FactoryGirl.create(:request, request_parameters).tap do |request|
-    request.asset.update_attributes!(:location => pipeline.location,:barcode=>request.asset.id%9999999)
+    request.asset.update_attributes!(:location => pipeline.location,:barcode => request.asset.id % 9999999)
   end
 end
 
@@ -42,7 +44,7 @@ end
 
 Given /^I have (\d+) requests for "([^"]*)" that are part of the same submission$/ do |count, pipeline_name|
   pipeline   = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  submission = FactoryGirl.create(:submission, :request_types => [ pipeline.request_types.last.id ])
+  submission = FactoryGirl.create(:submission, :request_types => [pipeline.request_types.last.id])
   (1..count.to_i).each do |_|
     create_request_for_pipeline(pipeline_name, :submission => submission)
   end
@@ -54,7 +56,7 @@ end
 
 Given /^all requests for the submission with UUID "([^\"]+)" are in the "([^\"]+)" state$/ do |uuid, state|
   submission = Uuid.lookup_single_uuid(uuid).resource
-  Request.update_all("state=#{state.inspect}", [ 'submission_id=?', submission.id ])
+  Request.update_all("state=#{state.inspect}", ['submission_id=?', submission.id])
 end
 
 Given /^I on batch page$/ do
@@ -75,7 +77,7 @@ When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipel
   request_number = request_number.to_i
   pipeline = Pipeline.find_by_name(pipeline_name)
 
-  request = pipeline.requests.inbox[request_number-1]
+  request = pipeline.requests.inbox[request_number - 1]
   check("request_#{request.id}")
 end
 
@@ -97,15 +99,6 @@ end
 When /^I fill in the plate barcode$/ do
   step(%Q{I fill in "barcode_0" with "#{Plate.last.ean13_barcode}"})
 #  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
-end
-
-When /^pipeline debug$/ do
-  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
-  puts "Plate #{Plate.last.id} -- #{Plate.last.container}"
-  puts Pipeline.find_by_name("DNA QC").location_id
-  puts Pipeline.find_by_name("DNA QC").requests.ready_in_storage.pipeline_pending.size
-  save_and_open_page
-  debugger
 end
 
 Then /^I have added some output plates$/ do

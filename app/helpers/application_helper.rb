@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 module ApplicationHelper
 
@@ -27,7 +29,7 @@ module ApplicationHelper
   end
 
   def remote_error(identifier = "remote_error")
-    content_tag("div", :id => identifier, :class=>"error", :style => "display:none;") do
+    content_tag("div", :id => identifier, :class => "error", :style => "display:none;") do
       "An error has occurred and the results can not be shown at the moment"
     end
   end
@@ -45,13 +47,13 @@ module ApplicationHelper
   end
 
   def required_marker
-    content_tag(:span,"&raquo;".html_safe,:class=>'required')
+    content_tag(:span,"&raquo;".html_safe,:class => 'required')
   end
 
   def render_flashes
     output = String.new.html_safe
     flash.each do |key, message|
-      output << alert(key,:id=>"message_#{key}") do
+      output << alert(key,:id => "message_#{key}") do
         Array(message).reduce(String.new.html_safe) { |buffer,m| buffer << content_tag(:div, m) }
       end
     end
@@ -59,7 +61,7 @@ module ApplicationHelper
   end
 
   def api_data
-    {:api_version => RELEASE.api_version}
+    { :api_version => RELEASE.api_version }
   end
 
   def display_user_guide(display_text, link=nil)
@@ -75,7 +77,7 @@ module ApplicationHelper
   end
 
   def display_status(status)
-    content_tag(:span,status,:class=>"request-state label label-#{bootstrapify_request_state(status)}")
+    content_tag(:span,status,:class => "request-state label label-#{bootstrapify_request_state(status)}")
   end
 
   def dynamic_link_to(summary_item)
@@ -175,7 +177,7 @@ module ApplicationHelper
     end
 
     if (total - failed) > 0
-      return ((passed.to_f / (total - failed).to_f)*100).to_i
+      return ((passed.to_f / (total - failed).to_f) * 100).to_i
     else
       return 0
     end
@@ -210,14 +212,14 @@ module ApplicationHelper
 
   def tabulated_error_messages_for(*params)
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
-    objects = params.collect {|object_name| instance_variable_get("@#{object_name}") }.compact
-    count   = objects.inject(0) {|sum, object| sum + object.errors.count }
+    objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
+    count   = objects.inject(0) { |sum, object| sum + object.errors.count }
     unless count.zero?
-      error_messages = objects.map {|object| object.errors.full_messages.map {|msg| content_tag(:div, msg) } }.join
-      [content_tag(:td, :class=>'error item') do
+      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| content_tag(:div, msg) } }.join
+      [content_tag(:td, :class => 'error item') do
         "Your #{params.first} has not been created."
       end,
-      content_tag(:td, :class=>'error') do
+      content_tag(:td, :class => 'error') do
         raw(error_messages)
       end].join.html_safe
     else
@@ -235,7 +237,7 @@ module ApplicationHelper
     if item.failures.empty?
       ""
     else
-      %Q{<span style="color:red;">FAILED</span>}
+      '<span style="color:red;">FAILED</span>'
     end
   end
 
@@ -278,7 +280,7 @@ module ApplicationHelper
   end
 
   def sorted_requests_for_search(requests)
-    sorted_requests = requests.select{|r| r.pipeline_id.nil?}
+    sorted_requests = requests.select { |r| r.pipeline_id.nil? }
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
     requests = requests + sorted_requests

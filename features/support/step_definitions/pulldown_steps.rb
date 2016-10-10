@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Transform /^submitted to "([^\"]+)"$/ do |name|
   SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
@@ -76,7 +78,7 @@ Given /^"([^\"]+)" of (the plate .+) and (the plate .+) both been (submitted to 
   request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
   create_submission_of_assets(
     template,
-    plate.wells.select(&range.method(:include?))+plate2.wells.select(&range.method(:include?)),
+    plate.wells.select(&range.method(:include?)) + plate2.wells.select(&range.method(:include?)),
     request_options
   )
 end
@@ -148,7 +150,7 @@ def finalise_pipeline_for(plate)
   plate.wells.each do |well|
     well.requests_as_target.each do |r|
       target_state = r.library_creation? ? 'passed' : 'qc_complete'
-      r.update_attributes!(:state=>target_state)
+      r.update_attributes!(:state => target_state)
     end
   end
 end
@@ -204,14 +206,14 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
 
   results = request_type.requests.all.map do |request|
     Hash[table.raw.map do |attribute,_|
-      [ attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) } ]
+      [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
     end]
   end.uniq!
   expected = Hash[table.raw.map do |attribute, value|
-    value = value.to_i if [ 'fragment_size_required_from', 'fragment_size_required_to' ].include?(attribute)
-    [ attribute, value ]
+    value = value.to_i if ['fragment_size_required_from', 'fragment_size_required_to'].include?(attribute)
+    [attribute, value]
   end]
-  assert_equal([ expected ], results, "Request details are not identical")
+  assert_equal([expected], results, "Request details are not identical")
 end
 
 Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
@@ -234,15 +236,13 @@ Given /^(the plate .+) will pool into 1 tube$/ do |plate|
   plate.wells.in_column_major_order.readonly(false).each do |well|
     RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
     well.stock_wells.attach!([stock_well])
-    FactoryGirl.create :library_creation_request, :asset=> stock_well, :target_asset => well, :submission => submission
+    FactoryGirl.create :library_creation_request, :asset => stock_well, :target_asset => well, :submission => submission
     # LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
   end
 end
 
 Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept,plate_name|
   Plate.find_by_name(plate_name).wells.each do |well|
-    well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each {|r| assert_equal accept=='should', r.request_metadata.customer_accepts_responsibility }
+    well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each { |r| assert_equal accept == 'should', r.request_metadata.customer_accepts_responsibility }
   end
 end
-
-

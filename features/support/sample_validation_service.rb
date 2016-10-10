@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require_relative 'fake_sinatra_service'
 
@@ -32,7 +34,7 @@ class FakeSampleValidationService < FakeSinatraService
 
   class Service < FakeSinatraService::Base
     post('/SampleSheet/Validate') do
-      json  = { 'Success' => FakeSampleValidationService.instance.next! }
+      json = { 'Success' => FakeSampleValidationService.instance.next! }
       headers('Content-Type' => 'application/json')
       body(json.to_json)
     end
@@ -40,4 +42,3 @@ class FakeSampleValidationService < FakeSinatraService
 end
 
 FakeSampleValidationService.install_hooks(self, '@sample_validation_service')
-

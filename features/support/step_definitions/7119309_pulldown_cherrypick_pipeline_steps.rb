@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 
 
@@ -32,9 +34,9 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells,
-    :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"400", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}
+    :request_options => { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "400", "fragment_size_required_from" => "300", "library_type" => "Standard" }
     )
-  step(%Q{1 pending delayed jobs are processed})
+  step("1 pending delayed jobs are processed")
 end
 
 
@@ -57,7 +59,7 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     :user     => User.last,
     :assets   => wells
     )
-  step(%Q{1 pending delayed jobs are processed})
+  step("1 pending delayed jobs are processed")
 end
 
 
@@ -71,7 +73,7 @@ end
 Given /^plate "([^"]*)" has concentration results$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
-    well.well_attribute.update_attributes!(:concentration => index*40)
+    well.well_attribute.update_attributes!(:concentration => index * 40)
   end
 end
 
@@ -96,7 +98,7 @@ end
 Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
-    well.well_attribute.update_attributes!(:measured_volume => index*11)
+    well.well_attribute.update_attributes!(:measured_volume => index * 11)
   end
 end
 
@@ -109,7 +111,7 @@ Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(CSV.parse(page.source).collect{|r| r.collect{|c| c ? c : "" }})
+  expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : "" } })
 end
 
 Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
@@ -117,12 +119,12 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
   tag_group = TagGroup.create!(:name => tag_group_name)
   tags = []
   1.upto(number_of_tags.to_i) do |i|
-    Tag.create!(:oligo => oligos[(i-1)%oligos.size], :map_id => i, :tag_group_id => tag_group.id)
+    Tag.create!(:oligo => oligos[(i - 1) % oligos.size], :map_id => i, :tag_group_id => tag_group.id)
   end
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|
-  actual_table = table(fetch_table('table.plate').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
+  actual_table = table(fetch_table('table.plate').collect { |row| row.collect { |cell| cell[/^(Tag [\d]+)|(\w+)/] } })
 
   expected_results_table.diff!(actual_table)
 end
@@ -134,57 +136,57 @@ When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldow
 end
 
 Given /^I have a pulldown batch$/ do
-  step(%Q{plate "1234567" with 8 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission})
-  step(%Q{plate "222" with 8 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission})
-  step(%Q{plate "1234567" has nonzero concentration results})
-  step(%Q{plate "1234567" has measured volume results})
-  step(%Q{plate "222" has nonzero concentration results})
-  step(%Q{plate "222" has measured volume results})
+  step('plate "1234567" with 8 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
+  step('plate "222" with 8 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
+  step('plate "1234567" has nonzero concentration results')
+  step('plate "1234567" has measured volume results')
+  step('plate "222" has nonzero concentration results')
+  step('plate "222" has measured volume results')
 
-  step(%Q{the plate barcode webservice returns "99999"})
-  step(%Q{I am on the show page for pipeline "Cherrypicking for Pulldown"})
-  step(%Q{I check "Select DN1234567T for batch"})
-  step(%Q{I check "Select DN222J for batch"})
-  step(%Q{I select "Create Batch" from the first "action_on_requests"})
-  step(%Q{I press "Submit"})
-  step(%Q{I follow "Cherrypick Group By Submission"})
-  step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
-  step(%Q{I press "Next step"})
-  step(%Q{I press "Release this batch"})
-  step(%Q{I set Plate "1220099999705" to be in freezer "Pulldown freezer"})
-  step(%Q{I am on the show page for pipeline "Pulldown Multiplex Library Preparation"})
-  step(%Q{I check "Select DN99999F for batch"})
-  step(%Q{I press "Submit"})
+  step('the plate barcode webservice returns "99999"')
+  step('I am on the show page for pipeline "Cherrypicking for Pulldown"')
+  step('I check "Select DN1234567T for batch"')
+  step('I check "Select DN222J for batch"')
+  step('I select "Create Batch" from the first "action_on_requests"')
+  step('I press "Submit"')
+  step('I follow "Cherrypick Group By Submission"')
+  step('I select "Pulldown Aliquot" from "Plate Purpose"')
+  step('I press "Next step"')
+  step('I press "Release this batch"')
+  step('I set Plate "1220099999705" to be in freezer "Pulldown freezer"')
+  step('I am on the show page for pipeline "Pulldown Multiplex Library Preparation"')
+  step('I check "Select DN99999F for batch"')
+  step('I press "Submit"')
 end
 
 Given /^I have 2 pulldown plates$/ do
-  step(%Q{plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission})
-  step(%Q{plate "1234567" has nonzero concentration results})
-  step(%Q{plate "1234567" has measured volume results})
+  step('plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
+  step('plate "1234567" has nonzero concentration results')
+  step('plate "1234567" has measured volume results')
 
-  step(%Q{the plate barcode webservice returns "99999"})
-  step(%Q{I am on the show page for pipeline "Cherrypicking for Pulldown"})
-  step(%Q{I check "Select DN1234567T for batch"})
-  step(%Q{I select "Create Batch" from the first "action_on_requests"})
-  step(%Q{I press "Submit"})
-  step(%Q{I follow "Cherrypick Group By Submission"})
-  step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
-  step(%Q{I press "Next step"})
-  step(%Q{I press "Release this batch"})
-  step(%Q{I set Plate "1220099999705" to be in freezer "Pulldown freezer"})
+  step('the plate barcode webservice returns "99999"')
+  step('I am on the show page for pipeline "Cherrypicking for Pulldown"')
+  step('I check "Select DN1234567T for batch"')
+  step('I select "Create Batch" from the first "action_on_requests"')
+  step('I press "Submit"')
+  step('I follow "Cherrypick Group By Submission"')
+  step('I select "Pulldown Aliquot" from "Plate Purpose"')
+  step('I press "Next step"')
+  step('I press "Release this batch"')
+  step('I set Plate "1220099999705" to be in freezer "Pulldown freezer"')
 
-  step(%Q{plate "222" with 1 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission})
-  step(%Q{plate "222" has nonzero concentration results})
-  step(%Q{plate "222" has measured volume results})
-  step(%Q{the plate barcode webservice returns "88888"})
-  step(%Q{I am on the show page for pipeline "Cherrypicking for Pulldown"})
-  step(%Q{I check "Select DN222J for batch"})
-  step(%Q{I press "Submit"})
-  step(%Q{I follow "Cherrypick Group By Submission"})
-  step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
-  step(%Q{I press "Next step"})
-  step(%Q{I press "Release this batch"})
-  step(%Q{I set Plate "1220088888782" to be in freezer "Pulldown freezer"})
+  step('plate "222" with 1 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
+  step('plate "222" has nonzero concentration results')
+  step('plate "222" has measured volume results')
+  step('the plate barcode webservice returns "88888"')
+  step('I am on the show page for pipeline "Cherrypicking for Pulldown"')
+  step('I check "Select DN222J for batch"')
+  step('I press "Submit"')
+  step('I follow "Cherrypick Group By Submission"')
+  step('I select "Pulldown Aliquot" from "Plate Purpose"')
+  step('I press "Next step"')
+  step('I press "Release this batch"')
+  step('I set Plate "1220088888782" to be in freezer "Pulldown freezer"')
 
 end
 
@@ -192,7 +194,7 @@ end
 
 Given /^all library tube barcodes are set to know values$/ do
   PulldownMultiplexedLibraryTube.all.each_with_index do |tube,index|
-    tube.update_attributes!(:barcode => "#{index+1}")
+    tube.update_attributes!(:barcode => "#{index + 1}")
   end
 end
 
@@ -235,18 +237,18 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
       :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
       :user => User.last,
       :assets => Well.all,
-      :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>'Standard'}
+      :request_options => { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => 'Standard' }
       )
-    step(%Q{1 pending delayed jobs are processed})
+    step("1 pending delayed jobs are processed")
 end
 
 When /^the last batch is sorted in row order$/ do
-  order = Batch.last.batch_requests.map {|br| br.request.asset.map.row_order }.sort
-  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.request.asset.map.row_order))}
+  order = Batch.last.batch_requests.map { |br| br.request.asset.map.row_order }.sort
+  Batch.last.batch_requests.map { |br| br.update_attributes!(:position => order.index(br.request.asset.map.row_order)) }
 end
 
 When /^the last batch is sorted in row and plate order$/ do
-  source = Batch.last.batch_requests.group_by {|br| br.request.asset.plate.id }
-  order = source.sort_by(&:first).map {|plate,br| br.sort_by {|br| br.request.asset.map.row_order}.map(&:id) }.flatten
-  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.id))}
+  source = Batch.last.batch_requests.group_by { |br| br.request.asset.plate.id }
+  order = source.sort_by(&:first).map { |plate,br| br.sort_by { |br| br.request.asset.map.row_order }.map(&:id) }.flatten
+  Batch.last.batch_requests.map { |br| br.update_attributes!(:position => order.index(br.id)) }
 end

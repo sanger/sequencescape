@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
   def self.up
@@ -13,9 +15,9 @@ class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
         :submission_parameters => {
           :workflow_id => Submission::Workflow.find_by_key('microarray_genotyping').id,
           :request_options => {
-            :initial_state => { flex_id => :pending}
+            :initial_state => { flex_id => :pending }
           },
-          :request_type_ids_list=>[[flex_id]],
+          :request_type_ids_list => [[flex_id]],
           :input_field_infos => cp_ifi
         }
       )
@@ -28,4 +30,3 @@ class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
     end
   end
 end
-

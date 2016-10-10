@@ -1,8 +1,8 @@
 
-require File.dirname(__FILE__)+'/view/menu/item'
-require File.dirname(__FILE__)+'/view/menu/list'
-require File.dirname(__FILE__)+'/view/tabs/item'
-require File.dirname(__FILE__)+'/view/tabs/list'
+require File.dirname(__FILE__) + '/view/menu/item'
+require File.dirname(__FILE__) + '/view/menu/list'
+require File.dirname(__FILE__) + '/view/tabs/item'
+require File.dirname(__FILE__) + '/view/tabs/list'
 
 module ApplicationHelper
 

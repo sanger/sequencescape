@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 ##
 # A stamp is a means of transfering material from a lot
@@ -13,7 +15,7 @@ class Stamp < ActiveRecord::Base
 
   class StampQcable < ActiveRecord::Base
 
-    self.table_name =('stamp_qcables')
+    self.table_name = ('stamp_qcables')
 
     belongs_to :stamp, :inverse_of => :stamp_qcables
     belongs_to :qcable, :inverse_of => :stamp_qcable

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^the barcode for the sample tube "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
   sample_tube = SampleTube.find_by_name(name) or raise StandardError, "Cannot find sample tube #{name.inspect}"
@@ -30,10 +32,10 @@ Given /^there is an asset link between "([^"]*)" and "([^"]*)"$/ do |source, tar
   AssetLink.create_edge(source_plate,target_plate)
   target_plate.wells.each do |target_well|
     source_well = source_plate.wells.located_at(target_well.map_description).first
-    Well::Link.create!(:target_well=>target_well,:source_well=>source_well,:type=>'stock')
+    Well::Link.create!(:target_well => target_well,:source_well => source_well,:type => 'stock')
   end
 end
 
 Given /^the multiplexed library tube with ID (\d+) has a BigDecimal volume$/ do |id|
-  MultiplexedLibraryTube.find(id).update_attributes!(:volume=>8.76000000)
+  MultiplexedLibraryTube.find(id).update_attributes!(:volume => 8.76000000)
 end

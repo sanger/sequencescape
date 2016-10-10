@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 require './test/test_helper'
 require 'csv'
@@ -103,7 +105,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
     end
     context "with an invalid CSV biorobot file" do
       setup do
-        filename = File.dirname(__FILE__)+"/../../data/bioanalysis_qc_results-with-error.csv"
+        filename = File.dirname(__FILE__) + "/../../data/bioanalysis_qc_results-with-error.csv"
         content = read_file filename
 
         @parser = Parsers::BioanalysisCsvParser.new(CSV.parse(content))

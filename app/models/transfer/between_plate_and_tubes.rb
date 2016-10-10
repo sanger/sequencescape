@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = {
@@ -23,7 +25,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   }
 
   class WellToTube < ActiveRecord::Base
-    self.table_name =('well_to_tube_transfers')
+    self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, :class_name => 'Transfer::BetweenPlateAndTubes'
     validates_presence_of :transfer
@@ -50,7 +52,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # NOTE: Performance enhancement to convert a tube to it's minimal representation for presentation.
   def tube_to_hash(tube)
     # Only build the hash once per tube. Shows significant speed improvement, esp. with label_text
-    @tubes||={}
+    @tubes ||= {}
     @tubes[tube.id] ||= {
       :uuid    => tube.uuid,
       :name    => tube.name,
@@ -86,7 +88,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     ActiveSupport::OrderedHash[
       source.stock_wells.map do |well, stock_wells|
         tube = locate_mx_library_tube_for(well, stock_wells)
-        (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [ well, [ tube, stock_wells ] ]
+        (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [well, [tube, stock_wells]]
       end.compact
     ]
   end
@@ -94,7 +96,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   def record_transfer(source, destination, stock_well)
     @transfers ||= {}
-    @transfers[source.map.description] = [ destination, stock_well ]
+    @transfers[source.map.description] = [destination, stock_well]
   end
   private :record_transfer
 
@@ -115,7 +117,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
   # creating an appropriate range.
   def tube_name_for(stock_wells)
-    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort {|w1,w2| w1.map.column_order <=> w2.map.column_order }
+    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort { |w1,w2| w1.map.column_order <=> w2.map.column_order }
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, "There appears to be no stock plate!" if stock_plates.empty?
     raise StandardError, "Cannot handle cross plate pooling!" if stock_plates.size > 1

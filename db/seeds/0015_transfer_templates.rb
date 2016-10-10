@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 COLUMN_RANGES = [
   (1..1),
@@ -19,7 +21,7 @@ def pooling_row_to_first_column_transfer_layout_96
   layout = {}
   ('A'..'H').each do |row|
     (1..12).each do |column|
-      layout["#{row}#{column}"]="#{row}1"
+      layout["#{row}#{column}"] = "#{row}1"
     end
   end
   layout
@@ -84,7 +86,7 @@ ActiveRecord::Base.transaction do
   )
 
   TransferTemplate.create!(
-    :name=>'Transfer wells to MX library tubes by multiplex',
+    :name => 'Transfer wells to MX library tubes by multiplex',
     :transfer_class_name => 'Transfer::FromPlateToTubeByMultiplex'
   )
 

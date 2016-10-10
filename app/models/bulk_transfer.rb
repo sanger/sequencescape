@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 class BulkTransfer < ActiveRecord::Base
   include Uuid::Uuidable
@@ -18,8 +20,8 @@ class BulkTransfer < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       each_transfer do |source,destination,transfers|
         Transfer::BetweenPlates.create!(
-          :source=>source,
-          :destination=>destination,
+          :source => source,
+          :destination => destination,
           :user => user,
           :transfers => transfers,
           :bulk_transfer_id => self.id
@@ -31,8 +33,8 @@ class BulkTransfer < ActiveRecord::Base
 
   def each_transfer
     well_transfers.group_by { |tf| [tf["source_uuid"],tf["destination_uuid"]] }.each do |source_dest, all_transfers|
-      transfers = Hash.new {|h,i| h[i]=[] }
-      all_transfers.each {|t| transfers[t["source_location"]] << t["destination_location"]  }
+      transfers = Hash.new { |h,i| h[i] = [] }
+      all_transfers.each { |t| transfers[t["source_location"]] << t["destination_location"]  }
 
       source = Uuid.find_by_external_id(source_dest.first).resource
       destination = Uuid.find_by_external_id(source_dest.last).resource

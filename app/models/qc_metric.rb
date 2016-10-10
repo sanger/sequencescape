@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 class QcMetric < ActiveRecord::Base
 
@@ -34,15 +36,15 @@ class QcMetric < ActiveRecord::Base
 
   serialize :metrics
 
-  scope :with_asset_ids, ->(ids) { where(:asset_id=>ids) }
+  scope :with_asset_ids, ->(ids) { where(:asset_id => ids) }
 
   scope :for_product, ->(product) {
-      joins(:qc_report=>:product_criteria).
-      where(:product_criteria => { :product_id => product})
+      joins(:qc_report => :product_criteria).
+      where(:product_criteria => { :product_id => product })
   }
 
   scope :stock_metric, ->() {
-    joins(:qc_report=>:product_criteria).
+    joins(:qc_report => :product_criteria).
     where(:product_criteria => { :stage => ProductCriteria::STAGE_STOCK })
   }
 
@@ -116,7 +118,7 @@ class QcMetric < ActiveRecord::Base
   end
 
   def value_error_message(decision, accepted_list)
-    accepted = accepted_list.keys.to_sentence(:last_word_connector=>', or ',:two_words_connector=>' or ')
+    accepted = accepted_list.keys.to_sentence(:last_word_connector => ', or ',:two_words_connector => ' or ')
     "#{decision} is not an acceptable decision. Should be #{accepted}."
   end
 

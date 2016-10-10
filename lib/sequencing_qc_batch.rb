@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011 Genome Research Ltd.
 # Place to put Illumina QC code to be refactored
 module SequencingQcBatch
   # NOTE: Be careful that the length of these do not exceed 25 characters, otherwise you will have to alter the
@@ -118,7 +119,7 @@ module SequencingQcBatch
     define_method(:"qc_#{ direction }_state") do
       raise StandardError, "Current QC state appears to be invalid: '#{ self.qc_state }'" unless qc_states.include?(self.qc_state.to_s)
       return nil if self.qc_state.to_s == qc_states.send(delimiter)
-      return qc_states[ qc_states.index(self.qc_state.to_s)+offset ]
+      return qc_states[qc_states.index(self.qc_state.to_s) + offset]
     end
   end
 
@@ -140,7 +141,7 @@ module SequencingQcBatch
   state_transition_helper(:complete)
 
   def processing_in_manual_qc?
-    [ 'qc_manual_in_progress', 'qc_manual' ].include?(self.qc_state)
+    ['qc_manual_in_progress', 'qc_manual'].include?(self.qc_state)
   end
 
   def qc_pipeline_workflow_id

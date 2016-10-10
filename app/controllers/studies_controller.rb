@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 require "rexml/document"
 
@@ -14,7 +16,7 @@ class StudiesController < ApplicationController
 
   before_action :login_required
   before_action :admin_login_required, :only => [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
-  before_action :manager_login_required, :only => [ :close, :open, :related_studies, :relate_study, :unrelate_study]
+  before_action :manager_login_required, :only => [:close, :open, :related_studies, :relate_study, :unrelate_study]
 
   around_filter :rescue_validation, :only => [:close, :open]
 
@@ -101,7 +103,7 @@ class StudiesController < ApplicationController
   def edit
     @study = Study.find(params[:id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?
-    @users   = User.all
+    @users = User.all
     redirect_if_not_owner_or_admin
   end
 
@@ -124,7 +126,7 @@ class StudiesController < ApplicationController
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => exception
-    Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
     flash.now[:error] = "Failed to update attributes for study!"
     render :action => "edit", :id => @study.id
   end
@@ -153,21 +155,21 @@ class StudiesController < ApplicationController
   end
 
   def collaborators
-    @study    = Study.find(params[:id])
+    @study = Study.find(params[:id])
     @all_roles  = Role.select(:name).uniq
     @roles      = Role.where(:authorizable_id => @study.id, :authorizable_type => "Study")
     @users      = User.order(:first_name)
   end
 
   def related_studies
-    @study    = Study.find(params[:id])
+    @study = Study.find(params[:id])
     @relation_names = StudyRelationType::names
     @studies = current_user.interesting_studies
-    @studies.reject {|s| s == @study }
+    @studies.reject { |s| s == @study }
 
     #TODO create a proper ReversedStudyRelation
-    @relations = @study.study_relations.map { |r| [r.related_study, r.name ] } +
-      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name ] }
+    @relations = @study.study_relations.map { |r| [r.related_study, r.name] } +
+      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
 
   end
 
@@ -176,13 +178,13 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     status = 500
 
-    if pr=params[:related_study]
-      relation_type_name    = pr[:relation_type]
+    if pr = params[:related_study]
+      relation_type_name = pr[:relation_type]
       related_study = Study.find_by_id pr[:study_id]
 
       begin
         yield(relation_type_name, related_study)
-        redirect_to :action =>  "related_studies"
+        redirect_to :action => "related_studies"
         return
       rescue ActiveRecord::RecordInvalid, RuntimeError => ex
         status = 403
@@ -213,7 +215,7 @@ class StudiesController < ApplicationController
   end
 
   def follow
-    @study    = Study.find(params[:id])
+    @study = Study.find(params[:id])
     if current_user.has_role? 'follower', @study
       current_user.has_no_role 'follower', @study
       flash[:notice] = "You have stopped following the '#{@study.name}' study."
@@ -225,33 +227,33 @@ class StudiesController < ApplicationController
   end
 
   def close
-     @study = Study.find(params[:id])
-     @study.deactivate!
-     @study.save
-     flash[:notice] = "This study has been deactivated"
-     redirect_to study_path(@study)
-   end
+    @study = Study.find(params[:id])
+    @study.deactivate!
+    @study.save
+    flash[:notice] = "This study has been deactivated"
+    redirect_to study_path(@study)
+  end
 
-   def open
-     @study = Study.find(params[:id])
-     @study.activate!
-     @study.save
-     flash[:notice] = "This study has been activated"
-     redirect_to study_path(@study)
-   end
+  def open
+    @study = Study.find(params[:id])
+    @study.activate!
+    @study.save
+    flash[:notice] = "This study has been activated"
+    redirect_to study_path(@study)
+  end
 
-   def show_accession
+  def show_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text =@study.accession_service.accession_study_xml(@study)
+      xml_text = @study.accession_service.accession_study_xml(@study)
       format.xml  { render(:text => xml_text) }
     end
-   end
+  end
 
    def show_policy_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text =@study.accession_service.accession_policy_xml(@study)
+      xml_text = @study.accession_service.accession_policy_xml(@study)
       format.xml  { render(:text => xml_text) }
     end
    end
@@ -259,7 +261,7 @@ class StudiesController < ApplicationController
    def show_dac_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text =@study.accession_service.accession_dac_xml(@study)
+      xml_text = @study.accession_service.accession_dac_xml(@study)
       format.xml  { render(:text => xml_text) }
     end
    end
@@ -339,7 +341,7 @@ class StudiesController < ApplicationController
      if @study.errors.count > 0
        flash[:error] = "Error submitting your plates"
        respond_to do |format|
-         format.html { render :action => "new_plate_submission"}
+         format.html { render :action => "new_plate_submission" }
          format.xml  { render :xml  => flash, :status => :unprocessable_entity }
          format.json { render :json => flash, :status => :unprocessable_entity }
        end
@@ -351,7 +353,7 @@ class StudiesController < ApplicationController
      if @study.errors.count > 0
        flash[:error] = "Error submitting your plates"
        respond_to do |format|
-         format.html { render :action => "new_plate_submission"}
+         format.html { render :action => "new_plate_submission" }
          format.xml  { render :xml  => flash, :status => :unprocessable_entity }
          format.json { render :json => flash, :status => :unprocessable_entity }
        end
@@ -444,7 +446,7 @@ class StudiesController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+      Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
       flash[:error] = "Failed to update attributes for study!"
       render :action => "edit", :id => @study.id
     end

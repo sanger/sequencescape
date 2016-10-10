@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 module StudiesHelper
   def status_link_title
@@ -12,7 +14,7 @@ module StudiesHelper
   end
 
   def display_owner(study)
-    owners_for_display([ study.owner ].compact)
+    owners_for_display([study.owner].compact)
   end
 
   def display_owners(study)
@@ -48,7 +50,7 @@ public
 
   def study_link(study,options)
     link_text = content_tag(:strong,study.name) << ' ' <<
-    content_tag(:span,study.state,:class=>"study-state label label-#{bootstrapify_study_state(study.state)}")
+    content_tag(:span,study.state,:class => "study-state label label-#{bootstrapify_study_state(study.state)}")
     link_to(link_text, study_path(study), options)
   end
 

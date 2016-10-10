@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 
 require 'carrierwave'
@@ -39,7 +41,7 @@ class Document < ActiveRecord::Base
   belongs_to :documentable, :polymorphic => true
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
-  has_uploaded :uploaded_data, {:serialization_column => "filename"}
+  has_uploaded :uploaded_data, { :serialization_column => "filename" }
 
   # Method provided for backwards compatibility
   def current_data
@@ -53,9 +55,8 @@ class Document < ActiveRecord::Base
   def update_document_attributes
     if uploaded_data.present?
       self.content_type = uploaded_data.file.content_type
-      self.size    = uploaded_data.file.size
+      self.size = uploaded_data.file.size
     end
   end
   private :update_document_attributes
 end
-

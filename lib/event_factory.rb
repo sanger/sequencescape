@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
 require 'lib/eventful_mailer'
 class EventFactory
 
@@ -84,7 +85,7 @@ class EventFactory
 
   # creates an event and sends an email when samples are register to a study
   def self.study_has_samples_registered(study,samples,user)
-    sample_names_string = samples.map{|s| s.name}.join("','")
+    sample_names_string = samples.map { |s| s.name }.join("','")
     content = "Samples '#{sample_names_string}' registered by user '#{user.login}' on #{Time.now}"
 
     study_event = Event.create(

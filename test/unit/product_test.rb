@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 require "test_helper"
@@ -16,12 +18,12 @@ class ProductTest < ActiveSupport::TestCase
 
     should 'only allow one active product with each name' do
       @product_a = create :product
-      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create :product, :name=> @product_a.name }
+      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create :product, :name => @product_a.name }
     end
 
     should 'allow products with the same name if one is deprecated' do
       @product_a = create :product, :deprecated_at => Time.now
-      @product_b = create :product, :name=> @product_a.name
+      @product_b = create :product, :name => @product_a.name
       assert @product_b.valid?
     end
 

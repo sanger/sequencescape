@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012 Genome Research Ltd.
 # This module may be used to benchmark the API processes
 
 class ResponseTimer
@@ -17,7 +18,7 @@ class ResponseTimer
     def close
       @response.close if @response.respond_to?(:close) # Pass us on
       stop = Time.now
-      @output.syswrite "Request: #{@env['REQUEST_METHOD']}%#{@env['REQUEST_URI']}%#{@env["rack.input"].string}%#{stop-@start}\n"
+      @output.syswrite "Request: #{@env['REQUEST_METHOD']}%#{@env['REQUEST_URI']}%#{@env["rack.input"].string}%#{stop - @start}\n"
       #@output.syswrite %Q{curl -X #{@env['REQUEST_METHOD']} -H "X_SEQUENCESCAPE_CLIENT_ID:development" -H "USER_AGENT:Ruby" -H "COOKIE:WTSISignOn=" -H "ACCEPT:application/json" -H "Content-Type: application/json" -d '#{@env["rack.input"].string}' http://localhost:3000#{@env['REQUEST_PATH']} --noproxy localhost\n}
     end
 

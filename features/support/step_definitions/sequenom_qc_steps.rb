@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 # TODO: Remove these methods from Plate because it's bad to do this in a test
 class Plate
@@ -41,9 +43,9 @@ Given /^I have a source plate which contains samples which have no gender inform
 end
 
 When /^I try to create a Sequenom QC plate from the input plate$/ do
-  step(%Q{I fill in "Plate 1" with "1220125054743"})
-  step(%Q{I fill in "User barcode" with "2470000100730"})
-  step(%Q{I press "Create new Plate"})
+  step('I fill in "Plate 1" with "1220125054743"')
+  step('I fill in "User barcode" with "2470000100730"')
+  step('I press "Create new Plate"')
 end
 
 
@@ -65,4 +67,3 @@ When /^well "([^"]*)" should come from well "([^"]*)" on plate "([^"]*)"$/ do |s
     assert plate.children.map(&:id).include?(sequenom_plate.id)
   end
 end
-

@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.
 class ::Sample
   # This returns all samples that require an accession number to be generated based on the conditions of their
   # studies and themselves.  It comes from a long (and highly frustrating) experience of decoding the
@@ -14,7 +15,7 @@ class ::Sample
       'LEFT JOIN data_release_study_types AS trea_drst ON trea_drst.id = trea_sm.data_release_study_type_id'
     ]).
     readonly(false).
-    where([ %q{
+    where(["
       (tcnan_sm.sample_ebi_accession_number IS NULL OR TRIM(tcnan_sm.sample_ebi_accession_number) = '') AND
       (tcnan_sm.sample_taxon_id IS NOT NULL) AND
       (tcnan_sm.sample_common_name IS NOT NULL AND TRIM(tcnan_sm.sample_common_name) != '') AND
@@ -30,11 +31,11 @@ class ::Sample
           trea_sm.data_release_timing IN (:data_release_timing)
         )
       )
-    }, {
-      :data_release_timing          => [ 'never', 'delayed' ],
+    ", {
+      :data_release_timing          => ['never', 'delayed'],
       :data_release_study_type      => DataReleaseStudyType::DATA_RELEASE_TYPES_SAMPLES,
-      :data_release_managed_or_open => [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ]
-    } ])
+      :data_release_managed_or_open => [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED]
+    }])
   }
 end
 

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module SubmissionsHelper
 
@@ -12,14 +14,14 @@ module SubmissionsHelper
 
   #<label for="submission_order_params_field_info_key">field_info.display_name/label>
   def order_input_label(field_info)
-    label('submission[order_params]',field_info.key, field_info.display_name,:class=>'control-label col-sm-6')
+    label('submission[order_params]',field_info.key, field_info.display_name,:class => 'control-label col-sm-6')
   end
 
   # Returns a either a text input or a selection tag based on the 'kind'
   # of the order parameter passed in.
   # field_info is expected to be FieldInfo [sic]
   def order_input_tag(order, field_info)
-    content_tag(:div,:class=>'col-sm-6') do
+    content_tag(:div,:class => 'col-sm-6') do
       case field_info.kind
       when "Selection" then order_selection_tag(order, field_info)
       when "Text"      then order_text_tag(order, field_info)
@@ -128,7 +130,7 @@ module SubmissionsHelper
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      display_user_error(raw("<h3>Your submission has failed:</h3><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>"))
+      display_user_error(raw("<h3>Your submission has failed:</h3><p> #{h((submission.message || 'No failure reason recorded').lines.first)} </p>"))
     when 'ready'
       alert(:success) { raw('Your submission has been <strong>processed</strong>.') }
     when 'cancelled'
@@ -152,7 +154,7 @@ module SubmissionsHelper
 
   def submission_link(submission,options)
     link_text = content_tag(:strong,submission.name) << ' ' <<
-    content_tag(:span,submission.state,:class=>"batch-state label label-#{bootstrapify_submission_state(submission.state)}")
+    content_tag(:span,submission.state,:class => "batch-state label label-#{bootstrapify_submission_state(submission.state)}")
     link_to(link_text, submission_path(submission), options)
   end
 end

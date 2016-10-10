@@ -1,14 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 Given /^I release the last completed batch$/ do
-  batch =Batch.where(state:"Completed").last
+  batch = Batch.where(state:"Completed").last
   visit release_batch_path(batch)
 end
 
 Given /^I finish the last started batch$/ do
-  batch =Batch.where(state:"Started").last
+  batch = Batch.where(state:"Started").last
   visit finish_batch_path(batch)
 end
 
@@ -62,5 +64,5 @@ When /^the batch is started$/ do
 end
 
 Then /^the customer should accept responsibility for all requests in the last batch$/ do
-  Batch.last.requests.all? {|r| r.request_metadata.customer_accepts_responsibility? }
+  Batch.last.requests.all? { |r| r.request_metadata.customer_accepts_responsibility? }
 end

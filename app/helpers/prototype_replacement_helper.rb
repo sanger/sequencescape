@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 module PrototypeReplacementHelper
   # def button_to_remote(*args); end
@@ -15,8 +17,8 @@ module PrototypeReplacementHelper
 
 
   def tooltip(name='Help', opts={}, &block)
-    button = content_tag(:span,name,:class=>'btn btn-info popover-trigger',:'data-content' => capture(opts,&block),
-    :'data-toggle' => 'popover', :'data-title'=> opts.fetch(:title,'About this'))
+    button = content_tag(:span,name,:class => 'btn btn-info popover-trigger',:'data-content' => capture(opts,&block),
+    :'data-toggle' => 'popover', :'data-title' => opts.fetch(:title,'About this'))
     concat button
   end
 

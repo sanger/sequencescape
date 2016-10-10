@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class Accessionable::Base
   InvalidData = Class.new(AccessionService::AccessionServiceError)
@@ -41,12 +43,12 @@ class Accessionable::Base
 
   def extract_accession_number(xmldoc)
           element = xmldoc.root.elements["/RECEIPT/#{schema_type.upcase}"]
-          accession_number       = element &&  element.attributes['accession']
+          accession_number = element && element.attributes['accession']
   end
 
   def extract_array_express_accession_number(xmldoc)
           element = xmldoc.root.elements["/RECEIPT/#{schema_type.upcase}/EXT_ID[@type='ArrayExpress']"]
-          accession_number       = element &&  element.attributes['accession']
+          accession_number = element && element.attributes['accession']
   end
 
   def update_accession_number!(user, accession_number)

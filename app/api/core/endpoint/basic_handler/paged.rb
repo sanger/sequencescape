@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Core::Endpoint::BasicHandler::Paged
   def self.page_accessor(action, will_paginate_method, default_value = nil)
@@ -32,7 +34,7 @@ module Core::Endpoint::BasicHandler::Paged
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    actions_to_details = [[:first,1]] +  ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
+    actions_to_details = [[:first,1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
     Hash[actions_to_details.map { |action,page| [action,core_path(page, options)] }]
   end
   private :pages_to_actions

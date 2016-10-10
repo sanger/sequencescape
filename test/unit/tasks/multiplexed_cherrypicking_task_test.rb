@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -20,11 +22,11 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   def self.shared
     context "with tag clashes" do
       setup do
-        tag_hash = Hash.new {|h,i| h[i] = create :tag }
-        @tags = [1,2,3,4,5,5,6,6].map {|i| tag_hash[i] }
+        tag_hash = Hash.new { |h,i| h[i] = create :tag }
+        @tags = [1,2,3,4,5,5,6,6].map { |i| tag_hash[i] }
         @requests = (1..8).map do |i|
           r = create :pooled_cherrypick_request
-          r.asset.aliquots.first.update_attributes!(:tag => @tags[i-1] )
+          r.asset.aliquots.first.update_attributes!(:tag => @tags[i - 1] )
           r
         end
 
@@ -56,11 +58,11 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   def params
     {
       :request_locations => request_location_hash,
-      :commit =>"Next step",
-      :batch_id =>"2",
-      :next_stage =>"true",
-      :workflow_id =>"24",
-      :id=>"2",
+      :commit => "Next step",
+      :batch_id => "2",
+      :next_stage => "true",
+      :workflow_id => "24",
+      :id => "2",
       :plate_purpose_id => @purpose_id,
       :existing_plate_barcode => @barcode,
       :micro_litre_volume_required => "5"
@@ -91,12 +93,12 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
         setup do
 
-          tag_hash = Hash.new {|h,i| h[i] = create :tag }
-          @tags = [1,2,3,4,5,6,7,8].map {|i| tag_hash[i] }
+          tag_hash = Hash.new { |h,i| h[i] = create :tag }
+          @tags = [1,2,3,4,5,6,7,8].map { |i| tag_hash[i] }
 
           @requests = (1..8).map do |i|
             r = create :pooled_cherrypick_request
-            r.asset.aliquots.first.update_attributes!(:tag => @tags[i-1] )
+            r.asset.aliquots.first.update_attributes!(:tag => @tags[i - 1] )
             r
           end
 

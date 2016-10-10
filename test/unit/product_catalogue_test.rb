@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 require "test_helper"
@@ -14,13 +16,13 @@ class ProductCatalogueTest < ActiveSupport::TestCase
     context 'with single product behaviour' do
       setup do
         @catalogue = create :single_product_catalogue
-        @product =  create :product
+        @product = create :product
         @catalogue.products << @product
       end
 
       context '#product_for' do
         should 'return the product' do
-          assert_equal @product, @catalogue.product_for({:attributes=>:do_not_matter})
+          assert_equal @product, @catalogue.product_for({ :attributes => :do_not_matter })
         end
       end
     end
@@ -60,7 +62,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
 
     should 'create a catalogue' do
       assert @constructed
-      assert_equal 1, ProductCatalogue.count -  @catalogue_count
+      assert_equal 1, ProductCatalogue.count - @catalogue_count
     end
 
     should 'only register novel products' do

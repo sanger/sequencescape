@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -14,8 +16,8 @@ class SampleRegistrarTest < ActiveSupport::TestCase
       setup do
         @initial_agc =  AssetGroup.count
         @initial_src =  SampleRegistrar.count
-        @sample_count =  Sample.count
-        @sampletube_count =  SampleTube.count
+        @sample_count = Sample.count
+        @sampletube_count = SampleTube.count
         SampleRegistrar.create!(
           :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
           :study => @study,
@@ -71,7 +73,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
     context 'registering a sample within an asset group' do
       context 'when the asset group does not exist' do
         setup do
-          @assetgroup_count =  AssetGroup.count
+          @assetgroup_count = AssetGroup.count
           SampleRegistrar.create!(
             :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
             :study => @study,
@@ -82,7 +84,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should "change AssetGroup.count by 1" do
-          assert_equal 1,  AssetGroup.count  - @assetgroup_count, "Expected AssetGroup.count to change by 1"
+          assert_equal 1,  AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by 1"
         end
 
         should 'put the sample tube into the asset groups' do
@@ -100,7 +102,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         # construction!
         context 'the actual test should give you an error. No Samples inserted.' do
           setup do
-            @initial_sc =  Sample.count
+            @initial_sc = Sample.count
             assert_raise(ActiveRecord::RecordInvalid) do
               SampleRegistrar.create!(
                 :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
@@ -160,10 +162,10 @@ class SampleRegistrarTest < ActiveSupport::TestCase
 
       context 'ignores any samples to be registered' do
         setup do
-          @sample_count =  Sample.count
+          @sample_count = Sample.count
           @initial_src =  SampleRegistrar.count
           @initial_agc =  AssetGroup.count
-          @sampletube_count =  SampleTube.count
+          @sampletube_count = SampleTube.count
           SampleRegistrar.register!([
             {
               :ignore => '1',
@@ -202,8 +204,8 @@ class SampleRegistrarTest < ActiveSupport::TestCase
 
       context 'registers multiple samples correctly' do
         setup do
-          @initial_sample_registrar =  SampleRegistrar.count
-          @sample_count =  Sample.count
+          @initial_sample_registrar = SampleRegistrar.count
+          @sample_count = Sample.count
           @sampletube_count =  SampleTube.count
           @assetgroup_count =  AssetGroup.count
           SampleRegistrar.register!([

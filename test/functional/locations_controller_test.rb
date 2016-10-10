@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 require 'locations_controller'
@@ -12,8 +14,8 @@ class LocationsControllerTest < ActionController::TestCase
       @controller = LocationsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @location  =FactoryGirl.create :location
-      @user =FactoryGirl.create :user
+      @location = FactoryGirl.create :location
+      @user = FactoryGirl.create :user
       session[:user] = @user.id
     end
     should_require_login
@@ -51,7 +53,7 @@ class LocationsControllerTest < ActionController::TestCase
       end
 
       should "render create_Location" do
-        assert_equal @old_count+1, Location.count
+        assert_equal @old_count + 1, Location.count
         assert_redirected_to location_path(assigns(:location))
       end
     end
@@ -85,7 +87,7 @@ class LocationsControllerTest < ActionController::TestCase
       end
 
       should "destroy given Locations" do
-        assert_equal @old_count-1, Location.count
+        assert_equal @old_count - 1, Location.count
         assert_redirected_to locations_path
       end
     end

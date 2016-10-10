@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -19,7 +21,7 @@ class QcDecisionTest < ActiveSupport::TestCase
       setup do
         @lot = create :lot
         @user = create :user
-        @user.roles.create!(:name=>'qa_manager')
+        @user.roles.create!(:name => 'qa_manager')
         @user_b = create :user
         @qcable_a = create :qcable, :lot => @lot, :state => 'pending'
         @qcable_b = create :qcable, :lot => @lot, :state => 'pending'
@@ -30,9 +32,9 @@ class QcDecisionTest < ActiveSupport::TestCase
           @qcd = QcDecision.create(
             :user => @user,
             :lot  => @lot,
-            :decisions=> [
-              {:qcable=> @qcable_a, :decision=>'release'},
-              {:qcable=> @qcable_b, :decision=>'fail'}
+            :decisions => [
+              { :qcable => @qcable_a, :decision => 'release' },
+              { :qcable => @qcable_b, :decision => 'fail' }
             ]
           )
         end
@@ -44,7 +46,7 @@ class QcDecisionTest < ActiveSupport::TestCase
 
         should "record the decision" do
           assert_equal 2, @qcd.qc_decision_qcables.count
-          assert_equal ['fail','release'], @qcd.qc_decision_qcables.map {|d| d.decision }.sort
+          assert_equal ['fail','release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
         end
 
       end
@@ -54,9 +56,9 @@ class QcDecisionTest < ActiveSupport::TestCase
           QcDecision.create!(
             :user => @user,
             :lot  => @lot,
-            :decisions=> [
-              {:qcable=> @qcable_a, :decision=>'delete'},
-              {:qcable=> @qcable_b, :decision=>'fail'}
+            :decisions => [
+              { :qcable => @qcable_a, :decision => 'delete' },
+              { :qcable => @qcable_b, :decision => 'fail' }
             ]
           )
         end
@@ -67,9 +69,9 @@ class QcDecisionTest < ActiveSupport::TestCase
           QcDecision.create!(
             :user => @user_b,
             :lot  => @lot,
-            :decisions=> [
-              {:qcable=> @qcable_a, :decision=>'release'},
-              {:qcable=> @qcable_b, :decision=>'fail'}
+            :decisions => [
+              { :qcable => @qcable_a, :decision => 'release' },
+              { :qcable => @qcable_b, :decision => 'fail' }
             ]
           )
         end

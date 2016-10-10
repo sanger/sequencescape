@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Studies::SampleRegistrationController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -27,17 +29,17 @@ class Studies::SampleRegistrationController < ApplicationController
       format.xml  { render(:xml  => flash.to_xml)  }
     end
   rescue SampleRegistrar::NoSamplesError => exception
-    flash.now[:error]      = 'You do not appear to have specified any samples'
-    @sample_registrars = [ SampleRegistrar.new ]
+    flash.now[:error] = 'You do not appear to have specified any samples'
+    @sample_registrars = [SampleRegistrar.new]
     render(:action => 'new')
   rescue SampleRegistrar::RegistrationError => exception
-    flash.now[:error]      = 'Your samples have not been registered'
+    flash.now[:error] = 'Your samples have not been registered'
     @sample_registrars = exception.sample_registrars
     render(:action => 'new')
   end
 
   def new
-    @sample_registrars = [ SampleRegistrar.new ]
+    @sample_registrars = [SampleRegistrar.new]
   end
 
   def spreadsheet

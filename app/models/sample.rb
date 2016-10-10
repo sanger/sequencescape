@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'rexml/text'
 class Sample < ActiveRecord::Base
@@ -91,7 +93,7 @@ class Sample < ActiveRecord::Base
 
     # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
 
-    md=Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact',left:"#{query}%",exact:query).pluck(:sample_id)
+    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact',left:"#{query}%",exact:query).pluck(:sample_id)
 
     # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
     # of numbers seems to massively increase the query length.
@@ -131,7 +133,7 @@ class Sample < ActiveRecord::Base
   def shorten_sanger_sample_id
     short_sanger_id = case sanger_sample_id
       when blank? then name
-      when sanger_sample_id.size <10 then sanger_sample_id
+      when sanger_sample_id.size < 10 then sanger_sample_id
       when /([\d]{7})$/ then $1
       else
         sanger_sample_id
@@ -239,7 +241,7 @@ class Sample < ActiveRecord::Base
   end
 
   def sample_supplier_name_empty?(supplier_sample_name)
-    supplier_sample_name.blank? || [ 'empty', 'blank', 'water', 'no supplier name available', 'none' ].include?(supplier_sample_name.downcase)
+    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
   def accession_service
@@ -261,11 +263,11 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
-  GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
-  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
-                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue' ]
-  SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
+  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
+  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
+  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
+                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
+  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
@@ -348,7 +350,7 @@ class Sample < ActiveRecord::Base
       :sample_sra_hold         => SRA_HOLD_VALUES
 #      :reference_genome        => ??
     }.inject({}) do |h,(k,v)|
-      h[k] = v.inject({}) { |a,b| a[b.downcase] = b ; a }
+      h[k] = v.inject({}) { |a,b| a[b.downcase] = b; a }
       h
     end
 
@@ -367,9 +369,9 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services=>:EGA, :downcase => true)
-    include_tag(:phenotype, :services=>:EGA)
-    include_tag(:donor_id, :services=>:EGA, :as => 'subject_id')
+    include_tag(:gender, :services => :EGA, :downcase => true)
+    include_tag(:phenotype, :services => :EGA)
+    include_tag(:donor_id, :services => :EGA, :as => 'subject_id')
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)
@@ -465,7 +467,7 @@ class Sample < ActiveRecord::Base
   end
 
   def friendly_name
-    sanger_sample_id||name
+    sanger_sample_id || name
   end
 
   # These don't really belong here, but exist due to the close coupling between sample

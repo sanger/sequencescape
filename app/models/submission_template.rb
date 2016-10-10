@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 # It associates a name to a pre-filled submission (subclass) and a serialized set of attributes
 # We could have use a Prototype Factory , and so just associate a name to existing submission
@@ -28,7 +30,7 @@ class SubmissionTemplate < ActiveRecord::Base
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
-  scope :hidden,               -> { order('product_line_id ASC').where([ 'superceded_by_id != ?', LATEST_VERSION ]) }
+  scope :hidden,               -> { order('product_line_id ASC').where(['superceded_by_id != ?', LATEST_VERSION]) }
   scope :visible,              -> { order('product_line_id ASC').where( :superceded_by_id => LATEST_VERSION ) }
   scope :include_product_line, -> { includes(:product_line) }
 
@@ -130,7 +132,7 @@ class SubmissionTemplate < ActiveRecord::Base
     klass = submission_class_name.constantize
     #TODO[mb14] Hack. This is to avoid to have to rename it in database or seen
     #The hack is not needed for subclasses as they inherits from Order
-    klass == Submission ? Order  : klass
+    klass == Submission ? Order : klass
   end
 
   private

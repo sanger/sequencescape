@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 module Submission::ProjectValidation
   def self.included(base)
@@ -58,9 +60,9 @@ module Submission::ProjectValidation
   # Hack to be able to build order
   # from pulled data
   def save_after_unmarshalling
-    @saving_without_validation=true
+    @saving_without_validation = true
     save_without_validation
-    @saving_without_validation=false
+    @saving_without_validation = false
   end
 
 

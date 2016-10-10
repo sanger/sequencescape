@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 class Comment < ActiveRecord::Base
   # include Uuid::Uuidable
@@ -18,7 +20,7 @@ class Comment < ActiveRecord::Base
     # Rails handles counts on group statements strangely (See the Comments proxy on plate)
 
     if submissions.present?
-      rids = Request.where(:submission_id=>submissions).pluck(:id)
+      rids = Request.where(:submission_id => submissions).pluck(:id)
       where([
         '(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',
         rids,plate.id
@@ -38,8 +40,7 @@ class Comment < ActiveRecord::Base
   def self.counts_for(commentables)
     return 0 if commentables.empty?
     type = commentables.first.class.base_class.name
-    where(:commentable_type=>type,:commentable_id=>commentables).group(:commentable_id).count
+    where(:commentable_type => type,:commentable_id => commentables).group(:commentable_id).count
   end
 
 end
-

@@ -1,11 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 
 class SubmissionsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :lab_manager_login_required, :only => [:change_priority]
@@ -50,8 +52,8 @@ class SubmissionsController < ApplicationController
   end
 
   def change_priority
-    Submission.find(params[:id]).update_attributes!(:priority=>params[:submission][:priority])
-    redirect_to :action=>:show, :id=>params[:id]
+    Submission.find(params[:id]).update_attributes!(:priority => params[:submission][:priority])
+    redirect_to :action => :show, :id => params[:id]
   end
 
   def index
@@ -66,7 +68,7 @@ class SubmissionsController < ApplicationController
   def cancel
     submission = Submission.find(params[:id])
     submission.cancel!
-    redirect_to :action=>:show, :id=>params[:id]
+    redirect_to :action => :show, :id => params[:id]
   end
 
   def destroy
@@ -85,7 +87,7 @@ class SubmissionsController < ApplicationController
     @presenter = Submission::SubmissionPresenter.new(current_user, :id => params[:id])
   end
 
- def study
+  def study
     @study       = Study.find(params[:id])
     @submissions = @study.submissions
   end
@@ -105,4 +107,3 @@ class SubmissionsController < ApplicationController
   end
   ##################################################         End of AJAX ROUTES
 end
-

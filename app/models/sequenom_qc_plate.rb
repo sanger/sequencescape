@@ -1,10 +1,12 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class SequenomQcPlate < Plate
   DEFAULT_SIZE = 384
-  self.per_page   = 50
+  self.per_page = 50
 
   attr_accessor :gender_check_bypass
   attr_accessor :plate_prefix
@@ -14,10 +16,6 @@ class SequenomQcPlate < Plate
 
   after_create :populate_wells_from_source_plates
 
-  def print_labels(barcode_printer, number_of_barcodes = 3)
-    BarcodePrinter.print(self.barcode_labels(number_of_barcodes.to_i), barcode_printer.name, prefix, "long", label_text_top, label_text_bottom)
-  end
-
   def source_plates
     return [] if self.parents.empty?
     ordered_source_plates = []
@@ -25,7 +23,7 @@ class SequenomQcPlate < Plate
       if plate_barcode.blank?
         ordered_source_plates << nil
       else
-        ordered_source_plates << self.parents.select{|plate| plate.barcode == plate_barcode}.first
+        ordered_source_plates << self.parents.select { |plate| plate.barcode == plate_barcode }.first
       end
     end
 
@@ -76,6 +74,14 @@ class SequenomQcPlate < Plate
     true
   end
 
+  def label_text_top
+    "#{plate_label(2)} #{plate_label(3)}"
+  end
+
+  def label_text_bottom
+    "#{plate_label(4)} #{plate_label(5)}"
+  end
+
   def connect_input_plates(input_plate_barcodes)
     self.parents = Plate.with_machine_barcode(input_plate_barcodes)
   end
@@ -88,7 +94,7 @@ class SequenomQcPlate < Plate
 
   def destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
     row_offset, col_offset = quadrant_row_col_offset(quadrant)
-    self.find_map_by_rowcol( (row*2) + row_offset, (col*2) +col_offset )
+    self.find_map_by_rowcol( (row * 2) + row_offset, (col * 2) + col_offset )
   end
 
   # ---------------------------
@@ -201,24 +207,10 @@ end
     true
   end
 
-  def barcode_labels(number_of_barcodes)
-    (1..number_of_barcodes).map do |plate_number|
-      PrintBarcode::Label.new(:number => self.barcode, :prefix => prefix, :suffix => plate_purpose.name)
-    end
-  end
-
   # Create a match object for the input plate names from this
   # sequenom plate's name.
   def label_match
     @label_match ||= name.match(/^([^\d]+)(\d+)?_(\d+)?_(\d+)?_(\d+)?_(\d+)$/)
-  end
-
-  def label_text_top
-    "#{plate_label(2)} #{plate_label(3)}"
-  end
-
-  def label_text_bottom
-    "#{plate_label(4)} #{plate_label(5)}"
   end
 
   # This is the date format used by show when the plate was created

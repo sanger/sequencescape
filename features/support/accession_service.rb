@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require File.expand_path(File.join(File.dirname(__FILE__), 'fake_sinatra_service.rb'))
 
@@ -50,7 +52,7 @@ class FakeAccessionService < FakeSinatraService
   end
 
   def add_payload(payload)
-    sent.push(Hash[*payload.map{|k,v| [k, v.readlines]}.map{|k,v| [k,(v unless v.empty?)]}.flatten])
+    sent.push(Hash[*payload.map { |k,v| [k, v.readlines] }.map { |k,v| [k,(v unless v.empty?)] }.flatten])
   end
 
   class Service < FakeSinatraService::Base

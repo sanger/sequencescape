@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.
 
 # A cache sweeper that clears out the batch XML that we're caching to improve the performance
 # of NPG.
@@ -24,13 +26,13 @@ class BatchCacheSweeper < ActiveRecord::Observer
 
   def through(record, &block)
     model, conditions = case
-      when record.is_a?(BatchRequest) then [ 'batch_requests', query_conditions_for(record)                                                ]
-      when record.is_a?(Request)      then [ 'batch_requests', "batch_requests.request_id=#{record.id}"                                    ]
-      when record.is_a?(Asset)        then [ 'requests',       "(requests.asset_id=#{record.id} OR requests.target_asset_id=#{record.id})" ]
-      when record.is_a?(Aliquot)      then [ 'aliquots',       query_conditions_for(record)                                                ]
-      when record.is_a?(Tag)          then [ 'aliquots',       "aliquots.tag_id=#{record.id}"                                              ]
+      when record.is_a?(BatchRequest) then ['batch_requests', query_conditions_for(record)]
+      when record.is_a?(Request)      then ['batch_requests', "batch_requests.request_id=#{record.id}"]
+      when record.is_a?(Asset)        then ['requests',       "(requests.asset_id=#{record.id} OR requests.target_asset_id=#{record.id})"]
+      when record.is_a?(Aliquot)      then ['aliquots',       query_conditions_for(record)]
+      when record.is_a?(Tag)          then ['aliquots',       "aliquots.tag_id=#{record.id}"]
     end
-    yield(JOINS.values.slice(0, JOINS.keys.index(model)+1), conditions)
+    yield(JOINS.values.slice(0, JOINS.keys.index(model) + 1), conditions)
   end
   private :through
 
@@ -49,7 +51,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
   private :handle
 
   def messengers_for(record)
-    Messenger.where(:target_type=>'Batch',:target_id=>ids_for(record))
+    Messenger.where(:target_type => 'Batch',:target_id => ids_for(record))
   end
 
 end

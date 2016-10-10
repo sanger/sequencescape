@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -18,16 +20,16 @@ class SearchesControllerTest < ActionController::TestCase
 
     context "searching (when logged in)" do
       setup do
-        @user =FactoryGirl.create :user
+        @user = FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
 
-        @study                    =FactoryGirl.create :study, :name => "FindMeStudy"
-        @study2                   =FactoryGirl.create :study, :name => "Another study"
-        @sample                   =FactoryGirl.create :sample, :name => "FindMeSample"
-        @asset                    =FactoryGirl.create(:sample_tube, :name => 'FindMeAsset')
-        @asset_group_to_find      =FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
-        @asset_group_to_not_find  =FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
+        @study = FactoryGirl.create :study, :name => "FindMeStudy"
+        @study2 = FactoryGirl.create :study, :name => "Another study"
+        @sample = FactoryGirl.create :sample, :name => "FindMeSample"
+        @asset = FactoryGirl.create(:sample_tube, :name => 'FindMeAsset')
+        @asset_group_to_find = FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
+        @asset_group_to_not_find = FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
 
         @submission = FactoryGirl.create :submission, name: 'FindMe'
         @ignore_submission = FactoryGirl.create :submission, name: 'IgnoreMeSub'

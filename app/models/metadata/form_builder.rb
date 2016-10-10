@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Metadata::FormBuilder < Metadata::BuilderBase
   def initialize(*args, &block)
@@ -26,7 +28,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
 
   def select_by_association(association, options={},html_options={})
-    association_target, options = association.to_s.classify.constantize, { }
+    association_target, options = association.to_s.classify.constantize, {}
     options[:selected] = association_target.default.for_select_dropdown.last if @object.send(association).nil? and association_target.default.present?
     select(:"#{association}_id", association_target.for_select_association, options,html_options)
   end
@@ -95,7 +97,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
 
     values  = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map { |v| v.to_s.downcase.gsub(/[^a-z0-9]+/, '_') }
     content = capture(&block)
-    concat(content_tag(:div, content, :class => [ :related_to, options[:to], values ].flatten.join(' ')))
+    concat(content_tag(:div, content, :class => [:related_to, options[:to], values].flatten.join(' ')))
 
     @related_fields.push(options[:to])
     content
@@ -108,7 +110,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         Array(key).each { |k| values[k.to_s] = Array(value) }
       end
     end
-    @changing.push([ field, options ])
+    @changing.push([field, options])
   end
 
   # Renders the Javascript for dealing with showing and hiding the related fields.

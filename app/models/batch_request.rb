@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class BatchRequest < ActiveRecord::Base
   include Api::BatchRequestIO::Extensions
@@ -31,7 +33,7 @@ class BatchRequest < ActiveRecord::Base
 
   # Each request can only belong to one batch.
   validates_uniqueness_of :request_id, :message => '%{value} is already in a batch.'
-  before_validation(:if => :requires_position?, :unless=>:position?) do |record|
+  before_validation(:if => :requires_position?, :unless => :position?) do |record|
     record.position = (record.batch.batch_requests.map(&:position).compact.max || 0) + 1
   end
 

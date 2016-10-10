@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class StudyReportsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -14,7 +16,7 @@ class StudyReportsController < ApplicationController
   end
 
   def new
-    params[:study_report] = {:study => params[:study]}
+    params[:study_report] = { :study => params[:study] }
     create
   end
 
@@ -42,10 +44,9 @@ class StudyReportsController < ApplicationController
   def show
     study_report = StudyReport.find(params[:id])
     send_data( study_report.report.read, :type => "text/plain",
-    :filename=>"#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
+    :filename => "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
     :disposition => 'attachment')
   end
 
 
 end
-

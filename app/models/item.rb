@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class Item < ActiveRecord::Base
   include Uuid::Uuidable
@@ -23,7 +25,7 @@ class Item < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => [:workflow_id, :version], :on => :create, :message => "already in use (item)"
 
  scope :for_search_query, ->(query,with_includes) {
-    where([ 'name LIKE ? OR id=?', "%#{query}%", query ])
+    where(['name LIKE ? OR id=?', "%#{query}%", query])
   }
 
   before_validation :set_version, :on => :create

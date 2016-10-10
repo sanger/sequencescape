@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 def open_barcode_stream(&block)
   user = "read_only"
   password = "read_only"
@@ -29,7 +30,7 @@ def read_user_id
       id = l.to_i
       user = f.gets.strip
 
-      user_barcode[user]=id
+      user_barcode[user] = id
       puts "#{user} => #{id}"
 
       f.gets #read a blamk lien as record separator

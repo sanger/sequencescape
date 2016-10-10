@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^I am using "(.*)" to authenticate$/ do |auth_method|
   configatron.authentication = auth_method
@@ -51,7 +53,7 @@ end
 
 Then /^I should not be on the login page$/ do
   # assert_no_tag :tag => :title, :child => "Sequencescape : Login"
-  %Q{I should not see "Sequencescape : Login" within "title"}
+  'I should not see "Sequencescape : Login" within "title"'
 end
 
 Then /^I should be logged in as "([^\"]*)"$/ do |login|

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
 module Submission::AssetSubmissionFinder
   def is_plate?(details)
@@ -37,7 +39,7 @@ module Submission::AssetSubmissionFinder
 
   def find_tubes_including_samples_for!(details)
 
-    prefix_cache = Hash.new {|cache,prefix| cache[prefix]= BarcodePrefix.find_by_prefix(prefix) }
+    prefix_cache = Hash.new { |cache,prefix| cache[prefix] = BarcodePrefix.find_by_prefix(prefix) }
 
     details['barcode'].map do |barcode|
       match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"

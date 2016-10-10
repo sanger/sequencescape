@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/ do |create_mx_tube, table|
   number_of_tubes = table.rows.size
@@ -18,7 +20,7 @@ Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/
 end
 
 Then /^the tag changing table should be:$/ do |expected_results_table|
-  actual_table = table( fetch_table('table.library_tube_list').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(.+)/] }}   )
+  actual_table = table( fetch_table('table.library_tube_list').collect { |row| row.collect { |cell| cell[/^(Tag [\d]+)|(.+)/] } }   )
   expected_results_table.diff!(actual_table)
 end
 
@@ -34,7 +36,7 @@ When /^I change the tags of the library tubes:$/ do |table|
   tube_to_tags = {}
   table.hashes.each do |row|
     barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
-    tube = LibraryTube.find_by_barcode(barcode)              or raise StandardError, "Cannot find library tube with barcode #{barcode.inspect}"
+    tube = LibraryTube.find_by_barcode(barcode) or raise StandardError, "Cannot find library tube with barcode #{barcode.inspect}"
     library_tubes << tube
 
     tag = Tag.find(tag_id)
@@ -43,12 +45,12 @@ When /^I change the tags of the library tubes:$/ do |table|
 
   step "I am on the tag changing page"
   step(%Q{I fill in "change_tags_library_tube_ids" with "#{library_tubes.map(&:id).join('\n')}"})
-  step %Q{I press "Submit"}
+  step 'I press "Submit"'
   # assign the correct tag
   tube_to_tags.each do|tube_id, tag_name|
     step %Q{I select "#{tag_name}" from "change_tags_library_tubes[#{tube_id}]"}
   end
-  step %Q{I press "Submit"}
+  step 'I press "Submit"'
   #done
 end
 

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Barcode
   # Anything that has a barcode is considered barcodeable.
@@ -23,7 +25,7 @@ class Barcode
     end
 
     def broadcast_barcode
-      AmqpObserver.instance << Messenger.new(:template=>'BarcodeIO',:root=>'barcode',:target=>self)
+      AmqpObserver.instance << Messenger.new(:template => 'BarcodeIO',:root => 'barcode',:target => self)
     end
 
     def barcode_type
@@ -72,6 +74,10 @@ class Barcode
       self
     end
 
+    def barcode!
+      barcode
+    end
+
   end
 
   InvalidBarcode = Class.new(StandardError)
@@ -79,10 +85,10 @@ class Barcode
   # Sanger barcoding scheme
 
   def self.prefix_to_number(prefix)
-    first  = prefix.getbyte(0)-64
-    second = prefix.getbyte(1)-64
+    first  = prefix.getbyte(0) - 64
+    second = prefix.getbyte(1) - 64
     first  = 0 if first < 0
-    second  = 0 if second < 0
+    second = 0 if second < 0
     return ((first * 27) + second) * 1000000000
   end
 
@@ -93,17 +99,17 @@ class Barcode
       raise ArgumentError, "Number : #{number} to big to generate a barcode." if number_s.size > 7
       human = prefix + number_s + calculate_checksum(prefix, number)
       barcode = prefix_to_number(prefix) + (number * 100)
-      barcode = barcode + human.getbyte(human.length-1)
+      barcode = barcode + human.getbyte(human.length - 1)
   end
 
   def self.calculate_barcode(prefix, number)
     barcode = calculate_sanger_barcode(prefix, number)
-    barcode*10+calculate_EAN13(barcode)
+    barcode * 10 + calculate_EAN13(barcode)
   end
 
   def self.calculate_checksum(prefix, number)
     string = prefix + number.to_s
-    len  = string.length
+    len = string.length
     sum = 0
     string.each_byte do |byte|
       sum += byte * len
@@ -145,7 +151,7 @@ class Barcode
   end
 
   def self.prefix_to_human(prefix)
-    human_prefix = ((prefix.to_i/27)+64).chr + ((prefix.to_i%27)+64).chr
+    human_prefix = ((prefix.to_i / 27) + 64).chr + ((prefix.to_i % 27) + 64).chr
   end
 
   def self.human_to_machine_barcode(human_barcode)
@@ -165,7 +171,7 @@ class Barcode
     prefix, number, check = self.split_barcode(code)
     human_prefix = self.prefix_to_human(prefix)
     if calculate_barcode(human_prefix, number.to_i) == code.to_i
-      bcode = "#{human_prefix}#{number.to_s}#{check.chr}"
+      bcode = "#{human_prefix}#{number}#{check.chr}"
     end
     bcode
   end
@@ -215,9 +221,9 @@ class Barcode
     code = code.to_i
     ean = 0
     weight = initial_weight
-    while code >0
+    while code > 0
       code, c = code.divmod 10
-      ean += c*weight % 10
+      ean += c * weight % 10
       weight = weight == 1 ? 3 : 1
     end
 

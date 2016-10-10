@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -72,8 +74,8 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         @assay_plate_b = create :pico_assay_b_plate, :barcode => "8888"
         @assay_plate_c = create :pico_assay_a_plate, :barcode => "5555"
         @assay_plate_d = create :pico_assay_a_plate, :barcode => "5555"
-        @sequenom_plate_a = create :sequenom_qc_plate , :barcode => "7777", :name=>'a'
-        @sequenom_plate_b = create :sequenom_qc_plate , :barcode => "6666", :name=>'b'
+        @sequenom_plate_a = create :sequenom_qc_plate, :barcode => "7777", :name => 'a'
+        @sequenom_plate_b = create :sequenom_qc_plate, :barcode => "6666", :name => 'b'
 
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_a)
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_b)

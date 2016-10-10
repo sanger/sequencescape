@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
 ActiveRecord::Base.transaction do
 
@@ -24,7 +26,7 @@ ActiveRecord::Base.transaction do
         :no_target_asset => false
   }
 
-  shared_options_a = shared_options_b.clone.merge({:product_line_id => ProductLine.find_by_name('Illumina-A')})
+  shared_options_a = shared_options_b.clone.merge({ :product_line_id => ProductLine.find_by_name('Illumina-A') })
 
   [
     {
@@ -120,15 +122,15 @@ ActiveRecord::Base.transaction do
     "HiSeq Paired end sequencing",
     "HiSeq 2500 Single end sequencing",
     "HiSeq 2500 Paired end sequencing"
-  ].map {|s| "#{pipeline} #{s}"}
+  ].map { |s| "#{pipeline} #{s}" }
   end
 
   [
-    {:pulldown_requests=>["Illumina-B STD"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Multiplexed WGS'},
-    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pooled"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pooled PATH', :label=>'ILB PATH'},
-    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pippin"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pippin PATH', :label=>'ILB PATH'},
-    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pooled"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pooled HWGS', :label=>'ILB HWGS'},
-    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pippin"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pippin HWGS', :label=>'ILB HWGS'}
+    { :pulldown_requests => ["Illumina-B STD"], :defaults => { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name => 'Multiplexed WGS' },
+    { :pulldown_requests => ["Shared Library Creation","Illumina-B Pooled"], :defaults => { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name => 'Pooled PATH', :label => 'ILB PATH' },
+    { :pulldown_requests => ["Shared Library Creation","Illumina-B Pippin"], :defaults => { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name => 'Pippin PATH', :label => 'ILB PATH' },
+    { :pulldown_requests => ["Shared Library Creation","Illumina-B Pooled"], :defaults => { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name => 'Pooled HWGS', :label => 'ILB HWGS' },
+    { :pulldown_requests => ["Shared Library Creation","Illumina-B Pippin"], :defaults => { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name => 'Pippin HWGS', :label => 'ILB HWGS' }
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
@@ -137,16 +139,16 @@ ActiveRecord::Base.transaction do
 
     RequestType.where(:name => sequencing_request_type_names_for('Illumina-B')).find_each do |sequencing_request_type|
       submission                   = LinearSubmission.new
-      submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
+      submission.request_type_ids  = [cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
       submission.info_differential = workflow.id
       submission.workflow          = workflow
       submission.request_options   = defaults
-      submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
+      submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
     end
   end
 
   [
-    {:pulldown_requests=>["Illumina-A Shared Library Creation","Illumina-A ISC"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => "8" }, :name=>'HTP ISC', :label=>'ILA ISC'}
+    { :pulldown_requests => ["Illumina-A Shared Library Creation","Illumina-A ISC"], :defaults => { 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => "8" }, :name => 'HTP ISC', :label => 'ILA ISC' }
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
@@ -155,12 +157,12 @@ ActiveRecord::Base.transaction do
 
     RequestType.where(:name => sequencing_request_type_names_for('Illumina-A')).find_each do |sequencing_request_type|
       submission                   = LinearSubmission.new
-      submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
+      submission.request_type_ids  = [cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
       submission.info_differential = workflow.id
       submission.workflow          = workflow
       submission.request_options   = defaults
 
-      submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
+      submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
 
     end
   end
@@ -169,19 +171,19 @@ ActiveRecord::Base.transaction do
   end
 
 re_request = RequestType.create!(
-    :key=>'illumina_a_re_isc',
-    :name=>'Illumina-A ReISC',
-    :workflow=>workflow,
+    :key => 'illumina_a_re_isc',
+    :name => 'Illumina-A ReISC',
+    :workflow => workflow,
     :asset_type => 'Well',
     :initial_state => 'pending',
-    :order=>1,
+    :order => 1,
     :request_class_name => 'Pulldown::Requests::IscLibraryRequest',
     :for_multiplexing => true,
     :product_line => ProductLine.find_by_name('Illumina-A'),
     :target_purpose => Purpose.find_by_name('Standard MX')
   ) do |rt|
     rt.acceptable_plate_purposes << Purpose.find_by!(name:'Lib PCR-XP')
-     RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
+     RequestType::Validator.create!(:request_type => rt, :request_option => "library_type", :valid_options => RequestType::Validator::LibraryTypeValidator.new(rt.id))
   end
 
   RequestType.create!(
@@ -200,7 +202,7 @@ re_request = RequestType.create!(
     ) do |rt|
       rt.pooling_method = RequestType::PoolingMethod.create!(
           :pooling_behaviour => 'PlateRow',
-          :pooling_options   => {:pool_count=>8}
+          :pooling_options   => { :pool_count => 8 }
         )
       rt.acceptable_plate_purposes << Purpose.find_by!(name:"PF Cherrypicked")
       RequestType::Validator.create!(
@@ -246,7 +248,7 @@ re_request = RequestType.create!(
     )
 
       RequestType.find_by_key!('illumina_b_hiseq_x_paired_end_sequencing').acceptable_plate_purposes << PlatePurpose.create!(
-        :name        =>'Strip Tube Purpose',
+        :name => 'Strip Tube Purpose',
         :target_type => 'StripTube',
         :can_be_considered_a_stock_plate => false,
         :cherrypickable_target => false,
@@ -275,7 +277,7 @@ StripTubeCreationPipeline.create!(
   :group_name => 'Sequencing'
 ) do |pipeline|
   pipeline.request_types << RequestType.find_by_key!('illumina_htp_strip_tube_creation')
-  pipeline.workflow = LabInterface::Workflow.create!(:name=>'Strip Tube Creation').tap do |workflow|
+  pipeline.workflow = LabInterface::Workflow.create!(:name => 'Strip Tube Creation').tap do |workflow|
     stct = StripTubeCreationTask.create!(
       :name => 'Strip Tube Creation',
       :workflow => workflow,

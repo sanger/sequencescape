@@ -1,10 +1,12 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 class Api::Messages::FlowcellIO < Api::Base
 
-  MANUAL_QC_BOOLS = {'passed'=>true,'failed'=>false }
+  MANUAL_QC_BOOLS = { 'passed' => true,'failed' => false }
 
   module LaneExtensions # Included in SequencingRequest
 
@@ -28,7 +30,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def flowcell_barcode
-          lab_events.each {|e| e.descriptor_value_for(flowcell_identifier).tap {|bc| return bc unless bc.nil? } }
+          lab_events.each { |e| e.descriptor_value_for(flowcell_identifier).tap { |bc| return bc unless bc.nil? } }
         end
 
         def samples
@@ -39,7 +41,7 @@ class Api::Messages::FlowcellIO < Api::Base
           end
         end
 
-        delegate :spiked_in_buffer, :external_release, :to=>:target_asset, :allow_nil => true
+        delegate :spiked_in_buffer, :external_release, :to => :target_asset, :allow_nil => true
 
         def controls
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []
@@ -71,7 +73,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def mx_library
-          asset.external_identifier||"UNKNOWN"
+          asset.external_identifier || "UNKNOWN"
         end
 
         def manual_qc
@@ -156,7 +158,7 @@ class Api::Messages::FlowcellIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }])}
+        scope :including_associations_for_json, -> { includes([:uuid_object, :user, :assignee, { :pipeline => :uuid_object }]) }
 
         def flowcell_barcode
           requests.first.flowcell_barcode
@@ -259,5 +261,3 @@ class Api::Messages::FlowcellIO < Api::Base
 
 
 end
-
-

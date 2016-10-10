@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 # Defines named roles for users that may be applied to
 # objects in a polymorphic fashion. For example, you could create a role
@@ -8,7 +10,7 @@
 # or without any specification at all.
 class Role < ActiveRecord::Base
   class UserRole < ActiveRecord::Base
-    self.table_name =('roles_users')
+    self.table_name = ('roles_users')
     belongs_to :role
     belongs_to :user
   end
@@ -40,7 +42,7 @@ class Role < ActiveRecord::Base
         has_many :users, :through => :roles
 
         scope :with_related_users_included, -> { includes(:roles => :users ) }
-        scope :of_interest_to, ->(user) { joins(:users).where(:users=>{:id=>user}).distinct }
+        scope :of_interest_to, ->(user) { joins(:users).where(:users => { :id => user }).distinct }
       end
     end
 
@@ -49,7 +51,7 @@ class Role < ActiveRecord::Base
       def role_relation(name, role_name)
         scope name.to_sym, ->(user) {
           joins(:roles,:users).
-          where(roles:{name:role_name.to_s},users:{id:user.id})
+          where(roles:{ name:role_name.to_s },users:{ id:user.id })
         }
       end
 

@@ -25,12 +25,12 @@ module Informatics
     end
 
     def balanced_against(a)
-      puts "SETTING BALANCED PORTS: #{a.to_s}"
+      puts "SETTING BALANCED PORTS: #{a}"
       @balanced_ports = a
     end
 
     def balanced_ports
-      puts "GETTING BALANCED PORTS: #{@balanced_ports.to_s}"
+      puts "GETTING BALANCED PORTS: #{@balanced_ports}"
       @balanced_ports
     end
 

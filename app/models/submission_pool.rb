@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 # SubmissionPools are designed to view submissions in the context of a particular asset
@@ -51,7 +53,7 @@ class SubmissionPool < ActiveRecord::Base
   has_many :tag2_layout_template_submissions, :class_name => 'Tag2Layout::TemplateSubmission', :foreign_key => 'submission_id'
   has_many :tag2_layout_templates, :through => :tag2_layout_template_submissions
 
-  scope :include_uuid, ->() { }
+  scope :include_uuid, ->() {}
   scope :include_outer_request, ->() { includes(:outer_request) }
 
   scope :for_plate, ->(plate) {
@@ -99,7 +101,7 @@ class SubmissionPool < ActiveRecord::Base
   end
 
   def used_tag2_layout_templates
-    tag2_layout_templates.map {|template| {"uuid"=>template.uuid,"name"=>template.name}}
+    tag2_layout_templates.map { |template| { "uuid" => template.uuid,"name" => template.name } }
   end
 
 end

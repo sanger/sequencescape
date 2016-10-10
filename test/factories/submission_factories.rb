@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012 Genome Research Ltd.
 FactoryGirl.define do
   factory :submission__ do |submission|
     #raise "call FactoryHelp::submission instead "
@@ -13,13 +14,13 @@ FactoryGirl.define do
   #easier to keep it here at the moment because we are moving stuff between both
   factory :order do |order|
     study
-    workflow              {|workflow| workflow.association(:submission_workflow)}
+    workflow              { |workflow| workflow.association(:submission_workflow) }
     project
     user
     item_options          {}
     request_options       {}
     assets                []
-    request_types         { [ create(:request_type).id ] }
+    request_types         { [create(:request_type).id] }
 
     factory :order_with_submission do
       after(:build) { |o| o.create_submission(:user_id => o.user_id) }

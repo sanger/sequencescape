@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 module Tasks::SamplePrepQcHandler
   def render_sample_prep_qc_task(task, params)
@@ -11,7 +13,7 @@ module Tasks::SamplePrepQcHandler
     requests = task.find_batch_requests(params[:batch_id])
 
     params[:request].each do |request_id, qc_status|
-      requests_found = requests.select{ |request| request.id == request_id.to_i }
+      requests_found = requests.select { |request| request.id == request_id.to_i }
       request = requests_found.first
       if request.nil?
         flash[:error] = "Couldnt find Request #{request_id}"

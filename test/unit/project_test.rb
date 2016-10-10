@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -69,7 +71,7 @@ class ProjectTest < ActiveSupport::TestCase
         @request_type    = create :request_type
         @request_type_2  = create :request_type, :name => "request_type_2", :key => "request_type_2"
         @request_type_3  = create :request_type, :name => "request_type_3", :key => "request_type_3"
-        @submission       = FactoryHelp::submission :project => @project, :asset_group_name => 'to avoid asset errors'
+        @submission = FactoryHelp::submission :project => @project, :asset_group_name => 'to avoid asset errors'
         # Failed
         create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
         create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
@@ -111,4 +113,3 @@ class ProjectTest < ActiveSupport::TestCase
 
   end
 end
-

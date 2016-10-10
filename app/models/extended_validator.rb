@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 ##
 # Extended validators are used to provide extra validation
@@ -15,7 +17,7 @@ class ExtendedValidator < ActiveRecord::Base
 
   class RequestTypeExtendedValidator < ActiveRecord::Base
 
-    self.table_name=('request_types_extended_validators')
+    self.table_name = ('request_types_extended_validators')
 
     belongs_to :extended_validator
     belongs_to :request_type

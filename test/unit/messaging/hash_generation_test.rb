@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -47,7 +49,7 @@ class HashGenerationTest < ActiveSupport::TestCase
 
     setup do
 
-      @test_assn    = mock('assn')
+      @test_assn = mock('assn')
       @test_has_many_more = mock('hasm_more_assn')
       @test_ham_assn = mock('hasm_assn')
 
@@ -72,10 +74,10 @@ class HashGenerationTest < ActiveSupport::TestCase
       should 'generate the expected hash' do
         hash = ExampleApi.to_hash(@example_model)
         assert_equal({
-          'name'=>'example',
-          'association_value'=>'example_2',
-          'has_many_association'=>[{'nested_value'=>'example_3','has_many_more'=>[{'nested_value_2'=>'example_4'}]}],
-          'updated_at'=> Date.new(2013,1,4)
+          'name' => 'example',
+          'association_value' => 'example_2',
+          'has_many_association' => [{ 'nested_value' => 'example_3','has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
+          'updated_at' => Date.new(2013,1,4)
         }, hash)
       end
     end
@@ -89,10 +91,10 @@ class HashGenerationTest < ActiveSupport::TestCase
       should 'record an updated timestamp' do
         hash = ExampleApi.to_hash(@example_model)
         assert_equal({
-          'name'=>'example',
-          'association_value'=>'example_2',
-          'has_many_association'=>[{'nested_value'=>'example_3','has_many_more'=>[{'nested_value_2'=>'example_4'}]}],
-          'updated_at'=> Date.new(2013,1,6)
+          'name' => 'example',
+          'association_value' => 'example_2',
+          'has_many_association' => [{ 'nested_value' => 'example_3','has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
+          'updated_at' => Date.new(2013,1,6)
         }, hash)
       end
     end

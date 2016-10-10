@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require File.join(File.dirname(__FILE__), *%w[.. test_helper])
 
@@ -102,7 +104,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                 @study.study_metadata.data_release_prevention_reason_comment = 'It just is'
               end
 
-              [ 'managed', 'open' ].each do |strategy|
+              ['managed', 'open'].each do |strategy|
                 context "and strategy is #{ strategy }" do
                   setup do
                     @study.study_metadata.data_release_strategy = strategy
@@ -122,7 +124,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                 @study.study_metadata.data_release_delay_reason = 'phd study'
               end
 
-              [ 'managed', 'open' ].each do |strategy|
+              ['managed', 'open'].each do |strategy|
                 context "and strategy is #{ strategy }" do
                   setup do
                     @study.study_metadata.data_release_strategy       = strategy

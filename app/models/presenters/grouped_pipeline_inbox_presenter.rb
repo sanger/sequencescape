@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 
 module Presenters
   class GroupedPipelineInboxPresenter
@@ -71,7 +73,7 @@ module Presenters
     end
 
     def valid_fields
-      @valid_fields ||= self.class.fields.select {|n,m,c| c.nil? || self.send(c) }
+      @valid_fields ||= self.class.fields.select { |n,m,c| c.nil? || self.send(c) }
     end
 
     def purpose_important?
@@ -172,11 +174,11 @@ module Presenters
     end
 
     def stock_barcode
-      parent.source_plate.try(:sanger_human_barcode)||"Unknown"
+      parent.source_plate.try(:sanger_human_barcode) || "Unknown"
     end
 
     def still_required
-      wells/parent.height
+      wells / parent.height
     end
 
     # Gates

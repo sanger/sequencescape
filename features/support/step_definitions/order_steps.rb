@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
 Given /^no order templates exist$/ do
   SubmissionTemplate.destroy_all
@@ -25,9 +27,9 @@ Given /^I have an order created with the following details based on the template
       when 'pre_cap_group' then v
       else Uuid.include_resource.lookup_single_uuid(v).resource
       end
-    [ k.to_sym, v ]
+    [k.to_sym, v]
   end
-  user = User.find_by(login:'abc123')||FactoryGirl.create(:user,login:'abc123')
+  user = User.find_by(login:'abc123') || FactoryGirl.create(:user,login:'abc123')
   order = template.create_order!({ :user => user }.merge(Hash[order_attributes]))
 end
 
@@ -54,6 +56,5 @@ end
 
 When /^the order with UUID "([^"]*)" has been added to a submission$/ do |uuid|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
-  Submission.create!(:orders => [ order ], :user => order.user )
+  Submission.create!(:orders => [order], :user => order.user )
 end
-

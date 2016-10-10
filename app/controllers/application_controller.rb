@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require "exceptions"
 
@@ -49,7 +51,7 @@ class ApplicationController < ActionController::Base
   public
 
   def block_api_access(message = nil, format = :xml)
-    content = {:error => "Unsupported API access"}
+    content = { :error => "Unsupported API access" }
     content[:message] = message unless message.nil?
     { format => content.send("to_#{format}".to_sym, :root => :errors), :status => 406 }
   end
@@ -66,7 +68,7 @@ class ApplicationController < ActionController::Base
   end
 
   def first_param(key)
-    value  = params[key]
+    value = params[key]
     value ? value.first : nil
   end
 

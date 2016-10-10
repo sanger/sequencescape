@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 require_dependency 'tube/purpose'
 
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
@@ -30,15 +32,15 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect{|r| r.asset.present?}.asset.plate
+    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect { |r| r.asset.present? }.asset.plate
   end
 
   def library_source_plates(tube)
     Plate.select('DISTINCT assets.*').
-      joins(:wells=>:requests).
-      where(:requests=>{
+      joins(:wells => :requests).
+      where(:requests => {
         :target_asset_id => tube.id,
-        :sti_type=>[Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
+        :sti_type => [Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
       }
     ).map(&:source_plate)
   end
@@ -49,13 +51,13 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :request_state
 
   def mappings
-    {'cancelled' =>'cancelled','failed' => 'failed','qc_complete' => 'passed'}
+    { 'cancelled' => 'cancelled','failed' => 'failed','qc_complete' => 'passed' }
   end
   private :mappings
 
   def generate_events_for(tube,orders,user)
     orders.each do |order_id|
-      BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>order_id})
+      BroadcastEvent::LibraryComplete.create!(:seed => tube,:user => user,:properties => { :order_id => order_id })
     end
   end
   private :generate_events_for

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 require 'lib/lab_where_client'
 # A simple class to handle the behaviour from the labwhere reception controller
@@ -38,7 +40,7 @@ class LabwhereReception
     begin
 
       scan = LabWhereClient::Scan.create(
-        :location_barcode=> location_barcode,
+        :location_barcode => location_barcode,
         :user_code => user_code,
         :labware_barcodes => asset_barcodes
       )
@@ -46,11 +48,11 @@ class LabwhereReception
       unless scan.valid?
         errors.add(:scan, scan.error)
         return false
-      end 
+      end
 
     rescue LabWhereClient::LabwhereException => exception
       errors.add(:base, "Could not connect to Labwhere. Sequencescape location has still been updated")
-      return false 
+      return false
     end
 
     assets.each do |asset|

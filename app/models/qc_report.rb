@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 class QcReport < ActiveRecord::Base
@@ -15,7 +17,7 @@ class QcReport < ActiveRecord::Base
 
     module ClassMethods
       def available_states
-        QcReport.aasm.states.map {|state| state.name.to_s }
+        QcReport.aasm.states.map { |state| state.name.to_s }
       end
     end
 
@@ -98,7 +100,7 @@ class QcReport < ActiveRecord::Base
           ActiveRecord::Base.transaction do
             assets.each do |asset|
               criteria = product_criteria.assess(asset)
-              QcMetric.create!(:asset=>asset,:qc_decision=>criteria.qc_decision,:metrics=>criteria.metrics,:qc_report=>self)
+              QcMetric.create!(:asset => asset,:qc_decision => criteria.qc_decision,:metrics => criteria.metrics,:qc_report => self)
             end
           end
         end

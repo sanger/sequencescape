@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class SamplesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -10,7 +12,7 @@ class SamplesController < ApplicationController
 
   #require 'curb'
 
-  before_action :admin_login_required, :only => [ :administer, :destroy ]
+  before_action :admin_login_required, :only => [:administer, :destroy]
 
   def index
     @samples = Sample.order(created_at: :desc).page(params[:page])
@@ -23,8 +25,8 @@ class SamplesController < ApplicationController
 
   def new
     @sample = Sample.new
-    @workflows  = Submission::Workflow.all
-    @studies   = Study.alphabetical
+    @workflows = Submission::Workflow.all
+    @studies = Study.alphabetical
   end
 
   def create
@@ -99,7 +101,7 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
       begin
-        cleaned_params  = clean_params_from_check(params[:sample])
+        cleaned_params = clean_params_from_check(params[:sample])
         @sample.update_attributes!(cleaned_params)
         flash[:notice] = "Sample details have been updated"
         redirect_to sample_path(@sample)
@@ -131,7 +133,7 @@ class SamplesController < ApplicationController
   def remove_from_study
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
-    StudySample.find_by(:study_id=>params[:study_id],:sample_id=>params[:id]).destroy
+    StudySample.find_by(:study_id => params[:study_id],:sample_id => params[:id]).destroy
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end
@@ -139,7 +141,7 @@ class SamplesController < ApplicationController
   def show_accession
     @sample = Sample.find(params[:id])
     respond_to do |format|
-      xml_text =@sample.accession_service.accession_sample_xml(@sample)
+      xml_text = @sample.accession_service.accession_sample_xml(@sample)
       format.xml  { render(:text => xml_text) }
     end
   end
@@ -167,9 +169,9 @@ class SamplesController < ApplicationController
 
    def taxon_lookup
      if params[:term]
-       url= configatron.taxon_lookup_url+"/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
+       url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
      elsif params[:id]
-       url = configatron.taxon_lookup_url+"/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
+       url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
      else return
      end
 
@@ -177,15 +179,15 @@ class SamplesController < ApplicationController
      if configatron.disable_web_proxy == true
        RestClient.proxy = ''
      elsif not configatron.proxy.blank?
-       RestClient.proxy= configatron.proxy
+       RestClient.proxy = configatron.proxy
        rc.headers["User-Agent"] = "Internet Explorer 5.0"
      end
      #rc.verbose = true
      body = rc.get.body
 
      respond_to do |format|
-       format.js {render :text =>body}
-       format.xml {render :text =>body}
+       format.js { render :text => body }
+       format.xml { render :text => body }
        #      format.html {render :nothing}
      end
    end

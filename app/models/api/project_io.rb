@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Api::ProjectIO < Api::Base
   module Extensions
@@ -16,7 +18,7 @@ class Api::ProjectIO < Api::Base
 
         scope :including_associations_for_json, -> { includes([
             :uuid_object, {
-              :project_metadata => [ :project_manager, :budget_division ],
+              :project_metadata => [:project_manager, :budget_division],
               :roles => :users
             }
           ])}
@@ -40,17 +42,17 @@ class Api::ProjectIO < Api::Base
 
   with_association(:project_metadata) do
     with_association(:project_manager, :lookup_by => :name) do
-      map_attribute_to_json_attribute(:name , 'project_manager')
+      map_attribute_to_json_attribute(:name, 'project_manager')
     end
-    map_attribute_to_json_attribute(:project_cost_code , 'cost_code')
-    map_attribute_to_json_attribute(:funding_comments , 'funding_comments')
-    map_attribute_to_json_attribute(:collaborators , 'collaborators')
-    map_attribute_to_json_attribute(:external_funding_source , 'external_funding_source')
+    map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
+    map_attribute_to_json_attribute(:funding_comments, 'funding_comments')
+    map_attribute_to_json_attribute(:collaborators, 'collaborators')
+    map_attribute_to_json_attribute(:external_funding_source, 'external_funding_source')
     with_association(:budget_division, :lookup_by => :name) do
-      map_attribute_to_json_attribute(:name , 'budget_division')
+      map_attribute_to_json_attribute(:name, 'budget_division')
     end
-    map_attribute_to_json_attribute(:sequencing_budget_cost_centre , 'budget_cost_centre')
-    map_attribute_to_json_attribute(:project_funding_model , 'funding_model')
+    map_attribute_to_json_attribute(:sequencing_budget_cost_centre, 'budget_cost_centre')
+    map_attribute_to_json_attribute(:project_funding_model, 'funding_model')
   end
 
   extra_json_attributes do |object, json_attributes|

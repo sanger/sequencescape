@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -16,8 +18,8 @@ class RequestTest < ActiveSupport::TestCase
 
     context "while scoping with #for_order_including_submission_based_requests" do
       setup do
-        @study =  create :study
-        @project =  create :project
+        @study = create :study
+        @project = create :project
 
         @asset = create :empty_sample_tube
         @asset.aliquots.create!(:sample => create(:sample, :studies => [@study]))
@@ -80,11 +82,11 @@ class RequestTest < ActiveSupport::TestCase
 
         @genotyping_request_type = create :request_type, :name => "genotyping"
         @cherrypick_request_type = create :request_type, :name => "cherrypick", :target_asset_type => nil
-        @submission  = FactoryHelp::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
+        @submission = FactoryHelp::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = create :item, :submission => @submission
 
-        @genotype_pipeline = create :pipeline, :name =>"genotyping pipeline", :request_types => [ @genotyping_request_type ]
-        @cherrypick_pipeline = create :pipeline, :name => "cherrypick pipeline", :request_types => [ @cherrypick_request_type ], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
+        @genotype_pipeline = create :pipeline, :name => "genotyping pipeline", :request_types => [@genotyping_request_type]
+        @cherrypick_pipeline = create :pipeline, :name => "cherrypick pipeline", :request_types => [@cherrypick_request_type], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
         @request1 = create(
           :request_without_assets,
@@ -119,7 +121,7 @@ class RequestTest < ActiveSupport::TestCase
           @request2 = create :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
           @request3 = create :request_without_assets, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
 
-          @batch = @cherrypick_pipeline.batches.create!(:requests => [ @request1 ])
+          @batch = @cherrypick_pipeline.batches.create!(:requests => [@request1])
 
           @request1.reload
           @request2.reload
@@ -144,8 +146,8 @@ class RequestTest < ActiveSupport::TestCase
        should "return same properties" do
          @request.reload
          @new_request.reload
-         original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at'=>nil)
-         copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at'=>nil)
+         original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
+         copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
          assert_equal original_attributes, copied_attributes
        end
 
@@ -450,14 +452,14 @@ class RequestTest < ActiveSupport::TestCase
       end
 
       should "update when request is started" do
-        @request.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+        @request.request_metadata.update_attributes!(:customer_accepts_responsibility => true)
         assert @request.request_metadata.customer_accepts_responsibility?
       end
 
       should "not update once a request is failed" do
         @request.fail!
         assert_raise ActiveRecord::RecordInvalid do
-          @request.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+          @request.request_metadata.update_attributes!(:customer_accepts_responsibility => true)
         end
       end
 

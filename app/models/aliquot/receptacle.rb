@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Aliquot::Receptacle < Asset
   include Transfer::State
@@ -34,13 +36,13 @@ class Aliquot::Receptacle < Asset
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
 
   # Named scopes for the future
-  scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
-  scope :include_aliquots_for_api, -> { includes( :aliquots => [ {:sample=>[:uuid_object,:study_reference_genome,{:sample_metadata=>:reference_genome}]}, { :tag => :tag_group }, :bait_library ] ) }
+  scope :include_aliquots, -> { includes( :aliquots => [:sample, :tag, :bait_library] ) }
+  scope :include_aliquots_for_api, -> { includes( :aliquots => [{ :sample => [:uuid_object,:study_reference_genome,{ :sample_metadata => :reference_genome }] }, { :tag => :tag_group }, :bait_library] ) }
   scope :for_summary, -> { includes(:map,:samples,:studies,:projects) }
-  scope :include_creation_batches, -> { includes(:creation_batches)}
-  scope :include_source_batches, -> { includes(:source_batches)}
+  scope :include_creation_batches, -> { includes(:creation_batches) }
+  scope :include_source_batches, -> { includes(:source_batches) }
 
-  scope :for_study_and_request_type, ->(study,request_type) { joins(:aliquots,:requests).where(aliquots:{study_id:study}).where(requests:{request_type_id:request_type}) }
+  scope :for_study_and_request_type, ->(study,request_type) { joins(:aliquots,:requests).where(aliquots:{ study_id:study }).where(requests:{ request_type_id:request_type }) }
 
   # This is a lambda as otherwise the scope selects Aliquot::Receptacles
   scope :with_aliquots, -> { joins(:aliquots) }
@@ -50,7 +52,7 @@ class Aliquot::Receptacle < Asset
   scope :with_sample,    ->(sample) { where(:aliquots => { :sample_id => Array(sample) }).joins(:aliquots) }
 
   # Scope for caching the samples of the receptacle
-  scope :including_samples, -> { includes(:samples=>:studies) }
+  scope :including_samples, -> { includes(:samples => :studies) }
 
   # TODO: Remove these at some point in the future as they're kind of wrong!
   has_one :sample, :through => :primary_aliquot

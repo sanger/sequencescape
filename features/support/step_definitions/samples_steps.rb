@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 def GivenSampleMetadata(attribute, regexp)
   Given(regexp) do |name,value|
@@ -27,17 +29,16 @@ Then /^I should see an error "([^\"]*)"$/ do |msg|
   assert_contain msg
 end
 
-# TODO[xxx]: This is incredibly slow!
 Then /^the following samples should be in the sample registration fields:$/ do |table|
-  table.hashes.each_with_index do |details,index|
-    with_scope("table#samples_to_register tr.sample_row:nth-child(#{index+1})") do
-      details.each do |label, value|
-        field       = find_field("#{ label } for sample #{ index }")
-        field_value = (field.tag_name == 'textarea') ? field.text : field.value
-        assert_match(/#{value}/, field_value, "Field #{ label.inspect } for sample #{ index } was unexpected")
-      end
-    end
+  number = table.rows.count
+  approved_heads = table.headers
+  heads = find('table#samples_to_register').find_all('thead th').map { |th| th.text }
+  rows = find('table#samples_to_register').find_all("tbody tr:nth-child(-n+#{number})")
+  hashes = rows.map do |tr|
+    hash = Hash[heads.zip(tr.find_all('td').map { |td| td.first('input').try(:value) || td.first('select').try(:value) })]
+    hash.slice(*approved_heads)
   end
+  assert_equal table.hashes, hashes
 end
 
 Given /^the sample "([^\"]+)" has the Taxon ID "([^\"]+)"$/ do |name,id|
@@ -104,7 +105,7 @@ Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/
   # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
   xsd = Nokogiri::XML::Schema(File.open(schema))
   result = xsd.validate(Nokogiri(xml))
-  assert(result.length==0, result.map(&:message).join(""))
+  assert(result.length == 0, result.map(&:message).join(""))
 end
 
 Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
@@ -138,7 +139,7 @@ end
 
 Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
-  sample.update_attributes(Hash[* [attr_name, (value unless value=="empty")]])
+  sample.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
 end
 
 Then /^the sample "([^\"]+)" should exist$/ do |name|
@@ -166,7 +167,7 @@ end
 
 Given /^the sample "([^\"]+)" is in the (sample tube|well) "([^\"]+)"$/ do |sample_name, asset_type, asset_name|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  asset   = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
+  asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
   asset.aliquots.clear
   asset.aliquots.create!(:sample => sample)
 end
@@ -194,7 +195,7 @@ GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has th
 
 When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
  step %Q{I am on the show page for sample "#{sample_name}"}
- action_str = (action_type=='create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+ action_str = (action_type == 'create') ? 'Generate Accession Number' : 'Update EBI Sample data'
  step(%Q{I follow "#{action_str}"})
 end
 
@@ -239,7 +240,7 @@ Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
   study_name = "study for sample #{sample_name}"
   step(%Q{a study named "#{study_name}" exists for accession})
   step(%Q{the sample named "#{sample_name}" exists with ID 200})
-  step(%Q{I am the owner of sample "sample"})
+  step('I am the owner of sample "sample"')
   step(%Q{the sample "#{sample_name}" belongs to the study "#{study_name}"})
   step(%Q{the sample "#{sample_name}" has the Taxon ID "99999"})
   step(%Q{the sample "#{sample_name}" has the common name "Human"})
@@ -252,7 +253,7 @@ end
 
 Given /^all samples have a Sanger sample ID based on "([^\"]+)"$/ do |id|
   Sample.all.each_with_index do |sample, index|
-    sample.update_attributes!(:sanger_sample_id => "#{id}#{'%02d' % (index+1)}")
+    sample.update_attributes!(:sanger_sample_id => "#{id}#{'%02d' % (index + 1)}")
   end
 end
 
@@ -302,7 +303,7 @@ Given /^there are no samples$/ do
   # To bypass all the callbacks
   # That trigger when they die
   Sample.delete_all
-  Uuid.where(:resource_type=>'Sample').each(&:destroy)
+  Uuid.where(:resource_type => 'Sample').each(&:destroy)
 end
 
 Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|

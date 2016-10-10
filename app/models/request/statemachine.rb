@@ -1,16 +1,18 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
 
 module Request::Statemachine
-  COMPLETED_STATE = [ 'passed', 'failed' ]
-  OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
-  ACTIVE = QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
-  INACTIVE = QUOTA_EXEMPTED  = [ 'failed', 'cancelled' ]
+  COMPLETED_STATE = ['passed', 'failed']
+  OPENED_STATE    = ['pending', 'blocked', 'started']
+  ACTIVE = QUOTA_COUNTED = ['passed', 'pending', 'blocked', 'started']
+  INACTIVE = QUOTA_EXEMPTED = ['failed', 'cancelled']
 
   module ClassMethods
     def redefine_aasm(options={},&block)
@@ -61,7 +63,7 @@ module Request::Statemachine
 
 
         event :hold do
-          transitions :to => :hold, :from => [ :pending ]
+          transitions :to => :hold, :from => [:pending]
         end
 
         # State Machine events

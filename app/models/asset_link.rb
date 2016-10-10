@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 
 class AssetLink < ActiveRecord::Base
@@ -64,7 +66,7 @@ class AssetLink < ActiveRecord::Base
         plural_name = name.to_s.pluralize.to_sym
         has_many(plural_name, scope, :through => :links_as_child, :source => :ancestor)
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
 
           def #{name}
             #{plural_name}.first
@@ -80,7 +82,7 @@ class AssetLink < ActiveRecord::Base
           def has_#{name}?
             #{name}.present?
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
     end
   end

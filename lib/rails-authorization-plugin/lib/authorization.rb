@@ -31,11 +31,11 @@ module Authorization
       # Allow class-level authorization check.
       # permit is used in a before_action fashion and passes arguments to the before_action.
       def permit( authorization_expression, *args )
-        filter_keys = [ :only, :except ]
+        filter_keys = [:only, :except]
         filter_args, eval_args = {}, {}
         if args.last.is_a? Hash
-          filter_args.merge!( args.last.reject {|k,v| not filter_keys.include? k } )
-          eval_args.merge!( args.last.reject {|k,v| filter_keys.include? k } )
+          filter_args.merge!( args.last.reject { |k,v| not filter_keys.include? k } )
+          eval_args.merge!( args.last.reject { |k,v| filter_keys.include? k } )
         end
         before_action( filter_args ) do |controller|
           controller.permit( authorization_expression, eval_args )
@@ -133,8 +133,8 @@ module Authorization
           model_symbol = model_name.to_sym
           if @options[model_symbol]
             @options[model_symbol]
-          elsif instance_variables.include?( '@'+model_name )
-            instance_variable_get( '@'+model_name )
+          elsif instance_variables.include?( '@' + model_name )
+            instance_variable_get( '@' + model_name )
           # Note -- while the following code makes autodiscovery more convenient, it's a little too much side effect & security question
           # elsif self.params[:id]
           #  eval_str = model_name.camelize + ".find(#{self.params[:id]})"

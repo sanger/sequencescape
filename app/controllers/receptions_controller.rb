@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class ReceptionsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -80,7 +82,7 @@ class ReceptionsController < ApplicationController
       location = Location.find(params[:location_id])
       assets = params[:asset_id]
       @errors = []
-      asset_count  = 0
+      asset_count = 0
 
       assets.each do |index,asset_id|
         asset = Asset.find_by(id: asset_id)

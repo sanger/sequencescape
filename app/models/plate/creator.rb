@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
 
 class Plate::Creator < ActiveRecord::Base
@@ -8,7 +10,7 @@ class Plate::Creator < ActiveRecord::Base
   PlateCreationError = Class.new(StandardError)
 
   class PurposeRelationship < ActiveRecord::Base
-    self.table_name =('plate_creator_purposes')
+    self.table_name = ('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, :class_name => 'Plate::Creator'
@@ -16,7 +18,7 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   class ParentPurposeRelationship < ActiveRecord::Base
-    self.table_name=('plate_creator_parent_purposes')
+    self.table_name = ('plate_creator_parent_purposes')
 
     belongs_to :plate_purpose, :class_name => 'Purpose'
   end
@@ -45,7 +47,10 @@ class Plate::Creator < ActiveRecord::Base
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
-        barcode_printer.print_labels(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", plate_purpose.name.to_s, scanned_user.login)
+        print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
+                                              LabelPrinter::Label::PlateCreator,
+                                              plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+        return false unless print_job.execute
       end
       true
     end
@@ -56,7 +61,7 @@ class Plate::Creator < ActiveRecord::Base
 
     creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
 
-    return [ plate ]
+    return [plate]
   end
 
   def create_plates(source_plate_barcodes, current_user, creator_parameters=nil)

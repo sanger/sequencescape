@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class BatchesController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -20,7 +22,7 @@ class BatchesController < ApplicationController
     elsif logged_in?
       @user = current_user
       assigned_batches = Batch.where(assignee_id: @user.id)
-      @batches = (@user.batches + assigned_batches).sort_by {|batch| batch.id}.reverse
+      @batches = (@user.batches + assigned_batches).sort_by { |batch| batch.id }.reverse
     else
       # Can end up here with XML. And it causes pain.
       @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
@@ -177,7 +179,7 @@ class BatchesController < ApplicationController
             redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
           end
           format.xml do
-            render :xml => {:error => message}.to_xml(:root => :errors), :status => :bad_request
+            render :xml => { :error => message }.to_xml(:root => :errors), :status => :bad_request
           end
         end
       end
@@ -189,7 +191,7 @@ class BatchesController < ApplicationController
           redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
         end
         format.xml do
-          errors = {:error => message}
+          errors = { :error => message }
           render :xml => errors.to_xml(:root => :errors), :status => :method_not_allowed
         end
       end
@@ -286,7 +288,7 @@ class BatchesController < ApplicationController
         reason = params[:failure][:reason]
         comment = params[:failure][:comment]
         requests = params[:requested_fail] || {}
-        fail_but_charge = params[:failure][:fail_but_charge]=='1'
+        fail_but_charge = params[:failure][:fail_but_charge] == '1'
         requests_for_removal = params[:requested_remove] || {}
         # Check to see if the user is trying to remove AND fail the same request.
         diff = requests_for_removal.keys & requests.keys
@@ -299,7 +301,7 @@ class BatchesController < ApplicationController
           else
             unless requests.empty?
               @batch.fail_batch_items(requests, reason, comment, fail_but_charge)
-              flash[:notice] = "#{requests.keys.to_sentence} set to failed.#{fail_but_charge ? ' The customer will still be charged.':''}"
+              flash[:notice] = "#{requests.keys.to_sentence} set to failed.#{fail_but_charge ? ' The customer will still be charged.' : ''}"
             end
 
             unless requests_for_removal.empty?
@@ -435,114 +437,45 @@ class BatchesController < ApplicationController
     end
   end
 
+
   def print_multiplex_barcodes
-    printables = []
-    count = params[:count].to_i
-
-    params[:printable].each do |key, value|
-      if value == 'on'
-        asset = Asset.find(key)
-        if @batch.multiplexed?
-          count.times do
-            printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "(p) #{asset.name}" })
-          end
-        end
-      end
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                        LabelPrinter::Label::BatchMultiplex,
+                                        count: params[:count], printable: params[:printable], batch: @batch)
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
     end
 
-    unless printables.empty?
-      asset = @batch.assets.first
-      begin
-        printables.sort! {|a,b| a.number <=> b.number }
-        BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
-      rescue PrintBarcode::BarcodeException
-        flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue Savon::Error
-        flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-      else
-        flash[:notice] = "Your labels have been printed to #{params[:printer]}."
-      end
-    end
     redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
   end
 
   def print_plate_barcodes
-    printables = []
-    count = params[:count].to_i
-    params[:printable].each do |key, value|
-      if value == 'on'
-        label = key
-        identifier = key
-        count.times do
-          printables.push PrintBarcode::Label.new({ :number => identifier, :study => label, :batch => @batch })
-        end
-      end
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                           LabelPrinter::Label::BatchPlate,
+                                           count: params[:count], printable: params[:printable], batch: @batch)
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
     end
-    unless printables.empty?
-      begin
-        printables.sort! {|a,b| a.number <=> b.number }
-        BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
-      rescue PrintBarcode::BarcodeException
-        flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-      rescue Savon::Error
-        flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-      else
-        flash[:notice] = "Your labels have been printed to #{params[:printer]}."
-      end
-    end
+
     redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
   end
 
 
   def print_barcodes
     unless @batch.requests.empty?
-      asset = @batch.requests.first.target_asset
-      printables = []
-      count = params[:count].to_i
-      params[:printable].each do |key, value|
-        if value == 'on'
-          request = Request.find(key)
-          if params[:stock]
-            if @batch.multiplexed?
-              stock = request.target_asset.children.first
-              identifier = stock.barcode
-              label = stock.name
-            else
-              stock = request.target_asset.stock_asset
-              identifier = stock.barcode
-              label = stock.name
-            end
-          else
-            if @batch.multiplexed?
-              unless request.tag_number.nil?
-                label = "(#{request.tag_number}) #{request.target_asset.id}"
-                identifier = request.target_asset.barcode
-              else
-                label = request.target_asset.name
-                identifier = request.target_asset.barcode
-              end
-            else
-              label = request.target_asset.tube_name
-              identifier = request.target_asset.barcode
-            end
-          end
-          count.times do
-            printables.push PrintBarcode::Label.new({ :number => identifier, :study => label })
-          end
-        end
+      print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::BatchTube,
+                                          stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
+      if print_job.execute
+        flash[:notice] = print_job.success
+      else
+        flash[:error] = print_job.errors.full_messages.join('; ')
       end
-      unless printables.empty?
-        begin
-          printables.sort! {|a,b| b.number <=> a.number }
-          BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
-        rescue PrintBarcode::BarcodeException
-          flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
-        rescue Savon::Error
-          flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-        else
-          flash[:notice] = "Your labels have been printed to #{params[:printer]}."
-        end
-      end
+
     else
       flash[:notice] = "Your batch contains no requests."
     end
@@ -575,13 +508,13 @@ class BatchesController < ApplicationController
       render :action => "simplified_worksheet", :layout => false
     elsif @batch.multiplexed?
       if @task
-        render :action => "multiplexed_library_worksheet", :layout => false, :locals => {:task => @task}
+        render :action => "multiplexed_library_worksheet", :layout => false, :locals => { :task => @task }
       else
         render :action => "multiplexed_library_worksheet", :layout => false
       end
     else
       if @task
-        render :action => "detailed_worksheet", :layout => false, :locals => {:task => @task}
+        render :action => "detailed_worksheet", :layout => false, :locals => { :task => @task }
       else
         render :action => "detailed_worksheet", :layout => false
       end
@@ -632,8 +565,8 @@ class BatchesController < ApplicationController
   end
 
   def swap
-    if @batch.swap(current_user, {"batch_1" => {"id"=>params["batch"]["1"], "lane"=>params["batch"]["position"]["1"]},
-                    "batch_2" => {"id"=>params["batch"]["2"], "lane"=>params["batch"]["position"]["2"]}
+    if @batch.swap(current_user, { "batch_1" => { "id" => params["batch"]["1"], "lane" => params["batch"]["position"]["1"] },
+                    "batch_2" => { "id" => params["batch"]["2"], "lane" => params["batch"]["position"]["2"] }
                   })
       flash[:notice] = "Successfully swapped lane positions"
       redirect_to batch_path(@batch)
@@ -646,7 +579,7 @@ class BatchesController < ApplicationController
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
     send_data csv_string, :type => "text/plain",
-     :filename=>"#{@batch.id}_cherrypick_layout.csv",
+     :filename => "#{@batch.id}_cherrypick_layout.csv",
      :disposition => 'attachment'
   end
 
@@ -656,7 +589,7 @@ class BatchesController < ApplicationController
                                                              @batch.total_volume_to_cherrypick,
                                                              params[:plate_type])
     send_data tecan_gwl_file_as_string, :type => "text/plain",
-     :filename=>"#{@batch.id}_batch_#{@plate_barcode}.gwl",
+     :filename => "#{@batch.id}_batch_#{@plate_barcode}.gwl",
      :disposition => 'attachment'
   end
 
@@ -674,7 +607,7 @@ class BatchesController < ApplicationController
       @batch_assets = []
       unless @batch.multiplexed?
         @batch_assets = @batch.requests.map(&:target_asset)
-        @batch_assets.delete_if{ |a| a.has_stock_asset? }
+        @batch_assets.delete_if { |a| a.has_stock_asset? }
         if @batch_assets.empty?
           flash[:error] = "Stock tubes already exist for everything."
           redirect_to batch_path(@batch)
@@ -721,7 +654,7 @@ class BatchesController < ApplicationController
   def pulldown_batch_report
     csv_string = @batch.pulldown_batch_report
     send_data csv_string, :type => "text/plain",
-     :filename=>"batch_#{@batch.id}_report.csv",
+     :filename => "batch_#{@batch.id}_report.csv",
      :disposition => 'attachment'
 
   end
@@ -729,14 +662,14 @@ class BatchesController < ApplicationController
   def pacbio_sample_sheet
     csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
     send_data csv_string, :type => "text/plain",
-     :filename=>"batch_#{@batch.id}_sample_sheet.csv",
+     :filename => "batch_#{@batch.id}_sample_sheet.csv",
      :disposition => 'attachment'
   end
 
   def sample_prep_worksheet
     csv_string = PacBio::Worksheet.new.create_csv_from_batch(@batch)
     send_data csv_string, :type => "text/plain",
-     :filename=>"batch_#{@batch.id}_worksheet.csv",
+     :filename => "batch_#{@batch.id}_worksheet.csv",
      :disposition => 'attachment'
   end
 

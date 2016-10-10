@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Batch::PipelineBehaviour
   def self.included(base)
@@ -48,7 +50,7 @@ module Batch::PipelineBehaviour
 
   def complete_events
     @efct ||= if lab_events.loaded
-      lab_events.select{ |le| le.description == "Complete" }
+      lab_events.select { |le| le.description == "Complete" }
     else
       lab_events.where(description:"Complete")
     end

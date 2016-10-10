@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 module Tasks::CherrypickHandler
   def self.included(base)
@@ -65,16 +67,16 @@ module Tasks::CherrypickHandler
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
 
-    @plate_cols = @plate.try(:width)||@plate_purpose.plate_width
-    @plate_rows = @plate.try(:height)||@plate_purpose.plate_height
+    @plate_cols = @plate.try(:width) || @plate_purpose.plate_width
+    @plate_rows = @plate.try(:height) || @plate_purpose.plate_height
   end
 
   def setup_input_params_for_pass_through
     @robot_id = params[:robot_id]
     @robot = Robot.find(@robot_id)
     @plate_type = params[:plate_type]
-    @volume_required= params[:volume_required]
-    @micro_litre_volume_required= params[:micro_litre_volume_required]
+    @volume_required = params[:volume_required]
+    @micro_litre_volume_required = params[:micro_litre_volume_required]
     @concentration_required = params[:concentration_required]
     @minimum_volume = params[:minimum_volume]
     @maximum_volume = params[:maximum_volume]
@@ -124,7 +126,7 @@ module Tasks::CherrypickHandler
       used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
 
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
-      plates_with_samples = plates.reject {|pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
+      plates_with_samples = plates.reject { |pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
       if fluidigm_plate.present? && plates_with_samples.count > 1
         raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
@@ -136,7 +138,7 @@ module Tasks::CherrypickHandler
         plate = partial_plate
         if plate.nil?
           barcode = PlateBarcode.create.barcode
-          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode, :plate_metadata_attributes=>{:fluidigm_barcode=>fluidigm_plate})
+          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode, :plate_metadata_attributes => { :fluidigm_barcode => fluidigm_plate })
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.
@@ -155,7 +157,7 @@ module Tasks::CherrypickHandler
             # This collects the wells together for the plate they should be on, and modifies
             # the values in the well data.  It *does not* save either of these, which means that
             # SELECT & INSERT/UPDATE are not interleaved, which affects the cache
-            well.map = well_locations[plate.asset_shape.location_from_row_and_column(row, col.to_i+1, plate.size)]
+            well.map = well_locations[plate.asset_shape.location_from_row_and_column(row, col.to_i + 1, plate.size)]
             cherrypicker.call(well, request)
             plates_and_wells[plate] << well
             plate_and_requests[plate] << request
@@ -170,7 +172,7 @@ module Tasks::CherrypickHandler
 
       # Attach the wells into their plate for maximum efficiency.
       plates_and_wells.each do |plate, wells|
-        wells.map { |w| w.well_attribute.save! ; w.save! }
+        wells.map { |w| w.well_attribute.save!; w.save! }
         plate.wells.attach(wells)
       end
 
@@ -182,7 +184,7 @@ module Tasks::CherrypickHandler
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)
-      (@batch.requests-used_requests).each do |unused_request|
+      (@batch.requests - used_requests).each do |unused_request|
         unused_request.recycle_from_batch!
       end
     end

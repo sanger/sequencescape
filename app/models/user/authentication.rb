@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 module User::Authentication
   def self.included(base)
@@ -24,7 +26,7 @@ module User::Authentication
     ldap_profile = ldap.search( :base => treebase, :filter => filter )[0]
     # If we have two or more records, something is off with LDAP
 
-    {:email => "mail", :first_name => "givenname", :last_name => "sn"}.each do |attr,ldap_attr|
+    { :email => "mail", :first_name => "givenname", :last_name => "sn" }.each do |attr,ldap_attr|
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
     self.save if self.changed?

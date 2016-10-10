@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 class AssetCreation < ActiveRecord::Base
   include Uuid::Uuidable
@@ -40,7 +42,7 @@ class AssetCreation < ActiveRecord::Base
   end
 
   def connect_parent_and_children
-    children.each {|child| create_ancestor_asset!(parent, child)}
+    children.each { |child| create_ancestor_asset!(parent, child) }
   end
   private :connect_parent_and_children
 

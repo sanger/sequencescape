@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Request::ChangeDecision
   include ::Validateable
@@ -18,7 +20,7 @@ class Request::ChangeDecision
   attr_accessor :asset_qc_state_check_box
 
   def checkboxes
-    [ self.change_decision_check_box, self.asset_qc_state_check_box ]
+    [self.change_decision_check_box, self.asset_qc_state_check_box]
   end
   validates_each(:checkboxes) do |record, attribute, list_of_checkbox_values|
     record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? { |v| v.blank? or v == '0' }
@@ -82,7 +84,7 @@ private
     previous_state = self.request.state
     ActiveRecord::Base.transaction do
       self.request.change_decision!
-      self.request.events.create!({:message => "Change state from #{previous_state} to  #{state}", :created_by => self.user.login, :family => "update"})
+      self.request.events.create!({ :message => "Change state from #{previous_state} to  #{state}", :created_by => self.user.login, :family => "update" })
       self.request.comments.create!(:description => self.comment, :user_id => self.user.id)
     end
   end

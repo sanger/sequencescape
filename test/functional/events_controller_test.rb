@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require "test_helper"
 require 'events_controller'
@@ -26,7 +28,7 @@ class EventsControllerTest < ActionController::TestCase
         # test below, it was probably just a mistake.
         setup do
           @controller.stubs(:login_required).returns(true)
-          put :create, :event => {:key => 'blah'}
+          put :create, :event => { :key => 'blah' }
         end
         should respond_with :success
       end
@@ -38,7 +40,7 @@ class EventsControllerTest < ActionController::TestCase
       # also feels like the RIGHT behaviour.
       context "XML" do
         setup do
-          get :create, :format => :xml, :event => {:key => 'blah'}
+          get :create, :format => :xml, :event => { :key => 'blah' }
         end
         should respond_with :success
       end

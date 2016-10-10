@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require "net/ldap"
 require "openssl"
@@ -39,11 +41,11 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password, :if => :password_required?
 
   scope :with_login, ->(*logins) { where(login:logins.flatten) }
-  scope :all_administrators, -> { joins(:roles).where(:roles=>{:name=>'administrator'}) }
+  scope :all_administrators, -> { joins(:roles).where(:roles => { :name => 'administrator' }) }
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(:roles=>{:name=>'owner'}).order(:last_name).uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(:roles => { :name => 'owner' }).order(:last_name).uniq }
 
   attr_accessor :password
 
@@ -251,7 +253,7 @@ class User < ActiveRecord::Base
     # before filter
     def encrypt_password
       return if password.blank?
-      self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+      self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
       self.crypted_password = encrypt(password)
     end
 

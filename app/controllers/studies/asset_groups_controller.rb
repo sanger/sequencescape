@@ -1,14 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 class Studies::AssetGroupsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  include BarcodePrintersController::Print
+
   def index
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
     @asset_groups = @study.asset_groups
 
     respond_to do |format|
@@ -19,7 +21,7 @@ class Studies::AssetGroupsController < ApplicationController
 
   def show
     @asset_group = AssetGroup.find(params[:id])
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -29,7 +31,7 @@ class Studies::AssetGroupsController < ApplicationController
 
   def new
     @asset_group = AssetGroup.new
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -38,12 +40,12 @@ class Studies::AssetGroupsController < ApplicationController
   end
 
   def edit
-    @asset_group  = AssetGroup.find(params[:id])
-    @study      = Study.find(params[:study_id])
+    @asset_group = AssetGroup.find(params[:id])
+    @study = Study.find(params[:study_id])
   end
 
   def create
-    @study     = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
     @asset_group = AssetGroup.new(params[:asset_group])
     @asset_group.study = @study
 
@@ -62,8 +64,8 @@ class Studies::AssetGroupsController < ApplicationController
   end
 
   def update
-    @asset_group  = AssetGroup.find(params[:id])
-    @study      = Study.find(params[:study_id])
+    @asset_group = AssetGroup.find(params[:id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       if @asset_group.update_attributes(params[:asset_group])
@@ -80,7 +82,7 @@ class Studies::AssetGroupsController < ApplicationController
   def destroy
     @asset_group = AssetGroup.find(params[:id])
     @asset_group.destroy
-    @study      = Study.find(params[:study_id])
+    @study = Study.find(params[:study_id])
 
     respond_to do |format|
       format.html { redirect_to(study_asset_groups_url(@study)) }
@@ -111,7 +113,7 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     if params[:asset]
-      ids = params[:asset].map {|a| a[1] == "1" ? a[0] : nil }.select {|a| !a.nil? }
+      ids = params[:asset].map { |a| a[1] == "1" ? a[0] : nil }.select { |a| !a.nil? }
       @assets = Asset.find(ids)
       @asset_group.assets << @assets
     end
@@ -132,17 +134,27 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
-    @assets = @asset_group ? @asset_group.assets.select {|asset| asset.is_a?(Barcode::Barcodeable)} : []
+    @assets = @asset_group ? @asset_group.assets.select { |asset| asset.is_a?(Barcode::Barcodeable) } : []
 
-    unbarcoded = @asset_group.assets.reject {|asset| asset.is_a?(Barcode::Barcodeable)}
-    @unbarcoded_types = unbarcoded.map {|ub| ub.sti_type.pluralize.humanize }.uniq.to_sentence
+    unbarcoded = @asset_group.assets.reject { |asset| asset.is_a?(Barcode::Barcodeable) }
+    @unbarcoded_types = unbarcoded.map { |ub| ub.sti_type.pluralize.humanize }.uniq.to_sentence
     @unbarcoded_count = unbarcoded.length
-    @containers = unbarcoded.map {|ub| ub.container }.uniq.select {|container| container.is_a?(Barcode::Barcodeable) }
+    @containers = unbarcoded.map { |ub| ub.container }.uniq.select { |container| container.is_a?(Barcode::Barcodeable) }
   end
 
   def print_labels
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
-    print_asset_labels(study_asset_groups_path(@study), print_study_asset_group_path(@study, @asset_group))
+
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: params[:printables])
+    if print_job.execute
+      flash[:notice] = print_job.success
+      redirect_to study_asset_groups_path(@study)
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+      redirect_to print_study_asset_group_path(@study, @asset_group)
+    end
   end
 end

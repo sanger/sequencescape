@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 require "test_helper"
 require 'qc_reports_controller'
@@ -15,9 +17,9 @@ class QcReportsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @request.env["HTTP_REFERER"] = '/'
 
-      @user     = create :user
+      @user = create :user
       session[:user] = @user.id
-      @study  = create :study
+      @study = create :study
       @product = create :product
       @product_criteria = create :product_criteria, :product => @product
     end

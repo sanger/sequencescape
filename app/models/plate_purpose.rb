@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PlatePurpose < Purpose
   module Associations
@@ -46,7 +48,7 @@ class PlatePurpose < Purpose
   serialize :cherrypick_filters
   validates_presence_of(:cherrypick_filters, :if => :cherrypickable_target?)
   before_validation(:if => :cherrypickable_target?) do |r|
-    r[:cherrypick_filters] ||= [ 'Cherrypick::Strategy::Filter::ShortenPlexesToFit' ]
+    r[:cherrypick_filters] ||= ['Cherrypick::Strategy::Filter::ShortenPlexesToFit']
   end
 
   belongs_to :asset_shape, :class_name => 'AssetShape'
@@ -70,7 +72,7 @@ class PlatePurpose < Purpose
   end
 
   def cherrypick_completed(plate)
-    messenger_creators.each {|creator| creator.create!(plate) }
+    messenger_creators.each { |creator| creator.create!(plate) }
   end
 
   def plate_height
@@ -139,9 +141,9 @@ class PlatePurpose < Purpose
       parameters.concat(args)
     end
     raise "Apparently there are not requests on these wells?" if conditions.empty?
-    Request.where_is_not_a?(TransferRequest).where([ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
+    Request.where_is_not_a?(TransferRequest).where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
-      request.request_metadata.update_attributes!(:customer_accepts_responsibility=>true) if customer_accepts_responsibility
+      request.request_metadata.update_attributes!(:customer_accepts_responsibility => true) if customer_accepts_responsibility
       request.passed? ? request.retrospective_fail! : request.fail!
     end
   end
@@ -179,7 +181,7 @@ class PlatePurpose < Purpose
   end
 
   def size
-    attributes['size']||96
+    attributes['size'] || 96
   end
 
   def well_locations
@@ -257,4 +259,3 @@ require_dependency 'plate_purpose/initial_purpose'
 require_dependency 'pulldown/initial_plate_purpose'
 require_dependency 'pulldown/library_plate_purpose'
 require_dependency 'pulldown/stock_plate_purpose'
-
