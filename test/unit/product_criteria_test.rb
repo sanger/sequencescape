@@ -47,7 +47,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     should 'not be destroyable' do
       # ActiveRecord::RecordNotDestroyed is the Rails4 exception for this
       # Added here as Rails 2 is a bit useless with appropriate exceptions
-      assert_raise(ActiveRecord::RecordNotDestroyed) { @criteria_a.destroy }
+      assert_raise(ActiveRecord::RecordNotDestroyed) { @criteria_a.destroy! }
     end
 
     should 'be deprecatable' do
