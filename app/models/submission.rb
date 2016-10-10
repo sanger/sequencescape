@@ -166,51 +166,37 @@ class Submission < ActiveRecord::Base
     return multiplex_started_passed_result
   end
 
-  def duplicate(&block)
-    raise "Not implemented yet"
+  # Required at initial construction time ...
+  validate :validate_orders_are_compatible
 
-    create_parameters = template_parameters
-    new_submission = Submission.create(create_parameters.merge(study: self.study, workflow: self.workflow,
-          user: self.user, assets: self.assets, state: self.state,
-          request_types: self.request_types,
-          request_options: self.request_options,
-          comments: self.comments,
-          project_id: self.project_id), &block)
-    new_submission.save
-    return new_submission
-  end
-
- # Required at initial construction time ...
- validate :validate_orders_are_compatible
-
- # Order needs to have the 'structure'
- def validate_orders_are_compatible()
+  # Order needs to have the 'structure'
+  def validate_orders_are_compatible()
     return true if orders.size < 2
     # check every order agains the first one
     first_order = orders.first
     orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
     return false if errors.count > 0
- end
- private :validate_orders_are_compatible
+  end
+  private :validate_orders_are_compatible
 
- # this method is part of the submission
+  # this method is part of the submission
   # not order, because it is submission
- # which decide if orders are compatible or not
- def check_orders_compatible?(a, b)
+  # which decide if orders are compatible or not
+  def check_orders_compatible?(a, b)
     errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
     errors.add(:request_options, "are incompatible") if !request_options_compatible?(a, b)
     errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
     check_studies_compatible?(a.study, b.study)
- end
+  end
 
- def request_options_compatible?(a, b)
+  def request_options_compatible?(a, b)
    a.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) }
- end
+  end
 
- def check_studies_compatible?(a, b)
+  def check_studies_compatible?(a, b)
     errors.add(:study, "Can't mix contaminated and non contaminated human DNA") unless a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
     errors.add(:study, "Can't mix X and autosome removal with non-removal") unless a.study_metadata.remove_x_and_autosomes == b.study_metadata.remove_x_and_autosomes
- end
+  end
 
   # for the moment we consider that request types should be the same for all order
   # so we can take the first one

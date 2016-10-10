@@ -17,7 +17,6 @@ module SharedBehaviour::Indestructable
 
   def prevent_destruction
     errors.add(:base, 'can not be destroyed and should be deprecated instead!')
-    raise ActiveRecord::RecordNotDestroyed, self
     false
   end
 end

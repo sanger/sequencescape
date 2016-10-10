@@ -207,7 +207,6 @@ end
 def decode_json(json, source)
   ActiveSupport::JSON.decode(json)
 rescue StandardError => exception
-  raise exception
   raise StandardError, "#{source} JSON is invalid: #{json.inspect}"
 end
 
