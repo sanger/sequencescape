@@ -13,7 +13,7 @@ module Cherrypick::Task::PickHelpers
     end
   end
 
-  def cherrypick_wells_grouped_by_submission(requests, robot, purpose, &picker)
+  def cherrypick_wells_grouped_by_submission(requests, robot, purpose)
     plate, purpose = nil, purpose
     plate, purpose = purpose, purpose.plate_purpose if purpose.is_a?(Plate)
 
@@ -22,7 +22,7 @@ module Cherrypick::Task::PickHelpers
         if request.present?
           well     = request.target_asset
           well.map = position
-          picker.call(well, request)
+          yield(well, request)
           [well, request]
         else
           nil

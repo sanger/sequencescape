@@ -15,7 +15,7 @@ def open_barcode_stream(&block)
     ;
     EOS
 
-    block.call(f)
+    yield(f)
   end
 end
 

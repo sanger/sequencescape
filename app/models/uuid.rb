@@ -81,7 +81,7 @@ class Uuid < ActiveRecord::Base
           LEFT OUTER JOIN #{Uuid.quoted_table_name} u
           ON r.id=u.resource_id AND u.resource_type="#{self}"
           WHERE u.id IS NULL
-        }).map { |r| block.call(r['id']) }
+        }).map { |r| yield(r['id']) }
       end
       private :records_for_missing_uuids
     end

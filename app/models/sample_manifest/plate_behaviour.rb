@@ -34,10 +34,7 @@ module SampleManifest::PlateBehaviour
     def generate_wells_for_plates(well_data, plates, &block)
       cloned_well_data = well_data.dup
       plates.each do |plate|
-        block.call(
-          cloned_well_data.slice!(0, plate.size),
-          plate
-        )
+        yield(cloned_well_data.slice!(0, plate.size), plate)
       end
     end
     private :generate_wells_for_plates

@@ -23,7 +23,7 @@ class ManifestGenerator
       plate_ids.each do |plate_id|
         plate = Plate.find(plate_id)
         plate_label = institute_plate_label(plate)
-        plate.wells_sorted_by(&:id).each do |well|
+        plate.wells.order(:id).each do |well|
           csv << self.generate_manifest_row(well, plate.barcode, plate_label).unshift(row)
           row = row + 1
         end

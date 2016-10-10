@@ -38,7 +38,7 @@ end
 def walk_hash_structure(hash_data, &block)
   if hash_data.is_a?(Hash)
     hash_data.inject({}) do |hash, (key, value)|
-      hash[key] = walk_hash_structure(value, &block) unless block.call(key)
+      hash[key] = walk_hash_structure(value, &block) unless yield(key)
       hash
     end
   elsif hash_data.is_a?(Array)

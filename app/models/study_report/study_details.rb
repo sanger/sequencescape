@@ -63,7 +63,7 @@ module StudyReport::StudyDetails
   end
 
   def progress_report_on_all_assets(&block)
-    block.call(progress_report_header)
+    yield(progress_report_header)
     each_stock_well_id_in_study_in_batches do |asset_ids|
 
       # eager loading of well_attribute , can only be done on  wells ...
@@ -71,7 +71,7 @@ module StudyReport::StudyDetails
         asset_progress_data = asset.qc_report
         next if asset_progress_data.nil?
 
-        block.call([
+        yield([
           asset_progress_data[:status],
           self.name,
           asset_progress_data[:supplier],

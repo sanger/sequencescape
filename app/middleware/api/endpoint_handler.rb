@@ -147,7 +147,7 @@ module Api
     def lookup_for_class(model, &block)
       ::Core::Io::Registry.instance.lookup_for_class(model)
     rescue ::Core::Registry::UnregisteredError => exception
-      block.call(exception)
+      yield(exception)
     end
     private :lookup_for_class
 

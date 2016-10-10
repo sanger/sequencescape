@@ -12,7 +12,7 @@ class ::Endpoints::Searches < ::Core::Endpoint::Base
         # want to paginate search results, but this is sadly a breaking change.
         request.target.scope(request.json['search']).send(name).to_a.tap do |results|
           response.handled_by = action
-          block.call(response, results)
+          yield(response, results)
         end
       end
     end

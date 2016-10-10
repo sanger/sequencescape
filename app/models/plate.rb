@@ -372,10 +372,6 @@ class Plate < Asset
     wells.sorted
   end
 
-  def wells_sorted_by(&block)
-    wells.sort { |a, b| block.call(a) <=> block.call(b) }
-  end
-
   def children_and_holded
     (children | wells)
   end

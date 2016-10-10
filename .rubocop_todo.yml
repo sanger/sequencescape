@@ -392,19 +392,19 @@ Metrics/PerceivedComplexity:
 
 # Offense count: 13
 # Cop supports --auto-correct.
-Performance/RedundantBlockCall:
-  Exclude:
-    - 'app/api/core/endpoint/basic_handler/associations/belongs_to.rb'
-    - 'app/api/core/io/base/eager_loading_behaviour.rb'
-    - 'app/api/endpoints/searches.rb'
-    - 'app/middleware/api/endpoint_handler.rb'
-    - 'app/models/cherrypick/task/pick_helpers.rb'
-    - 'app/models/plate.rb'
-    - 'app/models/sample_manifest/plate_behaviour.rb'
-    - 'app/models/study_report/study_details.rb'
-    - 'app/models/uuid.rb'
-    - 'features/support/step_definitions/api_steps.rb'
-    - 'lib/update_user_barcode.rb'
+# Performance/RedundantBlockCall:
+#   Exclude:
+#     - 'app/api/core/endpoint/basic_handler/associations/belongs_to.rb'
+#     - 'app/api/core/io/base/eager_loading_behaviour.rb'
+#     - 'app/api/endpoints/searches.rb'
+#     - 'app/middleware/api/endpoint_handler.rb'
+#     - 'app/models/cherrypick/task/pick_helpers.rb'
+#     - 'app/models/plate.rb'
+#     - 'app/models/sample_manifest/plate_behaviour.rb'
+#     - 'app/models/study_report/study_details.rb'
+#     - 'app/models/uuid.rb'
+#     - 'features/support/step_definitions/api_steps.rb'
+#     - 'lib/update_user_barcode.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.
