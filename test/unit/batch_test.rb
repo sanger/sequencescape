@@ -658,39 +658,6 @@ end
             end
           end
         end
-
-        context "when evaluations tag contains more than 1 evaluation" do
-          setup do
-            @info = { "evaluation" => [{ "result" => "pass", "checks" => { "check" => [{ "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" }, { "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" }] }, "check" => "Auto QC", "identifier" => @batch.id, "location" => 1 }, { "result" => "fail", "checks" => { "check" => { "results" => "Some free form data (no html please)", "criteria" => { "criterion" => [{ "value" => "Greater than 80mb", "key" => "yield" }, { "value" => "Greater than Q20", "key" => "count" }] }, "data_source" => "/somewhere.fastq", "links" => { "link" => { "href" => "http://example.com/some_interesting_image_or_table", "label" => "display text for hyperlink" } }, "comment" => "All good", "pass" => "true" } }, "check" => "Auto QC", "identifier" => @batch.id, "location" => 2 }] }
-            @events_count = LabEvent.count
-            @requests_count = Request.count
-          end
-
-          should "return no errors if successful" do
-            assert Batch.qc_evaluations_update(@info)
-          end
-
-          should "create an event using passed params" do
-            assert_equal 0, @events_count
-            Batch.qc_evaluations_update(@info)
-            assert_equal 5, LabEvent.count
-          end
-
-          should "event should include passed params" do
-            Batch.qc_evaluations_update(@info)
-            @event = LabEvent.last
-            assert_equal @event.description, @info["evaluation"].last["check"]
-            assert_equal @event.descriptor_fields, @info["evaluation"].last["checks"]["check"].keys
-            assert_equal @event.descriptors.size, @info["evaluation"].last["checks"]["check"].size
-          end
-
-          should "update qc_state on an request" do
-            batch_events_size = @batch.lab_events.size
-            Batch.qc_evaluations_update(@info)
-            assert_equal batch_events_size + @info["evaluation"].size, Batch.find(@batch.id).lab_events.size
-            # assert_equal @info["evaluation"].first["result"], @batch.batch_requests.find_by_position(@info["evaluation"].first["location"]).request.target_asset.qc_state
-          end
-        end
       end
     end
 

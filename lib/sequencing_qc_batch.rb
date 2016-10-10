@@ -17,57 +17,12 @@ module SequencingQcBatch
 
   def self.included(base)
     base.instance_eval do
-      extend ClassMethods
 
       # TODO[xxx]: Isn't qc_state supposed to be initialised to 'qc_pending' rather than blank?
       validates_inclusion_of :qc_state, :in => VALID_QC_STATES, :allow_blank => true
 
       belongs_to :qc_pipeline, :class_name => "Pipeline"
       before_create :qc_pipeline_update
-    end
-  end
-
-  module ClassMethods
-    # Based on the structure of the document found in test/data/activeMQ_message_example.xml
-    # {"evaluations"=>{"evaluation"=>{"result"=>nil, "checks"=>{"check"=>{"results"=>"Some free form data (no html please)", "criteria"=>{"criterion"=>[{"value"=>"Greater than 80mb", "key"=>"yield"}, {"value"=>"Greater than Q20", "key"=>"count"}]}, "data_source"=>"/somewhere.fastq", "links"=>{"link"=>{"href"=>"http://example.com/some_interesting_image_or_table", "label"=>"display text for hyperlink"}}, "comment"=>"All good", "pass"=>"true"}}, "check"=>"Auto QC", "identifier"=>"batch id", "location"=>"lane number"}}}
-    def qc_evaluations_update(evaluations)
-      if evaluations.has_key?("evaluation")
-        evaluations.each do |key, evaluation|
-          if evaluation.kind_of?(Array)
-            evaluation.each do |ev|
-              Batch.qc_assets_update(ev)
-            end
-          elsif evaluation.kind_of?(Hash)
-            Batch.qc_assets_update(evaluation)
-          end
-        end
-      end
-    end
-
-    def qc_assets_update(evaluation)
-      b = Batch.includes(:requests).find(evaluation["identifier"])
-      # Checks if batch.qc_state is not qc_manual, then change it
-      # so that it appears in the Manual QC pipeline
-      if b.qc_state == "qc_pending" || b.qc_state == "qc_submitted"
-        b.qc_ready_for_manual
-      end
-
-
-      br = b.batch_requests.find_by(:position => evaluation["location"])
-
-      result = evaluation["result"]
-      unless result.nil? || br.request.target_asset.nil? # nil e.g. controls without source/target asset
-        br.request.target_asset.qc_state = result
-        br.save
-        b.lab_events.create(:description => "Auto QC result", :message => result.humanize)
-      end
-      evaluation["checks"].each_value do |v|
-        v = [v] unless v.kind_of?(Array)
-        v.each do |value|
-          br.request.lab_events.create(:description => evaluation["check"], :descriptors => value, :descriptor_fields => value.keys, :batch_id => b.id)
-        end
-      end
-      br.save
     end
   end
 

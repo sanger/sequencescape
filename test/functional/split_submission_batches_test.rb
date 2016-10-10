@@ -36,7 +36,26 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         # However, as this seems to relate to the multiplier, it may be related to out problem.
         @submission_template = SubmissionTemplate.find_by_name!('Illumina-C - Library creation - Single ended sequencing')
 
-        post(:create, :submission => { :is_a_sequencing_order => "true", :comments => "", :template_id => @submission_template.id, :order_params => { "read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" }, :asset_group_id => @asset_group.id, :study_id => @study.id, :sample_names_text => "", :plate_purpose_id => @plate_purpose.id, :project_name => @project.name, :lanes_of_sequencing_required => "5", :priority => 1 })
+        post(:create,
+          :submission => {
+            :is_a_sequencing_order => "true",
+            :comments => "",
+            :template_id => @submission_template.id,
+            :order_params => {
+              "read_length" => "37",
+              "fragment_size_required_to" => "400",
+              "bait_library_name" => "Human all exon 50MB",
+              "fragment_size_required_from" => "100",
+              "library_type" => "Agilent Pulldown" },
+            :asset_group_id => @asset_group.id,
+            :study_id => @study.id,
+            :sample_names_text => "",
+            :plate_purpose_id => @plate_purpose.id,
+            :project_name => @project.name,
+            :lanes_of_sequencing_required => "5",
+            :priority => 1
+          }
+        )
 
         Submission.last.built!
         Delayed::Worker.new.work_off(1)
