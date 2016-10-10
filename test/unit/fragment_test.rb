@@ -14,7 +14,7 @@ class FragmentTest < ActiveSupport::TestCase
       end
 
       should 'not fail if descriptor_fields present' do
-        @fragment.add_descriptor(Descriptor.new(:name => 'descriptor', :value => 'value'))
+        @fragment.add_descriptor(Descriptor.new(name: 'descriptor', value: 'value'))
         @fragment.to_xml.inspect
       end
     end

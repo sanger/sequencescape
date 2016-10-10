@@ -9,8 +9,8 @@ module Batch::PipelineBehaviour
     base.class_eval do
       # The associations with the pipeline
       belongs_to :pipeline
-      delegate :workflow, :item_limit, :multiplexed?, :to => :pipeline
-      delegate :tasks, :to => :workflow
+      delegate :workflow, :item_limit, :multiplexed?, to: :pipeline
+      delegate :tasks, to: :workflow
 
       # The validations that the pipeline & batch are correct
       validates_presence_of :pipeline
@@ -21,10 +21,10 @@ module Batch::PipelineBehaviour
       end
 
       # The batch requires positions on it's requests if the pipeline does
-      delegate :requires_position?, :to => :pipeline
+      delegate :requires_position?, to: :pipeline
 
       # Ensure that the batch is valid to be marked as completed
-      validate(:if => :completed?) do |record|
+      validate(if: :completed?) do |record|
         record.pipeline.validation_of_batch_for_completion(record)
       end
     end

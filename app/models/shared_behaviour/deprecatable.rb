@@ -9,7 +9,7 @@ module SharedBehaviour::Deprecatable
 
   def self.included(base)
     base.class_eval do
-      scope :active, ->() { where(:deprecated_at => nil) }
+      scope :active, ->() { where(deprecated_at: nil) }
     end
   end
 

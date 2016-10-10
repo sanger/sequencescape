@@ -9,7 +9,7 @@ require "test_helper"
 class LibraryCreationPipelineTest < ActiveSupport::TestCase
   context "Pipeline" do
     setup do
-      @pipeline = create :library_creation_pipeline, :name => "Library creation pipeline"
+      @pipeline = create :library_creation_pipeline, name: "Library creation pipeline"
     end
 
     should "return true for library_creation?" do

@@ -34,16 +34,16 @@ before_action :evil_parameter_hack!
   def update
    @project = Project.find(params[:id])
    flash[:notice] = "Your project has been updated"
-   render :partial => "manage_single_project"
+   render partial: "manage_single_project"
   end
 
   def edit
     @request_types = RequestType.order(name: :asc)
     if params[:id] != "0"
       @project = Project.find(params[:id])
-      render :partial => "edit", :locals => { :project => @project }
+      render partial: "edit", locals: { project: @project }
     else
-      render :nothing => true
+      render nothing: true
     end
   end
 
@@ -61,7 +61,7 @@ before_action :evil_parameter_hack!
 
     @projects = scope
 
-    render :partial => "filtered_projects"
+    render partial: "filtered_projects"
   end
 
   def managed_update
@@ -86,11 +86,11 @@ before_action :evil_parameter_hack!
       end
 
       flash[:notice] = "Your project has been updated"
-      redirect_to :controller => "admin/projects", :action => "update", :id => @project.id
+      redirect_to controller: "admin/projects", action: "update", id: @project.id
     else
       logger.warn "Failed to update attributes: #{@project.errors.map { |e| e.to_s }}"
       flash[:error] = "Failed to update attributes for project!"
-      render :action => :show, :id => @project.id and return
+      render action: :show, id: @project.id and return
     end
   end
 
@@ -101,7 +101,7 @@ before_action :evil_parameter_hack!
     elsif params[:sort] == "owner"
       @projects = @projects.sort_by { |project| project.user_id }
     end
-    render :partial => "projects"
+    render partial: "projects"
   end
 
   private

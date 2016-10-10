@@ -11,12 +11,12 @@ module FluidigmHelper
     height.times do |r|
       width.times do |c|
         wells << {
-          :description  => "S%0#{digit_count}d" % [(width * r) + c + 1],
-          :location_id  => ((width * r) + c + 1),
-          :asset_size   => size,
-          :row_order    => ((width * r) + c),
-          :column_order => ((height * c) + r),
-          :asset_shape_id => plate_layout
+          description: "S%0#{digit_count}d" % [(width * r) + c + 1],
+          location_id: ((width * r) + c + 1),
+          asset_size: size,
+          row_order: ((width * r) + c),
+          column_order: ((height * c) + r),
+          asset_shape_id: plate_layout
         }
       end
     end

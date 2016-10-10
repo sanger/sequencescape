@@ -17,7 +17,7 @@ class AdminController < ApplicationController
     else
       @users = User.where(login:params[:q])
     end
-    render :partial => 'admin/users/users', :locals => { :users => @users }
+    render partial: 'admin/users/users', locals: { users: @users }
   end
 
 end

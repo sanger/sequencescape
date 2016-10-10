@@ -28,7 +28,7 @@ class StudiesHelperTest < ActiveSupport::TestCase
       end
 
       should 'return the owner name' do
-        @study.stubs(:owner).returns(mock('Owner', :name => 'John Smith'))
+        @study.stubs(:owner).returns(mock('Owner', name: 'John Smith'))
         @expected = 'John Smith'
       end
     end
@@ -39,7 +39,7 @@ class StudiesHelperTest < ActiveSupport::TestCase
       end
 
       teardown do
-        study = mock('Study', :roles => @roles)
+        study = mock('Study', roles: @roles)
         assert_equal @expected, @helper.display_owners(study)
       end
 
@@ -48,12 +48,12 @@ class StudiesHelperTest < ActiveSupport::TestCase
       end
 
       should 'return the single owner name' do
-        @roles << mock('Role', :name => 'owner', :users => [mock('User', :name => 'John Smith')])
+        @roles << mock('Role', name: 'owner', users: [mock('User', name: 'John Smith')])
         @expected = 'John Smith'
       end
 
       should 'comma-separate multiple owners' do
-        @roles << mock('Role', :name => 'owner', :users => [mock('User', :name => 'John Smith'), mock('User', :name => 'Jane Doe')])
+        @roles << mock('Role', name: 'owner', users: [mock('User', name: 'John Smith'), mock('User', name: 'Jane Doe')])
         @expected = 'John Smith, Jane Doe'
       end
     end

@@ -13,8 +13,8 @@ module Tasks::SetDescriptorsHandler
 
     # if qc_state is qc_manual then update it
     if @batch.qc_state == "qc_manual"
-      @batch.lab_events.create(:description => "Manual QC", :message => "Manual QC started for batch #{@batch.id}", :user_id => current_user.id)
-      @batch.lab_events.create(:description => "Manual QC", :message => "Manual QC started for batch #{@batch.id}", :user_id => current_user.id)
+      @batch.lab_events.create(description: "Manual QC", message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
+      @batch.lab_events.create(description: "Manual QC", message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
       @batch.qc_state = @batch.qc_next_state
       @batch.save
     end
@@ -40,7 +40,7 @@ module Tasks::SetDescriptorsHandler
             # with a single set of descriptor fields is shared between all the requests...
             if request.id == checked.to_i
 
-              event = LabEvent.new(:batch_id => @batch.id, :description => @task.name)
+              event = LabEvent.new(batch_id: @batch.id, description: @task.name)
 
               # This is called when a single set of fields is used
               # and called over and over based on the select boxs
@@ -66,7 +66,7 @@ module Tasks::SetDescriptorsHandler
                 params[:upload].each_key do |key|
                   event.filename = params[:upload][key].original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
                   event.data = params[:upload][key].read
-                  event.add_descriptor Descriptor.new({ :name => key, :value => event.filename })
+                  event.add_descriptor Descriptor.new({ name: key, value: event.filename })
                 end
               end
 
@@ -79,7 +79,7 @@ module Tasks::SetDescriptorsHandler
                   asset = Asset.new()
                   asset.sti_type = Family.find(params[:asset][key][:family_id]).name
                   params[:asset][key].each_key do |field|
-                    asset.add_descriptor Descriptor.new({ :name => field, :value => params[:asset][key][field] })
+                    asset.add_descriptor Descriptor.new({ name: field, value: params[:asset][key][field] })
                   end
                   asset.save
                   asset.parents << request.asset
@@ -105,7 +105,7 @@ module Tasks::SetDescriptorsHandler
       else
         # Some requests have yet to pass this task
         # Construct a URL that contains a nested hash of values to display as defaults for the next request
-        @params = { :batch_id => @batch.id, :workflow_id => @workflow.id, :values => @values }
+        @params = { batch_id: @batch.id, workflow_id: @workflow.id, values: @values }
         redirect_to url_for(flatten_hash(@params))
       end
 

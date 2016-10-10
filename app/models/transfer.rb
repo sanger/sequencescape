@@ -10,9 +10,9 @@ class Transfer < ActiveRecord::Base
       base.class_eval do
         include Transfer::State
 
-        has_many :transfers_as_source,      ->() { order('created_at ASC') }, :class_name => 'Transfer', :foreign_key => :source_id
-        has_many :transfers_to_tubes,       ->() { order('created_at ASC') }, :class_name => 'Transfer::BetweenPlateAndTubes', :foreign_key => :source_id
-        has_many :transfers_as_destination, ->() { order('id ASC') },         :class_name => 'Transfer', :foreign_key => :destination_id
+        has_many :transfers_as_source,      ->() { order('created_at ASC') }, class_name: 'Transfer', foreign_key: :source_id
+        has_many :transfers_to_tubes,       ->() { order('created_at ASC') }, class_name: 'Transfer::BetweenPlateAndTubes', foreign_key: :source_id
+        has_many :transfers_as_destination, ->() { order('id ASC') },         class_name: 'Transfer', foreign_key: :destination_id
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         scope :with_no_outgoing_transfers, -> {
@@ -125,7 +125,7 @@ class Transfer < ActiveRecord::Base
     def self.included(base)
       base.class_eval do
         serialize :transfers
-        validates :transfers, :presence => true, :allow_blank => false
+        validates :transfers, presence: true, allow_blank: false
       end
     end
   end
@@ -134,9 +134,9 @@ class Transfer < ActiveRecord::Base
   module TransfersToKnownDestination
     def self.included(base)
       base.class_eval do
-        belongs_to :destination, :polymorphic => true
+        belongs_to :destination, polymorphic: true
         validates_presence_of :destination
-        validates_uniqueness_of :destination_id, :scope => [:destination_type, :source_id], :message => 'can only be transferred to once from the source'
+        validates_uniqueness_of :destination_id, scope: [:destination_type, :source_id], message: 'can only be transferred to once from the source'
       end
     end
   end
@@ -172,9 +172,9 @@ class Transfer < ActiveRecord::Base
 
   # The source plate and the destination asset (which varies between different types of transfers)
   # You can only transfer from one plate to another once, anything else is an error.
-  belongs_to :source, :class_name => 'Plate'
+  belongs_to :source, class_name: 'Plate'
   validates_presence_of :source
-  scope :include_source, -> { includes( :source => ModelExtensions::Plate::PLATE_INCLUDES ) }
+  scope :include_source, -> { includes( source: ModelExtensions::Plate::PLATE_INCLUDES ) }
 
   # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.
@@ -184,9 +184,9 @@ class Transfer < ActiveRecord::Base
     # values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
     each_transfer do |source, destination, submission|
       request_type_between(source, destination).create!(
-        :asset         => source,
-        :target_asset  => destination,
-        :submission_id => submission || source.pool_id
+        asset: source,
+        target_asset: destination,
+        submission_id: submission || source.pool_id
       )
     end
   end

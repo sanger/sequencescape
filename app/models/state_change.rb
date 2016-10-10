@@ -20,11 +20,11 @@ class StateChange < ActiveRecord::Base
   validates_presence_of :user
 
   # This is the target asset for which to update the state
-  belongs_to :target, :class_name => 'Asset'
+  belongs_to :target, class_name: 'Asset'
   validates_presence_of :target
 
   # If the state change is a known failure state then a reason must be included
-  validates :reason, :presence => true, :if => :targetted_for_failure?
+  validates :reason, presence: true, if: :targetted_for_failure?
 
   def targetted_for_failure?
     ['failed', 'cancelled'].include?(target_state)

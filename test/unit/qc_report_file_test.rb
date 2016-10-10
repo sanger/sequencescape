@@ -61,20 +61,20 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'given a file with a report' do
       setup do
-        @product = create :product, :name => 'Demo Product'
-        @criteria = create :product_criteria, :product => @product, :version => 1
-        @study = create :study, :name => 'Example study'
+        @product = create :product, name: 'Demo Product'
+        @criteria = create :product_criteria, product: @product, version: 1
+        @study = create :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
-            :study => @study,
-            :exclude_existing => false,
-            :product_criteria => @criteria,
-            :state => 'awaiting_proceed'
+            study: @study,
+            exclude_existing: false,
+            product_criteria: @criteria,
+            state: 'awaiting_proceed'
           }
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id => i + 1)
+          create :qc_metric, qc_report: @report, qc_decision: ['passed','failed'][i], asset: create(:well, id: i + 1)
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
@@ -105,20 +105,20 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'On overriding' do
       setup do
-        @product = FactoryGirl.build :product, :name => 'Demo Product'
-        @criteria = FactoryGirl.build :product_criteria, :product => @product, :version => 1
-        @study = FactoryGirl.build :study, :name => 'Example study'
+        @product = FactoryGirl.build :product, name: 'Demo Product'
+        @criteria = FactoryGirl.build :product_criteria, product: @product, version: 1
+        @study = FactoryGirl.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
-            :study => @study,
-            :exclude_existing => false,
-            :product_criteria => @criteria,
-            :state => 'awaiting_proceed'
+            study: @study,
+            exclude_existing: false,
+            product_criteria: @criteria,
+            state: 'awaiting_proceed'
           }
         end
         @asset_ids = []
         2.times do |i|
-          m = create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id => i + 1)
+          m = create :qc_metric, qc_report: @report, qc_decision: ['passed','failed'][i], asset: create(:well, id: i + 1)
           @asset_ids << m.asset_id
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
@@ -138,20 +138,20 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'With missing assets' do
       setup do
-        @product = FactoryGirl.build :product, :name => 'Demo Product'
-        @criteria = FactoryGirl.build :product_criteria, :product => @product, :version => 1
-        @study = FactoryGirl.build :study, :name => 'Example study'
+        @product = FactoryGirl.build :product, name: 'Demo Product'
+        @criteria = FactoryGirl.build :product_criteria, product: @product, version: 1
+        @study = FactoryGirl.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
-            :study => @study,
-            :exclude_existing => false,
-            :product_criteria => @criteria,
-            :state => 'awaiting_proceed'
+            study: @study,
+            exclude_existing: false,
+            product_criteria: @criteria,
+            state: 'awaiting_proceed'
           }
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i]
+          create :qc_metric, qc_report: @report, qc_decision: ['passed','failed'][i]
         end
         @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 

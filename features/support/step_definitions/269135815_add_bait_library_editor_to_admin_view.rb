@@ -18,10 +18,10 @@ end
 
 Given /^I have a bait library called "([^\"]*)"$/ do |name|
   BaitLibrary.create!(
-    :name => name,
-    :bait_library_type => BaitLibraryType.find_by_visible(true),
-    :bait_library_supplier => BaitLibrary::Supplier.find_by_visible(true),
-    :target_species => 'Dragon'
+    name: name,
+    bait_library_type: BaitLibraryType.find_by_visible(true),
+    bait_library_supplier: BaitLibrary::Supplier.find_by_visible(true),
+    target_species: 'Dragon'
     )
 end
 
@@ -30,11 +30,11 @@ Then /^the supplier_identifier for "([^\"]*)" should be nil$/ do |name|
 end
 
 Given /^I have a bait library type called "([^\"]*)"$/ do |name|
-  BaitLibraryType.create!(:name => name)
+  BaitLibraryType.create!(name: name)
 end
 
 Given /^I have a supplier called "([^\"]*)"$/ do |name|
-  BaitLibrary::Supplier.create!(:name => name )
+  BaitLibrary::Supplier.create!(name: name )
 end
 
 Then /^the "([^\"]*)" called "([^\"]*)" should exist$/ do |class_name, name|
@@ -44,18 +44,18 @@ end
 
 Given /^the last bait library has type "([^\"]*)"$/ do |name|
   BaitLibrary.last.update_attributes(
-    :bait_library_type => BaitLibraryType.create!(:name => name)
+    bait_library_type: BaitLibraryType.create!(name: name)
   )
 end
 
 Given /^the last bait library has supplier "([^\"]*)"$/ do |name|
   BaitLibrary.last.update_attributes(
-    :bait_library_supplier => BaitLibrary::Supplier.create!(:name => name)
+    bait_library_supplier: BaitLibrary::Supplier.create!(name: name)
   )
 end
 
 Given /^the last bait library is hidden$/ do
-  BaitLibrary.last.update_attributes(:visible => false)
+  BaitLibrary.last.update_attributes(visible: false)
 end
 
 Then /^the submission with UUID "([^\"]*)" should not be ready$/ do |uuid|

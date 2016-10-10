@@ -28,25 +28,25 @@ class Order < ActiveRecord::Base
 
   # Required at initial construction time ...
   belongs_to :study
-  validates :study, :presence => true, :unless => :cross_study_allowed
+  validates :study, presence: true, unless: :cross_study_allowed
 
   belongs_to :project
-  validates :project, :presence => true, :unless => :cross_project_allowed
+  validates :project, presence: true, unless: :cross_project_allowed
 
-  belongs_to :order_role, :class_name => 'Order::OrderRole'
-  delegate :role, :to => :order_role, :allow_nil => true
+  belongs_to :order_role, class_name: 'Order::OrderRole'
+  delegate :role, to: :order_role, allow_nil: true
 
   belongs_to :product
 
   belongs_to :user
   validates_presence_of :user
 
-  belongs_to :workflow, :class_name => 'Submission::Workflow'
+  belongs_to :workflow, class_name: 'Submission::Workflow'
   validates_presence_of :workflow
 
-  has_many :requests, :inverse_of => :order
+  has_many :requests, inverse_of: :order
 
-  belongs_to :submission, :inverse_of => :orders
+  belongs_to :submission, inverse_of: :orders
   scope :include_for_study_view, -> { includes(:submission) }
   #validates_presence_of :submission
 
@@ -125,9 +125,9 @@ class Order < ActiveRecord::Base
   scope :including_associations_for_json, -> {
     includes([
       :uuid_object,
-      { :assets => [:uuid_object] },
-      { :project => :uuid_object },
-      { :study => :uuid_object },
+      { assets: [:uuid_object] },
+      { project: :uuid_object },
+      { study: :uuid_object },
       :user
     ])
   }
@@ -149,7 +149,7 @@ class Order < ActiveRecord::Base
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)
     constructor = options.delete(:template) || self
-    constructor.create_order!(options.merge(:assets => options.fetch(:assets, [])))
+    constructor.create_order!(options.merge(assets: options.fetch(:assets, [])))
   end
 
   class << self
@@ -159,7 +159,7 @@ class Order < ActiveRecord::Base
   # only needed to note
   def self.build!(options)
     #call submission with appropriate Order subclass
-    Submission.build!({ :template => self }.merge(options))
+    Submission.build!({ template: self }.merge(options))
   end
 
   def self.extended(base)
@@ -181,7 +181,7 @@ class Order < ActiveRecord::Base
   private :is_asset_applicable_to_type?
 
 
-  delegate :left_building_state?, :to => :submission, :allow_nil => true
+  delegate :left_building_state?, to: :submission, allow_nil: true
 
   def create_request_of_type!(request_type, attributes = {}, &block)
     em = request_type.extract_metadata_from_hash(request_options)
@@ -203,12 +203,12 @@ class Order < ActiveRecord::Base
 
   def duplicate(&block)
     create_parameters = template_parameters
-    new_order = Order.create(create_parameters.merge( :study => self.study,:workflow => self.workflow,
-          :user => self.user, :assets => self.assets, :state => self.state,
-          :request_types => self.request_types,
-          :request_options => self.request_options,
-          :comments => self.comments,
-          :project_id => self.project_id), &block)
+    new_order = Order.create(create_parameters.merge( study: self.study,workflow: self.workflow,
+          user: self.user, assets: self.assets, state: self.state,
+          request_types: self.request_types,
+          request_options: self.request_options,
+          comments: self.comments,
+          project_id: self.project_id), &block)
     new_order.save
     return new_order
   end
@@ -233,14 +233,14 @@ class Order < ActiveRecord::Base
   # So don't forget to filter again if you override this method.
   def template_parameters
     {
-      :request_options => request_options,
-      :request_types => request_types,
-      :comments => comments,
-      :request_type_ids_list => request_type_ids_list,
-      :workflow_id => workflow.id,
-      :info_differential => info_differential,
-      :customize_partial => customize_partial,
-      :asset_input_methods => asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
+      request_options: request_options,
+      request_types: request_types,
+      comments: comments,
+      request_type_ids_list: request_type_ids_list,
+      workflow_id: workflow.id,
+      info_differential: info_differential,
+      customize_partial: customize_partial,
+      asset_input_methods: asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
     }.reject { |k,v| v.nil? }
   end
 
@@ -280,12 +280,12 @@ class Order < ActiveRecord::Base
     end
     def to_field_infos
       values = {
-        :display_name  => display_name,
-        :key           => key,
-        :default_value => default,
-        :kind          => kind
+        display_name: display_name,
+        key: key,
+        default_value: default,
+        kind: kind
       }
-      values.update(:selection => options) if self.selection?
+      values.update(selection: options) if self.selection?
       FieldInfo.new(values)
     end
   end
@@ -311,8 +311,8 @@ class Order < ActiveRecord::Base
     # deep. In hindsight it would probably have been easier to either:
     # a) Start from scratch
     # b) Not bother
-    mock_request = request_type.request_class.new(:request_type => request_type)
-    request_type.request_class::Metadata.new(:request => mock_request,:owner => mock_request)
+    mock_request = request_type.request_class.new(request_type: request_type)
+    request_type.request_class::Metadata.new(request: mock_request,owner: mock_request)
   end
 
   # Return the list of input fields to edit when creating a new submission
@@ -385,6 +385,6 @@ class Order < ActiveRecord::Base
   end
 
   def generate_broadcast_event
-    BroadcastEvent::OrderMade.create!(:seed => self,:user => user)
+    BroadcastEvent::OrderMade.create!(seed: self,user: user)
   end
 end

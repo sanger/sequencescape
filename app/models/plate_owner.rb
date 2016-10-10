@@ -9,7 +9,7 @@ class PlateOwner < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :plate
-  belongs_to :eventable, :polymorphic => true
+  belongs_to :eventable, polymorphic: true
 
   validates_presence_of :eventable
 end

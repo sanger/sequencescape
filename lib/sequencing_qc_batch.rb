@@ -19,9 +19,9 @@ module SequencingQcBatch
     base.instance_eval do
 
       # TODO[xxx]: Isn't qc_state supposed to be initialised to 'qc_pending' rather than blank?
-      validates_inclusion_of :qc_state, :in => VALID_QC_STATES, :allow_blank => true
+      validates_inclusion_of :qc_state, in: VALID_QC_STATES, allow_blank: true
 
-      belongs_to :qc_pipeline, :class_name => "Pipeline"
+      belongs_to :qc_pipeline, class_name: "Pipeline"
       before_create :qc_pipeline_update
     end
   end
@@ -63,7 +63,7 @@ module SequencingQcBatch
   def qc_previous_state!(current_user)
     previous_state = self.qc_previous_state
     if previous_state
-      self.lab_events.create(:description => "QC Rollback", :message => "Manual QC moved from #{self.qc_state} to #{previous_state}", :user_id => current_user.id)
+      self.lab_events.create(description: "QC Rollback", message: "Manual QC moved from #{self.qc_state} to #{previous_state}", user_id: current_user.id)
       self.qc_state = previous_state
     end
     self.state = 'started'
@@ -100,14 +100,14 @@ module SequencingQcBatch
   end
 
   def qc_pipeline_workflow_id
-    pipeline = Pipeline.find_by!(:name => "quality control", :automated => true)
+    pipeline = Pipeline.find_by!(name: "quality control", automated: true)
     pipeline.workflow.id
   end
 
   def qc_ready_for_manual
     ActiveRecord::Base.transaction do
       p = Pipeline.find(self.qc_pipeline_id)
-      self.update_attributes!(:qc_pipeline_id => p.next_pipeline_id, :qc_state => 'qc_manual')
+      self.update_attributes!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
     end
   end
 
@@ -126,7 +126,7 @@ module SequencingQcBatch
   def submit_to_qc_queue
     logger.debug "Batch #{self.id} attempting to be added to QC queue. State is #{self.qc_state}"
     # Get QC workflow and its tasks
-    workflow = LabInterface::Workflow.find_by_name("quality control", :include => [:tasks])
+    workflow = LabInterface::Workflow.find_by_name("quality control", include: [:tasks])
     tasks    = workflow.tasks
     if self.qc_state == "qc_pending"
       # Submit requests for all tasks in the workflow
@@ -142,7 +142,7 @@ module SequencingQcBatch
         task.descriptors.each do |t|
           h_doc["keys"]["#{t.key}"] = t.value
         end
-        doc = h_doc.to_xml(:root => "criteria", :skip_types => true)
+        doc = h_doc.to_xml(root: "criteria", skip_types: true)
         # A *Hacky* solution to get the XML readable for Chainlink
         doc = doc.to_s.gsub!('-', '_').gsub!('UTF_8', 'UTF-8')
         # logger.debug doc
@@ -190,7 +190,7 @@ module SequencingQcBatch
   private
 
     def assets_qc_tasks_results
-      auto_qc_pipeline = Pipeline.firind_by!(:name => "quality control", :automated => true)
+      auto_qc_pipeline = Pipeline.firind_by!(name: "quality control", automated: true)
       qc_workflow = LabInterface::Workflow.find_by_pipeline_id auto_qc_pipeline.id
       qc_tasks = qc_workflow.tasks
       results = []

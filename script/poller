@@ -9,14 +9,14 @@ require 'daemons'
 
 options = {
   #:app_name   => "projects-poller",
-  :dir_mode   => :normal,
-  :dir        => tmp_dir,
-  :multiple   => false,
-  :ontop      => false,
-  :mode       => :load,
-  :backtrace  => true,
-  :monitor    => true,
-  :log_output => true
+  dir_mode: :normal,
+  dir: tmp_dir,
+  multiple: false,
+  ontop: false,
+  mode: :load,
+  backtrace: true,
+  monitor: true,
+  log_output: true
 }
 
 options[:app_name] = if ENV.has_key?('Rails.env')

@@ -28,7 +28,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
         @endpoint_helper = endpoint_helper
       end
 
-      delegate :endpoint_details, :to => :@endpoint
+      delegate :endpoint_details, to: :@endpoint
 
       def merge(node)
         super(node) { |children| self.class.new(@endpoint_helper, children) }

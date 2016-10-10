@@ -40,7 +40,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         object_class.stubs(:name).returns('ClassName')
 
         @exchange = mock('Exchange for sending')
-        @exchange.expects(:publish).with('JSON', :key => 'test.saved.class_name.123456789', :persistent => false)
+        @exchange.expects(:publish).with('JSON', key: 'test.saved.class_name.123456789', persistent: false)
         @target.instance_variable_set(:@mock_exchange, @exchange)
 
         @target.send(:publish_to, @exchange, object)

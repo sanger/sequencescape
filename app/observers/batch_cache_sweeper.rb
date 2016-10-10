@@ -51,7 +51,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
   private :handle
 
   def messengers_for(record)
-    Messenger.where(:target_type => 'Batch',:target_id => ids_for(record))
+    Messenger.where(target_type: 'Batch',target_id: ids_for(record))
   end
 
 end

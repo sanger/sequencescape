@@ -4,10 +4,10 @@
 # Copyright (C) 2007-2011,2012,2013,2014 Genome Research Ltd.
 module Identifiable
   def self.included(base)
-    base.send(:has_many, :identifiers, :as => :identifiable)
+    base.send(:has_many, :identifiers, as: :identifiable)
     base.instance_eval do
      scope :with_identifier, ->(t) {
-        includes(:identifiers).where(:identifiers => { :resource_name => t } )
+        includes(:identifiers).where(identifiers: { resource_name: t } )
       }
 
     scope :sync_identifier, ->(t) {
@@ -23,7 +23,7 @@ module Identifiable
 
   def set_external(resource_name, object_or_id)
     raise Exception.new, "Resource name can't be blank" if resource_name.blank?
-    ident = identifier(resource_name) || identifiers.build(:resource_name => resource_name)
+    ident = identifier(resource_name) || identifiers.build(resource_name: resource_name)
     if object_or_id.is_a? Fixnum
       ident.external_id = object_or_id
     else

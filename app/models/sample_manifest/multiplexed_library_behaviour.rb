@@ -7,7 +7,7 @@
 module SampleManifest::MultiplexedLibraryBehaviour
   module ClassMethods
     def create_for_multiplexed_library!(attributes, *args, &block)
-      create!(attributes.merge(:asset_type => 'multiplexed_library'), *args, &block).tap do |manifest|
+      create!(attributes.merge(asset_type: 'multiplexed_library'), *args, &block).tap do |manifest|
         manifest.generate
       end
     end
@@ -22,23 +22,23 @@ module SampleManifest::MultiplexedLibraryBehaviour
       @manifest = manifest
     end
 
-    delegate :generate_mx_library, :to => :@manifest
+    delegate :generate_mx_library, to: :@manifest
 
 
     def generate
       @mx_tube = generate_mx_library
     end
 
-    delegate :samples, :to => :@manifest
+    delegate :samples, to: :@manifest
 
     def io_samples
       samples.map do |sample|
         {
-          :sample    => sample,
-          :container => {
-            :barcode => sample.primary_receptacle.sanger_human_barcode
+          sample: sample,
+          container: {
+            barcode: sample.primary_receptacle.sanger_human_barcode
           },
-          :library_information => sample.primary_receptacle.library_information
+          library_information: sample.primary_receptacle.library_information
         }
       end
     end
@@ -58,8 +58,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
     def details(&block)
       samples.each do |sample|
         yield({
-          :barcode   => sample.assets.first.sanger_human_barcode,
-          :sample_id => sample.sanger_sample_id
+          barcode: sample.assets.first.sanger_human_barcode,
+          sample_id: sample.sanger_sample_id
         })
       end
     end
@@ -68,8 +68,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
       [].tap do |details|
         samples.each do |sample|
           details << {
-            :barcode   => sample.assets.first.sanger_human_barcode,
-            :sample_id => sample.sanger_sample_id
+            barcode: sample.assets.first.sanger_human_barcode,
+            sample_id: sample.sanger_sample_id
           }
         end
       end
@@ -133,16 +133,16 @@ module SampleManifest::MultiplexedLibraryBehaviour
       tag_group = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
 
       {
-        :specialized_from_manifest => {
-          :tag_id           => tag_group.tags.detect { |tag| tag.map_id == row['TAG INDEX'].to_i }.id,
-          :library_type     => row['LIBRARY TYPE'],
-          :insert_size_from => row['INSERT SIZE FROM'].to_i,
-          :insert_size_to   => row['INSERT SIZE TO'].to_i
+        specialized_from_manifest: {
+          tag_id: tag_group.tags.detect { |tag| tag.map_id == row['TAG INDEX'].to_i }.id,
+          library_type: row['LIBRARY TYPE'],
+          insert_size_from: row['INSERT SIZE FROM'].to_i,
+          insert_size_to: row['INSERT SIZE TO'].to_i
         }
       }.tap do |params|
         if row[SampleManifest::Headers::TAG2_GROUP_FIELD].present?
           tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
-          params[:specialized_from_manifest].merge!(:tag2_id => tag2_group.tags.detect { |tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i }.id )
+          params[:specialized_from_manifest].merge!(tag2_id: tag2_group.tags.detect { |tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i }.id )
         end
       end
     end
@@ -167,7 +167,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
       create_sample(sanger_sample_id).tap do |sample|
         sample_tube = LibraryTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
-        sample_tube.aliquots.create!(:sample => sample)
+        sample_tube.aliquots.create!(sample: sample)
       end
     end
   end

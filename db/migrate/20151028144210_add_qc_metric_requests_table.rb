@@ -10,8 +10,8 @@ class AddQcMetricRequestsTable < ActiveRecord::Migration
 
   def self.up
     create_table :qc_metric_requests do |t|
-      t.references :qc_metric, :null => false
-      t.references :request, :null => false
+      t.references :qc_metric, null: false
+      t.references :request, null: false
       t.timestamps
     end
 

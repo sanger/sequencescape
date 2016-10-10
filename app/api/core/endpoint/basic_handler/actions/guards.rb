@@ -27,7 +27,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
       @guards = []
     end
 
-    delegate :push, :to => :@guards
+    delegate :push, to: :@guards
 
     def execute(object)
       return true if @guards.empty?

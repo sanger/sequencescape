@@ -22,7 +22,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
 
       context '#product_for' do
         should 'return the product' do
-          assert_equal @product, @catalogue.product_for({ :attributes => :do_not_matter })
+          assert_equal @product, @catalogue.product_for({ attributes: :do_not_matter })
         end
       end
     end
@@ -30,7 +30,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
     context 'with invalid behaviour' do
       should 'reject non-existant behaviours'do
         assert_raise(ActiveRecord::RecordInvalid) do
-          create :product_catalogue, :selection_behaviour => 'InvalidSelectionBehaviour'
+          create :product_catalogue, selection_behaviour: 'InvalidSelectionBehaviour'
         end
       end
     end
@@ -42,16 +42,16 @@ class ProductCatalogueTest < ActiveSupport::TestCase
     setup do
       @catalogue_count = ProductCatalogue.count
 
-      @existing_product = create :product, :name => 'pre_existing'
+      @existing_product = create :product, name: 'pre_existing'
 
       @product_count = Product.count
       @product_product_catalogue_count = ProductProductCatalogue.count
 
 
       catalogue_parameters = {
-        :name => 'test',
-        :selection_behaviour => 'SingleProduct',
-        :products => {
+        name: 'test',
+        selection_behaviour: 'SingleProduct',
+        products: {
           'ambiguator_a' => 'pre_existing',
           'ambiguator_b' => 'novel'
         }

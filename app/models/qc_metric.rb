@@ -23,29 +23,29 @@ class QcMetric < ActiveRecord::Base
   }
 
   new_state 'passed'
-  new_state 'failed', :passed => false
-  new_state 'manually_passed', :automatic => false
-  new_state 'manually_failed', :passed => false, :automatic => false
-  new_state 'unprocessable', :passed => false, :proceedable => false
+  new_state 'failed', passed: false
+  new_state 'manually_passed', automatic: false
+  new_state 'manually_failed', passed: false, automatic: false
+  new_state 'unprocessable', passed: false, proceedable: false
 
   belongs_to :asset
   belongs_to :qc_report
-  has_one :product_criteria, :through => :qc_report
+  has_one :product_criteria, through: :qc_report
   validates_presence_of :asset, :qc_report
-  validates_inclusion_of :qc_decision, :in => QcMetric.valid_states
+  validates_inclusion_of :qc_decision, in: QcMetric.valid_states
 
   serialize :metrics
 
-  scope :with_asset_ids, ->(ids) { where(:asset_id => ids) }
+  scope :with_asset_ids, ->(ids) { where(asset_id: ids) }
 
   scope :for_product, ->(product) {
-      joins(:qc_report => :product_criteria).
-      where(:product_criteria => { :product_id => product })
+      joins(qc_report: :product_criteria).
+      where(product_criteria: { product_id: product })
   }
 
   scope :stock_metric, ->() {
-    joins(:qc_report => :product_criteria).
-    where(:product_criteria => { :stage => ProductCriteria::STAGE_STOCK })
+    joins(qc_report: :product_criteria).
+    where(product_criteria: { stage: ProductCriteria::STAGE_STOCK })
   }
 
   scope :most_recent_first, ->() { order('created_at DESC, id DESC') }
@@ -118,7 +118,7 @@ class QcMetric < ActiveRecord::Base
   end
 
   def value_error_message(decision, accepted_list)
-    accepted = accepted_list.keys.to_sentence(:last_word_connector => ', or ',:two_words_connector => ' or ')
+    accepted = accepted_list.keys.to_sentence(last_word_connector: ', or ',two_words_connector: ' or ')
     "#{decision} is not an acceptable decision. Should be #{accepted}."
   end
 

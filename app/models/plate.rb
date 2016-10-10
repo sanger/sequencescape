@@ -24,24 +24,24 @@ class Plate < Asset
   has_qc_files
 
   # Contained associations all look up through wells (Wells in turn delegate to aliquots)
-  has_many :contained_samples, :through => :wells, :source => :samples
-  has_many :conatined_aliquots, :through => :wells, :source => :aliquots
+  has_many :contained_samples, through: :wells, source: :samples
+  has_many :conatined_aliquots, through: :wells, source: :aliquots
 
   # We also look up studies and projects through wells
-  has_many :studies, ->() { uniq }, :through => :wells
-  has_many :projects, ->() { uniq }, :through => :wells
+  has_many :studies, ->() { uniq }, through: :wells
+  has_many :projects, ->() { uniq }, through: :wells
 
 
-  has_many :well_requests_as_target, :through => :wells, :source => :requests_as_target
-  has_many :orders_as_target, ->() { uniq }, :through => :well_requests_as_target, :source => :order
+  has_many :well_requests_as_target, through: :wells, source: :requests_as_target
+  has_many :orders_as_target, ->() { uniq }, through: :well_requests_as_target, source: :order
 
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
-  has_many :stock_requests,  ->() { uniq }, :through => :stock_well_associations, :source => :requests
-  has_many :stock_well_associations,  ->() { uniq }, :through => :wells, :source => :stock_wells
-  has_many :stock_orders,  ->() { uniq }, :through => :stock_requests, :source => :order
+  has_many :stock_requests,  ->() { uniq }, through: :stock_well_associations, source: :requests
+  has_many :stock_well_associations,  ->() { uniq }, through: :wells, source: :stock_wells
+  has_many :stock_orders,  ->() { uniq }, through: :stock_requests, source: :order
 
   # The default state for a plate comes from the plate purpose
-  delegate :default_state, :to => :plate_purpose, :allow_nil => true
+  delegate :default_state, to: :plate_purpose, allow_nil: true
   def state
     plate_purpose.state_of(self)
   end
@@ -52,9 +52,9 @@ class Plate < Asset
 
   def summary_hash
     {
-      :asset_id => id,
-      :barcode => { :ean13_barcode => ean13_barcode, :human_readable => sanger_human_barcode },
-      :occupied_wells => wells.with_aliquots.include_map.map(&:map_description)
+      asset_id: id,
+      barcode: { ean13_barcode: ean13_barcode, human_readable: sanger_human_barcode },
+      occupied_wells: wells.with_aliquots.include_map.map(&:map_description)
     }
   end
 
@@ -69,16 +69,16 @@ class Plate < Asset
   SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
-  delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
-  delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
-  delegate :supports_multiple_submissions?, :to => :plate_purpose
-  delegate :fluidigm_barcode, :to => :plate_metadata
-  delegate :dilution_factor,:dilution_factor=, :to => :plate_metadata
+  delegate :barcode_type, to: :plate_purpose, allow_nil: true
+  delegate :asset_shape, to: :plate_purpose, allow_nil: true
+  delegate :supports_multiple_submissions?, to: :plate_purpose
+  delegate :fluidigm_barcode, to: :plate_metadata
+  delegate :dilution_factor,:dilution_factor=, to: :plate_metadata
 
-  validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
+  validates_length_of :fluidigm_barcode, is: 10, allow_blank: true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
-  has_many :transfer_requests, :through => :wells, :source => :transfer_requests_as_target
+  has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
 
 
   # About 10x faster than going through the wells
@@ -129,9 +129,9 @@ class Plate < Asset
   def barcode_dilution_factor_created_at_hash
     return {} if barcode.blank?
     {
-      :barcode => generate_machine_barcode,
-      :dilution_factor => dilution_factor.to_s,
-      :created_at => created_at
+      barcode: generate_machine_barcode,
+      dilution_factor: dilution_factor.to_s,
+      created_at: created_at
     }
   end
 
@@ -158,12 +158,12 @@ class Plate < Asset
     # getting created here. (The intent is to change this so requests are treated similarly to plates)
     def create!(options)
       plate.submissions.each { |s| s.add_comment(options[:description],options[:user]) }
-      Comment.create!(options.merge(:commentable => plate))
+      Comment.create!(options.merge(commentable: plate))
     end
 
     def create(options)
       plate.submissions.each { |s| s.add_comment(options[:description],options[:user]) }
-      Comment.create(options.merge(:commentable => plate))
+      Comment.create(options.merge(commentable: plate))
     end
 
     # By default rails treats sizes for grouped queries different to sizes
@@ -214,15 +214,15 @@ class Plate < Asset
       time_now = Time.now
       links_data.each do |c|
         AssetLink.create!(
-          :direct => true,
+          direct: true,
           #:count => 1, Huh?
-          :ancestor_id => c.first,
-          :descendant_id => c.last
+          ancestor_id: c.first,
+          descendant_id: c.last
           )
         WellAttribute.create!(
-          :well_id => c.last,
-          :created_at => time_now,
-          :updated_at => time_now
+          well_id: c.last,
+          created_at: time_now,
+          updated_at: time_now
         )
       end
     end
@@ -235,7 +235,7 @@ class Plate < Asset
 
     def construct!
       Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
-        build(:map => location)
+        build(map: location)
       end.tap do |wells|
         proxy_association.owner.save!
         AssetLink::Job.create(proxy_association.owner, wells)
@@ -276,7 +276,7 @@ class Plate < Asset
     end
   end
 
-  scope :include_wells_and_attributes, -> { includes(:wells => [:map, :well_attribute]) }
+  scope :include_wells_and_attributes, -> { includes(wells: [:map, :well_attribute]) }
 
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
@@ -322,9 +322,9 @@ class Plate < Asset
   scope :output_by_batch, ->(batch) {
 
       joins({
-        :container_associations => {
-          :content => {
-            :requests_as_target => :batch
+        container_associations: {
+          content: {
+            requests_as_target: :batch
           }
         }
       }).
@@ -335,16 +335,16 @@ class Plate < Asset
   scope :with_wells, ->(wells) {
       select('DISTINCT assets.*').
       joins(:container_associations).
-      where(:container_associations => { :content_id => wells.map(&:id) })
+      where(container_associations: { content_id: wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
-  has_many :descendant_plates, :class_name => "Plate", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
-  has_many :descendant_lanes,  :class_name => "Lane", :through => :links_as_ancestor, :foreign_key => :ancestor_id, :source => :descendant
+  has_many :descendant_plates, class_name: "Plate", through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
+  has_many :descendant_lanes,  class_name: "Lane", through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :tag_layouts
 
   scope :with_descendants_owned_by, ->(user) {
-    joins(:descendant_plates => :plate_owner).
-    where(:plate_owners => { :user_id => user }).
+    joins(descendant_plates: :plate_owner).
+    where(plate_owners: { user_id: user }).
     uniq
   }
 
@@ -355,13 +355,13 @@ class Plate < Asset
 
   scope :with_wells_and_requests, ->() {
     includes({
-      :wells => [
+      wells: [
         :uuid_object, :map,
         {
-          :requests_as_target => [
-            { :initial_study => :uuid_object },
-            { :initial_project => :uuid_object },
-            { :asset => { :aliquots => :sample } }
+          requests_as_target: [
+            { initial_study: :uuid_object },
+            { initial_project: :uuid_object },
+            { asset: { aliquots: :sample } }
           ]
         }
       ]
@@ -384,9 +384,9 @@ class Plate < Asset
     # Count from 0
     description = asset_shape.location_from_row_and_column(row,col + 1,size)
     Map.where(
-      :description    => description,
-      :asset_size     => size,
-      :asset_shape_id => asset_shape
+      description: description,
+      asset_size: size,
+      asset_shape_id: asset_shape
      ).first
   end
 
@@ -445,7 +445,7 @@ class Plate < Asset
   end
 
   def set_plate_type(result)
-    self.add_descriptor(Descriptor.new({ :name => "Plate Type", :value => result }))
+    self.add_descriptor(Descriptor.new({ name: "Plate Type", value: result }))
     self.save
   end
 
@@ -518,22 +518,22 @@ class Plate < Asset
   end
 
   def self.create_from_rack_csv(file_location, plate_barcode)
-    plate = self.create(:name => "Plate #{plate_barcode}", :barcode => plate_barcode, :size => 96)
+    plate = self.create(name: "Plate #{plate_barcode}", barcode: plate_barcode, size: 96)
 
     CSV.foreach(file_location) do |row|
       map = Map.find_for_cell_location(row.first, plate.size)
       unless row.last.strip.blank?
         asset = Asset.find_by_two_dimensional_barcode(row.last.strip)
         unless asset.nil?
-          well = plate.wells.create(:sample => asset.sample, :map_id => map.id)
+          well = plate.wells.create(sample: asset.sample, map_id: map.id)
           well.name = "#{asset} #{well.id}"
           well.save
           AssetLink.create_edge(asset, well)
         else
-          well = plate.wells.create(:map_id => map.id)
+          well = plate.wells.create(map_id: map.id)
         end
       else
-        well = plate.wells.create(:map_id => map.id)
+        well = plate.wells.create(map_id: map.id)
       end
     end
     plate
@@ -547,7 +547,7 @@ class Plate < Asset
     begin
       params[:snp_plates].each do |index,plate_barcode_id|
         next if plate_barcode_id.blank?
-        plate = Plate.create(:barcode => "#{plate_barcode_id}", :name => "Plate #{plate_barcode_id}", :size => DEFAULT_SIZE)
+        plate = Plate.create(barcode: "#{plate_barcode_id}", name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
         storage_location = Location.find(params[:asset][:location_id])
         plate.location = storage_location
         plate.save!
@@ -581,12 +581,12 @@ class Plate < Asset
 
   def create_plate_submission(project, study, user, current_time)
     LinearSubmission.build!(
-      :study => study,
-      :project => project,
-      :workflow => genotyping_submission_workflow,
-      :user => user,
-      :assets => wells,
-      :request_types => submission_workflow_request_type_ids(genotyping_submission_workflow)
+      study: study,
+      project: project,
+      workflow: genotyping_submission_workflow,
+      user: user,
+      assets: wells,
+      request_types: submission_workflow_request_type_ids(genotyping_submission_workflow)
     )
   end
 
@@ -620,9 +620,9 @@ class Plate < Asset
   def generate_plate_submission(project, study, user, current_time)
     submission = self.create_plate_submission(project, study, user, current_time)
     if submission
-      self.events.create!(:message => I18n.t('studies.submissions.plate.event.success', :barcode => self.barcode, :submission_id => submission.id), :created_by => user.login)
+      self.events.create!(message: I18n.t('studies.submissions.plate.event.success', barcode: self.barcode, submission_id: submission.id), created_by: user.login)
     else
-      self.events.create!(:message => I18n.t('studies.submissions.plate.event.failed', :barcode => self.barcode), :created_by => user.login)
+      self.events.create!(message: I18n.t('studies.submissions.plate.event.failed', barcode: self.barcode), created_by: user.login)
       study.errors.add("plate_barcode", "Couldnt create submission for plate #{plate_barcode}")
     end
   end
@@ -670,17 +670,17 @@ class Plate < Asset
 
   def lookup_stock_plate
     spp = PlatePurpose.considered_stock_plate.pluck(:id)
-    self.ancestors.order('created_at DESC').where(:plate_purpose_id => spp).first
+    self.ancestors.order('created_at DESC').where(plate_purpose_id: spp).first
   end
   private :lookup_stock_plate
 
   def original_stock_plates
-    ancestors.where(:plate_purpose_id => PlatePurpose.stock_plate_purpose)
+    ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
-    self.ancestors.order('created_at DESC').where(:plate_purpose_id => ancestor_purpose_id).first
+    self.ancestors.order('created_at DESC').where(plate_purpose_id: ancestor_purpose_id).first
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
@@ -719,7 +719,7 @@ class Plate < Asset
     # plate to the plate purpose of choice.
     barcode    = nil if barcode.present? and unscoped.find_by_barcode(barcode).present?
     barcode  ||= PlateBarcode.create.barcode
-    create!(attributes.merge(:barcode => barcode), &block)
+    create!(attributes.merge(barcode: barcode), &block)
   end
 
   def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)
@@ -778,10 +778,10 @@ class Plate < Asset
 
   def barcode_label_for_printing
     PrintBarcode::Label.new(
-      :number => self.barcode,
-      :study  => self.find_study_abbreviation_from_parent,
-      :suffix => self.parent.try(:barcode),
-      :prefix => self.barcode_prefix.prefix
+      number: self.barcode,
+      study: self.find_study_abbreviation_from_parent,
+      suffix: self.parent.try(:barcode),
+      prefix: self.barcode_prefix.prefix
     )
   end
 
@@ -803,7 +803,7 @@ class Plate < Asset
   end
 
   def convert_to(new_purpose)
-    self.update_attributes!(:plate_purpose => new_purpose)
+    self.update_attributes!(plate_purpose: new_purpose)
   end
 
   def compatible_purposes

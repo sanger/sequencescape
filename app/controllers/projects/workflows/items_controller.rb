@@ -18,7 +18,7 @@ class Projects::Workflows::ItemsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @items.to_xml }
+      format.xml { render xml: @items.to_xml }
     end
   end
 

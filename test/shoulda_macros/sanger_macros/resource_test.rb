@@ -193,7 +193,7 @@ module Sanger
                   context "should show status" do
                     setup do
                       @object = create resource_name
-                      get :status, :id => @object.id
+                      get :status, id: @object.id
                     end
                     should respond_with :success
                   end
@@ -211,8 +211,8 @@ module Sanger
                       end
                       should respond_with :success
                       should "have api version attribute on root object" do
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}", :attributes => { :api_version => "0.6" }
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}"
+                        assert_tag tag: "#{resource_name.to_s.pluralize}", attributes: { api_version: "0.6" }
+                        assert_tag tag: "#{resource_name.to_s.pluralize}"
                       end
                     end
                   end
@@ -227,8 +227,8 @@ module Sanger
                       end
                       should respond_with :success
                       should "show xml" do
-                        assert_tag :tag => "#{resource_name}", :attributes => { :api_version => RELEASE.api_version }
-                        assert_tag :tag => "#{resource_name}"
+                        assert_tag tag: "#{resource_name}", attributes: { api_version: RELEASE.api_version }
+                        assert_tag tag: "#{resource_name}"
                       end
                     end
                   end

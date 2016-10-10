@@ -19,10 +19,10 @@ class TagLayoutTemplate < ActiveRecord::Base
   validates_presence_of :direction_algorithm
   validates_presence_of :walking_algorithm
 
-  delegate :direction, :to => :direction_algorithm_class
-  delegate :walking_by, :to => :walking_algorithm_class
+  delegate :direction, to: :direction_algorithm_class
+  delegate :walking_by, to: :walking_algorithm_class
 
-  scope :include_tags, -> { includes({ :tag_group => :tags }) }
+  scope :include_tags, -> { includes({ tag_group: :tags }) }
 
   def stamp_to(_)
     # Do Nothing
@@ -40,9 +40,9 @@ class TagLayoutTemplate < ActiveRecord::Base
 
   def tag_layout_attributes
     {
-      :tag_group => tag_group,
-      :direction_algorithm => direction_algorithm,
-      :walking_algorithm => walking_algorithm
+      tag_group: tag_group,
+      direction_algorithm: direction_algorithm,
+      walking_algorithm: walking_algorithm
     }
   end
   private :tag_layout_attributes

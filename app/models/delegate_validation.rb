@@ -39,7 +39,7 @@ module DelegateValidation
 
     attr_reader :target
     protected :target
-    delegate :include_unset_values?, :to => :target
+    delegate :include_unset_values?, to: :target
 
 
     def self.name
@@ -84,7 +84,7 @@ module DelegateValidation
   # A composite validator that will perform multiple validations across several validator classes.
   class CompositeValidator
     include ActiveModel::Validations
-    class_attribute :validator_classes, :instance_writer => false
+    class_attribute :validator_classes, instance_writer: false
 
     def self.CompositeValidator(*validator_classes)
       Class.new(CompositeValidator).tap do |sub_class|

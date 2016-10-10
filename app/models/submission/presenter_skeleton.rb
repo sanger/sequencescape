@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class Submission::PresenterSkeleton
-  class_attribute :attributes, :instance_writer => false
+  class_attribute :attributes, instance_writer: false
   self.attributes = Array.new
 
   def initialize(user, submission_attributes = {})

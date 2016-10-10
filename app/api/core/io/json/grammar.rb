@@ -72,7 +72,7 @@ module ::Core::Io::Json::Grammar
       duplicate { |children| self.class.new(owner, children) }
     end
 
-    delegate :json_root, :to => :@owner
+    delegate :json_root, to: :@owner
 
     def encode(object, options)
       object_encoder(object, options).call(object, options, options[:stream])
@@ -177,7 +177,7 @@ module ::Core::Io::Json::Grammar
   module Resource
     def resource_details(endpoint, object, options, stream)
       stream.block('actions') do |nested_stream|
-        endpoint.send(:actions, object, options.merge(:target => object)).map do |action,url|
+        endpoint.send(:actions, object, options.merge(target: object)).map do |action,url|
           nested_stream.attribute(action,url)
         end
         actions(object, options, nested_stream)

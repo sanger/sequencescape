@@ -41,7 +41,7 @@ class Api::Messages::FlowcellIO < Api::Base
           end
         end
 
-        delegate :spiked_in_buffer, :external_release, :to => :target_asset, :allow_nil => true
+        delegate :spiked_in_buffer, :external_release, to: :target_asset, allow_nil: true
 
         def controls
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []
@@ -158,7 +158,7 @@ class Api::Messages::FlowcellIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :user, :assignee, { :pipeline => :uuid_object }]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :user, :assignee, { pipeline: :uuid_object }]) }
 
         def flowcell_barcode
           requests.first.flowcell_barcode

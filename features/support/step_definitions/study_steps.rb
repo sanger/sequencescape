@@ -5,16 +5,16 @@
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_name,property_name,value|
-  study = Study.first(:conditions => { :name => study_name }) or raise StandardError, "Study '#{ study_name }' does not exist"
+  study = Study.first(conditions: { name: study_name }) or raise StandardError, "Study '#{ study_name }' does not exist"
   study.properties.set(property_name.downcase.gsub(/[^a-z0-9]+/, '_'), value)
 end
 
 Given /^I have a study called "([^\"]*)"$/ do |study|
-  FactoryGirl.create :study, :name => study
+  FactoryGirl.create :study, name: study
 end
 
 Given /^I have a study called "([^\"]*)" that requires ethical approval and has HMDMC approval number "(.*?)"$/ do |study, number|
-  study = FactoryGirl.create :study, :name => study
+  study = FactoryGirl.create :study, name: study
   study.study_metadata.contains_human_dna = "Yes"
   study.study_metadata.contaminated_human_dna = "No"
   study.study_metadata.commercially_available = "No"
@@ -36,7 +36,7 @@ end
 Given /^study "([^\"]*)" has samples registered$/ do |study|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
-  new_sample_group = FactoryGirl.create :sample_group, :name => "new_sample_group", :user => user, :study => proj
+  new_sample_group = FactoryGirl.create :sample_group, name: "new_sample_group", user: user, study: proj
   samples = {
     "0" => {
       "name" => "SUPPLIER SAMPLE NAME",
@@ -64,7 +64,7 @@ end
 Given /^study "([^\"]*)" has assets registered$/ do |study|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
-  new_sample_group = FactoryGirl.create :asset_group, :name => "new_asset_group", :user => user, :study => proj
+  new_sample_group = FactoryGirl.create :asset_group, name: "new_asset_group", user: user, study: proj
 end
 
 Given /^the following user records$/ do |table|
@@ -83,8 +83,8 @@ Given /^user "([^\"]*)" is an? "([^\"]*)" of study "([^\"]*)"$/ do |login, role_
   proj = Study.find_by_name(study)
   role = Role.find_by(name:role_name,authorizable_type:'Study',authorizable_id:proj.id)
   if role.nil?
-    role = FactoryGirl.create :role, :name => role_name, :authorizable_type => 'Study',
-      :authorizable_id => proj.id, :created_at => Time.now, :updated_at => Time.now
+    role = FactoryGirl.create :role, name: role_name, authorizable_type: 'Study',
+      authorizable_id: proj.id, created_at: Time.now, updated_at: Time.now
   end
   usr = User.find_by_login(login)
   usr.roles << role
@@ -180,7 +180,7 @@ end
 def GivenFacultySponsor(attribute, regexp)
   Given(regexp) do |name,value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
-    faculty_sponsor = FacultySponsor.create!({ :name => value })
+    faculty_sponsor = FacultySponsor.create!({ name: value })
     study.study_metadata.send(:"#{ attribute }=", faculty_sponsor)
     study.save!
   end
@@ -210,13 +210,13 @@ end
 Given /^the study "([^\"]+)" is delayed for (3|6|9|12) months because "([^\"]+)"$/ do |name, period, reason|
   study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
   study.update_attributes!(
-    :study_metadata_attributes => {
-      :data_release_timing => 'delayed',
-      :data_release_delay_reason => 'other',
-      :data_release_delay_other_comment => reason,
-      :data_release_delay_period => "#{ period } months",
-      :data_release_delay_approval => 'Yes',
-      :data_release_delay_reason_comment => reason
+    study_metadata_attributes: {
+      data_release_timing: 'delayed',
+      data_release_delay_reason: 'other',
+      data_release_delay_other_comment: reason,
+      data_release_delay_period: "#{ period } months",
+      data_release_delay_approval: 'Yes',
+      data_release_delay_reason_comment: reason
     }
   )
 end
@@ -231,34 +231,34 @@ Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, :name => "new_asset_group", :user => user, :study => proj
+  id_asset_group = FactoryGirl.create :asset_group, name: "new_asset_group", user: user, study: proj
 #  id_asset = FactoryGirl.create :asset, :name => 'Cucumberirbattle', :sti_type => 'SampleTube', :barcode => 'barcode', :sample_id => '1', :closed => '0'
-  id_asset = FactoryGirl.create :sample_tube, :name => 'Cucumberirbattle', :barcode => 'barcode', :closed => '0'
-  id_aga = FactoryGirl.create :asset_group_asset, :asset_id => id_asset.id, :asset_group_id => id_asset_group.id
+  id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
+  id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
 end
 
 Given /^study "([^\"]*)" has asset and assetgroup called "([^\"]*)"$/ do |study, new_asset_group|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, :name => new_asset_group, :user => user, :study => proj
-  id_asset = FactoryGirl.create :sample_tube, :name => 'Cucumberirbattle', :barcode => 'barcode', :closed => '0'
-  id_aga = FactoryGirl.create :asset_group_asset, :asset_id => id_asset.id, :asset_group_id => id_asset_group.id
+  id_asset_group = FactoryGirl.create :asset_group, name: new_asset_group, user: user, study: proj
+  id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
+  id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
 end
 
 Given /^study "([^\"]*)" has plate and assetgroup$/ do |study_name|
   study = Study.find_by_name(study_name)
   user = User.find_by_login 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, :name => "new_asset_group", :user => user, :study => study
+  id_asset_group = FactoryGirl.create :asset_group, name: "new_asset_group", user: user, study: study
   sample = FactoryGirl.create :sample
   study.samples << sample
   map   = FactoryGirl.create :map
-  plate = FactoryGirl.create :plate, :name => 'Cucumberirbattle', :barcode => '123', :closed => '0'
-  well = FactoryGirl.create :well, :name => 'Well 1', :closed => '0',  :sample => sample, :map => map
+  plate = FactoryGirl.create :plate, name: 'Cucumberirbattle', barcode: '123', closed: '0'
+  well = FactoryGirl.create :well, name: 'Well 1', closed: '0',  sample: sample, map: map
   well.plate = plate
   well.save
-  id_aga = FactoryGirl.create :asset_group_asset, :asset_id => well.id, :asset_group_id => id_asset_group.id
+  id_aga = FactoryGirl.create :asset_group_asset, asset_id: well.id, asset_group_id: id_asset_group.id
 end
 
 
@@ -318,7 +318,7 @@ def assign_asset_to_study(asset,study_name)
   else
     Asset.find(asset_ids).each do |asset|
       asset.try(:aliquots).try(:each) do |aliquot|
-        aliquot.update_attributes!(:study_id => study.id)
+        aliquot.update_attributes!(study_id: study.id)
       end
     end
   end
@@ -330,13 +330,13 @@ Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, ab
 end
 When /^I get the XML accession for the study *"([^\"]+)"$/ do |name|
   study = Study.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
-  visit(url_for(:controller => 'studies', :action => 'show_accession', :id => study.id, :format => :xml))
+  visit(url_for(controller: 'studies', action: 'show_accession', id: study.id, format: :xml))
 end
 
 
 Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_name, asset_model, asset_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  asset = FactoryGirl.create(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
+  asset = FactoryGirl.create(asset_model.gsub(/\s+/, '_').to_sym, name: asset_name)
   step %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
 end
 
@@ -398,12 +398,12 @@ end
 
 Given /^study "([^"]*)" has a study title of "([^"]*)"$/ do |study_name, study_title|
   study = Study.find_by_name(study_name)
-  study.study_metadata.update_attributes!(:study_study_title => study_title)
+  study.study_metadata.update_attributes!(study_study_title: study_title)
 end
 
 Given /^study "([^"]*)" has an ENA project ID of "([^"]*)"$/ do |study_name, ena_project_id|
   study = Study.find_by_name(study_name)
-  study.study_metadata.update_attributes!(:study_project_id => ena_project_id)
+  study.study_metadata.update_attributes!(study_project_id: ena_project_id)
 end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
@@ -427,21 +427,21 @@ end
 
 When /^I have an? (managed|open) study without a data release group called "(.*?)"$/ do |managed,study_name|
   Study.create!(
-      :name => study_name,
-      :study_metadata_attributes => {
-        :program => Program.find_by_name("General"),
-        :faculty_sponsor => FactoryGirl.create(:faculty_sponsor),
-        :study_type => StudyType.last,
-        :data_release_strategy => managed,
-        :study_description => 'blah',
-        :data_release_study_type => DataReleaseStudyType.first,
-        :contaminated_human_dna => 'No',
-        :contains_human_dna => 'Yes',
-        :commercially_available => 'No'
+      name: study_name,
+      study_metadata_attributes: {
+        program: Program.find_by_name("General"),
+        faculty_sponsor: FactoryGirl.create(:faculty_sponsor),
+        study_type: StudyType.last,
+        data_release_strategy: managed,
+        study_description: 'blah',
+        data_release_study_type: DataReleaseStudyType.first,
+        contaminated_human_dna: 'No',
+        contains_human_dna: 'Yes',
+        commercially_available: 'No'
       }
     )
 end
 
 Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
-  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group => dag)
+  Study.find_by_name(study_name).study_metadata.update_attributes!(data_access_group: dag)
 end

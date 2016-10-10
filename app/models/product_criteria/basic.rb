@@ -22,12 +22,12 @@ class ProductCriteria::Basic
   Comparison = Struct.new(:method,:message)
 
   METHOD_ALIAS = {
-    :greater_than => Comparison.new(:>,    '%s too low' ),
-    :less_than    => Comparison.new(:<,    '%s too high'),
-    :at_least     => Comparison.new(:>=,   '%s too low' ),
-    :at_most      => Comparison.new(:<=,   '%s too high'),
-    :equals       => Comparison.new(:==,   '%s not suitable'),
-    :not_equal    => Comparison.new(:'!=', '%s not suitable')
+    greater_than: Comparison.new(:>,    '%s too low' ),
+    less_than: Comparison.new(:<,    '%s too high'),
+    at_least: Comparison.new(:>=,   '%s too low' ),
+    at_most: Comparison.new(:<=,   '%s too high'),
+    equals: Comparison.new(:==,   '%s not suitable'),
+    not_equal: Comparison.new(:'!=', '%s not suitable')
   }
 
   GENDER_MARKER_MAPS = {
@@ -64,7 +64,7 @@ class ProductCriteria::Basic
   end
 
   def metrics
-    values.merge({ :comment => @comment.join(';') })
+    values.merge({ comment: @comment.join(';') })
   end
 
   def well_location
@@ -76,17 +76,17 @@ class ProductCriteria::Basic
   end
 
   SUPPORTED_SAMPLE.each do |attribute|
-    delegate(attribute, :to => :sample, :allow_nil => true)
+    delegate(attribute, to: :sample, allow_nil: true)
   end
 
-  delegate(:sample_metadata, :to => :sample, :allow_nil => true)
+  delegate(:sample_metadata, to: :sample, allow_nil: true)
 
   SUPPORTED_SAMPLE_METADATA.each do |attribute|
-    delegate(attribute, :to => :sample_metadata, :allow_nil => true)
+    delegate(attribute, to: :sample_metadata, allow_nil: true)
   end
 
   SUPPORTED_WELL_ATTRIBUTES.each do |attribute|
-    delegate(attribute, :to => :well_attribute, :allow_nil => true)
+    delegate(attribute, to: :well_attribute, allow_nil: true)
   end
 
   # Return the sample gender, returns nil if it can't be determined

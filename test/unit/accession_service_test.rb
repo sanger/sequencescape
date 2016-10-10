@@ -12,15 +12,15 @@ class AccessionServiceTest < ActiveSupport::TestCase
     acc = Accessionable::Sample.new(@sample)
     tag = acc.tags.detect { |tag| tag.label == tag_label }
     assert tag, "Could not find #{tag} in #{acc.tags.map(&:label).join(',')}"
-    subject_tag = { :tag => tag.label, :value => tag.value }
-    assert_equal({ :tag => tag_label, :value => value }, subject_tag)
+    subject_tag = { tag: tag.label, value: tag.value }
+    assert_equal({ tag: tag_label, value: value }, subject_tag)
   end
 
   # temporary test for hotfix
   context "A sample with a strain" do
     setup do
       @study = create :study
-      @sample = create :sample, :studies => [@study]
+      @sample = create :sample, studies: [@study]
       @sample.sample_metadata.sample_strain_att = "my strain"
     end
 
@@ -32,7 +32,7 @@ class AccessionServiceTest < ActiveSupport::TestCase
   context "A sample with a gender" do
     setup do
       @study = create :managed_study
-      @sample = create :sample, :studies => [@study]
+      @sample = create :sample, studies: [@study]
       @sample.sample_metadata.gender = "male"
     end
 
@@ -45,7 +45,7 @@ class AccessionServiceTest < ActiveSupport::TestCase
   context "A sample with a donor_id" do
     setup do
       @study = create :managed_study
-      @sample = create :sample, :studies => [@study]
+      @sample = create :sample, studies: [@study]
       @sample.sample_metadata.donor_id = "123456789"
     end
 

@@ -21,7 +21,7 @@ module ApiTools
     renamed_keys = self.for_api.inject({}) do |renamed_keys,(key,value)|
       renamed_keys.tap { renamed_keys[key.underscore] = value }
     end
-    options.reverse_merge!(:root => self.class.to_s.underscore, :skip_types => true)
+    options.reverse_merge!(root: self.class.to_s.underscore, skip_types: true)
     renamed_keys.to_xml(options)
   end
 

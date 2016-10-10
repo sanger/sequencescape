@@ -13,24 +13,24 @@ class Plate::Creator < ActiveRecord::Base
     self.table_name = ('plate_creator_purposes')
 
     belongs_to :plate_purpose
-    belongs_to :plate_creator, :class_name => 'Plate::Creator'
+    belongs_to :plate_creator, class_name: 'Plate::Creator'
 
   end
 
   class ParentPurposeRelationship < ActiveRecord::Base
     self.table_name = ('plate_creator_parent_purposes')
 
-    belongs_to :plate_purpose, :class_name => 'Purpose'
+    belongs_to :plate_purpose, class_name: 'Purpose'
   end
 
   self.table_name = 'plate_creators'
 
   # These are the plate purposes that will be created when this creator is used.
-  has_many :plate_creator_purposes, :class_name => 'Plate::Creator::PurposeRelationship', :dependent => :destroy, :foreign_key => :plate_creator_id
-  has_many :plate_purposes, :through => :plate_creator_purposes
+  has_many :plate_creator_purposes, class_name: 'Plate::Creator::PurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
+  has_many :plate_purposes, through: :plate_creator_purposes
 
-  has_many :parent_purpose_relationships, :class_name => 'Plate::Creator::ParentPurposeRelationship',:dependent => :destroy, :foreign_key => :plate_creator_id
-  has_many :parent_plate_purposes, :through => :parent_purpose_relationships, :source => :plate_purpose
+  has_many :parent_purpose_relationships, class_name: 'Plate::Creator::ParentPurposeRelationship',dependent: :destroy, foreign_key: :plate_creator_id
+  has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
   # If there are no barcodes supplied then we use the plate purpose we represent
   belongs_to :plate_purpose
@@ -75,7 +75,7 @@ class Plate::Creator < ActiveRecord::Base
     # Because then you get multiple matches.  So we take the first match, which is just not right.
     scanned_barcodes.map do |scanned|
       plate =
-        Plate.with_machine_barcode(scanned).includes(:location, { :wells => :aliquots }).first or
+        Plate.with_machine_barcode(scanned).includes(:location, { wells: :aliquots }).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
       unless can_create_plates?(plate, plate_purposes)
         raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]"

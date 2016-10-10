@@ -29,51 +29,51 @@ module Qcable::Statemachine
       aasm column: :state, whiny_persistence: true, namespace: true, name: 'qc_state' do
 
         state :created
-        state :pending,        :enter => :on_stamp
-        state :failed,         :enter => :on_failed
-        state :passed,         :enter => :on_passed
-        state :available,      :enter => :on_released
-        state :destroyed,      :enter => :on_destroyed
-        state :qc_in_progress, :enter => :on_qc
-        state :exhausted,      :enter => :on_used
+        state :pending,        enter: :on_stamp
+        state :failed,         enter: :on_failed
+        state :passed,         enter: :on_passed
+        state :available,      enter: :on_released
+        state :destroyed,      enter: :on_destroyed
+        state :qc_in_progress, enter: :on_qc
+        state :exhausted,      enter: :on_used
 
         initial_state Proc.new { |qcable| qcable.default_state }
 
         # State Machine events
         event :do_stamp do
-          transitions :to => :pending, :from => [:created]
+          transitions to: :pending, from: [:created]
         end
 
         event :destroy_labware do
-          transitions :to => :destroyed, :from => [:pending,:available], :allow_automated? => true
+          transitions to: :destroyed, from: [:pending,:available], allow_automated?: true
         end
 
         event :qc do
-          transitions :to => :qc_in_progress, :from => [:pending], :allow_automated? => true
+          transitions to: :qc_in_progress, from: [:pending], allow_automated?: true
         end
 
         event :release do
-          transitions :to => :available, :from => [:pending]
+          transitions to: :available, from: [:pending]
         end
 
         event :pass do
-          transitions :to => :passed, :from => [:qc_in_progress]
+          transitions to: :passed, from: [:qc_in_progress]
         end
 
         event :fail do
-          transitions :to => :failed, :from => [:qc_in_progress,:pending]
+          transitions to: :failed, from: [:qc_in_progress,:pending]
         end
 
         event :use do
-          transitions :to => :exhausted, :from => [:available], :allow_automated? => true
+          transitions to: :exhausted, from: [:available], allow_automated?: true
         end
       end
 
       # new version of combinable named_scope
      scope :for_state, ->(state) { where(state: state) }
 
-     scope :available,   -> { where(:state => :available) }
-     scope :unavailable, -> { where(:state => [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]) }
+     scope :available,   -> { where(state: :available) }
+     scope :unavailable, -> { where(state: [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]) }
 
     end
   end

@@ -8,11 +8,11 @@ class SpecificTubeCreation < TubeCreation
   class ChildPurpose < ActiveRecord::Base
     self.table_name = ('specific_tube_creation_purposes')
     belongs_to :specific_tube_creation
-    belongs_to :tube_purpose, :class_name => 'Purpose'
+    belongs_to :tube_purpose, class_name: 'Purpose'
   end
 
-  has_many :creation_child_purposes, :class_name => 'SpecificTubeCreation::ChildPurpose'
-  has_many :child_purposes, :through => :creation_child_purposes, :source => :tube_purpose
+  has_many :creation_child_purposes, class_name: 'SpecificTubeCreation::ChildPurpose'
+  has_many :child_purposes, through: :creation_child_purposes, source: :tube_purpose
 
   validates_presence_of :child_purposes
 

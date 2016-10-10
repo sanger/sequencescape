@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
-  Supplier.create!({ :name => supplier_name })
+  Supplier.create!({ name: supplier_name })
 end
 
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
@@ -17,11 +17,11 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   study.samples.each_with_index do |sample,index|
     sample.update_attributes!(
-      :sanger_sample_id => sample.name,
-      :sample_metadata_attributes => {
-        :gender           => "Female",
-        :dna_source       => "Blood",
-        :sample_sra_hold  => "Hold"
+      sanger_sample_id: sample.name,
+      sample_metadata_attributes: {
+        gender: "Female",
+        dna_source: "Blood",
+        sample_sra_hold: "Hold"
       }
     )
     sample.name = "#{study.abbreviation}#{index + 1}"
@@ -31,7 +31,7 @@ end
 
 Given /^the last sample has been updated by a manifest$/ do
   sample = Sample.last or raise StandardError, "There appear to be no samples"
-  sample.update_attributes!(:updated_by_manifest => true)
+  sample.update_attributes!(updated_by_manifest: true)
 end
 
 Then /^study "([^\"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
@@ -45,7 +45,7 @@ end
 
 def sequence_sanger_sample_ids_for(plate)
   plate.wells.walk_in_column_major_order do |well, index|
-    well.primary_aliquot.sample.update_attributes!(:sanger_sample_id => yield(index))
+    well.primary_aliquot.sample.update_attributes!(sanger_sample_id: yield(index))
   end
 end
 
@@ -60,10 +60,10 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
     index += plate.size
   end
   SampleTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id => "tube_sample_#{idx + 1}")
+    tube.aliquots.first.sample.update_attributes!(sanger_sample_id: "tube_sample_#{idx + 1}")
   end
   LibraryTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id => "tube_sample_#{idx + 1}")
+    tube.aliquots.first.sample.update_attributes!(sanger_sample_id: "tube_sample_#{idx + 1}")
   end
 end
 
@@ -206,28 +206,28 @@ end
 When /^the sample manifest with ID (\d+) is owned by study "([^\"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
   study    = Study.find_by_name(name) or raise StandardError, "Cannot find study #{name.inspect}"
-  manifest.update_attributes!(:study => study)
+  manifest.update_attributes!(study: study)
 end
 
 When /^the sample manifest with ID (\d+) is supplied by "([^\"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
   supplier = Supplier.find_by_name(name) or raise StandardError, "Cannot find supplier #{name.inspect}"
-  manifest.update_attributes!(:supplier => supplier)
+  manifest.update_attributes!(supplier: supplier)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) sample tube$/ do |id, count|
   manifest = SampleManifest.find(id)
-  manifest.update_attributes!(:asset_type => '1dtube', :count => count.to_i)
+  manifest.update_attributes!(asset_type: '1dtube', count: count.to_i)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) plates?$/ do |id, count|
   manifest = SampleManifest.find(id)
-  manifest.update_attributes!(:asset_type => 'plate', :count => count.to_i)
+  manifest.update_attributes!(asset_type: 'plate', count: count.to_i)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) libraries?$/ do |id, count|
   manifest = SampleManifest.find(id)
-  manifest.update_attributes!(:asset_type => 'multiplexed_library', :count => count.to_i)
+  manifest.update_attributes!(asset_type: 'multiplexed_library', count: count.to_i)
 end
 
 Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
@@ -237,11 +237,11 @@ Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
 end
 
 Given /^sample tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(:barcodes => SampleTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(barcodes: SampleTube.all.map(&:sanger_human_barcode))
 end
 
 Given /^library tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(:barcodes => LibraryTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(barcodes: LibraryTube.all.map(&:sanger_human_barcode))
 end
 
 Then /^print any manifest errors for debugging$/ do

@@ -11,9 +11,9 @@ class AddQcReportTable < ActiveRecord::Migration
 
   def self.up
     create_table :qc_reports do |t|
-      t.integer :study_id,            :null => false
-      t.integer :product_criteria_id, :null => false
-      t.boolean :exclude_existing,    :null => false
+      t.integer :study_id,            null: false
+      t.integer :product_criteria_id, null: false
+      t.boolean :exclude_existing,    null: false
       t.string  :state
       t.timestamps
     end

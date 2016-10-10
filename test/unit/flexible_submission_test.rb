@@ -23,7 +23,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling }
+        @library_creation_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
@@ -34,13 +34,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       context 'multiplexed submission' do
         setup do
           @mpx_submission = FlexibleSubmission.build!(
-            :study            => @study,
-            :project          => @project,
-            :workflow         => @workflow,
-            :user             => @user,
-            :assets           => @assets,
-            :request_types    => @request_type_ids,
-            :request_options  => @request_options
+            study: @study,
+            project: @project,
+            workflow: @workflow,
+            user: @user,
+            assets: @assets,
+            request_types: @request_type_ids,
+            request_options: @request_options
           )
           @mpx_submission.save!
         end
@@ -68,10 +68,10 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       context 'with qc_criteria' do
         setup do
           @our_product_criteria = create :product_criteria
-          @current_report = create :qc_report, :product_criteria => @our_product_criteria
+          @current_report = create :qc_report, product_criteria: @our_product_criteria
           @stock_well = create :well
 
-          @metric = create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
+          @metric = create :qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true
 
           @assets.each do |qced_well|
             qced_well.stock_wells.attach!([@stock_well])
@@ -79,14 +79,14 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
 
           @mpx_submission = FlexibleSubmission.build!(
-            :study            => @study,
-            :project          => @project,
-            :workflow         => @workflow,
-            :user             => @user,
-            :assets           => @assets,
-            :request_types    => @request_type_ids,
-            :request_options  => @request_options,
-            :product          => @our_product_criteria.product
+            study: @study,
+            project: @project,
+            workflow: @workflow,
+            user: @user,
+            assets: @assets,
+            request_types: @request_type_ids,
+            request_options: @request_options,
+            product: @our_product_criteria.product
           )
           @mpx_submission.save!
         end
@@ -110,23 +110,23 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context "specified at submission" do
           setup do
             @xs_mpx_submission = FlexibleSubmission.build!(
-              :study            => @study,
-              :project          => @project,
-              :workflow         => @workflow,
-              :user             => @user,
-              :assets           => @assets.slice(0,8),
-              :request_types    => @request_type_ids,
-              :request_options  => @request_options
+              study: @study,
+              project: @project,
+              workflow: @workflow,
+              user: @user,
+              assets: @assets.slice(0,8),
+              request_types: @request_type_ids,
+              request_options: @request_options
             )
             @order_b = FlexibleSubmission.prepare!(
-              :study            => @study_b,
-              :project          => @project_b,
-              :workflow         => @workflow,
-              :user             => @user,
-              :assets           => @assets.slice(8,8),
-              :request_types    => @request_type_ids,
-              :request_options  => @request_options,
-              :submission       => @xs_mpx_submission
+              study: @study_b,
+              project: @project_b,
+              workflow: @workflow,
+              user: @user,
+              assets: @assets.slice(8,8),
+              request_types: @request_type_ids,
+              request_options: @request_options,
+              submission: @xs_mpx_submission
             )
             @xs_mpx_submission.orders << @order_b
             @xs_mpx_submission.save!
@@ -159,13 +159,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           should 'not be valid for unpooled assets' do
             assert_raise(ActiveRecord::RecordInvalid) do
               FlexibleSubmission.build!(
-                :study            => nil,
-                :project          => nil,
-                :workflow         => @workflow,
-                :user             => @user,
-                :assets           => @assets,
-                :request_types    => @request_type_ids,
-                :request_options  => @request_options
+                study: nil,
+                project: nil,
+                workflow: @workflow,
+                user: @user,
+                assets: @assets,
+                request_types: @request_type_ids,
+                request_options: @request_options
               )
 
             end
@@ -176,13 +176,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @request_count = Request.count
               @pooled = create :cross_pooled_well
               @sub = FlexibleSubmission.build!(
-                :study            => nil,
-                :project          => nil,
-                :workflow         => @workflow,
-                :user             => @user,
-                :assets           => [@pooled],
-                :request_types    => @request_type_ids,
-                :request_options  => @request_options
+                study: nil,
+                project: nil,
+                workflow: @workflow,
+                user: @user,
+                assets: [@pooled],
+                request_types: @request_type_ids,
+                request_options: @request_options
               )
               @sub.process!
             end
@@ -209,7 +209,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, { :for_multiplexing => true, :target_asset_type => 'MultiplexedLibraryTube', :pooling_method => @pooling }
+        @library_creation_request_type = create :well_request_type, { for_multiplexing: true, target_asset_type: 'MultiplexedLibraryTube', pooling_method: @pooling }
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
@@ -221,13 +221,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         setup do
 
           @mpx_submission = FlexibleSubmission.build!(
-            :study            => @study,
-            :project          => @project,
-            :workflow         => @workflow,
-            :user             => @user,
-            :assets           => @assets,
-            :request_types    => @request_type_ids,
-            :request_options  => @request_options
+            study: @study,
+            project: @project,
+            workflow: @workflow,
+            user: @user,
+            assets: @assets,
+            request_types: @request_type_ids,
+            request_options: @request_options
           )
         end
 
@@ -274,21 +274,21 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => false }
-        @mx_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling }
-        @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
+        @ux_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: false }
+        @mx_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
+        @pe_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "PE sequencing", order: 2, key: "pe_sequencing"
 
         @request_type_ids = [@mx_request_type.id, @pe_request_type.id]
 
         @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
-          :study            => @study,
-          :project          => @project,
-          :workflow         => @workflow,
-          :user             => @user,
-          :assets           => @assets,
-          :request_types    => @request_type_ids,
-          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
-          :comments         => ''
+          study: @study,
+          project: @project,
+          workflow: @workflow,
+          user: @user,
+          assets: @assets,
+          request_types: @request_type_ids,
+          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
+          comments: ''
         )
       end
 
@@ -318,9 +318,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => false }
-        @mx_request_type = create :well_request_type, { :target_purpose => nil, :for_multiplexing => true, :pooling_method => @pooling }
-        @pe_request_type = create :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
+        @ux_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: false }
+        @mx_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
+        @pe_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "PE sequencing", order: 2, key: "pe_sequencing"
 
         @mx_request_type_ids = [@mx_request_type.id, @pe_request_type.id]
         @ux_request_type_ids = [@ux_request_type.id, @pe_request_type.id]
@@ -332,13 +332,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context "for multiplexed libraries and sequencing" do
           setup do
             @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
-                :study            => @study,
-                :project          => @project,
-                :workflow         => @workflow,
-                :user             => @user,
-                :assets           => @assets,
-                :request_types    => @mx_request_type_ids,
-                :comments         => ''
+                study: @study,
+                project: @project,
+                workflow: @workflow,
+                user: @user,
+                assets: @assets,
+                request_types: @mx_request_type_ids,
+                comments: ''
               )
           end
 
@@ -359,13 +359,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context "for unplexed libraries and sequencing" do
           setup do
             @ux_submission_with_multiplication_factor = FlexibleSubmission.build!(
-                :study            => @study,
-                :project          => @project,
-                :workflow         => @workflow,
-                :user             => @user,
-                :assets           => @assets,
-                :request_types    => @ux_request_type_ids,
-                :comments         => ''
+                study: @study,
+                project: @project,
+                workflow: @workflow,
+                user: @user,
+                assets: @assets,
+                request_types: @ux_request_type_ids,
+                comments: ''
               )
           end
 

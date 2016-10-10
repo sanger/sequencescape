@@ -10,6 +10,6 @@ class DocumentsController < ApplicationController
   before_action :evil_parameter_hack!
   def show
     @document = Document.find(params[:id])
-    send_data @document.current_data, :filename => @document.filename, :type => @document.content_type, :disposition => 'inline'
+    send_data @document.current_data, filename: @document.filename, type: @document.content_type, disposition: 'inline'
   end
 end

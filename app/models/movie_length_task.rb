@@ -38,11 +38,11 @@ class MovieLengthTask < Task
   end
 
   def included_for_do_task
-    [{ :requests => :asset }, :pipeline]
+    [{ requests: :asset }, :pipeline]
   end
 
   def included_for_render_task
-    [{ :requests => :asset }, :pipeline]
+    [{ requests: :asset }, :pipeline]
   end
 
 end

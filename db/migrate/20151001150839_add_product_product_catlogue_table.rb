@@ -13,8 +13,8 @@ class AddProductProductCatlogueTable < ActiveRecord::Migration
 
 
     create_table :product_product_catalogues do |t|
-      t.integer :product_id, :null => false
-      t.integer :product_catalogue_id, :null => false
+      t.integer :product_id, null: false
+      t.integer :product_catalogue_id, null: false
       t.string  :selection_criterion
       t.timestamps
     end

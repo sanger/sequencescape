@@ -15,5 +15,5 @@ Given /^the fields of the sample_metadata for the sample called "([^"]+)" are pr
     else raise StandardError, "Unknown column type #{column.type.inspect} (#{column.name.inspect})"
     end
   end.compact]
-  sample.update_attributes!(:sample_metadata_attributes => updates)
+  sample.update_attributes!(sample_metadata_attributes: updates)
 end

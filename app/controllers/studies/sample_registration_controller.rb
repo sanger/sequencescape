@@ -17,7 +17,7 @@ class Studies::SampleRegistrationController < ApplicationController
     # We have to remap the contents of the 'sample_registrars' parameter from a hash to an array, because
     # that's what it actually is: a map from index to attributes for that SampleRegistrar instance.
     attributes = clean_params_from_check(params['sample_registrars']).inject([]) do |attributes,(index_as_string,parameters)|
-      attributes[index_as_string.to_i] = parameters.merge(:study => @study, :user => current_user)
+      attributes[index_as_string.to_i] = parameters.merge(study: @study, user: current_user)
       attributes
     end.compact
 
@@ -25,17 +25,17 @@ class Studies::SampleRegistrationController < ApplicationController
     flash[:notice] = 'Your samples have been registered'
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
-      format.json { render(:json => flash.to_json) }
-      format.xml  { render(:xml  => flash.to_xml)  }
+      format.json { render(json: flash.to_json) }
+      format.xml  { render(xml: flash.to_xml)  }
     end
   rescue SampleRegistrar::NoSamplesError => exception
     flash.now[:error] = 'You do not appear to have specified any samples'
     @sample_registrars = [SampleRegistrar.new]
-    render(:action => 'new')
+    render(action: 'new')
   rescue SampleRegistrar::RegistrationError => exception
     flash.now[:error] = 'Your samples have not been registered'
     @sample_registrars = exception.sample_registrars
-    render(:action => 'new')
+    render(action: 'new')
   end
 
   def new

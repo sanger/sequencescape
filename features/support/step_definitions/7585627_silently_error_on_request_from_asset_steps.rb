@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^an library tube named "([^"]*)"$/ do |name|
-  librarytube = FactoryGirl.create(:empty_library_tube, :name => name)
+  librarytube = FactoryGirl.create(:empty_library_tube, name: name)
 end
 
 Given /^library tube "([^"]*)" is bounded to the study "([^"]*)"$/ do |library_name,study_name|

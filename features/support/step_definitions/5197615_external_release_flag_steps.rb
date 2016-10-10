@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 Given /^an unreleasable lane named "([^"]*)" exists$/ do |name|
-  FactoryGirl.create(:lane, :name => name, :external_release => false)
+  FactoryGirl.create(:lane, name: name, external_release: false)
 end
 
 Given /^a releasable lane named "([^"]*)" exists$/ do |name|
-  FactoryGirl.create(:lane, :name => name, :external_release => true)
+  FactoryGirl.create(:lane, name: name, external_release: true)
 end

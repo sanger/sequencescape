@@ -8,7 +8,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
   def do_cherrypick_group_by_submission_task(task,params)
     if ! task.valid_params?(params)
       flash[:warning] = "Invalid values typed in"
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s
+      redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (0).to_s
       return false
     end
 
@@ -19,12 +19,12 @@ module Tasks::CherrypickGroupBySubmissionHandler
       partial_plate, plate_purpose = Plate.with_machine_barcode(params[:existing_plate]).first, nil
       if partial_plate.nil?
         flash[:error] = "Cannot find the partial plate #{params[:existing_plate].inspect}"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s
+        redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (0).to_s
         return false
       end
       unless task.plate_purpose_options(@batch).include?(@plate.purpose)
         flash[:error] = "Invalid target plate, wrong plate purpose"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+        redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
     end

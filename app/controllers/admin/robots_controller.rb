@@ -8,21 +8,21 @@ class Admin::RobotsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_robot_by_id, :only => [:show, :edit, :update, :destroy]
+  before_action :find_robot_by_id, only: [:show, :edit, :update, :destroy]
 
   def index
     @robots = Robot.all
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @robots }
+      format.xml  { render xml: @robots }
     end
   end
 
   def show
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @robot }
+      format.xml  { render xml: @robot }
     end
   end
 
@@ -31,7 +31,7 @@ class Admin::RobotsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @robot }
+      format.xml  { render xml: @robot }
     end
   end
 
@@ -45,10 +45,10 @@ class Admin::RobotsController < ApplicationController
       if @robot.save
         flash[:notice] = 'Robot was successfully created.'
         format.html { redirect_to admin_robot_path(@robot) }
-        format.xml  { render :xml => @robot, :status => :created, :location => @robot }
+        format.xml  { render xml: @robot, status: :created, location: @robot }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @robot.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @robot.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -60,8 +60,8 @@ class Admin::RobotsController < ApplicationController
         format.html { redirect_to admin_robot_path(@robot) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @robot.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @robot.errors, status: :unprocessable_entity }
       end
     end
   end

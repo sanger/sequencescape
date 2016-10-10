@@ -19,7 +19,7 @@ class SampleRegistrar < ActiveRecord::Base
 
   # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
   def initialize(attributes = {},what = {})
-    super({ :sample_attributes => {}, :sample_tube_attributes => {} }.merge(attributes.symbolize_keys),what)
+    super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys),what)
   end
 
   # Raised if the call to SampleRegistrar.register! fails for any reason, and so that calling code
@@ -52,7 +52,7 @@ class SampleRegistrar < ActiveRecord::Base
     # Note that we're explicitly ignoring the ignored records here!
 
     helper     = AssetGroupHelper.new
-    registrars = registration_attributes.map { |attributes| new(attributes.merge(:asset_group_helper => helper)) }.reject(&:ignore?)
+    registrars = registration_attributes.map { |attributes| new(attributes.merge(asset_group_helper: helper)) }.reject(&:ignore?)
     raise NoSamplesError, registrars if registrars.empty?
     begin
       # We perform this in a database wide transaction because it is altering several tables.  It also locks
@@ -77,7 +77,7 @@ class SampleRegistrar < ActiveRecord::Base
   belongs_to :study
   validates_presence_of :study
 
-  belongs_to :sample, :validate => true, :autosave => true
+  belongs_to :sample, validate: true, autosave: true
   accepts_nested_attributes_for :sample
   validates_presence_of :sample
 
@@ -91,7 +91,7 @@ class SampleRegistrar < ActiveRecord::Base
   end
 
   # Samples always come in a SampleTube when coming through us
-  belongs_to :sample_tube, :validate => true, :autosave => true
+  belongs_to :sample_tube, validate: true, autosave: true
   accepts_nested_attributes_for :sample_tube
   validates_presence_of :sample_tube
 
@@ -99,14 +99,14 @@ class SampleRegistrar < ActiveRecord::Base
     record.sample_tube.name = record.sample.name
   end
   after_create do |record|
-    record.sample_tube.aliquots.create!(:sample => record.sample, :study => record.study)
+    record.sample_tube.aliquots.create!(sample: record.sample, study: record.study)
   end
 
   # SampleTubes are registered within an AssetGroup, unless the AssetGroup is unspecified.
   attr_accessor :asset_group_helper
   attr_accessor :asset_group_name
-  belongs_to :asset_group, :validate => true, :autosave => true
-  validates_each(:asset_group_name, :if => :new_record?) do |record, attr, value|
+  belongs_to :asset_group, validate: true, autosave: true
+  validates_each(:asset_group_name, if: :new_record?) do |record, attr, value|
     record.errors.add(:asset_group, "#{value} already exists, please enter another name") if record.asset_group_helper.existing_asset_group?(value)
   end
 
@@ -120,7 +120,7 @@ class SampleRegistrar < ActiveRecord::Base
 
   def self.create_asset_group_by_name(name, study)
     return nil if name.blank?
-    AssetGroup.find_by_name(name) || AssetGroup.create!(:name => name, :study => study)
+    AssetGroup.find_by_name(name) || AssetGroup.create!(name: name, study: study)
   end
 
   # This model does not really need to exist but, without Rails 3, we can't easily use the ActiveRecord stuff.
@@ -146,7 +146,7 @@ class SampleRegistrar < ActiveRecord::Base
 
   # Columns that are required for the spreadsheet to be considered valid.
   REQUIRED_COLUMNS = ['Asset group', 'Sample name']
-  REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ')
+  REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
 
   def self.from_spreadsheet(file, study, user)
     workbook = Spreadsheet.open(file.path) or raise SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted'
@@ -204,11 +204,11 @@ class SampleRegistrar < ActiveRecord::Base
     sample_registrars = []
     1.upto(num_samples) do |row|
       attributes = {
-        :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
-        :sample_attributes => {
-          :sample_metadata_attributes => {}
+        asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
+        sample_attributes: {
+          sample_metadata_attributes: {}
         },
-        :sample_tube_attributes => {}
+        sample_tube_attributes: {}
       }
 
       used_definitions.each_with_index do |handler, index|
@@ -221,7 +221,7 @@ class SampleRegistrar < ActiveRecord::Base
       # Store the sample registration and check that it is valid.  This will mean that the
       # UI will display any errors without the user having to submit the form to find out.
 
-      SampleRegistrar.new(attributes.merge(:study => study, :user => user)).tap do |sample_registrar|
+      SampleRegistrar.new(attributes.merge(study: study, user: user)).tap do |sample_registrar|
         sample_registrars.push(sample_registrar)
         sample_registrar.valid?
       end

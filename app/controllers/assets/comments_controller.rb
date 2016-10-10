@@ -13,16 +13,16 @@ class Assets::CommentsController < ApplicationController
   def index
     @comments = @asset.comments.order("created_at ASC")
     if request.xhr?
-      render :partial => "simple_list", :locals => { :descriptions => @comments.pluck(:description) }
+      render partial: "simple_list", locals: { descriptions: @comments.pluck(:description) }
     else
       # Perform default
     end
   end
 
   def create
-    @asset.comments.create(:description => params[:comment], :user => current_user)
+    @asset.comments.create(description: params[:comment], user: current_user)
     @comments = @asset.comments
-    render :partial => "list", :locals => { :commentable => @asset, :visible => true }
+    render partial: "list", locals: { commentable: @asset, visible: true }
   end
 
   def destroy
@@ -31,7 +31,7 @@ class Assets::CommentsController < ApplicationController
       comment.destroy
     end
     @comments = @asset.comments
-    render :partial => "list", :locals => { :commentable => @asset, :visible => true }
+    render partial: "list", locals: { commentable: @asset, visible: true }
   end
 
   private

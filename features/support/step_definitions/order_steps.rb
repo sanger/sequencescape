@@ -30,7 +30,7 @@ Given /^I have an order created with the following details based on the template
     [k.to_sym, v]
   end
   user = User.find_by(login:'abc123') || FactoryGirl.create(:user,login:'abc123')
-  order = template.create_order!({ :user => user }.merge(Hash[order_attributes]))
+  order = template.create_order!({ user: user }.merge(Hash[order_attributes]))
 end
 
 Given /^an order template with UUID "([^"]+)" exists$/ do |uuid_value|
@@ -38,7 +38,7 @@ Given /^an order template with UUID "([^"]+)" exists$/ do |uuid_value|
 end
 
 Given /^an order template called "([^\"]+)" with UUID "([^"]+)"$/ do |name, uuid_value|
-  set_uuid_for(FactoryGirl.create(:submission_template, :name => name), uuid_value)
+  set_uuid_for(FactoryGirl.create(:submission_template, name: name), uuid_value)
 end
 
 Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name,uuid_value|
@@ -56,5 +56,5 @@ end
 
 When /^the order with UUID "([^"]*)" has been added to a submission$/ do |uuid|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
-  Submission.create!(:orders => [order], :user => order.user )
+  Submission.create!(orders: [order], user: order.user )
 end

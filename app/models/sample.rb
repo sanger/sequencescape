@@ -31,32 +31,32 @@ class Sample < ActiveRecord::Base
 
   acts_as_authorizable
 
-  has_many :study_samples, :dependent => :destroy
-  has_many :studies, :through => :study_samples
+  has_many :study_samples, dependent: :destroy
+  has_many :studies, through: :study_samples
 
-  has_many :roles, :as => :authorizable
-  has_many :comments, :as => :commentable
+  has_many :roles, as: :authorizable
+  has_many :comments, as: :commentable
 
   receptacle_alias(:assets) do
     def first_of_type(asset_class)
       self.detect { |asset| asset.is_a?(asset_class) }
     end
   end
-  receptacle_alias(:wells,        :class_name => 'Well')
-  receptacle_alias(:sample_tubes, :class_name => 'SampleTube')
+  receptacle_alias(:wells,        class_name: 'Well')
+  receptacle_alias(:sample_tubes, class_name: 'SampleTube')
 
-  has_many :asset_groups, :through => :assets
-  has_many :requests, :through => :assets
-  has_many :submissions, :through => :requests
+  has_many :asset_groups, through: :assets
+  has_many :requests, through: :assets
+  has_many :submissions, through: :requests
 
   belongs_to :sample_manifest
 
   validates_presence_of :name
-  validates_format_of :name, :with => /\A[\w_-]+\z/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
-  validates_format_of :name, :with => /\A[\(\)\+\s\w._-]+\z/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
-  validates_uniqueness_of :name, :on => :create, :message => "already in use", :unless => :sample_manifest_id?
+  validates_format_of :name, with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create
+  validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
+  validates_uniqueness_of :name, on: :create, message: "already in use", unless: :sample_manifest_id?
 
-  validate :name_unchanged, :if => :name_changed?, :on => :update
+  validate :name_unchanged, if: :name_changed?, on: :update
 
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
@@ -67,7 +67,7 @@ class Sample < ActiveRecord::Base
   validation_guard(:can_rename_sample)
 
   def rename_to!(new_name)
-    update_attributes!(:name => new_name)
+    update_attributes!(name: new_name)
   end
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
@@ -81,7 +81,7 @@ class Sample < ActiveRecord::Base
   end
   private :safe_to_destroy
 
-  scope :with_name, ->(*names) { where(:name => names.flatten) }
+  scope :with_name, ->(*names) { where(name: names.flatten) }
 
 
   scope :for_search_query, ->(query,with_includes) {
@@ -274,7 +274,7 @@ class Sample < ActiveRecord::Base
   extend Metadata
   has_metadata do
     include ReferenceGenome::Associations
-    association(:reference_genome, :name, :required => true)
+    association(:reference_genome, :name, required: true)
 
     attribute(:organism)
     attribute(:cohort)
@@ -286,17 +286,17 @@ class Sample < ActiveRecord::Base
     attribute(:mother)
     attribute(:father)
     attribute(:replicate)
-    attribute(:gc_content, :in => Sample::GC_CONTENTS)
-    attribute(:gender, :in => Sample::GENDERS)
+    attribute(:gc_content, in: Sample::GC_CONTENTS)
+    attribute(:gender, in: Sample::GENDERS)
     attribute(:donor_id)
-    attribute(:dna_source, :in => Sample::DNA_SOURCES)
+    attribute(:dna_source, in: Sample::DNA_SOURCES)
     attribute(:sample_public_name)
     attribute(:sample_common_name)
     attribute(:sample_strain_att)
     attribute(:sample_taxon_id)
     attribute(:sample_ebi_accession_number)
     attribute(:sample_description)
-    attribute(:sample_sra_hold, :in => Sample::SRA_HOLD_VALUES)
+    attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
 
     attribute(:sibling)
     attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
@@ -315,13 +315,13 @@ class Sample < ActiveRecord::Base
     attribute(:phenotype)
     #attribute(:strain_or_line) strain
     #TODO: split age in two fields and use a composed_of
-    attribute(:age, :with => Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
+    attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
     attribute(:developmental_stage)
     #attribute(:sex) gender
     attribute(:cell_type)
     attribute(:disease_state)
     attribute(:compound) #TODO : yes/no?
-    attribute(:dose, :with => Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
+    attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
     attribute(:immunoprecipitate)
     attribute(:growth_condition)
     attribute(:rnai)
@@ -335,7 +335,7 @@ class Sample < ActiveRecord::Base
     attribute(:disease)
 
 
-    with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
+    with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
       # ena_required_fields.validates_presence_of :sample_common_name
       # ena_required_fields.validates_presence_of :sample_taxon_id
       ena_required_fields.validates_presence_of :service_specific_fields
@@ -344,10 +344,10 @@ class Sample < ActiveRecord::Base
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
     # capitalisation of these is correct.
     REMAPPED_ATTRIBUTES = {
-      :gc_content              => GC_CONTENTS,
-      :gender                  => GENDERS,
-      :dna_source              => DNA_SOURCES,
-      :sample_sra_hold         => SRA_HOLD_VALUES
+      gc_content: GC_CONTENTS,
+      gender: GENDERS,
+      dna_source: DNA_SOURCES,
+      sample_sra_hold: SRA_HOLD_VALUES
 #      :reference_genome        => ??
     }.inject({}) do |h,(k,v)|
       h[k] = v.inject({}) { |a,b| a[b.downcase] = b; a }
@@ -369,9 +369,9 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services => :EGA, :downcase => true)
-    include_tag(:phenotype, :services => :EGA)
-    include_tag(:donor_id, :services => :EGA, :as => 'subject_id')
+    include_tag(:gender, services: :EGA, downcase: true)
+    include_tag(:phenotype, services: :EGA)
+    include_tag(:donor_id, services: :EGA, as: 'subject_id')
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)
@@ -409,7 +409,7 @@ class Sample < ActiveRecord::Base
     # If we set a reference genome via its name, we want to validate that we found it.
     # We can't just raise and exception when we don't find it, as this cases the sample manifest
     # delayed job to fail completely.
-    validate :reference_genome_found, :if => :reference_genome_set_by_name
+    validate :reference_genome_found, if: :reference_genome_set_by_name
 
     def reference_genome_found
       # A reference genome of nil automatically get converted to the reference genome named "", so
@@ -423,10 +423,10 @@ class Sample < ActiveRecord::Base
 
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, :if => :validating_ena_required_fields?) do |record, attr, value|
+  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, attr, value|
     record.errors.add(:base,'Sample has no study') if value.blank?
   end
-  validates_associated(:ena_study, :allow_blank => true, :if => :validating_ena_required_fields?)
+  validates_associated(:ena_study, allow_blank: true, if: :validating_ena_required_fields?)
 
   def ena_study
     @ena_study
@@ -472,7 +472,7 @@ class Sample < ActiveRecord::Base
 
   # These don't really belong here, but exist due to the close coupling between sample
   # and its initial aliquot in the sample manifest.
-  delegate :specialized_from_manifest=, :to => :primary_receptacle
-  delegate :library_information=, :to => :primary_receptacle
+  delegate :specialized_from_manifest=, to: :primary_receptacle
+  delegate :library_information=, to: :primary_receptacle
 
 end

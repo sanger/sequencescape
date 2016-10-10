@@ -45,7 +45,7 @@ module Request::Statistics
       @statistics = Hash.new { |h,k| h[k] = 0 }
     end
 
-    delegate :[], :[]=, :to => :@statistics
+    delegate :[], :[]=, to: :@statistics
 
     def total
       @statistics.values.sum
@@ -74,7 +74,7 @@ module Request::Statistics
       @counters = Hash.new { |h,k| h[k] = Counter.new }
     end
 
-    delegate :[], :[]=, :to => :@counters
+    delegate :[], :[]=, to: :@counters
 
     def self.summary_counter(name)
       line = __LINE__ + 1

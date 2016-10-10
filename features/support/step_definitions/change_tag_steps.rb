@@ -11,11 +11,11 @@ Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/
   mx_tube = FactoryGirl.create(:multiplexed_library_tube) if create_mx_tube
   table.hashes.each do |row|
     barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
-    tube = FactoryGirl.create(:full_library_tube, :barcode => barcode.to_i)
+    tube = FactoryGirl.create(:full_library_tube, barcode: barcode.to_i)
     tag  = Tag.find_by_map_id(tag_id.match(/(\d+)/)[1].to_i) or raise StandardError, "Cannot find tag #{tag_id.inspect}"
     #tube.aliquots.create!(:tag => tag, :sample => Sample.create!(:name => "sample for tube #{tube.barcode}".gsub(" ","_")))
     tag.tag!(tube)
-    RequestType.transfer.create!(:asset => tube, :target_asset => mx_tube) if mx_tube
+    RequestType.transfer.create!(asset: tube, target_asset: mx_tube) if mx_tube
   end
 end
 

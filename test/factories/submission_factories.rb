@@ -23,7 +23,7 @@ FactoryGirl.define do
     request_types         { [create(:request_type).id] }
 
     factory :order_with_submission do
-      after(:build) { |o| o.create_submission(:user_id => o.user_id) }
+      after(:build) { |o| o.create_submission(user_id: o.user_id) }
     end
 
   end

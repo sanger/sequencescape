@@ -27,7 +27,7 @@ class Admin::RobotPropertiesController < ApplicationController
     if @robot_property.save
       redirect_to [:admin, @robot, @robot_property]
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -40,7 +40,7 @@ class Admin::RobotPropertiesController < ApplicationController
     if @robot_property.update_attributes(params[:robot_property])
       redirect_to [:admin, @robot, @robot_property]
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 

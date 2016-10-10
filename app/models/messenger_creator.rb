@@ -18,7 +18,7 @@ class MessengerCreator < ActiveRecord::Base
   validate :template_exists?
 
   def create!(target)
-    Messenger.create!(:target => target, :root => root, :template => template)
+    Messenger.create!(target: target, root: root, template: template)
   end
 
   private

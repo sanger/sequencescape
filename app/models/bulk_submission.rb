@@ -150,7 +150,7 @@ class BulkSubmission
             end
 
             begin
-              submission = Submission.create!(:name => submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority => max_priority(orders))
+              submission = Submission.create!(name: submission_name, user: user, orders: orders.map(&method(:prepare_order)).compact, priority: max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
@@ -259,14 +259,14 @@ class BulkSubmission
 
       # The order attributes are initially
       attributes = {
-        :study   => study,
-        :project => project,
-        :user => user,
-        :comments => details['comments'],
-        :request_options => {
-          :read_length => details['read length']
+        study: study,
+        project: project,
+        user: user,
+        comments: details['comments'],
+        request_options: {
+          read_length: details['read length']
         },
-        :pre_cap_group => details['pre-capture group']
+        pre_cap_group: details['pre-capture group']
       }
 
       attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?

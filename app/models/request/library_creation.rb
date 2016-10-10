@@ -16,8 +16,8 @@ class Request::LibraryCreation < CustomerRequest
   # Add common pool information, like insert size and library type
   def update_pool_information(pool_information)
     pool_information.merge!(
-      :insert_size  => { :from => insert_size.from, :to => insert_size.to },
-      :library_type => { :name => library_type }
+      insert_size: { from: insert_size.from, to: insert_size.to },
+      library_type: { name: library_type }
     )
   end
 
@@ -25,16 +25,16 @@ class Request::LibraryCreation < CustomerRequest
   # The columns in the database are strings and we need them to be integers, hence we force
   # that here.
   def self.fragment_size_details(minimum = :no_default, maximum = :no_default)
-    minimum_details, maximum_details = { :required => true, :integer => true }, { :required => true, :integer => true }
+    minimum_details, maximum_details = { required: true, integer: true }, { required: true, integer: true }
     minimum_details[:default] = minimum unless minimum == :no_default
     maximum_details[:default] = maximum unless maximum == :no_default
 
     class_eval do
-      has_metadata :as => Request do
+      has_metadata as: Request do
         # Redefine the fragment size attributes as they are fixed
         attribute(:fragment_size_required_from, minimum_details)
         attribute(:fragment_size_required_to, maximum_details)
-        attribute(:gigabases_expected, :positive_float => true)
+        attribute(:gigabases_expected, positive_float: true)
       end
       include Request::LibraryManufacture
     end

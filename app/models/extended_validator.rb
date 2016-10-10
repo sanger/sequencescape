@@ -36,14 +36,14 @@ class ExtendedValidator < ActiveRecord::Base
     end
   end
 
-  has_many :request_type_extened_validators, :dependent => :destroy, :class_name => 'ExtendedValidator::RequestTypeExtendedValidator'
-  has_many :request_types, :through => :request_type_extened_validators
+  has_many :request_type_extened_validators, dependent: :destroy, class_name: 'ExtendedValidator::RequestTypeExtendedValidator'
+  has_many :request_types, through: :request_type_extened_validators
 
   validates_presence_of :behaviour
   serialize :options
 
   scope :for_submission, ->(submission) {
     joins('INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id').
-    where(:request_types_extended_validators => { :request_type_id => submission.request_types })
+    where(request_types_extended_validators: { request_type_id: submission.request_types })
   }
 end

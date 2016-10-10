@@ -8,8 +8,8 @@ module Authorization
     # your authentication system
     if not Object.constants.include? "LOGIN_REQUIRED_REDIRECTION"
       LOGIN_REQUIRED_REDIRECTION = {
-        :controller => 'session',
-        :action => 'new'
+        controller: 'session',
+        action: 'new'
       }
     end
     if not Object.constants.include? "PERMISSION_DENIED_REDIRECTION"
@@ -48,7 +48,7 @@ module Authorization
 
       # Permit? turns off redirection by default and takes no blocks
       def permit?( authorization_expression, *args )
-        @options = { :allow_guests => false, :redirect => false }
+        @options = { allow_guests: false, redirect: false }
         @options.merge!( args.last.is_a?( Hash ) ? args.last : {} )
 
         has_permission?( authorization_expression )
@@ -58,7 +58,7 @@ module Authorization
       # permit (without a question mark ending) calls redirect on denial by default.
       # Specify :redirect => false to turn off redirection.
       def permit( authorization_expression, *args )
-        @options = { :allow_guests => false, :redirect => true }
+        @options = { allow_guests: false, redirect: true }
         @options.merge!( args.last.is_a?( Hash ) ? args.last : {} )
 
         if has_permission?( authorization_expression )

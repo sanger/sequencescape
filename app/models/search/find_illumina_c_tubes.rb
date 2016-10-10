@@ -19,13 +19,13 @@ class Search::FindIlluminaCTubes < Search
       IlluminaC::PlatePurposes::TUBE_PURPOSE_FLOWS.flatten
     )
   end
-  delegate :illumina_c_tube_purposes, :to => 'self.class'
+  delegate :illumina_c_tube_purposes, to: 'self.class'
 
   def self.illumina_c_final_tube_purpose
     Tube::Purpose.where(name:
       IlluminaC::PlatePurposes::TUBE_PURPOSE_FLOWS.map(&:last)
     )
   end
-  delegate :illumina_c_final_tube_purpose, :to => 'self.class'
+  delegate :illumina_c_final_tube_purpose, to: 'self.class'
 
 end

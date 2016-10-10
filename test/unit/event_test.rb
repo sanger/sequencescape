@@ -22,7 +22,7 @@ class EventTest < ActiveSupport::TestCase
       context "when 'descriptor' key is not blank" do
         context "should add production data" do
           setup do
-            @event = Event.create(:descriptor_key => "")
+            @event = Event.create(descriptor_key: "")
           end
 
           should "be valid" do
@@ -48,12 +48,12 @@ class EventTest < ActiveSupport::TestCase
       setup do
         @item = create :item
         @study = create :study
-        @request = create :request, :study => @study, :item => @item
-        @settings = { :eventful_id => @request.id,
-                      :eventful_type => "Request",
-                      :family => "QC Analysis",
-                      :identifier => "ID",
-                      :location => "Loc" }
+        @request = create :request, study: @study, item: @item
+        @settings = { eventful_id: @request.id,
+                      eventful_type: "Request",
+                      family: "QC Analysis",
+                      identifier: "ID",
+                      location: "Loc" }
 
         assert @request.pending?
       end
@@ -76,12 +76,12 @@ class EventTest < ActiveSupport::TestCase
       setup do
         @item = create :item
         @study = create :study
-        @request = create :request, :study => @study, :item => @item, :state => "started"
-        @settings = { :eventful_id => @request.id,
-                      :eventful_type => "Request",
-                      :identifier => "ID",
-                      :location => "Loc",
-                      :message => "updating request"
+        @request = create :request, study: @study, item: @item, state: "started"
+        @settings = { eventful_id: @request.id,
+                      eventful_type: "Request",
+                      identifier: "ID",
+                      location: "Loc",
+                      message: "updating request"
                     }
 
         assert @request.started?
@@ -145,18 +145,18 @@ class EventTest < ActiveSupport::TestCase
 
     context "when created with a" do
       setup do
-        @library_creation_request_type = create :request_type, :name => "Library creation", :key => "library_creation"
-        @mx_library_creation_request_type = create :request_type, :name => "Multiplexed library creation", :key => "multiplexed_library_creation"
-        @pe_sequencing_request_type = create :request_type, :name => "Paired end sequencing", :key => "paired_end_sequencing"
-        @dna_qc_request_type = create :request_type, :name => "DNA QC", :key => "dna_qc"
+        @library_creation_request_type = create :request_type, name: "Library creation", key: "library_creation"
+        @mx_library_creation_request_type = create :request_type, name: "Multiplexed library creation", key: "multiplexed_library_creation"
+        @pe_sequencing_request_type = create :request_type, name: "Paired end sequencing", key: "paired_end_sequencing"
+        @dna_qc_request_type = create :request_type, name: "DNA QC", key: "dna_qc"
 
-        @control = create(:sample_tube, :resource => true)
+        @control = create(:sample_tube, resource: true)
 
-        @library_creation_request = create :request, :request_type => @library_creation_request_type
-        @multiplexed_library_creation_request = create :request, :request_type => @mx_library_creation_request_type
-        @pe_sequencing_request = create :request, :request_type => @pe_sequencing_request_type
-        @dna_qc_request = create :request, :request_type => @dna_qc_request_type
-        @request_for_control = create :request, :request_type => @pe_sequencing_request_type, :asset => @control, :state => "started"
+        @library_creation_request = create :request, request_type: @library_creation_request_type
+        @multiplexed_library_creation_request = create :request, request_type: @mx_library_creation_request_type
+        @pe_sequencing_request = create :request, request_type: @pe_sequencing_request_type
+        @dna_qc_request = create :request, request_type: @dna_qc_request_type
+        @request_for_control = create :request, request_type: @pe_sequencing_request_type, asset: @control, state: "started"
         @requests = [@library_creation_request, @multiplexed_library_creation_request, @pe_sequencing_request, @dna_qc_request]
       end
 
@@ -170,11 +170,11 @@ class EventTest < ActiveSupport::TestCase
 
           @request_with_no_attempts = @requests.first
 
-          @lib_prep_event = Event.create(:eventful_id => @library_creation_request.id, :eventful_type => 'Request', :family => "pass", :content => "", :message => "test comment", :identifier => 1234, :descriptor_key => "pass")
-          @mx_lib_prep_event = Event.create(:eventful_id => @multiplexed_library_creation_request.id, :eventful_type => 'Request', :family => "pass", :content => "", :message => "test comment", :identifier => 1234, :descriptor_key => "pass")
-          @pe_sequencing_event = Event.create(:eventful_id => @pe_sequencing_request.id, :eventful_type => 'Request', :family => "pass", :content => "", :message => "test comment", :identifier => 1234, :descriptor_key => "pass")
-          @dna_qc_event = Event.create(:eventful_id => @dna_qc_request.id, :eventful_type => 'Request', :family => "pass", :content => "", :message => "test comment", :identifier => 1234, :descriptor_key => "pass")
-          @control_event = Event.create(:eventful_id => @request_for_control.id, :eventful_type => 'Request', :family => "pass", :content => "", :message => "test comment", :identifier => 1234, :descriptor_key => "pass")
+          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request', family: "pass", content: "", message: "test comment", identifier: 1234, descriptor_key: "pass")
+          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: "pass", content: "", message: "test comment", identifier: 1234, descriptor_key: "pass")
+          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request', family: "pass", content: "", message: "test comment", identifier: 1234, descriptor_key: "pass")
+          @dna_qc_event = Event.create(eventful_id: @dna_qc_request.id, eventful_type: 'Request', family: "pass", content: "", message: "test comment", identifier: 1234, descriptor_key: "pass")
+          @control_event = Event.create(eventful_id: @request_for_control.id, eventful_type: 'Request', family: "pass", content: "", message: "test comment", identifier: 1234, descriptor_key: "pass")
         end
 
         should "create valid events" do
@@ -215,11 +215,11 @@ class EventTest < ActiveSupport::TestCase
 #          @failure_property_def = PropertyDefinition(:name => "Failure", :key => "failure", :relates_to => Request.to_s)
 #          @pass_property_def = PropertyDefinition(:name => "Pass", :key => "pass", :relates_to => Request.to_s)
 
-          @lib_prep_event = Event.create(:eventful_id => @library_creation_request.id, :eventful_type => 'Request', :family => "fail", :content => "Test reason", :message => "test comment", :identifier => 1234, :descriptor_key => "failure")
-          @mx_lib_prep_event = Event.create(:eventful_id => @multiplexed_library_creation_request.id, :eventful_type => 'Request', :family => "fail", :content => "Test reason", :message => "test comment", :identifier => 1234, :descriptor_key => "failure")
-          @pe_sequencing_event = Event.create(:eventful_id => @pe_sequencing_request.id, :eventful_type => 'Request', :family => "fail", :content => "Test reason", :message => "test comment", :identifier => 1234, :descriptor_key => "failure")
-          @dna_qc_event = Event.create(:eventful_id => @dna_qc_request.id, :eventful_type => 'Request', :family => "fail", :content => "Test reason", :message => "test comment", :identifier => 1234, :descriptor_key => "failure")
-          @control_event = Event.create(:eventful_id => @request_for_control.id, :eventful_type => 'Request', :family => "fail", :content => "Test reason", :message => "test comment", :identifier => 1234, :descriptor_key => "failure")
+          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request', family: "fail", content: "Test reason", message: "test comment", identifier: 1234, descriptor_key: "failure")
+          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: "fail", content: "Test reason", message: "test comment", identifier: 1234, descriptor_key: "failure")
+          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request', family: "fail", content: "Test reason", message: "test comment", identifier: 1234, descriptor_key: "failure")
+          @dna_qc_event = Event.create(eventful_id: @dna_qc_request.id, eventful_type: 'Request', family: "fail", content: "Test reason", message: "test comment", identifier: 1234, descriptor_key: "failure")
+          @control_event = Event.create(eventful_id: @request_for_control.id, eventful_type: 'Request', family: "fail", content: "Test reason", message: "test comment", identifier: 1234, descriptor_key: "failure")
         end
 
         # must create an event correctly
@@ -252,11 +252,11 @@ class EventTest < ActiveSupport::TestCase
           end
 
           # :eventful_id => request_id, :eventful_type => 'Request', :family => family, :message => message
-          @lib_prep_event = Event.create(:eventful_id => @library_creation_request.id, :eventful_type => 'Request', :family => "complete", :message => "Completed pipeline")
-          @mx_lib_prep_event = Event.create(:eventful_id => @multiplexed_library_creation_request.id, :eventful_type => 'Request', :family => "complete", :message => "Completed pipeline")
-          @pe_sequencing_event = Event.create(:eventful_id => @pe_sequencing_request.id, :eventful_type => 'Request', :family => "complete", :message => "Completed pipeline")
-          @dna_qc_event = Event.create(:eventful_id => @dna_qc_request.id, :eventful_type => 'Request', :family => "complete", :message => "Completed pipeline")
-          @control = Event.create(:eventful_id => @dna_qc_request.id, :eventful_type => 'Request', :family => "complete", :message => "Completed pipeline")
+          @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request', family: "complete", message: "Completed pipeline")
+          @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: "complete", message: "Completed pipeline")
+          @pe_sequencing_event = Event.create(eventful_id: @pe_sequencing_request.id, eventful_type: 'Request', family: "complete", message: "Completed pipeline")
+          @dna_qc_event = Event.create(eventful_id: @dna_qc_request.id, eventful_type: 'Request', family: "complete", message: "Completed pipeline")
+          @control = Event.create(eventful_id: @dna_qc_request.id, eventful_type: 'Request', family: "complete", message: "Completed pipeline")
         end
 
         should "correctly update the requests" do

@@ -20,7 +20,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
 
     should_require_login
 
-    resource_test('comment', { :actions => ['index'], :ignore_actions => ["new", "edit", "update", "show", 'destroy', 'create'], :formats => ['html'], :parent => "request" })
+    resource_test('comment', { actions: ['index'], ignore_actions: ["new", "edit", "update", "show", 'destroy', 'create'], formats: ['html'], parent: "request" })
 
     context "with an ajax request" do
       setup do
@@ -32,7 +32,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
       end
 
       should 'return a ul of comments' do
-        xhr :get, :index, :request_id => @rq.id
+        xhr :get, :index, request_id: @rq.id
         assert_template partial: '_simple_list'
       end
 

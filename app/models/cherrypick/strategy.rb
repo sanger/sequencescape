@@ -111,7 +111,7 @@ class Cherrypick::Strategy
       @purpose, @wells, @species = purpose, [Cherrypick::Strategy::Empty] * filled, species
     end
 
-    delegate :size, :cherrypick_direction, :to => :@purpose
+    delegate :size, :cherrypick_direction, to: :@purpose
 
     # This is the size of the plate in the dimension in which we cherrypick.
     def dimension
@@ -122,7 +122,7 @@ class Cherrypick::Strategy
       size - used
     end
 
-    delegate :empty?, :inspect, :concat, :to => :@wells
+    delegate :empty?, :inspect, :concat, to: :@wells
 
     def used
       @wells.size
@@ -220,7 +220,7 @@ class Cherrypick::Strategy
     @purpose = purpose
   end
 
-  delegate :cherrypick_filters, :to => :@purpose
+  delegate :cherrypick_filters, to: :@purpose
   private :cherrypick_filters
 
   def pick(requests, robot, plate = nil)

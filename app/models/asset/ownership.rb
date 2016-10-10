@@ -14,7 +14,7 @@ module Asset::Ownership
       base.class_eval do
         extend ClassMethods
         after_create :assign_owner
-        has_many :owners, :as => :eventable
+        has_many :owners, as: :eventable
       end
     end
 
@@ -43,11 +43,11 @@ module Asset::Ownership
       base.class_eval do
 
         has_one :plate_owner
-        has_one :owner, :source => :user, :through => :plate_owner
+        has_one :owner, source: :user, through: :plate_owner
 
          scope :for_user, ->(user) {
             joins(:plate_owner).
-            where(:plate_owners => { :user_id => user })
+            where(plate_owners: { user_id: user })
           }
 
       end
@@ -55,9 +55,9 @@ module Asset::Ownership
 
     def change_owner_to(owner,source_event)
       if plate_owner.nil?
-        self.update_attributes!(:plate_owner => PlateOwner.create!(:user => owner, :eventable => source_event, :plate => self))
+        self.update_attributes!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
       else
-        plate_owner.update_attributes!(:user => owner, :eventable => source_event)
+        plate_owner.update_attributes!(user: owner, eventable: source_event)
       end
     end
   end

@@ -19,11 +19,11 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         @sample_count = Sample.count
         @sampletube_count = SampleTube.count
         SampleRegistrar.create!(
-          :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
-          :study => @study,
-          :user  => @user,
-          :sample_attributes => { :name => 'valid_sample' },
-          :asset_group_name  => ''
+          asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
+          study: @study,
+          user: @user,
+          sample_attributes: { name: 'valid_sample' },
+          asset_group_name: ''
         )
       end
 
@@ -75,11 +75,11 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         setup do
           @assetgroup_count = AssetGroup.count
           SampleRegistrar.create!(
-            :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
-            :study => @study,
-            :user  => @user,
-            :sample_attributes => { :name => 'valid_sample' },
-            :asset_group_name  => 'asset_group_with_one_sample'
+            asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
+            study: @study,
+            user: @user,
+            sample_attributes: { name: 'valid_sample' },
+            asset_group_name: 'asset_group_with_one_sample'
           )
         end
 
@@ -94,7 +94,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
 
       context 'when the asset group already exists' do
         setup do
-          create(:asset_group, :name => 'asset_group_with_one_sample')
+          create(:asset_group, name: 'asset_group_with_one_sample')
         end
 
         # NOTE: This structure is required so that the 'should_not_change' statement succeeds.
@@ -105,11 +105,11 @@ class SampleRegistrarTest < ActiveSupport::TestCase
             @initial_sc = Sample.count
             assert_raise(ActiveRecord::RecordInvalid) do
               SampleRegistrar.create!(
-                :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
-                :study => @study,
-                :user  => @user,
-                :sample_attributes => { :name => 'valid_sample' },
-                :asset_group_name  => 'asset_group_with_one_sample'
+                asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
+                study: @study,
+                user: @user,
+                sample_attributes: { name: 'valid_sample' },
+                asset_group_name: 'asset_group_with_one_sample'
               )
             end
           end
@@ -124,11 +124,11 @@ class SampleRegistrarTest < ActiveSupport::TestCase
     context 'registering a sample within a sample tube' do
       setup do
         SampleRegistrar.create!(
-          :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
-          :study => @study,
-          :user  => @user,
-          :sample_attributes => { :name => 'valid_sample' },
-          :sample_tube_attributes => { :two_dimensional_barcode => 'XX12345' }
+          asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
+          study: @study,
+          user: @user,
+          sample_attributes: { name: 'valid_sample' },
+          sample_tube_attributes: { two_dimensional_barcode: 'XX12345' }
         )
       end
     end
@@ -150,10 +150,10 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           assert_raise(SampleRegistrar::NoSamplesError) do
             SampleRegistrar.register!([
               {
-                :ignore => '1',
-                :study  => @study,
-                :user   => @user,
-                :sample_attributes => { :name => 'valid_sample' }
+                ignore: '1',
+                study: @study,
+                user: @user,
+                sample_attributes: { name: 'valid_sample' }
               }
             ])
           end
@@ -168,16 +168,16 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           @sampletube_count = SampleTube.count
           SampleRegistrar.register!([
             {
-              :ignore => '1',
-              :study  => @study,
-              :user   => @user,
-              :asset_group_name => 'ignored_asset_group',
-              :sample_attributes => { :name => 'ignored_sample' }
+              ignore: '1',
+              study: @study,
+              user: @user,
+              asset_group_name: 'ignored_asset_group',
+              sample_attributes: { name: 'ignored_sample' }
             },
             {
-              :study  => @study,
-              :user   => @user,
-              :sample_attributes => { :name => 'valid_sample' }
+              study: @study,
+              user: @user,
+              sample_attributes: { name: 'valid_sample' }
             }
           ])
         end
@@ -210,34 +210,34 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           @assetgroup_count =  AssetGroup.count
           SampleRegistrar.register!([
             {
-              :study => @study,
-              :user  => @user,
-              :sample_attributes => { :name => 'valid_sample_1' },
-              :asset_group_name  => 'asset_group_1'
+              study: @study,
+              user: @user,
+              sample_attributes: { name: 'valid_sample_1' },
+              asset_group_name: 'asset_group_1'
             },
             {
-              :study => @study,
-              :user  => @user,
-              :sample_attributes => { :name => 'valid_sample_2' },
-              :asset_group_name  => 'asset_group_2'
+              study: @study,
+              user: @user,
+              sample_attributes: { name: 'valid_sample_2' },
+              asset_group_name: 'asset_group_2'
             },
             {
-              :ignore => '1',
-              :study  => @study,
-              :user   => @user,
-              :sample_attributes => { :name => 'ignored_sample_1' },
-              :asset_group_name  => 'asset_group_1'
+              ignore: '1',
+              study: @study,
+              user: @user,
+              sample_attributes: { name: 'ignored_sample_1' },
+              asset_group_name: 'asset_group_1'
             },
             {
-              :study => @study,
-              :user  => @user,
-              :sample_attributes => { :name => 'valid_sample_3' },
-              :asset_group_name  => 'asset_group_1'
+              study: @study,
+              user: @user,
+              sample_attributes: { name: 'valid_sample_3' },
+              asset_group_name: 'asset_group_1'
             },
             {
-              :study => @study,
-              :user  => @user,
-              :sample_attributes => { :name => 'valid_sample_4' },
+              study: @study,
+              user: @user,
+              sample_attributes: { name: 'valid_sample_4' },
             },
           ])
         end

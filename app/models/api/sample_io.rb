@@ -16,7 +16,7 @@ class Api::SampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { :sample_metadata => :reference_genome }, { :studies => [:study_metadata, :uuid_object] }]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { sample_metadata: :reference_genome }, { studies: [:study_metadata, :uuid_object] }]) }
         alias_method(:json_root, :url_name)
       end
     end
@@ -62,7 +62,7 @@ class Api::SampleIO < Api::Base
     map_attribute_to_json_attribute(:sample_ebi_accession_number)
     map_attribute_to_json_attribute(:sample_description)
     map_attribute_to_json_attribute(:sample_sra_hold)
-    with_association(:reference_genome, :lookup_by => :name) do
+    with_association(:reference_genome, lookup_by: :name) do
       map_attribute_to_json_attribute(:name, 'reference_genome')
     end
     map_attribute_to_json_attribute(:supplier_name)
@@ -81,7 +81,7 @@ class Api::SampleIO < Api::Base
   # can then retrieve the sample tube information through the API.
   def self.create!(parameters)
     super.tap do |sample|
-      Tube::Purpose.standard_sample_tube.create!.aliquots.create!(:sample => sample)
+      Tube::Purpose.standard_sample_tube.create!.aliquots.create!(sample: sample)
     end
   end
 end

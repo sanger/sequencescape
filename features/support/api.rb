@@ -19,16 +19,16 @@ end
 # Enables a replacement Sample endpoint for the object service tests, disabling it after
 class TestSampleEndpoint < ::Core::Endpoint::Base
   model do
-    action(:create, :to => :standard_create!)
+    action(:create, to: :standard_create!)
   end
 
   instance do
     has_many(
-      :sample_tubes, :json => 'sample_tubes', :to => 'sample_tubes',
-      :include => [:library_tubes, :requests]
+      :sample_tubes, json: 'sample_tubes', to: 'sample_tubes',
+      include: [:library_tubes, :requests]
     )
 
-    action(:update, :to => :standard_update!)
+    action(:update, to: :standard_update!)
   end
 
   def self.root

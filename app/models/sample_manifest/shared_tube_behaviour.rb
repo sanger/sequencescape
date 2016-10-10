@@ -37,7 +37,7 @@ module SampleManifest::SharedTubeBehaviour
     study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
       create_sample(sanger_sample_id).tap do |sample|
         sample_tube = Tube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
-        sample_tube.aliquots.create!(:sample => sample)
+        sample_tube.aliquots.create!(sample: sample)
       end
     end
   end

@@ -23,7 +23,7 @@ module Submission::FlexibleRequestGraph
     alias_method :multiplexed?, :multiplexed
     alias_method :preplexed?, :preplexed
 
-    delegate :product, :to => :order
+    delegate :product, to: :order
 
     def initialize(order,source_assets, multiplexing_assets)
       @order = order
@@ -111,7 +111,7 @@ module Submission::FlexibleRequestGraph
 
           chain.order.create_request_of_type!(
             request_type,
-            :asset => source_asset, :target_asset => target_asset
+            asset: source_asset, target_asset: target_asset
           ).tap do |request|
 
             AssetLink.create_edge!(source_asset, target_asset) if source_asset.present? and target_asset.present?
@@ -120,7 +120,7 @@ module Submission::FlexibleRequestGraph
             request.update_responsibilities!
 
             comments.each do |comment|
-              request.comments.create!(:user => user, :description => comment)
+              request.comments.create!(user: user, description: comment)
             end if comments.present?
           end
         end
@@ -191,10 +191,10 @@ module Submission::FlexibleRequestGraph
 
     def associate_built_requests!
       downstream_requests.each do |request|
-        request.update_attributes!(:initial_study => nil) if request.initial_study != study
-        request.update_attributes!(:initial_project => nil) if request.initial_project != project
+        request.update_attributes!(initial_study: nil) if request.initial_study != study
+        request.update_attributes!(initial_project: nil) if request.initial_project != project
         comments.each do |comment|
-          request.comments.create!(:user => user, :description => comment)
+          request.comments.create!(user: user, description: comment)
         end if comments.present?
       end
     end

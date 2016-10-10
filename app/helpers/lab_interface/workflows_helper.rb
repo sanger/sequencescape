@@ -49,7 +49,7 @@ module LabInterface::WorkflowsHelper
   def qc_select_box(request, status, html_options={})
     select_options = ['pass', 'fail']
     select_options.unshift('') if html_options.delete(:generate_blank)
-    select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(:class => 'qc_state'))
+    select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(class: 'qc_state'))
   end
 
   def gel_qc_select_box(request, status, html_options={})

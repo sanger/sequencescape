@@ -15,7 +15,7 @@ module Tasks::PlateTransferHandler
   end
 
   def includes_for_plate_creation
-    [{ :asset => [:map,{ :plate => [:plate_purpose,:barcode_prefix] },:aliquots] },{ :target_asset => [:pac_bio_library_tube_metadata] }]
+    [{ asset: [:map,{ plate: [:plate_purpose,:barcode_prefix] },:aliquots] },{ target_asset: [:pac_bio_library_tube_metadata] }]
   end
 
   def find_or_create_target(task)
@@ -34,14 +34,14 @@ module Tasks::PlateTransferHandler
       batch_requests.each do |outer_request|
         source = outer_request.asset
         transfer_request_to_plate.create!(
-          :asset => source,
-          :target_asset => well_map[source.map_id],
-          :submission_id => outer_request.submission_id
+          asset: source,
+          target_asset: well_map[source.map_id],
+          submission_id: outer_request.submission_id
         )
         transfer_request_from_plate.create!(
-          :asset => well_map[source.map_id],
-          :target_asset => outer_request.target_asset,
-          :submission_id => outer_request.submission_id
+          asset: well_map[source.map_id],
+          target_asset: outer_request.target_asset,
+          submission_id: outer_request.submission_id
         )
       end
     end
@@ -50,7 +50,7 @@ module Tasks::PlateTransferHandler
   def target_plate
     transfer = TransferRequest.siblings_of(@batch.requests.first).
       for_submission_id(@batch.requests.first.submission_id).
-      includes(:target_asset => :plate).first
+      includes(target_asset: :plate).first
     return nil unless transfer.present?
     transfer.target_asset.plate
   end

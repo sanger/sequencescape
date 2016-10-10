@@ -16,7 +16,7 @@ class Api::AssetAuditIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { :asset => [:uuid_object, :barcode_prefix] }]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { asset: [:uuid_object, :barcode_prefix] }]) }
       end
     end
   end

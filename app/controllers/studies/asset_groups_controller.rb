@@ -15,7 +15,7 @@ class Studies::AssetGroupsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @asset_groups }
+      format.xml  { render xml: @asset_groups }
     end
   end
 
@@ -25,7 +25,7 @@ class Studies::AssetGroupsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @asset_group }
+      format.xml  { render xml: @asset_group }
     end
   end
 
@@ -35,7 +35,7 @@ class Studies::AssetGroupsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @asset_group }
+      format.xml  { render xml: @asset_group }
     end
   end
 
@@ -53,12 +53,12 @@ class Studies::AssetGroupsController < ApplicationController
       if @asset_group.save
         flash[:notice] = 'AssetGroup was successfully created.'
         format.html { redirect_to study_asset_group_path(@study, @asset_group) }
-        format.xml  { render :xml => @asset_group, :status => :created, :location => @asset_group }
-        format.json { render :json => @asset_group, :status => :created, :location => @asset_group }
+        format.xml  { render xml: @asset_group, status: :created, location: @asset_group }
+        format.json { render json: @asset_group, status: :created, location: @asset_group }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @asset_group.errors, :status => :unprocessable_entity }
-        format.json { render :json => @asset_group.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @asset_group.errors, status: :unprocessable_entity }
+        format.json { render json: @asset_group.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -73,8 +73,8 @@ class Studies::AssetGroupsController < ApplicationController
         format.html { redirect_to study_asset_group_path(@study, @asset_group) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @asset_group.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @asset_group.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -105,7 +105,7 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     respond_to do |format|
        format.html # index.html.erb
-       format.xml  { render :xml => @assets }
+       format.xml  { render xml: @assets }
      end
   end
 
@@ -120,8 +120,8 @@ class Studies::AssetGroupsController < ApplicationController
 
     respond_to do |format|
        format.html { redirect_to(study_asset_group_url(@study,@asset_group)) }
-       format.xml  { render :xml => @assets }
-       format.json { render :json => @assets }
+       format.xml  { render xml: @assets }
+       format.json { render json: @assets }
      end
   end
 

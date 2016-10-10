@@ -287,28 +287,28 @@ plate_purposes = <<-EOS
 EOS
 
 AssetShape.create!(
-  :name => 'Standard',
-  :horizontal_ratio => 3,
-  :vertical_ratio   => 2,
-  :description_strategy => 'Map::Coordinate'
+  name: 'Standard',
+  horizontal_ratio: 3,
+  vertical_ratio: 2,
+  description_strategy: 'Map::Coordinate'
 )
 AssetShape.create!(
-  :name => 'Fluidigm96',
-  :horizontal_ratio => 3,
-  :vertical_ratio   => 8,
-  :description_strategy => 'Map::Sequential'
+  name: 'Fluidigm96',
+  horizontal_ratio: 3,
+  vertical_ratio: 8,
+  description_strategy: 'Map::Sequential'
 )
 AssetShape.create!(
-  :name => 'Fluidigm192',
-  :horizontal_ratio => 3,
-  :vertical_ratio   => 4,
-  :description_strategy => 'Map::Sequential'
+  name: 'Fluidigm192',
+  horizontal_ratio: 3,
+  vertical_ratio: 4,
+  description_strategy: 'Map::Sequential'
 )
 AssetShape.create!(
-  :name => 'StripTubeColumn',
-  :horizontal_ratio => 1,
-  :vertical_ratio   => 8,
-  :description_strategy => 'Map::Sequential'
+  name: 'StripTubeColumn',
+  horizontal_ratio: 1,
+  vertical_ratio: 8,
+  description_strategy: 'Map::Sequential'
 )
 
 YAML::load(plate_purposes).each do |plate_purpose|
@@ -320,11 +320,11 @@ end
 
 # Some plate purposes that appear to be used by SLF but are not in the seeds from SNP.
 (1..5).each do |index|
-  PlatePurpose.create!(:name => "Aliquot #{index}", :qc_display => true, :can_be_considered_a_stock_plate => true, :cherrypickable_target => true)
+  PlatePurpose.create!(name: "Aliquot #{index}", qc_display: true, can_be_considered_a_stock_plate: true, cherrypickable_target: true)
 end
-PlatePurpose.create!(:name => "ABgene_0765", :can_be_considered_a_stock_plate => false, :cherrypickable_source => true, :cherrypickable_target => false)
-PlatePurpose.create!(:name => "ABgene_0800", :can_be_considered_a_stock_plate => false, :cherrypickable_source => true, :cherrypickable_target => true)
-PlatePurpose.create!(:name => "FluidX075", :can_be_considered_a_stock_plate => false, :cherrypickable_source => true, :cherrypickable_target => false)
+PlatePurpose.create!(name: "ABgene_0765", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
+PlatePurpose.create!(name: "ABgene_0800", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: true)
+PlatePurpose.create!(name: "FluidX075", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
 
 # Build the links between the parent and child plate purposes
 relationships = {
@@ -351,69 +351,69 @@ ActiveRecord::Base.transaction do
   # All of the PlatePurpose names specified in the keys of RELATIONSHIPS have complicated relationships.
   # The others are simply maps to themselves.
   PlatePurpose.where(['name NOT IN (?)', relationships.keys]).each do |purpose|
-    purpose.child_relationships.create!(:child => purpose, :transfer_request_type => RequestType.transfer)
+    purpose.child_relationships.create!(child: purpose, transfer_request_type: RequestType.transfer)
   end
 
   # Here are the complicated ones:
-  PlatePurpose.where(:name => relationships.keys).each do |purpose|
-    PlatePurpose.where(:name => relationships[purpose.name]).each do |child|
-      purpose.child_relationships.create!(:child => child, :transfer_request_type => RequestType.transfer)
+  PlatePurpose.where(name: relationships.keys).each do |purpose|
+    PlatePurpose.where(name: relationships[purpose.name]).each do |child|
+      purpose.child_relationships.create!(child: child, transfer_request_type: RequestType.transfer)
     end
   end
 
   # A couple of legacy pulldown types
-  PlatePurpose.create!(:name => 'SEQCAP WG', :cherrypickable_target => false)  # Superceded by Pulldown WGS below (here for transition period)
-  PlatePurpose.create!(:name => 'SEQCAP SC', :cherrypickable_target => false)  # Superceded by Pulldown SC/ISC below (here for transition period)
+  PlatePurpose.create!(name: 'SEQCAP WG', cherrypickable_target: false)  # Superceded by Pulldown WGS below (here for transition period)
+  PlatePurpose.create!(name: 'SEQCAP SC', cherrypickable_target: false)  # Superceded by Pulldown SC/ISC below (here for transition period)
 
   PlatePurpose.create!(
-  :name => 'STA',
-  :default_state => 'pending',
-  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
-  :cherrypickable_target => true,
-  :cherrypick_direction => 'column',
-  :asset_shape => AssetShape.find_by_name('Standard')
+  name: 'STA',
+  default_state: 'pending',
+  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  cherrypickable_target: true,
+  cherrypick_direction: 'column',
+  asset_shape: AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
-  :name => 'STA2',
-  :default_state => 'pending',
-  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
-  :cherrypickable_target => true,
-  :cherrypick_direction => 'column',
-  :asset_shape => AssetShape.find_by_name('Standard')
+  name: 'STA2',
+  default_state: 'pending',
+  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  cherrypickable_target: true,
+  cherrypick_direction: 'column',
+  asset_shape: AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
-  :name => 'SNP Type',
-  :default_state => 'pending',
-  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
-  :cherrypickable_target => true,
-  :cherrypick_direction => 'column',
-  :asset_shape => AssetShape.find_by_name('Standard')
+  name: 'SNP Type',
+  default_state: 'pending',
+  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  cherrypickable_target: true,
+  cherrypick_direction: 'column',
+  asset_shape: AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
-  :name => 'Fluidigm 96-96',
-  :default_state => 'pending',
-  :cherrypickable_target => true,
-  :cherrypick_direction => 'interlaced_column',
-  :size => 96,
-  :asset_shape => AssetShape.find_by_name('Fluidigm96')
+  name: 'Fluidigm 96-96',
+  default_state: 'pending',
+  cherrypickable_target: true,
+  cherrypick_direction: 'interlaced_column',
+  size: 96,
+  asset_shape: AssetShape.find_by_name('Fluidigm96')
 )
 PlatePurpose.create!(
-  :name => 'Fluidigm 192-24',
-  :default_state => 'pending',
-  :cherrypickable_target => true,
-  :cherrypick_direction => 'interlaced_column',
-  :size => 192,
-  :asset_shape => AssetShape.find_by_name('Fluidigm192')
+  name: 'Fluidigm 192-24',
+  default_state: 'pending',
+  cherrypickable_target: true,
+  cherrypick_direction: 'interlaced_column',
+  size: 192,
+  asset_shape: AssetShape.find_by_name('Fluidigm192')
 )
 end
 PlatePurpose.create!(
-  :name => 'PacBio Sheared',
-  :target_type => 'Plate',
-  :default_state => 'pending',
-  :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
-  :cherrypickable_target => false,
-  :cherrypickable_source => false,
-  :size => 96,
-  :asset_shape => AssetShape.find_by_name('Standard'),
-  :barcode_for_tecan => 'ean13_barcode'
+  name: 'PacBio Sheared',
+  target_type: 'Plate',
+  default_state: 'pending',
+  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  cherrypickable_target: false,
+  cherrypickable_source: false,
+  size: 96,
+  asset_shape: AssetShape.find_by_name('Standard'),
+  barcode_for_tecan: 'ean13_barcode'
 )

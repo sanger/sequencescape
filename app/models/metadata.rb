@@ -25,8 +25,8 @@ private
     association_name = "#{ as_name }_metadata".underscore.to_sym
     class_name = "#{ self.name}::Metadata"
 
-    has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true, :inverse_of => :owner }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))
-    accepts_nested_attributes_for(association_name, :update_only => true)
+    has_one(association_name, { class_name: class_name, dependent: :destroy, validate: true, autosave: true, inverse_of: :owner }.merge(options).merge(foreign_key: "#{as_name}_id", inverse_of: :owner))
+    accepts_nested_attributes_for(association_name, update_only: true)
     scope :"include_#{ association_name }", -> { includes(association_name) }
 
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
@@ -127,7 +127,7 @@ private
       super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}),*args, &block)
     end
 
-    before_validation :merge_instance_defaults, :on => :create
+    before_validation :merge_instance_defaults, on: :create
 
     def merge_instance_defaults
       # Replace attributes with the default if the value is nil
@@ -144,7 +144,7 @@ private
       @validating_ena_required_fields = !!state
     end
 
-    delegate :validator_for, :to => :owner
+    delegate :validator_for, to: :owner
 
     def service_specific_fields
       owner.required_tags.uniq.select do |tag|
@@ -175,8 +175,8 @@ private
           * (SECTION_FIELDS.map do |section|
             I18n.t(
               section,
-              :scope => [:metadata, metadata_attribute_path(field)].flatten,
-              :default => I18n.t(section, :scope => [:metadata, :defaults])
+              scope: [:metadata, metadata_attribute_path(field)].flatten,
+              default: I18n.t(section, scope: [:metadata, :defaults])
             )
           end << {})
         )

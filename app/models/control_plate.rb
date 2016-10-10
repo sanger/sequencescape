@@ -18,6 +18,6 @@ class ControlPlate < Plate
   def affy_wells
     wells.includes(:map).where(maps:{ description:AFFY_WELL_LOCATIONS, asset_size: 96 })
   end
-  deprecate(:affy_wells => 'assumed this was not used, needs map_id fixes')
+  deprecate(affy_wells: 'assumed this was not used, needs map_id fixes')
 
 end

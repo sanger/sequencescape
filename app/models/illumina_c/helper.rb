@@ -82,10 +82,10 @@ module IlluminaC::Helper
       cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
           yield({
-            :name => name_for(cherrypick,sequencing_request_type),
-            :submission_class_name => 'LinearSubmission',
-            :submission_parameters => submission_parameters(cherrypick,sequencing_request_type),
-            :product_line_id => ProductLine.find_by_name(PIPELINE),
+            name: name_for(cherrypick,sequencing_request_type),
+            submission_class_name: 'LinearSubmission',
+            submission_parameters: submission_parameters(cherrypick,sequencing_request_type),
+            product_line_id: ProductLine.find_by_name(PIPELINE),
           })
         end
       end
@@ -93,10 +93,10 @@ module IlluminaC::Helper
 
     def submission_parameters(cherrypick,sequencing)
       sp = {
-        :request_type_ids_list => request_type_ids(cherrypick,sequencing),
-        :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
-        :order_role_id => Order::OrderRole.find_or_create_by(role:role).id,
-        :info_differential => Submission::Workflow.find_by_key('short_read_sequencing').id
+        request_type_ids_list: request_type_ids(cherrypick,sequencing),
+        workflow_id: Submission::Workflow.find_by_key('short_read_sequencing').id,
+        order_role_id: Order::OrderRole.find_or_create_by(role:role).id,
+        info_differential: Submission::Workflow.find_by_key('short_read_sequencing').id
       }
       return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key) || type == 'illumina_c_multiplexing'
     end
@@ -118,12 +118,12 @@ module IlluminaC::Helper
     def update!
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
-        SubmissionTemplate.find_by_name!(options[:name]).update_attributes!(:submission_parameters => options[:submission_parameters])
+        SubmissionTemplate.find_by_name!(options[:name]).update_attributes!(submission_parameters: options[:submission_parameters])
       end
     end
 
     def self.find_for(name,sequencing=nil)
-      tc = TemplateConstructor.new(:name => name, :sequencing => sequencing)
+      tc = TemplateConstructor.new(name: name, sequencing: sequencing)
       [true,false].map do |cherrypick|
         tc.sequencing.map do |sequencing_request_type|
           SubmissionTemplate.find_by_name!(tc.name_for(cherrypick,sequencing_request_type))

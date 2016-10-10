@@ -32,7 +32,7 @@ class PipelinesControllerTest < ActionController::TestCase
       end
       context "without any pipeline batches" do
         setup do
-          get :batches, :id => @pipeline.id.to_s
+          get :batches, id: @pipeline.id.to_s
         end
 
         should respond_with :success
@@ -40,8 +40,8 @@ class PipelinesControllerTest < ActionController::TestCase
 
       context "with 1 batch" do
         setup do
-         FactoryGirl.create :batch, :pipeline => @pipeline
-          get :batches, :id => @pipeline.id.to_s
+         FactoryGirl.create :batch, pipeline: @pipeline
+          get :batches, id: @pipeline.id.to_s
         end
 
         should respond_with :success
@@ -51,14 +51,14 @@ class PipelinesControllerTest < ActionController::TestCase
     context "#show" do
       setup do
         @pipeline = FactoryGirl.create :pipeline
-        get :show, :id => @pipeline
+        get :show, id: @pipeline
       end
 
       should respond_with :success
       context "and no batches" do
         setup do
           @pipeline = FactoryGirl.create :pipeline
-          get :show, :id => @pipeline
+          get :show, id: @pipeline
         end
 
         should respond_with :success
@@ -68,7 +68,7 @@ class PipelinesControllerTest < ActionController::TestCase
     context "#setup_inbox" do
       setup do
         @pipeline = FactoryGirl.create :pipeline
-        get :setup_inbox, :id => @pipeline.id.to_s
+        get :setup_inbox, id: @pipeline.id.to_s
       end
 
       should respond_with :success
@@ -77,7 +77,7 @@ class PipelinesControllerTest < ActionController::TestCase
     context "#training_batch" do
       setup do
         @pipeline = FactoryGirl.create :pipeline
-        get :training_batch, :id => @pipeline.id.to_s
+        get :training_batch, id: @pipeline.id.to_s
       end
 
       should respond_with :success
@@ -86,7 +86,7 @@ class PipelinesControllerTest < ActionController::TestCase
     context "#activate" do
       setup do
         @pipeline = FactoryGirl.create :pipeline
-        get :activate, :id => @pipeline.id.to_s
+        get :activate, id: @pipeline.id.to_s
       end
 
       should respond_with :redirect
@@ -95,7 +95,7 @@ class PipelinesControllerTest < ActionController::TestCase
     context "#deactivate" do
       setup do
         @pipeline = FactoryGirl.create :pipeline
-        get :deactivate, :id => @pipeline.id.to_s
+        get :deactivate, id: @pipeline.id.to_s
       end
 
       should respond_with :redirect

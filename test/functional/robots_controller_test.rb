@@ -36,7 +36,7 @@ class RobotsControllerTest < ActionController::TestCase
     context "#create" do
       setup do
         @count = Robot.count
-        post :create, :robot => { :name => "newrobot", :location => "biglab" }
+        post :create, robot: { name: "newrobot", location: "biglab" }
       end
       should "increase number of robots" do
         assert_equal @count + 1, Robot.count
@@ -47,7 +47,7 @@ class RobotsControllerTest < ActionController::TestCase
 
     context "#show" do
       setup do
-        get :show, :id => @robot.id
+        get :show, id: @robot.id
       end
       should respond_with :success
       should_not set_flash
@@ -55,7 +55,7 @@ class RobotsControllerTest < ActionController::TestCase
 
     context "#edit" do
       setup do
-        get :edit, :id => @robot.id
+        get :edit, id: @robot.id
       end
       should respond_with :success
       should_not set_flash
@@ -63,7 +63,7 @@ class RobotsControllerTest < ActionController::TestCase
 
     context "#update" do
       setup do
-        put :update, :id => @robot.id, :robot => { :name => "tecan" }
+        put :update, id: @robot.id, robot: { name: "tecan" }
       end
 
       should "update name" do
@@ -76,7 +76,7 @@ class RobotsControllerTest < ActionController::TestCase
     context "#destroy" do
       setup do
         @count = Robot.count
-        delete :destroy, :id => @robot.id
+        delete :destroy, id: @robot.id
       end
       should "delete robot" do
         assert_equal @count - 1, Robot.count

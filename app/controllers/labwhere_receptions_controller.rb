@@ -6,7 +6,7 @@
 
 class LabwhereReceptionsController < ApplicationController
 
-  before_action :login_required, :except => [:index,:create]
+  before_action :login_required, except: [:index,:create]
 
   def index
     @labwhere_reception = LabwhereReception.new(params[:user_code],params[:location_barcode],params[:location_id],[])
@@ -23,7 +23,7 @@ class LabwhereReceptionsController < ApplicationController
     else
       flash[:error] = lwr.errors.full_messages.join('; ')
     end
-    redirect_to labwhere_receptions_path, :location_id => params[:location_id]
+    redirect_to labwhere_receptions_path, location_id: params[:location_id]
   end
 
 end

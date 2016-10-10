@@ -34,11 +34,11 @@ class Tube < Aliquot::Receptacle
     save!
   end
 
-  has_many :submissions, ->() { distinct }, :through => :requests_as_target
+  has_many :submissions, ->() { distinct }, through: :requests_as_target
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
  scope :with_purpose, ->(*purposes) {
-    where(:plate_purpose_id => purposes.flatten.map(&:id))
+    where(plate_purpose_id: purposes.flatten.map(&:id))
   }
 
   def submission
@@ -56,7 +56,7 @@ class Tube < Aliquot::Receptacle
   end
 
   def original_stock_plates
-    ancestors.where(:plate_purpose_id => PlatePurpose.stock_plate_purpose)
+    ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
   end
 
   alias_method :friendly_name, :sanger_human_barcode
@@ -68,9 +68,9 @@ class Tube < Aliquot::Receptacle
   end
 
   # TODO: change column name to account for purpose, not plate_purpose!
-  belongs_to :purpose, :class_name => 'Tube::Purpose', :foreign_key => :plate_purpose_id
+  belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
   delegate_to_purpose(:transition_to, :created_with_request_options, :pool_id, :name_for_child_tube, :stock_plate)
-  delegate :barcode_type, :to => :purpose
+  delegate :barcode_type, to: :purpose
 
   def name_for_label
     (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
@@ -90,7 +90,7 @@ class Tube < Aliquot::Receptacle
     barcode    = args.first || attributes[:barcode]
     raise "Barcode: #{barcode} already used!" if barcode.present? and find_by_barcode(barcode).present?
     barcode ||= AssetBarcode.new_barcode
-    create!(attributes.merge(:barcode => barcode), &block)
+    create!(attributes.merge(barcode: barcode), &block)
   end
 
 end

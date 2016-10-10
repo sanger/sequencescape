@@ -7,10 +7,10 @@
 class CreateBaseRequestPurposes < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      RequestPurpose.create!(:key => 'standard')
-      RequestPurpose.create!(:key => 'qc')
-      RequestPurpose.create!(:key => 'internal')
-      RequestPurpose.create!(:key => 'control')
+      RequestPurpose.create!(key: 'standard')
+      RequestPurpose.create!(key: 'qc')
+      RequestPurpose.create!(key: 'internal')
+      RequestPurpose.create!(key: 'control')
     end
   end
 

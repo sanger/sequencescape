@@ -23,7 +23,7 @@ class Admin::RolesControllerTest < ActionController::TestCase
         session[:user] = @user = create :user
       end
 
-      resource_test('role', :with_prefix => 'admin_', :ignore_actions => ['create','destroy','update','edit'], :formats => ['html'])
+      resource_test('role', with_prefix: 'admin_', ignore_actions: ['create','destroy','update','edit'], formats: ['html'])
     end
 
   end

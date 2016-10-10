@@ -10,6 +10,6 @@ class ::Endpoints::Lanes < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:requests, :json => 'requests', :to => 'requests')
+    has_many(:requests, json: 'requests', to: 'requests')
   end
 end

@@ -57,7 +57,7 @@ module CarrierWave
         # Stores the file in the DbFiles model - split across many rows if size > 200KB
         def store(file)
           each_slice(file) do |start, finish|
-            @uploader.model.db_files.create!(:data => file.slice(start, finish))
+            @uploader.model.db_files.create!(data: file.slice(start, finish))
           end
 
           # Old code from attachment_fu: doesn't seem to be needed

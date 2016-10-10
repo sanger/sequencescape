@@ -15,7 +15,7 @@ class Admin::CustomTextsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @custom_texts.to_xml }
+      format.xml  { render xml: @custom_texts.to_xml }
     end
   end
 
@@ -23,7 +23,7 @@ class Admin::CustomTextsController < ApplicationController
     @custom_text = CustomText.find(params[:id])
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @custom_text.to_xml }
+      format.xml  { render xml: @custom_text.to_xml }
     end
   end
 
@@ -39,7 +39,7 @@ class Admin::CustomTextsController < ApplicationController
         format.html { redirect_to admin_custom_text_path(@custom_text) }
       else
         flash[:error] = "Problems creating your new custom text"
-        format.html { render :action => :new }
+        format.html { render action: :new }
       end
     end
   end
@@ -58,7 +58,7 @@ class Admin::CustomTextsController < ApplicationController
       redirect_to admin_custom_text_path(@custom_text)
     else
       flash[:error] = "Failed to update attributes"
-      render :action => "edit", :id => @custom_text.id
+      render action: "edit", id: @custom_text.id
     end
   end
 

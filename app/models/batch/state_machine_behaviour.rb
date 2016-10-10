@@ -8,33 +8,33 @@ module Batch::StateMachineBehaviour
   def self.included(base)
     base.class_eval do
       include AASM
-      aasm :column => :state, :whiny_persistence => true do
+      aasm column: :state, whiny_persistence: true do
 
-        state :pending, :initial => true
-        state :started, :enter => :start_requests
+        state :pending, initial: true
+        state :started, enter: :start_requests
         state :completed
         state :released
         state :discarded
 
         # State Machine events
         event :start do
-          transitions :to => :started, :from => [:pending, :started]
+          transitions to: :started, from: [:pending, :started]
         end
 
         event :complete do
-          transitions :to => :completed, :from => [:started, :pending, :completed]
+          transitions to: :completed, from: [:started, :pending, :completed]
         end
 
         event :release do
-          transitions :to => :released, :from => [:completed, :started, :pending, :released]
+          transitions to: :released, from: [:completed, :started, :pending, :released]
         end
 
         event :discard do
-          transitions :to => :discarded, :from => [:pending]
+          transitions to: :discarded, from: [:pending]
         end
       end
 
-      scope :failed,    -> { where(:production_state => "fail") }
+      scope :failed,    -> { where(production_state: "fail") }
 
       # We override the behaviour of a couple of events because they require user details.
       alias_method_chain(:start!, :user)
@@ -63,9 +63,9 @@ module Batch::StateMachineBehaviour
   end
 
   def create_complete_batch_event_for(user)
-    lab_events.create!(:batch => self, :user => user, :description => 'Complete').tap do |event|
-      event.add_descriptor Descriptor.new(:name => 'pipeline_id', :value => pipeline.id)
-      event.add_descriptor Descriptor.new(:name => 'pipeline',    :value => pipeline.name)
+    lab_events.create!(batch: self, user: user, description: 'Complete').tap do |event|
+      event.add_descriptor Descriptor.new(name: 'pipeline_id', value: pipeline.id)
+      event.add_descriptor Descriptor.new(name: 'pipeline',    value: pipeline.name)
       event.save!
     end
   end
@@ -79,11 +79,11 @@ module Batch::StateMachineBehaviour
   end
 
   def create_release_batch_event_for(user)
-    lab_events.create!(:batch => self, :user => user, :description => 'Released').tap do |event|
-      event.add_descriptor Descriptor.new(:name => 'workflow_id', :value => workflow.id)
-      event.add_descriptor Descriptor.new(:name => 'workflow',    :value => "Released from #{workflow.name}")
-      event.add_descriptor Descriptor.new(:name => 'task',        :value => workflow.name)
-      event.add_descriptor Descriptor.new(:name => 'Released',    :value => workflow.name)
+    lab_events.create!(batch: self, user: user, description: 'Released').tap do |event|
+      event.add_descriptor Descriptor.new(name: 'workflow_id', value: workflow.id)
+      event.add_descriptor Descriptor.new(name: 'workflow',    value: "Released from #{workflow.name}")
+      event.add_descriptor Descriptor.new(name: 'task',        value: workflow.name)
+      event.add_descriptor Descriptor.new(name: 'Released',    value: workflow.name)
       event.save!
     end
   end

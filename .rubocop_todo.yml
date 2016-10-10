@@ -1680,13 +1680,6 @@ Style/GuardClause:
     - 'lib/tasks/uat_setup.rake'
     - 'lib/validateable.rb'
 
-# Offense count: 13016
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
-# SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
-Style/HashSyntax:
-  Enabled: false
-
 # Offense count: 16
 Style/IdenticalConditionalBranches:
   Exclude:

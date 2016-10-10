@@ -20,11 +20,11 @@ class BulkTransfer < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       each_transfer do |source,destination,transfers|
         Transfer::BetweenPlates.create!(
-          :source => source,
-          :destination => destination,
-          :user => user,
-          :transfers => transfers,
-          :bulk_transfer_id => self.id
+          source: source,
+          destination: destination,
+          user: user,
+          transfers: transfers,
+          bulk_transfer_id: self.id
         )
       end
     end

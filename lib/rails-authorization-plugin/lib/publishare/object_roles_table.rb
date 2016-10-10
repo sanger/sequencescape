@@ -11,8 +11,8 @@ module Authorization
 
       module ClassMethods
         def acts_as_authorized_user(roles_relationship_opts = {})
-          has_many :user_role_bindings, :class_name => 'Role::UserRole'
-          has_many :roles, roles_relationship_opts.merge(:through => :user_role_bindings, :source => :role)
+          has_many :user_role_bindings, class_name: 'Role::UserRole'
+          has_many :roles, roles_relationship_opts.merge(through: :user_role_bindings, source: :role)
 #          has_and_belongs_to_many :roles, roles_relationship_opts
           include Authorization::ObjectRolesTable::UserExtensions::InstanceMethods
           include Authorization::Identity::UserExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
@@ -34,11 +34,11 @@ module Authorization
           role = get_role( role_name, authorizable_obj )
           if role.nil?
             role = if authorizable_obj.is_a? Class
-              Role.create( :name => role_name, :authorizable_type => authorizable_obj.to_s )
+              Role.create( name: role_name, authorizable_type: authorizable_obj.to_s )
                    elsif authorizable_obj
-              Role.create( :name => role_name, :authorizable => authorizable_obj )
+              Role.create( name: role_name, authorizable: authorizable_obj )
                    else
-              Role.create( :name => role_name )
+              Role.create( name: role_name )
                    end
           end
           self.roles << role if role and not self.roles.exists?( role.id )
@@ -96,21 +96,21 @@ module Authorization
         def get_role( role_name, authorizable_obj )
           if authorizable_obj.is_a? Class
             Role.where(
-              :name => role_name,
-              :authorizable_type => authorizable_obj.to_s,
-              :authorizable_id => nil
+              name: role_name,
+              authorizable_type: authorizable_obj.to_s,
+              authorizable_id: nil
             ).first
           elsif authorizable_obj
             Role.where(
-              :name => role_name,
-              :authorizable_type => authorizable_obj.class.base_class.to_s,
-              :authorizable_id => authorizable_obj.id
+              name: role_name,
+              authorizable_type: authorizable_obj.class.base_class.to_s,
+              authorizable_id: authorizable_obj.id
             ).first
           else
             Role.where(
-              :name => role_name,
-              :authorizable_type => nil,
-              :authorizable_id => nil
+              name: role_name,
+              authorizable_type: nil,
+              authorizable_id: nil
             ).first
           end
         end
@@ -132,9 +132,9 @@ module Authorization
 
       module ClassMethods
         def acts_as_authorizable
-          has_many :accepted_roles, :as => :authorizable, :class_name => 'Role', :dependent => :destroy
+          has_many :accepted_roles, as: :authorizable, class_name: 'Role', dependent: :destroy
 
-          has_many :users, :through => :roles
+          has_many :users, through: :roles
 
           def accepts_role?( role_name, user )
             user.has_role? role_name, self

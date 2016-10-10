@@ -7,7 +7,7 @@
 class LabEvent < ActiveRecord::Base
   belongs_to :batch
   belongs_to :user
-  belongs_to :eventful, :polymorphic => true
+  belongs_to :eventful, polymorphic: true
   acts_as_descriptable :serialized
 
   before_validation :unescape_for_descriptors
@@ -45,6 +45,6 @@ class LabEvent < ActiveRecord::Base
   end
 
   def add_new_descriptor(name, value)
-    add_descriptor Descriptor.new(:name => name, :value => value)
+    add_descriptor Descriptor.new(name: name, value: value)
   end
 end

@@ -11,16 +11,16 @@ class Product < ActiveRecord::Base
   include SharedBehaviour::Deprecatable
 
   validates_presence_of :name
-  validates_uniqueness_of :name, :scope => :deprecated_at
-  has_many :product_product_catalogues, :dependent => :destroy
-  has_many :product_catalogues, :through => :product_product_catalogues
-  has_many :submission_templates, :inverse_of => :product, :through => :product_catalogues
+  validates_uniqueness_of :name, scope: :deprecated_at
+  has_many :product_product_catalogues, dependent: :destroy
+  has_many :product_catalogues, through: :product_product_catalogues
+  has_many :submission_templates, inverse_of: :product, through: :product_catalogues
   has_many :orders
-  has_many :product_criteria, :inverse_of => :product, :class_name => 'ProductCriteria'
+  has_many :product_criteria, inverse_of: :product, class_name: 'ProductCriteria'
 
   scope :with_stock_report, ->() {
     joins(:product_criteria).
-    where(:product_criteria => { :deprecated_at => nil,:stage => ProductCriteria::STAGE_STOCK })
+    where(product_criteria: { deprecated_at: nil,stage: ProductCriteria::STAGE_STOCK })
   }
 
   scope :alphabetical, ->() { order(:name) }

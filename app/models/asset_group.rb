@@ -15,10 +15,10 @@ class AssetGroup < ActiveRecord::Base
   belongs_to :submission      # Optional, present if created by a particular submission
 
   has_many :asset_group_assets
-  has_many :assets, :through => :asset_group_assets
+  has_many :assets, through: :asset_group_assets
 
-  validates :name, :presence => true, :uniqueness => true
-  validates :study, :presence => true
+  validates :name, presence: true, uniqueness: true
+  validates :study, presence: true
 
  scope :for_search_query, ->(query,with_includes) { where(['name LIKE ?', "%#{query}%"]) }
 
@@ -35,7 +35,7 @@ class AssetGroup < ActiveRecord::Base
     # Is new name set or create group
     asset_group = nil
     if new_assets_name.present?
-      asset_group = AssetGroup.create_with(study:study).find_or_create_by(:name => new_assets_name)
+      asset_group = AssetGroup.create_with(study:study).find_or_create_by(name: new_assets_name)
     end
     return asset_group
   end

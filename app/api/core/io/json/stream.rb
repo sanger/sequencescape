@@ -56,9 +56,9 @@ module ::Core::Io::Json
       open do
         ::Core::Io::Registry.instance.lookup_for_object(object).object_json(
           object, options.merge(
-            :stream => self,
-            :object => object,
-            :nested => true
+            stream: self,
+            object: object,
+            nested: true
           )
         )
       end

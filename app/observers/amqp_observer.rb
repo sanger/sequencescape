@@ -96,7 +96,7 @@ class AmqpObserver < ActiveRecord::Observer
         @observer, @updated, @deleted = observer, Set.new, Set.new
       end
 
-      delegate :determine_record_to_broadcast, :to => :@observer
+      delegate :determine_record_to_broadcast, to: :@observer
 
       def each(&block)
         @updated.group_by(&:first).each do |model, pairs|
@@ -137,7 +137,7 @@ class AmqpObserver < ActiveRecord::Observer
         @observer = observer
       end
 
-      delegate :activate_exchange, :publish_to, :determine_record_to_broadcast, :to => :@observer
+      delegate :activate_exchange, :publish_to, :determine_record_to_broadcast, to: :@observer
       private :activate_exchange, :publish_to
 
       def <<(record)
@@ -158,8 +158,8 @@ class AmqpObserver < ActiveRecord::Observer
     def publish_to(exchange,record)
       exchange.publish(
         MultiJson.dump(record),
-        :key        => record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
-        :persistent => configatron.amqp.persistent
+        key: record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
+        persistent: configatron.amqp.persistent
       )
     end
     private :publish_to
@@ -175,10 +175,10 @@ class AmqpObserver < ActiveRecord::Observer
     # the Mongrel process will start killing threads because of too many open files.  This method,
     # therefore, enables transactional support for connecting to an exchange.
     def activate_exchange(&block)
-      client = Bunny.new(configatron.amqp.url, :spec => '09', :frame_max => configatron.amqp.fetch(:maximum_frame,0))
+      client = Bunny.new(configatron.amqp.url, spec: '09', frame_max: configatron.amqp.fetch(:maximum_frame,0))
       begin
         client.start
-        exchange = client.exchange('psd.sequencescape', :passive => true)
+        exchange = client.exchange('psd.sequencescape', passive: true)
         yield exchange
       ensure
         client.stop

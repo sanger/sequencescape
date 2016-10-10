@@ -31,7 +31,7 @@ class ChangeTag
         tube = LibraryTube.find(library_tube_id)
         new_tag = Tag.find(tag_id)
         tube.aliquots.first.descendants(true).map do |aliquot|
-          aliquot.update_attributes!(:tag => new_tag)
+          aliquot.update_attributes!(tag: new_tag)
         end
       end
     end

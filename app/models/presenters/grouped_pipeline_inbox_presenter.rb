@@ -23,14 +23,14 @@ module Presenters
     # TODO: Drive some of these directly from the database
     add_field 'Internal ID',    :internal_id
     add_field 'Barcode',        :barcode
-    add_field 'Wells',          :wells,          :if => :purpose_important?
-    add_field 'Plate Purpose',  :plate_purpose,  :if => :purpose_important?
-    add_field 'Pick To',        :pick_to,        :if => :purpose_important?
-    add_field 'Next Pipeline',  :next_pipeline,  :if => :display_next_pipeline?
-    add_field 'Submission',     :submission_id,  :if => :group_by_submission?
-    add_field 'Study',          :study,          :if => :group_by_submission?
-    add_field 'Stock Barcode',  :stock_barcode,  :if => :show_stock?
-    add_field 'Still Required', :still_required, :if => :select_partial_requests?
+    add_field 'Wells',          :wells,          if: :purpose_important?
+    add_field 'Plate Purpose',  :plate_purpose,  if: :purpose_important?
+    add_field 'Pick To',        :pick_to,        if: :purpose_important?
+    add_field 'Next Pipeline',  :next_pipeline,  if: :display_next_pipeline?
+    add_field 'Submission',     :submission_id,  if: :group_by_submission?
+    add_field 'Study',          :study,          if: :group_by_submission?
+    add_field 'Stock Barcode',  :stock_barcode,  if: :show_stock?
+    add_field 'Still Required', :still_required, if: :select_partial_requests?
     add_field 'Submitted at',   :submitted_at
 
 

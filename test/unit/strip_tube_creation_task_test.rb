@@ -26,16 +26,16 @@ end
     setup do
       @workflow_c = DummyWorkflowController.new(@pipeline)
       @pipeline       = create :pipeline
-      @batch          = create :batch, :pipeline => @pipeline
-      @task           = create :strip_tube_creation_task, :workflow => @pipeline.workflow
+      @batch          = create :batch, pipeline: @pipeline
+      @task           = create :strip_tube_creation_task, workflow: @pipeline.workflow
       @task.descriptors <<
-        Descriptor.new(:name => 'test',:selection => [1,2,4,6,12], :key => 'strips_to_create') <<
-        Descriptor.new(:name => 'test2',:value => 'Strip Tube Purpose', :key => 'strip_tube_purpose')
+        Descriptor.new(name: 'test',selection: [1,2,4,6,12], key: 'strips_to_create') <<
+        Descriptor.new(name: 'test2',value: 'Strip Tube Purpose', key: 'strip_tube_purpose')
       @plate = create :plate_for_strip_tubes
 
       @request_type = create :well_request_type
       @plate.wells.in_plate_column(1,96).each do |well|
-        2.times { @batch.requests << FactoryGirl.build(:request_without_assets, :asset => well, :target_asset => nil, :request_type => @request_type ) }
+        2.times { @batch.requests << FactoryGirl.build(:request_without_assets, asset: well, target_asset: nil, request_type: @request_type ) }
       end
       @pipeline.request_types << @request_type
     end

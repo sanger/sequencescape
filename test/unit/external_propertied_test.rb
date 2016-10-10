@@ -16,7 +16,7 @@ class ExternalPropertiedTest < ActiveSupport::TestCase
     should have_many :external_properties
 
     setup do
-      @test_subject = ExternalPropertied.create(:name => "TestObject")
+      @test_subject = ExternalPropertied.create(name: "TestObject")
       assert @test_subject.valid?
     end
 
@@ -24,7 +24,7 @@ class ExternalPropertiedTest < ActiveSupport::TestCase
       test_value = "Test"
       setup do
         # we use "test" as :test is saved as weird serialized stuff
-        @test_subject.external_properties.create(:key => "test", :value => test_value)
+        @test_subject.external_properties.create(key: "test", value: test_value)
       end
       should "have the right value" do
         assert_equal test_value, @test_subject.get_external_value(:test)

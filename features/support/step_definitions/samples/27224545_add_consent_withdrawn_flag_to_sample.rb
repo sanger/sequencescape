@@ -36,12 +36,12 @@ Given /^I try to create a "([^\"]*)" order with the following setup:$/ do |templ
   end
 
   @order = submission_template.new_order(
-    :project => Project.find_by_name(params['Project']),
-    :study => Study.find_by_name(params['Study']),
-    :asset_group => AssetGroup.find_by_name(params['Asset Group']),
-    :workflow => Submission::Workflow.first,
-    :user => @current_user,
-    :request_options => request_options
+    project: Project.find_by_name(params['Project']),
+    study: Study.find_by_name(params['Study']),
+    asset_group: AssetGroup.find_by_name(params['Asset Group']),
+    workflow: Submission::Workflow.first,
+    user: @current_user,
+    request_options: request_options
   )
   @order.assets = [Asset.find_by_name(params['Asset'])] unless Asset.find_by_name(params['Asset']).nil?
 end
@@ -75,11 +75,11 @@ Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "(
   asset_group = AssetGroup.find_by_name(asset_group)
   requests = []
   asset_group.assets.each do |asset|
-    target_asset = FactoryGirl.build :sample_tube, :sample => asset.sample, :name => "#{asset.name}_target"
+    target_asset = FactoryGirl.build :sample_tube, sample: asset.sample, name: "#{asset.name}_target"
     request = pipeline.request_types.last.create!(
-      :asset => asset,
-      :target_asset => target_asset,
-      :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 76 }
+      asset: asset,
+      target_asset: target_asset,
+      request_metadata_attributes: { fragment_size_required_from: 100, fragment_size_required_to: 200, read_length: 76 }
     )
     #request = FactoryGilr.build :request, :asset => asset, :target_asset => target_asset, :request_type => pipeline.request_type, :pipeline => pipeline
     request.save
@@ -98,7 +98,7 @@ end
 
 When /^I get the XML for the batch "([^"]*)"$/ do |id|
   batch = Batch.find(id)
-  visit(batch_path(batch, :format => :xml))
+  visit(batch_path(batch, format: :xml))
 end
 
 When /^I try to save the order$/ do ||

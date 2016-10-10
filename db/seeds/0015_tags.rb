@@ -800,8 +800,8 @@ tags = { "TruSeq small RNA index tags - 6 mer tags" =>
    [96,"GCCAAGAC"]]
 }
 
-TagGroup.create!(tag_group_names.map { |n| { :name => n } })
+TagGroup.create!(tag_group_names.map { |n| { name: n } })
 tags.each do |tag_group_name, tags_in_group|
   tag_group = TagGroup.find_by_name(tag_group_name) or raise ActiveRecord::RecordNotFound, "Cannot find tag group #{tag_group_name.inspect}"
-  tags_in_group.each { |m,o| tag_group.tags.create!(:map_id => m, :oligo => o) }
+  tags_in_group.each { |m,o| tag_group.tags.create!(map_id: m, oligo: o) }
 end

@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Permission < ActiveRecord::Base
-  belongs_to :permissable, :polymorphic => true
+  belongs_to :permissable, polymorphic: true
 end

@@ -9,7 +9,7 @@ class AddProductToExistingOrdersByRole < ActiveRecord::Migration
   class Order < ActiveRecord::Base
     self.table_name = ('orders')
     belongs_to :order_role
-    scope :with_role, ->(role) { where(:order_role_id => role.id) }
+    scope :with_role, ->(role) { where(order_role_id: role.id) }
   end
 
   class OrderRole < ActiveRecord::Base
@@ -38,14 +38,14 @@ class AddProductToExistingOrdersByRole < ActiveRecord::Migration
         next if role.nil?
         product = Product.find_by_name!(product_name)
         say "#{rolename} to #{product_name}"
-        Order.with_role(role).update_all(:product_id => product.id)
+        Order.with_role(role).update_all(product_id: product.id)
       end
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      Request.update_all(:product_id => nil)
+      Request.update_all(product_id: nil)
     end
   end
 end

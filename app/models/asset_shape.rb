@@ -82,12 +82,12 @@ class AssetShape < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       (0...size).each do |i|
         Map.create!(
-          :asset_size     => size,
-          :asset_shape_id => self.id,
-          :location_id    => i + 1,
-          :row_order      => i,
-          :column_order   => horizontal_to_vertical(i,size) || 0,
-          :description    => location_from_index(i,size)
+          asset_size: size,
+          asset_shape_id: self.id,
+          location_id: i + 1,
+          row_order: i,
+          column_order: horizontal_to_vertical(i,size) || 0,
+          description: location_from_index(i,size)
         )
       end
     end

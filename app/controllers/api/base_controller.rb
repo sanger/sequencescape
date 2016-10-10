@@ -10,9 +10,9 @@ class Api::BaseController < ApplicationController
   before_action :evil_parameter_hack!
   class_attribute :model_class
   before_action { |controller| Uuid.translate_uuids_to_ids_in_params(controller.params) }
-  around_filter :wrap_in_transaction, :only => [:create, :update, :destroy]
+  around_filter :wrap_in_transaction, only: [:create, :update, :destroy]
 
-  delegate :render_class, :to => :model_class
+  delegate :render_class, to: :model_class
 
   #--
   # Exception handling code
@@ -22,7 +22,7 @@ class Api::BaseController < ApplicationController
       hash.tap { hash[field_and_error_pair.first].push(field_and_error_pair.last) }
     end
     respond_to do |format|
-      format.json { render :json => self.render_class.map_attribute_to_json_attribute_in_errors(errors), :status => :unprocessable_entity }
+      format.json { render json: self.render_class.map_attribute_to_json_attribute_in_errors(errors), status: :unprocessable_entity }
     end
   end
 
@@ -35,7 +35,7 @@ class Api::BaseController < ApplicationController
   #++
   def show
     respond_to do |format|
-      format.json { render :json => @object.to_json }
+      format.json { render json: @object.to_json }
     end
   end
 
@@ -45,14 +45,14 @@ class Api::BaseController < ApplicationController
     results = @context.order(sort_order).paginate(page: params[:page], total_entries: 100000000, per_page: 500)
 
     respond_to do |format|
-      format.json { render :json => results }
+      format.json { render json: results }
     end
   end
 
   def create
     object = self.render_class.create!(params)
     respond_to do |format|
-      format.json { render :json => object.to_json, :status => :created, :location => object }
+      format.json { render json: object.to_json, status: :created, location: object }
     end
   end
 

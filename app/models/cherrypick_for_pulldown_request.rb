@@ -6,47 +6,47 @@
 
 class CherrypickForPulldownRequest < TransferRequest
 
-  redefine_aasm :column => :state, :whiny_persistence => true do
+  redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has less states.
-    state :pending, :initial => true
+    state :pending, initial: true
     state :started
-    state :failed,     :enter => :on_failed
+    state :failed,     enter: :on_failed
     state :passed
-    state :cancelled,  :enter => :on_cancelled
+    state :cancelled,  enter: :on_cancelled
     state :hold
 
     event :hold do
-      transitions :to => :hold, :from => [:pending]
+      transitions to: :hold, from: [:pending]
     end
 
     # State Machine events
     event :start do
-      transitions :to => :started, :from => [:pending,:hold]
+      transitions to: :started, from: [:pending,:hold]
     end
 
     event :pass do
-      transitions :to => :passed, :from => [:pending, :started, :failed]
+      transitions to: :passed, from: [:pending, :started, :failed]
     end
 
     event :fail do
-      transitions :to => :failed, :from => [:pending, :started, :passed]
+      transitions to: :failed, from: [:pending, :started, :passed]
     end
 
     event :cancel do
-      transitions :to => :cancelled, :from => [:started, :passed]
+      transitions to: :cancelled, from: [:started, :passed]
     end
 
     event :cancel_before_started do
-      transitions :to => :cancelled, :from => [:pending,:hold]
+      transitions to: :cancelled, from: [:pending,:hold]
     end
 
     event :submission_cancelled do
-      transitions :to => :cancelled, :from => [:pending, :cancelled]
+      transitions to: :cancelled, from: [:pending, :cancelled]
     end
 
     event :detach do
-      transitions :to => :pending, :from => [:pending, :cancelled]
+      transitions to: :pending, from: [:pending, :cancelled]
     end
   end
 

@@ -6,7 +6,7 @@
 
 Sequencescape::Application.routes.draw do
   root to:'homes#show'
-  resource :home, :only => [:show]
+  resource :home, only: [:show]
 
   mount Api::RootService.new => '/api/1'
 
@@ -58,18 +58,18 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  scope 'npg_actions', :module => 'npg_actions' do
-    resources :assets, :only => [] do
-      post :pass_qc_state, :action => :pass, :format => :xml
-      post :fail_qc_state, :action => :fail, :format => :xml
+  scope 'npg_actions', module: 'npg_actions' do
+    resources :assets, only: [] do
+      post :pass_qc_state, action: :pass, format: :xml
+      post :fail_qc_state, action: :fail, format: :xml
     end
   end
 
   resources :items
 
   resources :batches do
-    resources :requests, :controller => "batches/requests"
-    resources :comments, :controller => "batches/comments"
+    resources :requests, controller: "batches/requests"
+    resources :comments, controller: "batches/comments"
 
     member do
       get :print_labels
@@ -89,7 +89,7 @@ Sequencescape::Application.routes.draw do
     end
 
   end
-  resources :uuids, :only => [:show]
+  resources :uuids, only: [:show]
 
   match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch, :via => :post
   match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch, :via => :post
@@ -145,7 +145,7 @@ Sequencescape::Application.routes.draw do
 
     resources :assets
 
-    resources :sample_registration, :only => [:index,:new,:create], :controller => "studies/sample_registration" do
+    resources :sample_registration, only: [:index,:new,:create], controller: "studies/sample_registration" do
       collection do
         post :spreadsheet
         # get :new
@@ -153,8 +153,8 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :samples, :controller => "studies/samples"
-    resources :events, :controller => "studies/events"
+    resources :samples, controller: "studies/samples"
+    resources :events, controller: "studies/events"
 
     resources :requests do
       member do
@@ -163,9 +163,9 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :comments, :controller => "studies/comments"
+    resources :comments, controller: "studies/comments"
 
-    resources :asset_groups, :controller => "studies/asset_groups" do
+    resources :asset_groups, controller: "studies/asset_groups" do
       member do
         post :search
         post :add
@@ -177,7 +177,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :plates, :controller => "studies/plates", :except => :destroy do
+    resources :plates, controller: "studies/plates", except: :destroy do
 
       collection do
         post :view_wells
@@ -189,10 +189,10 @@ Sequencescape::Application.routes.draw do
         post :remove_wells
       end
 
-      resources :wells, :expect => [:destroy,:edit]
+      resources :wells, expect: [:destroy,:edit]
     end
 
-    resources :workflows, :controller => "studies/workflows" do
+    resources :workflows, controller: "studies/workflows" do
 
       member do
         get :summary
@@ -206,7 +206,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :documents, :controller => "studies/documents", :only => [:show,:destroy]
+    resources :documents, controller: "studies/documents", only: [:show,:destroy]
 
   end
 
@@ -230,7 +230,7 @@ Sequencescape::Application.routes.draw do
   match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
 
   resources :requests do
-    resources :comments, :controller => "requests/comments"
+    resources :comments, controller: "requests/comments"
 
     member do
       get :history
@@ -322,7 +322,7 @@ Sequencescape::Application.routes.draw do
     resources :bait_libraries
 
 
-    scope :module => :bait_libraries do
+    scope module: :bait_libraries do
       resources :bait_library_types
       resources :bait_library_suppliers
     end
@@ -330,7 +330,7 @@ Sequencescape::Application.routes.draw do
 
   get 'admin' => 'admin#index', :as => :admin
 
-  resources :profile, :controller => 'users' do
+  resources :profile, controller: 'users' do
     member do
       get :study_reports
       get :projects
@@ -376,7 +376,7 @@ Sequencescape::Application.routes.draw do
 
   match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
 
-  resources :pipelines, :except => [:delete] do
+  resources :pipelines, except: [:delete] do
     collection do
       post :update_priority
     end
@@ -417,7 +417,7 @@ Sequencescape::Application.routes.draw do
   resources :tasks
   resources :asset_audits
 
-  resources :qc_reports, :except => [:delete,:update] do
+  resources :qc_reports, except: [:delete,:update] do
     collection do
       post :qc_file
     end
@@ -432,8 +432,8 @@ Sequencescape::Application.routes.draw do
 
   resources :families
 
-  resources :tag_groups, :excpet => [:destroy] do
-    resources :tags, :except => [:destroy, :index, :create, :new, :edit]
+  resources :tag_groups, excpet: [:destroy] do
+    resources :tags, except: [:destroy, :index, :create, :new, :edit]
   end
 
   resources :assets do
@@ -457,7 +457,7 @@ Sequencescape::Application.routes.draw do
       post :move
     end
 
-    resources :comments, :controller => "assets/comments"
+    resources :comments, controller: "assets/comments"
   end
 
   resources :plates do
@@ -471,7 +471,7 @@ Sequencescape::Application.routes.draw do
 
   resources :pico_set_results, only: :create
 
-  resources :receptions, :only => [:index] do
+  resources :receptions, only: [:index] do
     collection do
       post :confirm_reception
       get :snp_register
@@ -499,93 +499,93 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  scope '0_5', :module => 'api' do
+  scope '0_5', module: 'api' do
 
-    resources 'asset_audits', :only => [:index, :show]
-    resources 'asset_links', :only => [:index, :show]
-    resources 'batch_requests', :only => [:index, :show]
-    resources 'batches', :only => [:index, :show] do
+    resources 'asset_audits', only: [:index, :show]
+    resources 'asset_links', only: [:index, :show]
+    resources 'batch_requests', only: [:index, :show]
+    resources 'batches', only: [:index, :show] do
       member do
         get :children
         get :parents
       end
     end
-    resources 'billing_events', :only => [:index, :show]
-    resources 'events', :only => [:index, :show]
-    resources 'lanes', :only => [:index, :show] do
+    resources 'billing_events', only: [:index, :show]
+    resources 'events', only: [:index, :show]
+    resources 'lanes', only: [:index, :show] do
       member do
         get :children
         get :parents
       end
     end
-    resources 'library_tubes', :only => [:index, :show] do
+    resources 'library_tubes', only: [:index, :show] do
       member do
         get :children
         get :parents
       end
 
-      resources 'lanes', :only => [:index, :show]
-      resources 'requests', :only => [:index, :show]
+      resources 'lanes', only: [:index, :show]
+      resources 'requests', only: [:index, :show]
     end
-    resources 'multiplexed_library_tubes', :only => [:index, :show] do
+    resources 'multiplexed_library_tubes', only: [:index, :show] do
       member do
         get :children
         get :parents
       end
     end
-    resources 'pulldown_multiplexed_library_tubes', :only => [:index, :show]
-    resources 'plate_purposes', :only => [:index, :show]
+    resources 'pulldown_multiplexed_library_tubes', only: [:index, :show]
+    resources 'plate_purposes', only: [:index, :show]
 
-    resources 'plates', :only => [:index, :show] do
-      member do
-        get :children
-        get :parents
-      end
-    end
-
-    resources 'sample_tubes', :only => [:index, :show] do
-      resources 'library_tubes', :only => [:index, :show]
-      resources 'requests', :only => [:index, :show]
+    resources 'plates', only: [:index, :show] do
       member do
         get :children
         get :parents
       end
     end
 
-    resources 'study_samples', :only => [:index, :show]
-    resources 'submissions', :only => [:index, :show] do
-      resources 'orders', :only => [:index, :show]
-    end
-    resources 'orders', :only => [:index, :show]
-    resources 'tags', :only => [:index, :show]
-    resources 'wells', :only => [:index, :show] do
+    resources 'sample_tubes', only: [:index, :show] do
+      resources 'library_tubes', only: [:index, :show]
+      resources 'requests', only: [:index, :show]
       member do
         get :children
         get :parents
       end
     end
-    resources 'aliquots', :only => [:index, :show]
 
-
-    resources 'projects', :except => :destroy do
-      resources 'studies', :except => :destroy
+    resources 'study_samples', only: [:index, :show]
+    resources 'submissions', only: [:index, :show] do
+      resources 'orders', only: [:index, :show]
     end
-    resources 'requests', :except => :destroy
-    resources 'samples', :except => :destroy do
+    resources 'orders', only: [:index, :show]
+    resources 'tags', only: [:index, :show]
+    resources 'wells', only: [:index, :show] do
       member do
         get :children
         get :parents
       end
-      resources 'sample_tubes', :only => [:index, :show] do
+    end
+    resources 'aliquots', only: [:index, :show]
+
+
+    resources 'projects', except: :destroy do
+      resources 'studies', except: :destroy
+    end
+    resources 'requests', except: :destroy
+    resources 'samples', except: :destroy do
+      member do
+        get :children
+        get :parents
+      end
+      resources 'sample_tubes', only: [:index, :show] do
         member do
           get :children
           get :parents
         end
       end
     end
-    resources 'studies', :except => :destroy do
-      resources 'samples', :except => :destroy
-      resources 'projects', :except => :destroy
+    resources 'studies', except: :destroy do
+      resources 'samples', except: :destroy
+      resources 'projects', except: :destroy
     end
 
   end
@@ -612,7 +612,7 @@ Sequencescape::Application.routes.draw do
     get '/' => 'home#index'
   end
 
-  resources :labwhere_receptions, :only => [:index, :create]
+  resources :labwhere_receptions, only: [:index, :create]
 
   resources :qc_files, only: [:show]
 

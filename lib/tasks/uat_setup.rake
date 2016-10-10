@@ -10,13 +10,13 @@ namespace :uat do
      def self.create
        if @barcode.nil?
          @barcode = Plate.first(
-           :conditions => 'barcode is not null and barcode!="9999999" and length(barcode)=7',
-           :order => 'barcode desc'
+           conditions: 'barcode is not null and barcode!="9999999" and length(barcode)=7',
+           order: 'barcode desc'
          ).try(:barcode).to_i
 
          @barcode = 9000000 if @barcode.zero? and not Plate.count.zero?
        end
-       OpenStruct.new(:barcode => (@barcode += 1))
+       OpenStruct.new(barcode: (@barcode += 1))
      end
     end
 
@@ -149,86 +149,86 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       puts "Creating basic template..."
 
-      PlateTemplate.create!(:name => 'Empty Template')
+      PlateTemplate.create!(name: 'Empty Template')
 
       puts "Setting up projects..."
       Project.create!(
-        :name => 'UAT project A',
-        :enforce_quotas => true,
-        :approved => true,
-        :state => 'active',
-        :project_metadata_attributes => {
-          :project_cost_code => 'UATA',
-          :project_funding_model => 'Internal',
-          :project_manager_id => ProjectManager.find_or_create_by(name:'UAT manager').id,
-          :budget_division_id => BudgetDivision.find_or_create_by(name:'UAT internal division').id
+        name: 'UAT project A',
+        enforce_quotas: true,
+        approved: true,
+        state: 'active',
+        project_metadata_attributes: {
+          project_cost_code: 'UATA',
+          project_funding_model: 'Internal',
+          project_manager_id: ProjectManager.find_or_create_by(name:'UAT manager').id,
+          budget_division_id: BudgetDivision.find_or_create_by(name:'UAT internal division').id
         }
       )
       Project.create!(
-        :name => 'UAT project B',
-        :enforce_quotas => true,
-        :approved => true,
-        :state => 'active',
-        :project_metadata_attributes => {
-          :project_cost_code => 'UATA',
-          :project_funding_model => 'External',
-          :project_manager_id => ProjectManager.find_or_create_by(name:'UAT manager').id,
-          :budget_division_id => BudgetDivision.find_or_create_by(name:'UAT external division').id
+        name: 'UAT project B',
+        enforce_quotas: true,
+        approved: true,
+        state: 'active',
+        project_metadata_attributes: {
+          project_cost_code: 'UATA',
+          project_funding_model: 'External',
+          project_manager_id: ProjectManager.find_or_create_by(name:'UAT manager').id,
+          budget_division_id: BudgetDivision.find_or_create_by(name:'UAT external division').id
         }
       )
 
       puts "Faking a sponsor..."
 
-      FacultySponsor.create!(:name => 'UAT Sponsor')
+      FacultySponsor.create!(name: 'UAT Sponsor')
 
       puts "Setting up studies..."
 
       Study.create!(
-        :name => 'UAT study A',
-        :study_metadata_attributes => {
-          :study_ebi_accession_number => 'YYYY',
-          :study_type => StudyType.find_by_name('Exome Sequencing'),
-          :faculty_sponsor => FacultySponsor.last,
-          :data_release_study_type => DataReleaseStudyType.find_by_name('genomic sequencing'),
-          :study_description => 'A seeded test study',
-          :contaminated_human_dna => 'No',
-          :contains_human_dna => 'No',
-          :commercially_available => 'No'
+        name: 'UAT study A',
+        study_metadata_attributes: {
+          study_ebi_accession_number: 'YYYY',
+          study_type: StudyType.find_by_name('Exome Sequencing'),
+          faculty_sponsor: FacultySponsor.last,
+          data_release_study_type: DataReleaseStudyType.find_by_name('genomic sequencing'),
+          study_description: 'A seeded test study',
+          contaminated_human_dna: 'No',
+          contains_human_dna: 'No',
+          commercially_available: 'No'
         }
       ).activate!
 
       Study.create!(
-        :name => 'UAT study B',
-        :study_metadata_attributes => {
-          :study_ebi_accession_number => 'YYYY',
-          :study_type => StudyType.find_by_name('Exome Sequencing'),
-          :faculty_sponsor => FacultySponsor.last,
-          :data_release_study_type => DataReleaseStudyType.find_by_name('genomic sequencing'),
-          :study_description => 'A seeded test study',
-          :contaminated_human_dna => 'No',
-          :contains_human_dna => 'No',
-          :commercially_available => 'No'
+        name: 'UAT study B',
+        study_metadata_attributes: {
+          study_ebi_accession_number: 'YYYY',
+          study_type: StudyType.find_by_name('Exome Sequencing'),
+          faculty_sponsor: FacultySponsor.last,
+          data_release_study_type: DataReleaseStudyType.find_by_name('genomic sequencing'),
+          study_description: 'A seeded test study',
+          contaminated_human_dna: 'No',
+          contains_human_dna: 'No',
+          commercially_available: 'No'
         }
       ).activate!
 
       Study.create!(
-        :name => 'UAT study C',
-        :study_metadata_attributes => {
-          :study_ebi_accession_number => 'YYYY',
-          :study_type => StudyType.find_by_name('Exome Sequencing'),
-          :faculty_sponsor => FacultySponsor.last,
-          :data_release_study_type => DataReleaseStudyType.find_by_name('genomic sequencing'),
-          :study_description => 'A seeded test study with mock human data',
-          :contaminated_human_dna => 'No',
-          :contains_human_dna => 'Yes',
-          :commercially_available => 'No'
+        name: 'UAT study C',
+        study_metadata_attributes: {
+          study_ebi_accession_number: 'YYYY',
+          study_type: StudyType.find_by_name('Exome Sequencing'),
+          faculty_sponsor: FacultySponsor.last,
+          data_release_study_type: DataReleaseStudyType.find_by_name('genomic sequencing'),
+          study_description: 'A seeded test study with mock human data',
+          contaminated_human_dna: 'No',
+          contains_human_dna: 'Yes',
+          commercially_available: 'No'
         }
       ).activate!
 
       puts "Adding UAT user"
 
-      user = User.create!(:login => 'UAT user',  :swipecard_code => 'uat_test', :workflow_id => 1).tap do |u|
-        u.roles.create!(:name => 'administrator')
+      user = User.create!(login: 'UAT user',  swipecard_code: 'uat_test', workflow_id: 1).tap do |u|
+        u.roles.create!(name: 'administrator')
       end
 
       puts "Registering samples/assets"
@@ -237,27 +237,27 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
         print '.'
         SampleRegistrar.register!((1..96).map { |i| sample_named("sample_#{study.id}_#{i}",study,user) })
         print '.'
-        stock = Purpose.find(2).create!(:barcode => (10 * study.id)).tap do |plate|
+        stock = Purpose.find(2).create!(barcode: (10 * study.id)).tap do |plate|
           plate.wells.each { |w| w.aliquots.create!(
-            :sample => Sample.create!(
-              :name => "sample_in_#{w.plate.sanger_human_barcode}#{w.map.description}",
-              :studies => [study],
-              :sample_metadata_attributes => {
-                :sample_ebi_accession_number => 'XXX',
-                :sample_taxon_id => 9603 + study.id
+            sample: Sample.create!(
+              name: "sample_in_#{w.plate.sanger_human_barcode}#{w.map.description}",
+              studies: [study],
+              sample_metadata_attributes: {
+                sample_ebi_accession_number: 'XXX',
+                sample_taxon_id: 9603 + study.id
               }
             ),
-            :study => study
+            study: study
           )}
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('Cherrypicked').create!(:barcode => i + (10 * study.id),:location => Location.find_by_name('Illumina high throughput freezer'))
+          child = Purpose.find_by_name('Cherrypicked').create!(barcode: i + (10 * study.id),location: Location.find_by_name('Illumina high throughput freezer'))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('ILC Stock').create!(:barcode => i + 4 + (10 * study.id),:location => Location.find_by_name('Illumina high throughput freezer'))
+          child = Purpose.find_by_name('ILC Stock').create!(barcode: i + 4 + (10 * study.id),location: Location.find_by_name('Illumina high throughput freezer'))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
@@ -265,13 +265,13 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
       user = User.last
       puts "Setting up tag plates..."
       lot = LotType.find_by_name('IDT Tags').lots.create!(
-        :lot_number => 'UATTaglot',
-        :template => TagLayoutTemplate.find_by_name('Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
-        :user => user,
-        :received_at => DateTime.now
+        lot_number: 'UATTaglot',
+        template: TagLayoutTemplate.find_by_name('Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
+        user: user,
+        received_at: DateTime.now
       )
-     qcc = QcableCreator.create!(:lot => lot,:user => user,:count => 30)
-     qcc.qcables.each { |qcable| qcable.update_attributes!(:state => 'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
+     qcc = QcableCreator.create!(lot: lot,user: user,count: 30)
+     qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
 
     else
       # We should never be hitting here

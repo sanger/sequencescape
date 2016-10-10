@@ -66,7 +66,7 @@ class PreCapturePool < ActiveRecord::Base
 
     def pool(requests,plex)
       requests.flatten.each_slice(plex) do |pooled_requests|
-        PreCapturePool.create!(:requests => pooled_requests)
+        PreCapturePool.create!(requests: pooled_requests)
       end
     end
 

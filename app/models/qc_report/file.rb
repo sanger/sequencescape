@@ -73,7 +73,7 @@ class QcReport::File
   # This should ONLY be called after the headers have been read out.
   # This puts the column headers at the top of the remaining csv file
   def body_csv
-    @body_csv ||= CSV.new(@file,:headers => :first_row, :header_converters => [:symbol] )
+    @body_csv ||= CSV.new(@file,headers: :first_row, header_converters: [:symbol] )
   end
 
   def each_group_of_decisions
@@ -107,7 +107,7 @@ class QcReport::File
   def process_line(line)
     qc_decision = (line[:qc_decision] || "").strip
     proceed = (line[:proceed] || "").strip
-    { :qc_decision => qc_decision, :proceed => proceed }
+    { qc_decision: qc_decision, proceed: proceed }
   end
 
   def invalid(message)

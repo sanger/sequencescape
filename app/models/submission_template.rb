@@ -20,18 +20,18 @@ class SubmissionTemplate < ActiveRecord::Base
   has_many :orders
   belongs_to :product_line
 
-  has_many   :supercedes,    :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
-  belongs_to :superceded_by, :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
+  has_many   :supercedes,    class_name: 'SubmissionTemplate', foreign_key: :superceded_by_id
+  belongs_to :superceded_by, class_name: 'SubmissionTemplate', foreign_key: :superceded_by_id
 
-  belongs_to :product_catalogue, :inverse_of => :submission_templates
-  delegate :product_for, :to => :product_catalogue
+  belongs_to :product_catalogue, inverse_of: :submission_templates
+  delegate :product_for, to: :product_catalogue
   validates_presence_of :product_catalogue
 
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
   scope :hidden,               -> { order('product_line_id ASC').where(['superceded_by_id != ?', LATEST_VERSION]) }
-  scope :visible,              -> { order('product_line_id ASC').where( :superceded_by_id => LATEST_VERSION ) }
+  scope :visible,              -> { order('product_line_id ASC').where( superceded_by_id: LATEST_VERSION ) }
   scope :include_product_line, -> { includes(:product_line) }
 
   def visible
@@ -48,14 +48,14 @@ class SubmissionTemplate < ActiveRecord::Base
         yield(cloned) if block_given?
         name, cloned.name = cloned.name, "Superceding #{cloned.name}"
         cloned.save!
-        self.update_attributes!(:superceded_by_id => cloned.id, :superceded_at => Time.now)
-        cloned.update_attributes!(:name => name)
+        self.update_attributes!(superceded_by_id: cloned.id, superceded_at: Time.now)
+        cloned.update_attributes!(name: name)
       end
     end
   end
 
   def create_and_build_submission!(attributes)
-    Submission.build!(attributes.merge(:template => self))
+    Submission.build!(attributes.merge(template: self))
   end
   def create_order!(attributes)
     self.new_order(attributes).tap do |order|
@@ -66,7 +66,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   def create_with_submission!(attributes)
     self.create_order!(attributes) do |order|
-      order.create_submission(:user_id => order.user_id)
+      order.create_submission(user_id: order.user_id)
     end
   end
 
@@ -118,7 +118,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   # create a new template from a submission
   def self.new_from_submission(name, submission)
-    submission_template = new(:name => name)
+    submission_template = new(name: name)
     submission_template.update_from_submission(submission)
     return submission_template
   end

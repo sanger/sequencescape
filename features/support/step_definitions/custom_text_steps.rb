@@ -14,8 +14,8 @@ end
 
 Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)"$/ do |identifier, differential|
   @current_custom_text = CustomText.find_by(
-    :identifier   => identifier,
-    :differential => differential
+    identifier: identifier,
+    differential: differential
   )
 
   assert_not_nil @current_custom_text
@@ -36,7 +36,7 @@ end
 Given /^the application information box should contain "([^\"]*)"$/ do |info_text|
   regexp = Regexp.new(info_text)
   with_scope('#app-info-box') do
-    assert page.has_xpath?('//*', :text => regexp)
+    assert page.has_xpath?('//*', text: regexp)
   end
 end
 

@@ -20,7 +20,7 @@ myfile.each do |line|
 end
 puts "#{sample_names.size} Sample Names read from file"
 
-asset_group = AssetGroup.create(:name => "#{project_id}_asset_group_#{Time.now}")
+asset_group = AssetGroup.create(name: "#{project_id}_asset_group_#{Time.now}")
 sample_names.each do |sample_name|
   sample = Sample.find_by_name(sample_name)
   raise "Cannot find #{sample_name}" if sample.nil?

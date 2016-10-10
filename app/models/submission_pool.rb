@@ -16,7 +16,7 @@ class SubmissionPool < ActiveRecord::Base
           # Rails 4 takes scopes as second argument, we can probably also tidy up and remove the counter_sql
           # as it is the :group by seems to throw rails, and distinct will throw off out count.
           has_many :submission_pools, ->() { select('submissions.*, requests.id AS outer_request_id').group('submissions.id').uniq },
-            :through => :well_requests_as_target do
+            through: :well_requests_as_target do
 
               def count(*args)
                 # Horrid hack due to the behaviour of count with a group_by
@@ -49,9 +49,9 @@ class SubmissionPool < ActiveRecord::Base
 
   self.table_name = 'submissions'
 
-  belongs_to :outer_request, :class_name => 'Request'
-  has_many :tag2_layout_template_submissions, :class_name => 'Tag2Layout::TemplateSubmission', :foreign_key => 'submission_id'
-  has_many :tag2_layout_templates, :through => :tag2_layout_template_submissions
+  belongs_to :outer_request, class_name: 'Request'
+  has_many :tag2_layout_template_submissions, class_name: 'Tag2Layout::TemplateSubmission', foreign_key: 'submission_id'
+  has_many :tag2_layout_templates, through: :tag2_layout_template_submissions
 
   scope :include_uuid, ->() {}
   scope :include_outer_request, ->() { includes(:outer_request) }

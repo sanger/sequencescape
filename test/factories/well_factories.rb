@@ -21,24 +21,24 @@ FactoryGirl.define do
     current_volume      15
   end
 
-  factory :well_with_sample_and_without_plate, :parent => :empty_well do |well|
+  factory :well_with_sample_and_without_plate, parent: :empty_well do |well|
     after(:build) do |well|
-      well.aliquots << build(:tagged_aliquot, :receptacle => well)
+      well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :tagged_well, :parent => :empty_well do |well|
+  factory :tagged_well, parent: :empty_well do |well|
     after(:create) do |well|
-      well.aliquots.create!(:sample => create(:sample), :tag => create(:tag))
+      well.aliquots.create!(sample: create(:sample), tag: create(:tag))
     end
   end
 
-  factory :well_with_sample_and_plate, :parent => :well_with_sample_and_without_plate do |well|
+  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |well|
     map
     plate
   end
 
-  factory :cross_pooled_well, :parent => :empty_well do |well|
+  factory :cross_pooled_well, parent: :empty_well do |well|
     map
     plate
     after(:build) do |well|

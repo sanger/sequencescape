@@ -82,7 +82,7 @@ module Submission::LinearRequestGraph
 
         create_request_of_type!(
           request_type,
-          :asset => source_asset, :target_asset => target_asset, :item => item
+          asset: source_asset, target_asset: target_asset, item: item
         ).tap do |request|
           # TODO: AssetLink is supposed to disappear at some point in the future because it makes no real sense
           # given that the request graph describes this relationship.
@@ -92,7 +92,7 @@ module Submission::LinearRequestGraph
           request.update_responsibilities!
 
           comments.split("\n").each do |comment|
-            request.comments.create!(:user => user, :description => comment)
+            request.comments.create!(user: user, description: comment)
           end if comments.present?
         end
       end
@@ -123,10 +123,10 @@ module Submission::LinearRequestGraph
 
   def associate_built_requests(assets)
     assets.map(&:requests).flatten.each do |request|
-      request.update_attributes!(:initial_study => nil) if request.initial_study != study
-      request.update_attributes!(:initial_project => nil) if request.initial_project != project
+      request.update_attributes!(initial_study: nil) if request.initial_study != study
+      request.update_attributes!(initial_project: nil) if request.initial_project != project
       comments.split("\n").each do |comment|
-        request.comments.create!(:user => user, :description => comment)
+        request.comments.create!(user: user, description: comment)
       end if comments.present?
     end
   end
@@ -138,7 +138,7 @@ module Submission::LinearRequestGraph
     item = asset.requests.first.item unless asset.requests.empty?
     return item if item.present?
 
-    Item.create!(:workflow => workflow, :name => "#{asset.display_name} #{id}", :submission => self.submission)
+    Item.create!(workflow: workflow, name: "#{asset.display_name} #{id}", submission: self.submission)
   end
   private :create_item_for!
 

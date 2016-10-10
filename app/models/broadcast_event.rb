@@ -15,7 +15,7 @@ class BroadcastEvent < ActiveRecord::Base
   extend BroadcastEvent::MetadataHelpers::MetadatableClassMethods
   extend BroadcastEvent::RenderHelpers::RenderableClassMethods
 
-  belongs_to :seed, :polymorphic => true
+  belongs_to :seed, polymorphic: true
   belongs_to :user
   validates_presence_of :seed
 

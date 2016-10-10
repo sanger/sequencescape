@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Sdb::SampleManifestsController < Sdb::BaseController
-  before_action :set_sample_manifest_id, :only => [:show, :generated]
-  before_action :validate_type,    :only => [:new, :create]
+  before_action :set_sample_manifest_id, only: [:show, :generated]
+  before_action :validate_type,    only: [:new, :create]
 
   LIMIT_ERROR_LENGTH = 10000
 
@@ -35,20 +35,20 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def export
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.generated_document.current_data,
-              :filename => "manifest_#{@manifest.id}.xlsx",
-              :type => 'application/excel')
+              filename: "manifest_#{@manifest.id}.xlsx",
+              type: 'application/excel')
   end
 
   def uploaded_spreadsheet
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.uploaded_document.current_data,
-              :filename => "manifest_#{@manifest.id}.csv",
-              :type => 'application/excel')
+              filename: "manifest_#{@manifest.id}.csv",
+              type: 'application/excel')
   end
 
   def new
     @asset_type = params[:type]
-    @sample_manifest  = SampleManifest.new(:asset_type => @asset_type)
+    @sample_manifest  = SampleManifest.new(asset_type: @asset_type)
     @study_id         = params[:study_id] || ""
     @studies          = Study.alphabetical
     @suppliers        = Supplier.alphabetical
@@ -77,14 +77,14 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   # Show the manifest
   def show
     @study_id = @sample_manifest.study_id
-    @samples = @sample_manifest.samples.paginate(:page => params[:page])
+    @samples = @sample_manifest.samples.paginate(page: params[:page])
   end
 
   def index
-    pending_sample_manifests = SampleManifest.pending_manifests.paginate(:page => params[:page])
-    completed_sample_manifests = SampleManifest.completed_manifests.paginate(:page => params[:page])
+    pending_sample_manifests = SampleManifest.pending_manifests.paginate(page: params[:page])
+    completed_sample_manifests = SampleManifest.completed_manifests.paginate(page: params[:page])
     @display_manifests = pending_sample_manifests | completed_sample_manifests
-    @sample_manifests = SampleManifest.paginate(:page => params[:page])
+    @sample_manifests = SampleManifest.paginate(page: params[:page])
   end
 
   private

@@ -10,7 +10,7 @@ class AssetsController < ApplicationController
   before_action :evil_parameter_hack!
 
   class PlateLayout
-    DEFAULT_WELL = { :request => nil, :asset => nil, :error => nil }
+    DEFAULT_WELL = { request: nil, asset: nil, error: nil }
 
     attr_reader :width, :height, :wells
 

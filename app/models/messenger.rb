@@ -6,7 +6,7 @@
 
 class Messenger < ActiveRecord::Base
 
-  belongs_to :target, :polymorphic => true
+  belongs_to :target, polymorphic: true
   validates_presence_of :target, :root, :template
 
   def shoot

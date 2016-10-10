@@ -6,10 +6,10 @@ class MetadataMigration < ActiveRecord::Migration
   class Property < ActiveRecord::Base
     class Definition < ActiveRecord::Base
       self.table_name = ('property_definitions')
-      has_many :properties, :class_name => 'MetadataMigration::Property', :foreign_key => :property_definition_id, :dependent => :destroy
+      has_many :properties, class_name: 'MetadataMigration::Property', foreign_key: :property_definition_id, dependent: :destroy
 
-     scope :for_class, ->(c) { where(:relates_to => c )  }
-     scope :for_keys, ->(keys) { where(:key => keys) }
+     scope :for_class, ->(c) { where(relates_to: c )  }
+     scope :for_keys, ->(keys) { where(key: keys) }
 
       # It's more efficient to delete all of the properties and then delete the definition.
       def self.delete_for(relates_to, keys)
@@ -20,7 +20,7 @@ class MetadataMigration < ActiveRecord::Migration
     end
 
     self.table_name = ('properties')
-    belongs_to :definition, :class_name => 'MetadataMigration::Property::Definition', :foreign_key => :property_definition_id
+    belongs_to :definition, class_name: 'MetadataMigration::Property::Definition', foreign_key: :property_definition_id
   end
 
   def self.reference_class_name
@@ -32,7 +32,7 @@ class MetadataMigration < ActiveRecord::Migration
       [:id, self.reference_id].include?(name.to_sym)
     end.inject({}) do |hash,p|
       returning(hash) do
-        hash[p] = Property::Definition.find_by( :relates_to => self.reference_class_name, :key => p.to_s ) or raise StandardError, "Cannot find property definition for '#{ p }'"
+        hash[p] = Property::Definition.find_by( relates_to: self.reference_class_name, key: p.to_s ) or raise StandardError, "Cannot find property definition for '#{ p }'"
       end
     end
   end
@@ -44,7 +44,7 @@ class MetadataMigration < ActiveRecord::Migration
     say("There are #{ reference_class.count } records to process")
 
     start = 0
-    reference_class.find_in_batches(:batch_size => 1500, :include => :properties) do |records|
+    reference_class.find_in_batches(batch_size: 1500, include: :properties) do |records|
       say_with_time("Processing #{start}-#{start + records.length}") do
         # Create new objects that can be validated.
         objects = records.map do |record|

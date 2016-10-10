@@ -7,8 +7,8 @@
 class ContainerAssociation < ActiveRecord::Base
   #We don't define the class, so will get an error if being used directly
   # in fact , the class need to be definend otherwise, eager loading through doesn't work
-  belongs_to :container, :class_name => "Asset"
-  belongs_to :content, :class_name => "Asset"
+  belongs_to :container, class_name: "Asset"
+  belongs_to :content, class_name: "Asset"
 
   # NOTE: This was originally on the content asset but this causes massive performance issues.
   # It causes the plate and it's metadata to be loaded for each well, which would be cached if
@@ -24,9 +24,9 @@ class ContainerAssociation < ActiveRecord::Base
   module Extension
     def contains(content_name, options = {}, &block)
       class_name = content_name ? content_name.to_s.classify : Asset.name
-      has_many :container_associations, :foreign_key => :container_id
-      has_many :contents, options.merge(:class_name => class_name, :through => :container_associations)
-      has_many(content_name, options.merge(:class_name => class_name, :through => :container_associations, :source => :content)) do
+      has_many :container_associations, foreign_key: :container_id
+      has_many :contents, options.merge(class_name: class_name, through: :container_associations)
+      has_many(content_name, options.merge(class_name: class_name, through: :container_associations, source: :content)) do
         # Provide bulk importing abilities.  Inside a transaction we can guarantee that the information in the DB is
         # consistent from our perspective.  In other words, we can bulk insert the records and then reload them, limited
         # by their count, to obtain the IDs.
@@ -47,7 +47,7 @@ class ContainerAssociation < ActiveRecord::Base
 
         def attach(records)
           ActiveRecord::Base.transaction do
-            records.each { |r| ContainerAssociation.create!(:container_id => proxy_association.owner.id, :content_id => r.id) }
+            records.each { |r| ContainerAssociation.create!(container_id: proxy_association.owner.id, content_id: r.id) }
           end
         end
 
@@ -58,7 +58,7 @@ class ContainerAssociation < ActiveRecord::Base
         end
 
         def connect(content)
-          ContainerAssociation.create!(:container => proxy_association.owner, :content => content)
+          ContainerAssociation.create!(container: proxy_association.owner, content: content)
           post_connect(content)
         end
         private :connect
@@ -78,16 +78,16 @@ class ContainerAssociation < ActiveRecord::Base
         end
 
         def with(subinclude)
-          scoped(:include => { :contents => subinclude })
+          scoped(include: { contents: subinclude })
         end
       end
     end
 
     def contained_by(container_name, &block)
       class_name = container_name.to_s.singularize.capitalize
-      has_one :container_association, :foreign_key => :content_id
-      has_one :container, :through => :container_association
-      has_one(container_name, :through => :container_association, :source => :container, &block)
+      has_one :container_association, foreign_key: :content_id
+      has_one :container, through: :container_association
+      has_one(container_name, through: :container_association, source: :container, &block)
 
       #delegate :location, :to => :container
     end

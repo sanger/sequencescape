@@ -13,7 +13,7 @@ class SampleManifestTest < ActiveSupport::TestCase
       barcode.stubs(:barcode).returns(23)
       PlateBarcode.stubs(:create).returns(barcode)
 
-      @study = create :study, :name => 'CARD1'
+      @study = create :study, name: 'CARD1'
       @study.study_metadata.study_name_abbreviation = 'CARD1'
       @study.save!
     end
@@ -27,7 +27,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @initial_wells    = Well.count
             @initial_in_study = @study.samples.count
 
-            @manifest = create :sample_manifest, :study => @study, :count => count
+            @manifest = create :sample_manifest, study: @study, count: count
             @manifest.generate
           end
 
@@ -51,7 +51,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @initial_mx_tubes      = MultiplexedLibraryTube.count
             @initial_in_study      = @study.samples.count
 
-            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type => 'multiplexed_library'
+            @manifest = create :sample_manifest, study: @study, count: count, asset_type: 'multiplexed_library'
             @manifest.generate
           end
 
@@ -113,7 +113,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         end
       end)
 
-      @manifest = create(:sample_manifest, :count => 37, :asset_type => 'plate', :rapid_generation => true)
+      @manifest = create(:sample_manifest, count: 37, asset_type: 'plate', rapid_generation: true)
       @manifest.generate
     end
 

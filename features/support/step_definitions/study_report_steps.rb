@@ -11,14 +11,14 @@ end
 Given /^there is (\d+) pending report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   1.upto(num_reports.to_i) do
-    FactoryGirl.create :pending_study_report, :study => study, :user => @current_user
+    FactoryGirl.create :pending_study_report, study: study, user: @current_user
   end
 end
 
 Given /^there is (\d+) completed report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   1.upto(num_reports.to_i) do
-    FactoryGirl.create :completed_study_report, :study => study, :user => @current_user
+    FactoryGirl.create :completed_study_report, study: study, user: @current_user
   end
 end
 
@@ -35,37 +35,37 @@ Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_resul
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
-  plate = Plate.create!(:barcode => plate_barcode, :plate_purpose => PlatePurpose.find_by_name("Stock Plate"))
+  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by_name("Stock Plate"))
   samples = []
   1.upto(3) do |i|
-    well = Well.create!(:plate => plate, :map_id => i)
-    well.aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
+    well = Well.create!(plate: plate, map_id: i)
+    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
     well.well_attribute.update_attributes!(
-      :gender_markers  => ['F', 'F', 'F', 'F'],
-      :sequenom_count  => 29,
-      :concentration   => 1,
-      :pico_pass       => "Pass",
-      :gel_pass        => "Pass",
-      :measured_volume => 500.0
+      gender_markers: ['F', 'F', 'F', 'F'],
+      sequenom_count: 29,
+      concentration: 1,
+      pico_pass: "Pass",
+      gel_pass: "Pass",
+      measured_volume: 500.0
     )
     samples << well.primary_aliquot.sample
   end
   study = Study.find_by_name(study_name)
   RequestFactory.create_assets_requests(plate.wells, study)
 
-  samples[0].external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
-  samples[1].external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
-  samples[2].external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 51| DNAlab completed: 17")
+  samples[0].external_properties.create!(key: 'genotyping_done', value: "DNAlab completed: 13")
+  samples[1].external_properties.create!(key: 'genotyping_done', value: "Imported to Illumina: 123")
+  samples[2].external_properties.create!(key: 'genotyping_done', value: "Imported to Illumina: 51| DNAlab completed: 17")
 end
 
 
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
 
-  plate = Plate.create!(:barcode => plate_barcode, :plate_purpose => PlatePurpose.find_by_name("Stock Plate"))
+  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by_name("Stock Plate"))
   1.upto(24) do |i|
-    well = Well.create!(:plate => plate, :map_id => i)
-    well.aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
+    well = Well.create!(plate: plate, map_id: i)
+    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
   end
 
   study = Study.find_by_name(study_name)
@@ -73,7 +73,7 @@ Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_n
 end
 
 Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
-  study_report = StudyReport.create!(:study => Study.find_by_name(study_name))
+  study_report = StudyReport.create!(study: Study.find_by_name(study_name))
   study_report.perform
   step("2 pending delayed jobs are processed")
 end
@@ -91,6 +91,6 @@ end
 
 Given /^each sample was updated by a sample manifest$/ do
   Sample.find_each do |sample|
-    sample.update_attributes!(:updated_by_manifest => true)
+    sample.update_attributes!(updated_by_manifest: true)
   end
 end

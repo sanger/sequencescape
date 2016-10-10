@@ -122,7 +122,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
         @value_b = 'value_b'
         @dynamic = DynamicSubject.new(@dynamic_target,@value_b)
         @value_a = 'value_a'
-        @user = create :user, :email => 'example@example.com'
+        @user = create :user, email: 'example@example.com'
         @time = DateTime.parse("2012-03-11 10:22:42")
         # :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
         @seed = TestSeed.new(
@@ -134,7 +134,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
           dynamic_relation:@dynamic,
           id:1,
           data_method_a:@value_a)
-        @event = ExampleEvent.new(:seed => @seed,:user => @user,:created_at => @time)
+        @event = ExampleEvent.new(seed: @seed,user: @user,created_at: @time)
       end
 
       should 'find subjects with a 1 to 1 relationship' do

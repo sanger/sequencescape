@@ -6,7 +6,7 @@
 
 class PacBioSamplePrepRequest < CustomerRequest
 
-  has_metadata :as => Request do
+  has_metadata as: Request do
     attribute(:insert_size)
     attribute(:sequencing_type)
   end

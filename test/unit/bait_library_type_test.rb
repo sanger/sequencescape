@@ -29,22 +29,22 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
     setup do
       @sample = create :sample
 
-      @pulldown_request_type = create :request_type, :name => "Bait Pulldown", :target_asset_type => nil
-      @sequencing_request_type = create :request_type, :name => "Single ended sequencing2"
-      @submission = FactoryHelp::submission(:request_types => [@pulldown_request_type, @sequencing_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
-      @item = create :item, :submission => @submission
+      @pulldown_request_type = create :request_type, name: "Bait Pulldown", target_asset_type: nil
+      @sequencing_request_type = create :request_type, name: "Single ended sequencing2"
+      @submission = FactoryHelp::submission(request_types: [@pulldown_request_type, @sequencing_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
+      @item = create :item, submission: @submission
 
-      @genotype_pipeline = create :pipeline, :name => "Cluster formation SE2", :request_types => [@sequencing_request_type]
-      @pulldown_pipeline = create :pipeline, :name => "Bait Pulldown", :request_types => [@pulldown_request_type], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
+      @genotype_pipeline = create :pipeline, name: "Cluster formation SE2", request_types: [@sequencing_request_type]
+      @pulldown_pipeline = create :pipeline, name: "Bait Pulldown", request_types: [@pulldown_request_type], next_pipeline_id: @genotype_pipeline.id, asset_type: 'LibraryTube'
 
       @request1 = create(
         :request_without_assets,
-        :item         => @item,
-        :asset        => create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) },
-        :target_asset => nil,
-        :submission   => @submission,
-        :request_type => @pulldown_request_type,
-        :pipeline     => @pulldown_pipeline
+        item: @item,
+        asset: create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(sample: @sample) },
+        target_asset: nil,
+        submission: @submission,
+        request_type: @pulldown_request_type,
+        pipeline: @pulldown_pipeline
       )
 
       #@request1.request_metadata.bait_library = create(:bait_library)

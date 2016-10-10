@@ -11,18 +11,18 @@ module ModelExtensions::Batch
       # This is the new stuff ...
       accepts_nested_attributes_for :requests
 
-      scope :include_pipeline, -> { includes( :pipeline => :uuid_object ) }
+      scope :include_pipeline, -> { includes( pipeline: :uuid_object ) }
       scope :include_user, -> { includes(:user) }
       scope :include_requests, -> { includes(
-        :requests => [
+        requests: [
           :uuid_object, :request_metadata, :request_type,
-          { :submission   => :uuid_object },
-          { :asset        => [:uuid_object, :barcode_prefix, { :aliquots => [:sample, :tag] }] },
-          { :target_asset => [:uuid_object, :barcode_prefix, { :aliquots => [:sample, :tag] }] }
+          { submission: :uuid_object },
+          { asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] },
+          { target_asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] }
         ]
       )}
 
-      after_create :generate_target_assets_for_requests, :if => :need_target_assets_on_requests?
+      after_create :generate_target_assets_for_requests, if: :need_target_assets_on_requests?
       before_save :manage_downstream_requests
     end
   end
@@ -48,7 +48,7 @@ module ModelExtensions::Batch
         requests_to_update.concat(downstream_requests.map { |r| [r.id, target_asset.id] })
       end
 
-      request.update_attributes!(:target_asset => target_asset)
+      request.update_attributes!(target_asset: target_asset)
 
       # All links between the two assets as new, so we can bulk create them!
       asset_links << [request.asset.id, request.target_asset.id]
@@ -57,7 +57,7 @@ module ModelExtensions::Batch
     AssetLink::BuilderJob.create(asset_links)
 
     requests_to_update.each do |request_details|
-      Request.find(request_details.first).update_attributes!(:asset_id => request_details.last)
+      Request.find(request_details.first).update_attributes!(asset_id: request_details.last)
     end
 
   end

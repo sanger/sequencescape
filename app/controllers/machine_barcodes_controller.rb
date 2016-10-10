@@ -14,7 +14,7 @@ class MachineBarcodesController < ApplicationController
     summary = asset.present? ? asset.summary_hash : {}
     status = asset.present? ? 200 : 404
     respond_to do |format|
-      format.json { render :json => summary, :status => status }
+      format.json { render json: summary, status: status }
     end
   end
 end

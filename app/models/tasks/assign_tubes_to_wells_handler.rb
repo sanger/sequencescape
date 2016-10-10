@@ -21,7 +21,7 @@ module Tasks::AssignTubesToWellsHandler
     requests = task.find_batch_requests(params[:batch_id])
 
     ActiveRecord::Base.transaction do
-      plate = Plate.create!(:barcode => PlateBarcode.create.barcode)
+      plate = Plate.create!(barcode: PlateBarcode.create.barcode)
 
       library_tubes.each do |library_tube|
         library_well_positions = all_well_positions_for_library_tube(tubes_to_well_positions, library_tube)
@@ -30,7 +30,7 @@ module Tasks::AssignTubesToWellsHandler
           raise "Not enough well positions to satisfy requests" if well_position.nil?
 
           well = find_target_asset_from_requests(requests_for_library)
-          well.update_attributes!(:map => Map.find_by_description_and_asset_size(well_position, 96), :plate => plate)
+          well.update_attributes!(map: Map.find_by_description_and_asset_size(well_position, 96), plate: plate)
           assign_requests_to_well(requests_for_library, well)
 
         end
@@ -119,7 +119,7 @@ module Tasks::AssignTubesToWellsHandler
 
   def assign_requests_to_well(requests,well)
     requests.each do |request|
-      request.update_attributes!(:target_asset => well)
+      request.update_attributes!(target_asset: well)
     end
   end
 

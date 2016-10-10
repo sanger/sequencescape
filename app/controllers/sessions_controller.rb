@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
   skip_before_action :login_required
 
   def index
-    redirect_to :action => :login
+    redirect_to action: :login
   end
 
   def settings
@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
     self.current_user = User.authenticate(params[:login], params[:password])
     if logged_in?
       flash[:notice] = "Logged in successfully"
-      redirect_back_or_default(:controller => :studies)
+      redirect_back_or_default(controller: :studies)
     else
       if params
         flash[:notice] = "Your log in details don't match our records. Please try again."
@@ -37,7 +37,7 @@ class SessionsController < ApplicationController
     cookies.delete :auth_token
     reset_session
     flash[:notice] = "You have been logged out."
-    redirect_back_or_default(:controller => :studies)
+    redirect_back_or_default(controller: :studies)
   end
 
 end

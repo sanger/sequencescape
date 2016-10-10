@@ -14,14 +14,14 @@ module SubmissionTemplateMaker
 
       SubmissionTemplate.create!(
         {
-          :name                  => "#{product_line.name} - #{old_template.name}",
-          :submission_parameters => submission_parameters,
-          :product_line_id       => product_line.id,
-          :visible               => true
+          name: "#{product_line.name} - #{old_template.name}",
+          submission_parameters: submission_parameters,
+          product_line_id: product_line.id,
+          visible: true
         }.reverse_merge(old_template.attributes).except!('created_at','updated_at')
       )
 
-      old_template.update_attributes(:visible => false)
+      old_template.update_attributes(visible: false)
     end
   end
 

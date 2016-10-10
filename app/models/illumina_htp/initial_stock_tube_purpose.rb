@@ -45,7 +45,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
         ).
         includes([:uuid_object, :barcode_prefix])
 
-      siblings.map { |s| s.id.nil? ? :no_tube : { :name => s.name,:uuid => s.uuid,:ean13_barcode => s.ean13_barcode,:state => s.quick_state } }
+      siblings.map { |s| s.id.nil? ? :no_tube : { name: s.name,uuid: s.uuid,ean13_barcode: s.ean13_barcode,state: s.quick_state } }
     end
 
   end

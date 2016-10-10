@@ -10,8 +10,8 @@ class ::Endpoints::Requests < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:asset,        :json => 'source_asset')
-    belongs_to(:target_asset, :json => 'target_asset')
-    belongs_to(:submission,   :json => 'submission')
+    belongs_to(:asset,        json: 'source_asset')
+    belongs_to(:target_asset, json: 'target_asset')
+    belongs_to(:submission,   json: 'submission')
   end
 end

@@ -16,7 +16,7 @@ class Api::EventIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { :eventful => :uuid_object }] ) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { eventful: :uuid_object }] ) }
         alias_method(:json_root, :url_name)
       end
     end

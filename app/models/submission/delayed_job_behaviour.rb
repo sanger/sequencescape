@@ -9,7 +9,7 @@ module Submission::DelayedJobBehaviour
     base.class_eval do
       conf_priority = configatron.delayed_job.fetch(:submission_process_priority)
       priority = conf_priority.present? ? conf_priority : 0
-      handle_asynchronously :build_batch, :priority => priority
+      handle_asynchronously :build_batch, priority: priority
     end
   end
 
@@ -44,7 +44,7 @@ module Submission::DelayedJobBehaviour
   def fail_set_message_and_save(message)
     self.fail!
     self.message = message[0..254]
-    self.save(:validate => false)        # Just in case the cause is it being invalid!
+    self.save(validate: false)        # Just in case the cause is it being invalid!
   end
   private :fail_set_message_and_save
 end

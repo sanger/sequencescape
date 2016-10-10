@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 Given /^exist a Samples called "([^\"]*)"$/ do |nameSample|
-  s = FactoryGirl.create :sample, :name => nameSample
+  s = FactoryGirl.create :sample, name: nameSample
 end

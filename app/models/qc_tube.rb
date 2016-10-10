@@ -5,5 +5,5 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class QcTube < MultiplexedLibraryTube
-  delegate :qc_files, :qc_files=, :add_qc_file, :to => :parent
+  delegate :qc_files, :qc_files=, :add_qc_file, to: :parent
 end

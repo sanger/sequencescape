@@ -21,11 +21,11 @@ class Admin::Roles::UsersControllerTest < ActionController::TestCase
 
     resource_test(
       'user', {
-        :parent => 'role',
-        :actions => ['index'],
-        :ignore_actions => ['show','create'],
-        :user => -> { user = FactoryGirl.create(:user); user.is_administrator; user },
-        :formats => ['html']
+        parent: 'role',
+        actions: ['index'],
+        ignore_actions: ['show','create'],
+        user: -> { user = FactoryGirl.create(:user); user.is_administrator; user },
+        formats: ['html']
       }
     )
   end

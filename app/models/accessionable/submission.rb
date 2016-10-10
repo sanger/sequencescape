@@ -42,7 +42,7 @@ class Accessionable::Submission < Accessionable::Base
 
         additions.each do |accessionable|
           xml.ACTION {
-            xml.ADD(:source => accessionable.file_name,  :schema => accessionable.schema_type)
+            xml.ADD(source: accessionable.file_name,  schema: accessionable.schema_type)
           }
 
           xml.ACTION {
@@ -54,8 +54,8 @@ class Accessionable::Submission < Accessionable::Base
         modifications.each do |accessionable|
           xml.ACTION {
             xml.MODIFY(
-              :source => accessionable.file_name,
-              :schema => accessionable.schema_type
+              source: accessionable.file_name,
+              schema: accessionable.schema_type
             )
           }
 
@@ -107,9 +107,9 @@ private
 
     def build(markup)
       markup.CONTACT(
-        :inform_on_error  => inform_on_error,
-        :inform_on_status => inform_on_status,
-        :name             => name
+        inform_on_error: inform_on_error,
+        inform_on_status: inform_on_status,
+        name: name
       )
     end
   end

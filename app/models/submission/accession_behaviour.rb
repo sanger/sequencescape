@@ -7,7 +7,7 @@
 module Submission::AccessionBehaviour
   def self.included(base)
     base.class_eval do
-      validate :check_data_release_and_accession_for_submission, :if => :can_check_data_release_and_accession?
+      validate :check_data_release_and_accession_for_submission, if: :can_check_data_release_and_accession?
     end
   end
 
@@ -36,7 +36,7 @@ module Submission::AccessionBehaviour
   private
 
   def test_asset_group
-    AssetGroup.new(:assets => self.assets)
+    AssetGroup.new(assets: self.assets)
   end
 
   def unaccessioned_samples

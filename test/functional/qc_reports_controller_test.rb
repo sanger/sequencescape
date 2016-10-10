@@ -21,14 +21,14 @@ class QcReportsControllerTest < ActionController::TestCase
       session[:user] = @user.id
       @study = create :study
       @product = create :product
-      @product_criteria = create :product_criteria, :product => @product
+      @product_criteria = create :product_criteria, product: @product
     end
 
     should_require_login(:index)
 
     context "#index" do
       setup do
-        get :index, :study_id => @study.id
+        get :index, study_id: @study.id
       end
       should respond_with :success
       should render_template :index
@@ -37,7 +37,7 @@ class QcReportsControllerTest < ActionController::TestCase
     context "#create" do
       setup do
         @qc_report_count = QcReport.count
-        post :create, :qc_report => { :study_id => @study.id, :product_id => @product.id }
+        post :create, qc_report: { study_id: @study.id, product_id: @product.id }
       end
       should respond_with :redirect
       should set_flash.to('Your report has been requested and will be presented on this page when complete.')
@@ -52,7 +52,7 @@ class QcReportsControllerTest < ActionController::TestCase
 
     context "#create without product" do
       setup do
-        post :create, :qc_report => { :study_id => @study.id }
+        post :create, qc_report: { study_id: @study.id }
       end
       should respond_with :redirect
       should redirect_to('index') { "/" }

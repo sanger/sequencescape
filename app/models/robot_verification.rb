@@ -66,12 +66,12 @@ class RobotVerification
 
     if valid_plate_locations?(params, batch, robot, expected_plate_layout)
       batch.events.create(
-        :message => I18n.t("bed_verification.layout.valid", :plate_barcode => destination_plate_barcode),
-        :created_by => user.login)
+        message: I18n.t("bed_verification.layout.valid", plate_barcode: destination_plate_barcode),
+        created_by: user.login)
     else
       batch.events.create(
-        :message => I18n.t("bed_verification.layout.invalid", :plate_barcode => destination_plate_barcode),
-        :created_by => user.login)
+        message: I18n.t("bed_verification.layout.invalid", plate_barcode: destination_plate_barcode),
+        created_by: user.login)
       @errors << "Bed layout invalid"
       return false
     end

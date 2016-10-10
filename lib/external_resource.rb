@@ -6,7 +6,7 @@ module ExternalResource
   ResourceName = "SNP"
 
   def self.included(base)
-    base.send(:has_one, :identifier, :as => :external)
+    base.send(:has_one, :identifier, as: :external)
   end
 
   def set_identifiable(ident)

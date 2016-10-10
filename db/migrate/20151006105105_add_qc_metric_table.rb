@@ -11,10 +11,10 @@ class AddQcMetricTable < ActiveRecord::Migration
 
   def self.up
     create_table :qc_metrics do |t|
-      t.integer :qc_report_id, :null => false
-      t.integer :asset_id, :null => false
+      t.integer :qc_report_id, null: false
+      t.integer :asset_id, null: false
       t.text    :metrics
-      t.boolean :qc_decision, :null => false
+      t.boolean :qc_decision, null: false
       t.boolean :proceed
       t.timestamps
     end

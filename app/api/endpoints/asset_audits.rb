@@ -12,6 +12,6 @@ class ::Endpoints::AssetAudits < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:asset, :json => "asset")
+    belongs_to(:asset, json: "asset")
   end
 end

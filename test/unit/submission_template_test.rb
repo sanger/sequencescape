@@ -27,8 +27,8 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
   context "A Order" do
     setup do
-      @workflow = create :submission_workflow,:key => 'microarray_genotyping'
-      @order = Order.new(:workflow => @workflow)
+      @workflow = create :submission_workflow,key: 'microarray_genotyping'
+      @order = Order.new(workflow: @workflow)
     end
     context "with a comment" do
       setup do

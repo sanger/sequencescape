@@ -47,16 +47,16 @@ module Tasks::StripTubeCreationHandler
 
     (0...tubes_to_create).each do |tube_number|
 
-      tube = strip_purpose.create!(:name => "#{base_name}:#{tube_number + 1}",:location => @batch.pipeline.location)
+      tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}",location: @batch.pipeline.location)
       AssetLink::Job.create(source_plate,[tube])
 
       tube.size.times do |index|
         request = locations_requests[index].pop
         well    = tube.wells.in_column_major_order.all[index].id
         request.submission.next_requests(request).each do |dsr|
-          dsr.update_attributes!(:asset_id => well)
+          dsr.update_attributes!(asset_id: well)
         end
-        request.update_attributes!(:target_asset_id => well)
+        request.update_attributes!(target_asset_id: well)
       end
     end
 

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 Given /^there is a plate purpose named "([^\"]+)"$/ do |name|
-  PlatePurpose.first(:conditions => { :name => name })
+  PlatePurpose.first(conditions: { name: name })
 end
 
 Then /^the "([^\"]+)" fields listed below should be appropriately displayed:$/ do |workflow_name,table|

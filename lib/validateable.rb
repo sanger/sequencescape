@@ -34,14 +34,14 @@ module Validateable
       defaults.flatten!
       defaults << attribute_key_name.to_s.humanize
       options[:count] ||= 1
-      I18n.translate(defaults.shift, options.merge(:default => defaults, :scope => [:activerecord, :attributes]))
+      I18n.translate(defaults.shift, options.merge(default: defaults, scope: [:activerecord, :attributes]))
     end
     def human_name(options = {})
       defaults = self_and_descendants_from_active_record.map do |klass|
         "#{klass.name.underscore}""#{klass.name.underscore}"
       end
       defaults << self.name.humanize
-      I18n.translate(defaults.shift, { :scope => [:activerecord, :models], :count => 1, :default => defaults }.merge(options))
+      I18n.translate(defaults.shift, { scope: [:activerecord, :models], count: 1, default: defaults }.merge(options))
     end
   end
 

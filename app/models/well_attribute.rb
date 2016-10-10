@@ -9,29 +9,29 @@ require 'aasm'
 class WellAttribute < ActiveRecord::Base
   include AASM
 
-  belongs_to :well, :inverse_of => :well_attribute
+  belongs_to :well, inverse_of: :well_attribute
 
   serialize :gender_markers
   def gender_markers_string
     gender_markers.try(:to_s)
   end
 
-  aasm column: :pico_pass, :whiny_persistence => true do
+  aasm column: :pico_pass, whiny_persistence: true do
 
 
-    state :ungraded, :initial => true
+    state :ungraded, initial: true
     # These states are originally used in SNP
     state :Pass
     state :Repeat
     state :Fail
 
     event :pass_pico_test do
-      transitions :to => :Pass, :from => [:ungraded, :Repeat, :Fail, :Pass]
+      transitions to: :Pass, from: [:ungraded, :Repeat, :Fail, :Pass]
     end
 
     event :fail_pico_test do
-      transitions :to => :Fail, :from => [:Repeat, :Fail, :Pass]
-      transitions :to => :Repeat, :from => [:ungraded]
+      transitions to: :Fail, from: [:Repeat, :Fail, :Pass]
+      transitions to: :Repeat, from: [:ungraded]
     end
 
   end

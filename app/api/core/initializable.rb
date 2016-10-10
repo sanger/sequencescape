@@ -19,7 +19,7 @@ module Core::Initializable
       end
 
       def delegate_to_owner(*names)
-        names.push(:to => :@owner)
+        names.push(to: :@owner)
         delegate(*names)
       end
     end

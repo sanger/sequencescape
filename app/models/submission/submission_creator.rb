@@ -70,13 +70,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   def create_order
     order_role = Order::OrderRole.find_by_role(order_params.delete('order_role')) if order_params.present?
     new_order = template.new_order(
-      :study           => study,
-      :project         => project,
-      :user            => @user,
-      :request_options => order_params,
-      :comments        => comments,
-      :pre_cap_group   => pre_capture_plex_group,
-      :order_role      => order_role
+      study: study,
+      project: project,
+      user: @user,
+      request_options: order_params,
+      comments: comments,
+      pre_cap_group: pre_capture_plex_group,
+      order_role: order_role
     )
     new_order.request_type_multiplier do |sequencing_request_type_id|
       new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
@@ -123,7 +123,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
           submission.orders << new_order
         else
-          @submission = new_order.create_submission(:user => order.user, :priority => priority)
+          @submission = new_order.create_submission(user: order.user, priority: priority)
         end
 
         new_order.save!
@@ -153,17 +153,17 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
 
     return case input_methods.first
-      when :asset_group_id    then { :asset_group => find_asset_group }
+      when :asset_group_id    then { asset_group: find_asset_group }
       when :sample_names_text then
         {
-          :assets => wells_on_specified_plate_purpose_for(
+          assets: wells_on_specified_plate_purpose_for(
             plate_purpose,
             find_samples_from_text(sample_names_text)
           )
         }
       when :barcodes_wells_text then
         {
-          :assets => find_assets_from_text(barcodes_wells_text)
+          assets: find_assets_from_text(barcodes_wells_text)
         }
 
       else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
@@ -197,7 +197,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
     names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
-    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { :names => names }])
+    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
 
     name_set  = Set.new(names)
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
@@ -287,7 +287,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def url(view)
-    view.send(:submission_path, submission.present? ? submission : { :id => 'DUMMY_ID' })
+    view.send(:submission_path, submission.present? ? submission : { id: 'DUMMY_ID' })
   end
 
   def template_name

@@ -11,10 +11,10 @@ class LotType < ActiveRecord::Base
 
   include Uuid::Uuidable
 
-  has_many :lots, :inverse_of => :lot_type
-  belongs_to :target_purpose, :class_name => 'Purpose'
+  has_many :lots, inverse_of: :lot_type
+  belongs_to :target_purpose, class_name: 'Purpose'
 
-  validates :name, :template_class, :presence => true
+  validates :name, :template_class, presence: true
   validates_uniqueness_of :name
 
   def valid_template_class

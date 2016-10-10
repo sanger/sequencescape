@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^study named "([^"]*)" with reference genome id (\d+)$/ do |name_study, reference_id|
-  FactoryGirl.create(:study, :name => name_study, :reference_genome_id => reference_id)
+  FactoryGirl.create(:study, name: name_study, reference_genome_id: reference_id)
 end
 
 When /^I (POST|PUT) following XML to see the reference genome on the study called "([^"]*)"$/ do |action, xml, name_study|

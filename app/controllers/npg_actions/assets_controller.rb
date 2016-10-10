@@ -6,20 +6,20 @@
 
 class NpgActions::AssetsController < ApplicationController
 
-  before_action :login_required, :except => [:pass, :fail]
-  before_action :find_asset, :only => [:pass, :fail]
-  before_action :find_request, :only => [:pass, :fail]
-  before_action :npg_action_invalid?, :only => [:pass, :fail]
-  before_action :xml_valid?, :only => [:pass, :fail]
+  before_action :login_required, except: [:pass, :fail]
+  before_action :find_asset, only: [:pass, :fail]
+  before_action :find_request, only: [:pass, :fail]
+  before_action :npg_action_invalid?, only: [:pass, :fail]
+  before_action :xml_valid?, only: [:pass, :fail]
 
 
-  rescue_from(ActiveRecord::RecordNotFound, :with => :rescue_error)
+  rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
 
   XmlInvalid = Class.new(StandardError)
-  rescue_from(XmlInvalid, :with => :rescue_error)
+  rescue_from(XmlInvalid, with: :rescue_error)
 
   NPGActionInvalid = Class.new(StandardError)
-  rescue_from(NPGActionInvalid, :with => :rescue_error_internal_server_error)
+  rescue_from(NPGActionInvalid, with: :rescue_error_internal_server_error)
 
   #this procedure build a procedure called "state". In this casa: pass and fail.
   def self.construct_action_for_qc_state(state)
@@ -79,13 +79,13 @@ class NpgActions::AssetsController < ApplicationController
 
   def rescue_error(exception)
     respond_to do |format|
-      format.xml { render :xml => "<error><message>#{exception.message}</message></error>", :status => "404" }
+      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: "404" }
     end
   end
 
   def rescue_error_internal_server_error(exception)
     respond_to do |format|
-      format.xml { render :xml => "<error><message>#{exception.message}</message></error>", :status => "500" }
+      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: "500" }
     end
   end
 end

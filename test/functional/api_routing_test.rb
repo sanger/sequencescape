@@ -24,11 +24,11 @@ class ApiRoutingTest < ActionController::TestCase
       resources_with_nesting = resources.extract_options!
 
       resources.each do |resource|
-        with_options(:controller => "api/#{resource}") do |check|
-          yield(check, "/0_5/#{resource}", { :controller => "api/#{resource}" })
+        with_options(controller: "api/#{resource}") do |check|
+          yield(check, "/0_5/#{resource}", { controller: "api/#{resource}" })
 
           # We absolutely, never, ever expose :destroy
-          check.should_not_route :delete, "/0_5/#{resource}/12345", :action => :destroy
+          check.should_not_route :delete, "/0_5/#{resource}/12345", action: :destroy
         end
       end
 
@@ -38,7 +38,7 @@ class ApiRoutingTest < ActionController::TestCase
             yield(check, "/0_5/#{parent}/67890/#{resource}", { :"#{parent.to_s.singularize}_id" => '67890', :controller => "api/#{resource}" })
 
             # We absolutely, never, ever expose :destroy
-            check.should_not_route :delete, "/0_5/#{parent}/67890/#{resource}/12345", :action => :destroy
+            check.should_not_route :delete, "/0_5/#{parent}/67890/#{resource}/12345", action: :destroy
           end
         end
       end
@@ -47,11 +47,11 @@ class ApiRoutingTest < ActionController::TestCase
     def read_only_routes(*resources)
       context 'read only resources' do
         resource_routes(*resources) do |context, core_path, controller|
-          context.should route(:get, core_path).to(controller.merge(:action => :index ))
-          context.should route(:get, "#{core_path}/12345").to(controller.merge(:action => :show, :id => '12345'))
+          context.should route(:get, core_path).to(controller.merge(action: :index ))
+          context.should route(:get, "#{core_path}/12345").to(controller.merge(action: :show, id: '12345'))
 
-          context.should_not_route :post, core_path,            :action => :create
-          context.should_not_route :put,  "#{core_path}/12345", :action => :update, :id => '12345'
+          context.should_not_route :post, core_path,            action: :create
+          context.should_not_route :put,  "#{core_path}/12345", action: :update, id: '12345'
         end
       end
     end
@@ -59,10 +59,10 @@ class ApiRoutingTest < ActionController::TestCase
     def crud_routes(*resources)
       context 'CRUD resources' do
         resource_routes(*resources) do |context, core_path, controller|
-          context.should route(:get,  core_path).to(controller.merge(            :action => :index ))
-          context.should route(:get,  "#{core_path}/12345").to(controller.merge( :action => :show, :id => '12345'))
-          context.should route(:post, core_path).to(controller.merge(             :action => :create ))
-          context.should route(:put,  "#{core_path}/12345").to(controller.merge(  :action => :update, :id => '12345'))
+          context.should route(:get,  core_path).to(controller.merge(            action: :index ))
+          context.should route(:get,  "#{core_path}/12345").to(controller.merge( action: :show, id: '12345'))
+          context.should route(:post, core_path).to(controller.merge(             action: :create ))
+          context.should route(:put,  "#{core_path}/12345").to(controller.merge(  action: :update, id: '12345'))
         end
       end
     end
@@ -84,16 +84,16 @@ class ApiRoutingTest < ActionController::TestCase
       :tags,
       :wells,
       :submissions,
-      :sample_tubes  => [:library_tubes, :requests],
-      :samples       => [:sample_tubes],
-      :library_tubes => [:lanes, :requests]
+      sample_tubes: [:library_tubes, :requests],
+      samples: [:sample_tubes],
+      library_tubes: [:lanes, :requests]
     )
 
     crud_routes(
       :requests,
       :samples,
-      :projects => [:studies],
-      :studies  => [:samples, :projects]
+      projects: [:studies],
+      studies: [:samples, :projects]
     )
 
     context 'parent/child relationships' do
@@ -104,15 +104,15 @@ class ApiRoutingTest < ActionController::TestCase
         :multiplexed_library_tubes,
         :plates,
         :wells,
-        :samples => [:sample_tubes]
+        samples: [:sample_tubes]
       ) do |context, core_path, controller|
-        context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(   :action => :parents,  :id => '12345' ))
-        context.should route(:get, "#{core_path}/12345/children").to(controller.merge(  :action => :children, :id => '12345' ))
+        context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(   action: :parents,  id: '12345' ))
+        context.should route(:get, "#{core_path}/12345/children").to(controller.merge(  action: :children, id: '12345' ))
 
         # No other method should be allowed to these resources:
         [:put, :post, :delete].each do |method|
-          context.should_not_route method, "#{core_path}/12345/parents",  :action => :parents,  :id => '12345'
-          context.should_not_route method, "#{core_path}/12345/children", :action => :children, :id => '12345'
+          context.should_not_route method, "#{core_path}/12345/parents",  action: :parents,  id: '12345'
+          context.should_not_route method, "#{core_path}/12345/children", action: :children, id: '12345'
         end
       end
     end

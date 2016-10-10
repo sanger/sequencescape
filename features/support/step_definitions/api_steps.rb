@@ -66,11 +66,11 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |key, login|
-  User.find_or_create_by(login:login).update_attributes!(:api_key => key)
+  User.find_or_create_by(login:login).update_attributes!(api_key: key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
-  User.find_by_api_key(cookie).update_attributes!(:api_key => nil)
+  User.find_by_api_key(cookie).update_attributes!(api_key: nil)
 end
 
 def api_request(action, path, body)
@@ -140,7 +140,7 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.new(:name => 'test_api',:key => key,:privilege => permission,:contact => 'none').save(:validate => false)
+  ApiApplication.new(name: 'test_api',key: key,privilege: permission,contact: 'none').save(validate: false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
@@ -154,13 +154,13 @@ end
 
 When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model,name|
   object = model.classify.constantize.find_by_name(name) or raise "Cannot find #{ model } #{ name.inspect }"
-  visit(url_for(:controller => "api/#{model.pluralize}", :action => 'show', :id => object, :format => :json))
+  visit(url_for(controller: "api/#{model.pluralize}", action: 'show', id: object, format: :json))
 end
 
 When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
   study = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{ name.inspect }"
   raise StandardError, "It appears there are no requests for study #{ name.inspect }" if study.requests.empty?
-  visit(url_for(:controller => "api/requests", :action => 'show', :id => study.requests.last, :format => :json))
+  visit(url_for(controller: "api/requests", action: 'show', id: study.requests.last, format: :json))
 end
 
 Then /^show me the HTTP response body$/ do
@@ -298,7 +298,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
     child.aliquots = []
-    RequestType.transfer.create!(:asset => parent, :target_asset => child)
+    RequestType.transfer.create!(asset: parent, target_asset: child)
     child.save!
   end
 end
@@ -309,7 +309,7 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do | child_name,
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
     child.aliquots = []
-    RequestType.transfer.create!(:asset => parent, :target_asset => child)
+    RequestType.transfer.create!(asset: parent, target_asset: child)
     child.save!
   end
 end
@@ -317,29 +317,29 @@ end
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    FactoryGirl.create(:empty_sample_tube, :name => "#{name} sample tube #{index}", :id => (base_id.to_i + index - 1)).tap do |sample_tube|
-      sample_tube.aliquots.create!(:sample => sample)
+    FactoryGirl.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
+      sample_tube.aliquots.create!(sample: sample)
     end
   end
 end
 
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
-  project = FactoryGirl.create :project, :name => project_name, :approved => true, :state => "active"
-  project.update_attributes!(:project_metadata_attributes => {
-    :project_manager => ProjectManager.find_by_name('Unallocated'),
-    :project_cost_code => "ABC",
-    :funding_comments => "External funding",
-    :collaborators => "No collaborators",
-    :external_funding_source => "EU",
-    :budget_division => BudgetDivision.find_by_name('Pathogen (including malaria)'),
-    :sequencing_budget_cost_centre => "Sanger",
-    :project_funding_model => "Internal"
+  project = FactoryGirl.create :project, name: project_name, approved: true, state: "active"
+  project.update_attributes!(project_metadata_attributes: {
+    project_manager: ProjectManager.find_by_name('Unallocated'),
+    project_cost_code: "ABC",
+    funding_comments: "External funding",
+    collaborators: "No collaborators",
+    external_funding_source: "EU",
+    budget_division: BudgetDivision.find_by_name('Pathogen (including malaria)'),
+    sequencing_budget_cost_centre: "Sanger",
+    project_funding_model: "Internal"
   })
 end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
   project = Project.find_by_name(project_name)
-  user = FactoryGirl.create :user, :login => login_name,  :first_name => "John", :last_name => "Doe", :email => "#{login_name}@example.com"
+  user = FactoryGirl.create :user, login: login_name,  first_name: "John", last_name: "Doe", email: "#{login_name}@example.com"
   user.is_owner_of(project)
 end
 
@@ -357,7 +357,7 @@ end
 
 Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, infinium_barcode|
   plate = Plate.find_by_name(plate_name)
-  plate.plate_metadata.update_attributes!(:infinium_barcode => infinium_barcode)
+  plate.plate_metadata.update_attributes!(infinium_barcode: infinium_barcode)
 end
 
 Given /^no (plate purpose|request type)s exist$/ do |model|

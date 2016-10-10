@@ -78,7 +78,7 @@ class TagLayout < ActiveRecord::Base
   private :wells_in_walking_order
 
   # After creating the instance we can layout the tags into the wells.
-  after_create :layout_tags_into_wells, :if => :valid?
+  after_create :layout_tags_into_wells, if: :valid?
 
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells

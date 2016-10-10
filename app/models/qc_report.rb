@@ -27,16 +27,16 @@ class QcReport < ActiveRecord::Base
         # When adding new states, please make sure you update the config/locals/en.yml file
         # with decriptions.
 
-        aasm :column => :state, :whiny_persistence => true do
+        aasm column: :state, whiny_persistence: true do
 
         # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
-        state :queued, :initial => true
+        state :queued, initial: true
 
         # A report has failed one or more times. Generally this means there is a problem.
         state :requeued
 
         # The report has been picked up by the delayed job. Entry into this state triggers building.
-        state :generating, :after_enter => :generate_report
+        state :generating, after_enter: :generate_report
 
         # The report has been generated and is awaiting customer feedback
         state :awaiting_proceed
@@ -49,23 +49,23 @@ class QcReport < ActiveRecord::Base
         # Call generate_without_delay! to bypass delayed job, although make sure there aren't
         # any existing jobs first.
         event :generate do
-          transitions :from => [:queued,:requeued], :to => :generating
+          transitions from: [:queued,:requeued], to: :generating
         end
 
         # Called on report failure. Generally the delayed job will cycle it through a few times
         # but most reports in this state will require manual intervention.
         event :requeue do
-          transitions :from => :generating, :to => :requeued
+          transitions from: :generating, to: :requeued
         end
 
         # Called automatically when a report is generated
         event :generation_complete do
-          transitions :from => :generating, :to => :awaiting_proceed
+          transitions from: :generating, to: :awaiting_proceed
         end
 
           # A QC report might be uploaded multiple times
           event :proceed_decision do
-            transitions :from => [:complete,:awaiting_proceed], :to => :complete
+            transitions from: [:complete,:awaiting_proceed], to: :complete
           end
 
         end
@@ -100,7 +100,7 @@ class QcReport < ActiveRecord::Base
           ActiveRecord::Base.transaction do
             assets.each do |asset|
               criteria = product_criteria.assess(asset)
-              QcMetric.create!(:asset => asset,:qc_decision => criteria.qc_decision,:metrics => criteria.metrics,:qc_report => self)
+              QcMetric.create!(asset: asset,qc_decision: criteria.qc_decision,metrics: criteria.metrics,qc_report: self)
             end
           end
         end
@@ -120,11 +120,11 @@ class QcReport < ActiveRecord::Base
   include ReportBehaviour
 
   belongs_to :product_criteria
-  has_one :product, :through => :product_criteria
+  has_one :product, through: :product_criteria
   belongs_to :study
   has_many :qc_metrics
 
-  before_validation :generate_report_identifier, :if => :identifier_required?
+  before_validation :generate_report_identifier, if: :identifier_required?
 
   after_create :generate!
 
@@ -136,7 +136,7 @@ class QcReport < ActiveRecord::Base
 
   validates_presence_of :product_criteria, :study, :state
 
-  validates_inclusion_of :exclude_existing, :in => [true, false], :message => 'should be true or false.'
+  validates_inclusion_of :exclude_existing, in: [true, false], message: 'should be true or false.'
 
   # Reports are handled asynchronously
   handle_asynchronously :generate

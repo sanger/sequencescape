@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^the workflow named "([^\"]+)" exists$/ do |name|
-  FactoryGirl.create(:submission_workflow, :name => name) or raise StandardError, "Cannot create workflow '#{ name }'"
+  FactoryGirl.create(:submission_workflow, name: name) or raise StandardError, "Cannot create workflow '#{ name }'"
 end
 
 Given /^I am the owner of sample "([^\"]+)"$/ do |name|
@@ -34,7 +34,7 @@ Given /^the field labeled "([^\"]+)" should not exist$/ do |field_name|
 end
 
 Given /^I am an administrator$/ do
-  @current_user.roles.create!(:name => 'administrator')
+  @current_user.roles.create!(name: 'administrator')
   @current_user.reload
 end
 

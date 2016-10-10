@@ -6,17 +6,17 @@
 
 module Tasks::DnaQcHandler
   def render_dna_qc_task(task, params)
-    @batch = Batch.includes({ :requests => :request_metadata }, :pipeline, :lab_events).find(params[:batch_id])
+    @batch = Batch.includes({ requests: :request_metadata }, :pipeline, :lab_events).find(params[:batch_id])
     @batch.start!(current_user) if @batch.pending?
     @rits = @batch.pipeline.request_information_types
 
     @requests = @batch.requests.includes(
-      :source_well => [
+      source_well: [
         :external_properties,
         :map,
         :plate,
         :well_attribute,
-        { :aliquots => [:tag, { :sample => :sample_metadata }] }
+        { aliquots: [:tag, { sample: :sample_metadata }] }
     # We sort in ruby as otherwise we end up wrestling with MySQL 5.7's requirement for the sort
     # to be in the select. We'll just end up wrestling with rails handling of the includes if
     # we try and force it here.

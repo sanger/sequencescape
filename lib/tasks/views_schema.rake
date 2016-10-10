@@ -1,7 +1,7 @@
 namespace :db do
   namespace :views do
     desc 'Export the views to a schema file'
-    task :dump_schema => :environment do
+    task dump_schema: :environment do
       File.open('./db/views_schema.tmp','w') do |schema|
         schema.puts "# This is an automatically generated file by rake:db:views:dump_schema"
         schema.puts "require 'lib/views_schema'"
@@ -18,7 +18,7 @@ namespace :db do
     end
 
     desc 'Reload the dumped schema'
-    task :schema_load => :environment  do
+    task schema_load: :environment  do
       require './db/views_schema'
     end
   end

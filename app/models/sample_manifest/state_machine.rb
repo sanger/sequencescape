@@ -17,24 +17,24 @@ module SampleManifest::StateMachine
   end
 
   def configure_state_machine
-    aasm :column => :state, :whiny_persistence => true do
+    aasm column: :state, whiny_persistence: true do
 
-      state :pending, :initial => true
+      state :pending, initial: true
       state :processing
       state :failed
       state :completed
 
       # State Machine events
       event :start do
-        transitions :to => :processing, :from => [:pending, :failed, :completed, :processing]
+        transitions to: :processing, from: [:pending, :failed, :completed, :processing]
       end
 
       event :finished do
-        transitions :to => :completed, :from => [:processing]
+        transitions to: :completed, from: [:processing]
       end
 
       event :fail do
-        transitions :to => :failed, :from => [:processing]
+        transitions to: :failed, from: [:processing]
       end
     end
 

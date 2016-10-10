@@ -67,7 +67,7 @@ class GeneratorTest < ActiveSupport::TestCase
         }
       }
 
-    @testcases << { :data_object => data_object, :expected_output => expected_output }
+    @testcases << { data_object: data_object, expected_output: expected_output }
 
     file = File.open(configatron.tecan_files_location + "/tecan/" + "127073.gwl", "rb")
     expected_output = file.read
@@ -103,7 +103,7 @@ class GeneratorTest < ActiveSupport::TestCase
         }
     }
 
-    @testcases << { :data_object => data_object, :expected_output => expected_output }
+    @testcases << { data_object: data_object, expected_output: expected_output }
 
     file = File.open(configatron.tecan_files_location + "/tecan/" + "pooled_cherrypick.gwl", "rb")
     expected_output = file.read
@@ -131,7 +131,7 @@ class GeneratorTest < ActiveSupport::TestCase
       }
     }
 
-    @testcases << { :data_object => data_object, :expected_output => expected_output }
+    @testcases << { data_object: data_object, expected_output: expected_output }
 
     @testcases.each_with_index do |testcase,index|
       context ".mapping for testcase #{index}" do

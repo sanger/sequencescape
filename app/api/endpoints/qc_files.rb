@@ -11,7 +11,7 @@ class ::Endpoints::QcFiles < ::Core::Endpoint::Base
 
   instance do
     # belongs_to :plate, :json => 'plate'
-    has_file(:content_type => 'sequencescape/qc_file')
+    has_file(content_type: 'sequencescape/qc_file')
   end
 
 end

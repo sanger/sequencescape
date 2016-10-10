@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Task < ActiveRecord::Base
-  belongs_to :workflow, :class_name => "LabInterface::Workflow", :foreign_key => :pipeline_workflow_id
+  belongs_to :workflow, class_name: "LabInterface::Workflow", foreign_key: :pipeline_workflow_id
   has_many :families
-  has_many :descriptors, :class_name => "Descriptor", :dependent => :destroy
+  has_many :descriptors, class_name: "Descriptor", dependent: :destroy
 
   acts_as_descriptable :active
 
@@ -35,13 +35,13 @@ class Task < ActiveRecord::Base
         return
       end
     end
-    self.descriptors << Descriptor.new(:name => name_s, :value => value)
+    self.descriptors << Descriptor.new(name: name_s, value: value)
 #    self.descriptors.save
   end
   # END descriptors
 
   # BEGIN subclass_to_attribute, could be move into a mixin
-  has_many :subclass_attributes, :as =>  :attributable, :dependent => :destroy, :autosave => true
+  has_many :subclass_attributes, as: :attributable, dependent: :destroy, autosave: true
   def get_subclass_attribute_value(name, default=nil)
     name_s = name.to_s
     self.subclass_attributes.each do |desc|
@@ -60,7 +60,7 @@ class Task < ActiveRecord::Base
         return
       end
     end
-    self.subclass_attributes << SubclassAttribute.new(:name => name_s, :value => value)
+    self.subclass_attributes << SubclassAttribute.new(name: name_s, value: value)
 #    self.subclass.save
   end
 
@@ -163,7 +163,7 @@ class Task < ActiveRecord::Base
   end
 
   def generate_events_from_descriptors(asset)
-    event = LabEvent.new(:description => asset.sti_type)
+    event = LabEvent.new(description: asset.sti_type)
     asset.descriptors.each do |descriptor|
       event.add_descriptor(descriptor) if descriptor.name != "family_id"
     end

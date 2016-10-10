@@ -13,7 +13,7 @@ class ProjectTest < ActiveSupport::TestCase
 
     context "#metadata" do
       setup do
-        @project = Project.new :name => "Project : #{Time.now}"
+        @project = Project.new name: "Project : #{Time.now}"
       end
 
       should "require cost-code and project funding model" do
@@ -27,10 +27,10 @@ class ProjectTest < ActiveSupport::TestCase
 
     context "#billable_events" do
       setup do
-        @sample1 = mock("Sample 1", :billable_events => [1, 2, 3])
-        @sample2 = mock("Sample 2", :billable_events => [1, 2, 3, 4])
+        @sample1 = mock("Sample 1", billable_events: [1, 2, 3])
+        @sample2 = mock("Sample 2", billable_events: [1, 2, 3, 4])
 
-        @project = Project.new :name => "Project : #{Time.now}"
+        @project = Project.new name: "Project : #{Time.now}"
         @project.expects(:samples).returns([@sample1, @sample2])
 
         @billable_events = @project.billable_events
@@ -54,7 +54,7 @@ class ProjectTest < ActiveSupport::TestCase
         @event3 = mock("Event 3")
         @event3.expects(:created_at).returns(Time.parse("2008-04-16")).times(2)
 
-        @project = Project.new :name => "Project : #{Time.now}"
+        @project = Project.new name: "Project : #{Time.now}"
         @project.expects(:billable_events).returns([@event1, @event2, @event3])
 
         @billable_events = @project.billable_events_between from.to_date, to.to_date
@@ -69,26 +69,26 @@ class ProjectTest < ActiveSupport::TestCase
       setup do
         @project         = create :project
         @request_type    = create :request_type
-        @request_type_2  = create :request_type, :name => "request_type_2", :key => "request_type_2"
-        @request_type_3  = create :request_type, :name => "request_type_3", :key => "request_type_3"
-        @submission = FactoryHelp::submission :project => @project, :asset_group_name => 'to avoid asset errors'
+        @request_type_2  = create :request_type, name: "request_type_2", key: "request_type_2"
+        @request_type_3  = create :request_type, name: "request_type_3", key: "request_type_3"
+        @submission = FactoryHelp::submission project: @project, asset_group_name: 'to avoid asset errors'
         # Failed
-        create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
-        create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
-        create :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :cancelled_request, project: @project, request_type: @request_type, submission: @submission
+        create :cancelled_request, project: @project, request_type: @request_type, submission: @submission
+        create :cancelled_request, project: @project, request_type: @request_type, submission: @submission
 
         # Failed
-        create :failed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        create :failed_request, project: @project, request_type: @request_type, submission: @submission
         # Passed
-        create :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        create :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        create :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        create :passed_request, :project => @project, :request_type => @request_type_2, :submission => @submission
-        create :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
-        create :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        create :passed_request, project: @project, request_type: @request_type, submission: @submission
+        create :passed_request, project: @project, request_type: @request_type, submission: @submission
+        create :passed_request, project: @project, request_type: @request_type, submission: @submission
+        create :passed_request, project: @project, request_type: @request_type_2, submission: @submission
+        create :passed_request, project: @project, request_type: @request_type_3, submission: @submission
+        create :passed_request, project: @project, request_type: @request_type_3, submission: @submission
         # Pending
-        create :pending_request, :project => @project, :request_type => @request_type, :submission => @submission
-        create :pending_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        create :pending_request, project: @project, request_type: @request_type, submission: @submission
+        create :pending_request, project: @project, request_type: @request_type_3, submission: @submission
         @submission.save!
       end
 

@@ -40,14 +40,14 @@ module ActiveRecord # :nodoc:
         module Active
           def self.included(base)
             base.class_eval do
-              has_many :descriptors, ->() { order('sorter') }, :dependent => :destroy
+              has_many :descriptors, ->() { order('sorter') }, dependent: :destroy
             end
           end
 
           def create_descriptors(params)
             self.descriptors << params.sort_by { |k,_| k.to_i }.each_with_index.map do |(field_id, value), index|
               value[:required] = (value[:required] == 'on') ? 1 : 0
-              Descriptor.new(value.merge(:sorter => index + 1))
+              Descriptor.new(value.merge(sorter: index + 1))
             end
           end
 
@@ -70,7 +70,7 @@ module ActiveRecord # :nodoc:
           end
 
           def descriptor_xml(options = {})
-            xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+            xml = options[:builder] ||= Builder::XmlMarkup.new(indent: options[:indent])
             xml.instruct! unless options[:skip_instruct]
 
             xml.descriptors {
@@ -86,7 +86,7 @@ module ActiveRecord # :nodoc:
           def descriptors
             [].tap do |response|
               each_descriptor do |field, value|
-                response.push(Descriptor.new(:name => field, :value => value))
+                response.push(Descriptor.new(name: field, value: value))
               end
             end
           end

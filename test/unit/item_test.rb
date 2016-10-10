@@ -17,7 +17,7 @@ class ItemTest < ActiveSupport::TestCase
     context "#workflow" do
       setup do
         @workflow = create :submission_workflow
-        @item = create :item, :workflow => @workflow
+        @item = create :item, workflow: @workflow
       end
 
       should "return a value for workflow on an Item" do

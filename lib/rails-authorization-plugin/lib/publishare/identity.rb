@@ -103,11 +103,11 @@ module Authorization
           if method_name =~ /^has_(\w+)\?$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact
-            self.accepted_roles.where(name: roles, :include => :users).any? { |role| role.users.compact.any? }
+            self.accepted_roles.where(name: roles, include: :users).any? { |role| role.users.compact.any? }
           elsif method_name =~ /^has_(\w+)$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact
-            users = self.accepted_roles.where(name: roles, :include => :users).collect { |role| role.users }
+            users = self.accepted_roles.where(name: roles, include: :users).collect { |role| role.users }
             users.flatten.compact.uniq if users
           else
             super

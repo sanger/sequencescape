@@ -119,8 +119,8 @@ class Request < ActiveRecord::Base
   }
 
 
-  scope :including_samples_from_target, ->() { includes({ :target_asset => { :aliquots => :sample } }) }
-  scope :including_samples_from_source, ->() { includes({ :asset => { :aliquots => :sample } }) }
+  scope :including_samples_from_target, ->() { includes({ target_asset: { aliquots: :sample } }) }
+  scope :including_samples_from_source, ->() { includes({ asset: { aliquots: :sample } }) }
 
   scope :for_order_including_submission_based_requests, ->(order) {
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
@@ -132,33 +132,33 @@ class Request < ActiveRecord::Base
   belongs_to :pipeline
   belongs_to :item
 
-  has_many :failures, :as => :failable
+  has_many :failures, as: :failable
 
-  belongs_to :request_type, :inverse_of => :requests
-  delegate :billable?, :to => :request_type, :allow_nil => true
-  belongs_to :workflow, :class_name => "Submission::Workflow"
+  belongs_to :request_type, inverse_of: :requests
+  delegate :billable?, to: :request_type, allow_nil: true
+  belongs_to :workflow, class_name: "Submission::Workflow"
 
   belongs_to :user
   belongs_to :request_purpose
   validates_presence_of :request_purpose
 
-  belongs_to :submission, :inverse_of => :requests
-  belongs_to :submission_pool, :foreign_key => :submission_id
+  belongs_to :submission, inverse_of: :requests
+  belongs_to :submission_pool, foreign_key: :submission_id
 
-  belongs_to :order, :inverse_of => :requests
+  belongs_to :order, inverse_of: :requests
 
   # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
   has_many :qc_metric_requests
-  has_many :qc_metrics, :through => :qc_metric_requests
+  has_many :qc_metrics, through: :qc_metric_requests
   has_many :request_events, ->() { order(:current_from) }
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
-  scope :for_pacbio_sample_sheet, -> { includes([{ :target_asset => :map },:request_metadata]) }
-  scope :for_billing, -> { includes([:initial_project, :request_type, { :target_asset => :aliquots }]) }
+  scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map },:request_metadata]) }
+  scope :for_billing, -> { includes([:initial_project, :request_type, { target_asset: :aliquots }]) }
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
-  belongs_to :initial_project, :class_name => "Project"
+  belongs_to :initial_project, class_name: "Project"
 
 
   def current_request_event
@@ -173,7 +173,7 @@ class Request < ActiveRecord::Base
 
   def submission_plate_count
     submission.requests.
-      where(:request_type_id => request_type_id).
+      where(request_type_id: request_type_id).
       joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id').
       count('DISTINCT(spca.container_id)')
   end
@@ -189,7 +189,7 @@ class Request < ActiveRecord::Base
   end
 
   #same as project with study
-  belongs_to :initial_study, :class_name => "Study"
+  belongs_to :initial_study, class_name: "Study"
 
   def study_id=(study_id)
     raise RuntimeError, "Initial study already set" if initial_study_id
@@ -209,28 +209,28 @@ class Request < ActiveRecord::Base
   end
 
 
- scope :between, ->(source,target) { where(:asset_id => source.id, :target_asset_id => target.id) }
- scope :into_by_id, ->(target_ids) { where(:target_asset_id => target_ids ) }
+ scope :between, ->(source,target) { where(asset_id: source.id, target_asset_id: target.id) }
+ scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids ) }
 
  scope :request_type, ->(request_type) {
-    where(:request_type_id => request_type)
+    where(request_type_id: request_type)
   }
 
   scope :where_is_a?,     ->(clazz) { where( sti_type: [clazz, *clazz.descendants].map(&:name) ) }
   scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
-  scope :full_inbox, -> { where(:state => ["pending","hold"]) }
+  scope :full_inbox, -> { where(state: ["pending","hold"]) }
 
   scope :with_asset,  -> { where('asset_id is not null') }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
   scope :join_asset,  -> { joins(:asset) }
-  scope :with_asset_location, -> { includes(:asset => :map) }
+  scope :with_asset_location, -> { includes(asset: :map) }
 
   scope :siblings_of, ->(request) { where(asset_id:request.asset_id).where.not(id:request.id) }
 
   #Asset are Locatable (or at least some of them)
-  belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
+  belongs_to :location_association, primary_key: :locatable_id, foreign_key: :asset_id
   scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id]).readonly(false) }
 
   #Use container location
@@ -256,8 +256,8 @@ class Request < ActiveRecord::Base
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{ :submission => { :orders => :study }, :asset => [:scanned_into_lab_event,:studies] }]) }
-  scope :loaded_for_grouped_inbox_display, -> { preload([{ :submission => :orders }, :asset, :target_asset, :request_type]) }
+  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event,:studies] }]) }
+  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :asset, :target_asset, :request_type]) }
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
@@ -320,10 +320,10 @@ class Request < ActiveRecord::Base
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
-  delegate :study, :study_id, :to => :asset, :allow_nil => true
+  delegate :study, :study_id, to: :asset, allow_nil: true
 
-  scope :for_workflow, ->(workflow) { joins(:workflow).where(:workflow => { :key => workflow })  }
-  scope :for_request_types, ->(types) { joins(:request_type).where(:request_types => { :key => types }) }
+  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow })  }
+  scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query,with_includes) {
      where(['id=?', query])
@@ -333,11 +333,11 @@ class Request < ActiveRecord::Base
      where(['target_asset_id = ?', "#{target_asset_id}"])
    }
    scope :for_studies, ->(*studies) {
-     where(:initial_study_id => studies)
+     where(initial_study_id: studies)
    }
 
 
-  scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{ :asset => :aliquots,:target_asset => :aliquots }]) }
+  scope :with_assets_for_starting_requests, -> { includes([:request_metadata,{ asset: :aliquots,target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
 
@@ -425,7 +425,7 @@ class Request < ActiveRecord::Base
   end
 
   def add_comment(comment, user)
-    self.comments.create({ :description => comment, :user => user })
+    self.comments.create({ description: comment, user: user })
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
@@ -467,7 +467,7 @@ class Request < ActiveRecord::Base
 
   def update_priority
     priority = (self.priority + 1) % 4
-    submission.update_attributes!(:priority => priority)
+    submission.update_attributes!(priority: priority)
   end
 
   def priority
@@ -489,7 +489,7 @@ class Request < ActiveRecord::Base
 
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
   # we now need to be explicit in how we want it delegated.
-  delegate :name, :to => :request_metadata
+  delegate :name, to: :request_metadata
 
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)

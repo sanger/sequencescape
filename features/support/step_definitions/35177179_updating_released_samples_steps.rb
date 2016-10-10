@@ -10,7 +10,7 @@ end
 
 When /^I get the XML accession for the sample *"([^\"]+)"$/ do |name|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
-  visit(url_for(:controller => 'samples', :action => 'show_accession', :id => sample.id, :format => :xml))
+  visit(url_for(controller: 'samples', action: 'show_accession', id: sample.id, format: :xml))
 end
 
 When /^ignoring "([^\"]+)" the XML submission for the sample "([^"]*)" should be:$/ do |key_regexp, name, serialized_xml|

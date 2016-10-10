@@ -24,7 +24,7 @@ class Api::Messages::PacBioRunIO < Api::Base
       map_attribute_to_json_attribute(:uuid,'well_uuid_lims')
 
 
-      with_nested_has_many_association(:requests_as_target, :as => 'samples') do
+      with_nested_has_many_association(:requests_as_target, as: 'samples') do
 
         with_association(:initial_project) do
           map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')

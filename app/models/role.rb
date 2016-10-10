@@ -15,10 +15,10 @@ class Role < ActiveRecord::Base
     belongs_to :user
   end
 
-  has_many :user_role_bindings, :class_name => 'Role::UserRole'
-  has_many :users, :through => :user_role_bindings, :source => :user
+  has_many :user_role_bindings, class_name: 'Role::UserRole'
+  has_many :users, through: :user_role_bindings, source: :user
 
-  belongs_to :authorizable, :polymorphic => true
+  belongs_to :authorizable, polymorphic: true
 
   validates_presence_of :name
   scope :general_roles, -> { where("authorizable_type IS NULL") }
@@ -38,11 +38,11 @@ class Role < ActiveRecord::Base
     def self.included(base)
       base.extend(ClassMethods)
       base.instance_eval do
-        has_many :roles, :as => :authorizable
-        has_many :users, :through => :roles
+        has_many :roles, as: :authorizable
+        has_many :users, through: :roles
 
-        scope :with_related_users_included, -> { includes(:roles => :users ) }
-        scope :of_interest_to, ->(user) { joins(:users).where(:users => { :id => user }).distinct }
+        scope :with_related_users_included, -> { includes(roles: :users ) }
+        scope :of_interest_to, ->(user) { joins(:users).where(users: { id: user }).distinct }
       end
     end
 

@@ -34,11 +34,11 @@ class Lane < Aliquot::Receptacle
 
   extend Metadata
   has_metadata do
-    attribute(:release_reason, :in => LIST_REASONS)
+    attribute(:release_reason, in: LIST_REASONS)
   end
 
-  has_one_as_child(:spiked_in_buffer, ->() { where(:sti_type => 'SpikedBuffer') } )
+  has_one_as_child(:spiked_in_buffer, ->() { where(sti_type: 'SpikedBuffer') } )
 
-  has_many :aliquot_indicies, :inverse_of => :lane, :class_name => 'AliquotIndex'
+  has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
 
 end

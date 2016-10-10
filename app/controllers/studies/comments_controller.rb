@@ -15,9 +15,9 @@ class Studies::CommentsController < ApplicationController
   end
 
   def create
-    @study.comments.create(:description => params[:comment], :user_id => current_user.id)
+    @study.comments.create(description: params[:comment], user_id: current_user.id)
     @comments = @study.comments
-    render :partial => "list", :locals => { :commentable => @study, :visible => true }
+    render partial: "list", locals: { commentable: @study, visible: true }
   end
 
   def destroy
@@ -26,7 +26,7 @@ class Studies::CommentsController < ApplicationController
       comment.destroy
     end
     @comments = @study.comments
-    render :partial => "list", :locals => { :commentable => @study, :visible => true }
+    render partial: "list", locals: { commentable: @study, visible: true }
   end
 
   private

@@ -19,30 +19,30 @@ require './lib/product_helpers'
   ProductHelpers.single_template('SC'),
   ProductHelpers.single_template('InternalQC'),
   {
-    :name => 'GenericPCR',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'GenericPCR',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
     }
   },
   {
-    :name => 'GenericNoPCR',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'GenericNoPCR',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
     }
   },
   {
-    :name => 'ClassicMultiplexed',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'ClassicMultiplexed',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
     }
   },
   {
-    :name => 'Manual',
-    :selection_behaviour => 'Manual',
-    :products => {
+    name: 'Manual',
+    selection_behaviour: 'Manual',
+    products: {
       nil => 'Generic',
       'MWGS' => 'MWGS',
       'PWGS' => 'PWGS',
@@ -54,4 +54,4 @@ require './lib/product_helpers'
   ProductCatalogue.construct!(param)
 end
 
-Product.find_by_name('MWGS').product_criteria.create!(:stage => 'stock',:behaviour => 'Basic',:configuration => { :total_micrograms => { :greater_than => 50 } })
+Product.find_by_name('MWGS').product_criteria.create!(stage: 'stock',behaviour: 'Basic',configuration: { total_micrograms: { greater_than: 50 } })

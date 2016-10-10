@@ -27,9 +27,9 @@ class EventsController < ApplicationController
     respond_to do |format|
       # I know this looks crazy, but it appears to be explicitly tested for
       # Unfortunately there is no comment as to why.
-      format.html { render :xml => @event.to_xml }
-      format.xml  { render :xml => @event.to_xml }
-      format.json { render :json => @event.to_json }
+      format.html { render xml: @event.to_xml }
+      format.xml  { render xml: @event.to_xml }
+      format.json { render json: @event.to_json }
     end
   end
 

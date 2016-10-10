@@ -49,11 +49,11 @@ module Core::Service::ErrorHandling
 
     def general_error(code, errors = nil)
       errors ||= [exception_thrown.message]
-      error(code, JsonError.new(:general => errors))
+      error(code, JsonError.new(general: errors))
     end
 
     def content_error(code, errors = nil)
-      error(code, JsonError.new(:content => errors))
+      error(code, JsonError.new(content: errors))
     end
   end
 

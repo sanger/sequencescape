@@ -29,7 +29,7 @@ class RequestType::Validator < ActiveRecord::Base
     def to_a
       request_type.library_types.map(&:name)
     end
-    delegate :to_sentence, :to => :to_a
+    delegate :to_sentence, to: :to_a
   end
 
   ##
@@ -61,7 +61,7 @@ class RequestType::Validator < ActiveRecord::Base
   end
 
   belongs_to :request_type
-  validates :request_type, :request_option, :valid_options, :presence => true
+  validates :request_type, :request_option, :valid_options, presence: true
   serialize :valid_options
 
   def include?(option)

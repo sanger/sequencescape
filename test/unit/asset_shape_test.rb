@@ -10,7 +10,7 @@ class AssetShapeTest < ActiveSupport::TestCase
   context 'standard plates of' do
 
     setup do
-      @shape = AssetShape.new(:name => 'Test',:horizontal_ratio => 3,:vertical_ratio => 2,:description_strategy => 'Map::Coordinate')
+      @shape = AssetShape.new(name: 'Test',horizontal_ratio: 3,vertical_ratio: 2,description_strategy: 'Map::Coordinate')
     end
 
   context "96 wells " do
@@ -60,7 +60,7 @@ class AssetShapeTest < ActiveSupport::TestCase
   context "Fluidigm plates of 96 wells" do
 
     setup do
-      @shape = AssetShape.new(:name => 'Test',:horizontal_ratio => 3,:vertical_ratio => 8,:description_strategy => 'Map::Sequential')
+      @shape = AssetShape.new(name: 'Test',horizontal_ratio: 3,vertical_ratio: 8,description_strategy: 'Map::Sequential')
     end
 
     context "conversion between horizontal and back" do
@@ -93,7 +93,7 @@ class AssetShapeTest < ActiveSupport::TestCase
   context "Fluidigm plates of 192 wells" do
 
     setup do
-      @shape = AssetShape.new(:name => 'Test',:horizontal_ratio => 3,:vertical_ratio => 4,:description_strategy => 'Map::Sequential')
+      @shape = AssetShape.new(name: 'Test',horizontal_ratio: 3,vertical_ratio: 4,description_strategy: 'Map::Sequential')
     end
 
     context "conversion between horizontal and back" do

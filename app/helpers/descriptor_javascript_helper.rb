@@ -44,8 +44,8 @@ private
       content_tag(
         :a,
         capture(&block),
-        :href => 'javascript:void();',
-        :onClick => on_click_code
+        href: 'javascript:void();',
+        onClick: on_click_code
       )
     )
   end

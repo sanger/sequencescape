@@ -27,14 +27,14 @@ class Request::ChangeDecision
   end
 
   attr_accessor :asset_qc_state
-  validates_each(:asset_qc_state, :unless => :asset_qc_state_absent?) do |record, attr, value|
+  validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, attr, value|
     if not record.request.target_asset.has_been_through_qc?
       record.errors.add(:asset, 'has not been through QC')
     elsif value == record.request.target_asset.qc_state
       record.errors.add(:asset_qc_state, 'cannot be same as current state')
     end
   end
-  validates_presence_of :asset_qc_state, :unless => :asset_qc_state_absent?
+  validates_presence_of :asset_qc_state, unless: :asset_qc_state_absent?
 
   attr_accessor :comment
   validates_presence_of :comment
@@ -84,8 +84,8 @@ private
     previous_state = self.request.state
     ActiveRecord::Base.transaction do
       self.request.change_decision!
-      self.request.events.create!({ :message => "Change state from #{previous_state} to  #{state}", :created_by => self.user.login, :family => "update" })
-      self.request.comments.create!(:description => self.comment, :user_id => self.user.id)
+      self.request.events.create!({ message: "Change state from #{previous_state} to  #{state}", created_by: self.user.login, family: "update" })
+      self.request.comments.create!(description: self.comment, user_id: self.user.id)
     end
   end
 
@@ -93,7 +93,7 @@ private
     previous_state = self.request.target_asset.qc_state
     self.request.target_asset.set_qc_state(self.asset_qc_state)
     #self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
-    self.request.target_asset.comments.create!(:description => self.comment, :user_id => self.user.id)
+    self.request.target_asset.comments.create!(description: self.comment, user_id: self.user.id)
   end
 
 end

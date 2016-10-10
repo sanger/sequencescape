@@ -125,9 +125,9 @@ module Rake
       desc "Create Ruby on Rails plug-in package"
       task :rails_plugin do
         @dest = "#@package_dir/#{@name}"
-        makedirs(@dest,:verbose => false)
+        makedirs(@dest,verbose: false)
         @plugin_files.each do |fn|
-          cp(fn, @dest,:verbose => false)
+          cp(fn, @dest,verbose: false)
           add_file(File.basename(fn))
         end
 
@@ -136,14 +136,14 @@ module Rake
           f = File.join(@dest, fn)
           fdir = File.dirname(f)
           unless File.exist?(fdir)
-            mkdir_p(fdir,:verbose => false)
+            mkdir_p(fdir,verbose: false)
             add_folder("#{fdir}/")
           end
           if File.directory?(fn)
-            mkdir_p(f,:verbose => false)
+            mkdir_p(f,verbose: false)
             add_folder("#{fn}/")
           else
-            cp(fn, f, :verbose => false)
+            cp(fn, f, verbose: false)
             add_file(fn)
           end
         end

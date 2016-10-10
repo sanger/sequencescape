@@ -3,15 +3,15 @@ class MeetingController < ApplicationController
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  permit "rubyists and wanna_be_rubyists", :except => :public_page
+  permit "rubyists and wanna_be_rubyists", except: :public_page
 
   def public_page
-    render :text => "We're all in Chicago"
+    render text: "We're all in Chicago"
   end
 
   def secret_info
     permit "(matz or dhh) and interested in Answers" do
-      render :text => "The Answer = 42"
+      render text: "The Answer = 42"
     end
   end
 

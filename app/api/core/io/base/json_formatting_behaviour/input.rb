@@ -18,7 +18,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
   def self.extended(base)
     base.class_eval do
-      class_attribute :model_for_input, :instance_writer => false
+      class_attribute :model_for_input, instance_writer: false
       extend AssociationHandling
     end
   end

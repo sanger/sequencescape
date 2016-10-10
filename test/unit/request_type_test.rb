@@ -49,7 +49,7 @@ class RequestTypeTest < ActiveSupport::TestCase
     context 'with a purpose' do
       setup do
         @rp = create(:request_purpose)
-        @nrequest_type = create(:request_type, :request_purpose => @rp)
+        @nrequest_type = create(:request_type, request_purpose: @rp)
       end
 
       should 'set purpose on request' do
@@ -61,7 +61,7 @@ class RequestTypeTest < ActiveSupport::TestCase
 
     context 'when deprecated,' do
       setup do
-        @deprecated_request_type = create(:request_type, :deprecated => true)
+        @deprecated_request_type = create(:request_type, deprecated: true)
       end
 
       should 'not create deprecated requests' do

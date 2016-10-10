@@ -9,12 +9,12 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do |t|
       st = SubmissionSerializer.construct!({
-        :name => "Illumina-C - General no PCR - HiSeq-X sequencing",
-        :submission_class_name => "LinearSubmission",
-        :product_line => "Illumina-C",
-        :submission_parameters => {
-          :request_types => ["illumina_c_nopcr", "illumina_b_hiseq_x_paired_end_sequencing"],
-          :workflow => "short_read_sequencing"
+        name: "Illumina-C - General no PCR - HiSeq-X sequencing",
+        submission_class_name: "LinearSubmission",
+        product_line: "Illumina-C",
+        submission_parameters: {
+          request_types: ["illumina_c_nopcr", "illumina_b_hiseq_x_paired_end_sequencing"],
+          workflow: "short_read_sequencing"
         }
       })
       lt = LibraryType.find_or_create_by(name:"HiSeqX PCR free")
@@ -26,10 +26,10 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
       tag_group = TagGroup.find_by_name('NEXTflex-96 barcoded adapters') || TagGroup.first
 
       TagLayoutTemplate.create!(
-        :name                => "NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)",
-        :direction_algorithm => 'TagLayout::InRows',
-        :walking_algorithm   => 'TagLayout::WalkWellsOfPlate',
-        :tag_group           => tag_group
+        name: "NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)",
+        direction_algorithm: 'TagLayout::InRows',
+        walking_algorithm: 'TagLayout::WalkWellsOfPlate',
+        tag_group: tag_group
       )
     end
   end

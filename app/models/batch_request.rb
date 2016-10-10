@@ -21,23 +21,23 @@ class BatchRequest < ActiveRecord::Base
   attr_accessor :sorting_requests_within_batch
   alias_method(:sorting_requests_within_batch?, :sorting_requests_within_batch)
 
-  delegate :requires_position?, :to => :batch
+  delegate :requires_position?, to: :batch
 
   def need_to_check_position?
     requires_position? and not sorting_requests_within_batch?
   end
   private :need_to_check_position?
 
-  validates_numericality_of :position, :only_integer => true, :if => :requires_position?
-  validates_uniqueness_of :position, :scope => :batch_id, :if => :need_to_check_position?
+  validates_numericality_of :position, only_integer: true, if: :requires_position?
+  validates_uniqueness_of :position, scope: :batch_id, if: :need_to_check_position?
 
   # Each request can only belong to one batch.
-  validates_uniqueness_of :request_id, :message => '%{value} is already in a batch.'
-  before_validation(:if => :requires_position?, :unless => :position?) do |record|
+  validates_uniqueness_of :request_id, message: '%{value} is already in a batch.'
+  before_validation(if: :requires_position?, unless: :position?) do |record|
     record.position = (record.batch.batch_requests.map(&:position).compact.max || 0) + 1
   end
 
   def move_to_position!(position)
-    update_attributes!(:sorting_requests_within_batch => true, :position => position)
+    update_attributes!(sorting_requests_within_batch: true, position: position)
   end
 end

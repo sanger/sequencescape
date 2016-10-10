@@ -14,8 +14,8 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
       should 'setup the appropriate behaviour' do
         batch = Class.new
 
-        batch.expects(:validates_inclusion_of).with(:qc_state, :in => STATES, :allow_blank => true)
-        batch.expects(:belongs_to).with(:qc_pipeline, :class_name => 'Pipeline')
+        batch.expects(:validates_inclusion_of).with(:qc_state, in: STATES, allow_blank: true)
+        batch.expects(:belongs_to).with(:qc_pipeline, class_name: 'Pipeline')
         batch.expects(:before_create).with(:qc_pipeline_update)
 
         batch.send(:include, SequencingQcBatch)

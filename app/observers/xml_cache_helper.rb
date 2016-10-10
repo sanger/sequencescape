@@ -9,15 +9,15 @@ module XmlCacheHelper
   # appropriately for a cache sweeper that includes the XmlCacheHelper module.
   module ControllerHelper
     def cache_xml_response(record)
-      render :layout => false
+      render layout: false
       cache_page(
         response.body,
         url_for(
-          :controller => self.class.controller_name,
-          :action     => self.action_name,
-          :id         => record.id,
-          :format     => :xml,
-          :only_path  => true
+          controller: self.class.controller_name,
+          action: self.action_name,
+          id: record.id,
+          format: :xml,
+          only_path: true
         )
       )
     end
@@ -28,7 +28,7 @@ module XmlCacheHelper
     base.class_eval do
       extend ClassMethods
 
-      delegate :debug, :to => 'Rails.logger'
+      delegate :debug, to: 'Rails.logger'
 
       # NOTE: Getting sweepers to work without a controller is not simple!
       #
@@ -40,7 +40,7 @@ module XmlCacheHelper
       # include & delegate everything we need to interact with the cache.
       include Rails.application.routes.url_helpers
 
-      delegate :expire_page, :perform_caching, :to => 'ActionController::Base'
+      delegate :expire_page, :perform_caching, to: 'ActionController::Base'
       alias_method(:perform_caching?, :perform_caching)
       private :expire_page, :perform_caching, :perform_caching?
       private :url_for
@@ -69,8 +69,8 @@ module XmlCacheHelper
     i = 0
     begin
       expire_page(url_for(
-        :controller => caching_for_controller, :action => 'show', :id => id, :format => :xml,
-        :only_path => true
+        controller: caching_for_controller, action: 'show', id: id, format: :xml,
+        only_path: true
       ))
     rescue Errno::ENOENT => exception
       Rails.logger.warn { "Cannot clear cached XML file as it does not exist (#{exception.message})" }
@@ -119,7 +119,7 @@ module XmlCacheHelper
   module ClassMethods
     def self.extended(base)
       base.class_eval do
-        delegate :caching_for_controller, :caching_for_model, :to => 'self.class'
+        delegate :caching_for_controller, :caching_for_model, to: 'self.class'
       end
     end
 

@@ -22,7 +22,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   # NOTE: This is immediately overridden by the block below so don't move it!
   #++
   def document_field(field, options = {})
-    fields_for(:"#{ field }_attributes", :builder => ActionView::Helpers::FormBuilder) do |fields|
+    fields_for(:"#{ field }_attributes", builder: ActionView::Helpers::FormBuilder) do |fields|
       fields.file_field(:uploaded_data)
     end
   end
@@ -62,14 +62,14 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   # layout for our properties
   #
   {
-    :document_field  => :document,
-    :text_area       => :field,
-    :text_field      => :field,
-    :number_field    => :field,
-    :select          => :field,
-    :file_field      => :field,
-    :check_box       => :field,
-    :checktext_field => :field
+    document_field: :document,
+    text_area: :field,
+    text_field: :field,
+    number_field: :field,
+    select: :field,
+    file_field: :field,
+    check_box: :field,
+    checktext_field: :field
   }.each do |field, type|
     class_eval <<-END_OF_METHOD
       def #{ field }_with_property_field_wrapper(method, *args, &block)
@@ -97,7 +97,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
 
     values  = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map { |v| v.to_s.downcase.gsub(/[^a-z0-9]+/, '_') }
     content = capture(&block)
-    concat(content_tag(:div, content, :class => [:related_to, options[:to], values].flatten.join(' ')))
+    concat(content_tag(:div, content, class: [:related_to, options[:to], values].flatten.join(' ')))
 
     @related_fields.push(options[:to])
     content
@@ -117,11 +117,11 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   def finalize_related_fields(&block)
     related = @related_fields.compact.uniq.map(&:to_s)
     concat(render(
-      :partial => 'shared/metadata/related_fields',
-      :locals => {
-        :root            => sanitized_object_name,
-        :related         => related,
-        :changing_fields => @changing
+      partial: 'shared/metadata/related_fields',
+      locals: {
+        root: sanitized_object_name,
+        related: related,
+        changing_fields: @changing
       }
     )) unless related.empty?
   end
@@ -130,10 +130,10 @@ private
 
   def property_field(type, field, options = {}, &block)
     content = capture do
-      render_view(type, field, options) { |locals| locals.merge(:field => yield) }
+      render_view(type, field, options) { |locals| locals.merge(field: yield) }
     end
 
-    div_options = { :id => field.to_s }
+    div_options = { id: field.to_s }
     (div_options[:class] ||= []) << 'field_with_errors' unless @object.errors.get(field).blank?
     content_tag(:div, content, div_options)
   end

@@ -11,11 +11,11 @@ class UnifyInitialTransferRequests < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       # Create Initial Transfer Request TYpe for future Use
       initial_transfer = RequestType.create!(
-        :name => 'Initial Transfer', :key => 'initial_transfer', :order => 1,
-        :asset_type => 'Asset',  :multiples_allowed => false,
-        :request_class_name => 'TransferRequest::InitialTransfer',  :morphology => RequestType::CONVERGENT,
-        :for_multiplexing => 0, :billable => 0,
-        :request_purpose => RequestPurpose.find_by_key('internal')
+        name: 'Initial Transfer', key: 'initial_transfer', order: 1,
+        asset_type: 'Asset',  multiples_allowed: false,
+        request_class_name: 'TransferRequest::InitialTransfer',  morphology: RequestType::CONVERGENT,
+        for_multiplexing: 0, billable: 0,
+        request_purpose: RequestPurpose.find_by_key('internal')
       )
 
       deprecate_class('IlluminaB::Requests::InputToCovaris',new_type:initial_transfer)

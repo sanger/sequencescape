@@ -128,7 +128,7 @@ module LabWhereClient
     def self.creation_params(params)
       obj = params.dup
       obj[:labware_barcodes] = obj[:labware_barcodes].join("\n")
-      { :scan => obj }
+      { scan: obj }
     end
 
     def valid?

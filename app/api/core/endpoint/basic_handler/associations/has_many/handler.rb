@@ -74,7 +74,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
         nested_stream.block('actions') do |action_stream|
           actions(
             count_of_pages(association),
-            options.merge(:target => object)
+            options.merge(target: object)
           ).map do |action,url|
             action_stream.attribute(action,url)
           end

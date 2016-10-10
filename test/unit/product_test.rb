@@ -18,12 +18,12 @@ class ProductTest < ActiveSupport::TestCase
 
     should 'only allow one active product with each name' do
       @product_a = create :product
-      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create :product, :name => @product_a.name }
+      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create :product, name: @product_a.name }
     end
 
     should 'allow products with the same name if one is deprecated' do
-      @product_a = create :product, :deprecated_at => Time.now
-      @product_b = create :product, :name => @product_a.name
+      @product_a = create :product, deprecated_at: Time.now
+      @product_b = create :product, name: @product_a.name
       assert @product_b.valid?
     end
 
@@ -45,7 +45,7 @@ class ProductTest < ActiveSupport::TestCase
   context 'Product' do
 
     setup do
-      @product_a = create :product, :deprecated_at => Time.now
+      @product_a = create :product, deprecated_at: Time.now
       @product_b = create :product
     end
 

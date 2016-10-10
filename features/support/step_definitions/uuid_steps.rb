@@ -8,7 +8,7 @@ def set_uuid_for(object, uuid_value)
   uuid   = object.uuid_object
   uuid ||= object.build_uuid_object
   uuid.external_id = uuid_value
-  uuid.save(:validate => false)
+  uuid.save(validate: false)
 end
 
 ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
@@ -63,15 +63,15 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is
 end
 
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUID "([^\"]+)"$/ do |model,name,uuid_value|
-  set_uuid_for(FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, :name => name), uuid_value)
+  set_uuid_for(FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, name: name), uuid_value)
 end
 
 Given /^a tube purpose called "([^\"]+)" with UUID "([^\"]+)"$/ do |name,uuid_value|
-  set_uuid_for(FactoryGirl.create(:tube_purpose, :name => name), uuid_value)
+  set_uuid_for(FactoryGirl.create(:tube_purpose, name: name), uuid_value)
 end
 
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with ID (\d+)$/ do |model, name, id|
-  FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, :name => name, :id => id)
+  FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, name: name, id: id)
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^\"]+)" and IDs starting at (\d+)$/ do |count, model, name, id|
@@ -180,8 +180,8 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
     next_id = query.first['Auto_increment']
   end
 
-  uuid = Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value)
-  uuid.save(:validate => false)
+  uuid = Uuid.new(resource_type: root_class.sti_name, resource_id: next_id, external_id: uuid_value)
+  uuid.save(validate: false)
 end
 
 Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|
@@ -196,7 +196,7 @@ end
 
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|
   target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
-  target.uuid_object.update_attributes!(:external_id => uuid_value)
+  target.uuid_object.update_attributes!(external_id: uuid_value)
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (\d+)$/ do |count, model, id|
@@ -208,7 +208,7 @@ end
 
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model,uuid_value|
-  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/,'_').camelize.constantize.create!(:message => model), uuid_value)
+  set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/,'_').camelize.constantize.create!(message: model), uuid_value)
 end
 
 Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model,uuid_value|
@@ -216,7 +216,7 @@ Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model,uuid_value|
 end
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/ do |model, id|
-  FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, :id => id)
+  FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, id: id)
 end
 
 
@@ -229,7 +229,7 @@ end
 Given /^a asset_link with uuid "([^"]*)" exists and connects "([^"]*)" and "([^"]*)"$/ do |uuid_value, uuid_plate, uuid_well|
   plate = Plate.find(Uuid.find_id(uuid_plate))
   well  = Well.find(Uuid.find_id(uuid_well))
-  set_uuid_for(AssetLink.create!(:ancestor => plate, :descendant => well), uuid_value)
+  set_uuid_for(AssetLink.create!(ancestor: plate, descendant: well), uuid_value)
 end
 
 Given /^there are (\d+) "([^\"]+)" requests with IDs starting at (\d+)$/ do |count, type, id|
@@ -246,7 +246,7 @@ end
 
 Given /^all of the requests have appropriate assets with samples$/ do
   Request.find_each do |request|
-    request.update_attributes!(:asset => FactoryGirl.create(request.request_type.asset_type.underscore.to_sym))
+    request.update_attributes!(asset: FactoryGirl.create(request.request_type.asset_type.underscore.to_sym))
   end
 end
 

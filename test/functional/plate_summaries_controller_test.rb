@@ -20,8 +20,8 @@ class PlateSummariesControllerTest < ActionController::TestCase
       setup do
         @source_plate_a = create :source_plate
         @source_plate_b = create :source_plate
-        @child_plate_a  = create :child_plate, :parent => @source_plate_a
-        @child_plate_b  = create :child_plate, :parent => @source_plate_b
+        @child_plate_a  = create :child_plate, parent: @source_plate_a
+        @child_plate_b  = create :child_plate, parent: @source_plate_b
       end
 
       should "test factory is created" do

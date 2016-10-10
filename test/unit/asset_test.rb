@@ -25,7 +25,7 @@ class AssetTest < ActiveSupport::TestCase
 
     context "without a barcode" do
       setup do
-        @asset = create :asset, :barcode => nil
+        @asset = create :asset, barcode: nil
         @result_hash = @asset.barcode_and_created_at_hash
       end
       should "return an empty hash" do
@@ -37,7 +37,7 @@ class AssetTest < ActiveSupport::TestCase
       setup do
         @scanned_in_asset = create :asset
         @unscanned_in_asset = create :asset
-        @scanned_in_event = create :event, :content => Date.today.to_s, :message => "scanned in", :family => "scanned_into_lab", :eventful_type => "Asset", :eventful_id => @scanned_in_asset.id
+        @scanned_in_event = create :event, content: Date.today.to_s, message: "scanned in", family: "scanned_into_lab", eventful_type: "Asset", eventful_id: @scanned_in_asset.id
       end
       should "return a date if it has been scanned in" do
         assert_equal Date.today.to_s, @scanned_in_asset.scanned_in_date

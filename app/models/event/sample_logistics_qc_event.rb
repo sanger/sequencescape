@@ -15,20 +15,20 @@ class Event::SampleLogisticsQcEvent < Event
 
   def self.gel_qc_message(asset, message, family, user)
     self.create!(
-      :eventful => asset,
-      :message => message,
-      :content => Date.today.to_s,
-      :family => family,
-      :created_by => user ? user.login : nil
+      eventful: asset,
+      message: message,
+      content: Date.today.to_s,
+      family: family,
+      created_by: user ? user.login : nil
     )
   end
 
   def self.pico_qc_message(asset, message, family)
     self.create!(
-      :eventful => asset,
-      :message => message,
-      :content => Date.today.to_s,
-      :family => family
+      eventful: asset,
+      message: message,
+      content: Date.today.to_s,
+      family: family
     )
   end
 

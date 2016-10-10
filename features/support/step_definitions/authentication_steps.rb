@@ -20,23 +20,23 @@ Given /^user "(.*)" has a workflow "(.*)"$/ do |login, workflow_name|
 end
 
 Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
-  wk = Submission::Workflow.find_by!(:key => 'short_read_sequencing')
+  wk = Submission::Workflow.find_by!(key: 'short_read_sequencing')
 
   @current_user = FactoryGirl.create(:user,
-    :login => login,
-    :first_name => "John",
-    :last_name => "Doe",
-    :password => 'generic',
-    :password_confirmation => 'generic',
-    :email => "#{ login }@example.com",
-    :workflow_id => wk.id
+    login: login,
+    first_name: "John",
+    last_name: "Doe",
+    password: 'generic',
+    password_confirmation: 'generic',
+    email: "#{ login }@example.com",
+    workflow_id: wk.id
   )
 
   @current_user.roles << FactoryGirl.create(:role, name: role_name)
 
   visit "/login"
-  fill_in("login", :with => login)
-  fill_in("password", :with => 'generic')
+  fill_in("login", with: login)
+  fill_in("password", with: 'generic')
 
   # TODO - Should be "Log in" on the "login" page
   click_button("Login")
@@ -62,10 +62,10 @@ Then /^I should be logged in as "([^\"]*)"$/ do |login|
 end
 
 Given /^a user with human barcode "(ID\d+.)" exists$/ do |human_barcode|
-  FactoryGirl.create(:user, :barcode => human_barcode)
+  FactoryGirl.create(:user, barcode: human_barcode)
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|
    user = User.find_by_login(login)
-   user.update_attributes!(:last_name => nil, :first_name => nil)
+   user.update_attributes!(last_name: nil, first_name: nil)
 end

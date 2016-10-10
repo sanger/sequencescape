@@ -8,8 +8,8 @@
 Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
   purpose = Tube::Purpose.find_by!(name:tube_purpose)
   test = purpose.target_type.constantize.create!(
-    :name => tube_name,
-    :purpose => purpose
+    name: tube_name,
+    purpose: purpose
   )
 end
 
@@ -19,10 +19,10 @@ Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)"
   source = Asset.find_by_name(source_name)
   source = source.wells.first if source.is_a?(Plate)
   RequestType.find_by_name(request_type).create!(
-    { :state => state,
-    :asset => source,
-    :target_asset => tube,
-    :submission => submission
+    { state: state,
+    asset: source,
+    target_asset: tube,
+    submission: submission
     }.merge(request_defaults(request_type))
   )
 end
@@ -31,8 +31,8 @@ end
 Given /^a (started|passed|pending) transfer from the stock tube "([^"]*)" to the MX tube$/ do |state, source_name|
   source = Tube.find_by_name(source_name) or raise "Cannot find source tube #{source_name.inspect}"
   Transfer::BetweenTubesBySubmission.create!(
-    :source => source,
-    :user => User.last || User.create(:login => 'no_one')
+    source: source,
+    user: User.last || User.create(login: 'no_one')
   )
   step %Q{the transfer requests on "#{source.id}" are #{state}}
 end
@@ -50,9 +50,9 @@ end
 def request_defaults(type)
   {
     'Illumina-B STD' => {
-      :request_metadata_attributes => {
-        :fragment_size_required_from => 300,
-        :fragment_size_required_to => 300
+      request_metadata_attributes: {
+        fragment_size_required_from: 300,
+        fragment_size_required_to: 300
       }
     }
   }[type] || {}

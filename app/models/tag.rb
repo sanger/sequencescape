@@ -7,7 +7,7 @@
 class Tag < ActiveRecord::Base
   module Associations
     def untag!
-      aliquots.first.try(:update_attributes!, :tag => nil)
+      aliquots.first.try(:update_attributes!, tag: nil)
     end
   end
 
@@ -19,8 +19,8 @@ class Tag < ActiveRecord::Base
 
 
   belongs_to :tag_group
-  has_many :assets, :as => :material
-  has_many :requests, ->() { distinct }, :through => :assets
+  has_many :assets, as: :material
+  has_many :requests, ->() { distinct }, through: :assets
 
   scope :sorted, ->() { order("map_id ASC") }
 
@@ -30,7 +30,7 @@ class Tag < ActiveRecord::Base
 
   # Creates an instance of this tag that can be attached to a well.
   def create!
-    TagInstance.create!(:tag => self)
+    TagInstance.create!(tag: self)
   end
   deprecate :create!
 
@@ -38,14 +38,14 @@ class Tag < ActiveRecord::Base
   def tag!(asset)
     raise StandardError, "Cannot tag an empty asset"   if asset.aliquots.empty?
     raise StandardError, "Cannot tag multiple samples" if asset.aliquots.size > 1
-    asset.aliquots.first.update_attributes!(:tag => self)
+    asset.aliquots.first.update_attributes!(tag: self)
   end
 
   # Map id is converted to a string here for consistency with elsewhere in the api.
   def summary
     {
-      :tag_group => tag_group.name,
-      :tag_index => map_id.to_s
+      tag_group: tag_group.name,
+      tag_index: map_id.to_s
     }
   end
 end

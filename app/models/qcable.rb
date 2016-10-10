@@ -18,18 +18,18 @@ class Qcable < ActiveRecord::Base
   include AASM
   include Qcable::Statemachine
 
-  belongs_to :lot, :inverse_of => :qcables
+  belongs_to :lot, inverse_of: :qcables
   belongs_to :asset
-  belongs_to :qcable_creator, :inverse_of => :qcables
+  belongs_to :qcable_creator, inverse_of: :qcables
 
-  has_one :stamp_qcable, :inverse_of => :qcable, :class_name => 'Stamp::StampQcable'
-  has_one :stamp, :through => :stamp_qcable
+  has_one :stamp_qcable, inverse_of: :qcable, class_name: 'Stamp::StampQcable'
+  has_one :stamp, through: :stamp_qcable
 
-  validates :lot, :asset, :state, :qcable_creator, :presence => true
+  validates :lot, :asset, :state, :qcable_creator, presence: true
 
-  before_validation :create_asset!, :on => :create
+  before_validation :create_asset!, on: :create
 
-  delegate :bed, :order, :to => :stamp_qcable, :nil => true
+  delegate :bed, :order, to: :stamp_qcable, nil: true
 
   scope :include_for_json, -> { includes([:asset,:lot,:stamp,:stamp_qcable]) }
 
@@ -46,11 +46,11 @@ class Qcable < ActiveRecord::Base
       barcode_prefix = BarcodePrefix.find_by_prefix(prefix_string)
 
       if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
-        { :query => 'FALSE' }
+        { query: 'FALSE' }
       else
-        { :query => '(wam_asset.barcode=? AND wam_asset.barcode_prefix_id=?)', :parameters => [barcode_number, barcode_prefix.id] }
+        { query: '(wam_asset.barcode=? AND wam_asset.barcode_prefix_id=?)', parameters: [barcode_number, barcode_prefix.id] }
       end
-    end.inject({ :query => ['FALSE'], :parameters => [nil], :joins => ['LEFT JOIN assets AS wam_asset ON qcables.asset_id = wam_asset.id'] }) do |building, current|
+    end.inject({ query: ['FALSE'], parameters: [nil], joins: ['LEFT JOIN assets AS wam_asset ON qcables.asset_id = wam_asset.id'] }) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]

@@ -19,7 +19,7 @@ class SequenomController < ApplicationController
     end
 
     def update_plate(plate, user)
-      plate.events.create!(:message => I18n.t('sequenom.events.message', :step => self.name), :created_by => user.login)
+      plate.events.create!(message: I18n.t('sequenom.events.message', step: self.name), created_by: user.login)
       yield(self)
     end
   end
@@ -33,7 +33,7 @@ class SequenomController < ApplicationController
   end
 
   before_action :login_required
-  before_action :find_plate_from_id, :only => [:show, :update]
+  before_action :find_plate_from_id, only: [:show, :update]
 
   def index
     # Do nothing, fall through to the view
@@ -52,7 +52,7 @@ class SequenomController < ApplicationController
       STEPS.for(params[:sequenom_step]).update_plate(@plate, @user) do |step|
         flash[:notice] = I18n.t(
           'sequenom.notices.step_completed',
-          :step => step.name, :barcode => @plate.ean13_barcode, :human_barcode => @plate.sanger_human_barcode
+          step: step.name, barcode: @plate.ean13_barcode, human_barcode: @plate.sanger_human_barcode
         )
       end
     end
@@ -98,11 +98,11 @@ private
     define_method(rescue_exception_for_filter) do |exception,barcode,human_barcode|
       case
       when ActiveRecord::RecordNotFound === exception
-        flash[:error] = I18n.t("sequenom.errors.#{ name }.not_found_by_barcode", :barcode => barcode, :human_barcode => human_barcode)
+        flash[:error] = I18n.t("sequenom.errors.#{ name }.not_found_by_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
       when Barcode::InvalidBarcode === exception
-        flash[:error] = I18n.t("sequenom.errors.#{ name }.invalid_barcode", :barcode => barcode, :human_barcode => human_barcode)
+        flash[:error] = I18n.t("sequenom.errors.#{ name }.invalid_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
       when EmptyBarcode === exception
@@ -118,14 +118,14 @@ private
     before_action(filter_name, filter_options)
   end
 
-  find_by_barcode_filter(User,  :only => [:update, :quick_update]) { |barcode,human_barcode| human_barcode }
-  find_by_barcode_filter(Plate, :only => [:search, :quick_update]) { |barcode,human_barcode| Barcode.number_to_human(barcode) }
+  find_by_barcode_filter(User,  only: [:update, :quick_update]) { |barcode,human_barcode| human_barcode }
+  find_by_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode,human_barcode| Barcode.number_to_human(barcode) }
 
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!
   def rescue_find_plate_from_barcode_with_create(exception, barcode, human_barcode)
     rescue_find_plate_from_barcode_without_create(exception, barcode, human_barcode) unless ActiveRecord::RecordNotFound === exception
-    @plate = Plate.create!(:barcode => Barcode.number_to_human(barcode))
+    @plate = Plate.create!(barcode: Barcode.number_to_human(barcode))
   end
   alias_method_chain(:rescue_find_plate_from_barcode, :create)
 end

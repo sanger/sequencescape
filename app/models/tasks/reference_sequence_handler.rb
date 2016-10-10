@@ -18,7 +18,7 @@ module Tasks::ReferenceSequenceHandler
           return false
         end
 
-        Asset.find(asset_id).pac_bio_library_tube_metadata.update_attributes!(:protocol => protocol)
+        Asset.find(asset_id).pac_bio_library_tube_metadata.update_attributes!(protocol: protocol)
       end
     end
 

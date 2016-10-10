@@ -14,7 +14,7 @@ class WellTest < ActiveSupport::TestCase
 
     context "with gender_markers results" do
       setup do
-        @well.well_attribute.update_attributes!(:gender_markers => ['M','F','F'])
+        @well.well_attribute.update_attributes!(gender_markers: ['M','F','F'])
       end
       should "create an event if nothings changed and there are no previous events" do
         @well.update_gender_markers!(['M','F','F'], 'SNP')
@@ -53,7 +53,7 @@ class WellTest < ActiveSupport::TestCase
 
     context "with sequenom_count results" do
       setup do
-         @well.well_attribute.update_attributes!(:sequenom_count => 5)
+         @well.well_attribute.update_attributes!(sequenom_count: 5)
       end
 
       should "add an event if its changed" do
@@ -181,7 +181,7 @@ class WellTest < ActiveSupport::TestCase
         minimum_volume = 10
         maximum_volume = 50
         robot_minimum_picking_volume = 1.0
-        @source_well.well_attribute.update_attributes!(:concentration => measured_concentration, :measured_volume => measured_volume)
+        @source_well.well_attribute.update_attributes!(concentration: measured_concentration, measured_volume: measured_volume)
         @target_well.volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, @source_well, robot_minimum_picking_volume)
       end
       should "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
@@ -209,7 +209,7 @@ class WellTest < ActiveSupport::TestCase
           stock_to_pick = 0.1
           buffer_added = 9.9
           robot_minimum_picking_volume = nil
-          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -218,7 +218,7 @@ class WellTest < ActiveSupport::TestCase
           stock_to_pick = 1
           buffer_added = 9
           robot_minimum_picking_volume = 1.0
-          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -227,7 +227,7 @@ class WellTest < ActiveSupport::TestCase
           stock_to_pick = 10.0
           buffer_added = 0.0
           robot_minimum_picking_volume = 10.0
-          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -236,7 +236,7 @@ class WellTest < ActiveSupport::TestCase
           stock_to_pick = 5.0
           buffer_added = 5.0
           robot_minimum_picking_volume = 5.0
-          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -304,19 +304,19 @@ class WellTest < ActiveSupport::TestCase
         @our_product_criteria = create :product_criteria
         @other_criteria = create :product_criteria
 
-        @old_report = create :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.day, :report_identifier => "A#{Time.now}"
-        @current_report = create :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.hour, :report_identifier => "B#{Time.now}"
-        @unrelated_report = create :qc_report, :product_criteria => @other_criteria, :created_at => Time.now, :report_identifier => "C#{Time.now}"
+        @old_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.now - 1.day, report_identifier: "A#{Time.now}"
+        @current_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.now - 1.hour, report_identifier: "B#{Time.now}"
+        @unrelated_report = create :qc_report, product_criteria: @other_criteria, created_at: Time.now, report_identifier: "C#{Time.now}"
 
         @stock_well = create :well
 
         @well.stock_wells.attach!([@stock_well])
         @well.reload
 
-        create :qc_metric, :asset => @stock_well, :qc_report => @old_report, :qc_decision => 'passed', :proceed => true
-        create :qc_metric, :asset => @stock_well, :qc_report => @unrelated_report, :qc_decision => 'passed', :proceed => true
+        create :qc_metric, asset: @stock_well, qc_report: @old_report, qc_decision: 'passed', proceed: true
+        create :qc_metric, asset: @stock_well, qc_report: @unrelated_report, qc_decision: 'passed', proceed: true
 
-        @expected_metric = create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
+        @expected_metric = create :qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true
       end
 
       should 'report appropriate metrics' do

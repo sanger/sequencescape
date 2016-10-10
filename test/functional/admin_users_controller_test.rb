@@ -19,14 +19,14 @@ class Admin::UsersControllerTest < ActionController::TestCase
 
     resource_test(
       'user', {
-        :ignore_actions => ['update'],
-        :actions => ['show','edit','index'],
-        :formats => ['html'],
-        :defaults => { :login => "abc1234" },
-        :user => -> { FactoryGirl.create(:admin) },
+        ignore_actions: ['update'],
+        actions: ['show','edit','index'],
+        formats: ['html'],
+        defaults: { login: "abc1234" },
+        user: -> { FactoryGirl.create(:admin) },
 
         # Setup needed because 'edit' assumes presence of at least one Study and Project
-        :setup => -> { FactoryGirl.create(:study); FactoryGirl.create(:project) }
+        setup: -> { FactoryGirl.create(:study); FactoryGirl.create(:project) }
       }
     )
 
@@ -37,27 +37,27 @@ class Admin::UsersControllerTest < ActionController::TestCase
 
         session[:user] = @admin
 
-        @user_to_find = FactoryGirl.create :user, :first_name => "Some", :last_name => "Body", :login => "sb1"
-        @another_user = FactoryGirl.create :user, :first_name => "No", :last_name => "One", :login => "no1"
+        @user_to_find = FactoryGirl.create :user, first_name: "Some", last_name: "Body", login: "sb1"
+        @another_user = FactoryGirl.create :user, first_name: "No", last_name: "One", login: "no1"
 
       end
 
       should "find a user based on name" do
-        post :filter, :q => "Some"
+        post :filter, q: "Some"
 
         @users = assigns(:users)
         assert_equal @user_to_find, @users.first
       end
 
       should "find a user based on login" do
-        post :filter, :q => "sb"
+        post :filter, q: "sb"
 
         @users = assigns(:users)
         assert_equal @user_to_find, @users.first
       end
 
       should "find multiple users with shared characters in their logins" do
-        post :filter, :q => "1"
+        post :filter, q: "1"
 
         @users = assigns(:users)
         assert @users.detect { |u| u == @user_to_find }
@@ -65,7 +65,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
       end
 
       should "find multiple users with shared characters in their names" do
-        post :filter, :q => "o"
+        post :filter, q: "o"
 
         @users = assigns(:users)
         assert @users.detect { |u| u == @user_to_find }

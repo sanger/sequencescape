@@ -4,7 +4,7 @@
 # Copyright (C) 2007-2011 Genome Research Ltd.
 class Admin::ProgramsController < ApplicationController
   before_action :admin_login_required
-  before_action :discover_program, :only => [:show, :edit, :update, :destroy]
+  before_action :discover_program, only: [:show, :edit, :update, :destroy]
 
   def index
     @programs = Program.all
@@ -28,7 +28,7 @@ class Admin::ProgramsController < ApplicationController
         flash[:notice] = 'Program was successfully created.'
         format.html {  redirect_to(admin_program_path(@program)) }
       else
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
@@ -39,7 +39,7 @@ class Admin::ProgramsController < ApplicationController
         flash[:notice] = 'Program was successfully updated.'
         format.html { redirect_to(admin_programs_path) }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end

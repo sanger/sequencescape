@@ -12,7 +12,7 @@ class LabSearchesController < ApplicationController
   alias_method(:new, :search)
 
   def index
-    redirect_to :action => :new
+    redirect_to action: :new
   end
 
 private

@@ -9,7 +9,7 @@ module ModelExtensions::Order
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
-        delegate_validation :request_options_for_validation, :as => 'request_options', :to => :request_types, :if => :validate_request_options?
+        delegate_validation :request_options_for_validation, as: 'request_options', to: :request_types, if: :validate_request_options?
       end
     end
 
@@ -32,8 +32,8 @@ module ModelExtensions::Order
     end
 
     def request_options_for_validation
-      OpenStruct.new({ :owner => self }.reverse_merge(self.request_options || {})).tap do |v|
-        v.class.delegate(:errors, :include_unset_values?, :to => :owner)
+      OpenStruct.new({ owner: self }.reverse_merge(self.request_options || {})).tap do |v|
+        v.class.delegate(:errors, :include_unset_values?, to: :owner)
       end
     end
   end
@@ -49,15 +49,15 @@ module ModelExtensions::Order
 
       before_validation :merge_in_structured_request_options
 
-      scope :include_study, -> { includes( :study => :uuid_object ) }
-      scope :include_project, -> { includes( :project => :uuid_object ) }
-      scope :include_assets, -> { includes( :assets => :uuid_object ) }
+      scope :include_study, -> { includes( study: :uuid_object ) }
+      scope :include_project, -> { includes( project: :uuid_object ) }
+      scope :include_assets, -> { includes( assets: :uuid_object ) }
 
       has_many :submitted_assets
-      has_many :assets, :through => :submitted_assets, :before_add => :validate_new_record
+      has_many :assets, through: :submitted_assets, before_add: :validate_new_record
 
      scope :that_submitted_asset_id, ->(asset_id) {
-       where(:submitted_assets => { :asset_id => asset_id }).joins(:submitted_assets)
+       where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)
       }
 
       validate :extended_validation

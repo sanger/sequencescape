@@ -52,10 +52,10 @@ FactoryGirl.define do
     end
   end
 
-  factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
+  factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |t|
   end
 
-  factory :plate_creator, :class => Plate::Creator do
+  factory :plate_creator, class: Plate::Creator do
     name                { |t| FactoryGirl.generate :plate_creator_name }
   end
 
@@ -144,13 +144,13 @@ FactoryGirl.define do
   end
 
 
-  factory :lab_workflow_for_pipeline, :class => LabInterface::Workflow do |w|
+  factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do |w|
     name                  { |a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
     locale                "Internal"
   end
 
-  factory :pipeline, :class => Pipeline do |p|
+  factory :pipeline, class: Pipeline do |p|
     name                  { |a| FactoryGirl.generate :pipeline_name }
     automated             false
     active                true
@@ -160,7 +160,7 @@ FactoryGirl.define do
     after(:build)          do |pipeline|
       pipeline.request_types << create(:request_type )
       pipeline.add_control_request_type
-      pipeline.build_workflow(:name => pipeline.name, :item_limit => 2, :locale => 'Internal') if pipeline.workflow.nil?
+      pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
     end
   end
 
@@ -174,7 +174,7 @@ FactoryGirl.define do
     after(:build)          do |pipeline|
       pipeline.request_types << create(:request_type )
       pipeline.add_control_request_type
-      pipeline.build_workflow(:name => pipeline.name, :item_limit => 2, :locale => 'Internal') if pipeline.workflow.nil?
+      pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
     end
   end
 
@@ -189,7 +189,7 @@ FactoryGirl.define do
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type )
       pipeline.add_control_request_type
-      pipeline.build_workflow(:name => pipeline.name, :locale => 'Internal')
+      pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
   end
 
@@ -204,11 +204,11 @@ FactoryGirl.define do
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type )
       pipeline.add_control_request_type
-      pipeline.build_workflow(:name => pipeline.name, :locale => 'Internal')
+      pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
   end
 
-  factory :library_completion, :class => IlluminaHtp::Requests::LibraryCompletion do |request|
+  factory :library_completion, class: IlluminaHtp::Requests::LibraryCompletion do |request|
     request_type { |target| RequestType.find_by_name('Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -231,7 +231,7 @@ FactoryGirl.define do
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type )
       pipeline.add_control_request_type
-      pipeline.build_workflow(:name => pipeline.name, :locale => 'Internal')
+      pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
   end
 
@@ -246,20 +246,20 @@ FactoryGirl.define do
     interactive           nil
   end
 
-  factory :pipeline_admin, :class => User do |u|
+  factory :pipeline_admin, class: User do |u|
     login         "ad1"
     email         { |a| "#{a.login}@example.com".downcase }
     workflow      { |workflow| workflow.association(:submission_workflow) }
     pipeline_administrator true
   end
 
-  factory :lab_workflow, :class => LabInterface::Workflow do |w|
+  factory :lab_workflow, class: LabInterface::Workflow do |w|
     name                  { |a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
     locale                "Internal"
 
     after(:create) do |workflow|
-      workflow.pipeline = create(:pipeline, :workflow => workflow)
+      workflow.pipeline = create(:pipeline, workflow: workflow)
     end
   end
 
@@ -390,7 +390,7 @@ FactoryGirl.define do
     purpose_id { Purpose.find_by_name('PacBio Sheared').id }
   end
 
-  factory :sample_tube_without_barcode, :class => Tube do |tube|
+  factory :sample_tube_without_barcode, class: Tube do |tube|
     name                { |a| FactoryGirl.generate :asset_name }
     value               ""
     descriptors         []
@@ -401,7 +401,7 @@ FactoryGirl.define do
     purpose             { Tube::Purpose.standard_sample_tube }
   end
 
-  factory :empty_sample_tube, :class => SampleTube do |sample_tube|
+  factory :empty_sample_tube, class: SampleTube do |sample_tube|
     name                { |a| FactoryGirl.generate :asset_name }
     value               ""
     descriptors         []
@@ -411,9 +411,9 @@ FactoryGirl.define do
     barcode
     purpose             { Tube::Purpose.standard_sample_tube }
   end
-  factory :sample_tube, :parent => :empty_sample_tube do |sample_tube|
+  factory :sample_tube, parent: :empty_sample_tube do |sample_tube|
     after(:create) do |sample_tube|
-      sample_tube.aliquots.create!(:sample => create(:sample))
+      sample_tube.aliquots.create!(sample: create(:sample))
     end
   end
 
@@ -446,7 +446,7 @@ FactoryGirl.define do
     name { |a| FactoryGirl.generate :purpose_name }
   end
 
-  factory(:tube_purpose, :class => Tube::Purpose) do |purpose|
+  factory(:tube_purpose, class: Tube::Purpose) do |purpose|
     name        'Tube purpose'
     target_type 'MultiplexedLibraryTube'
   end
@@ -460,14 +460,14 @@ FactoryGirl.define do
   end
 
   # A plate that has exactly the right number of wells!
-  factory(:plate_for_strip_tubes, :class => Plate) do |plate|
+  factory(:plate_for_strip_tubes, class: Plate) do |plate|
     size 96
     plate_purpose { PlatePurpose.find_by_name('Stock plate') }
     after(:create) do |plate|
       plate.wells.import(
         ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'].map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-          create(:tagged_well, :map => map)
+          create(:tagged_well, map: map)
         end
       )
     end

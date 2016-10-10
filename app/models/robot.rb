@@ -10,7 +10,7 @@ class Robot < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :location
   has_many :robot_properties
-  has_one :max_plates_property, ->() { where(:key => 'max_plates') }, :class_name => 'RobotProperty'
+  has_one :max_plates_property, ->() { where(key: 'max_plates') }, class_name: 'RobotProperty'
 
  scope :with_machine_barcode, ->(barcode) {
     return none unless Barcode.prefix_from_barcode(barcode) == prefix

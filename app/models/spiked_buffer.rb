@@ -8,7 +8,7 @@ class SpikedBuffer < LibraryTube
   # The index of a spiked buffer is the first parent library tube.  Note that this does not cover cases where
   # the sti_type is a derivative of LibraryTube, which is actually fine because SpikedBuffer is a LibraryTube
   # and we definitely don't want that in the list.
-  has_one_as_child(:index, ->() { where(:sti_type => 'LibraryTube').order('id DESC') })
+  has_one_as_child(:index, ->() { where(sti_type: 'LibraryTube').order('id DESC') })
 
   def library_prep?
     false
@@ -16,8 +16,8 @@ class SpikedBuffer < LibraryTube
 
   # Before the validations are run on creation we need to ensure that there is at least an aliquot of phiX
   # in this tube.
-  before_validation(:on => :create) do |record|
-    record.aliquots.build(:sample => record.class.phiX_sample) if record.aliquots.empty?
+  before_validation(on: :create) do |record|
+    record.aliquots.build(sample: record.class.phiX_sample) if record.aliquots.empty?
   end
 
   def self.phiX_sample

@@ -25,10 +25,10 @@ class SamplesControllerTest < ActionController::TestCase
     # why, if you remove 'update' from the 'ignore_actions' you'll find the test fails!
     resource_test(
       'sample', {
-        :defaults => { :name => "Sample22" },
-        :formats => ['html'],
-        :ignore_actions => ['show','create','update','destroy'],
-        :user => -> { user = FactoryGirl.create(:user); user.is_administrator; user }
+        defaults: { name: "Sample22" },
+        formats: ['html'],
+        ignore_actions: ['show','create','update','destroy'],
+        user: -> { user = FactoryGirl.create(:user); user.is_administrator; user }
       }
     )
 
@@ -45,7 +45,7 @@ class SamplesControllerTest < ActionController::TestCase
           @initial_study_sample_count = StudySample.count
           @sample = FactoryGirl.create :sample
           @study = FactoryGirl.create :study
-          put :add_to_study, :id => @sample.id, :study => { :id => @study.id }
+          put :add_to_study, id: @sample.id, study: { id: @study.id }
         end
         should "change StudySample.count from  0 to 1" do
           assert_equal 0, @initial_study_sample_count

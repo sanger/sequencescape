@@ -23,7 +23,7 @@ module BroadcastEvent::SubjectHelpers
       Hash[json_fields.map { |f| [f,send(f)] }]
     end
 
-    delegate :friendly_name, :uuid, :subject_type, :to => :target
+    delegate :friendly_name, :uuid, :subject_type, to: :target
   end
 
   module SimpleTargetLookup

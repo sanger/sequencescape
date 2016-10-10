@@ -18,47 +18,47 @@ class Well < Aliquot::Receptacle
     self.table_name = 'well_links'
     self.inheritance_column = nil
 
-    belongs_to :target_well, :class_name => 'Well'
-    belongs_to :source_well, :class_name => 'Well'
+    belongs_to :target_well, class_name: 'Well'
+    belongs_to :source_well, class_name: 'Well'
   end
-  has_many :stock_well_links,  ->() { where(type:'stock') }, :class_name => 'Well::Link', :foreign_key => :target_well_id
+  has_many :stock_well_links,  ->() { where(type:'stock') }, class_name: 'Well::Link', foreign_key: :target_well_id
 
-  has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
+  has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
       attach(wells).tap do |_|
         proxy_association.owner.save!
       end
     end
     def attach(wells)
-      proxy_association.owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } })
+      proxy_association.owner.stock_well_links.build(wells.map { |well| { type: 'stock', source_well: well } })
     end
   end
 
-  has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
+  has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
 
   # hams_many due to eager loading requirement and can't have a has one through a has_many
-  has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(:assets => { :sti_type => 'Well' }) }, :class_name => 'Well', :through => :links_as_parent, :source => :descendant
+  has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(assets: { sti_type: 'Well' }) }, class_name: 'Well', through: :links_as_parent, source: :descendant
 
-  scope :include_stock_wells, -> { includes(:stock_wells => :requests_as_source) }
+  scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_map,         -> { includes(:map) }
 
   scope :located_at, ->(location) {
-    joins(:map).where(:maps => { :description => location })
+    joins(:map).where(maps: { description: location })
   }
 
   scope :on_plate_purpose, ->(purposes) {
       joins(:plate).
-      where(:plates_assets => { :plate_purpose_id => purposes })
+      where(plates_assets: { plate_purpose_id: purposes })
   }
 
   scope :for_study_through_sample, ->(study) {
-      joins(:aliquots => { :sample => :study_samples }).
-      where(:study_samples => { :study_id => study })
+      joins(aliquots: { sample: :study_samples }).
+      where(study_samples: { study_id: study })
   }
 
   scope :for_study_through_aliquot, ->(study) {
       joins(:aliquots).
-      where(:aliquots => { :study_id => study })
+      where(aliquots: { study_id: study })
   }
 
   #
@@ -72,15 +72,15 @@ class Well < Aliquot::Receptacle
     having("NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)",product_criteria.product_id,product_criteria.stage)
   }
 
-  has_many :target_well_links,  ->() { where(type:'stock') }, :class_name => 'Well::Link', :foreign_key => :source_well_id
-  has_many :target_wells, :through => :target_well_links, :source => :target_well
+  has_many :target_well_links,  ->() { where(type:'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
+  has_many :target_wells, through: :target_well_links, source: :target_well
 
   scope :stock_wells_for, ->(wells) {
     joins(:target_well_links).
-    where(:well_links => { :target_well_id => [wells].flatten.map(&:id) })
+    where(well_links: { target_well_id: [wells].flatten.map(&:id) })
   }
 
-  scope :located_at_position, ->(position) { joins(:map).readonly(false).where(:maps => { :description => position }) }
+  scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
   contained_by :plate
 
@@ -90,10 +90,10 @@ class Well < Aliquot::Receptacle
     plate
   end
 
-  delegate :location, :location_id, :location_id=, :printable_target, :to => :container, :allow_nil => true
+  delegate :location, :location_id, :location_id=, :printable_target, to: :container, allow_nil: true
   self.per_page = 500
 
-  has_one :well_attribute, :inverse_of => :well
+  has_one :well_attribute, inverse_of: :well
   before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
 
   scope :pooled_as_target_by, ->(type) {
@@ -113,8 +113,8 @@ class Well < Aliquot::Receptacle
   scope :in_inverse_column_major_order, -> { joins(:map).order('column_order DESC').select('assets.*, column_order') }
   scope :in_inverse_row_major_order,    -> { joins(:map).order('row_order DESC').select('assets.*, row_order') }
 
-  scope :in_plate_column, ->(col,size) {  joins(:map).where(:maps => { :description => Map::Coordinate.descriptions_for_column(col,size), :asset_size => size }) }
-  scope :in_plate_row,    ->(row,size) {  joins(:map).where(:maps => { :description => Map::Coordinate.descriptions_for_row(row,size), :asset_size => size }) }
+  scope :in_plate_column, ->(col,size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col,size), asset_size: size }) }
+  scope :in_plate_row,    ->(row,size) {  joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row,size), asset_size: size }) }
 
   scope :with_blank_samples, -> {
     joins([
@@ -125,8 +125,8 @@ class Well < Aliquot::Receptacle
   }
 
   scope :without_blank_samples, ->() {
-    joins(:aliquots => :sample).
-    where(:samples => { :empty_supplier_sample_name => false })
+    joins(aliquots: :sample).
+    where(samples: { empty_supplier_sample_name: false })
   }
 
   scope :with_contents, -> {
@@ -182,7 +182,7 @@ class Well < Aliquot::Receptacle
   alias_method(:get_volume, :get_current_volume)
   writer_for_well_attribute_as_float(:current_volume)
 
-  delegate_to_well_attribute(:buffer_volume, :default => 0.0)
+  delegate_to_well_attribute(:buffer_volume, default: 0.0)
   writer_for_well_attribute_as_float(:buffer_volume)
 
   delegate_to_well_attribute(:requested_volume)
@@ -205,14 +205,14 @@ class Well < Aliquot::Receptacle
       self.events.update_gender_markers!(resource)
     end
 
-    self.well_attribute.update_attributes!(:gender_markers => gender_markers)
+    self.well_attribute.update_attributes!(gender_markers: gender_markers)
   end
 
   def update_sequenom_count!(sequenom_count, resource)
     unless self.well_attribute.sequenom_count == sequenom_count
       self.events.update_sequenom_count!(resource)
     end
-    self.well_attribute.update_attributes!(:sequenom_count => sequenom_count)
+    self.well_attribute.update_attributes!(sequenom_count: sequenom_count)
 
   end
 
@@ -242,16 +242,16 @@ class Well < Aliquot::Receptacle
   end
 
   def create_child_sample_tube
-    Tube::Purpose.standard_sample_tube.create!(:map => self.map, :aliquots => aliquots.map(&:dup)).tap do |sample_tube|
+    Tube::Purpose.standard_sample_tube.create!(map: self.map, aliquots: aliquots.map(&:dup)).tap do |sample_tube|
       AssetLink.create_edge(self, sample_tube)
     end
   end
 
   def qc_data
-    { :pico => self.get_pico_pass,
-     :gel           => self.get_gel_pass,
-     :sequenom      => self.get_sequenom_pass,
-     :concentration => self.get_concentration }
+    { pico: self.get_pico_pass,
+     gel: self.get_gel_pass,
+     sequenom: self.get_sequenom_pass,
+     concentration: self.get_concentration }
   end
 
   def buffer_required?
@@ -264,7 +264,7 @@ class Well < Aliquot::Receptacle
     latest_child_well.sort_by(&:id).last
   end
 
-  validate(:on => :save) do |record|
+  validate(on: :save) do |record|
     record.errors.add(:name, "cannot be specified for a well") unless record.name.blank?
   end
 

@@ -12,9 +12,9 @@ class PreCapGroupsTest < ActiveSupport::TestCase
     pools.each_with_index do |well_locs,index|
       @plate.wells.located_at(well_locs).each do |well|
        FactoryGirl.create(:pulldown_isc_request, {
-          :asset => well,
-          :pre_capture_pool => @pools[index],
-          :submission_id => index + 1
+          asset: well,
+          pre_capture_pool: @pools[index],
+          submission_id: index + 1
         })
       end
     end
@@ -25,7 +25,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       @plate = FactoryGirl.create :pooling_plate
       @pools = (0..3).map do |i|
         pool = FactoryGirl.create :pre_capture_pool
-        pool.uuid_object.update_attributes!(:external_id => "00000000-0000-0000-0000-00000000000#{i}")
+        pool.uuid_object.update_attributes!(external_id: "00000000-0000-0000-0000-00000000000#{i}")
         pool
       end
     end
@@ -68,10 +68,10 @@ class PreCapGroupsTest < ActiveSupport::TestCase
         setup do
           @target_plate = FactoryGirl.create :initial_downstream_plate
           @transfer = Transfer::BetweenPlates.create!(
-            :source => @plate,
-            :destination => @target_plate,
-            :user => FactoryGirl.create(:user),
-            :transfers => { 'A1' => ['A1','B1'],'B1' => ['A1'],'C1' => ['A1'],'D1' => ['B1','C1'],'E1' => ['C1'],'F1' => ['C1'] }
+            source: @plate,
+            destination: @target_plate,
+            user: FactoryGirl.create(:user),
+            transfers: { 'A1' => ['A1','B1'],'B1' => ['A1'],'C1' => ['A1'],'D1' => ['B1','C1'],'E1' => ['C1'],'F1' => ['C1'] }
           )
         end
 
@@ -92,7 +92,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
       context "when some are started" do
         setup do
-          @pools[0,2].each { |pl| pl.requests.each { |r| r.update_attributes!(:state => 'started') } }
+          @pools[0,2].each { |pl| pl.requests.each { |r| r.update_attributes!(state: 'started') } }
         end
 
         should "report the unstarted pool" do

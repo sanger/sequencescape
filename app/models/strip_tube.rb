@@ -30,6 +30,6 @@ class StripTube < Plate
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     barcode    = args.first || attributes[:barcode]
-    create!(attributes.merge(:barcode => barcode), &block)
+    create!(attributes.merge(barcode: barcode), &block)
   end
 end

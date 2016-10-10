@@ -37,10 +37,10 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
 
   def library_source_plates(tube)
     Plate.select('DISTINCT assets.*').
-      joins(:wells => :requests).
-      where(:requests => {
-        :target_asset_id => tube.id,
-        :sti_type => [Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
+      joins(wells: :requests).
+      where(requests: {
+        target_asset_id: tube.id,
+        sti_type: [Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
       }
     ).map(&:source_plate)
   end
@@ -57,7 +57,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
 
   def generate_events_for(tube,orders,user)
     orders.each do |order_id|
-      BroadcastEvent::LibraryComplete.create!(:seed => tube,:user => user,:properties => { :order_id => order_id })
+      BroadcastEvent::LibraryComplete.create!(seed: tube,user: user,properties: { order_id: order_id })
     end
   end
   private :generate_events_for

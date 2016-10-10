@@ -10,6 +10,6 @@ class ::Endpoints::Batches < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:pipeline, :json => "pipeline")
+    belongs_to(:pipeline, json: "pipeline")
   end
 end

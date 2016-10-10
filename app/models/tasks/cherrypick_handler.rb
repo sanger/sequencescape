@@ -13,7 +13,7 @@ module Tasks::CherrypickHandler
 
   def render_cherrypick_task(task, params)
     unless flash[:error].blank?
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+      redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
     end
 
@@ -23,7 +23,7 @@ module Tasks::CherrypickHandler
     end
     if plate_template.nil?
       flash[:error] = "Please select a template"
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+      redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
     end
 
@@ -41,13 +41,13 @@ module Tasks::CherrypickHandler
       @plate = Plate.find_by_barcode(plate_barcode_id)
       if @plate.nil?
         flash[:error] = "Invalid plate barcode"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+        redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
     elsif @fluidigm_plate.present?
       if @fluidigm_plate.size > 10
         flash[:error] = "Invalid fluidigm barcode"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+        redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
       @plate = Plate::Metadata.includes(:plate).where(fluidigm_barcode: @fluidigm_barcode).try(:plate)
@@ -138,7 +138,7 @@ module Tasks::CherrypickHandler
         plate = partial_plate
         if plate.nil?
           barcode = PlateBarcode.create.barcode
-          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode, :plate_metadata_attributes => { :fluidigm_barcode => fluidigm_plate })
+          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: size, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_plate })
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.

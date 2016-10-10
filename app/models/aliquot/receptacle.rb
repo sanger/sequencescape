@@ -8,14 +8,14 @@ class Aliquot::Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
 
-  has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
-  has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
-  has_many :transfer_requests_as_target, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
+  has_many :transfer_requests, class_name: 'TransferRequest', foreign_key: :target_asset_id
+  has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
+  has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
 
-  has_many :requests, :inverse_of => :asset, :foreign_key => :asset_id
-  has_one  :source_request, ->() { includes(:request_metadata) }, :class_name => "Request", :foreign_key => :target_asset_id
-  has_many :requests_as_source, ->() { includes(:request_metadata) }, :class_name => 'Request', :foreign_key => :asset_id
-  has_many :requests_as_target, ->() { includes(:request_metadata) }, :class_name => 'Request', :foreign_key => :target_asset_id
+  has_many :requests, inverse_of: :asset, foreign_key: :asset_id
+  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: "Request", foreign_key: :target_asset_id
+  has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
+  has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
 
   has_many :creation_batches, class_name: "Batch", through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: "Batch", through: :requests_as_source, source: :batch
@@ -29,15 +29,15 @@ class Aliquot::Receptacle < Asset
 
   # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
   # one aliquot.
-  has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle
-  has_one :primary_aliquot, ->() { order(:created_at).readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
+  has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, foreign_key: :receptacle_id, autosave: true, dependent: :destroy, inverse_of: :receptacle
+  has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
-  has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
+  has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
   # Named scopes for the future
-  scope :include_aliquots, -> { includes( :aliquots => [:sample, :tag, :bait_library] ) }
-  scope :include_aliquots_for_api, -> { includes( :aliquots => [{ :sample => [:uuid_object,:study_reference_genome,{ :sample_metadata => :reference_genome }] }, { :tag => :tag_group }, :bait_library] ) }
+  scope :include_aliquots, -> { includes( aliquots: [:sample, :tag, :bait_library] ) }
+  scope :include_aliquots_for_api, -> { includes( aliquots: [{ sample: [:uuid_object,:study_reference_genome,{ sample_metadata: :reference_genome }] }, { tag: :tag_group }, :bait_library] ) }
   scope :for_summary, -> { includes(:map,:samples,:studies,:projects) }
   scope :include_creation_batches, -> { includes(:creation_batches) }
   scope :include_source_batches, -> { includes(:source_batches) }
@@ -48,20 +48,20 @@ class Aliquot::Receptacle < Asset
   scope :with_aliquots, -> { joins(:aliquots) }
 
   # Provide some named scopes that will fit with what we've used in the past
-  scope :with_sample_id, ->(id)     { where(:aliquots => { :sample_id => Array(id)     }).joins(:aliquots) }
-  scope :with_sample,    ->(sample) { where(:aliquots => { :sample_id => Array(sample) }).joins(:aliquots) }
+  scope :with_sample_id, ->(id)     { where(aliquots: { sample_id: Array(id)     }).joins(:aliquots) }
+  scope :with_sample,    ->(sample) { where(aliquots: { sample_id: Array(sample) }).joins(:aliquots) }
 
   # Scope for caching the samples of the receptacle
-  scope :including_samples, -> { includes(:samples => :studies) }
+  scope :including_samples, -> { includes(samples: :studies) }
 
   # TODO: Remove these at some point in the future as they're kind of wrong!
-  has_one :sample, :through => :primary_aliquot
+  has_one :sample, through: :primary_aliquot
   deprecate :sample
 
 
   def sample=(sample)
     aliquots.clear
-    aliquots << Aliquot.new(:sample => sample)
+    aliquots << Aliquot.new(sample: sample)
   end
   deprecate :sample=
 
@@ -70,7 +70,7 @@ class Aliquot::Receptacle < Asset
   end
   deprecate :sample_id
 
-  has_one :get_tag, :through => :primary_aliquot, :source => :tag
+  has_one :get_tag, through: :primary_aliquot, source: :tag
   deprecate :get_tag
 
   def tag
@@ -109,9 +109,9 @@ class Aliquot::Receptacle < Asset
     aliquots.pluck(:library_type).uniq
   end
 
-  has_many :studies, :through => :aliquots
-  has_many :projects, :through => :aliquots
-  has_many :samples, :through => :aliquots
+  has_many :studies, through: :aliquots
+  has_many :projects, through: :aliquots
+  has_many :samples, through: :aliquots
 
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples

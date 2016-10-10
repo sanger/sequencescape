@@ -22,7 +22,7 @@ class RobotVerificationsController < ApplicationController
       get_fields_and_check(barcode_hash)
     else
       flash[:error] = errors
-      redirect_to :action => :index
+      redirect_to action: :index
     end
   end
 
@@ -33,7 +33,7 @@ class RobotVerificationsController < ApplicationController
       @destination_plate_id = Plate.with_machine_barcode(params[:destination_plate_barcodes].first.first).first.barcode
     else
       flash[:error] = "Error: #{@robot_verification.errors.join('; ')}"
-      redirect_to :action => :index
+      redirect_to action: :index
     end
   end
 

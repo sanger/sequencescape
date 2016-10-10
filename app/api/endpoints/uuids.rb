@@ -33,7 +33,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     class CriteriaInvalid < ::Core::Service::Error
       def initialize(*args)
         super
-        @errors = { :lookup => [self.message] }
+        @errors = { lookup: [self.message] }
       end
 
       def api_error(response)
@@ -45,8 +45,8 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
 
     attr_reader :lookup
     protected :lookup
-    validates_presence_of :lookup, :message => 'should be a tuple'
-    validates_each(:lookup, :allow_blank => true) do |record, field, value|
+    validates_presence_of :lookup, message: 'should be a tuple'
+    validates_each(:lookup, allow_blank: true) do |record, field, value|
       record.errors.add(field, 'should be a tuple') unless value.is_a?(Hash)
     end
 
@@ -64,7 +64,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     end
 
     attribute_delegate(:id, :model)
-    validates_numericality_of :id, :only_integer => true, :greater_than => 0, :allow_blank? => false
+    validates_numericality_of :id, only_integer: true, greater_than: 0, allow_blank?: false
     validates_presence_of :model
 
     def initialize(attributes)
@@ -96,7 +96,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     disable(:read)
 
     # Does an individual resource lookup
-    bind_action(:create, :to => 'lookup', :as => :lookup) do |_,request, response|
+    bind_action(:create, to: 'lookup', as: :lookup) do |_,request, response|
       lookup = request.json.respond_to?(:keys) ? request.json['lookup'] : nil
       uuid = Search.create!(lookup).find
 
@@ -114,7 +114,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     bound_action_does_not_require_an_io_class(:lookup)
 
     # Handles trying to find multiple resources
-    bind_action(:create, :to => 'bulk', :as => :bulk) do |_,request, response|
+    bind_action(:create, to: 'bulk', as: :bulk) do |_,request, response|
       lookup = request.json.respond_to?(:keys) ? request.json['lookup'] : nil
       uuids = Search.create_bulk!(lookup).map(&:find)
 

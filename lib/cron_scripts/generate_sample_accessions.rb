@@ -32,16 +32,16 @@ class ::Sample
         )
       )
     ", {
-      :data_release_timing          => ['never', 'delayed'],
-      :data_release_study_type      => DataReleaseStudyType::DATA_RELEASE_TYPES_SAMPLES,
-      :data_release_managed_or_open => [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED]
+      data_release_timing: ['never', 'delayed'],
+      data_release_study_type: DataReleaseStudyType::DATA_RELEASE_TYPES_SAMPLES,
+      data_release_managed_or_open: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED]
     }])
   }
 end
 
 # Only ever process those samples that actually need an accession number to be generated for them.
 current_user = User.find_by_api_key(configatron.accession_local_key) or raise StandardError, "Cannot find accessioning user"
-Sample.requiring_accession_number.includes(:sample_metadata, { :studies => :study_metadata }).find_each do |sample|
+Sample.requiring_accession_number.includes(:sample_metadata, { studies: :study_metadata }).find_each do |sample|
   begin
     sample.validate_ena_required_fields!
     sample.accession_service.submit_sample_for_user(sample, current_user) unless sample.accession_service.nil?

@@ -17,8 +17,8 @@ class Parsers::BioanalysisCsvParser
 
   def field_name_for(sym_name)
     {
-      :concentration => "Conc. [ng/µl]",
-      :molarity => "Molarity [nmol/l]"
+      concentration: "Conc. [ng/µl]",
+      molarity: "Molarity [nmol/l]"
     }[sym_name]
   end
 
@@ -111,9 +111,9 @@ class Parsers::BioanalysisCsvParser
   def parse_sample(group)
     {
       parse_cell(group) => {
-        :peak_table => parse_peak_table(group),
-        :region_table => parse_region_table(group),
-        :overall => parse_overall(group)
+        peak_table: parse_peak_table(group),
+        region_table: parse_region_table(group),
+        overall: parse_overall(group)
       }
     }
   end

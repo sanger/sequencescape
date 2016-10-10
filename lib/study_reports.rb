@@ -3,7 +3,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
 Study.find_each do |study|
-  study_report = StudyReport.create!(:study => study)
+  study_report = StudyReport.create!(study: study)
   # delayed job
   study_report.perform
 end

@@ -112,9 +112,9 @@ class Api::Base
             object.roles.each do |role|
               json_attributes[role.name.underscore] = role.users.map do |user|
                 {
-                  :login => user.login,
-                  :email => user.email,
-                  :name  => user.name
+                  login: user.login,
+                  email: user.email,
+                  name: user.name
                 }
               end
             end
@@ -133,7 +133,7 @@ class Api::Base
   end
 
   # Contains the mapping from the ActiveRecord attribute to the key in the JSON hash
-  class_attribute :attribute_to_json_attribute_mappings, :instance_writer => false
+  class_attribute :attribute_to_json_attribute_mappings, instance_writer: false
   self.attribute_to_json_attribute_mappings = {}
 
   # TODO[xxx]: Need to warn about 'id' not being 'internal_id'
@@ -146,7 +146,7 @@ class Api::Base
   self.related_resources = []
 
   # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
-  class_attribute :associations, :instance_writer => false
+  class_attribute :associations, instance_writer: false
   self.associations = {}
 
     # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
@@ -212,15 +212,15 @@ class Api::Base
   class_attribute :attribute_to_json_attribute_mappings_for_list
 
   self.attribute_to_json_attribute_mappings_for_list = {
-    :id   => 'id',
-    :uuid => 'uuid',    # TODO[xxx]: if respond_to?(:uuid)
-    :url  => 'url',     # TODO[xxx]: if respond_to?(:uuid)
-    :name => 'name'     # TODO[xxx]: if respond_to?(:name)
+    id: 'id',
+    uuid: 'uuid',    # TODO[xxx]: if respond_to?(:uuid)
+    url: 'url',     # TODO[xxx]: if respond_to?(:uuid)
+    name: 'name'     # TODO[xxx]: if respond_to?(:name)
   }
 
   # Additional JSON attribute handling, that cannot be done with the simple stuff, should be passed
   # done through a block
-  class_attribute :extra_json_attribute_handlers, :instance_writer => false
+  class_attribute :extra_json_attribute_handlers, instance_writer: false
   self.extra_json_attribute_handlers = []
 
   def self.extra_json_attributes(&block)

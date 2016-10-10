@@ -10,7 +10,7 @@ class StudyType < ActiveRecord::Base
   has_many :study
 
   validates_presence_of  :name
-  validates_uniqueness_of :name, :message => "of study type already present in database"
+  validates_uniqueness_of :name, message: "of study type already present in database"
 
   scope :for_selection, ->() { order(:name).where(valid_for_creation: true) }
 

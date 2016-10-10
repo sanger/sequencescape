@@ -8,14 +8,14 @@ module ModelExtensions::Project
   def self.included(base)
     base.class_eval do
       has_many :submissions
-      scope :include_roles, -> { includes( :roles => :users ) }
+      scope :include_roles, -> { includes( roles: :users ) }
     end
   end
 
   def roles_as_json
     Hash[
       self.roles.map do |role|
-        [role.name.underscore, role.users.map { |user| { :login => user.login, :email => user.email, :name => user.name } }]
+        [role.name.underscore, role.users.map { |user| { login: user.login, email: user.email, name: user.name } }]
       end
     ]
   end

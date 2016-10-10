@@ -69,20 +69,20 @@ class AssignTagsToWellsTask < Task
     source_well_to_intermediate_wells.each do |source_well, assets|
       library_well, tagged_well, pooled_well, tube = assets
 
-      RequestType.transfer.create!(:asset => source_well,  :target_asset => library_well, :state => 'passed')
-      library_well.aliquots.each { |aliquot| aliquot.update_attributes!(:library => library_well) }
+      RequestType.transfer.create!(asset: source_well,  target_asset: library_well, state: 'passed')
+      library_well.aliquots.each { |aliquot| aliquot.update_attributes!(library: library_well) }
 
-      RequestType.transfer.create!(:asset => library_well, :target_asset => tagged_well,  :state => 'passed')
+      RequestType.transfer.create!(asset: library_well, target_asset: tagged_well,  state: 'passed')
       tag_id = well_id_tag_id_map[source_well.id]
       Tag.find(tag_id).tag!(tagged_well) if tag_id.present?
 
-      RequestType.transfer.create!(:asset => tagged_well,  :target_asset => pooled_well,  :state => 'passed')
+      RequestType.transfer.create!(asset: tagged_well,  target_asset: pooled_well,  state: 'passed')
 
       raise StandardError, "Pooled well into different tube!" unless tube == (pooled_well_to_tube[pooled_well] || tube)
       pooled_well_to_tube[pooled_well] = tube
     end
 
-    pooled_well_to_tube.each { |well, tube| RequestType.transfer.create!(:asset => well, :target_asset => tube) }
+    pooled_well_to_tube.each { |well, tube| RequestType.transfer.create!(asset: well, target_asset: tube) }
   end
   private :retag_tubes
 
@@ -95,19 +95,19 @@ class AssignTagsToWellsTask < Task
     well_to_tagged = {}
     tube_to_pool = {}
 
-    pooled_plate  = Plate.create!(:size => source_plate.size)
-    library_plate = Plate.create!(:size => source_plate.size)
-    tag_plate     = Plate.create!(:size => source_plate.size)
+    pooled_plate  = Plate.create!(size: source_plate.size)
+    library_plate = Plate.create!(size: source_plate.size)
+    tag_plate     = Plate.create!(size: source_plate.size)
 
     source_plate.wells.each do |well|
       library_well = Well.create!
-      RequestType.transfer.create!(:asset => well, :target_asset => library_well, :state => 'passed')
+      RequestType.transfer.create!(asset: well, target_asset: library_well, state: 'passed')
       library_plate.add_well_by_map_description(library_well, well.map_description)
-      library_well.aliquots.each { |aliquot| aliquot.update_attributes!(:library => library_well) }
+      library_well.aliquots.each { |aliquot| aliquot.update_attributes!(library: library_well) }
 
       tagged_well = Well.create!
       well_to_tagged[well] = tagged_well
-      RequestType.transfer.create!(:asset => library_well, :target_asset => tagged_well, :state => 'passed')
+      RequestType.transfer.create!(asset: library_well, target_asset: tagged_well, state: 'passed')
       tag_plate.add_well_by_map_description(tagged_well, well.map_description)
       tag_id = well_id_tag_id_map[well.id]
       Tag.find(tag_id).tag!(tagged_well) if tag_id
@@ -129,13 +129,13 @@ class AssignTagsToWellsTask < Task
         pooled_plate.add_well_by_map_description(pooled_well, tagged_well.map_description)
       end
 
-      RequestType.transfer.create!(:asset => tagged_well, :target_asset => pooled_well, :state => 'passed')
+      RequestType.transfer.create!(asset: tagged_well, target_asset: pooled_well, state: 'passed')
       # transfer between pooled_well and tube needs to be at the end, when all the aliquots are present
       #RequestType.transfer.create!(:asset => pooled_well, :target_asset => tube)
     end
 
     tube_to_pool.each do |tube, pooled_well|
-      RequestType.transfer.create!(:asset => pooled_well, :target_asset => tube, :state => 'passed')
+      RequestType.transfer.create!(asset: pooled_well, target_asset: tube, state: 'passed')
     end
 
     link_pulldown_indexed_libraries_to_multiplexed_library(requests)
@@ -173,7 +173,7 @@ class AssignTagsToWellsTask < Task
 
       # If the requests don't all end in the same tube!
       raise 'Borked!' unless requests_with_same_submission.map(&:target_asset).compact.uniq.size == 1
-      sequencing_requests.each { |sequencing_request| sequencing_request.update_attributes!(:asset => requests_with_same_submission.first.target_asset) }
+      sequencing_requests.each { |sequencing_request| sequencing_request.update_attributes!(asset: requests_with_same_submission.first.target_asset) }
     end
   end
 

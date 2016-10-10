@@ -58,7 +58,7 @@ class Presenters::QcReportPresenter
   end
 
   def state_description
-    I18n.t(qc_report.state, :scope => 'qc_reports.state_descriptions', :default => :default, :queue_count => queue_count )
+    I18n.t(qc_report.state, scope: 'qc_reports.state_descriptions', default: :default, queue_count: queue_count )
   end
 
   def to_csv(io)
@@ -70,7 +70,7 @@ class Presenters::QcReportPresenter
     @csv
   end
 
-  delegate :available?, :study, :report_identifier, :to => :qc_report
+  delegate :available?, :study, :report_identifier, to: :qc_report
 
   def each_header
     HEADER_FIELDS.each do |field,lookup|

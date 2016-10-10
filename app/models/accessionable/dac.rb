@@ -12,9 +12,9 @@ class Accessionable::Dac < Accessionable::Base
     @name = study.dac_refname
     @contacts = study.send("Data Access Contacts").map do |contact|
       {
-        :email => contact.email,
-        :name => contact.name,
-        :organisation => AccessionService::CenterName
+        email: contact.email,
+        name: contact.name,
+        organisation: AccessionService::CenterName
       }
     end
 
@@ -33,13 +33,13 @@ class Accessionable::Dac < Accessionable::Base
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.DAC_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.DAC(:alias => self.alias, :accession => self.accession_number, :center_name => self.center_name) {
+      xml.DAC(alias: self.alias, accession: self.accession_number, center_name: self.center_name) {
       xml.CONTACTS {
       self.contacts.each do |contact|
       xml.CONTACT( {
-        :name => contact[:name],
-        :email => contact[:email],
-        :organisation => contact[:organisation]
+        name: contact[:name],
+        email: contact[:email],
+        organisation: contact[:organisation]
         }.tap do |att|
          att[:telephone] = tel if (tel = contact[:telephone])
         end)

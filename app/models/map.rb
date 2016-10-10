@@ -131,19 +131,19 @@ class Map < ActiveRecord::Base
 
  scope :for_position_on_plate, ->(position,plate_size,asset_shape) {
     where(
-        :row_order => position - 1,
-        :asset_size     => plate_size,
-        :asset_shape_id => asset_shape.id
+        row_order: position - 1,
+        asset_size: plate_size,
+        asset_shape_id: asset_shape.id
     )
   }
 
-  scope :where_description, ->(*descriptions) { where(:description => descriptions.flatten) }
-  scope :where_plate_size,  ->(size) { where(:asset_size => size) }
-  scope :where_plate_shape, ->(asset_shape) { where(:asset_shape_id => asset_shape) }
-  scope :where_vertical_plate_position, ->(*positions) { where(:column_order => positions.map { |v| v - 1 }) }
+  scope :where_description, ->(*descriptions) { where(description: descriptions.flatten) }
+  scope :where_plate_size,  ->(size) { where(asset_size: size) }
+  scope :where_plate_shape, ->(asset_shape) { where(asset_shape_id: asset_shape) }
+  scope :where_vertical_plate_position, ->(*positions) { where(column_order: positions.map { |v| v - 1 }) }
 
-  belongs_to :asset_shape, :class_name => 'AssetShape'
-  delegate :standard?, :to => :asset_shape
+  belongs_to :asset_shape, class_name: 'AssetShape'
+  delegate :standard?, to: :asset_shape
 
   def self.valid_plate_size?(plate_size)
     plate_size.is_a?(Integer) && plate_size > 0
@@ -209,9 +209,9 @@ class Map < ActiveRecord::Base
 
   def next_map_position
     Map.where(
-      :asset_size => asset_size,
-      :asset_shape_id => asset_shape_id,
-      :row_order => row_order + 1
+      asset_size: asset_size,
+      asset_shape_id: asset_shape_id,
+      row_order: row_order + 1
     ).first
   end
 
@@ -229,26 +229,26 @@ class Map < ActiveRecord::Base
 
   def next_vertical_map_position
     Map.where(
-      :asset_size => asset_size,
-      :asset_shape_id => asset_shape_id,
-      :column_order => column_order + 1
+      asset_size: asset_size,
+      asset_shape_id: asset_shape_id,
+      column_order: column_order + 1
     ).first
   end
 
   def self.map_96wells
-    Map.where(:asset_size => 96)
+    Map.where(asset_size: 96)
   end
 
   def self.map_384wells
-    Map.where(:asset_size => 384)
+    Map.where(asset_size: 384)
   end
 
   def self.snp_map_id_to_pipelines_map_id(snp_map_id,plate_size)
     # We're only going to be getting standard plates in through SNP
     Map.where(
-      :asset_size  => plate_size,
-      :row_order   => snp_map_id.to_i + 1,
-      :asset_shape => AssetShape.default_id
+      asset_size: plate_size,
+      row_order: snp_map_id.to_i + 1,
+      asset_shape: AssetShape.default_id
     ).pluck(:id).first
   end
 
@@ -258,7 +258,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.split_well_description(well_description)
-    { :row => well_description.getbyte(0) - 65, :col => well_description[1,well_description.size].to_i }
+    { row: well_description.getbyte(0) - 65, col: well_description[1,well_description.size].to_i }
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
@@ -290,7 +290,7 @@ class Map < ActiveRecord::Base
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
     def walk_plate_in_column_major_order(size, asset_shape=nil, &block)
       asset_shape ||= AssetShape.default_id
-      where(:asset_size => size, :asset_shape_id => asset_shape).order(:column_order).each do |position|
+      where(asset_size: size, asset_shape_id: asset_shape).order(:column_order).each do |position|
         yield(position, position.column_order)
       end
     end
@@ -299,7 +299,7 @@ class Map < ActiveRecord::Base
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
     def walk_plate_in_row_major_order(size, asset_shape=nil, &block)
       asset_shape ||= AssetShape.default_id
-      where(:asset_size => size, :asset_shape_id => asset_shape).order(:row_order).each do |position|
+      where(asset_size: size, asset_shape_id: asset_shape).order(:row_order).each do |position|
         yield(position, position.row_order)
       end
     end

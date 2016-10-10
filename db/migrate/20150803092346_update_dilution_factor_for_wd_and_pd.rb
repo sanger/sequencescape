@@ -9,12 +9,12 @@ class UpdateDilutionFactorForWdAndPd < ActiveRecord::Migration
   def self.types
     [
       {
-        :purpose_name => "Working Dilution",
-        :value => 12.5
+        purpose_name: "Working Dilution",
+        value: 12.5
       },
       {
-        :purpose_name => "Pico Dilution",
-        :value => 50.0
+        purpose_name: "Pico Dilution",
+        value: 50.0
       }
     ]
   end

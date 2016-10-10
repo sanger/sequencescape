@@ -12,12 +12,12 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
       [96, 384].each do |size|
         context "when the plate size is #{size}" do
           should 'return plate width if purpose picked in rows' do
-            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => size, :cherrypick_direction => 'row'))
+            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: size, cherrypick_direction: 'row'))
             assert_equal(Map::Coordinate.plate_width(size), plate.dimension)
           end
 
           should 'return plate length if purpose picked in column' do
-            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => size, :cherrypick_direction => 'column'))
+            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: size, cherrypick_direction: 'column'))
             assert_equal(Map::Coordinate.plate_length(size), plate.dimension)
           end
         end
@@ -26,7 +26,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
 
     context 'empty plate' do
       setup do
-        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => 96, :cherrypick_direction => 'row'))
+        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: 96, cherrypick_direction: 'row'))
       end
 
       context '#available' do
@@ -76,7 +76,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
         end
 
         should 'be the last pick species if there have been picks' do
-          @target.concat([OpenStruct.new(:species => [:last])])
+          @target.concat([OpenStruct.new(species: [:last])])
           assert_equal([:last], @target.species)
         end
       end
@@ -84,7 +84,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
 
     context 'partial plate' do
       setup do
-        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => 96, :cherrypick_direction => 'column'), 12, [:plate])
+        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: 96, cherrypick_direction: 'column'), 12, [:plate])
       end
 
       context '#available' do
@@ -113,7 +113,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
 
       context '#remainder' do
         teardown do
-          @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => 96, :cherrypick_direction => 'column'), @filled)
+          @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: 96, cherrypick_direction: 'column'), @filled)
           assert_equal(@expected, @target.remainder)
         end
 
@@ -146,7 +146,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
         end
 
         should 'be the last pick species if there have been picks' do
-          @target.concat([OpenStruct.new(:species => [:last])])
+          @target.concat([OpenStruct.new(species: [:last])])
           assert_equal([:last], @target.species)
         end
       end

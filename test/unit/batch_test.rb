@@ -9,9 +9,9 @@ require "test_helper"
 class BatchTest < ActiveSupport::TestCase
   def setup
     @pipeline = create :pipeline,
-      :name          => 'Test pipeline',
-      :workflow      => LabInterface::Workflow.create!(:item_limit => 8),
-      :request_types => [create(:request_type, :request_class => Request, :order => 1)]
+      name: 'Test pipeline',
+      workflow: LabInterface::Workflow.create!(item_limit: 8),
+      request_types: [create(:request_type, request_class: Request, order: 1)]
   end
 
   context "A batch" do
@@ -32,7 +32,7 @@ class BatchTest < ActiveSupport::TestCase
       end
       context "workflow is internal and released?" do
         setup do
-          @pipeline.workflow.update_attributes!(:locale => 'Internal')
+          @pipeline.workflow.update_attributes!(locale: 'Internal')
         end
 
         should "initially not be #externally_released? then be #externally_released?" do
@@ -44,7 +44,7 @@ class BatchTest < ActiveSupport::TestCase
 
       context "workflow is external and released?" do
         setup do
-          @pipeline.workflow.update_attributes!(:locale => 'External')
+          @pipeline.workflow.update_attributes!(locale: 'External')
         end
 
         should "initially not be #internally_released? then be #internally_released? and return the pipelines first workflow" do
@@ -72,7 +72,7 @@ end
   context 'modifying request positions within a batch' do
     setup do
       @requests = (1..10).map { |_| @pipeline.request_types.last.create! }
-      @batch    = @pipeline.batches.create!(:requests => @requests)
+      @batch    = @pipeline.batches.create!(requests: @requests)
     end
 
     context "#assign_positions_to_requests!" do
@@ -95,7 +95,7 @@ end
 
     context '#shift_item_positions' do
       setup do
-        @requests.each { |r| r.update_attributes!(:asset => nil) }
+        @requests.each { |r| r.update_attributes!(asset: nil) }
       end
 
       should 'move the requests that are at, and after, the position by the number and have no asset' do
@@ -112,10 +112,10 @@ end
 
   context "when batch is created" do
     setup do
-      @request1 = @pipeline.request_types.last.create!(:asset => create(:sample_tube), :target_asset => create(:empty_library_tube))
-      @request2 = @pipeline.request_types.last.create!(:asset => create(:sample_tube), :target_asset => create(:empty_library_tube))
+      @request1 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
+      @request2 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
 
-      @batch = @pipeline.batches.create!(:requests => [@request1, @request2])
+      @batch = @pipeline.batches.create!(requests: [@request1, @request2])
     end
     should "be able to call start_requests" do
       assert_nothing_raised do
@@ -149,8 +149,8 @@ end
     context "create requests" do
       setup do
         @asset_count = Asset.count
-        @requests    = (1..4).map { |_| create(:request, :request_type => @pipeline.request_types.last) }
-        @batch       = @pipeline.batches.create!(:requests => @requests)
+        @requests    = (1..4).map { |_| create(:request, request_type: @pipeline.request_types.last) }
+        @batch       = @pipeline.batches.create!(requests: @requests)
       end
 
       should "change Asset.count by 8" do
@@ -194,7 +194,7 @@ end
 
   context "#requests_by_study" do
     setup do
-      @pipeline.workflow.update_attributes!(:locale => 'Internal')
+      @pipeline.workflow.update_attributes!(locale: 'Internal')
       @batch = @pipeline.batches.create!
 
       @study1 = create :study
@@ -209,7 +209,7 @@ end
     context "with 1 request" do
       setup do
         @study2 = create :study
-        @request1 = create :request, :request_type => @pipeline.request_types.last, :study => @study1, :batch => @batch
+        @request1 = create :request, request_type: @pipeline.request_types.last, study: @study1, batch: @batch
       end
 
       should "return correct studies" do
@@ -218,7 +218,7 @@ end
       end
 
       should "be #externally_released?" do
-        @batch.update_attributes!(:state => 'released')
+        @batch.update_attributes!(state: 'released')
         assert_equal @batch.externally_released?, true
       end
     end
@@ -227,8 +227,8 @@ end
       setup do
         @study2 = create :study
         @study3 = create :study
-        @request1 = create :request, :request_type => @pipeline.request_types.last, :study => @study1
-        @request2 = create :request, :request_type => @pipeline.request_types.last, :study => @study2
+        @request1 = create :request, request_type: @pipeline.request_types.last, study: @study1
+        @request2 = create :request, request_type: @pipeline.request_types.last, study: @study2
         @batch.requests << @request1 << @request2
       end
 
@@ -253,8 +253,8 @@ end
       end
 
       should "be #internally_released?" do
-        @pipeline.workflow.update_attributes!(:locale => 'External')
-        @batch.update_attributes!(:state => 'released')
+        @pipeline.workflow.update_attributes!(locale: 'External')
+        @batch.update_attributes!(state: 'released')
         assert_equal @batch.internally_released?, true
       end
     end
@@ -263,14 +263,14 @@ end
       setup do
         @study2 = create :study
         @plate1 = create :plate
-        @well1 = create :well, :plate => @plate1
+        @well1 = create :well, plate: @plate1
 
         @plate2 = create :plate
-        @well2 = create :well, :plate => @plate2
+        @well2 = create :well, plate: @plate2
 
         @batch.requests = [
-          @pipeline.request_types.last.create!(:study => @study1, :asset => @well1),
-          @pipeline.request_types.last.create!(:study => @study1, :asset => @well2)
+          @pipeline.request_types.last.create!(study: @study1, asset: @well1),
+          @pipeline.request_types.last.create!(study: @study1, asset: @well2)
         ]
       end
       should "return 1 plate id where they are in given study" do
@@ -297,17 +297,17 @@ end
     should_have_instance_methods :submit_to_qc_queue
 
     setup do
-      @pipeline_next = create :pipeline, :name => 'Next pipeline'
-      @pipeline      = create :pipeline, :name => 'Pipeline for BatchTest', :automated => false, :next_pipeline_id => @pipeline_next.id, :asset_type => "LibraryTube"
-      @sequencing_pipeline = create :sequencing_pipeline, :name => 'SequencingPipeline for BatchTest', :automated => false, :asset_type => "Lane"
-      @pipeline_qc = create :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_next.id
+      @pipeline_next = create :pipeline, name: 'Next pipeline'
+      @pipeline      = create :pipeline, name: 'Pipeline for BatchTest', automated: false, next_pipeline_id: @pipeline_next.id, asset_type: "LibraryTube"
+      @sequencing_pipeline = create :sequencing_pipeline, name: 'SequencingPipeline for BatchTest', automated: false, asset_type: "Lane"
+      @pipeline_qc = create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_next.id
     end
 
     context "create requests" do
       setup do
         @asset_count = Asset.count
-        @requests = (1..4).map { |_| create(:request, :request_type => @pipeline.request_types.last) }
-        @batch = @pipeline.batches.create!(:requests => @requests)
+        @requests = (1..4).map { |_| create(:request, request_type: @pipeline.request_types.last) }
+        @batch = @pipeline.batches.create!(requests: @requests)
       end
 
 
@@ -335,12 +335,12 @@ end
         # send_fail_event will be used once since only one request is not a resource /@request1
 #        EventSender.expects(:send_fail_event).returns(true).times(1)
         EventSender.stubs(:send_fail_event).returns(true)
-        @control = create :sample_tube, :resource => true
+        @control = create :sample_tube, resource: true
 
         @batch = @pipeline.batches.create!
         @request1, @request2 = @batch.requests = [
           @pipeline.request_types.last.create!,
-          @pipeline.request_types.last.create!(:asset => @control)
+          @pipeline.request_types.last.create!(asset: @control)
         ]
 
         @reason = "PCR not enough"
@@ -420,8 +420,8 @@ end
       context "control request" do
         setup do
           EventSender.expects(:send_fail_event).returns(true).times(1)
-          @asset = create :sample_tube, :resource => 1
-          @request3 = create :request, :batches => [@batch], :id => 789, :asset => @asset
+          @asset = create :sample_tube, resource: 1
+          @request3 = create :request, batches: [@batch], id: 789, asset: @asset
           @requests = { "#{@request1.id}" => "on", "control" => "on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
           assert_equal @request3, @batch.control
@@ -457,15 +457,15 @@ end
 
     context "#public methods" do
       setup do
-        @asset1 = create :sample_tube, :barcode => "123456"
-        @asset2 = create :sample_tube, :barcode => "654321"
+        @asset1 = create :sample_tube, barcode: "123456"
+        @asset2 = create :sample_tube, barcode: "654321"
 
-        @request1 = @pipeline.request_types.last.create!(:asset => @asset1)
-        @request2 = @pipeline.request_types.last.create!(:asset => @asset2)
+        @request1 = @pipeline.request_types.last.create!(asset: @asset1)
+        @request2 = @pipeline.request_types.last.create!(asset: @asset2)
 
         @batch = @pipeline.batches.create!
-        @batch.batch_requests.create!(:request => @request1, :position => 2)
-        @batch.batch_requests.create!(:request => @request2, :position => 1)
+        @batch.batch_requests.create!(request: @request1, position: 2)
+        @batch.batch_requests.create!(request: @request2, position: 1)
         @batch.reload
       end
 
@@ -489,8 +489,8 @@ end
       end
 
       should "reorder requests by increasing request.position if it's > 3" do
-        create :batch_request, :batch => @batch, :position => 6
-        create :batch_request, :batch => @batch, :position => 8
+        create :batch_request, batch: @batch, position: 6
+        create :batch_request, batch: @batch, position: 8
         @batch.shift_item_positions(4,1)
         v = @batch.ordered_requests
         # assert_equal 3, v[2].id # make sure that requests are the same
@@ -511,9 +511,9 @@ end
 
       context 'with control' do
         setup do
-          @control = create :sample_tube, :resource => true
-          @request = @pipeline.request_types.last.create!(:asset => @control)
-          @batch.batch_requests.create!(:request => @request, :position => 3)
+          @control = create :sample_tube, resource: true
+          @request = @pipeline.request_types.last.create!(asset: @control)
+          @batch.batch_requests.create!(request: @request, position: 3)
         end
 
         should "return true a request has resource" do
@@ -531,7 +531,7 @@ end
 
       context "underrun" do
         setup do
-          @pipeline.workflow.update_attributes!(:item_limit => 4)
+          @pipeline.workflow.update_attributes!(item_limit: 4)
         end
 
         should "return POSITIVE difference between batch.request_limit and batch.request_count" do
@@ -539,15 +539,15 @@ end
         end
 
         should "return NEGATIVE difference between batch.request_limit and batch.request_count" do
-          @batch.batch_requests.create!(:request => @pipeline.request_types.last.create!, :position => 3)
-          @batch.batch_requests.create!(:request => @pipeline.request_types.last.create!, :position => 4)
-          @batch.batch_requests.create!(:request => @pipeline.request_types.last.create!, :position => 5)
+          @batch.batch_requests.create!(request: @pipeline.request_types.last.create!, position: 3)
+          @batch.batch_requests.create!(request: @pipeline.request_types.last.create!, position: 4)
+          @batch.batch_requests.create!(request: @pipeline.request_types.last.create!, position: 5)
           assert_equal(-1, @batch.underrun)
         end
       end
 
       should "return 0 if batch has no request_limit set" do
-        @pipeline.workflow.update_attributes!(:item_limit => nil)
+        @pipeline.workflow.update_attributes!(item_limit: nil)
         assert_equal 0, @batch.underrun
       end
 
@@ -577,20 +577,20 @@ end
 
       context "#qc_evaluation_update" do
         setup do
-          @batch = @pipeline.batches.create!(:qc_state => 'qc_pending')
+          @batch = @pipeline.batches.create!(qc_state: 'qc_pending')
 
           @library1 = create :sample_tube
           @library2 = create :sample_tube
           @batch.batch_requests.create!(
-            :request  => @pipeline.request_types.last.create!(:asset => @library1, :target_asset => create(:library_tube)),
-            :position => 1
+            request: @pipeline.request_types.last.create!(asset: @library1, target_asset: create(:library_tube)),
+            position: 1
           )
           @batch.batch_requests.create!(
-            :request  => @pipeline.request_types.last.create!(:asset => @library2, :target_asset => create(:library_tube)),
-            :position => 2
+            request: @pipeline.request_types.last.create!(asset: @library2, target_asset: create(:library_tube)),
+            position: 2
           )
 
-          @task = create :task, :workflow => @pipeline.workflow
+          @task = create :task, workflow: @pipeline.workflow
         end
 
         context "when evaluations tag contains 1 evaluation" do
@@ -630,8 +630,8 @@ end
     context "#reset!" do
       setup do
         @batch = @pipeline.batches.create!
-        @pending_request   = @pipeline.request_types.last.create!(:state => 'pending', :asset => create(:sample_tube), :target_asset => create(:sample_tube))
-        @pending_request_2 = @pipeline.request_types.last.create!(:state => 'pending', :asset => create(:sample_tube), :target_asset => create(:sample_tube))
+        @pending_request   = @pipeline.request_types.last.create!(state: 'pending', asset: create(:sample_tube), target_asset: create(:sample_tube))
+        @pending_request_2 = @pipeline.request_types.last.create!(state: 'pending', asset: create(:sample_tube), target_asset: create(:sample_tube))
         @pending_request.asset.children << @pending_request.target_asset
         @pending_request_2.asset.children << @pending_request_2.target_asset
         @batch.requests << @pending_request << @pending_request_2
@@ -670,7 +670,7 @@ end
 
       context 'once started' do
         setup do
-         @batch.update_attributes!(:state => 'started')
+         @batch.update_attributes!(state: 'started')
        end
 
        should 'raise an exception' do
@@ -685,8 +685,8 @@ end
       setup do
         @batch = @sequencing_pipeline.batches.create!
         @ancestor = create :sample_tube
-        @pending_request   = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset => create(:library_tube), :target_asset => create(:lane))
-        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset => create(:library_tube), :target_asset => create(:lane))
+        @pending_request   = @sequencing_pipeline.request_types.last.create!(state: 'pending', asset: create(:library_tube), target_asset: create(:lane))
+        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(state: 'pending', asset: create(:library_tube), target_asset: create(:lane))
         @ancestor.children = [@pending_request.asset, @pending_request_2.asset]
         @pending_request.asset.children << @pending_request.target_asset
         @pending_request_2.asset.children << @pending_request_2.target_asset
@@ -732,7 +732,7 @@ end
       setup do
         @user = create :user
         @batch = @pipeline.batches.create!
-        @batch.update_attributes!(:qc_state => 'qc_completed')
+        @batch.update_attributes!(qc_state: 'qc_completed')
       end
       should "move batch to previous qc state" do
         assert_equal"qc_completed", @batch.qc_state
@@ -753,14 +753,14 @@ end
         context "when swapping #{left_position} and #{right_position}" do
           setup do
             # Create a batch with a couple of requests positioned appropriately
-            @left_batch            = create :batch, :pipeline => @pipeline
-            @original_left_request = create :batch_request, :batch_id => @left_batch.id, :position => left_position
-            create :batch_request, :batch_id => @left_batch.id, :position => 1
+            @left_batch            = create :batch, pipeline: @pipeline
+            @original_left_request = create :batch_request, batch_id: @left_batch.id, position: left_position
+            create :batch_request, batch_id: @left_batch.id, position: 1
 
             # Now create another batch that we'll swap the requests between
-            @right_batch            = create :batch, :pipeline => @pipeline
-            @original_right_request = create :batch_request, :batch_id => @right_batch.id, :position => right_position
-            create :batch_request, :batch_id => @right_batch.id, :position => 2
+            @right_batch            = create :batch, pipeline: @pipeline
+            @original_right_request = create :batch_request, batch_id: @right_batch.id, position: right_position
+            create :batch_request, batch_id: @right_batch.id, position: 2
 
             @user = create :user
           end
@@ -785,14 +785,14 @@ end
 
     context "#detach_request" do
       setup do
-        @library_prep_pipeline = create :pipeline, :name => "Library Prep Pipeline"
-        @pe_pipleine = create :pipeline, :name => "PE pipeline"
-        @lib_prep_batch = create :batch, :pipeline => @library_prep_pipeline
-        @lib_prep_request = create :request, :state => "started"
-        @pe_seq_request = create :request, :state => "pending"
+        @library_prep_pipeline = create :pipeline, name: "Library Prep Pipeline"
+        @pe_pipleine = create :pipeline, name: "PE pipeline"
+        @lib_prep_batch = create :batch, pipeline: @library_prep_pipeline
+        @lib_prep_request = create :request, state: "started"
+        @pe_seq_request = create :request, state: "pending"
         @lib_prep_batch.requests << @lib_prep_request
-        @sample_tube = create :sample_tube, :name => "sample tube 1"
-        @library_tube = create :library_tube, :name => "lib tube 1"
+        @sample_tube = create :sample_tube, name: "sample tube 1"
+        @library_tube = create :library_tube, name: "lib tube 1"
         @number_of_assets = Asset.count
         @lib_prep_request.asset = @sample_tube
         @lib_prep_request.target_asset = @library_tube
@@ -849,14 +849,14 @@ end
 
     context "#last_completed_task" do
       setup do
-        @library_prep_pipeline = create :pipeline, :name => "Library Prep Pipeline"
-        @task1 = create :task, :workflow => @library_prep_pipeline.workflow, :name => "Task 1", :sorted => 0
-        @task2 = create :task, :workflow => @library_prep_pipeline.workflow, :name => "Task 2", :sorted => 1
-        @task3 = create :task, :workflow => @library_prep_pipeline.workflow, :name => "Task 3", :sorted => 2
+        @library_prep_pipeline = create :pipeline, name: "Library Prep Pipeline"
+        @task1 = create :task, workflow: @library_prep_pipeline.workflow, name: "Task 1", sorted: 0
+        @task2 = create :task, workflow: @library_prep_pipeline.workflow, name: "Task 2", sorted: 1
+        @task3 = create :task, workflow: @library_prep_pipeline.workflow, name: "Task 3", sorted: 2
 
-        @batch = @library_prep_pipeline.batches.create!(:state => 'started')
-        @batch.requests << @library_prep_pipeline.request_types.last.create!(:state => 'started')
-        @batch.requests << @library_prep_pipeline.request_types.last.create!(:state => 'started')
+        @batch = @library_prep_pipeline.batches.create!(state: 'started')
+        @batch.requests << @library_prep_pipeline.request_types.last.create!(state: 'started')
+        @batch.requests << @library_prep_pipeline.request_types.last.create!(state: 'started')
 
         # NO idea why descriptors are added twice here, or why the descriptors
         # implementation appears to be so complicated. I've converted this from
@@ -896,11 +896,11 @@ end
   context "ready? all requests before creating batch" do
     setup do
       @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
-      @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(:project => create(:project)) }
+      @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
       @library_tube = @library_creation_request.target_asset
 
-      @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, :target_asset => @library_tube)
-      @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(:project => create(:project)) }
+      @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
+      @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
 
       # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
       # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
@@ -910,9 +910,9 @@ end
 
       @batch = @pipeline.batches.build
       @request_type = @batch.pipeline.request_types.first
-      @request_type_validator = RequestType::Validator.create!(:request_type => @request_type,:request_option => 'read_length',:valid_options => [76])
+      @request_type_validator = RequestType::Validator.create!(request_type: @request_type,request_option: 'read_length',valid_options: [76])
       @request_type.request_type_validators << @request_type_validator
-      @sequencing_request = create(:sequencing_request, { :asset => @library_tube, :request_type => @request_type })
+      @sequencing_request = create(:sequencing_request, { asset: @library_tube, request_type: @request_type })
       @batch.requests << @sequencing_request
     end
 

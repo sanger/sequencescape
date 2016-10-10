@@ -228,12 +228,12 @@ class YamlRenderer < Renderer
   def render_objects(objects)
     objects.map do |object|
       att = object_to_hash(object)
-      { :class => object.class.name, :id => object.id, :attributes => att }
+      { class: object.class.name, id: object.id, attributes: att }
     end.to_yaml
   end
 end
 
-$options = { :output_method => YamlRenderer.new, :model => :sample_with_assets }
+$options = { output_method: YamlRenderer.new, model: :sample_with_assets }
 $objects = []
 $already_pulled = {}
 
@@ -387,7 +387,7 @@ end
 # Model descriptions can be specified for subclass.
 # use :skip_super to not include superclass association
 Models = {
-  :submission => [{
+  submission: [{
   Submission => [:study, :project, RequestByType = ->(s) {  s.requests.group_by(&:request_type_id).values }, :asset_group],
   Request => [:asset, :target_asset],
   Asset => [->(s) {  s.requests.group_by(&:request_type_id).values }, :requests_as_target, :children, :parent],
@@ -398,22 +398,22 @@ Models = {
 }
 ],
 
-  :simple_submission => { Submission => ->(s) {  s.requests.group_by(&:request_type_id).values } },
+  simple_submission: { Submission => ->(s) {  s.requests.group_by(&:request_type_id).values } },
 
-  :asset_down => AssetDown = { Asset => [:children, RequestByType, :sample, :tags],
+  asset_down: AssetDown = { Asset => [:children, RequestByType, :sample, :tags],
     Request => [:target_asset],
     Submission => [RequestByType],
     Aliquot::Receptacle => [:aliquots],
     Aliquot => [:sample, :tag],
     Plate => [:wells]
 },
-  :asset_up => AssetUp = { Asset => [:parents, :requests_as_target],
+  asset_up: AssetUp = { Asset => [:parents, :requests_as_target],
     TagInstance => [:tag],
     Request => [:asset],
     Aliquot => [:sample, :tag],
     Aliquot::Receptacle => [:aliquots],
     Well => [:plate] },
-  :sample_with_assets => AssetDown.merge(
+  sample_with_assets: AssetDown.merge(
   Sample => [:assets, :study_samples],
   StudySample => [:study],
   Asset => [:requests, :children, :parents],
@@ -422,17 +422,17 @@ Models = {
   Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
   Submission => [:asset_group]
 ),
-  :asset_up_and_down => [AssetUp, AssetDown],
-  :asset_down_and_up => [AssetDown, AssetUp],
-  :full_asset => AssetUp.merge(AssetDown),
-  :asset => [{ Asset => [->(s) {  s.requests.group_by(&:request_type_id).values },
+  asset_up_and_down: [AssetUp, AssetDown],
+  asset_down_and_up: [AssetDown, AssetUp],
+  full_asset: AssetUp.merge(AssetDown),
+  asset: [{ Asset => [->(s) {  s.requests.group_by(&:request_type_id).values },
         :requests_as_target, :children, :parents] },
         { Request => [:asset, :target_asset] }],
-  :submission_down => [{ Submission => RequestByType }.merge(AssetDown)],
-    :bare => {}
+  submission_down: [{ Submission => RequestByType }.merge(AssetDown)],
+    bare: {}
 }
 
-Layouts = { :submission => [NodeToCluster.new(Submission)
+Layouts = { submission: [NodeToCluster.new(Submission)
   ]
 }
 optparse = OptionParser.new do |opts|
@@ -687,7 +687,7 @@ end
 
 class Asset
 
-  has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
+  has_many :requests_as_target, class_name: 'Request', foreign_key: :target_asset_id, include: :request_metadata
 end
 
 

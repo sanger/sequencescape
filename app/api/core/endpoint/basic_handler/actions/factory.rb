@@ -15,7 +15,7 @@ module Core::Endpoint::BasicHandler::Actions::Factory
       associations[@name] = lambda do |object, options, stream|
         stream.block(@name) do |nested_stream|
           nested_stream.block('actions') do |action_stream|
-            actions(object, options.merge(:target => object)).map do |action,url|
+            actions(object, options.merge(target: object)).map do |action,url|
               action_stream.attribute(action,url)
             end
           end

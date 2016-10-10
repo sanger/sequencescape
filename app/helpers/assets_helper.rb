@@ -36,7 +36,7 @@ module AssetsHelper
   def new_request_asset_path_in_context(asset)
     path_options = {}
     path_options[:study_id] = params[:study_id] if params.key?(:study_id)
-    new_request_asset_path(path_options.merge(:id => asset.id))
+    new_request_asset_path(path_options.merge(id: asset.id))
   end
 
   # Given the core name of an instance variable or ID parameter this method yields the name of the ID
@@ -52,11 +52,11 @@ module AssetsHelper
   # Returns a select tag that has it's options ordered by name (assumes present of sorted_by_name function)
   # and disabled if a value has been pre-selected.
   def select_field_sorted_by_name(field, select_options_source, selected, options = {})
-    content_tag(:div, :class => 'col-md-5') do
+    content_tag(:div, class: 'col-md-5') do
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.map { |x| [x.name, x.id] }, selected.try(:to_i)),
-        options.merge(:disabled => (selected.present? and not current_user.is_administrator?), :class => 'form-control select2')
+        options.merge(disabled: (selected.present? and not current_user.is_administrator?), class: 'form-control select2')
       )
     end
   end

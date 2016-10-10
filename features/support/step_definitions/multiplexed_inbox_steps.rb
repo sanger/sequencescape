@@ -14,8 +14,8 @@ Given /^that there are (\d+) requests in that pipeline$/ do |number_requests|
   number_requests.to_i.times do
     request = FactoryGirl.create(
       :request,
-      :request_type => @pipeline.request_types.last,
-      :asset        => FactoryGirl.create(asset_type)
+      request_type: @pipeline.request_types.last,
+      asset: FactoryGirl.create(asset_type)
     )
 
     request.asset.location = @pipeline.location

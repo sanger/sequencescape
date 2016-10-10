@@ -18,10 +18,10 @@ map_data = []
   Map.plate_dimensions(plate_size) do |width, height|
     details = (0...plate_size).map do |index|
       {
-        :location_id => index + 1,
-        :description => Map::Coordinate.horizontal_plate_position_to_description(index + 1, plate_size),
-        :asset_size  => plate_size,
-        :asset_shape => AssetShape.find_by_name('Standard')
+        location_id: index + 1,
+        description: Map::Coordinate.horizontal_plate_position_to_description(index + 1, plate_size),
+        asset_size: plate_size,
+        asset_shape: AssetShape.find_by_name('Standard')
       }
     end
 

@@ -67,7 +67,7 @@ module StudyReport::StudyDetails
     each_stock_well_id_in_study_in_batches do |asset_ids|
 
       # eager loading of well_attribute , can only be done on  wells ...
-      Well.for_study_report.where(:id => asset_ids).each do |asset|
+      Well.for_study_report.where(id: asset_ids).each do |asset|
         asset_progress_data = asset.qc_report
         next if asset_progress_data.nil?
 

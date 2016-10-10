@@ -71,7 +71,7 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      SubmissionTemplate.update_all(:product_catalogue_id => nil)
+      SubmissionTemplate.update_all(product_catalogue_id: nil)
     end
   end
 end

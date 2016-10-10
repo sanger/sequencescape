@@ -7,7 +7,7 @@
 class AddRequestPurposeTable < ActiveRecord::Migration
   def self.up
     create_table :request_purposes do |t|
-      t.string :key, :null => false
+      t.string :key, null: false
       t.timestamps
     end
   end

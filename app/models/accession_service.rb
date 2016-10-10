@@ -39,7 +39,7 @@ class AccessionService
 
             Rails::logger.debug { file.each_line.to_a.join("\n") }
 
-            { :name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
+            { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
           end
          )
 
@@ -153,7 +153,7 @@ private
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.STUDY(:alias => studydata[:alias], :accession => study.study_metadata.study_ebi_accession_number) {
+      xml.STUDY(alias: studydata[:alias], accession: study.study_metadata.study_ebi_accession_number) {
         xml.DESCRIPTOR {
           xml.STUDY_TITLE         studydata[:study_title]
           xml.STUDY_DESCRIPTION   studydata[:description]
@@ -164,9 +164,9 @@ private
           xml.PROJECT_ID(studydata[:study_id] || "0")
           study_type = studydata[:existing_study_type]
           if StudyType.include?(study_type)
-            xml.STUDY_TYPE(:existing_study_type => study_type)
+            xml.STUDY_TYPE(existing_study_type: study_type)
           else
-            xml.STUDY_TYPE(:existing_study_type => Study::Other_type, :new_study_type => study_type)
+            xml.STUDY_TYPE(existing_study_type: Study::Other_type, new_study_type: study_type)
           end
         }
             }
@@ -178,7 +178,7 @@ private
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.SAMPLE(:alias => sampledata[:alias], :accession => sample.sample_metadata.sample_ebi_accession_number) {
+      xml.SAMPLE(alias: sampledata[:alias], accession: sample.sample_metadata.sample_ebi_accession_number) {
         xml.SAMPLE_NAME {
           xml.COMMON_NAME  sampledata[:sample_common_name]
           xml.TAXON_ID     sampledata[:taxon_id]
@@ -210,17 +210,17 @@ private
     ) {
       xml.CONTACTS {
         xml.CONTACT(
-          :inform_on_error  => submission[:contact_inform_on_error],
-          :inform_on_status => submission[:contact_inform_on_status],
-          :name             => submission[:name]
+          inform_on_error: submission[:contact_inform_on_error],
+          inform_on_status: submission[:contact_inform_on_status],
+          name: submission[:name]
         )
       }
       xml.ACTIONS {
         xml.ACTION {
           if accession_number.blank?
-            xml.ADD(:source => submission[:source], :schema => submission[:schema])
+            xml.ADD(source: submission[:source], schema: submission[:schema])
           else
-            xml.MODIFY(:source => submission[:source], :target => "")
+            xml.MODIFY(source: submission[:source], target: "")
           end
         }
         xml.ACTION {
@@ -255,7 +255,7 @@ private
         # UA required to get through Sanger proxy
         # Although currently this UA is actually being set elsewhere in the
         # code as RestClient doesn't pass this header to the proxy.
-        rc.options[:headers] = { :user_agent => "Sequencescape Accession Client (#{Rails.env})" }
+        rc.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
       end
 
       payload = {}

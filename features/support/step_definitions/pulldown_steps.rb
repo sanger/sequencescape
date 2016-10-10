@@ -53,17 +53,17 @@ end
 
 def create_submission_of_assets(template, assets, request_options = {})
   template.create_and_build_submission!(
-    :user            => FactoryGirl.create(:user),
-    :study           => FactoryGirl.create(:study),
-    :project         => FactoryGirl.create(:project),
-    :assets          => assets,
-    :request_options => request_options
+    user: FactoryGirl.create(:user),
+    study: FactoryGirl.create(:study),
+    project: FactoryGirl.create(:project),
+    assets: assets,
+    request_options: request_options
   )
   step 'all pending delayed jobs are processed'
 end
 
 Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
-  request_options = { :read_length => 100, :fragment_size_required_from => 100, :fragment_size_required_to => 200 }
+  request_options = { read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200 }
   request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
 
   create_submission_of_assets(
@@ -74,7 +74,7 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
 end
 
 Given /^"([^\"]+)" of (the plate .+) and (the plate .+) both been (submitted to "[^"]+")$/ do |range, plate, plate2, template|
-  request_options = { :read_length => 100, :fragment_size_required_from => 100, :fragment_size_required_to => 200 }
+  request_options = { read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200 }
   request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
   create_submission_of_assets(
     template,
@@ -88,7 +88,7 @@ Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range
 
   submission = FactoryGirl.create :submission
   plate.wells.select(&range.method(:include?)).each do |well|
-    FactoryGirl.create :transfer_request, :submission => submission, :target_asset => well
+    FactoryGirl.create :transfer_request, submission: submission, target_asset: well
   end
 
 end
@@ -137,11 +137,11 @@ def work_pipeline_for(submissions, name, template=nil)
     w.requests_as_source.first.start!                           # Ensure request is considered started
   end
 
-  source_plate.plate_purpose.child_relationships.create!(:child => final_plate_type, :transfer_request_type => RequestType.transfer)
+  source_plate.plate_purpose.child_relationships.create!(child: final_plate_type, transfer_request_type: RequestType.transfer)
 
   final_plate_type.create!.tap do |final_plate|
-    AssetLink.create!(:ancestor => source_plate, :descendant => final_plate)
-    template.create!(:source => source_plate, :destination => final_plate, :user => FactoryGirl.create(:user))
+    AssetLink.create!(ancestor: source_plate, descendant: final_plate)
+    template.create!(source: source_plate, destination: final_plate, user: FactoryGirl.create(:user))
   end
 end
 
@@ -150,7 +150,7 @@ def finalise_pipeline_for(plate)
   plate.wells.each do |well|
     well.requests_as_target.each do |r|
       target_state = r.library_creation? ? 'passed' : 'qc_complete'
-      r.update_attributes!(:state => target_state)
+      r.update_attributes!(state: target_state)
     end
   end
 end
@@ -197,7 +197,7 @@ Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|
 end
 
 Given /^all of the wells on (the plate .+) are in an asset group called "([^"]+)" owned by (the study .+)$/ do |plate, name, study|
-  AssetGroup.create!(:study => study, :name => name, :assets => plate.wells)
+  AssetGroup.create!(study: study, name: name, assets: plate.wells)
 end
 
 Then /^all "([^\"]+)" requests should have the following details:$/ do |name, table|
@@ -229,14 +229,14 @@ end
 Given /^(the plate .+) will pool into 1 tube$/ do |plate|
   stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [FactoryGirl.create(:empty_well)] }
   stock_well  = stock_plate.wells.first
-  submission  = Submission.create!(:user => FactoryGirl.create(:user))
+  submission  = Submission.create!(user: FactoryGirl.create(:user))
 
-  AssetLink.create!(:ancestor => stock_plate, :descendant => plate)
+  AssetLink.create!(ancestor: stock_plate, descendant: plate)
 
   plate.wells.in_column_major_order.readonly(false).each do |well|
-    RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
+    RequestType.transfer.create!(asset: stock_well, target_asset: well, submission: submission)
     well.stock_wells.attach!([stock_well])
-    FactoryGirl.create :library_creation_request, :asset => stock_well, :target_asset => well, :submission => submission
+    FactoryGirl.create :library_creation_request, asset: stock_well, target_asset: well, submission: submission
     # LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
   end
 end

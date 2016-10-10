@@ -10,7 +10,7 @@ class PlateCreation < AssetCreation
   include_plate_named_scope :parent
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
-  belongs_to :parent, :class_name => 'Plate'
+  belongs_to :parent, class_name: 'Plate'
 
   def record_creation_of_children
     parent.events.create_plate!(child_purpose, child, user)
@@ -39,7 +39,7 @@ class PlateCreation < AssetCreation
     private :children
 
     def create_children!
-      self.child = child_purpose.create!(:location => parent.location)
+      self.child = child_purpose.create!(location: parent.location)
     end
     private :create_children!
 

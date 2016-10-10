@@ -24,7 +24,7 @@ class Studies::EventsControllerTest < ActionController::TestCase
 
      context "#index" do
         setup do
-          get :index, :study_id => @study.id
+          get :index, study_id: @study.id
         end
         should respond_with :success
         should render_template :index

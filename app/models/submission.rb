@@ -17,14 +17,14 @@ class Submission < ActiveRecord::Base
   validates_presence_of :user
 
   # Created during the lifetime ...
-  has_many :requests, :inverse_of => :submission
-  has_many :items, :through => :requests
+  has_many :requests, inverse_of: :submission
+  has_many :items, through: :requests
 
-  has_many :orders, :inverse_of => :submission
-  has_many :studies, :through => :orders
-  accepts_nested_attributes_for :orders, :update_only => true
+  has_many :orders, inverse_of: :submission
+  has_many :studies, through: :orders
+  accepts_nested_attributes_for :orders, update_only: true
 
-  has_many :comments_from_requests, :through => :requests, :source => :comments
+  has_many :comments_from_requests, through: :requests, source: :comments
 
   def comments
     # has_many throug doesn't work. Comments is a column (string) of order
@@ -42,16 +42,16 @@ class Submission < ActiveRecord::Base
   self.per_page = 500
   scope :including_associations_for_json, -> { includes([
       :uuid_object,
-      { :orders => [
-         { :project => :uuid_object },
-         { :assets => :uuid_object },
-         { :study => :uuid_object },
+      { orders: [
+         { project: :uuid_object },
+         { assets: :uuid_object },
+         { study: :uuid_object },
          :user] }
   ])}
 
-  scope :building, -> { where( :state => "building" ) }
-  scope :pending,  -> { where( :state => "pending" ) }
-  scope :ready,    -> { where( :state => "ready" ) }
+  scope :building, -> { where( state: "building" ) }
+  scope :pending,  -> { where( state: "pending" ) }
+  scope :ready,    -> { where( state: "ready" ) }
 
   scope :latest_first, -> { order('id DESC') }
 
@@ -72,7 +72,7 @@ class Submission < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
         request.submission_cancelled!  # Cancel first to prevent event doing something stupid
-        request.events.create!(:message => "Submission #{self.id} as destroyed")
+        request.events.create!(message: "Submission #{self.id} as destroyed")
       end
     end
   end
@@ -111,10 +111,10 @@ class Submission < ActiveRecord::Base
     end
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
-      order.create_submission({ :user_id => order.user_id }.merge(submission_options))
+      order.create_submission({ user_id: order.user_id }.merge(submission_options))
       order.save! #doesn't save submission id otherwise
       study_name = order.study.try(:name)
-      order.submission.update_attributes!(:name => study_name) if study_name
+      order.submission.update_attributes!(name: study_name) if study_name
       order.submission.reload
       order.submission.built!
       order.submission
@@ -170,12 +170,12 @@ class Submission < ActiveRecord::Base
     raise "Not implemented yet"
 
     create_parameters = template_parameters
-    new_submission = Submission.create(create_parameters.merge( :study => self.study,:workflow => self.workflow,
-          :user => self.user, :assets => self.assets, :state => self.state,
-          :request_types => self.request_types,
-          :request_options => self.request_options,
-          :comments => self.comments,
-          :project_id => self.project_id), &block)
+    new_submission = Submission.create(create_parameters.merge( study: self.study,workflow: self.workflow,
+          user: self.user, assets: self.assets, state: self.state,
+          request_types: self.request_types,
+          request_options: self.request_options,
+          comments: self.comments,
+          project_id: self.project_id), &block)
     new_submission.save
     return new_submission
   end

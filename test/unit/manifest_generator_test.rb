@@ -112,7 +112,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
       context "with a sample" do
         setup do
-          @well.aliquots.create!(:sample => @sample)
+          @well.aliquots.create!(sample: @sample)
         end
         context "with no set species" do
           should "return the default species" do
@@ -145,7 +145,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
       context "with a sample" do
         setup do
-          @well.aliquots.create!(:sample => @sample)
+          @well.aliquots.create!(sample: @sample)
         end
         context "and no external value set" do
           should "return default value" do
@@ -156,7 +156,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         end
         context "with external value set" do
           setup do
-            @sample.update_attributes!(:control => true)
+            @sample.update_attributes!(control: true)
           end
           should "return external value" do
             control = ManifestGenerator.well_sample_is_control(@well)
@@ -181,7 +181,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
       context "with a sample" do
         setup do
-          @well.aliquots.create!(:sample => @sample)
+          @well.aliquots.create!(sample: @sample)
           @well.save
         end
         context "and no external value set" do
@@ -199,7 +199,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           }.each do |expected, genders|
             Array(genders).each do |gender|
               should "see #{gender.inspect} as #{expected.inspect}" do
-                @sample.sample_metadata.update_attributes!(:gender => gender)
+                @sample.sample_metadata.update_attributes!(gender: gender)
                 assert_equal(expected, ManifestGenerator.well_sample_gender(@well))
               end
             end
@@ -224,7 +224,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           end
           context "with a sample" do
             setup do
-              @well.aliquots.create!(:sample => @sample)
+              @well.aliquots.create!(sample: @sample)
               @well.save
             end
             context "and no external value set" do
@@ -251,7 +251,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       [["A1","A01"],["C2","C02"],["H12","H12"],["G9","G09"]].each do |input_map,expected_map|
         context "for #{input_map}" do
           setup do
-            @well = create :well, :map => Map.find_by_description_and_asset_size(input_map,96)
+            @well = create :well, map: Map.find_by_description_and_asset_size(input_map,96)
             @description = ManifestGenerator.well_map_description(@well)
           end
           should "return expected description of #{expected_map}" do
@@ -310,7 +310,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
               @sample.save
 
               @map = Map.find_by_description(map_description)
-              @well.aliquots.create!(:sample => @sample)
+              @well.aliquots.create!(sample: @sample)
               @well.map = @map
               @well.set_requested_volume(volume)
               @well.set_concentration(concentration)
@@ -334,21 +334,21 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       setup do
         @user = create :user
 
-        @sample1 = create(:sample, :name => "Sample1", :sanger_sample_id => "STUDY_1_1", :sample_metadata_attributes => { :sample_common_name => 'Species 1' })
-        @sample2 = create :sample, :name => "Sample2", :sanger_sample_id => "STUDY_1_1"
-        @sample3 = create :sample, :name => "Sample3", :sanger_sample_id => "STUDY_1_1"
+        @sample1 = create(:sample, name: "Sample1", sanger_sample_id: "STUDY_1_1", sample_metadata_attributes: { sample_common_name: 'Species 1' })
+        @sample2 = create :sample, name: "Sample2", sanger_sample_id: "STUDY_1_1"
+        @sample3 = create :sample, name: "Sample3", sanger_sample_id: "STUDY_1_1"
 
-        @study1 = create :study, :user => @user
+        @study1 = create :study, user: @user
         @study1.samples << @sample1
         @study1.samples << @sample2
 
         @study1.study_metadata.study_name_abbreviation = 'STUDY'
 
-        @plate1 = create(:plate, :barcode => 11111, :size => 96, :name => "Plate 1", :plate_metadata_attributes => { :infinium_barcode => '12345' })
+        @plate1 = create(:plate, barcode: 11111, size: 96, name: "Plate 1", plate_metadata_attributes: { infinium_barcode: '12345' })
 
-        @well1 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample1) }
-        @well2 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample2) }
-        @well3 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample3) }
+        @well1 = create(:well).tap { |well| well.aliquots.create!(sample: @sample1) }
+        @well2 = create(:well).tap { |well| well.aliquots.create!(sample: @sample2) }
+        @well3 = create(:well).tap { |well| well.aliquots.create!(sample: @sample3) }
 
         [@well1,@well2,@well3].each do |well|
           well.set_requested_volume(15)
@@ -363,9 +363,9 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         @pipeline = create(:pipeline)
         @batch = @pipeline.batches.create!
         @batch.requests = [
-          @pipeline.request_types.last.create!(:study => @study1, :asset => @well),
-          @pipeline.request_types.last.create!(:study => @study1, :asset => @well2),
-          @pipeline.request_types.last.create!(:study => @study1, :asset => @well3)
+          @pipeline.request_types.last.create!(study: @study1, asset: @well),
+          @pipeline.request_types.last.create!(study: @study1, asset: @well2),
+          @pipeline.request_types.last.create!(study: @study1, asset: @well3)
         ]
 
         @manifest = ManifestGenerator.generate_manifests(@batch,@study1)
@@ -383,14 +383,14 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
       context "Several Plates and Single Study" do
         setup do
-          @plate2 = create(:plate, :barcode => 22222, :size => 96, :name => "Plate 2", :plate_metadata_attributes => { :infinium_barcode => '987654' })
+          @plate2 = create(:plate, barcode: 22222, size: 96, name: "Plate 2", plate_metadata_attributes: { infinium_barcode: '987654' })
 
-          @sample4 = create :sample, :name => "Sample4", :sanger_sample_id => "STUDY_1_4"
+          @sample4 = create :sample, name: "Sample4", sanger_sample_id: "STUDY_1_4"
           @study1.samples << @sample4
 
-          @well4 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
-          @well5 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
-          @well6 = create(:well).tap { |well| well.aliquots.create!(:sample => @sample4) }
+          @well4 = create(:well).tap { |well| well.aliquots.create!(sample: @sample4) }
+          @well5 = create(:well).tap { |well| well.aliquots.create!(sample: @sample4) }
+          @well6 = create(:well).tap { |well| well.aliquots.create!(sample: @sample4) }
 
           [@well4,@well5,@well6].each do |well|
             well.set_requested_volume(15)
@@ -403,9 +403,9 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           @plate2.add_and_save_well(@well6, 1, 0)
 
           @batch.requests.concat([
-            @pipeline.request_types.last.create!(:study => @study1, :asset => @well4),
-            @pipeline.request_types.last.create!(:study => @study1, :asset => @well5),
-            @pipeline.request_types.last.create!(:study => @study1, :asset => @well6)
+            @pipeline.request_types.last.create!(study: @study1, asset: @well4),
+            @pipeline.request_types.last.create!(study: @study1, asset: @well5),
+            @pipeline.request_types.last.create!(study: @study1, asset: @well6)
           ])
 
           @manifest = ManifestGenerator.generate_manifests(@batch,@study1)

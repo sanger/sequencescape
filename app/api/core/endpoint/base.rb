@@ -15,7 +15,7 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_attribute :instance_handler, :instance_writer => false
+      base.class_attribute :instance_handler, instance_writer: false
     end
 
     def instance(&block)
@@ -42,7 +42,7 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_attribute :model_handler, :instance_writer => false
+      base.class_attribute :model_handler, instance_writer: false
     end
 
     def model(&block)

@@ -8,45 +8,45 @@
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
 
-  redefine_aasm :column => :state, :whiny_persistence => true do
+  redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
-    state :pending, :initial => true
+    state :pending, initial: true
     state :started
-    state :failed,	    :enter => :on_failed
+    state :failed,	    enter: :on_failed
     state :passed
     state :qc_complete
-    state :cancelled,  :enter => :on_cancelled
+    state :cancelled,  enter: :on_cancelled
 
     # State Machine events
     event :start do
-      transitions :to => :started, :from => [:pending]
+      transitions to: :started, from: [:pending]
     end
 
     event :pass do
-      transitions :to => :passed, :from => [:pending, :started, :failed]
+      transitions to: :passed, from: [:pending, :started, :failed]
     end
 
     event :fail do
-      transitions :to => :failed, :from => [:pending, :started, :passed]
+      transitions to: :failed, from: [:pending, :started, :passed]
     end
 
     event :cancel do
-      transitions :to => :cancelled, :from => [:started, :passed, :qc_complete]
+      transitions to: :cancelled, from: [:started, :passed, :qc_complete]
     end
 
     event :cancel_before_started do
-      transitions :to => :cancelled, :from => [:pending]
+      transitions to: :cancelled, from: [:pending]
     end
 
     event :detach do
-      transitions :to => :pending, :from => [:pending]
+      transitions to: :pending, from: [:pending]
     end
 
     # Not all transfer quests will make this transition, but this way we push the
     # decision back up to the pipeline
     event :qc     do
-      transitions :to => :qc_complete, :from => [:passed]
+      transitions to: :qc_complete, from: [:passed]
     end
   end
 

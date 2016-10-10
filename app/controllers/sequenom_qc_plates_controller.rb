@@ -33,9 +33,9 @@ class SequenomQcPlatesController < ApplicationController
     ActiveRecord::Base.transaction do
       (1..number_of_barcodes).each do
         sequenom_qc_plate = SequenomQcPlate.new(
-          :plate_prefix        => params[:plate_prefix],
-          :gender_check_bypass => gender_check_bypass,
-          :user_barcode        => user_barcode
+          plate_prefix: params[:plate_prefix],
+          gender_check_bypass: gender_check_bypass,
+          user_barcode: user_barcode
         )
         #TODO: create a factory object
 

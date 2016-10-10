@@ -19,7 +19,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
 
     @batch.requests.each do |request|
 
-      event = LabEvent.new(:batch_id => @batch.id, :description => @task.name)
+      event = LabEvent.new(batch_id: @batch.id, description: @task.name)
 
       if params[:requests].present? && params[:requests]["#{request.id}"].present? && params[:requests]["#{request.id}"][:descriptors].present?
         # Descriptors: create description for event
@@ -51,7 +51,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
     else
       # Some requests have yet to pass this task
       # Construct a URL that contains a nested hash of values to display as defaults for the next request
-      @params = { :batch_id => @batch.id, :workflow_id => @workflow.id, :values => @values }
+      @params = { batch_id: @batch.id, workflow_id: @workflow.id, values: @values }
       redirect_to url_for(flatten_hash(@params))
     end
 

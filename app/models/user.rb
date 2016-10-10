@@ -24,12 +24,12 @@ class User < ActiveRecord::Base
   has_many :settings
   has_many :roles
   has_many :submissions
-  has_many :project_roles, ->() { where(authorizable_type:'Project') }, :class_name => 'Role'
-  has_many :study_roles,   ->() { where(authorizable_type:'Study') },   :class_name => 'Role'
+  has_many :project_roles, ->() { where(authorizable_type:'Project') }, class_name: 'Role'
+  has_many :study_roles,   ->() { where(authorizable_type:'Study') },   class_name: 'Role'
   has_many :study_roles
   has_many :batches
-  has_many :assigned_batches, :class_name => 'Batch', :foreign_key => :assignee_id, :inverse_of => :assignee
-  has_many :pipelines, ->() { order('batches.id DESC').distinct }, :through => :batches
+  has_many :assigned_batches, class_name: 'Batch', foreign_key: :assignee_id, inverse_of: :assignee
+  has_many :pipelines, ->() { order('batches.id DESC').distinct }, through: :batches
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
@@ -38,14 +38,14 @@ class User < ActiveRecord::Base
   validates_presence_of :login
   validates_uniqueness_of :login
 
-  validates_confirmation_of :password, :if => :password_required?
+  validates_confirmation_of :password, if: :password_required?
 
   scope :with_login, ->(*logins) { where(login:logins.flatten) }
-  scope :all_administrators, -> { joins(:roles).where(:roles => { :name => 'administrator' }) }
+  scope :all_administrators, -> { joins(:roles).where(roles: { name: 'administrator' }) }
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(:roles => { :name => 'owner' }).order(:last_name).uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).uniq }
 
   attr_accessor :password
 
@@ -215,13 +215,13 @@ class User < ActiveRecord::Base
   def remember_me
     self.remember_token_expires_at = 2.weeks.from_now.utc
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
-    save(:validate => false)
+    save(validate: false)
   end
 
   def forget_me
     self.remember_token_expires_at = nil
     self.remember_token            = nil
-    save(:validate => false)
+    save(validate: false)
   end
 
   # User has a relationship by role to these studies

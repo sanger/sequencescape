@@ -8,7 +8,7 @@ class WorkflowsController < ApplicationController
 #WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 #It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, :only => [:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+  before_action :find_workflow_by_id, only: [:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
@@ -40,7 +40,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @workflows.to_xml }
+      format.xml { render xml: @workflows.to_xml }
     end
   end
 
@@ -53,7 +53,7 @@ class WorkflowsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @workflow.to_xml }
+      format.xml  { render xml: @workflow.to_xml }
     end
   end
 
@@ -89,10 +89,10 @@ class WorkflowsController < ApplicationController
       if @workflow.save
         flash[:notice] = 'Workflow was successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :created, :location => workflow_url(@workflow) }
+        format.xml  { head :created, location: workflow_url(@workflow) }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @workflow.errors.to_xml }
+        format.html { render action: "new" }
+        format.xml  { render xml: @workflow.errors.to_xml }
       end
     end
   end
@@ -104,8 +104,8 @@ class WorkflowsController < ApplicationController
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @workflow.errors.to_xml }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @workflow.errors.to_xml }
       end
     end
   end
@@ -129,7 +129,7 @@ class WorkflowsController < ApplicationController
       task.sorted = params['task_list'].index(task.id.to_s) + 1
       task.save
     end
-    render :nothing => true
+    render nothing: true
   end
 
   # TODO: This needs to be made RESTful.
@@ -235,8 +235,8 @@ class WorkflowsController < ApplicationController
       user: current_user,
       batch: batch
     )
-    event.add_descriptor Descriptor.new({ :name => 'task_id', :value => task.id })
-    event.add_descriptor Descriptor.new({ :name => 'task', :value => task.name })
+    event.add_descriptor Descriptor.new({ name: 'task_id', value: task.id })
+    event.add_descriptor Descriptor.new({ name: 'task', value: task.name })
     event.save!
   end
 end

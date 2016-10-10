@@ -10,7 +10,7 @@ require 'unit/illumina_b/request_statemachine_checks'
 class TransferRequestTest < ActiveSupport::TestCase
 
   def shared_setup
-    @source = LibraryTube.create!.tap { |tube| tube.aliquots.create!(:sample => create(:sample)) }
+    @source = LibraryTube.create!.tap { |tube| tube.aliquots.create!(sample: create(:sample)) }
     create(:tag).tag!(@source)
     @destination = LibraryTube.create!
   end
@@ -36,7 +36,7 @@ class TransferRequestTest < ActiveSupport::TestCase
     context 'when using the constuctor' do
       setup do
         shared_setup
-        @transfer_request = RequestType.transfer.create!(:asset => @source, :target_asset => @destination)
+        @transfer_request = RequestType.transfer.create!(asset: @source, target_asset: @destination)
       end
 
       shared_tests
@@ -45,7 +45,7 @@ class TransferRequestTest < ActiveSupport::TestCase
 
     should 'not permit transfers to the same asset' do
       asset = create(:sample_tube)
-      assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(:asset => asset, :target_asset => asset) }
+      assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(asset: asset, target_asset: asset) }
     end
 
     context "with a tag clash" do
@@ -59,9 +59,9 @@ class TransferRequestTest < ActiveSupport::TestCase
       end
 
       should 'raise an exception' do
-        @transfer_request = RequestType.transfer.create!(:asset => @aliquot_1.receptacle.reload, :target_asset => @target_asset)
+        @transfer_request = RequestType.transfer.create!(asset: @aliquot_1.receptacle.reload, target_asset: @target_asset)
         assert_raise Aliquot::TagClash do
-          @transfer_request = RequestType.transfer.create!(:asset => @aliquot_2.receptacle.reload, :target_asset => @target_asset)
+          @transfer_request = RequestType.transfer.create!(asset: @aliquot_2.receptacle.reload, target_asset: @target_asset)
         end
       end
     end
