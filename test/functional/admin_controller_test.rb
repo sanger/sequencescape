@@ -41,7 +41,7 @@ class AdminControllerTest < ActionController::TestCase
 
       context "#filter with query" do
         setup do
-          get :filter, :q => "abc123"
+          get :filter, q: "abc123"
         end
         should respond_with :success
         should render_template "admin/users/_users"

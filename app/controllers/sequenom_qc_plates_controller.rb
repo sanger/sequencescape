@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class SequenomQcPlatesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   def new
     @barcode_printers  = BarcodePrinterType.find_by_name("384 Well Plate").barcode_printers
@@ -33,11 +33,11 @@ class SequenomQcPlatesController < ApplicationController
     ActiveRecord::Base.transaction do
       (1..number_of_barcodes).each do
         sequenom_qc_plate = SequenomQcPlate.new(
-          :plate_prefix        => params[:plate_prefix],
-          :gender_check_bypass => gender_check_bypass,
-          :user_barcode        => user_barcode
+          plate_prefix: params[:plate_prefix],
+          gender_check_bypass: gender_check_bypass,
+          user_barcode: user_barcode
         )
-        #TODO: create a factory object
+        # TODO: create a factory object
 
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
@@ -103,7 +103,7 @@ class SequenomQcPlatesController < ApplicationController
 
   def input_plate_names
     input_plate_names = {}
-    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[],i.to_s) || "" }
+    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[], i.to_s) || "" }
     input_plate_names
   end
 

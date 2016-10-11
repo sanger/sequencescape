@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
@@ -13,12 +13,12 @@ class EventFactory
     content = "Project registered by #{user.login}"
 
     event = Event.new(
-      :eventful_id => project.id,
-      :eventful_type => "Project",
-      :message => "Project registered",
-      :created_by => user.login,
-      :content => content,
-      :of_interest_to => "administrators"
+      eventful_id: project.id,
+      eventful_type: "Project",
+      message: "Project registered",
+      created_by: user.login,
+      content: content,
+      of_interest_to: "administrators"
     )
     event.save
 
@@ -38,12 +38,12 @@ class EventFactory
     content = "Project approved by #{user.login}"
 
     event = Event.new(
-      :eventful_id => project.id,
-      :eventful_type => "Project",
-      :message => "Project approved",
-      :created_by => user.login,
-      :content => content,
-      :of_interest_to => "administrators"
+      eventful_id: project.id,
+      eventful_type: "Project",
+      message: "Project approved",
+      created_by: user.login,
+      content: content,
+      of_interest_to: "administrators"
     )
     event.save
 
@@ -67,16 +67,16 @@ class EventFactory
     content = "Refund request by #{user.login}. Reference #{reference}"
 
     event = Event.new(
-      :eventful_id => project.id,
-      :eventful_type => "Project",
-      :message => "Refund #{reference}",
-      :created_by => user.login,
-      :content => content,
-      :of_interest_to => "administrators"
+      eventful_id: project.id,
+      eventful_type: "Project",
+      message: "Refund #{reference}",
+      created_by: user.login,
+      content: content,
+      of_interest_to: "administrators"
     )
     event.save
 
-    #EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
+    # EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
   end
 
  ###############################
@@ -84,17 +84,17 @@ class EventFactory
  ###############################
 
   # creates an event and sends an email when samples are register to a study
-  def self.study_has_samples_registered(study,samples,user)
+  def self.study_has_samples_registered(study, samples, user)
     sample_names_string = samples.map { |s| s.name }.join("','")
     content = "Samples '#{sample_names_string}' registered by user '#{user.login}' on #{Time.now}"
 
     study_event = Event.create(
-      :eventful_id => study.id,
-      :eventful_type => "Study",
-      :message => "Sample(s) registered",
-      :created_by => user.login,
-      :content => content,
-      :of_interest_to => "users"
+      eventful_id: study.id,
+      eventful_type: "Study",
+      message: "Sample(s) registered",
+      created_by: user.login,
+      content: content,
+      of_interest_to: "users"
     )
 
     recipients = []
@@ -114,12 +114,12 @@ class EventFactory
     content = "#{message}\nwhilst an attempt was made to update request #{request.id}\nby user '#{user.login}' on #{Time.now}"
 
     request_event = Event.create(
-      :eventful_id => request.id,
-      :eventful_type => "Request",
-      :message => "Request update(s) failed",
-      :created_by => user.login,
-      :content => content,
-      :of_interest_to => "manager"
+      eventful_id: request.id,
+      eventful_type: "Request",
+      message: "Request update(s) failed",
+      created_by: user.login,
+      content: content,
+      of_interest_to: "manager"
     )
 
     recipients = []

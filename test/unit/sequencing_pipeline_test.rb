@@ -14,8 +14,8 @@ class SequencingPipelineTest < ActiveSupport::TestCase
   context 'SequencingPipeline' do
     setup do
       @pipeline = SequencingPipeline.new(
-        :workflow => LabInterface::Workflow.new,
-        :request_types => [create(:sequencing_request_type)]
+        workflow: LabInterface::Workflow.new,
+        request_types: [create(:sequencing_request_type)]
       )
     end
 
@@ -23,13 +23,13 @@ class SequencingPipelineTest < ActiveSupport::TestCase
       should 'clone the request and add appropriate comments' do
         batch   = @pipeline.batches.build
         request = @pipeline.request_types.last.new(
-          :request_metadata_attributes => {
-            :fragment_size_required_from => 100,
-            :fragment_size_required_to   => 200,
-            :read_length                 => 76,
-            :customer_accepts_responsibility => false
+          request_metadata_attributes: {
+            fragment_size_required_from: 100,
+            fragment_size_required_to: 200,
+            read_length: 76,
+            customer_accepts_responsibility: false
           },
-          :state => 'started'
+          state: 'started'
         )
 
         clone = @pipeline.detach_request_from_batch(batch, request)

@@ -5,23 +5,23 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PipelinesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_pipeline_by_id, :only => [:show, :setup_inbox,
+  before_action :find_pipeline_by_id, only: [:show, :setup_inbox,
                                    :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
 
-  before_action :lab_manager_login_required, :only => [:update_priority,:deactivate,:activate]
+  before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
 
-  after_filter :set_cache_disabled!, :only => [:show]
+  after_filter :set_cache_disabled!, only: [:show]
 
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical.all
-    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p; h }
+    @grouping  = @pipelines.inject(Hash.new { |h, k| h[k] = [] }) { |h, p| h[p.group_name] << p; h }
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @pipelines.to_xml }
+      format.xml { render xml: @pipelines.to_xml }
     end
   end
 
@@ -44,14 +44,14 @@ class PipelinesController < ApplicationController
 
       if @pipeline.group_by_parent?
         # We use the inbox presenter
-        @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline,current_user,@show_held_requests)
+        @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
       elsif @pipeline.group_by_submission?
-        requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
         @grouped_requests = requests.group_by(&:submission_id)
         @requests_comment_count = Comment.counts_for(requests)
         @assets_comment_count = Comment.counts_for(requests.map(&:asset))
       else
-        @requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+        @requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
         # We convert to an array here as otherwise tails tries to be smart
         # and use the scope. Not only does it fail, but we may as well cache
         # the result now anyway.
@@ -75,7 +75,7 @@ class PipelinesController < ApplicationController
       redirect_to pipeline_url(@pipeline)
     else
       flash[:notice] = "Failed to set pipeline controls"
-      render :action => "setup_inbox", :id => @pipeline.id
+      render action: "setup_inbox", id: @pipeline.id
     end
   end
 
@@ -84,7 +84,7 @@ class PipelinesController < ApplicationController
   end
 
 
-  before_action :prepare_batch_and_pipeline, :only => [:summary, :finish]
+  before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
   def prepare_batch_and_pipeline
     @batch    = Batch.find(params[:id])
     @pipeline = @batch.pipeline
@@ -99,7 +99,7 @@ class PipelinesController < ApplicationController
     @batch.complete!(current_user)
   rescue ActiveRecord::RecordInvalid => exception
     flash[:error] = exception.record.errors.full_messages
-    redirect_to(url_for(:controller => 'batches', :action => 'show', :id => @batch.id))
+    redirect_to(url_for(controller: 'batches', action: 'show', id: @batch.id))
   end
 
   def release
@@ -109,7 +109,7 @@ class PipelinesController < ApplicationController
     end
 
     flash[:notice] = 'Batch released!'
-    redirect_to :controller => "batches", :action => "show", :id => @batch.id
+    redirect_to controller: "batches", action: "show", id: @batch.id
   end
 
   def activate
@@ -143,10 +143,10 @@ class PipelinesController < ApplicationController
     request  = Request.find(params[:request_id])
     ActiveRecord::Base.transaction do
       request.update_priority
-      render :text => '', :layout => false
+      render text: '', layout: false
     end
   rescue ActiveRecord::RecordInvalid => exception
-    render :text => '', :layout => false, :status => :unprocessable_entity
+    render text: '', layout: false, status: :unprocessable_entity
   end
 
   private
@@ -157,8 +157,8 @@ class PipelinesController < ApplicationController
   def add_controls(pipeline, controls)
     controls.each do |control|
       values = control.split(",")
-      unless Control.exists?(:item_id => values.last, :pipeline_id => pipeline.id)
-        pipeline.controls.create(:name => values.first, :item_id => values.last, :pipeline_id => pipeline.id)
+      unless Control.exists?(item_id: values.last, pipeline_id: pipeline.id)
+        pipeline.controls.create(name: values.first, item_id: values.last, pipeline_id: pipeline.id)
       end
     end
   end

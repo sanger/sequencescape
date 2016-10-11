@@ -25,7 +25,7 @@ class Submission::Workflow < ActiveRecord::Base
       'project.metadata.collaborators',
       'project.metadata.external_funding_source'
     ]
-  }.inject(Hash.new { |h,k| h[k] = [] }) do |fields_to_workflows,(workflow, acceptable_fields)|
+  }.inject(Hash.new { |h, k| h[k] = [] }) do |fields_to_workflows, (workflow, acceptable_fields)|
     fields_to_workflows.tap do
       acceptable_fields.each do |field|
         fields_to_workflows[field] << workflow

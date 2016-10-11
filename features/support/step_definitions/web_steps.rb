@@ -40,7 +40,7 @@ end
 
 When /^(?:|I )press the first "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
   with_scope(selector) do
-    first(:button,button).click
+    first(:button, button).click
   end
 end
 
@@ -56,7 +56,7 @@ end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/ do |field, value, selector|
   with_scope(selector) do
-    fill_in(field, :with => value)
+    fill_in(field, with: value)
   end
 end
 
@@ -68,7 +68,7 @@ end
 
 When /^(?:|I )fill in "([^"]*)" for "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector) do
-    fill_in(field, :with => value)
+    fill_in(field, with: value)
   end
 end
 
@@ -97,27 +97,27 @@ end
 When /^(?:|I )select from the following(?: within "([^"]*)")?:$/ do |selector, fields|
   with_scope(selector) do
     fields.rows_hash.each do |field, value|
-      select(value, :from => field)
+      select(value, from: field)
     end
   end
 end
 
 When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector) do
-    select(value, :from => field)
+    select(value, from: field)
   end
 end
 
 When /^(?:|I )select "([^"]*)" from the first "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector) do
-    first(:select,field).select(value)
+    first(:select, field).select(value)
   end
 end
 
-When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible,field, selector|
+When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible, field, selector|
   visible = invisible != "the invisible "
   with_scope(selector) do
-    check(field,:visible => visible)
+    check(field, visible: visible)
   end
 end
 
@@ -160,9 +160,9 @@ Then /^(?:|I )should see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, selec
   regexp = Regexp.new(regexp)
   with_scope(selector) do
     if page.respond_to? :should
-      page.should have_xpath('//*', :text => regexp)
+      page.should have_xpath('//*', text: regexp)
     else
-      assert page.has_xpath?('//*', :text => regexp)
+      assert page.has_xpath?('//*', text: regexp)
     end
   end
 end
@@ -177,11 +177,11 @@ Then /^I should see "(.*?)" once$/ do |text|
 end
 
 Then /^I should see "(.*?)" within the javascript$/ do |text|
-  assert all('script', :visible => false).any? { |s| s.native.text.include?(text) }, "Didn't find #{text} in javascript"
+  assert all('script', visible: false).any? { |s| s.native.text.include?(text) }, "Didn't find #{text} in javascript"
 end
 
 Then /^I should not see "(.*?)" within the javascript$/ do |text|
-  assert all('script', :visible => false).none? { |s| s.native.text.include?(text) }, "Found #{text} in javascript"
+  assert all('script', visible: false).none? { |s| s.native.text.include?(text) }, "Found #{text} in javascript"
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
@@ -198,9 +198,9 @@ Then /^(?:|I )should not see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, s
   regexp = Regexp.new(regexp)
   with_scope(selector) do
     if page.respond_to? :should
-      page.should have_no_xpath('//*', :text => regexp)
+      page.should have_no_xpath('//*', text: regexp)
     else
-      assert page.has_no_xpath?('//*', :text => regexp)
+      assert page.has_no_xpath?('//*', text: regexp)
     end
   end
 end
@@ -264,7 +264,7 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair { |k,v| expected_params[k] = v.split(',') }
+  expected_pairs.rows_hash.each_pair { |k, v| expected_params[k] = v.split(',') }
 
   if actual_params.respond_to? :should
     actual_params.should == expected_params
@@ -282,7 +282,7 @@ Then /^show me the page$/ do
 end
 
 Given /^the "([^\"]*)" field is hidden$/ do |field_name|
-  assert find_field(field_name,visible: false).visible? == false
+  assert find_field(field_name, visible: false).visible? == false
 end
 
 Given /^I drag "(.*?)" to "(.*?)"$/ do |source, target|

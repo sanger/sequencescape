@@ -10,7 +10,7 @@ module ApiRouting
   # Assets have a couple of extra actions that are always present: namely 'parents' and 'children'
   def asset(*entities, &block)
     options = entities.extract_options!
-    entities.push({ :member => { :parents => :get, :children => :get } }.merge(options))
+    entities.push({ member: { parents: :get, children: :get } }.merge(options))
     self.model(*entities, &block)
   end
 
@@ -20,10 +20,10 @@ module ApiRouting
     options   = entities.extract_options!
     read_only = !options.key?(:read_only) || options.delete(:read_only)
     exposed_actions = read_only ? [:index, :show] : [:index, :show, :create, :update]
-    entities.push({ :only => exposed_actions, :name_prefix => 'api_' }.merge(options))
+    entities.push({ only: exposed_actions, name_prefix: 'api_' }.merge(options))
 
     original_block = block
-    block          = !block_given? ? original_block : ->(r) { r.with_options(:read_only => read_only, &original_block) }
+    block          = !block_given? ? original_block : ->(r) { r.with_options(read_only: read_only, &original_block) }
     self.resources(*entities, &block)
   end
 end

@@ -7,18 +7,18 @@
 class LabEvent < ActiveRecord::Base
   belongs_to :batch
   belongs_to :user
-  belongs_to :eventful, :polymorphic => true
+  belongs_to :eventful, polymorphic: true
   acts_as_descriptable :serialized
 
   before_validation :unescape_for_descriptors
 
- scope :with_descriptor, ->(k,v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
+  scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
- scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
+  scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
 
 
   def unescape_for_descriptors
-    self[:descriptors] = (self[:descriptors] || {}).inject({}) do |hash,(key,value)|
+    self[:descriptors] = (self[:descriptors] || {}).inject({}) do |hash, (key, value)|
       hash[CGI.unescape(key)] = value
       hash
     end
@@ -37,7 +37,7 @@ class LabEvent < ActiveRecord::Base
 
   def descriptor_value_for(name)
     self.descriptors.each do |desc|
-      if desc.name.downcase == name.to_s.downcase
+      if desc.name.casecmp(name.to_s).zero?
         return desc.value
       end
     end
@@ -45,6 +45,6 @@ class LabEvent < ActiveRecord::Base
   end
 
   def add_new_descriptor(name, value)
-    add_descriptor Descriptor.new(:name => name, :value => value)
+    add_descriptor Descriptor.new(name: name, value: value)
   end
 end

@@ -30,7 +30,7 @@ class LotTest < ActiveSupport::TestCase
 
     context "#lot" do
       setup do
-        PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => (FactoryGirl.generate :sanger_barcode)))
+        PlateBarcode.stubs(:create).returns(OpenStruct.new(barcode: (FactoryGirl.generate :sanger_barcode)))
         @lot = create :lot
         @mock_asset = Asset.new
         @mock_asset.stubs(:save!).returns(true)
@@ -42,7 +42,7 @@ class LotTest < ActiveSupport::TestCase
       end
 
       should "validate the template type" do
-        @lot.template = create :tag_layout_template, :name => 'lot_test'
+        @lot.template = create :tag_layout_template, name: 'lot_test'
         assert !@lot.valid?, 'Lot should be invalid'
       end
 

@@ -10,13 +10,12 @@ class PopulateAncestorsFromPlateToTube < ActiveRecord::Migration
       ["ILB_STD_MX", "ILC Lib Pool Norm", "Cap Lib Pool Norm", "Legacy MX tube", "Lib Pool Norm", "Lib Pool SS-XP-Norm"].each do |purpose_name|
         purpose = Purpose.find_by_name(purpose_name)
         [Transfer::BetweenSpecificTubes, Transfer::BetweenTubesBySubmission].each do |klass|
-          klass.find_each({ :conditions =>
-            {
-              :destinations => {
-                :plate_purpose_id => purpose.id
-              }
-            },
-            :joins => [
+          klass.find_each({ conditions:             {
+                            destinations: {
+                              plate_purpose_id: purpose.id
+                            }
+                          },
+            joins: [
               "INNER JOIN assets as destinations on destinations.id=destination_id"
               ]
           }) do |t|

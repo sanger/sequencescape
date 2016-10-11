@@ -7,7 +7,7 @@
 class AssignTagsTask < Task
 
   def included_for_render_task
-    [{ :requests => [{ :asset => [:asset_groups,{ :primary_aliquot => :sample }] },:target_asset,:batch_request] }, :pipeline]
+    [{ requests: [{ asset: [:asset_groups, { primary_aliquot: :sample }] }, :target_asset, :batch_request] }, :pipeline]
   end
 
   class AssignTagsData < Task::RenderElement

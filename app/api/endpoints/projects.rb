@@ -10,6 +10,6 @@ class Endpoints::Projects < Core::Endpoint::Base
   end
 
   instance do
-    has_many(:submissions, :json => 'submissions', :to => 'submissions')
+    has_many(:submissions, json: 'submissions', to: 'submissions')
   end
 end

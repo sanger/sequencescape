@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012 Genome Research Ltd.
@@ -6,10 +6,10 @@ class MetadataMigration < ActiveRecord::Migration
   class Property < ActiveRecord::Base
     class Definition < ActiveRecord::Base
       self.table_name = ('property_definitions')
-      has_many :properties, :class_name => 'MetadataMigration::Property', :foreign_key => :property_definition_id, :dependent => :destroy
+      has_many :properties, class_name: 'MetadataMigration::Property', foreign_key: :property_definition_id, dependent: :destroy
 
-     scope :for_class, ->(c) { where(:relates_to => c )  }
-     scope :for_keys, ->(keys) { where(:key => keys) }
+     scope :for_class, ->(c) { where(relates_to: c)  }
+     scope :for_keys, ->(keys) { where(key: keys) }
 
       # It's more efficient to delete all of the properties and then delete the definition.
       def self.delete_for(relates_to, keys)
@@ -20,7 +20,7 @@ class MetadataMigration < ActiveRecord::Migration
     end
 
     self.table_name = ('properties')
-    belongs_to :definition, :class_name => 'MetadataMigration::Property::Definition', :foreign_key => :property_definition_id
+    belongs_to :definition, class_name: 'MetadataMigration::Property::Definition', foreign_key: :property_definition_id
   end
 
   def self.reference_class_name
@@ -30,9 +30,9 @@ class MetadataMigration < ActiveRecord::Migration
   def self.properties_from_metadata
     metadata_class.column_names.reject do |name|
       [:id, self.reference_id].include?(name.to_sym)
-    end.inject({}) do |hash,p|
+    end.inject({}) do |hash, p|
       returning(hash) do
-        hash[p] = Property::Definition.find_by( :relates_to => self.reference_class_name, :key => p.to_s ) or raise StandardError, "Cannot find property definition for '#{ p }'"
+        hash[p] = Property::Definition.find_by(relates_to: self.reference_class_name, key: p.to_s) or raise StandardError, "Cannot find property definition for '#{p}'"
       end
     end
   end
@@ -41,15 +41,15 @@ class MetadataMigration < ActiveRecord::Migration
   def self.migrate_properties
     properties = self.properties_from_metadata
 
-    say("There are #{ reference_class.count } records to process")
+    say("There are #{reference_class.count} records to process")
 
     start = 0
-    reference_class.find_in_batches(:batch_size => 1500, :include => :properties) do |records|
+    reference_class.find_in_batches(batch_size: 1500, include: :properties) do |records|
       say_with_time("Processing #{start}-#{start + records.length}") do
         # Create new objects that can be validated.
         objects = records.map do |record|
           metadata_class.new(
-            properties.inject({ self.reference_id.to_s => record.id }) do |attributes,(property,definition)|
+            properties.inject({ self.reference_id.to_s => record.id }) do |attributes, (property, definition)|
               returning(attributes) do
                 attributes[property.to_s] = record.properties.detect { |p|
                   p.property_definition_id == definition.id
@@ -88,7 +88,7 @@ class MetadataMigration < ActiveRecord::Migration
       end
     end
   rescue ActiveRecord::RecordInvalid => exception
-    $stderr.puts "Invalid record: #{ exception.record.inspect }"
+    $stderr.puts "Invalid record: #{exception.record.inspect}"
     raise
   end
 

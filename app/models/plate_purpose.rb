@@ -9,16 +9,16 @@ class PlatePurpose < Purpose
     def self.included(base)
       base.class_eval do
         # TODO: change to purpose_id
-        belongs_to :plate_purpose, :foreign_key => :plate_purpose_id
-        belongs_to :purpose, :foreign_key => :plate_purpose_id
+        belongs_to :plate_purpose, foreign_key: :plate_purpose_id
+        belongs_to :purpose, foreign_key: :plate_purpose_id
         scope :with_plate_purpose, ->(*purposes) {
-          where(:plate_purpose_id => purposes.flatten)
+          where(plate_purpose_id: purposes.flatten)
         }
       end
     end
 
     # Delegate the change of state to our plate purpose.
-    def transition_to(state, user, contents = nil, customer_accepts_responsibility=false)
+    def transition_to(state, user, contents = nil, customer_accepts_responsibility = false)
       purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
     end
 
@@ -34,24 +34,24 @@ class PlatePurpose < Purpose
   scope :compatible_with_purpose, ->(purpose) {
     purpose.nil? ?
       where('FALSE') :
-      where(["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type]).
+      where(["(target_type is null and 'Plate'=?)  or target_type=?", purpose.target_plate_type, purpose.target_plate_type]).
         order("name ASC")
   }
 
-  scope :cherrypickable_as_target, -> { where( :cherrypickable_target => true ) }
-  scope :cherrypickable_as_source, -> { where( :cherrypickable_source => true ) }
-  scope :cherrypickable_default_type, -> { where( :cherrypickable_target => true, :cherrypickable_source => true ) }
+  scope :cherrypickable_as_target, -> { where(cherrypickable_target: true) }
+  scope :cherrypickable_as_source, -> { where(cherrypickable_source: true) }
+  scope :cherrypickable_default_type, -> { where(cherrypickable_target: true, cherrypickable_source: true) }
   scope :for_submissions, -> { where('can_be_considered_a_stock_plate = true OR name = "Working Dilution"').
     order('can_be_considered_a_stock_plate DESC') }
-  scope :considered_stock_plate, -> { where( :can_be_considered_a_stock_plate => true ) }
+  scope :considered_stock_plate, -> { where(can_be_considered_a_stock_plate: true) }
 
   serialize :cherrypick_filters
-  validates_presence_of(:cherrypick_filters, :if => :cherrypickable_target?)
-  before_validation(:if => :cherrypickable_target?) do |r|
+  validates_presence_of(:cherrypick_filters, if: :cherrypickable_target?)
+  before_validation(if: :cherrypickable_target?) do |r|
     r[:cherrypick_filters] ||= ['Cherrypick::Strategy::Filter::ShortenPlexesToFit']
   end
 
-  belongs_to :asset_shape, :class_name => 'AssetShape'
+  belongs_to :asset_shape, class_name: 'AssetShape'
 
   def source_plate(plate)
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
@@ -95,18 +95,18 @@ class PlatePurpose < Purpose
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility=false)
+  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
     transition_state_requests(wells, state)
-    fail_stock_well_requests(wells,customer_accepts_responsibility) if state == 'failed'
+    fail_stock_well_requests(wells, customer_accepts_responsibility) if state == 'failed'
   end
 
 
   module Overrideable
     def transition_state_requests(wells, state)
-      wells = wells.includes(:requests_as_target => { :asset => :aliquots, :target_asset => :aliquots })
+      wells = wells.includes(requests_as_target: { asset: :aliquots, target_asset: :aliquots })
       wells.each { |w| w.requests_as_target.each { |r| r.transition_to(state) } }
     end
     private :transition_state_requests
@@ -128,22 +128,22 @@ class PlatePurpose < Purpose
 
   include Overrideable
 
-  def fail_stock_well_requests(wells,customer_accepts_responsibility)
+  def fail_stock_well_requests(wells, customer_accepts_responsibility)
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
     # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
     conditions, parameters = [], []
     fail_request_details_for(wells) do |submission_ids, stock_wells|
       # Efficiency gain to be had using '=' over 'IN' when there is only one value to consider.
       condition, args = [], []
-      condition[0], args[0] = (submission_ids.size == 1) ? ['submission_id=?',submission_ids.first] : ['submission_id IN (?)',submission_ids]
-      condition[1], args[1] = (stock_wells.size == 1)    ? ['asset_id=?',stock_wells.first] : ['asset_id IN (?)',stock_wells]
+      condition[0], args[0] = (submission_ids.size == 1) ? ['submission_id=?', submission_ids.first] : ['submission_id IN (?)', submission_ids]
+      condition[1], args[1] = (stock_wells.size == 1)    ? ['asset_id=?', stock_wells.first] : ['asset_id IN (?)', stock_wells]
       conditions << "(#{condition[0]} AND #{condition[1]})"
       parameters.concat(args)
     end
     raise "Apparently there are not requests on these wells?" if conditions.empty?
     Request.where_is_not_a?(TransferRequest).where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
-      request.request_metadata.update_attributes!(:customer_accepts_responsibility => true) if customer_accepts_responsibility
+      request.request_metadata.update_attributes!(customer_accepts_responsibility: true) if customer_accepts_responsibility
       request.passed? ? request.retrospective_fail! : request.fail!
     end
   end
@@ -169,7 +169,7 @@ class PlatePurpose < Purpose
   self.per_page = 500
 
   # TODO: change to purpose_id
-  has_many :plates, :foreign_key => :plate_purpose_id
+  has_many :plates, foreign_key: :plate_purpose_id
 
   def target_plate_type
     self.target_type || 'Plate'

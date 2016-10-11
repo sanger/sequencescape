@@ -23,18 +23,18 @@ class Lot < ActiveRecord::Base
 
   belongs_to :lot_type
   belongs_to :user
-  belongs_to :template, :polymorphic => true
+  belongs_to :template, polymorphic: true
 
-  has_many :qcables, :inverse_of => :lot
+  has_many :qcables, inverse_of: :lot
 
-  has_many :stamps, :inverse_of => :lot
+  has_many :stamps, inverse_of: :lot
 
-  validates :lot_number, :lot_type, :user, :template, :received_at, :presence => true
+  validates :lot_number, :lot_type, :user, :template, :received_at, presence: true
   validates_uniqueness_of :lot_number
 
   validate :valid_template?
 
-  delegate :valid_template_class, :target_purpose, :to => :lot_type
+  delegate :valid_template_class, :target_purpose, to: :lot_type
 
  scope :include_lot_type, -> { includes(:lot_type) }
  scope :include_template, -> { includes(:template) }
@@ -43,11 +43,11 @@ class Lot < ActiveRecord::Base
  scope :with_qc_asset, ->(qc_asset) {
     return none if qc_asset.nil?
     sibling = qc_asset.transfers_as_destination.first.source
-    tag2_siblings = Tag2Layout.where(:plate_id => qc_asset.id).pluck(:source_id)
+    tag2_siblings = Tag2Layout.where(plate_id: qc_asset.id).pluck(:source_id)
 
     asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
 
-    includes(:qcables).where(qcables:{ asset_id:asset_ids }).where.not(qcables:{ state: 'exhausted' })
+    includes(:qcables).where(qcables: { asset_id: asset_ids }).where.not(qcables: { state: 'exhausted' })
   }
 
   private
@@ -55,7 +55,7 @@ class Lot < ActiveRecord::Base
   def valid_template?
     return false unless lot_type.present?
     return true if template.is_a?(valid_template_class)
-    errors.add(:template,"is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
+    errors.add(:template, "is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
     false
   end
 

@@ -8,7 +8,7 @@ module Submission::RequestOptionsBehaviour
   def self.included(base)
     base.class_eval do
       serialize :request_options, ActiveSupport::HashWithIndifferentAccess
-      validate :check_request_options, :if => :request_options_changed?
+      validate :check_request_options, if: :request_options_changed?
     end
   end
 

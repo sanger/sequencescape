@@ -6,7 +6,7 @@
 
 class Implement < ActiveRecord::Base
   validates_presence_of :name
-  validates :barcode, :presence => true, :on => :update
+  validates :barcode, presence: true, on: :update
   @@barcode_prefix = "LE"
 
   def generate_barcode

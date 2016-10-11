@@ -1,5 +1,5 @@
 namespace :benchmark do
-  task :plate_creation => :environment do
+  task plate_creation: :environment do
 
     $stdout.puts "Warming up..."
     15.times do

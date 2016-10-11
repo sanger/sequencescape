@@ -5,7 +5,7 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 Given /^I have a multiplexed library tube called "(.*?)"$/ do |name|
-  Purpose.find_by_name('Standard MX').create!(:name => name,:qc_state => 'pending')
+  Purpose.find_by_name('Standard MX').create!(name: name, qc_state: 'pending')
 end
 
 Then /^the "(.*?)" requests on "(.*?)" should have no study or project$/ do |request_type, asset_name|
@@ -23,14 +23,14 @@ Then /^the multiplexed library tube "(.*?)" contains "(.*?)"$/ do |tube_name, li
     new_aliquot.library = library_tube
     MultiplexedLibraryTube.find_by_name(tube_name).aliquots << new_aliquot
     new_aliquot.save!
-    AssetLink.create!(:ancestor => library_tube, :descendant => MultiplexedLibraryTube.find_by_name(tube_name), :direct => true)
+    AssetLink.create!(ancestor: library_tube, descendant: MultiplexedLibraryTube.find_by_name(tube_name), direct: true)
   end
 end
 
 Given /^the library tube "(.*?)" has aliquots with tag (\d+) under project "(.*?)"$/ do |library_tube_name, tag_id, project_name|
   LibraryTube.find_by_name(library_tube_name).aliquots.each do |aliquot|
-    aliquot.update_attributes!(:project => Project.find_by_name(project_name))
-    aliquot.update_attributes!(:tag_id => tag_id)
+    aliquot.update_attributes!(project: Project.find_by_name(project_name))
+    aliquot.update_attributes!(tag_id: tag_id)
   end
 end
 

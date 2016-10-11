@@ -4,7 +4,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
@@ -25,7 +25,7 @@ module WTSI
     ##
     # comment_prefix will be applied to the start of each line
     # comment_open and comment_close will wrap the start and end lines
-    Filetype = Struct.new(:extension,:comment_prefix,:comment_open,:comment_close)
+    Filetype = Struct.new(:extension, :comment_prefix, :comment_open, :comment_close)
 
     def initialize
       yield self
@@ -38,8 +38,8 @@ module WTSI
     # prefix: The string that will be prepended to a comment (eg. # for ruby)
     # open: The string that opens a multi-line comment (OPTIONAL)
     # close: The string that closes a multi-line comment (OPTIONAL)
-    def add_filetype(extension,prefix,open=nil,close=nil)
-      filetypes[extension] = Filetype.new(extension,prefix,open,close)
+    def add_filetype(extension, prefix, open = nil, close = nil)
+      filetypes[extension] = Filetype.new(extension, prefix, open, close)
     end
 
     ##
@@ -59,7 +59,7 @@ module WTSI
     # Begin the license application process
     def apply_licenses
       files_to_license.each do |filename|
-        TargetFile.new(filename,self).apply_license
+        TargetFile.new(filename, self).apply_license
       end
       return 0
     end
@@ -79,7 +79,7 @@ module WTSI
     ##
     # The initial date range in string format
     def range_string
-      @rs ||= [initial_range.begin,initial_range.end].uniq.join('-')
+      @rs ||= [initial_range.begin, initial_range.end].uniq.join('-')
     end
 
     private
@@ -116,7 +116,7 @@ module WTSI
 
     attr_reader :filename, :licenser, :filetype, :old_file
 
-    def initialize(filename,licenser)
+    def initialize(filename, licenser)
       @filename = filename
       @licenser = licenser
       @filetype = licenser.filetype_for(extension)
@@ -143,19 +143,19 @@ module WTSI
         new_file.close unless @new_file.nil? || new_file.closed?
       end
 
-      File.rename(filename,"#{filename}.tmp")
-      File.rename(new_filename,filename)
+      File.rename(filename, "#{filename}.tmp")
+      File.rename(new_filename, filename)
       File.delete("#{filename}.tmp")
     end
 
     private
 
     def old_file
-      @old_file ||= File.open(filename,'r')
+      @old_file ||= File.open(filename, 'r')
     end
 
     def new_file
-      @new_file ||= File.new(new_filename,'w')
+      @new_file ||= File.new(new_filename, 'w')
     end
 
     def new_filename
@@ -187,7 +187,7 @@ module WTSI
     end
 
     def license_body
-      licenser.license_text.gsub(/^/,filetype.comment_prefix)
+      licenser.license_text.gsub(/^/, filetype.comment_prefix)
     end
 
     def date_stamps
@@ -229,9 +229,9 @@ HEREDOC
   config.date_line = 'Copyright (C) %s Genome Research Ltd.'
   config.initial_range = (2007..2011)
 
-  config.add_filetype('rb','#')
-  config.add_filetype('js','//')
-  config.add_filetype('erb','#', '<%','%>')
+  config.add_filetype('rb', '#')
+  config.add_filetype('js', '//')
+  config.add_filetype('erb', '#', '<%', '%>')
 
   config.exclude_folder 'lib'
   config.exclude_folder 'vendor'

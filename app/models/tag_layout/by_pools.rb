@@ -7,7 +7,7 @@
 # Lays out the tags so that they are based on the pool.
 class TagLayout::ByPools < TagLayout
   # The direction of the tagging is column major, within the pools.
-  class_attribute :direction, :instance_writer => false
+  class_attribute :direction, instance_writer: false
   self.direction = 'column'
 
   def walk_wells(&block)

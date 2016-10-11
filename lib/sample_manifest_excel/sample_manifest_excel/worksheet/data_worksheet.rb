@@ -2,7 +2,7 @@ module SampleManifestExcel
 
   module Worksheet
 
-    #DataWorksheet creates a data worksheet to be filled in by a client.
+    # DataWorksheet creates a data worksheet to be filled in by a client.
 
     class DataWorksheet < Base
 
@@ -30,15 +30,15 @@ module SampleManifestExcel
         end
       end
 
-      #Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
-      #data validations, conditional formattings, freezes panes at required place.
+      # Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
+      # data validations, conditional formattings, freezes panes at required place.
 
       def create_worksheet
         insert_axlsx_worksheet("DNA Collections Form")
       end
 
-      #Adds title and description (study abbreviation, supplier name, number of assets sent)
-      #to a worksheet.
+      # Adds title and description (study abbreviation, supplier name, number of assets sent)
+      # to a worksheet.
 
       def add_title_and_description
         add_row ["DNA Collections Form"]
@@ -49,7 +49,7 @@ module SampleManifestExcel
         add_rows(1)
       end
 
-      #Adds columns with all required data to a worksheet
+      # Adds columns with all required data to a worksheet
 
       def add_columns
         columns.update(first_row, last_row, ranges, axlsx_worksheet)
@@ -60,8 +60,8 @@ module SampleManifestExcel
 
       end
 
-      #Creates row filled in with required column values, also unlocks (adds unlock style)
-      #the cells that should be filled in by clients
+      # Creates row filled in with required column values, also unlocks (adds unlock style)
+      # the cells that should be filled in by clients
 
       def create_row(detail)
         axlsx_worksheet.add_row do |row|
@@ -75,8 +75,8 @@ module SampleManifestExcel
         end
       end
 
-      #Freezes panes vertically after particular column (sanger_sample_id by default)
-      #and horizontally after headings
+      # Freezes panes vertically after particular column (sanger_sample_id by default)
+      # and horizontally after headings
 
       def freeze_panes(name = :sanger_sample_id)
         axlsx_worksheet.sheet_view.pane do |pane|
@@ -87,20 +87,20 @@ module SampleManifestExcel
         end
       end
 
-      #Finds the column after whech the panes should be frozen. If the column was not found
-      #freezes the panes after column 0 (basically not frozen vertically)
+      # Finds the column after whech the panes should be frozen. If the column was not found
+      # freezes the panes after column 0 (basically not frozen vertically)
 
       def freeze_after_column(name)
         columns.find_by(name) ? columns.find_by(name).number : 0
       end
 
-      #The row where the table with data starts (after headings)
+      # The row where the table with data starts (after headings)
 
       def first_row
         10
       end
 
-      #The row where the table with data end
+      # The row where the table with data end
 
       def last_row
         @last_row ||= sample_manifest.details_array.count + first_row - 1

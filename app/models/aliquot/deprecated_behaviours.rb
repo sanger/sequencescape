@@ -9,9 +9,9 @@ module Aliquot::DeprecatedBehaviours
   module Request
     def self.included(base)
       base.class_eval do
-        #Shouldn't be used . Here for compatibility with the previous code
-        #having request having one sample
-        has_many :samples, :through => :asset
+        # Shouldn't be used . Here for compatibility with the previous code
+        # having request having one sample
+        has_many :samples, through: :asset
         deprecate :samples,  :sample_ids
       end
     end
@@ -42,8 +42,8 @@ module Aliquot::DeprecatedBehaviours
     end
     deprecate :sample_name?
 
-    def sample_name(default=nil, &block)
-      #return the name of the underlying samples
+    def sample_name(default = nil, &block)
+      # return the name of the underlying samples
       # used mainly for compatibility with the old codebase
       # # default is used if no smaple
       # # block is used to aggregate the samples

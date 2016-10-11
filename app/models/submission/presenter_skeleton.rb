@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class Submission::PresenterSkeleton
-  class_attribute :attributes, :instance_writer => false
+  class_attribute :attributes, instance_writer: false
   self.attributes = Array.new
 
   def initialize(user, submission_attributes = {})
@@ -41,7 +41,7 @@ class Submission::PresenterSkeleton
       yield(order.study.name, order.study)
     else # Cross study
       Study.in_assets(order.all_assets).each do |study|
-        yield(study.name,study)
+        yield(study.name, study)
       end
     end
   end
@@ -51,7 +51,7 @@ class Submission::PresenterSkeleton
       yield(order.project.name, order.project)
     else # Cross Project
       Project.in_assets(order.all_assets).each do |project|
-        yield(project.name,project)
+        yield(project.name, project)
       end
     end
   end

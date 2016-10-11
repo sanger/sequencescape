@@ -33,9 +33,9 @@ class QcMetricTest < ActiveSupport::TestCase
       ['manually_failed', true,  true],
       ['manually_failed', nil,   false],
       ['manually_passed', nil,   false],
-    ].each do |qc_state,proceed_state,poor_quality_proceed|
+    ].each do |qc_state, proceed_state, poor_quality_proceed|
         should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
-          qc = create :qc_metric, :qc_decision => qc_state, :proceed => proceed_state
+          qc = create :qc_metric, qc_decision: qc_state, proceed: proceed_state
           assert_equal poor_quality_proceed, qc.poor_quality_proceed
         end
       end
@@ -45,19 +45,19 @@ class QcMetricTest < ActiveSupport::TestCase
     [
       ['passed',         true],
       ['failed',         true],
-      ['manually_passed',true],
-      ['manually_failed',true],
+      ['manually_passed', true],
+      ['manually_failed', true],
       ['unprocessable',  false],
     ].each do |qc_state, proceedable|
 
       should "#{proceedable ? '' : 'not '}allow the proceed flag to be set to Y when #{qc_state}" do
-        qc = create :qc_metric, :qc_decision => qc_state
+        qc = create :qc_metric, qc_decision: qc_state
         qc.human_proceed = 'Y'
         assert_equal proceedable, qc.proceed
       end
 
       should "allow the proceed flag to be set to N when #{qc_state}" do
-        qc = create :qc_metric, :qc_decision => qc_state
+        qc = create :qc_metric, qc_decision: qc_state
         qc.human_proceed = 'N'
         assert_equal false, qc.proceed
       end

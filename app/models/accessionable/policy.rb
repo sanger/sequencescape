@@ -14,7 +14,7 @@ class Accessionable::Policy < Accessionable::Base
     @name = "Policy for study - #{study.name} - ##{study.id}"
     @policy_url = study.study_metadata.dac_policy
     @title = study.study_metadata.dac_policy_title
-    #@dac_refname = study.dac_refname
+    # @dac_refname = study.dac_refname
     @dac_accession_number = study.dac_accession_number
     super(study.policy_accession_number)
 
@@ -30,11 +30,11 @@ class Accessionable::Policy < Accessionable::Base
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.POLICY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.POLICY(:alias => self.alias,
-                 :accession => self.accession_number,
-                 :center_name => self.center_name) {
+      xml.POLICY(alias: self.alias,
+                 accession: self.accession_number,
+                 center_name: self.center_name) {
       xml.TITLE self.title
-      xml.DAC_REF(:accession => self.dac_accession_number)
+      xml.DAC_REF(accession: self.dac_accession_number)
       xml.POLICY_FILE self.policy_url
     }
     }

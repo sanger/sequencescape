@@ -14,11 +14,11 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     orders = Set.new
     target_requests(tube).each do |request|
       request.customer_accepts_responsibility! if customer_accepts_responsibility
-      to_state = request_state(request,state)
+      to_state = request_state(request, state)
       request.transition_to(to_state) unless to_state.nil?
       orders << request.order.id unless request.is_a?(TransferRequest)
     end
-    generate_events_for(tube,orders,user) if mappings[state] == 'passed'
+    generate_events_for(tube, orders, user) if mappings[state] == 'passed'
   end
 
   def target_requests(tube)
@@ -26,7 +26,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       [
         "state IN (?) OR (state='passed' AND sti_type IN (?))",
         Request::Statemachine::OPENED_STATE,
-        [TransferRequest,*TransferRequest.descendants].map(&:name)
+        [TransferRequest, *TransferRequest.descendants].map(&:name)
       ])
   end
   private :target_requests
@@ -37,27 +37,27 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
 
   def library_source_plates(tube)
     Plate.select('DISTINCT assets.*').
-      joins(:wells => :requests).
-      where(:requests => {
-        :target_asset_id => tube.id,
-        :sti_type => [Request::LibraryCreation,*Request::LibraryCreation.descendants].map(&:name)
+      joins(wells: :requests).
+      where(requests: {
+        target_asset_id: tube.id,
+        sti_type: [Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
       }
     ).map(&:source_plate)
   end
 
-  def request_state(request,state)
+  def request_state(request, state)
     request.is_a?(TransferRequest) ? state : mappings[state]
   end
   private :request_state
 
   def mappings
-    { 'cancelled' => 'cancelled','failed' => 'failed','qc_complete' => 'passed' }
+    { 'cancelled' => 'cancelled', 'failed' => 'failed', 'qc_complete' => 'passed' }
   end
   private :mappings
 
-  def generate_events_for(tube,orders,user)
+  def generate_events_for(tube, orders, user)
     orders.each do |order_id|
-      BroadcastEvent::LibraryComplete.create!(:seed => tube,:user => user,:properties => { :order_id => order_id })
+      BroadcastEvent::LibraryComplete.create!(seed: tube, user: user, properties: { order_id: order_id })
     end
   end
   private :generate_events_for

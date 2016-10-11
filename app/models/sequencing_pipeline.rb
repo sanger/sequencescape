@@ -50,16 +50,16 @@ class SequencingPipeline < Pipeline
     # Note that the request metadata also needs to be cloned for this to work.
     ActiveRecord::Base.transaction do
       request.dup.tap do |request_clone|
-        rma = request.request_metadata.attributes.merge(:request => request_clone)
-        request_clone.update_attributes!(:state => 'pending', :target_asset_id => nil,:request_metadata_attributes => rma)
-        request_clone.comments.create!(:description => "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now()}")
-        request.comments.create!(:description => "The request #{request_clone.id} is an automatically created clone of this one")
+        rma = request.request_metadata.attributes.merge(request: request_clone)
+        request_clone.update_attributes!(state: 'pending', target_asset_id: nil, request_metadata_attributes: rma)
+        request_clone.comments.create!(description: "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now()}")
+        request.comments.create!(description: "The request #{request_clone.id} is an automatically created clone of this one")
       end
     end
   end
 
   def on_start_batch(batch, user)
-    BroadcastEvent::SequencingStart.create!(:seed => batch,:user => user,:properties => {},:created_at => DateTime.now)
+    BroadcastEvent::SequencingStart.create!(seed: batch, user: user, properties: {}, created_at: DateTime.now)
   end
 
   def post_release_batch(batch, user)
@@ -68,7 +68,7 @@ class SequencingPipeline < Pipeline
     # However some old features still use them, and until this behaviour is completely
     # deprecated we should leave it here.
     batch.assets.compact.uniq.each(&:index_aliquots)
-    Messenger.create!(:target => batch,:template => 'FlowcellIO',:root => 'flowcell')
+    Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell')
   end
 
 end

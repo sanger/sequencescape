@@ -11,13 +11,13 @@ class Aliquot < ActiveRecord::Base
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
 
-  TAG_COUNT_NAMES = ['Untagged','Single','Dual']
+  TAG_COUNT_NAMES = ['Untagged', 'Single', 'Dual']
 
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
   include Api::AliquotIO::Extensions
   # An aliquot is held within a receptacle
-  belongs_to :receptacle, :class_name => 'Asset'
+  belongs_to :receptacle, class_name: 'Asset'
 
   # An aliquot can belong to a study and a project.
   belongs_to :study
@@ -48,7 +48,7 @@ class Aliquot < ActiveRecord::Base
   belongs_to :tag
   before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
 
-  belongs_to :tag2, :class_name => 'Tag'
+  belongs_to :tag2, class_name: 'Tag'
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
 
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
@@ -98,8 +98,8 @@ class Aliquot < ActiveRecord::Base
   end
 
   # It can belong to a library asset
-  belongs_to :library, :class_name => 'Aliquot::Receptacle'
-  composed_of :insert_size, :mapping => [%w{insert_size_from from}, %w{insert_size_to to}], :class_name => 'Aliquot::InsertSize', :allow_nil => true
+  belongs_to :library, class_name: 'Aliquot::Receptacle'
+  composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
   # also reset the timestamp information as this is a new aliquot really.
@@ -117,7 +117,7 @@ class Aliquot < ActiveRecord::Base
 
   # return all aliquots originated from the current one
   # ie aliquots sharing the sample, tag information, descending the requess graph
-  def descendants(include_self=false)
+  def descendants(include_self = false)
     (include_self ? self : requests).walk_objects({
       Aliquot => :receptacle,
       Receptacle => [:aliquots, :requests_as_source],
@@ -148,7 +148,7 @@ class Aliquot < ActiveRecord::Base
     when object.bait_library_id.present? && (self.bait_library_id != object.bait_library_id)  then return false # We have different bait libraries
     when self.untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.untagged? && object.no_tag2?                                             then return true # The upstream aliquot was untagged, we don't need to check tags
-    else (object.untagged? || (self.tag_id == object.tag_id)) && (object.no_tag2? || (self.tag2_id == object.tag2_id ))  # Both aliquots are tagged, we need to check if they match
+    else (object.untagged? || (self.tag_id == object.tag_id)) && (object.no_tag2? || (self.tag2_id == object.tag2_id))  # Both aliquots are tagged, we need to check if they match
     end
   end
 

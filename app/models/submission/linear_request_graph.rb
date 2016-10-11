@@ -25,9 +25,9 @@ module Submission::LinearRequestGraph
   # Generates a list of RequestType and multiplier pairs for the instance.
   def build_request_type_multiplier_pairs
     # Ensure that the keys of the multipliers hash are strings, otherwise we get weirdness!
-    multipliers = Hash.new { |h,k| h[k] = 1 }.tap do |multipliers|
+    multipliers = Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
       requested_multipliers = request_options.try(:[], :multiplier) || {}
-      requested_multipliers.each { |k,v| multipliers[k.to_s] = v.to_i }
+      requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
     end
 
     request_types.dup.map do |request_type_id|
@@ -82,7 +82,7 @@ module Submission::LinearRequestGraph
 
         create_request_of_type!(
           request_type,
-          :asset => source_asset, :target_asset => target_asset, :item => item
+          asset: source_asset, target_asset: target_asset, item: item
         ).tap do |request|
           # TODO: AssetLink is supposed to disappear at some point in the future because it makes no real sense
           # given that the request graph describes this relationship.
@@ -92,7 +92,7 @@ module Submission::LinearRequestGraph
           request.update_responsibilities!
 
           comments.split("\n").each do |comment|
-            request.comments.create!(:user => user, :description => comment)
+            request.comments.create!(user: user, description: comment)
           end if comments.present?
         end
       end
@@ -110,7 +110,7 @@ module Submission::LinearRequestGraph
           associate_built_requests(target_assets.uniq.compact); []
         end
       else
-        target_assets.each_with_index.map do |asset,index|
+        target_assets.each_with_index.map do |asset, index|
           source_asset = request_type.no_target_asset? ? source_asset_qc_metric_and_item[index].first : asset
           [source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last]
         end
@@ -123,10 +123,10 @@ module Submission::LinearRequestGraph
 
   def associate_built_requests(assets)
     assets.map(&:requests).flatten.each do |request|
-      request.update_attributes!(:initial_study => nil) if request.initial_study != study
-      request.update_attributes!(:initial_project => nil) if request.initial_project != project
+      request.update_attributes!(initial_study: nil) if request.initial_study != study
+      request.update_attributes!(initial_project: nil) if request.initial_project != project
       comments.split("\n").each do |comment|
-        request.comments.create!(:user => user, :description => comment)
+        request.comments.create!(user: user, description: comment)
       end if comments.present?
     end
   end
@@ -138,7 +138,7 @@ module Submission::LinearRequestGraph
     item = asset.requests.first.item unless asset.requests.empty?
     return item if item.present?
 
-    Item.create!(:workflow => workflow, :name => "#{asset.display_name} #{id}", :submission => self.submission)
+    Item.create!(workflow: workflow, name: "#{asset.display_name} #{id}", submission: self.submission)
   end
   private :create_item_for!
 

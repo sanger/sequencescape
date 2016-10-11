@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class UsersController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :validate_user, :except => [:index, :projects, :study_reports]
-  before_action :find_user, :except => [:index]
+  before_action :validate_user, except: [:index, :projects, :study_reports]
+  before_action :find_user, except: [:index]
 
   def index
     @users = User.all
@@ -33,7 +33,7 @@ class UsersController < ApplicationController
     else
       flash[:error] = "Problem updating profile."
     end
-    redirect_to :action => :show, :id => @user.id
+    redirect_to action: :show, id: @user.id
   end
 
   def projects
@@ -51,7 +51,7 @@ class UsersController < ApplicationController
       return true
     else
       flash[:error] = "You don't have permission to view or edit that profile: here is yours instead."
-      redirect_to :action => :show, :id => current_user.id
+      redirect_to action: :show, id: current_user.id
     end
   end
 

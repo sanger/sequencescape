@@ -19,7 +19,7 @@ class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline
     return true unless batch.requests.any? do |r|
       r.target_asset.aliquots.any? { |a| a.tag.nil? }
     end
-    batch.errors.add(:base,'This batch appears to have not been properly tagged')
+    batch.errors.add(:base, 'This batch appears to have not been properly tagged')
     # raise ActiveRecord::RecordInvalid, batch
   end
 end

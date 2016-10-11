@@ -34,7 +34,7 @@ public
     return image_tag("error.png") unless document
     case document.content_type
     when /pdf/
-      image_tag("pdf_icon.png", :size => "18x18")
+      image_tag("pdf_icon.png", size: "18x18")
     when /word/
       image_tag("word_icon.png")
     when /excel/
@@ -48,9 +48,9 @@ public
     asset.closed? ? "closed" : "open"
   end
 
-  def study_link(study,options)
-    link_text = content_tag(:strong,study.name) << ' ' <<
-    content_tag(:span,study.state,:class => "study-state label label-#{bootstrapify_study_state(study.state)}")
+  def study_link(study, options)
+    link_text = content_tag(:strong, study.name) << ' ' <<
+    content_tag(:span, study.state, class: "study-state label label-#{bootstrapify_study_state(study.state)}")
     link_to(link_text, study_path(study), options)
   end
 

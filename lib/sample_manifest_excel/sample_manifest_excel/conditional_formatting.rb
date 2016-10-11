@@ -12,7 +12,7 @@ module SampleManifestExcel
 
     set_attributes :options, :style, :formula
 
-    def initialize(attributes={})
+    def initialize(attributes = {})
       create_attributes(attributes)
     end
 

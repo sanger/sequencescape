@@ -15,7 +15,7 @@ class AssetAudit < ActiveRecord::Base
   self.per_page = 500
 
   validates_presence_of :asset, :key
-  validates_format_of :key, :with => /\A[\w_]+\z/i, :message => I18n.t('asset_audit.key_format'), :on => :create
+  validates_format_of :key, with: /\A[\w_]+\z/i, message: I18n.t('asset_audit.key_format'), on: :create
 
   # Disabled in the initial events release. One enabling ensure historical audits
   # get broadcast
@@ -24,7 +24,7 @@ class AssetAudit < ActiveRecord::Base
   private
 
   def broadcast_event
-    BroadcastEvent::AssetAudit.create!(:seed => self,:user => User.find_by_login(created_by),:created_at => created_at)
+    BroadcastEvent::AssetAudit.create!(seed: self, user: User.find_by_login(created_by), created_at: created_at)
   end
 
 

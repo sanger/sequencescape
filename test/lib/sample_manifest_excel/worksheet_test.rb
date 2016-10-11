@@ -9,7 +9,7 @@ class WorksheetTest < ActiveSupport::TestCase
     @workbook = xls.workbook
 
     SampleManifestExcel.configure do |config|
-      config.folder = File.join("test","data", "sample_manifest_excel")
+      config.folder = File.join("test", "data", "sample_manifest_excel")
       config.load!
     end
 
@@ -72,18 +72,18 @@ class WorksheetTest < ActiveSupport::TestCase
     end
 
     should "should add title and description" do
-      assert_equal "DNA Collections Form", spreadsheet.sheet(0).cell(1,1)
-      assert_equal "Study:", spreadsheet.sheet(0).cell(5,1)
-      assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(0).cell(5,2)
-      assert_equal "Supplier:", spreadsheet.sheet(0).cell(6,1)
-      assert_equal sample_manifest.supplier.name, spreadsheet.sheet(0).cell(6,2)
-      assert_equal "No. Plates Sent:", spreadsheet.sheet(0).cell(7,1)
-      assert_equal sample_manifest.count.to_s, spreadsheet.sheet(0).cell(7,2)
+      assert_equal "DNA Collections Form", spreadsheet.sheet(0).cell(1, 1)
+      assert_equal "Study:", spreadsheet.sheet(0).cell(5, 1)
+      assert_equal sample_manifest.study.abbreviation, spreadsheet.sheet(0).cell(5, 2)
+      assert_equal "Supplier:", spreadsheet.sheet(0).cell(6, 1)
+      assert_equal sample_manifest.supplier.name, spreadsheet.sheet(0).cell(6, 2)
+      assert_equal "No. Plates Sent:", spreadsheet.sheet(0).cell(7, 1)
+      assert_equal sample_manifest.count.to_s, spreadsheet.sheet(0).cell(7, 2)
     end
 
     should "add standard headings to worksheet" do
       worksheet.columns.headings.each_with_index do |heading, i|
-        assert_equal heading, spreadsheet.sheet(0).cell(9,i + 1)
+        assert_equal heading, spreadsheet.sheet(0).cell(9, i + 1)
       end
     end
 
@@ -141,7 +141,7 @@ class WorksheetTest < ActiveSupport::TestCase
     should "add ranges to axlsx worksheet" do
       range = worksheet.ranges.first.last
       range.options.each_with_index do |option, i|
-        assert_equal option, spreadsheet.sheet(0).cell(1,i + 1)
+        assert_equal option, spreadsheet.sheet(0).cell(1, i + 1)
       end
       assert_equal worksheet.ranges.count, spreadsheet.sheet(0).last_row
     end

@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class GelsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :slf_gel_login_required
 
@@ -23,11 +23,11 @@ class GelsController < ApplicationController
     @plate = Plate.find_by_barcode_and_barcode_prefix_id(params[:barcode], BarcodePrefix.find_by_prefix(Plate.prefix))
     if !@plate
       flash[:error] = "plate not found"
-      render :action => :find
+      render action: :find
       return
     end
 
-    render :action => :show
+    render action: :show
   end
 
   def show
@@ -38,12 +38,12 @@ class GelsController < ApplicationController
     ActiveRecord::Base.transaction do
       params[:wells].keys.each do |well_id|
         well = Well.find(well_id)
-        well.well_attribute.update_attributes!( :gel_pass => params[:wells][well_id][:qc_state])
+        well.well_attribute.update_attributes!(gel_pass: params[:wells][well_id][:qc_state])
         well.events.create_gel_qc!(params[:wells][well_id][:qc_state], current_user)
       end
       Plate.find(params[:id]).events.create_gel_qc!('', current_user)
     end
     flash[:notice] = "Gel results for plate updated"
-    redirect_to :action => :index
+    redirect_to action: :index
   end
 end

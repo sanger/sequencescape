@@ -13,8 +13,8 @@ class MessengerCreatorTest < ActiveSupport::TestCase
     setup do
 
       @purpose =           FactoryGirl.build :plate_purpose
-      @messenger_creator = FactoryGirl.build :messenger_creator, :purpose => @purpose
-      @plate =             FactoryGirl.build :plate, :plate_purpose => @purpose
+      @messenger_creator = FactoryGirl.build :messenger_creator, purpose: @purpose
+      @plate =             FactoryGirl.build :plate, plate_purpose: @purpose
       @start_count = Messenger.count
 
     end

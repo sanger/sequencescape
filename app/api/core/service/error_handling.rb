@@ -9,9 +9,6 @@ module Core::Service::ErrorHandling
     app.instance_eval do
       helpers Helpers
 
-      # We need hierarchical exception handling, so we rewrite the @errors Hash with our own implementation
-      @errors = HierarchicalExceptionMap.new(@errors)
-
       error([
         ::IllegalOperation,
         ::Core::Service::Error,
@@ -39,7 +36,7 @@ module Core::Service::ErrorHandling
 
       def each(&block)
         yield JSON.generate(@error)
-        #Yajl::Encoder.new.encode(@error, &block)
+        # Yajl::Encoder.new.encode(@error, &block)
       end
     end
 
@@ -49,24 +46,11 @@ module Core::Service::ErrorHandling
 
     def general_error(code, errors = nil)
       errors ||= [exception_thrown.message]
-      error(code, JsonError.new(:general => errors))
+      error(code, JsonError.new(general: errors))
     end
 
     def content_error(code, errors = nil)
-      error(code, JsonError.new(:content => errors))
-    end
-  end
-
-  class HierarchicalExceptionMap < Hash
-    def initialize(hash)
-      super
-      merge!(hash || {})
-    end
-
-    def [](key)
-      return super[key] unless key.is_a?(Class)
-      key = key.superclass until key.nil? or key?(key)
-      super(key)
+      error(code, JsonError.new(content: errors))
     end
   end
 end
@@ -103,7 +87,7 @@ class ActiveRecord::RecordInvalid
   end
 
   def errors_grouped_by_attribute
-    Hash[record.errors.map { |k,v| [yield(k), [v].flatten.uniq] }]
+    Hash[record.errors.map { |k, v| [yield(k), [v].flatten.uniq] }]
   end
   private :errors_grouped_by_attribute
 end

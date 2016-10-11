@@ -10,7 +10,7 @@ class StudyRelationType < ActiveRecord::Base
   validates_uniqueness_of :reversed_name
 
   def relate_studies!(study, related_study)
-    study.study_relations.create!(:related_study => related_study, :study_relation_type => self)
+    study.study_relations.create!(related_study: related_study, study_relation_type: self)
   end
 
   def self.names

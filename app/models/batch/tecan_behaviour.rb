@@ -19,7 +19,7 @@ module Batch::TecanBehaviour
 
   def generate_tecan_data(target_barcode, override_plate_type = nil)
     # very slow
-    #return nil unless validate_for_tecan(target_barcode)
+    # return nil unless validate_for_tecan(target_barcode)
 
     data_object = {
        "user" => user.login,
@@ -28,7 +28,7 @@ module Batch::TecanBehaviour
        "destination" => {}
     }
 
-    requests.includes([{ :asset => :plate },{ :target_asset => :plate }]).where(:state => "passed").each do |request|
+    requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: "passed").each do |request|
 
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
@@ -36,7 +36,7 @@ module Batch::TecanBehaviour
       full_source_barcode = request.asset.plate.barcode_for_tecan
       full_destination_barcode = request.target_asset.plate.barcode_for_tecan
 
-      source_plate_name = request.asset.plate.stock_plate_name.gsub(/_/, "\s")
+      source_plate_name = request.asset.plate.stock_plate_name.tr('_', "\s")
       if override_plate_type
         source_plate_name = override_plate_type
       end
@@ -46,7 +46,7 @@ module Batch::TecanBehaviour
       end
       if data_object["destination"][full_destination_barcode].nil?
         data_object["destination"][full_destination_barcode] = {
-          "name" => PlatePurpose.cherrypickable_default_type.first.name.gsub(/_/, "\s"),
+          "name" => PlatePurpose.cherrypickable_default_type.first.name.tr('_', "\s"),
           "plate_size" => request.target_asset.plate.size
         }
       end
@@ -67,7 +67,7 @@ module Batch::TecanBehaviour
     data_object = generate_tecan_data(target_barcode)
     dest_barcode_index = Sanger::Robots::Tecan::Generator.barcode_to_plate_index(data_object["destination"])
     source_barcode_index = Sanger::Robots::Tecan::Generator.source_barcode_to_plate_index(data_object["destination"])
-    [dest_barcode_index,source_barcode_index]
+    [dest_barcode_index, source_barcode_index]
   end
 
   def tecan_gwl_file_as_text(target_barcode, volume_required = 13, plate_type = nil)
@@ -75,7 +75,7 @@ module Batch::TecanBehaviour
     Sanger::Robots::Tecan::Generator.mapping(data_object,  volume_required.to_i)
   end
 
-  def tecan_gwl_file(target_barcode,volume_required=13)
+  def tecan_gwl_file(target_barcode, volume_required = 13)
     data_object = generate_tecan_data(target_barcode)
     gwl_data = Sanger::Robots::Tecan::Generator.mapping(data_object,  volume_required.to_i)
     begin

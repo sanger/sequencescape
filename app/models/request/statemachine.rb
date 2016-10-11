@@ -15,7 +15,7 @@ module Request::Statemachine
   INACTIVE = QUOTA_EXEMPTED = ['failed', 'cancelled']
 
   module ClassMethods
-    def redefine_aasm(options={},&block)
+    def redefine_aasm(options = {}, &block)
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine
@@ -29,8 +29,8 @@ module Request::Statemachine
         end
       end
       # Wipe out the inherited state machine. Can't use unregister.
-      AASM::StateMachineStore.register(self,true)
-      aasm(options,&block)
+      AASM::StateMachineStore.register(self, true)
+      aasm(options, &block)
     end
 
     # Determines the most likely event that should be fired when transitioning between the two states.  If there is
@@ -51,102 +51,102 @@ module Request::Statemachine
       extend ClassMethods
 
       ## State machine
-      aasm :column => :state, :whiny_persistence => true do
+      aasm column: :state, whiny_persistence: true do
 
-        state :pending,   :initial => true
-        state :started,   :after_enter => :on_started
-        state :failed,    :after_enter => :on_failed
-        state :passed,    :after_enter => :on_passed
-        state :cancelled, :after_enter => :on_cancelled
-        state :blocked,   :after_enter => :on_blocked
-        state :hold,      :after_enter => :on_hold
+        state :pending,   initial: true
+        state :started,   after_enter: :on_started
+        state :failed,    after_enter: :on_failed
+        state :passed,    after_enter: :on_passed
+        state :cancelled, after_enter: :on_cancelled
+        state :blocked,   after_enter: :on_blocked
+        state :hold,      after_enter: :on_hold
 
 
         event :hold do
-          transitions :to => :hold, :from => [:pending]
+          transitions to: :hold, from: [:pending]
         end
 
         # State Machine events
         event :start do
-          transitions :to => :started, :from => [:pending, :hold]
+          transitions to: :started, from: [:pending, :hold]
         end
 
         event :pass do
-          transitions :to => :passed, :from => [:started]
+          transitions to: :passed, from: [:started]
         end
 
         event :fail do
-          transitions :to => :failed, :from => [:started]
+          transitions to: :failed, from: [:started]
         end
 
         event :retrospective_pass do
-          transitions :to => :passed, :from => [:failed]
+          transitions to: :passed, from: [:failed]
         end
 
         event :retrospective_fail do
-          transitions :to => :failed, :from => [:passed]
+          transitions to: :failed, from: [:passed]
         end
 
         event :block do
-          transitions :to => :blocked, :from => [:pending]
+          transitions to: :blocked, from: [:pending]
         end
 
         event :unblock do
-          transitions :to => :pending, :from => [:blocked]
+          transitions to: :pending, from: [:blocked]
         end
 
         event :detach do
-          transitions :to => :pending, :from => [:cancelled]
+          transitions to: :pending, from: [:cancelled]
         end
 
         event :reset do
-          transitions :to => :pending, :from => [:hold]
+          transitions to: :pending, from: [:hold]
         end
 
         event :cancel do
-          transitions :to => :cancelled, :from => [:started, :hold]
+          transitions to: :cancelled, from: [:started, :hold]
         end
 
         event :return do
-          transitions :to => :pending, :from => [:failed, :passed]
+          transitions to: :pending, from: [:failed, :passed]
         end
 
         event :cancel_completed do
-          transitions :to => :cancelled, :from => [:failed, :passed]
+          transitions to: :cancelled, from: [:failed, :passed]
         end
 
         event :cancel_from_upstream do
-          transitions :to => :cancelled, :from => [:pending]
+          transitions to: :cancelled, from: [:pending]
         end
 
         event :cancel_before_started do
-          transitions :to => :cancelled, :from => [:pending, :hold]
+          transitions to: :cancelled, from: [:pending, :hold]
         end
 
         event :submission_cancelled do
-          transitions :to => :cancelled, :from => [:pending,:cancelled]
+          transitions to: :cancelled, from: [:pending, :cancelled]
         end
 
         event :fail_from_upstream do
-          transitions :to => :cancelled, :from => [:pending]
-          transitions :to => :failed,    :from => [:started]
-          transitions :to => :failed,    :from => [:passed]
+          transitions to: :cancelled, from: [:pending]
+          transitions to: :failed,    from: [:started]
+          transitions to: :failed,    from: [:passed]
         end
 
       end
 
-     scope :for_state, ->(state) { where(:state => state) }
+     scope :for_state, ->(state) { where(state: state) }
 
-     scope :completed,        -> { where(:state => COMPLETED_STATE) }
+     scope :completed,        -> { where(state: COMPLETED_STATE) }
 
-     scope :pipeline_pending, -> { where(:state => "pending") } #  we don't want the blocked one here }
-     scope :pending,          -> { where(:state => ["pending", "blocked"]) } # block is a kind of substate of pending }
+     scope :pipeline_pending, -> { where(state: "pending") } #  we don't want the blocked one here }
+     scope :pending,          -> { where(state: ["pending", "blocked"]) } # block is a kind of substate of pending }
 
-     scope :started,          -> { where(:state => "started") }
-     scope :cancelled,        -> { where(:state => "cancelled") }
+     scope :started,          -> { where(state: "started") }
+     scope :cancelled,        -> { where(state: "cancelled") }
 
-     scope :opened,           -> { where(:state => OPENED_STATE) }
-     scope :closed,           -> { where(:state => ["passed", "failed", "cancelled"]) }
+     scope :opened,           -> { where(state: OPENED_STATE) }
+     scope :closed,           -> { where(state: ["passed", "failed", "cancelled"]) }
 
     end
   end

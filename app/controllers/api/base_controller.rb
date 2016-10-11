@@ -5,24 +5,24 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Api::BaseController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   class_attribute :model_class
   before_action { |controller| Uuid.translate_uuids_to_ids_in_params(controller.params) }
-  around_filter :wrap_in_transaction, :only => [:create, :update, :destroy]
+  around_filter :wrap_in_transaction, only: [:create, :update, :destroy]
 
-  delegate :render_class, :to => :model_class
+  delegate :render_class, to: :model_class
 
   #--
   # Exception handling code
   #++
   rescue_from ActiveRecord::RecordInvalid do |exception|
-    errors = exception.record.errors.inject(Hash.new { |h,k| h[k] = [] }) do |hash, field_and_error_pair|
+    errors = exception.record.errors.inject(Hash.new { |h, k| h[k] = [] }) do |hash, field_and_error_pair|
       hash.tap { hash[field_and_error_pair.first].push(field_and_error_pair.last) }
     end
     respond_to do |format|
-      format.json { render :json => self.render_class.map_attribute_to_json_attribute_in_errors(errors), :status => :unprocessable_entity }
+      format.json { render json: self.render_class.map_attribute_to_json_attribute_in_errors(errors), status: :unprocessable_entity }
     end
   end
 
@@ -35,7 +35,7 @@ class Api::BaseController < ApplicationController
   #++
   def show
     respond_to do |format|
-      format.json { render :json => @object.to_json }
+      format.json { render json: @object.to_json }
     end
   end
 
@@ -45,14 +45,14 @@ class Api::BaseController < ApplicationController
     results = @context.order(sort_order).paginate(page: params[:page], total_entries: 100000000, per_page: 500)
 
     respond_to do |format|
-      format.json { render :json => results }
+      format.json { render json: results }
     end
   end
 
   def create
     object = self.render_class.create!(params)
     respond_to do |format|
-      format.json { render :json => object.to_json, :status => :created, :location => object }
+      format.json { render json: object.to_json, status: :created, location: object }
     end
   end
 

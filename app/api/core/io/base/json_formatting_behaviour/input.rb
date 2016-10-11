@@ -18,7 +18,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
   def self.extended(base)
     base.class_eval do
-      class_attribute :model_for_input, :instance_writer => false
+      class_attribute :model_for_input, instance_writer: false
       extend AssociationHandling
     end
   end
@@ -34,7 +34,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     # handled right now, provided there is not a read_write one that shares their name.
     read_only, read_write = json_to_attribute.partition { |_, v| v.nil? }
     common_keys = read_only.map(&:first) & read_write.map(&:first)
-    read_only.delete_if { |k,_| common_keys.include?(k) }
+    read_only.delete_if { |k, _| common_keys.include?(k) }
     code.concat(read_only.map do |json, _|
       "process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }"
     end)
@@ -71,21 +71,21 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       # JSON.
       path.inject(initial_structure) { |part, step| part[step] ||= {} }
       code << "process_if_present(params, #{json.split('.').inspect}) do |value|"
-      if path.empty?
-        code << "  attributes.tap do |section|"
-      else
-        code << "  #{path.inspect}.inject(attributes) { |a,s| a[s] }.tap do |section|"
-      end
+      code << if path.empty?
+        "  attributes.tap do |section|"
+              else
+        "  #{path.inspect}.inject(attributes) { |a,s| a[s] }.tap do |section|"
+              end
 
-      if model.nil?
-        code << "    section[:#{leaf}] = value #nil"
-      elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
-        code << "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
-      elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]
-        code << "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
-      else
-        code << "    section[:#{leaf}] = value"
-      end
+      code << if model.nil?
+        "    section[:#{leaf}] = value #nil"
+              elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
+        "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
+              elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]
+        "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
+              else
+        "    section[:#{leaf}] = value"
+              end
       code << "  end"
       code << "end"
     end
@@ -111,7 +111,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   # If the specified path is present all of the way to the end then the value at the
   # leaf is yielded, otherwise this method simply returns.
   def process_if_present(json, path)
-    value = path.inject(json) do |current,step|
+    value = path.inject(json) do |current, step|
       return unless current.respond_to?(:key?)    # Could be nested attribute but not present!
       return unless current.key?(step)
       current[step]

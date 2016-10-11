@@ -16,7 +16,7 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
 
   def test_descriptor_serialization
     post = Post.new
-    hash = { :field_1 => 'test_controller', :field_2 => 'test_action' }
+    hash = { field_1: 'test_controller', field_2: 'test_action' }
     array = [:field_1, :field_2]
     post.descriptors = hash
     post.descriptor_fields = array
@@ -34,7 +34,7 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_add_descriptor
     post = Post.new
     assert_equal 0, post.descriptors.size
-    descriptor = Descriptor.new({ :name => 'test_name', :value => 'test_value' })
+    descriptor = Descriptor.new({ name: 'test_name', value: 'test_value' })
     post.add_descriptor descriptor
     assert_equal 1, post.descriptors.size
     assert_equal 'test_name', post.descriptors[0].name
@@ -44,16 +44,16 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_add_multiple_descriptors
     post = Post.new
     assert_equal 0, post.descriptors.size
-    descriptor = Descriptor.new({ :name => 'test_name', :value => 'test_value' })
+    descriptor = Descriptor.new({ name: 'test_name', value: 'test_value' })
     post.add_descriptor descriptor
     assert_equal 1, post.descriptors.size
-    descriptor = Descriptor.new({ :name => 'test_name_2', :value => 'test_value_2' })
+    descriptor = Descriptor.new({ name: 'test_name_2', value: 'test_value_2' })
     post.add_descriptor descriptor
     assert_equal 2, post.descriptors.size
-    descriptor = Descriptor.new({ :name => 'test_name_3', :value => 'test_value_3' })
+    descriptor = Descriptor.new({ name: 'test_name_3', value: 'test_value_3' })
     post.add_descriptor descriptor
     assert_equal 3, post.descriptors.size
-    descriptor = Descriptor.new({ :name => 'test_name_4', :value => 'test_value_4' })
+    descriptor = Descriptor.new({ name: 'test_name_4', value: 'test_value_4' })
     post.add_descriptor descriptor
     assert_equal 4, post.descriptors.size
     assert_equal 'test_name', post.descriptors[0].name
@@ -72,16 +72,16 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_active_descriptors
     post = ActivePost.new
     assert_equal 0, post.descriptors.size
-    post.descriptors << Descriptor.new({ :name => 'test_value', :value => 'test_value' })
+    post.descriptors << Descriptor.new({ name: 'test_value', value: 'test_value' })
     assert_equal 1, post.descriptors.size
-    post.descriptors << Descriptor.new({ :name => 'test_value2', :value => 'test_value2' })
+    post.descriptors << Descriptor.new({ name: 'test_value2', value: 'test_value2' })
     assert_equal 2, post.descriptors.size
   end
 
   def test_active_descriptors_create
     post = ActivePost.new
-    params = { 0 => { :name => 'test_name', :value => 'test_value' },
-               1 => { :name => 'test_name1', :value => 'test_value1' }
+    params = { 0 => { name: 'test_name', value: 'test_value' },
+               1 => { name: 'test_name1', value: 'test_value1' }
               }
     post.create_descriptors(params)
     assert_equal 2, post.descriptors.size
@@ -99,11 +99,11 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_active_descriptors_sort
     post = ActivePost.new
     params = {
-                5 => { :name => 'test_name_e', :value => 'test_value_e' },
-                4 => { :name => 'test_name_d', :value => 'test_value_d' },
-                3 => { :name => 'test_name_c', :value => 'test_value_c' },
-                2 => { :name => 'test_name_b', :value => 'test_value_b' },
-                1 => { :name => 'test_name_a', :value => 'test_value_a' },
+                5 => { name: 'test_name_e', value: 'test_value_e' },
+                4 => { name: 'test_name_d', value: 'test_value_d' },
+                3 => { name: 'test_name_c', value: 'test_value_c' },
+                2 => { name: 'test_name_b', value: 'test_value_b' },
+                1 => { name: 'test_name_a', value: 'test_value_a' },
               }
     post.create_descriptors(params)
     assert_equal 5, post.descriptors.size
@@ -116,14 +116,14 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
 
   def test_active_descriptors_update
     post = ActivePost.new
-    params = { 0 => { :name => 'test_name', :value => 'test_value' },
-               1 => { :name => 'test_name1', :value => 'test_value1' }
+    params = { 0 => { name: 'test_name', value: 'test_value' },
+               1 => { name: 'test_name1', value: 'test_value1' }
               }
     post.create_descriptors(params)
     assert_equal 2, post.descriptors.size
-    params = { 0 => { :name => 'another_name', :value => 'another_value' },
-               1 => { :name => 'another_name1', :value => 'another_value1' },
-               2 => { :name => 'another_name2', :value => 'another_value2' }
+    params = { 0 => { name: 'another_name', value: 'another_value' },
+               1 => { name: 'another_name1', value: 'another_value1' },
+               2 => { name: 'another_name2', value: 'another_value2' }
               }
     post.update_descriptors(params)
     assert_equal 3, post.descriptors.size
@@ -132,8 +132,8 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
 
   def test_active_descriptors_remove
     post = ActivePost.new
-    params = { 0 => { :name => 'test_name', :value => 'test_value' },
-               1 => { :name => 'test_name1', :value => 'test_value1' }
+    params = { 0 => { name: 'test_name', value: 'test_value' },
+               1 => { name: 'test_name1', value: 'test_value1' }
               }
     post.create_descriptors(params)
     post.save
@@ -146,7 +146,7 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
 
   def test_descriptor_xml
     post = Post.new
-    hash = { :controller => 'test_controller', :action => 'test_action' }
+    hash = { controller: 'test_controller', action: 'test_action' }
     array = [:controller, :action]
     post.descriptors = hash
     post.descriptor_fields = array

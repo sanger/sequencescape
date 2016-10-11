@@ -21,7 +21,7 @@ module Cherrypick::VolumeByNanoGrams
   end
   private :check_inputs_to_volume_to_cherrypick_by_nano_grams!
 
-  def volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, source_well, robot_minimum_picking_volume=0.0)
+  def volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, source_well, robot_minimum_picking_volume = 0.0)
     robot_minimum_picking_volume ||= 0.0
     check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
 

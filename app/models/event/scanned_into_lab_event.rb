@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Event::ScannedIntoLabEvent < Event
-  after_create :set_qc_state_pending, :unless => :test?
+  after_create :set_qc_state_pending, unless: :test?
   alias_method :asset, :eventful
 
   def self.create_for_asset!(asset, location)
     self.create!(
-      :eventful => asset,
-      :message => "Scanned into #{location.name}",
-      :content => Date.today.to_s,
-      :family => "scanned_into_lab"
+      eventful: asset,
+      message: "Scanned into #{location.name}",
+      content: Date.today.to_s,
+      family: "scanned_into_lab"
     )
 
   end

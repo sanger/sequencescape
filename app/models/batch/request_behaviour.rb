@@ -10,7 +10,7 @@ module Batch::RequestBehaviour
       has_one :batch_request, inverse_of: :request, dependent: :destroy
       has_one :batch, through: :batch_request, inverse_of: :requests
 
-      scope :include_for_batch_view, -> { includes(:batch_request,:asset,:target_asset,:request_metadata,:comments) }
+      scope :include_for_batch_view, -> { includes(:batch_request, :asset, :target_asset, :request_metadata, :comments) }
 
       # For backwards compatibility
       def batch_requests; [batch_request].compact; end
@@ -22,10 +22,10 @@ module Batch::RequestBehaviour
       scope :unbatched, ->() {
         joins('LEFT OUTER JOIN batch_requests ON batch_requests.request_id = requests.id').
         readonly(false).
-        where(batch_requests:{ request_id: nil })
+        where(batch_requests: { request_id: nil })
       }
 
-      delegate :position, :to => :batch_request, :allow_nil => true
+      delegate :position, to: :batch_request, allow_nil: true
     end
   end
 

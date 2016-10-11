@@ -10,7 +10,7 @@ module Api
     # NOTE: This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
     ALL_SERVICES_AVAILABLE = Hash[Dir.glob(File.join(Rails.root, %w{app api endpoints ** *.rb})).map do |file|
       handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
-      [handler.root.gsub('/', '_'), handler]
+      [handler.root.tr('/', '_'), handler]
     end]
 
     use Api::EndpointHandler
@@ -28,9 +28,9 @@ module Api
                     endpoint.model_handler.send(
                       :actions,
                       endpoint.model_handler,
-                      :response => self, :endpoint => endpoint
-                    ).map do |action,url|
-                      actions_stream.attribute(action,url)
+                      response: self, endpoint: endpoint
+                    ).map do |action, url|
+                      actions_stream.attribute(action, url)
                     end
                   end
                 end

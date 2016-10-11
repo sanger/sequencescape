@@ -40,7 +40,7 @@ class FakeAccessionService < FakeSinatraService
   end
 
   def failure(message)
-    self.bodies << %Q{<RECEIPT success="false"><ERROR>#{ message }</ERROR></RECEIPT>}
+    self.bodies << %Q{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
   end
 
   def next!
@@ -52,7 +52,7 @@ class FakeAccessionService < FakeSinatraService
   end
 
   def add_payload(payload)
-    sent.push(Hash[*payload.map { |k,v| [k, v.readlines] }.map { |k,v| [k,(v unless v.empty?)] }.flatten])
+    sent.push(Hash[*payload.map { |k, v| [k, v.readlines] }.map { |k, v| [k, (v unless v.empty?)] }.flatten])
   end
 
   class Service < FakeSinatraService::Base

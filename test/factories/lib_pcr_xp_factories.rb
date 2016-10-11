@@ -45,7 +45,7 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory  :lib_pcr_xp_request_type, parent: :request_type  do
+  factory :lib_pcr_xp_request_type, parent: :request_type  do
     asset_type     'Well'
     request_class CustomerRequest
     key "Illumina_Lib_PCR_XP_Lib_Pool"

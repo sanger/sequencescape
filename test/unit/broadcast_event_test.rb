@@ -55,10 +55,10 @@ class BroadcastEventTest < ActiveSupport::TestCase
   end
 
 
-  TestSubject = Struct.new(:uuid,:friendly_name,:subject_type)
-  DynamicSubject = Struct.new(:target,:data_method_b)
+  TestSubject = Struct.new(:uuid, :friendly_name, :subject_type)
+  DynamicSubject = Struct.new(:target, :data_method_b)
 
-  def assert_subject(subject,role_type)
+  def assert_subject(subject, role_type)
     assert @event.subjects, "No subjects found"
     test_subject = @event.subjects.detect { |s| s.uuid == subject.uuid }
 
@@ -69,7 +69,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
     assert_equal role_type, test_subject.role_type
   end
 
-  def assert_metadata(key,value)
+  def assert_metadata(key, value)
     assert_equal value, @event.metadata[key]
   end
 
@@ -88,12 +88,12 @@ class BroadcastEventTest < ActiveSupport::TestCase
     # Methods that yield an array
     has_subjects :many, :many_relation
     # Blocks that define more complicated relationships
-    has_subject(:block) { |ts,e| ts.dynamic_relation.target }
+    has_subject(:block) { |ts, e| ts.dynamic_relation.target }
 
     has_metadata :data_a, :data_method_a
-    has_metadata(:data_b) { |ts,e| ts.dynamic_relation.data_method_b }
+    has_metadata(:data_b) { |ts, e| ts.dynamic_relation.data_method_b }
 
-    has_metadata(:data_c) { |ts,e| e.accessible }
+    has_metadata(:data_c) { |ts, e| e.accessible }
 
     def accessible
       'value_c'
@@ -115,43 +115,43 @@ class BroadcastEventTest < ActiveSupport::TestCase
     context 'with a seed' do
 
       setup do
-        @single         = TestSubject.new('000','single_subject','single_type')
-        @many_one       = TestSubject.new('001','many_subject_1','many_type')
-        @many_two       = TestSubject.new('002','many_subject_2','many_type')
-        @dynamic_target = TestSubject.new('003','dynamic_subject','dynamic_type')
+        @single         = TestSubject.new('000', 'single_subject', 'single_type')
+        @many_one       = TestSubject.new('001', 'many_subject_1', 'many_type')
+        @many_two       = TestSubject.new('002', 'many_subject_2', 'many_type')
+        @dynamic_target = TestSubject.new('003', 'dynamic_subject', 'dynamic_type')
         @value_b = 'value_b'
-        @dynamic = DynamicSubject.new(@dynamic_target,@value_b)
+        @dynamic = DynamicSubject.new(@dynamic_target, @value_b)
         @value_a = 'value_a'
-        @user = create :user, :email => 'example@example.com'
+        @user = create :user, email: 'example@example.com'
         @time = DateTime.parse("2012-03-11 10:22:42")
         # :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
         @seed = TestSeed.new(
-          uuid:'004',
-          friendly_name:'seed_subject',
-          subject_type:'seed_type',
-          single_relation:@single,
-          many_relation:[@many_one,@many_two],
-          dynamic_relation:@dynamic,
-          id:1,
-          data_method_a:@value_a)
-        @event = ExampleEvent.new(:seed => @seed,:user => @user,:created_at => @time)
+          uuid: '004',
+          friendly_name: 'seed_subject',
+          subject_type: 'seed_type',
+          single_relation: @single,
+          many_relation: [@many_one, @many_two],
+          dynamic_relation: @dynamic,
+          id: 1,
+          data_method_a: @value_a)
+        @event = ExampleEvent.new(seed: @seed, user: @user, created_at: @time)
       end
 
       should 'find subjects with a 1 to 1 relationship' do
-        assert_subject(@single,'single')
+        assert_subject(@single, 'single')
       end
 
       should 'find subjects with a 1 to many relationship' do
-        assert_subject(@many_one,'many')
-        assert_subject(@many_two,'many')
+        assert_subject(@many_one, 'many')
+        assert_subject(@many_two, 'many')
       end
 
       should 'find subjects with a block relationship' do
-        assert_subject(@dynamic_target,'block')
+        assert_subject(@dynamic_target, 'block')
       end
 
       should 'find the seed subject' do
-        assert_subject(@seed,'seed')
+        assert_subject(@seed, 'seed')
       end
 
       should 'have five subjects in total' do
@@ -160,15 +160,15 @@ class BroadcastEventTest < ActiveSupport::TestCase
       end
 
       should 'find metadata by simple calls' do
-        assert_metadata('data_a',@value_a)
+        assert_metadata('data_a', @value_a)
       end
 
       should 'find metadata by block calls' do
-        assert_metadata('data_b',@value_b)
+        assert_metadata('data_b', @value_b)
       end
 
       should 'scope metadata on event' do
-        assert_metadata('data_c','value_c')
+        assert_metadata('data_c', 'value_c')
       end
 
       should 'find all metadata as a hash' do

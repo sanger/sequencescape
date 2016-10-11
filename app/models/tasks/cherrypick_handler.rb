@@ -13,7 +13,7 @@ module Tasks::CherrypickHandler
 
   def render_cherrypick_task(task, params)
     unless flash[:error].blank?
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+      redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
     end
 
@@ -23,7 +23,7 @@ module Tasks::CherrypickHandler
     end
     if plate_template.nil?
       flash[:error] = "Please select a template"
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+      redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
     end
 
@@ -41,13 +41,13 @@ module Tasks::CherrypickHandler
       @plate = Plate.find_by_barcode(plate_barcode_id)
       if @plate.nil?
         flash[:error] = "Invalid plate barcode"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+        redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
     elsif @fluidigm_plate.present?
       if @fluidigm_plate.size > 10
         flash[:error] = "Invalid fluidigm barcode"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage - 1).to_s
+        redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
       @plate = Plate::Metadata.includes(:plate).where(fluidigm_barcode: @fluidigm_barcode).try(:plate)
@@ -57,13 +57,13 @@ module Tasks::CherrypickHandler
     flash.now[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
 
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
-    if @spreadsheet_layout
-      @map_info = @spreadsheet_layout
-    elsif @plate.present?
-      @map_info = @task.pick_onto_partial_plate(@requests,plate_template,@robot,@batch,@plate)
-    else
-      @map_info = @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
-    end
+    @map_info = if @spreadsheet_layout
+      @spreadsheet_layout
+                elsif @plate.present?
+      @task.pick_onto_partial_plate(@requests, plate_template, @robot, @batch, @plate)
+                else
+      @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
+                end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
 
@@ -121,12 +121,12 @@ module Tasks::CherrypickHandler
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
-      wells = Hash[Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).map { |w| [w.id,w] }]
+      wells = Hash[Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).map { |w| [w.id, w] }]
       request_and_well = Hash[@batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
-      used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
+      used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h, k| h[k] = [] }, Hash.new { |h, k| h[k] = [] }
 
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
-      plates_with_samples = plates.reject { |pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
+      plates_with_samples = plates.reject { |pid, rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
       if fluidigm_plate.present? && plates_with_samples.count > 1
         raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
@@ -138,7 +138,7 @@ module Tasks::CherrypickHandler
         plate = partial_plate
         if plate.nil?
           barcode = PlateBarcode.create.barcode
-          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode, :plate_metadata_attributes => { :fluidigm_barcode => fluidigm_plate })
+          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: size, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_plate })
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.
@@ -150,7 +150,7 @@ module Tasks::CherrypickHandler
             request, well = case
               when request_id.blank?           then next
               when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
-              else request_and_well[request_id.gsub('well_','').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
+              else request_and_well[request_id.gsub('well_', '').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
             end
 
             # NOTE: Performance enhancement here
@@ -176,9 +176,9 @@ module Tasks::CherrypickHandler
         plate.wells.attach(wells)
       end
 
-      plate_and_requests.each do |target_plate,requests|
+      plate_and_requests.each do |target_plate, requests|
         Plate.with_requests(requests).each do |source_plate|
-          AssetLink::Job.create(source_plate,[target_plate])
+          AssetLink::Job.create(source_plate, [target_plate])
         end
       end
 
@@ -190,7 +190,7 @@ module Tasks::CherrypickHandler
     end
   end
 
-  def create_control_request_and_add_to_batch(task,control_param)
+  def create_control_request_and_add_to_batch(task, control_param)
     control_request = task.create_control_request_from_well(control_param) or raise StandardError, "Control request not created!"
     @batch.requests << control_request
     [control_request, control_request.target_asset]

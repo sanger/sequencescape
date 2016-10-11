@@ -46,7 +46,7 @@ module Submission::StateMachine
     end
 
     def process_callbacks!
-      callbacks.each do |_,callback|
+      callbacks.each do |_, callback|
         callback.call
       end
     end
@@ -55,7 +55,7 @@ module Submission::StateMachine
       @callbacks ||= {}
     end
 
-    def register_callback(key=nil,&block)
+    def register_callback(key = nil, &block)
       key ||= "k#{@callbacks.size}"
       callbacks[key] = block
     end
@@ -80,33 +80,33 @@ module Submission::StateMachine
 
   def configure_state_machine
 
-    aasm :column => :state, :whiny_persistence => true do
+    aasm column: :state, whiny_persistence: true do
 
-      state :building,    :initial => true,               :exit => :valid_for_leaving_building_state
-      state :pending,     :enter => :complete_building
-      state :processing,  :enter => :process_submission!, :exit => :process_callbacks!
-      state :ready,       :enter => :broadcast_events
+      state :building,    initial: true,               exit: :valid_for_leaving_building_state
+      state :pending,     enter: :complete_building
+      state :processing,  enter: :process_submission!, exit: :process_callbacks!
+      state :ready,       enter: :broadcast_events
       state :failed
-      state :cancelled,   :enter => :cancel_all_requests
+      state :cancelled,   enter: :cancel_all_requests
 
       event :built do
-        transitions :to => :pending, :from => [:building]
+        transitions to: :pending, from: [:building]
       end
 
       event :cancel do
-        transitions :to => :cancelled, :from => [:pending, :ready, :cancelled], :guard => :requests_cancellable?
+        transitions to: :cancelled, from: [:pending, :ready, :cancelled], guard: :requests_cancellable?
       end
 
       event :process do
-        transitions :to => :processing, :from => [:processing, :failed, :pending]
+        transitions to: :processing, from: [:processing, :failed, :pending]
       end
 
       event :ready do
-        transitions :to => :ready, :from => [:processing, :failed]
+        transitions to: :ready, from: [:processing, :failed]
       end
 
       event :fail do
-        transitions :to => :failed, :from => [:processing, :failed, :pending]
+        transitions to: :failed, from: [:processing, :failed, :pending]
       end
     end
 
@@ -115,8 +115,8 @@ module Submission::StateMachine
 
   UnprocessedStates = ["building", "pending", "processing"]
   def configure_named_scopes
-   scope :unprocessed, -> { where(:state => UnprocessedStates) }
-   scope :processed, -> { where(:state => ["ready", "failed"]) }
+   scope :unprocessed, -> { where(state: UnprocessedStates) }
+   scope :processed, -> { where(state: ["ready", "failed"]) }
   end
 
   private :configure_named_scopes

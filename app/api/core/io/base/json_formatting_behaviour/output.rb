@@ -19,7 +19,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
     end.inject(json_code_tree.for(self)) do |tree, (json_path, attribute_path)|
       tree.tap do
         json_leaf = json_path.pop
-        json_path.inject(tree) { |node,step| node[step] }.leaf(json_leaf, attribute_path)
+        json_path.inject(tree) { |node, step| node[step] }.leaf(json_leaf, attribute_path)
       end
     end
 

@@ -11,7 +11,7 @@ class QcableTest < ActiveSupport::TestCase
   context "A Qcable" do
 
     setup do
-      PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => (FactoryGirl.generate :sanger_barcode)))
+      PlateBarcode.stubs(:create).returns(OpenStruct.new(barcode: (FactoryGirl.generate :sanger_barcode)))
     end
 
     should belong_to :lot
@@ -31,7 +31,7 @@ class QcableTest < ActiveSupport::TestCase
 
     context "#qcable" do
       setup do
-        @mock_purpose = mock('Purpose',:default_state => 'created')
+        @mock_purpose = mock('Purpose', default_state: 'created')
         @mock_purpose.expects('create!').returns(Asset.new).once
         @mock_lot = create :lot
         @mock_lot.expects(:target_purpose).returns(@mock_purpose).twice
@@ -47,7 +47,7 @@ class QcableTest < ActiveSupport::TestCase
 
     context "#qcable pre-pending" do
       setup do
-        @mock_purpose = build :tube_purpose, :default_state => 'pending'
+        @mock_purpose = build :tube_purpose, default_state: 'pending'
         @template     = FactoryGirl.build(:tag2_layout_template)
         @lot_type     = create :tag2_lot_type, target_purpose: @mock_purpose
         @mock_lot     = create :tag2_lot, lot_type: @lot_type

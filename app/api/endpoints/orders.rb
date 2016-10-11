@@ -10,10 +10,10 @@ class Endpoints::Orders < Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:project, :json => 'project')
-    belongs_to(:study,   :json => 'study')
-    belongs_to(:user,    :json => 'user')
+    belongs_to(:project, json: 'project')
+    belongs_to(:study,   json: 'study')
+    belongs_to(:user,    json: 'user')
 
-    action(:update, :to => :standard_update!, :if => :building?)
+    action(:update, to: :standard_update!, if: :building?)
   end
 end

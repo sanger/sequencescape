@@ -18,12 +18,12 @@ class Api::AliquotIO < Api::Base
 
         scope :including_associations_for_json, -> { includes([
             :uuid_object,
-            { :sample => :uuid_object },
-            { :study => :uuid_object },
-            { :project => :uuid_object },
-            { :tag => :uuid_object },
-            { :library => :uuid_object },
-            { :receptacle => :uuid_object }
+            { sample: :uuid_object },
+            { study: :uuid_object },
+            { project: :uuid_object },
+            { tag: :uuid_object },
+            { library: :uuid_object },
+            { receptacle: :uuid_object }
           ])}
       end
     end
@@ -83,5 +83,5 @@ class Api::AliquotIO < Api::Base
       map_attribute_to_json_attribute(:name, 'bait_library_supplier_name')
     end
   end
-  #self.related_resources = [ :library_tubes, :requests ]
+  # self.related_resources = [ :library_tubes, :requests ]
 end

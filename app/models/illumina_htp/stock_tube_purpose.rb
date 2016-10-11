@@ -10,7 +10,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
 
   def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
-    tube.requests_as_target.where.not(state:terminated_states).each do |request|
+    tube.requests_as_target.where.not(state: terminated_states).each do |request|
       request.transition_to(state)
     end
     outer_requests_for(tube).each do |request|
@@ -26,7 +26,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
 
   def terminated_states
-    ['cancelled','failed']
+    ['cancelled', 'failed']
   end
   private :terminated_states
 

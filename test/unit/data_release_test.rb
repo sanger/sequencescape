@@ -60,7 +60,7 @@ class DataReleaseTest < ActiveSupport::TestCase
           @study.save!
         end
         should "return false" do
-          assert ! @study.ena_accession_required?
+          assert !@study.ena_accession_required?
         end
       end
 
@@ -90,7 +90,7 @@ class DataReleaseTest < ActiveSupport::TestCase
           @study.enforce_accessioning = true
         end
 
-        ["transcriptomics","other sequencing-based assay","genotyping or cytogenetics"].each do |data_release_sort_of_study_value|
+        ["transcriptomics", "other sequencing-based assay", "genotyping or cytogenetics"].each do |data_release_sort_of_study_value|
           context "where sort of study is #{data_release_sort_of_study_value}" do
             setup do
               @study.study_metadata.data_release_study_type.name = data_release_sort_of_study_value
@@ -105,7 +105,7 @@ class DataReleaseTest < ActiveSupport::TestCase
               end
 
               ['managed', 'open'].each do |strategy|
-                context "and strategy is #{ strategy }" do
+                context "and strategy is #{strategy}" do
                   setup do
                     @study.study_metadata.data_release_strategy = strategy
                     @study.save!
@@ -125,7 +125,7 @@ class DataReleaseTest < ActiveSupport::TestCase
               end
 
               ['managed', 'open'].each do |strategy|
-                context "and strategy is #{ strategy }" do
+                context "and strategy is #{strategy}" do
                   setup do
                     @study.study_metadata.data_release_strategy       = strategy
                     @study.study_metadata.data_release_delay_period   = "3 months"

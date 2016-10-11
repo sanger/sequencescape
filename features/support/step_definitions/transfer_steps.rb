@@ -15,12 +15,12 @@ def transfer_model(name)
   "transfer/#{name}".gsub(/\s+/, '_').camelize.constantize
 end
 
-Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |model,id,uuid_value|
+Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |model, id, uuid_value|
   set_uuid_for(transfer_model(model).find(id), uuid_value)
 end
 
-Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ do |name,id|
-  FactoryGirl.create(:"transfer_#{name.gsub(/\s+/, '_')}", :id => id)
+Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ do |name, id|
+  FactoryGirl.create(:"transfer_#{name.gsub(/\s+/, '_')}", id: id)
 end
 
 Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^\"]+)"$/ do |target, model, id, uuid_value|
@@ -28,7 +28,7 @@ Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_
 end
 
 Given /^the ((?:pooling ||multiplex )?transfer template) called "([^\"]+)" exists$/ do |type, name|
-  FactoryGirl.create(type.gsub(/\s/, '_').to_sym, :name => name)
+  FactoryGirl.create(type.gsub(/\s/, '_').to_sym, name: name)
 end
 
 Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |source, destination, table|
@@ -42,11 +42,11 @@ Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |sour
 end
 
 Given /^a transfer plate exists with ID (\d+)$/ do |id|
-  FactoryGirl.create(:transfer_plate, :id => id)
+  FactoryGirl.create(:transfer_plate, id: id)
 end
 
 Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |type, name|
-  FactoryGirl.create("#{type}_transfer_plate", :name => name)
+  FactoryGirl.create("#{type}_transfer_plate", name: name)
 end
 
 Given /^the plate "(.*?)" has additional wells$/ do |name|
@@ -54,7 +54,7 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
     plate.wells.import(
       ['C1', 'D1'].map do |location|
         map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-        FactoryGirl.create(:tagged_well, :map => map)
+        FactoryGirl.create(:tagged_well, map: map)
       end
     )
   end
@@ -62,14 +62,14 @@ end
 
 Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
   parent_plate = Plate.find_by_name(parent) or raise "Cannot find parent plate #{parent.inspect}"
-  AssetLink.create!(:ancestor => parent_plate, :descendant => FactoryGirl.create(:destination_transfer_plate, :name => name))
+  AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:destination_transfer_plate, name: name))
 end
 
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
   template    = TransferTemplate.find_by_name(template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
   source      = Plate.find_by_name(source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
   destination = Plate.find_by_name(destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
-  template.create!(:source => source, :destination => destination, :user => FactoryGirl.create(:user))
+  template.create!(source: source, destination: destination, user: FactoryGirl.create(:user))
 end
 
 
@@ -84,7 +84,7 @@ end
 
 def change_request_state(state, targets, direction, request_class)
   association = (direction == 'to') ? :requests_as_target : :requests_as_source
-  Request.where(id:Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id) ).update_all(state: state)
+  Request.where(id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)).update_all(state: state)
 end
 
 {
@@ -137,12 +137,12 @@ Then /^the study for the aliquots in the wells of (the plate .+) should match th
 end
 Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
-  plate.update_attributes!(:plate_purpose => plate_purpose)
+  plate.update_attributes!(plate_purpose: plate_purpose)
 end
 
 Given /^transfers between "([^\"]+)" and "([^\"]+)" plates are done by "([^\"]+)" requests$/ do |source, destination, typename|
   source_plate_purpose      = PlatePurpose.find_by_name(source)      or raise StandardError, "Cannot find the plate purpose #{source.inspect}"
   destination_plate_purpose = PlatePurpose.find_by_name(destination) or raise StandardError, "Cannot find the plate purpose #{destination.inspect}"
   request_type              = RequestType.find_by_name(typename)     or raise StandardError, "Cannot find request type #{typename.inspect}"
-  source_plate_purpose.child_relationships.create!(:child => destination_plate_purpose, :transfer_request_type => request_type)
+  source_plate_purpose.child_relationships.create!(child: destination_plate_purpose, transfer_request_type: request_type)
 end

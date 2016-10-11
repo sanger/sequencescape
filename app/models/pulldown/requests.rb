@@ -25,7 +25,7 @@ module Pulldown::Requests
       def self.included(base)
         base.class_eval do
           include BaitLibrary::Associations
-          association(:bait_library, :name, :scope => :visible)
+          association(:bait_library, :name, scope: :visible)
           validates_presence_of :bait_library
           validate :bait_library_valid
         end
@@ -55,7 +55,7 @@ module Pulldown::Requests
     include PreCapturePool::Poolable
 
     Metadata.class_eval do
-      attribute(:pre_capture_plex_level, :default => 8, :integer => true)
+      attribute(:pre_capture_plex_level, default: 8, integer: true)
     end
 
     def update_pool_information(pool_information)

@@ -12,7 +12,7 @@ class LibPcrPlatesNoLongerNeedSpecialBehaviour < ActiveRecord::Migration
 
   def up
     ActiveRecord::Base.transaction do
-      PlatePurpose.where(name:'Lib PCR').each do |purpose|
+      PlatePurpose.where(name: 'Lib PCR').each do |purpose|
         purpose.type = 'PlatePurpose'
         purpose.save!
       end
@@ -21,7 +21,7 @@ class LibPcrPlatesNoLongerNeedSpecialBehaviour < ActiveRecord::Migration
 
   def down
     ActiveRecord::Base.transaction do
-      PlatePurpose.where(name:'Lib PCR').each do |purpose|
+      PlatePurpose.where(name: 'Lib PCR').each do |purpose|
         purpose.type = 'IlluminaHtp::LibPcrPlatePurpose'
         purpose.save!
       end

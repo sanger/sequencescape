@@ -36,7 +36,26 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         # However, as this seems to relate to the multiplier, it may be related to out problem.
         @submission_template = SubmissionTemplate.find_by_name!('Illumina-C - Library creation - Single ended sequencing')
 
-        post(:create, :submission => { :is_a_sequencing_order => "true", :comments => "", :template_id => @submission_template.id, :order_params => { "read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" }, :asset_group_id => @asset_group.id, :study_id => @study.id, :sample_names_text => "", :plate_purpose_id => @plate_purpose.id, :project_name => @project.name, :lanes_of_sequencing_required => "5", :priority => 1 })
+        post(:create,
+          submission: {
+            is_a_sequencing_order: "true",
+            comments: "",
+            template_id: @submission_template.id,
+            order_params: {
+              "read_length" => "37",
+              "fragment_size_required_to" => "400",
+              "bait_library_name" => "Human all exon 50MB",
+              "fragment_size_required_from" => "100",
+              "library_type" => "Agilent Pulldown" },
+            asset_group_id: @asset_group.id,
+            study_id: @study.id,
+            sample_names_text: "",
+            plate_purpose_id: @plate_purpose.id,
+            project_name: @project.name,
+            lanes_of_sequencing_required: "5",
+            priority: 1
+          }
+        )
 
         Submission.last.built!
         Delayed::Worker.new.work_off(1)
@@ -48,8 +67,8 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
           @requests_group_a = LibraryCreationRequest.all[0..1]
           @requests_group_b = LibraryCreationRequest.all[2..3]
           @pipeline = LibraryCreationRequest.first.request_type.pipelines.first
-          @batch_a = Batch.create!(:requests => @requests_group_a, :pipeline => @pipeline)
-          @batch_a.start!(:user => @user)
+          @batch_a = Batch.create!(requests: @requests_group_a, pipeline: @pipeline)
+          @batch_a.start!(user: @user)
           @batch_a.complete!(@user)
           @batch_a.release!(@user)
 
@@ -64,10 +83,10 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
           setup do
 
             @sequencing_group = SequencingRequest.all[0..1]
-            @seq_batch = Batch.create!(:requests => @sequencing_group, :pipeline => @sequencing_pipeline)
+            @seq_batch = Batch.create!(requests: @sequencing_group, pipeline: @sequencing_pipeline)
 
             @seq_batch.requests.map(&:start!)
-            @seq_batch.fail('just','because')
+            @seq_batch.fail('just', 'because')
             @seq_batch.requests.each { |r| @seq_batch.detach_request(r) }
           end
 
@@ -87,25 +106,25 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
          setup do
            # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
            # However, as this seems to relate to the multiplier, it may be related to out problem.
-           #@asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
+           # @asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
            @submission_template = SubmissionTemplate.find_by_name!('Illumina-C - Multiplexed Library Creation - Single ended sequencing')
            @library_pipeline = Pipeline.find_by_name!('Illumina-B MX Library Preparation')
 
-           post(:create, :submission => {
-             :is_a_sequencing_order  => "true",
-             :comments               => "",
-             :template_id            => @submission_template.id.to_s,
-             :order_params           => {
+           post(:create, submission: {
+             is_a_sequencing_order: "true",
+             comments: "",
+             template_id: @submission_template.id.to_s,
+             order_params: {
                "read_length" => "37", "fragment_size_required_to" => "400", "bait_library_name" => "Human all exon 50MB",
                "fragment_size_required_from" => "100", "library_type" => "Standard"
                },
-             :asset_group_id         => @asset_group.id.to_s,
-             :study_id               => @study.id.to_s,
-             :sample_names_text      => "",
-             :plate_purpose_id       => @plate_purpose.id.to_s,
-             :project_name           => @project.name,
-             :lanes_of_sequencing_required => "5",
-             :priority => 1
+             asset_group_id: @asset_group.id.to_s,
+             study_id: @study.id.to_s,
+             sample_names_text: "",
+             plate_purpose_id: @plate_purpose.id.to_s,
+             project_name: @project.name,
+             lanes_of_sequencing_required: "5",
+             priority: 1
              })
 
            Submission.last.built!

@@ -18,9 +18,9 @@ class PlateConversionTest < ActiveSupport::TestCase
       should 'convert plates to a new purpose' do
         @plate = create :plate
         @user  = create :user
-        @purpose_b = PlatePurpose.new(:name => 'test_purpose')
+        @purpose_b = PlatePurpose.new(name: 'test_purpose')
 
-        PlateConversion.create!(:target => @plate,:user => @user,:purpose => @purpose_b)
+        PlateConversion.create!(target: @plate, user: @user, purpose: @purpose_b)
 
         assert_equal @purpose_b, @plate.purpose
 
@@ -30,9 +30,9 @@ class PlateConversionTest < ActiveSupport::TestCase
         @plate = create :plate
         @parent = create :plate
         @user = create :user
-        @purpose_b = PlatePurpose.new(:name => 'test_purpose')
+        @purpose_b = PlatePurpose.new(name: 'test_purpose')
 
-        PlateConversion.create!(:target => @plate,:user => @user,:purpose => @purpose_b,:parent => @parent)
+        PlateConversion.create!(target: @plate, user: @user, purpose: @purpose_b, parent: @parent)
 
         assert_equal @parent, @plate.parents.first
 

@@ -108,7 +108,7 @@ class TaskTest < ActiveSupport::TestCase
       context "and default value" do
         setup do
           class MyTask
-            set_subclass_attribute :att_with_default, :default => "default_value"
+            set_subclass_attribute :att_with_default, default: "default_value"
           end
         end
         should "use default value if subclass_attribute not set" do

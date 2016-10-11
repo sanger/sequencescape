@@ -25,7 +25,7 @@ class Parsers::IscXtenParser
   def concentration(location)
     begin
       get_row(location)[get_column_for_header(:concentration)]
-    rescue NoMethodError  #Ugh! I want to catch these where they happen
+    rescue NoMethodError  # Ugh! I want to catch these where they happen
       raise InvalidFile
     end
   end
@@ -41,11 +41,11 @@ class Parsers::IscXtenParser
 
   def get_name_for_header(sym_name)
     {
-      :row => "Well Row",
-      :col => "Well Col",
-      :content => "Content",
-      :raw_data => "Raw Data (485/520)",
-      :concentration => "Linear regression fit based on Raw Data (485/520)"
+      row: "Well Row",
+      col: "Well Col",
+      content: "Content",
+      raw_data: "Raw Data (485/520)",
+      concentration: "Linear regression fit based on Raw Data (485/520)"
     }[sym_name]
   end
 
@@ -61,7 +61,7 @@ class Parsers::IscXtenParser
   end
 
   def locations
-    table.sort { |a,b| a[0] <=> b[0] && a[1].to_i <=> b[1].to_i }.map { |l| l[0] + l[1] }
+    table.sort { |a, b| a[0] <=> b[0] && a[1].to_i <=> b[1].to_i }.map { |l| l[0] + l[1] }
   end
 
   def each_well_and_parameters

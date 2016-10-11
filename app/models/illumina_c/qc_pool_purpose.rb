@@ -6,16 +6,16 @@
 
 class IlluminaC::QcPoolPurpose < Tube::Purpose
 
-  def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility=false)
+  def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
-      tube.requests_as_target.where.not(state:terminated_states).each do |request|
+      tube.requests_as_target.where.not(state: terminated_states).each do |request|
         request.transition_to(state)
       end
     end
   end
 
   def terminated_states
-    ['cancelled','failed']
+    ['cancelled', 'failed']
   end
   private :terminated_states
 

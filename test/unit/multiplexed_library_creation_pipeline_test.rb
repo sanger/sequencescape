@@ -14,8 +14,8 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
 
   context 'batch interaction' do
     setup do
-      @batch = create(:batch, :pipeline => @pipeline)
-      @batch.requests = (1..5).map { |_| create(:request_suitable_for_starting, :request_type => @batch.pipeline.request_types.last) }
+      @batch = create(:batch, pipeline: @pipeline)
+      @batch.requests = (1..5).map { |_| create(:request_suitable_for_starting, request_type: @batch.pipeline.request_types.last) }
     end
 
     context 'for completion' do
@@ -34,7 +34,7 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
       end
 
       should 'not error if all of the target asset aliquots are tagged' do
-        @batch.requests.each_with_index { |r,i| create(:tag, :map_id => i).tag!(r.target_asset) }
+        @batch.requests.each_with_index { |r, i| create(:tag, map_id: i).tag!(r.target_asset) }
         @batch.complete!(@user)
 
         assert(@batch.errors.empty?, "There are errors on the batch")

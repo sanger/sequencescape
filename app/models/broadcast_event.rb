@@ -15,7 +15,7 @@ class BroadcastEvent < ActiveRecord::Base
   extend BroadcastEvent::MetadataHelpers::MetadatableClassMethods
   extend BroadcastEvent::RenderHelpers::RenderableClassMethods
 
-  belongs_to :seed, :polymorphic => true
+  belongs_to :seed, polymorphic: true
   belongs_to :user
   validates_presence_of :seed
 
@@ -36,13 +36,13 @@ class BroadcastEvent < ActiveRecord::Base
   # Returns an array of all subjects
   def subjects
     self.class.subject_associations.map do |sa|
-      sa.for(seed,self)
+      sa.for(seed, self)
     end.flatten
   end
 
   # Returns a hash of all metadata
   def metadata
-    Hash[self.class.metadata_finders.map { |mf| mf.for(seed,self) }]
+    Hash[self.class.metadata_finders.map { |mf| mf.for(seed, self) }]
   end
 
   def routing_key

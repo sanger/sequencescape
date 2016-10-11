@@ -6,17 +6,17 @@
 
 # Provides a simple endpoint for monitoring server status
 class HealthController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :login_required, :except => [:index]
+  before_action :login_required, except: [:index]
 
   def index
     @monitor = Health.new
 
     respond_to do |format|
-      format.json { render :json => @monitor, :status => @monitor.status }
+      format.json { render json: @monitor, status: @monitor.status }
     end
   end
 end

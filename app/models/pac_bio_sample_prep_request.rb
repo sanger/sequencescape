@@ -6,7 +6,7 @@
 
 class PacBioSamplePrepRequest < CustomerRequest
 
-  has_metadata :as => Request do
+  has_metadata as: Request do
     attribute(:insert_size)
     attribute(:sequencing_type)
   end
@@ -22,7 +22,7 @@ class PacBioSamplePrepRequest < CustomerRequest
   private
 
   def on_started
-    target_asset.generate_name(asset.display_name.gsub(':','-'))
+    target_asset.generate_name(asset.display_name.tr(':', '-'))
     target_asset.save
   end
 

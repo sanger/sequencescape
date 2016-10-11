@@ -21,18 +21,18 @@ class Api::RequestIO < Api::Base
             :request_type,
             :request_metadata,
             :user, {
-              :asset => [
+              asset: [
                 :uuid_object,
                 :barcode_prefix,
-                { :primary_aliquot => { :sample => :uuid_object } }
+                { primary_aliquot: { sample: :uuid_object } }
               ],
-              :target_asset => [
+              target_asset: [
                 :uuid_object,
                 :barcode_prefix,
-                { :primary_aliquot => { :sample => :uuid_object } }
+                { primary_aliquot: { sample: :uuid_object } }
               ],
-              :initial_study => :uuid_object,
-              :initial_project => :uuid_object
+              initial_study: :uuid_object,
+              initial_project: :uuid_object
             }
           ])}
 

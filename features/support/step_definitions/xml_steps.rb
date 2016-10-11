@@ -6,7 +6,7 @@
 
 def sort_arrays(xml_data)
   if xml_data.is_a?(Hash)
-    Hash[xml_data.map { |k,v| [k, sort_arrays(v)] }]
+    Hash[xml_data.map { |k, v| [k, sort_arrays(v)] }]
   elsif xml_data.is_a?(Array)
     # Kind of a hack but works for the cases where Hash elements exist
     xml_data.map { |e| sort_arrays(e) }.sort_by(&:to_a)
@@ -65,7 +65,7 @@ end
 When /^I (POST|PUT) the following XML to "(\/[^\"]+)":$/ do |action, path, xml|
   page.driver.send(
     action.downcase,
-    "#{ path }",
+    "#{path}",
     xml,
     { 'CONTENT_TYPE' => 'application/xml', 'HTTP_ACCEPT' => 'application/xml' }
   )

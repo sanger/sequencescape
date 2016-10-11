@@ -29,8 +29,8 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  has_uploaded_document :uploaded, { :differentiator => "uploaded" }
-  has_uploaded_document :generated, { :differentiator => "generated" }
+  has_uploaded_document :uploaded, { differentiator: "uploaded" }
+  has_uploaded_document :generated, { differentiator: "generated" }
 
   attr_accessor :override
   attr_reader :manifest_errors
@@ -53,7 +53,7 @@ class SampleManifest < ActiveRecord::Base
 
   validates_presence_of :supplier
   validates_presence_of :study
-  validates_numericality_of :count, :only_integer => true, :greater_than => 0, :allow_blank => false
+  validates_numericality_of :count, only_integer: true, greater_than: 0, allow_blank: false
 
   before_save :default_asset_type
 
@@ -94,17 +94,17 @@ class SampleManifest < ActiveRecord::Base
     "Manifest_#{self.id}"
   end
 
-  #TODO[xxx] Consider index to make it faster
+  # TODO[xxx] Consider index to make it faster
   scope :pending_manifests, ->() {
-    order( 'sample_manifests.id DESC').
-    joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
-    where( 'documents.id IS NULL')
+    order('sample_manifests.id DESC').
+    joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+    where('documents.id IS NULL')
   }
 
   scope :completed_manifests, ->() {
-    order( 'sample_manifests.updated_at DESC').
-    joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
-    where( 'documents.id IS NOT NULL')
+    order('sample_manifests.updated_at DESC').
+    joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+    where('documents.id IS NOT NULL')
   }
 
   def generate
@@ -118,7 +118,7 @@ class SampleManifest < ActiveRecord::Base
   end
 
   def create_sample(sanger_sample_id)
-    Sample.create!(:name => sanger_sample_id, :sanger_sample_id => sanger_sample_id, :sample_manifest => self).tap do |sample|
+    Sample.create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self).tap do |sample|
       sample.events.created_using_sample_manifest!(self.user)
     end
   end
@@ -131,7 +131,7 @@ class SampleManifest < ActiveRecord::Base
   def generate_study_samples(study_samples_data)
     study_sample_fields = [:study_id, :sample_id]
     study_samples_data.each do |study_sample|
-      StudySample.create!(:study_id => study_sample.first, :sample_id => study_sample.last)
+      StudySample.create!(study_id: study_sample.first, sample_id: study_sample.last)
     end
 
   end

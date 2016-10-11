@@ -12,7 +12,7 @@ class Plate::CreatorParameters
   end
 
   public
-  def set_plate_parameters(plate, parent_plate=nil)
+  def set_plate_parameters(plate, parent_plate = nil)
     # All the creation parameters are applied as String values into the ActiveRecord. Maybe in
     # future this will need to be reviewed in case Ruby conversion from strings is not appropriate
     plate.update_attributes!(plate_parameters(plate, parent_plate)) unless @params.nil?
@@ -29,7 +29,7 @@ class Plate::CreatorParameters
     (!params[:dilution_factor].nil?) && (!params[:dilution_factor].to_s.empty?)
   end
 
-  def plate_parameters(plate, parent_plate=nil)
+  def plate_parameters(plate, parent_plate = nil)
     params = @params.clone
 
     parent_dilution_factor = plate_dilution_factor(parent_plate)
@@ -45,7 +45,7 @@ class Plate::CreatorParameters
     params.delete(:dilution_factor) if params[:dilution_factor].nil?
 
     # Remove any symbol not valid for plate creation (just dilution factor at now)
-    params.delete_if { |k,v| k.to_sym != :dilution_factor }
+    params.delete_if { |k, v| k.to_sym != :dilution_factor }
   end
 
 end

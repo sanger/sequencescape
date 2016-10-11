@@ -19,7 +19,7 @@ class SetBaseRequestPurposes < ActiveRecord::Migration
   end
 
   def self.purpose(key)
-    @rp ||= Hash[RequestPurpose.all.map { |rp| [rp.key,rp] }]
+    @rp ||= Hash[RequestPurpose.all.map { |rp| [rp.key, rp] }]
     @rp[key]
   end
 

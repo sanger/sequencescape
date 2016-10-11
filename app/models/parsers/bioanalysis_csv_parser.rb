@@ -17,8 +17,8 @@ class Parsers::BioanalysisCsvParser
 
   def field_name_for(sym_name)
     {
-      :concentration => "Conc. [ng/µl]",
-      :molarity => "Molarity [nmol/l]"
+      concentration: "Conc. [ng/µl]",
+      molarity: "Molarity [nmol/l]"
     }[sym_name]
   end
 
@@ -37,7 +37,7 @@ class Parsers::BioanalysisCsvParser
     type = content[starting_line][0]
     fields = content[starting_line + 1]
 
-    for pos in (starting_line + 2) .. (ending_line) do
+    for pos in (starting_line + 2)..(ending_line) do
       values = content[pos]
       unless values.nil? && (values.length != fields.length)
         content_hash.merge!(Hash[fields.zip(values)])
@@ -61,7 +61,7 @@ class Parsers::BioanalysisCsvParser
   # - regexp -> Regular expression to be matched in the first column as beginning of range
   # - range -> In case it is specified, restricts the searching process to this range of lines
   # instead of using all the content of the CSV file
-  def get_groups(regexp, range=nil)
+  def get_groups(regexp, range = nil)
     groups = []
     group = []
     range = build_range(range)
@@ -72,7 +72,7 @@ class Parsers::BioanalysisCsvParser
 
       if line[0].present? && line[0].match(regexp) && group.empty?
         group.push(pos)
-      elsif (line.empty? && group.one? )
+      elsif (line.empty? && group.one?)
         group.push(pos - 1)
       end
 
@@ -111,9 +111,9 @@ class Parsers::BioanalysisCsvParser
   def parse_sample(group)
     {
       parse_cell(group) => {
-        :peak_table => parse_peak_table(group),
-        :region_table => parse_region_table(group),
-        :overall => parse_overall(group)
+        peak_table: parse_peak_table(group),
+        region_table: parse_region_table(group),
+        overall: parse_overall(group)
       }
     }
   end
@@ -135,7 +135,7 @@ class Parsers::BioanalysisCsvParser
 
   def parsed_content
     @parsed_content ||= parse_samples
-  rescue NoMethodError => e  #Ugh! I want to catch these where they happen
+  rescue NoMethodError => e  # Ugh! I want to catch these where they happen
     raise InvalidFile
   end
 
@@ -145,8 +145,8 @@ class Parsers::BioanalysisCsvParser
   end
 
   def each_well_and_parameters
-    parsed_content.each do |well,values|
-      yield(well,values[:peak_table][field_name_for(:concentration)],values[:peak_table][field_name_for(:molarity)])
+    parsed_content.each do |well, values|
+      yield(well, values[:peak_table][field_name_for(:concentration)], values[:peak_table][field_name_for(:molarity)])
     end
   end
 

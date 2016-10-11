@@ -7,7 +7,7 @@
 module RequestType::Validation
 
   def delegate_validator
-    DelegateValidation::CompositeValidator::CompositeValidator(request_class.delegate_validator,request_type_validator)
+    DelegateValidation::CompositeValidator::CompositeValidator(request_class.delegate_validator, request_type_validator)
   end
 
   def request_type_validator
@@ -15,10 +15,10 @@ module RequestType::Validation
 
     Class.new(RequestTypeValidator) do
       request_type.request_type_validators.each do |validator|
-        message = "is '%{value}' should be #{validator.valid_options.to_sentence(:last_word_connector => ' or ')}"
+        message = "is '%{value}' should be #{validator.valid_options.to_sentence(last_word_connector: ' or ')}"
         vro = :"#{validator.request_option}"
-        delegate_attribute(vro, :to => :target, :default => validator.default, :type_cast => validator.type_cast)
-        validates_inclusion_of vro, :in => validator.valid_options, :if => :"#{validator.request_option}_needs_checking?", :message => message
+        delegate_attribute(vro, to: :target, default: validator.default, type_cast: validator.type_cast)
+        validates_inclusion_of vro, in: validator.valid_options, if: :"#{validator.request_option}_needs_checking?", message: message
       end
     end.tap do |sub_class|
       sub_class.request_type = request_type
@@ -27,7 +27,7 @@ module RequestType::Validation
   end
 
   class RequestTypeValidator < DelegateValidation::Validator
-    class_attribute :request_type, :instance_writer => false
+    class_attribute :request_type, instance_writer: false
     request_type =  nil
 
     def library_types_present?

@@ -18,7 +18,7 @@ class QcFileTest < ActiveSupport::TestCase
 
       should "update the well concentration" do
         @plate.expects(:update_concentrations_from).with(:parser)
-        QcFile.create!(:asset => @plate)
+        QcFile.create!(asset: @plate)
       end
     end
   end

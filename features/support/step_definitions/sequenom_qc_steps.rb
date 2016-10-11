@@ -9,18 +9,18 @@ class Plate
   def add_wells_to_plate(number_of_wells)
     sample = FactoryGirl.create(:sample)
     1.upto(number_of_wells.to_i) do |i|
-      wells.create!(:map_id => i).tap { |well| well.aliquots.create!(:sample => sample) }
+      wells.create!(map_id: i).tap { |well| well.aliquots.create!(sample: sample) }
     end
   end
 
-  def self.create_source_plates(source_barcodes, first_well_gender=true, number_of_wells = 96)
+  def self.create_source_plates(source_barcodes, first_well_gender = true, number_of_wells = 96)
     source_barcodes.each do |encoded_barcode|
-      plate = FactoryGirl.create(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
+      plate = FactoryGirl.create(:plate, barcode: Barcode.number_to_human(encoded_barcode))
       plate.add_wells_to_plate(number_of_wells)
 
       # Unless we say otherwise give the first sample on the plate
       plate.wells.first.primary_aliquot.sample.sample_metadata.update_attributes!(
-        :gender => "male"
+        gender: "male"
       ) if first_well_gender
     end
   end
@@ -34,12 +34,12 @@ Given /^I am setup for sequenome QC$/ do
 end
 
 Given /^I am setup for sequenome QC using plates "([^"]*)"$/ do |barcodes_string|
-  Plate.create_source_plates(barcodes_string.split("\s"),true, 2)
+  Plate.create_source_plates(barcodes_string.split("\s"), true, 2)
 end
 
 
 Given /^I have a source plate which contains samples which have no gender information$/ do
-  Plate.create_source_plates(%w{1220125054743},false)
+  Plate.create_source_plates(%w{1220125054743}, false)
 end
 
 When /^I try to create a Sequenom QC plate from the input plate$/ do

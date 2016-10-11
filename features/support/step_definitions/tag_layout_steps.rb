@@ -5,11 +5,11 @@
 # Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
-  FactoryGirl.create(style.gsub(/ /, '_'), :name => name)
+  FactoryGirl.create(style.tr(' ', '_'), name: name)
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
-  FactoryGirl.create(:tag2_layout_template, :name => name, oligo: 'AAA')
+  FactoryGirl.create(:tag2_layout_template, name: name, oligo: 'AAA')
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -24,17 +24,17 @@ Transform /^tag layout with ID (\d+)$/ do |id|
 end
 
 Given /^the tag group for (tag layout template .+) has (\d+) tags$/ do |template, count|
-  (1..count.to_i).each { |index| template.tag_group.tags.create!(:map_id => index, :oligo => "TAG#{index}") }
+  (1..count.to_i).each { |index| template.tag_group.tags.create!(map_id: index, oligo: "TAG#{index}") }
 end
 
 Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}|#{TAG_LAYOUT_REGEXP}) is called "([^"]+)"$/ do |target, group_name|
-  target.tag_group.update_attributes!(:name => group_name)
+  target.tag_group.update_attributes!(name: group_name)
 end
 
 def replace_tag_layout_tags(template, index_to_oligo)
   template.tag_group.tags.destroy_all
   index_to_oligo.each do |tag_attributes|
-    template.tag_group.tags.create!(:map_id => tag_attributes[:index], :oligo => tag_attributes[:oligo])
+    template.tag_group.tags.create!(map_id: tag_attributes[:index], oligo: tag_attributes[:oligo])
   end
 end
 
@@ -44,7 +44,7 @@ end
 
 Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}) has tags (\d+)\.\.(\d+)$/ do |template, low, high|
   tag_range = Range.new(low.to_i, high.to_i)
-  replace_tag_layout_tags(template, tag_range.map { |index| { :index => index, :oligo => "TAG#{index}" } })
+  replace_tag_layout_tags(template, tag_range.map { |index| { index: index, oligo: "TAG#{index}" } })
 end
 
 # assert simply isn't good enough for displaying the oligos and working out what has gone wrong so this
@@ -98,7 +98,7 @@ end
 Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
     name, WellRange.new('A1', 'H12'),
-    ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
+    ('A'..'H').to_a.zip(table.raw).inject({}) do |h, (row_a, row)|
       h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i + 1}"] = cell } }
     end
   )
@@ -107,7 +107,7 @@ end
 Then /^the tag 2 layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag2_layout(
     name, WellRange.new('A1', 'H12'),
-    ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
+    ('A'..'H').to_a.zip(table.raw).inject({}) do |h, (row_a, row)|
       h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i + 1}"] = cell } }
     end
   )
@@ -138,15 +138,15 @@ def pool_by_strategy(source, destination, pooling_strategy)
   Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}") unless pooling_strategy.sum == source.size
 
   source_wells, destination_wells = [], []
-  source.wells.walk_in_column_major_order { |well,_| source_wells << well }
-  destination.wells.walk_in_column_major_order { |well,_| destination_wells << well }
+  source.wells.walk_in_column_major_order { |well, _| source_wells << well }
+  destination.wells.walk_in_column_major_order { |well, _| destination_wells << well }
 
   pooling_strategy.each_with_index do |pool, submission_id|
-    submission_id = Submission.create!(:user => User.first || User.create!(:login => 'a')).id
+    submission_id = Submission.create!(user: User.first || User.create!(login: 'a')).id
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
     wells_for_source.zip(wells_for_destination).each do |w|
-      RequestType.transfer.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id)
-      FactoryGirl.create :request_without_submission, :asset => w.first, :target_asset => w.last, :submission_id => submission_id
+      RequestType.transfer.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
+      FactoryGirl.create :request_without_submission, asset: w.first, target_asset: w.last, submission_id: submission_id
     end
   end
 end
@@ -163,11 +163,11 @@ Given /^the wells for (the plate.+) have been pooled to (the plate.+) according 
 end
 
 Given /^the tag group "(.*?)" exists$/ do |name|
-  TagGroup.create!(:name => name)
+  TagGroup.create!(name: name)
 end
 
 Given /^the tag group "(.*?)" has (\d+) tags$/ do |group, count|
-  (1..count.to_i).each { |index| TagGroup.find_by_name!(group).tags.create!(:map_id => index, :oligo => "TAG#{index}") }
+  (1..count.to_i).each { |index| TagGroup.find_by_name!(group).tags.create!(map_id: index, oligo: "TAG#{index}") }
 end
 
 Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
@@ -176,7 +176,7 @@ end
 
 Given /^the tag2 layout template "(.*?)" is associated with the last submission$/ do |template|
   Tag2Layout::TemplateSubmission.create!(
-    :tag2_layout_template => Tag2LayoutTemplate.find_by_name!(template),
-    :submission => Submission.last
+    tag2_layout_template: Tag2LayoutTemplate.find_by_name!(template),
+    submission: Submission.last
     )
 end

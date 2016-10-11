@@ -13,7 +13,7 @@ class Document < ActiveRecord::Base
   module Associations
     # Adds accessors for named fields and attaches documents to them
 
-    def has_uploaded_document(field, options={})
+    def has_uploaded_document(field, options = {})
       # Options
       #  differentiator - this is a string used to separate multiple documents related to your model
       #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
@@ -38,10 +38,10 @@ class Document < ActiveRecord::Base
   end
 
   # Polymorphic relationship
-  belongs_to :documentable, :polymorphic => true
+  belongs_to :documentable, polymorphic: true
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
-  has_uploaded :uploaded_data, { :serialization_column => "filename" }
+  has_uploaded :uploaded_data, { serialization_column: "filename" }
 
   # Method provided for backwards compatibility
   def current_data

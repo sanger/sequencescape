@@ -16,7 +16,7 @@ module Tasks::AssignTagsToWellsHandler
       task.validate_tags_not_repeated_for_submission!(requests, @tags_to_wells)
     rescue
       flash[:warning] = "Duplicate tags will be assigned to a pooled tube, select a different tag group"
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s, :tag_group => params[:tag_group]
+      redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (0).to_s, tag_group: params[:tag_group]
       return false
     end
   end
@@ -27,19 +27,19 @@ module Tasks::AssignTagsToWellsHandler
       task.validate_returned_tags_are_not_repeated_in_submission!(requests, params)
     rescue
       flash[:warning] = "Duplicate tags in a single pooled tube"
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s, :tag_group => params[:tag_group]
+      redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (0).to_s, tag_group: params[:tag_group]
       return false
     end
 
     ActiveRecord::Base.transaction do
       well_id_tag_id_map = {}
-      params[:tag].each do |k,v|
+      params[:tag].each do |k, v|
         well_id_tag_id_map[k.to_i] = v.to_i
       end
       task.assign_tags_to_wells(requests, well_id_tag_id_map)
-      #task.unlink_tag_instances_from_wells(requests)
-      #task.create_tag_instances_and_link_to_wells(requests, params)
-      #task.link_pulldown_indexed_libraries_to_multiplexed_library(requests)
+      # task.unlink_tag_instances_from_wells(requests)
+      # task.create_tag_instances_and_link_to_wells(requests, params)
+      # task.link_pulldown_indexed_libraries_to_multiplexed_library(requests)
     end
 
     true

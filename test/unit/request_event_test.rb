@@ -8,7 +8,7 @@ require 'test_helper'
 
 class RequestEventTest < ActiveSupport::TestCase
 
-  RequestType.where(key:[
+  RequestType.where(key: [
     'Transfer',
     'illumina_b_std',
     'illumina_b_hiseq_2500_paired_end_sequencing',
@@ -22,9 +22,9 @@ class RequestEventTest < ActiveSupport::TestCase
 
 
         @request = request_type.new(
-            :asset => well_with_sample_and_without_plate,
-            :target_asset => create(:empty_well),
-            :request_metadata_attributes => { :bait_library_id => BaitLibrary.last.id, :insert_size => 200, :fragment_size_required_from => 200, :fragment_size_required_to => 201 }
+            asset: well_with_sample_and_without_plate,
+            target_asset: create(:empty_well),
+            request_metadata_attributes: { bait_library_id: BaitLibrary.last.id, insert_size: 200, fragment_size_required_from: 200, fragment_size_required_to: 201 }
           ).tap do |r|
           r.stubs(:valid?).returns(true)
           r.save!

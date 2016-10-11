@@ -18,7 +18,7 @@ module AssetsHelper
     elsif plate_layout.bad_well_at?(row, column)
       ["Error", "#{well[:error]}", ""]
     else
-      raise StandardError, "Unknown well status ((#{ plate_layout.location_for_well_at(row, column) }) = #{ plate_layout.well_at(row, column).inspect })"
+      raise StandardError, "Unknown well status ((#{plate_layout.location_for_well_at(row, column)}) = #{plate_layout.well_at(row, column).inspect})"
     end
   end
 
@@ -36,7 +36,7 @@ module AssetsHelper
   def new_request_asset_path_in_context(asset)
     path_options = {}
     path_options[:study_id] = params[:study_id] if params.key?(:study_id)
-    new_request_asset_path(path_options.merge(:id => asset.id))
+    new_request_asset_path(path_options.merge(id: asset.id))
   end
 
   # Given the core name of an instance variable or ID parameter this method yields the name of the ID
@@ -52,11 +52,11 @@ module AssetsHelper
   # Returns a select tag that has it's options ordered by name (assumes present of sorted_by_name function)
   # and disabled if a value has been pre-selected.
   def select_field_sorted_by_name(field, select_options_source, selected, options = {})
-    content_tag(:div, :class => 'col-md-5') do
+    content_tag(:div, class: 'col-md-5') do
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.map { |x| [x.name, x.id] }, selected.try(:to_i)),
-        options.merge(:disabled => (selected.present? and not current_user.is_administrator?), :class => 'form-control select2')
+        options.merge(disabled: (selected.present? and not current_user.is_administrator?), class: 'form-control select2')
       )
     end
   end
@@ -66,7 +66,7 @@ module AssetsHelper
     return false unless asset.is_sequenceable?                      # Asset must be sequenceable ...
     return true if current_user.is_administrator?                   # ... user could be an administrator ...
     return true if current_user.is_manager?
-    #asset.studies.any? { |study| current_user.is_manager?(study) }  # ... or a manager of any study related to the asset
+    # asset.studies.any? { |study| current_user.is_manager?(study) }  # ... or a manager of any study related to the asset
   end
 
   # Returns true if the current user can request an additional library on the asset, otherwise false

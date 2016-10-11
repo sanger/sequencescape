@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2014 Genome Research Ltd.
@@ -10,14 +10,14 @@ module DbTableArchiver
   end
 
   def self.archive!(table)
-    table_transaction(table) do |original,archive|
+    table_transaction(table) do |original, archive|
       puts "Archiving table '#{table}' to #{archive_name}"
       ActiveRecord::Base.connection.rename_table original, archive
     end
   end
 
   def self.restore!(table)
-    table_transaction(table) do |original,archive|
+    table_transaction(table) do |original, archive|
       puts "Restoring table '#{table}' from #{archive_name}"
       ActiveRecord::Base.connection.rename_table archive, original
     end

@@ -28,12 +28,12 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
     end
 
 
-    ["index","new"].each do |controller_method|
+    ["index", "new"].each do |controller_method|
       context "##{controller_method}" do
         setup do
           @assetgroup_count = AssetGroup.count
           @study_count = Study.count
-          get controller_method, :study_id => @study.id
+          get controller_method, study_id: @study.id
         end
         should respond_with :success
 
@@ -51,7 +51,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
         setup do
           @assetgroup_count = AssetGroup.count
           @study_count = Study.count
-          get controller_method, :study_id => @study.id, :id => @asset_group.id
+          get controller_method, study_id: @study.id, id: @asset_group.id
         end
         should "change AssetGroup.count by 0" do
           assert_equal 0,  AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by 0"
@@ -65,7 +65,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
     context "#search" do
       context "should redirect if no query is passed in" do
         setup do
-          get :search, :study_id => @study.id, :id => @asset_group.id
+          get :search, study_id: @study.id, id: @asset_group.id
         end
 
         should respond_with :redirect
@@ -73,7 +73,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
 
       context "should redirect if it is given a blank query" do
         setup do
-          get :search, :study_id => @study.id, :id => @asset_group.id, :q => ""
+          get :search, study_id: @study.id, id: @asset_group.id, q: ""
         end
 
         should respond_with :redirect
@@ -81,7 +81,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
 
       context "should redirect if too small a query is passed" do
         setup do
-          get :search, :study_id => @study.id, :id => @asset_group.id, :q => "a"
+          get :search, study_id: @study.id, id: @asset_group.id, q: "a"
         end
 
         should respond_with :redirect
@@ -89,7 +89,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
 
       context "should suceed with a query longer than 1" do
         setup do
-          get :search, :study_id => @study.id, :id => @asset_group.id, :q => "ab"
+          get :search, study_id: @study.id, id: @asset_group.id, q: "ab"
         end
 
         should respond_with :success
@@ -100,7 +100,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       setup do
         @study_count = Study.count
         @assetgroup_count = AssetGroup.count
-        delete :destroy, :study_id => @study.id, :id => @asset_group.id
+        delete :destroy, study_id: @study.id, id: @asset_group.id
       end
 
       should "change AssetGroup.count by -1" do
@@ -119,10 +119,10 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       setup do
         @assetgroup_count = AssetGroup.count
         @study_count = Study.count
-        put :update, :study_id => @study.id, :id => @asset_group.id, asset_group: { :name => "update name" }
+        put :update, study_id: @study.id, id: @asset_group.id, asset_group: { name: "update name" }
       end
 
-      should set_flash.to( /updated/)
+      should set_flash.to(/updated/)
 
       should "change AssetGroup.count by 0" do
          assert_equal 0,  AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by 0"

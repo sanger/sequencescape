@@ -6,8 +6,8 @@
 
 class Comment < ActiveRecord::Base
   # include Uuid::Uuidable
-  belongs_to :commentable, :polymorphic => true
-  has_many :comments, :as => :commentable
+  belongs_to :commentable, polymorphic: true
+  has_many :comments, as: :commentable
   belongs_to :user
 
   scope :for_plate, ->(plate) {
@@ -20,10 +20,10 @@ class Comment < ActiveRecord::Base
     # Rails handles counts on group statements strangely (See the Comments proxy on plate)
 
     if submissions.present?
-      rids = Request.where(:submission_id => submissions).pluck(:id)
+      rids = Request.where(submission_id: submissions).pluck(:id)
       where([
         '(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',
-        rids,plate.id
+        rids, plate.id
       ]).group('CONCAT(comments.description, IFNULL(comments.title,""), comments.user_id)')
       # The above group by is grim, and is due to the way rails generates the key to help count
       # grouped statements. Essentially is adds AS on the end to create a new column. If we don't
@@ -40,7 +40,7 @@ class Comment < ActiveRecord::Base
   def self.counts_for(commentables)
     return 0 if commentables.empty?
     type = commentables.first.class.base_class.name
-    where(:commentable_type => type,:commentable_id => commentables).group(:commentable_id).count
+    where(commentable_type: type, commentable_id: commentables).group(:commentable_id).count
   end
 
 end

@@ -10,15 +10,15 @@ class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
       flex_id = RequestType.find_by_key('flexible_cherrypick').id
       cp_ifi = SubmissionTemplate.find_by_name("Cherrypick").submission_parameters[:input_field_infos]
       SubmissionTemplate.create!(
-        :name => 'Flexible Cherrypick',
-        :submission_class_name => "LinearSubmission",
-        :submission_parameters => {
-          :workflow_id => Submission::Workflow.find_by_key('microarray_genotyping').id,
-          :request_options => {
-            :initial_state => { flex_id => :pending }
+        name: 'Flexible Cherrypick',
+        submission_class_name: "LinearSubmission",
+        submission_parameters: {
+          workflow_id: Submission::Workflow.find_by_key('microarray_genotyping').id,
+          request_options: {
+            initial_state: { flex_id => :pending }
           },
-          :request_type_ids_list => [[flex_id]],
-          :input_field_infos => cp_ifi
+          request_type_ids_list: [[flex_id]],
+          input_field_infos: cp_ifi
         }
       )
     end

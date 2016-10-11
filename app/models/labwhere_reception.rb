@@ -17,7 +17,7 @@ class LabwhereReception
 
   validates :asset_barcodes, :user_code, :location, presence: true
 
-  def initialize(user_code,location_barcode,location_id,asset_barcodes)
+  def initialize(user_code, location_barcode, location_id, asset_barcodes)
     @asset_barcodes = asset_barcodes.map(&:strip)
     @location_id = location_id.to_i
     @location_barcode = location_barcode.try(:strip)
@@ -40,9 +40,9 @@ class LabwhereReception
     begin
 
       scan = LabWhereClient::Scan.create(
-        :location_barcode => location_barcode,
-        :user_code => user_code,
-        :labware_barcodes => asset_barcodes
+        location_barcode: location_barcode,
+        user_code: user_code,
+        labware_barcodes: asset_barcodes
       )
 
       unless scan.valid?

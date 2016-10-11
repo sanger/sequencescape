@@ -13,7 +13,7 @@ Sequencescape::Application.configure do
   # TODO: Refactor our code to make it easier to set this to false
   # Main issue is it causing problems with nested single table inheritance, such
   # as on plate purpose.
-  config.cache_classes = ENV.fetch('CACHE_CLASSES','true') == 'true'
+  config.cache_classes = ENV.fetch('CACHE_CLASSES', 'true') == 'true'
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true

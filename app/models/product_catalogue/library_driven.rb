@@ -8,7 +8,7 @@ class ProductCatalogue::LibraryDriven
 
   attr_reader :product
 
-  def initialize(catalogue,submission_attributes)
+  def initialize(catalogue, submission_attributes)
     @product = catalogue.products.first
   end
 

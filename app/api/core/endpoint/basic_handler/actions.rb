@@ -22,13 +22,13 @@ module Core::Endpoint::BasicHandler::Actions
   end
 
   ACTIONS_WITH_SUCCESS_CODES = {
-    :create => 201,
-    :read   => 200,
-    :update => 200,
-    :delete => 200,
+    create: 201,
+    read: 200,
+    update: 200,
+    delete: 200,
 
-    :create_from_file => 201,
-    :update_from_file => 200
+    create_from_file: 201,
+    update_from_file: 200
   }
 
   ACTIONS_WITH_SUCCESS_CODES.each do |action, status_code|

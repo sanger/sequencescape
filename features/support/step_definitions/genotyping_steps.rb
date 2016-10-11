@@ -30,26 +30,26 @@ end
 
 Given /^a robot exists$/ do
   robot = FactoryGirl.create :robot
-  robot.robot_properties.create(:key => 'max_plates', :value => "21")
+  robot.robot_properties.create(key: 'max_plates', value: "21")
 end
 
 Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |study_name, plate_barcode, expected_results_table|
   study = Study.find_by_name(study_name)
   plate = Plate.find_by_barcode(plate_barcode)
-  manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id],study))
+  manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id], study))
   manifest.shift(3)
   expected_results_table.diff!(manifest)
 end
 
-Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/ do |plate_barcode, study_name, number_of_samples,asset_group_name|
+Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/ do |plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by_name(study_name)
-  plate = FactoryGirl.create(:plate, :barcode => plate_barcode, :location => Location.find_by_name("Sample logistics freezer"))
+  plate = FactoryGirl.create(:plate, barcode: plate_barcode, location: Location.find_by_name("Sample logistics freezer"))
 
-  asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(:name => asset_group_name)
+  asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
-    FactoryGirl.create(:well, :plate => plate, :map_id => index).tap do |well|
-      well.aliquots.create!(:sample => FactoryGirl.create(:sample, :name => "Sample_#{plate_barcode}_#{index}"),
-                                              :study => study)
+    FactoryGirl.create(:well, plate: plate, map_id: index).tap do |well|
+      well.aliquots.create!(sample: FactoryGirl.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
+                                              study: study)
     end
   end
 end
@@ -57,7 +57,7 @@ end
 Given /^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/ do |plate_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
   plate = Plate.find_by_barcode(plate_barcode)
-  asset_group = AssetGroup.find_or_create_by(name:asset_group_name, study_id:study.id)
+  asset_group = AssetGroup.find_or_create_by(name: asset_group_name, study_id: study.id)
   plate.wells.each do |well|
     asset_group.assets << well
   end
@@ -83,12 +83,12 @@ Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
 end
 
 Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
-  robot = FactoryGirl.create :robot, :barcode => robot_barcode
-  robot.robot_properties.create(:key => 'max_plates', :value => "21")
-  robot.robot_properties.create(:key => 'SCRC1', :value => "1")
-  robot.robot_properties.create(:key => 'SCRC2', :value => "2")
-  robot.robot_properties.create(:key => 'SCRC3', :value => "3")
-  robot.robot_properties.create(:key => 'DEST1', :value => "20")
+  robot = FactoryGirl.create :robot, barcode: robot_barcode
+  robot.robot_properties.create(key: 'max_plates', value: "21")
+  robot.robot_properties.create(key: 'SCRC1', value: "1")
+  robot.robot_properties.create(key: 'SCRC2', value: "2")
+  robot.robot_properties.create(key: 'SCRC3', value: "3")
+  robot.robot_properties.create(key: 'DEST1', value: "20")
 end
 
 When /^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/ do |plate_purpose_name|
@@ -121,19 +121,19 @@ end
 Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/ do |well_description, plate_barcode, genotyping_status|
   plate = Plate.find_by_barcode(plate_barcode)
   well = plate.find_well_by_name(well_description)
-  well.primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
+  well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
 end
 
 
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
   well = Uuid.find_by_external_id(uuid).resource
 
-  sample = FactoryGirl.create(:sample, :name => "Testing_the_JSON_API")
-  sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
-  sample.external_properties.create!(:key => 'genotyping_snp_plate_id')
+  sample = FactoryGirl.create(:sample, name: "Testing_the_JSON_API")
+  sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
+  sample.external_properties.create!(key: 'genotyping_snp_plate_id')
 
   well.aliquots.clear
-  well.aliquots.create!(:sample => sample)
+  well.aliquots.create!(sample: sample)
 end
 
 
@@ -141,7 +141,7 @@ Given /^I have a DNA QC submission for plate "([^"]*)"$/ do |plate_barcode|
   step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
 end
 
-Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name,plate_barcode, project_name, study_name|
+Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name, plate_barcode, project_name, study_name|
   plate = Plate.find_by_barcode(plate_barcode)
   project = Project.find_by_name(project_name)
   study = Study.find_by_name(study_name)
@@ -155,11 +155,11 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
 
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)
   submission = submission_template.create_and_build_submission!(
-    :study    => study,
-    :project  => project,
-    :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
-    :user     => User.last,
-    :assets   => wells
+    study: study,
+    project: project,
+    workflow: Submission::Workflow.find_by_key('microarray_genotyping'),
+    user: User.last,
+    assets: wells
     )
   step("1 pending delayed jobs are processed")
 end
@@ -172,11 +172,11 @@ Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_
 
   submission_template = SubmissionTemplate.find_by_name('Cherrypick')
   submission = submission_template.create_and_build_submission!(
-    :study => study,
-    :project => project,
-    :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
-    :user => User.last,
-    :assets => asset_group.assets
+    study: study,
+    project: project,
+    workflow: Submission::Workflow.find_by_key('microarray_genotyping'),
+    user: User.last,
+    assets: asset_group.assets
     )
   step("1 pending delayed jobs are processed")
 end

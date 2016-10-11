@@ -21,8 +21,8 @@ class AssetGroupTest < ActiveSupport::TestCase
       @asset3.stubs(:id).returns(3)
       @assets = []
       @study = create :study
-      @asset_group = create :asset_group, :study_id => @study.id
-      @asset_group.stubs(:assets).returns([@asset1,@asset2])
+      @asset_group = create :asset_group, study_id: @study.id
+      @asset_group.stubs(:assets).returns([@asset1, @asset2])
     end
 
     should "return the number of assets" do
@@ -57,13 +57,13 @@ class AssetGroupTest < ActiveSupport::TestCase
       @asset2.stubs(:sti_type).returns('Well')
       @assets = []
       @study = create :study
-      @asset_group = create :asset_group, :study_id => @study.id
-      @asset_group.stubs(:assets).returns([@asset1,@asset2])
+      @asset_group = create :asset_group, study_id: @study.id
+      @asset_group.stubs(:assets).returns([@asset1, @asset2])
     end
 
 
     should "report its asset types" do
-      assert_equal ['Tube','Well'], @asset_group.asset_types
+      assert_equal ['Tube', 'Well'], @asset_group.asset_types
     end
 
     should "not support automatic_move?" do
@@ -84,8 +84,8 @@ class AssetGroupTest < ActiveSupport::TestCase
       @asset2.stubs(:sti_type).returns('Tube')
       @assets = []
       @study = create :study
-      @asset_group = create :asset_group, :study_id => @study.id
-      @asset_group.stubs(:assets).returns([@asset1,@asset2])
+      @asset_group = create :asset_group, study_id: @study.id
+      @asset_group.stubs(:assets).returns([@asset1, @asset2])
     end
 
     should "not support automatic_move?" do
@@ -102,13 +102,13 @@ class AssetGroupTest < ActiveSupport::TestCase
     end
     should "not allow an AssetGroup to be created without a study" do
       assert_raises ActiveRecord::RecordInvalid do
-        @asset_group = create :asset_group, :study_id => nil
+        @asset_group = create :asset_group, study_id: nil
       end
     end
 
     should "not allow an AssetGroup to be created without a name" do
       assert_raises ActiveRecord::RecordInvalid do
-        @asset_group = create :asset_group, :name => "", :study_id => @study.id
+        @asset_group = create :asset_group, name: "", study_id: @study.id
       end
     end
 
@@ -117,9 +117,9 @@ class AssetGroupTest < ActiveSupport::TestCase
     end
 
     should "only allow a name to be used once" do
-      create :asset_group, :name => "Another-Name", :study_id => @study.id
+      create :asset_group, name: "Another-Name", study_id: @study.id
       assert_raises ActiveRecord::RecordInvalid do
-        create :asset_group, :name => "Another-Name", :study_id => @study.id
+        create :asset_group, name: "Another-Name", study_id: @study.id
       end
     end
 
@@ -131,7 +131,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         setup do
           5.times do |i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => 'ERS00001' })
+            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
             @asset_group.assets << asset
           end
         end
@@ -145,11 +145,11 @@ class AssetGroupTest < ActiveSupport::TestCase
         context "except 1 have accession numbers" do
           setup do
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => '' })
+            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset
           end
           should "return false" do
-            assert ! @asset_group.all_samples_have_accession_numbers?
+            assert !@asset_group.all_samples_have_accession_numbers?
           end
         end
       end
@@ -157,7 +157,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         setup do
           5.times do |i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => '' })
+            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset
           end
         end

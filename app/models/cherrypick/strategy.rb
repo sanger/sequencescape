@@ -39,7 +39,7 @@ class Cherrypick::Strategy
     # Orders the plexes by the optimum fitting
     class BestFit
       def call(plexes, current_plate)
-        comparator = ->(l,r) { r.size <=> l.size }
+        comparator = ->(l, r) { r.size <=> l.size }
         comparator = lambda do |left, right|
           left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
           sorted_fill = left_fill <=> right_fill
@@ -61,7 +61,7 @@ class Cherrypick::Strategy
         species = current_plate.species
         return plexes if species.empty?
 
-        plexes.each_with_index.sort do |(left,left_index), (right,right_index)|
+        plexes.each_with_index.sort do |(left, left_index), (right, right_index)|
           left_species, right_species = species_for_plex(left), species_for_plex(right)
           left_in, right_in = species & left_species, species & right_species
           case
@@ -111,7 +111,7 @@ class Cherrypick::Strategy
       @purpose, @wells, @species = purpose, [Cherrypick::Strategy::Empty] * filled, species
     end
 
-    delegate :size, :cherrypick_direction, :to => :@purpose
+    delegate :size, :cherrypick_direction, to: :@purpose
 
     # This is the size of the plate in the dimension in which we cherrypick.
     def dimension
@@ -122,7 +122,7 @@ class Cherrypick::Strategy
       size - used
     end
 
-    delegate :empty?, :inspect, :concat, :to => :@wells
+    delegate :empty?, :inspect, :concat, to: :@wells
 
     def used
       @wells.size
@@ -220,7 +220,7 @@ class Cherrypick::Strategy
     @purpose = purpose
   end
 
-  delegate :cherrypick_filters, :to => :@purpose
+  delegate :cherrypick_filters, to: :@purpose
   private :cherrypick_filters
 
   def pick(requests, robot, plate = nil)

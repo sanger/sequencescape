@@ -15,8 +15,8 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
 
   def separate(_, actions)
     actions[@options[:to].to_s] = lambda do |object, options, stream|
-      actions(object, options.merge(:target => object)).map do |action,url|
-        stream.attribute(action,url)
+      actions(object, options.merge(target: object)).map do |action, url|
+        stream.attribute(action, url)
       end
     end
   end
@@ -33,7 +33,7 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
 
   def generate_json_actions(object, options)
     rooted_json(options) do |stream|
-      super(object, options.merge(:stream => stream))
+      super(object, options.merge(stream: stream))
     end
   end
 

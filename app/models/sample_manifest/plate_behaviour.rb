@@ -7,7 +7,7 @@
 module SampleManifest::PlateBehaviour
   module ClassMethods
     def create_for_plate!(attributes, *args, &block)
-      create!(attributes.merge(:asset_type => 'plate'), *args, &block).tap do |manifest|
+      create!(attributes.merge(asset_type: 'plate'), *args, &block).tap do |manifest|
         manifest.generate
       end
     end
@@ -23,10 +23,10 @@ module SampleManifest::PlateBehaviour
       @manifest = manifest
     end
 
-    delegate :generate_plates, :to => :@manifest
+    delegate :generate_plates, to: :@manifest
     alias_method(:generate, :generate_plates)
 
-    delegate :samples, :to => :@manifest
+    delegate :samples, to: :@manifest
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
     # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
@@ -34,10 +34,7 @@ module SampleManifest::PlateBehaviour
     def generate_wells_for_plates(well_data, plates, &block)
       cloned_well_data = well_data.dup
       plates.each do |plate|
-        block.call(
-          cloned_well_data.slice!(0, plate.size),
-          plate
-        )
+        yield(cloned_well_data.slice!(0, plate.size), plate)
       end
     end
     private :generate_wells_for_plates
@@ -60,7 +57,7 @@ module SampleManifest::PlateBehaviour
       # Generate the wells, samples & requests asynchronously.
       generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
         @manifest.generate_wells_asynchronously(
-          this_plates_well_data.map { |map,sample_id| [map.id, sample_id] },
+          this_plates_well_data.map { |map, sample_id| [map.id, sample_id] },
           plate.id
         )
       end
@@ -70,11 +67,11 @@ module SampleManifest::PlateBehaviour
       @plates  = plates.sort_by(&:barcode)
       @details = []
       plates.each do |plate|
-        well_data.slice!(0, plate.size).each do |map,sample_id|
+        well_data.slice!(0, plate.size).each do |map, sample_id|
           @details << {
-            :barcode   => plate.sanger_human_barcode,
-            :position  => map.description,
-            :sample_id => sample_id
+            barcode: plate.sanger_human_barcode,
+            position: map.description,
+            sample_id: sample_id
           }
         end
       end
@@ -102,10 +99,10 @@ module SampleManifest::PlateBehaviour
       samples.map do |sample|
         container = sample.primary_receptacle
         {
-          :sample    => sample,
-          :container => {
-            :barcode  => container.plate.sanger_human_barcode,
-            :position => container.map.description.sub(/^([^\d]+)(\d)$/, '\10\2')
+          sample: sample,
+          container: {
+            barcode: container.plate.sanger_human_barcode,
+            position: container.map.description.sub(/^([^\d]+)(\d)$/, '\10\2')
           }
         }
       end
@@ -123,9 +120,9 @@ module SampleManifest::PlateBehaviour
       samples.each do |sample|
         well = sample.wells.includes([:container, :map]).first
         yield({
-          :barcode   => well.plate.sanger_human_barcode,
-          :position  => well.map.description,
-          :sample_id => sample.sanger_sample_id
+          barcode: well.plate.sanger_human_barcode,
+          position: well.map.description,
+          sample_id: sample.sanger_sample_id
         })
       end
     end
@@ -139,7 +136,7 @@ module SampleManifest::PlateBehaviour
     base.class_eval do
       extend ClassMethods
 
-      delegate :stock_plate_purpose, :to => 'PlatePurpose'
+      delegate :stock_plate_purpose, to: 'PlatePurpose'
     end
   end
 
@@ -147,7 +144,7 @@ module SampleManifest::PlateBehaviour
     ActiveRecord::Base.transaction do
       # Ensure the order of the wells are maintained
       maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [map.id, map] }]
-      well_data = well_data_with_ids.map { |map_id,sample_id| [maps[map_id], sample_id] }
+      well_data = well_data_with_ids.map { |map_id, sample_id| [maps[map_id], sample_id] }
 
       generate_wells(well_data, Plate.find(plate_id))
     end
@@ -159,7 +156,7 @@ module SampleManifest::PlateBehaviour
 
     well_data = []
     plates    = (0...self.count).map do |_|
-      Plate.create_with_barcode!(:plate_purpose => stock_plate_purpose)
+      Plate.create_with_barcode!(plate_purpose: stock_plate_purpose)
     end.sort_by(&:barcode).map do |plate|
       plate.tap do |plate|
         sanger_sample_ids = generate_sanger_ids(plate.size)
@@ -179,10 +176,10 @@ module SampleManifest::PlateBehaviour
   end
 
   def generate_wells(wells_for_plate, plate)
-    study.samples << wells_for_plate.map do |map,sanger_sample_id|
+    study.samples << wells_for_plate.map do |map, sanger_sample_id|
       create_sample(sanger_sample_id).tap do |sample|
-        plate.wells.create!(:map => map, :well_attribute => WellAttribute.new).tap do |well|
-          well.aliquots.create!(:sample => sample)
+        plate.wells.create!(map: map, well_attribute: WellAttribute.new).tap do |well|
+          well.aliquots.create!(sample: sample)
         end
       end
     end

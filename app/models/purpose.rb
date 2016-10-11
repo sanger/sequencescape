@@ -9,22 +9,22 @@ class Purpose < ActiveRecord::Base
 
   class Relationship < ActiveRecord::Base
     self.table_name = ('plate_purpose_relationships')
-    belongs_to :parent, :class_name => 'Purpose'
-    belongs_to :child, :class_name => 'Purpose'
+    belongs_to :parent, class_name: 'Purpose'
+    belongs_to :child, class_name: 'Purpose'
 
-    belongs_to :transfer_request_type, :class_name => 'RequestType'
+    belongs_to :transfer_request_type, class_name: 'RequestType'
 
-    scope :with_parent, ->(plate_purpose) { where(:parent_id => plate_purpose) }
-    scope :with_child,  ->(plate_purpose) { where(:child_id  => plate_purpose) }
+    scope :with_parent, ->(plate_purpose) { where(parent_id: plate_purpose) }
+    scope :with_child,  ->(plate_purpose) { where(child_id: plate_purpose) }
 
     module Associations
       def self.included(base)
         base.class_eval do
-          has_many :child_relationships, :class_name => 'Purpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
-          has_many :child_purposes, :through => :child_relationships, :source => :child
+          has_many :child_relationships, class_name: 'Purpose::Relationship', foreign_key: :parent_id, dependent: :destroy
+          has_many :child_purposes, through: :child_relationships, source: :child
 
-          has_many :parent_relationships, :class_name => 'Purpose::Relationship', :foreign_key => :child_id, :dependent => :destroy
-          has_many :parent_purposes, :through => :parent_relationships, :source => :parent
+          has_many :parent_relationships, class_name: 'Purpose::Relationship', foreign_key: :child_id, dependent: :destroy
+          has_many :parent_purposes, through: :parent_relationships, source: :parent
         end
       end
 
@@ -46,22 +46,22 @@ class Purpose < ActiveRecord::Base
 
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type
-  belongs_to :source_purpose, :class_name => 'Purpose'
+  belongs_to :source_purpose, class_name: 'Purpose'
 
   def barcode_type
     barcode_printer_type.printer_type_id
   end
 
   # Things that are created are often in a default location!
-  belongs_to :default_location, :class_name => 'Location'
-  has_many :messenger_creators, :inverse_of => :purpose
+  belongs_to :default_location, class_name: 'Location'
+  has_many :messenger_creators, inverse_of: :purpose
 
-  validates_format_of :name, :with => /\A\w[\s\w._-]+\w\z/i
+  validates_format_of :name, with: /\A\w[\s\w._-]+\w\z/i
   validates_presence_of :name
-  validates_uniqueness_of :name, :message => "already in use"
-  validates_inclusion_of :barcode_for_tecan, :in => ['ean13_barcode','fluidigm_barcode']
+  validates_uniqueness_of :name, message: "already in use"
+  validates_inclusion_of :barcode_for_tecan, in: ['ean13_barcode', 'fluidigm_barcode']
 
- scope :where_is_a?, ->(clazz) { where(:type => [clazz,*clazz.descendants].map(&:name)) }
+ scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
 
   def target_class
     target_type.constantize

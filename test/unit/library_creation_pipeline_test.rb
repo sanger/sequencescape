@@ -9,7 +9,7 @@ require "test_helper"
 class LibraryCreationPipelineTest < ActiveSupport::TestCase
   context "Pipeline" do
     setup do
-      @pipeline = create :library_creation_pipeline, :name => "Library creation pipeline"
+      @pipeline = create :library_creation_pipeline, name: "Library creation pipeline"
     end
 
     should "return true for library_creation?" do
@@ -17,15 +17,15 @@ class LibraryCreationPipelineTest < ActiveSupport::TestCase
     end
 
     should "return false for genotyping?" do
-      assert ! @pipeline.genotyping?
+      assert !@pipeline.genotyping?
     end
 
     should "return false for pulldown?" do
-      assert ! @pipeline.pulldown?
+      assert !@pipeline.pulldown?
     end
 
     should "return false for prints_a_worksheet_per_task?" do
-      assert ! @pipeline.prints_a_worksheet_per_task?
+      assert !@pipeline.prints_a_worksheet_per_task?
     end
 
     context "#create_batch_from_plate(assets)" do

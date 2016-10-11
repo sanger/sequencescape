@@ -15,22 +15,22 @@ class ProductCatalogue < ActiveRecord::Base
 
   UndefinedBehaviour = Class.new(StandardError)
 
-  has_many :submission_templates, :inverse_of => :product_catalogue
-  has_many :product_product_catalogues, :inverse_of => :product_catalogue, :dependent => :destroy
-  has_many :products, :through => :product_product_catalogues
+  has_many :submission_templates, inverse_of: :product_catalogue
+  has_many :product_product_catalogues, inverse_of: :product_catalogue, dependent: :destroy
+  has_many :products, through: :product_product_catalogues
 
   validates_presence_of :name
   validates_presence_of :selection_behaviour
-  validate :selection_behaviour_exists?, :if => :selection_behaviour?
+  validate :selection_behaviour_exists?, if: :selection_behaviour?
 
   class << self
     def construct!(arguments)
       ActiveRecord::Base.transaction do
         products = arguments.delete(:products)
-        product_assocations = products.map do |criterion,product_name|
+        product_assocations = products.map do |criterion, product_name|
           {
-            :selection_criterion => criterion,
-            :product => Product.find_or_create_by(name:product_name)
+            selection_criterion: criterion,
+            product: Product.find_or_create_by(name: product_name)
           }
         end
         self.create!(arguments) do |catalogue|
@@ -42,11 +42,11 @@ class ProductCatalogue < ActiveRecord::Base
   end
 
   def product_for(submission_attributes)
-    selection_class.new(self,submission_attributes).product
+    selection_class.new(self, submission_attributes).product
   end
 
   def product_with_criteria(criteria)
-    products.find_by(:product_product_catalogues => { :selection_criterion => criteria })
+    products.find_by(product_product_catalogues: { selection_criterion: criteria })
   end
 
   private
@@ -58,7 +58,7 @@ class ProductCatalogue < ActiveRecord::Base
     ProductCatalogue.const_get(selection_behaviour)
     true
   rescue NameError
-    errors.add(:selection_behaviour,"#{selection_behaviour} is not recognized")
+    errors.add(:selection_behaviour, "#{selection_behaviour} is not recognized")
     false
   end
 

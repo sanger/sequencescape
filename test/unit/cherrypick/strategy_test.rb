@@ -8,7 +8,7 @@ require 'test_helper'
 
 class Cherrypick::StrategyTest < ActiveSupport::TestCase
   def request(submission_id, barcode = 1)
-    OpenStruct.new(:submission_id => submission_id, :barcode => barcode,:representation => "request_#{submission_id}")
+    OpenStruct.new(submission_id: submission_id, barcode: barcode, representation: "request_#{submission_id}")
   end
   private :request
 
@@ -52,16 +52,16 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           end
 
           should 'contiguous wells' do
-            @plate = @purpose.create!(:do_not_create_wells, :barcode => 1).tap do |plate|
+            @plate = @purpose.create!(:do_not_create_wells, barcode: 1).tap do |plate|
               @purpose.well_locations.slice(0, 12).each do |location|
-                plate.wells.create!(:map => location)
+                plate.wells.create!(map: location)
               end
             end
           end
 
           should 'non-contiguous wells' do
-            @plate = @purpose.create!(:do_not_create_wells, :barcode => 1).tap do |plate|
-              plate.wells.create!(:map => @purpose.well_locations[11])
+            @plate = @purpose.create!(:do_not_create_wells, barcode: 1).tap do |plate|
+              plate.wells.create!(map: @purpose.well_locations[11])
             end
           end
         end
@@ -70,7 +70,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
       context '#pick' do
         setup do
           @filter = mock('filter')
-          @purpose.stubs(:cherrypick_filters).returns([OpenStruct.new(:new => @filter)])
+          @purpose.stubs(:cherrypick_filters).returns([OpenStruct.new(new: @filter)])
         end
 
         should 'return empty plates for no requests' do
@@ -82,7 +82,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           assert_raises(Cherrypick::Strategy::PickFailureError) do
             request = request(1)
             @filter.expects(:call).with([[request]], anything).returns([]).once
-            @strategy.send(:_pick, [request], OpenStruct.new(:max_beds => 1))
+            @strategy.send(:_pick, [request], OpenStruct.new(max_beds: 1))
           end
         end
 
@@ -90,7 +90,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           request = request(1)
           @filter.expects(:call).with([[request]], anything).returns([[request]]).once
 
-          pick_list = @strategy.send(:_pick, [request], OpenStruct.new(:max_beds => 1))
+          pick_list = @strategy.send(:_pick, [request], OpenStruct.new(max_beds: 1))
           assert_equal([['request_1']], pick_list)
         end
 
@@ -103,8 +103,8 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
           @filter.expects(:call).with([[requests.first], [requests.last]], anything).returns([[requests.first], [requests.last]]).once
           @filter.expects(:call).with([[requests.last]], anything).returns([[requests.last]]).twice
 
-          pick_list = @strategy.send(:_pick, requests, OpenStruct.new(:max_beds => 1))
-          assert_equal([['request_1'],['request_2']], pick_list)
+          pick_list = @strategy.send(:_pick, requests, OpenStruct.new(max_beds: 1))
+          assert_equal([['request_1'], ['request_2']], pick_list)
         end
       end
     end

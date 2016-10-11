@@ -9,12 +9,12 @@ module BroadcastEvent::RenderHelpers
   class Render
     def self.to_hash(event)
       {
-        :uuid => event.uuid,
-        :event_type => event.event_type,
-        :occured_at => event.created_at,
-        :user_identifier => event.user_identifier,
-        :subjects => event.subjects,
-        :metadata => event.metadata
+        uuid: event.uuid,
+        event_type: event.event_type,
+        occured_at: event.created_at,
+        user_identifier: event.user_identifier,
+        subjects: event.subjects,
+        metadata: event.metadata
       }
     end
   end

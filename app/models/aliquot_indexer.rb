@@ -11,7 +11,7 @@ class AliquotIndexer
   module AliquotScopes
     def self.included(base)
       base.class_eval do
-        scope :sorted_for_indexing, -> { joins([:tag,:tag2]).reorder('tag2s_aliquots.map_id ASC, tags.map_id ASC') }
+        scope :sorted_for_indexing, -> { joins([:tag, :tag2]).reorder('tag2s_aliquots.map_id ASC, tags.map_id ASC') }
       end
     end
   end
@@ -45,12 +45,12 @@ class AliquotIndexer
 
   def next_index
     @index += 1
-    next_index if [phix_map_id,configatron.phix_tag.tag_map_id].include?(@index)
+    next_index if [phix_map_id, configatron.phix_tag.tag_map_id].include?(@index)
     @index
   end
 
   def index
-    @lane.aliquot_indicies.build(aliquots.each_with_index.map { |a,i| { :aliquot => a, :aliquot_index => next_index } })
+    @lane.aliquot_indicies.build(aliquots.each_with_index.map { |a, i| { aliquot: a, aliquot_index: next_index } })
     @lane.save
   end
 end

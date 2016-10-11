@@ -7,7 +7,7 @@
 class AddGenericProduct < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      Product.create!(:name => 'Generic')
+      Product.create!(name: 'Generic')
     end
   end
 

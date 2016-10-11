@@ -1,10 +1,10 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 module EventfulRecord
   def has_many_events(&block)
-    has_many(:events, ->() { order('created_at') }, :as => :eventful, :dependent => :destroy) do
+    has_many(:events, ->() { order('created_at') }, as: :eventful, dependent: :destroy) do
       def self.event_constructor(name, event_class, event_class_method)
         line = __LINE__ + 1
         class_eval("
@@ -19,10 +19,10 @@ module EventfulRecord
   end
 
   def has_many_lab_events(&block)
-    has_many(:lab_events, ->() { order('created_at') }, :as => :eventful, :dependent => :destroy, &block)
+    has_many(:lab_events, ->() { order('created_at') }, as: :eventful, dependent: :destroy, &block)
   end
 
   def has_one_event_with_family(event_family, &block)
-    has_one(:"#{event_family}_event", ->() { order('id DESC').where(:family => event_family) }, :class_name => 'Event', :as => :eventful, &block)
+    has_one(:"#{event_family}_event", ->() { order('id DESC').where(family: event_family) }, class_name: 'Event', as: :eventful, &block)
   end
 end

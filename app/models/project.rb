@@ -29,22 +29,22 @@ class Project < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  aasm :column => :state, :whiny_persistence => true do
+  aasm column: :state, whiny_persistence: true do
 
-    state :pending, :initial => true
+    state :pending, initial: true
     state :active
     state :inactive
 
     event :reset do
-      transitions :to => :pending, :from => [:inactive, :active]
+      transitions to: :pending, from: [:inactive, :active]
     end
 
     event :activate do
-      transitions :to => :active, :from => [:pending, :inactive]
+      transitions to: :active, from: [:pending, :inactive]
     end
 
     event :deactivate do
-      transitions :to => :inactive, :from => [:pending, :active]
+      transitions to: :inactive, from: [:pending, :active]
     end
 
   end
@@ -52,33 +52,33 @@ class Project < ActiveRecord::Base
   scope :in_assets, ->(assets) {
     select('projects.*').uniq.
     joins(:aliquots).
-    where(aliquots:{ receptacle_id: assets })
+    where(aliquots: { receptacle_id: assets })
   }
 
-  has_many :roles, :as => :authorizable
+  has_many :roles, as: :authorizable
   has_many :orders
-  has_many :studies, ->() { distinct }, :class_name => "Study", :through => :orders, :source => :study
-  has_many :submissions,  ->() { distinct }, :through => :orders, :source => :submission
+  has_many :studies, ->() { distinct }, class_name: "Study", through: :orders, source: :study
+  has_many :submissions,  ->() { distinct }, through: :orders, source: :submission
   has_many :sample_manifests
   has_many :aliquots
 
   validates_presence_of :name, :state
-  validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
+  validates_uniqueness_of :name, on: :create, message: "already in use (#{self.name})"
 
-  scope :for_search_query, ->(query,with_includes) {
+  scope :for_search_query, ->(query, with_includes) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
   }
 
   # Allow us to pass in nil or '' if we don't want to filter state.
   # State is required so we don't need to look up an actual null state
   scope :in_state, ->(state) {
-    state.present? ? where(state:state) : all
+    state.present? ? where(state: state) : all
   }
 
   scope :approved,     ->()     { where(approved: true) }
   scope :unapproved,   ->()     { where(approved: false) }
   scope :valid,        ->()     { active.approved }
-  scope :for_user,     ->(user) { joins({ :roles => :user_role_bindings }).where(:roles_users => { :user_id => user }) }
+  scope :for_user,     ->(user) { joins({ roles: :user_role_bindings }).where(roles_users: { user_id: user }) }
 
   scope :with_unallocated_manager, ->() {
     roles = Role.arel_table
@@ -88,7 +88,7 @@ class Project < ActiveRecord::Base
   def ended_billable_lanes(ended)
     events = []
     self.samples.each do |sample|
-      if sample.ended.downcase == ended.downcase
+      if sample.ended.casecmp(ended).zero?
         events << sample.billable_events
       end
     end
@@ -158,7 +158,7 @@ class Project < ActiveRecord::Base
 
   def submittable?
     return true if project_metadata.project_funding_model.present?
-    errors.add(:base,"No funding model specified")
+    errors.add(:base, "No funding model specified")
     false
   end
 
@@ -172,7 +172,7 @@ class Project < ActiveRecord::Base
 
   alias_attribute :friendly_name, :name
 
-  delegate :project_cost_code, :to => :project_metadata
+  delegate :project_cost_code, to: :project_metadata
 
   PROJECT_FUNDING_MODELS = [
     '',
@@ -190,12 +190,12 @@ class Project < ActiveRecord::Base
     include ProjectManager::Associations
     include BudgetDivision::Associations
 
-    attribute(:project_cost_code, :required => true)
+    attribute(:project_cost_code, required: true)
     attribute(:funding_comments)
     attribute(:collaborators)
     attribute(:external_funding_source)
     attribute(:sequencing_budget_cost_centre)
-    attribute(:project_funding_model, :in => PROJECT_FUNDING_MODELS)
+    attribute(:project_funding_model, in: PROJECT_FUNDING_MODELS)
     attribute(:gt_committee_tracking_id)
 
     before_validation do |record|
@@ -208,5 +208,5 @@ class Project < ActiveRecord::Base
     'project'
   end
 
-  scope :with_unallocated_budget_division, -> { joins(:project_metadata).where(:project_metadata => { :budget_division_id => BudgetDivision.find_by_name('Unallocated') }) }
+  scope :with_unallocated_budget_division, -> { joins(:project_metadata).where(project_metadata: { budget_division_id: BudgetDivision.find_by_name('Unallocated') }) }
 end

@@ -11,6 +11,6 @@ module Core::Benchmarking
 
   def benchmark(message = nil, &block)
     yield
-    #ActiveRecord::Base.benchmark("===== API benchmark (#{message || 'general'}):", Logger::ERROR, &block)
+    # ActiveRecord::Base.benchmark("===== API benchmark (#{message || 'general'}):", Logger::ERROR, &block)
   end
 end

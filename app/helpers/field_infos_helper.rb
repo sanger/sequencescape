@@ -9,7 +9,7 @@ module FieldInfosHelper
     path = path.clone
     return field if path.empty?
     first = path.shift
-    to_bracketize = path + [field.key] #, "value"]
+    to_bracketize = path + [field.key] # , "value"]
     to_join = [first] + to_bracketize.map { |w| "[#{w}]" }
     return to_join.join
   end

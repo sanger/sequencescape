@@ -10,7 +10,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
       super
-      new_outer_state = ['started','passed','qc_complete'].include?(state) ? 'started' : state
+      new_outer_state = ['started', 'passed', 'qc_complete'].include?(state) ? 'started' : state
 
       # CAUTION!
       # TODO: While the behaviour here wont cause us any issues, its actually subtly wrong.
@@ -19,7 +19,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
       # 3) As we only fire on pending requests this isn't actually a massive problem as we'll be targeting the whole plate anyway
       active_submissions = plate.submission_ids
 
-      stock_wells(plate,contents).each do |source_well|
+      stock_wells(plate, contents).each do |source_well|
         # Only transitions from last submission
         source_well.requests.select { |r| r.library_creation? && active_submissions.include?(r.submission_id) }.each do |request|
           request.transition_to(new_outer_state) if request.pending?
@@ -28,7 +28,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
     end
   end
 
-  def stock_wells(plate,contents)
+  def stock_wells(plate, contents)
     return plate.parent.wells unless contents.present?
     plate.parent.wells.located_at(contents)
   end

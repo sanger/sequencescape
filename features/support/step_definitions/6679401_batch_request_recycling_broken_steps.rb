@@ -8,8 +8,8 @@ Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 
   plate = FactoryGirl.create(:plate)
-  study.asset_groups.create!(:name => group_name).tap do |asset_group|
-    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, :plate => plate, :map => Map.map_96wells[index - 1] ) }
+  study.asset_groups.create!(name: group_name).tap do |asset_group|
+    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, plate: plate, map: Map.map_96wells[index - 1]) }
   end
 end
 
@@ -30,7 +30,7 @@ end
 
 Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
   pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
-  pipeline.requests.each { |request| request.asset.container.update_attributes!(:location => pipeline.location) }
+  pipeline.requests.each { |request| request.asset.container.update_attributes!(location: pipeline.location) }
 end
 
 When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
@@ -41,15 +41,15 @@ end
 
 Given /^all of the requests in the "([^\"]+)" pipeline are in the "([^\"]+)" state$/ do |name, state|
   pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
-  pipeline.requests.each { |request| request.update_attributes!(:state => state) }
+  pipeline.requests.each { |request| request.update_attributes!(state: state) }
 end
 
 Then /^the inbox should contain (\d+) requests?$/ do |count|
   with_scope('#pipeline_inbox') do
     if page.respond_to? :should
-      page.should have_xpath('//td[contains(@class, "request")]', :count => count.to_i)
+      page.should have_xpath('//td[contains(@class, "request")]', count: count.to_i)
     else
-      assert page.has_xpath?('//td[contains(@class, "request")]', :count => count.to_i), "Page missing xpath"
+      assert page.has_xpath?('//td[contains(@class, "request")]', count: count.to_i), "Page missing xpath"
     end
   end
 end
@@ -63,7 +63,7 @@ Then /^the batch input asset table should have 1 row with (\d+) wells$/ do |coun
 end
 
 Given /^the plate template "([^\"]+)" exists$/ do |name|
-  FactoryGirl.create(:plate_template, :name => name)
+  FactoryGirl.create(:plate_template, name: name)
 end
 
 # This is a complete hack to get this to work: it knows where the wells are and goes to get them.  It knows
@@ -98,7 +98,7 @@ def build_batch_for(name, count, &block)
   assets = (1..count.to_i).map do |_|
     asset_attributes = {}
     if submission_details.key?(:holder_type)
-      asset_attributes[:container] = FactoryGirl.create(submission_details[:holder_type], :location_id => pipeline.location_id)
+      asset_attributes[:container] = FactoryGirl.create(submission_details[:holder_type], location_id: pipeline.location_id)
       asset_attributes[:map_id] = 1
     else
       asset_attributes[:location_id] = pipeline.location_id
@@ -111,17 +111,17 @@ def build_batch_for(name, count, &block)
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
   LinearSubmission.build!(
-    :study    => FactoryGirl.create(:study),
-    :project  => FactoryGirl.create(:project),
-    :workflow => wf,
-    :user     => user,
+    study: FactoryGirl.create(:study),
+    project: FactoryGirl.create(:project),
+    workflow: wf,
+    user: user,
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.
-    :assets        => assets,
-    :request_types => rts,
+    assets: assets,
+    request_types: rts,
 
     # Request parameter options
-    :request_options => submission_details[:request_options]
+    request_options: submission_details[:request_options]
   )
   step("all pending delayed jobs are processed")
 
@@ -129,7 +129,7 @@ def build_batch_for(name, count, &block)
   # in some form.
   requests = pipeline.requests.ready_in_storage.all
   raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
-  batch = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
+  batch = Batch.create!(pipeline: pipeline, user: user, requests: requests)
 end
 
 def requests_for_pipeline(name, count, &block)
@@ -144,8 +144,8 @@ end
 # Bad, I know, but it gets the job done for the genotyping pipelines!
 Given /^the batch and all its requests are pending$/ do
   batch = Batch.first or raise StandardError, "There appears to be no batches!"
-  batch.update_attributes!(:state => 'pending')
-  batch.requests.each { |r| r.update_attributes!(:state => 'pending') }
+  batch.update_attributes!(state: 'pending')
+  batch.requests.each { |r| r.update_attributes!(state: 'pending') }
 end
 
 SEQUENCING_PIPELINES = [
@@ -161,11 +161,11 @@ SEQUENCING_PIPELINES = [
 Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" pipeline$/ do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
     {
-      :asset_type => :library_tube,
-      :request_options => {
-        :fragment_size_required_from => 1,
-        :fragment_size_required_to   => 100,
-        :read_length                 => pipeline.request_types.last.request_type_validators.find_by_request_option('read_length').valid_options.first
+      asset_type: :library_tube,
+      request_options: {
+        fragment_size_required_from: 1,
+        fragment_size_required_to: 100,
+        read_length: pipeline.request_types.last.request_type_validators.find_by_request_option('read_length').valid_options.first
       }
     }
   end
@@ -193,11 +193,11 @@ LIBRARY_CREATION_PIPELINES = [
 Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/ do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
     {
-      :asset_type => :sample_tube,
-      :request_options => {
-        :fragment_size_required_from => 1,
-        :fragment_size_required_to   => 100,
-        :library_type                => 'Standard'
+      asset_type: :sample_tube,
+      request_options: {
+        fragment_size_required_from: 1,
+        fragment_size_required_to: 100,
+        library_type: 'Standard'
       }
     }
   end
@@ -220,8 +220,8 @@ GENOTYPING_PIPELINES = [
 Given /^I have a batch with (\d+) requests? for the "(#{GENOTYPING_PIPELINES})" pipeline$/ do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
     {
-      :asset_type => :well,
-      :holder_type => :plate
+      asset_type: :well,
+      holder_type: :plate
     }
   end
 end

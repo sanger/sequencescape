@@ -27,13 +27,13 @@ class AttachInfiniumBarcodeTest < TaskTestBase
     context "#do_task" do
       setup do
         @pipeline       = create :pipeline
-        @batch          = create :batch, :pipeline => @pipeline
+        @batch          = create :batch, pipeline: @pipeline
         @plate1 = create :plate
         @plate2 = create :plate
       end
       context "with valid parameters" do
         setup do
-          params = { :barcodes => { "#{@plate1.id}" => "111", "#{@plate2.id}" => "222" } }
+          params = { barcodes: { "#{@plate1.id}" => "111", "#{@plate2.id}" => "222" } }
           @task.do_task(@workflow, params)
         end
 
@@ -47,12 +47,12 @@ class AttachInfiniumBarcodeTest < TaskTestBase
       end
       context "with plate that doesnt exist" do
         setup do
-          params = { :barcodes => { "99999" => "111" } }
+          params = { barcodes: { "99999" => "111" } }
           @returned_task_value = @task.do_task(@workflow, params)
         end
 
         should "return false" do
-          assert ! @returned_task_value
+          assert !@returned_task_value
         end
       end
     end

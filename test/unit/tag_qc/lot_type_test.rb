@@ -33,7 +33,7 @@ class LotTypeTest < ActiveSupport::TestCase
 
         setup do
           @lot_count = Lot.count
-          @lot = @lot_type.create!(:template => @template,:user => @user,:lot_number => '123456789',:received_at => '2014-02-01')
+          @lot = @lot_type.create!(template: @template, user: @user, lot_number: '123456789', received_at: '2014-02-01')
         end
 
         should "change Lot.count by 1" do

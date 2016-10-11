@@ -41,5 +41,5 @@ Then /^(?:|I )should see one link with text "([^"]*)"$/ do |regexp|
 end
 
 Then /^(?:|I )should see (\d+) links with text "([^"]*)"$/ do |count, regexp|
-  assert has_xpath?('//a', :count => count.to_i, :text => /^#{regexp}$/)
+  assert has_xpath?('//a', count: count.to_i, text: /^#{regexp}$/)
 end

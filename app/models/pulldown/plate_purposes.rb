@@ -91,26 +91,26 @@ module Pulldown::PlatePurposes
     ['Lib PCRR-XP',  'ISCH lib pool', 'TransferRequest::InitialTransfer']
   ]
 
-  STOCK_PLATE_PURPOSES = ['WGS stock DNA','SC stock DNA','ISC stock DNA']
+  STOCK_PLATE_PURPOSES = ['WGS stock DNA', 'SC stock DNA', 'ISC stock DNA']
 
   class << self
 
     def create_purposes(branch_o)
       branch = branch_o.clone
       initial = Purpose.find_by_name!(branch.shift)
-      branch.inject(initial) do |parent,new_purpose_name|
-        Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(:name => new_purpose_name).tap do |child_purpose|
-          parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => request_type_between(parent,child_purpose))
+      branch.inject(initial) do |parent, new_purpose_name|
+        Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(name: new_purpose_name).tap do |child_purpose|
+          parent.child_relationships.create!(child: child_purpose, transfer_request_type: request_type_between(parent, child_purpose))
         end
       end
     end
 
     def request_type_between(parent, child)
-      _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
+      _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a, b, _| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
       return RequestType.initial_transfer if request_class == :initial
       request_type_name = "Illumina A #{parent.name}-#{child.name}"
-      RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1)
+      RequestType.create!(name: request_type_name, key: request_type_name.gsub(/\W+/, '_'), request_class_name: request_class, asset_type: 'Well', order: 1)
     end
     private :request_type_between
 
@@ -119,6 +119,6 @@ module Pulldown::PlatePurposes
 end
 
 
-['initial_downstream_plate','initial_plate','library_plate','stock_plate'].each do |type|
+['initial_downstream_plate', 'initial_plate', 'library_plate', 'stock_plate'].each do |type|
   require_dependency "app/models/pulldown/#{type}_purpose"
 end

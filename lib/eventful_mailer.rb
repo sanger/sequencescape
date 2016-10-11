@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
@@ -8,10 +8,10 @@ class EventfulMailer < ActionMailer::Base
     @message = message
     @content = content
     mail(
-      :from       => "#{configatron.sequencescape_email}",
-      :subject    => "#{configatron.mail_prefix} #{eventful.class} #{eventful.id}: #{message}",
-      :bcc        => receiver,
-      :sent_on    => sent_at
+      from: "#{configatron.sequencescape_email}",
+      subject: "#{configatron.mail_prefix} #{eventful.class} #{eventful.id}: #{message}",
+      bcc: receiver,
+      sent_on: sent_at
     )
   end
 
@@ -20,10 +20,10 @@ class EventfulMailer < ActionMailer::Base
     @message = title
     @content = content
     mail(
-      :from     =>  "#{configatron.sequencescape_email}",
-      :subject  =>  "#{configatron.mail_prefix}  Study #{study.id}: #{title}",
-      :bcc      =>  receiver,
-      :sent_on  =>  sent_at
+      from: "#{configatron.sequencescape_email}",
+      subject: "#{configatron.mail_prefix}  Study #{study.id}: #{title}",
+      bcc: receiver,
+      sent_on: sent_at
     )
   end
 
@@ -32,10 +32,10 @@ class EventfulMailer < ActionMailer::Base
     @message = message
     @content = content
     mail(
-      :from    => "#{configatron.sequencescape_email}",
-      :subject => "#{configatron.mail_prefix} #{eventful.class} #{eventful.id}: #{message}",
-      :bcc     => receiver,
-      :sent_on => sent_at
+      from: "#{configatron.sequencescape_email}",
+      subject: "#{configatron.mail_prefix} #{eventful.class} #{eventful.id}: #{message}",
+      bcc: receiver,
+      sent_on: sent_at
     )
   end
 
@@ -44,20 +44,20 @@ class EventfulMailer < ActionMailer::Base
     @request = request
     @message = message
     mail(
-      :from    => "#{configatron.sequencescape_email}",
-      :subject => "#{configatron.mail_prefix} Request failure for item #{item.id}",
-      :bcc     => receiver,
-      :sent_on => sent_at
+      from: "#{configatron.sequencescape_email}",
+      subject: "#{configatron.mail_prefix} Request failure for item #{item.id}",
+      bcc: receiver,
+      sent_on: sent_at
     )
   end
 
   def fail_attempt(receiver, request, sent_at = Time.now)
     @request = request
     mail(
-      :from    => "#{configatron.sequencescape_email}",
-      :subject => "#{configatron.mail_prefix} Attempt fail for #{request.id}",
-      :bcc     => receiver,
-      :sent_on => sent_at
+      from: "#{configatron.sequencescape_email}",
+      subject: "#{configatron.mail_prefix} Attempt fail for #{request.id}",
+      bcc: receiver,
+      sent_on: sent_at
     )
   end
 
@@ -66,10 +66,10 @@ class EventfulMailer < ActionMailer::Base
     @message = message
     @content = content
     mail(
-      :from    => "#{configatron.sequencescape_email}",
-      :subject => "#{configatron.mail_prefix} #{eventful.class} #{eventful.id}: #{message}",
-      :bcc     => receiver,
-      :sent_on => sent_at
+      from: "#{configatron.sequencescape_email}",
+      subject: "#{configatron.mail_prefix} #{eventful.class} #{eventful.id}: #{message}",
+      bcc: receiver,
+      sent_on: sent_at
     )
   end
 end

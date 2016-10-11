@@ -5,14 +5,14 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^I have a tag instance called "([^\"]+)"$/ do |name|
-  FactoryGirl.create(:tag_instance, :name => name)
+  FactoryGirl.create(:tag_instance, name: name)
 end
 
 Given /^I have a hybridization spiked buffer called "([^\"]+)"$/ do |name|
-  FactoryGirl.create(:spiked_buffer, :name => name)
+  FactoryGirl.create(:spiked_buffer, name: name)
 end
 Given /^I have a tag called "([^\"]+)"$/ do |name|
-  FactoryGirl.create(:tag, :map_id => name)
+  FactoryGirl.create(:tag, map_id: name)
 end
 
 Then /^the "([^\"]+)" of the asset "([^\"]+)" should be "([^\"]+)"$/ do |field, id, value|
@@ -31,7 +31,7 @@ Then /^(.+) asset (?:called|named) "([^\"]+)"(.*)$/ do |pre, name, post|
   step %Q{#{pre} asset "#{asset.id}"#{post}}
 end
 
-Given /^(.+) the (\w+) asset of the asset "([^\"]+)"(.*)$/ do |pre,relation, id, post|
+Given /^(.+) the (\w+) asset of the asset "([^\"]+)"(.*)$/ do |pre, relation, id, post|
   asset = Asset.find(id)
   related = asset.send(relation)
 

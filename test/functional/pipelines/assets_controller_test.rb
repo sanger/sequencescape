@@ -16,7 +16,7 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
     end
 
 
-    should route(:get, '/pipelines/assets/new/1').to(:action => 'new', :id => '1')
+    should route(:get, '/pipelines/assets/new/1').to(action: 'new', id: '1')
     should_require_login(:new)
 
     context 'GET "new"' do
@@ -24,7 +24,7 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
         session[:user] = create(:user)
 
         @family = create(:family)
-        get :new, :id => 123, :family => @family.id
+        get :new, id: 123, family: @family.id
       end
 
       should_not render_with_layout

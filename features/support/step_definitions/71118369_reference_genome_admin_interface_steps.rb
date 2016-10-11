@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^study named "([^"]*)" with reference genome id (\d+)$/ do |name_study, reference_id|
-  FactoryGirl.create(:study, :name => name_study, :reference_genome_id => reference_id)
+  FactoryGirl.create(:study, name: name_study, reference_genome_id: reference_id)
 end
 
 When /^I (POST|PUT) following XML to see the reference genome on the study called "([^"]*)"$/ do |action, xml, name_study|
@@ -18,9 +18,9 @@ When /^I (POST|PUT) following XML to see the empty reference genome on the study
  step %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
 end
 
-#When /^I request XML for the study named (.+)$/ do |page_name|
+# When /^I request XML for the study named (.+)$/ do |page_name|
 #  page.driver.get(path_to(page_name), nil, 'HTTP_ACCEPT' => 'application/xml')
-#end
+# end
 
 Then /^including "([^\"]+)" the XML response should be:$/ do |key_regexp, serialized_xml|
   expected = sort_arrays(remove_fields_from(Hash.from_xml(serialized_xml), /^#{key_regexp}$/))

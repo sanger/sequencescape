@@ -87,12 +87,12 @@ end
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
   step("I have a released cherrypicking batch with 1 samples")
   plate = Plate.last
-  plate.wells.each { |well| well.well_attribute.update_attributes!(:buffer_volume => nil) }
+  plate.wells.each { |well| well.well_attribute.update_attributes!(buffer_volume: nil) }
 end
 
 Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode|
   user = User.find_by_login(login)
-  user.update_attributes!(:barcode => user_barcode)
+  user.update_attributes!(barcode: user_barcode)
 end
 
 Transform /^the last batch$/ do |_|
@@ -107,7 +107,7 @@ Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do
   generated_lines.shift(2)
   assert_not_nil generated_lines
   tecan_file_lines = tecan_file.split(/\n/)
-  generated_lines.each_with_index do |line,index|
+  generated_lines.each_with_index do |line, index|
     assert_equal tecan_file_lines[index], line
   end
 end

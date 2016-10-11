@@ -15,7 +15,7 @@ module SampleManifestExcel
     # Each key is the range name and each value is a
     # has of range options.
     # The row that the range appears on is defined by the index of the range.
-    def initialize(ranges_data={})
+    def initialize(ranges_data = {})
       @ranges = create(ranges_data)
     end
 

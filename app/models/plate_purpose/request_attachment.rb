@@ -35,14 +35,14 @@ module PlatePurpose::RequestAttachment
         # the target_asset if it is defined.
         if connect_downstream
           downstream = upstream.submission.next_requests(upstream)
-          downstream.each { |ds| ds.update_attributes!(:asset => target_well) }
+          downstream.each { |ds| ds.update_attributes!(asset: target_well) }
         end
 
         # In some cases, such as the Illumina-C pipelines, requests might be
         # connected upfront. We don't want to touch these.
         next unless upstream.target_asset.nil?
 
-        upstream.update_attributes!(:target_asset => target_well)
+        upstream.update_attributes!(target_asset: target_well)
         upstream.pass!
 
       end

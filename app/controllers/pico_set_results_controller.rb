@@ -29,12 +29,12 @@ class PicoSetResultsController < ApplicationController
         # create method call using pico_assay_plate[:state] and use send for 2 method calls
         if pico_assay_plate.upload_pico_results(pico_set_result[:state], pico_set_result[:failure_reason], pico_set_result[:wells])
           message[:notice] = 'Updated concentrations'
-          format.xml  { render :xml  => message.to_xml, :status => :ok }
-          format.json { render :json => message.to_json, :status => :ok }
+          format.xml  { render xml: message.to_xml, status: :ok }
+          format.json { render json: message.to_json, status: :ok }
         else
           message[:error] = "Couldn't upload results"
-          format.xml  { render :xml  => message.to_xml, :status => :unprocessable_entity }
-          format.json { render :json => message.to_json, :status => :unprocessable_entity }
+          format.xml  { render xml: message.to_xml, status: :unprocessable_entity }
+          format.json { render json: message.to_json, status: :unprocessable_entity }
         end
       end
     end

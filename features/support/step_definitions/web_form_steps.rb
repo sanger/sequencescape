@@ -8,19 +8,19 @@
 # TODO: Remove these from the features and replace them with the new versions
 ########################################################################################
 Then /^the field labeled "([^"]+)" should contain "([^"]*)"$/ do |label, value|
-  step %Q{the "#{ label }" field should contain "#{ value }"}
+  step %Q{the "#{label}" field should contain "#{value}"}
 end
 
 When /^I fill in the field labeled "([^"]+)" with "([^"]*)"$/ do |label, value|
-  step(%Q{I fill in "#{ label }" with "#{ value }"})
+  step(%Q{I fill in "#{label}" with "#{value}"})
 end
 
 Then /^the checkbox labeled "([^"]+)" should not be checked$/ do |label|
-  step %Q{the "#{ label }" checkbox should not be checked}
+  step %Q{the "#{label}" checkbox should not be checked}
 end
 
 Then /^the checkbox labeled "([^"]+)" should be checked$/ do |label|
-  step %Q{the "#{ label }" checkbox should be checked}
+  step %Q{the "#{label}" checkbox should be checked}
 end
 
 Then /^the field labeled "([^\"]*)" should be disabled$/ do |label|
@@ -41,34 +41,34 @@ end
 
 Then /^the field "([^\"]*)" should be empty$/ do |field|
   field_value = field_labeled(field).attribute('value')
-  assert(field_value.blank?, "Field #{ field.inspect } is not blank")
+  assert(field_value.blank?, "Field #{field.inspect} is not blank")
 end
 
 ########################################################################################
 # Keep these!
 ########################################################################################
-Then /^I should see the following (required )?fields:$/ do |required,table|
+Then /^I should see the following (required )?fields:$/ do |required, table|
   table.hashes.each do |field|
     if field['type'].include?('/')
-      step %Q{I should see the #{ required }select field "#{ field['field'] }" with options "#{ field['type'] }"}
+      step %Q{I should see the #{required}select field "#{field['field']}" with options "#{field['type']}"}
     else
-      step %Q{I should see the #{ required }#{ field['type'] } field "#{ field['field'] }"}
+      step %Q{I should see the #{required}#{field['type']} field "#{field['field']}"}
     end
   end
 end
 
 def assert_label_exists(label_text, required = false)
   selector = 'label' << (required ? '.required' : ':not(.required)')
-  assert(page.has_css?(selector,:visible => :all,:text => label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
+  assert(page.has_css?(selector, visible: :all, text: label_text), "The #{label_text.inspect} should #{required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
 end
 
 def locate_labeled_field_type(label_text, field_type)
-  field = page.find_field(label_text) or raise Capybara::ElementNotFound, "Could not find #{ label_text.inspect }"
+  field = page.find_field(label_text) or raise Capybara::ElementNotFound, "Could not find #{label_text.inspect}"
   case field_type
   when 'text'     then field['type']  == 'text'     or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a text field"
   when 'select'   then field.tag_name == 'select'   or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a select field"
   when 'textarea' then field.tag_name == 'textarea' or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a textarea field"
-  else raise StandardError, "Unrecognised field type '#{ field_type }'"
+  else raise StandardError, "Unrecognised field type '#{field_type}'"
   end
   return field
 end
@@ -81,7 +81,7 @@ end
 Then /^I should not see the (text|select|textarea) field "([^\"]+)"$/ do |type, field|
   begin
     locate_labeled_field_type(field, type)
-    assert(false, "The field #{ field.inspect } exists!")
+    assert(false, "The field #{field.inspect} exists!")
   rescue Capybara::ElementNotFound => exception
     # This is fine!
   end
@@ -113,17 +113,17 @@ Then /^I should see the (required )?select field "([^\"]+)" without the option "
 end
 
 Then /^the select field "([^\"]+)" should have the option "([^\"]+)"$/ do |field, option|
-  element = page.find_field(field, :visible => :all,:disabled => true)
+  element = page.find_field(field, visible: :all, disabled: true)
   element.all("option").detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
 Then /^the select field "([^\"]+)" should not have the option "([^\"]+)"$/ do |field, option|
-  element = page.find_field(field, :visible => :all,:disabled => true)
+  element = page.find_field(field, visible: :all, disabled: true)
   element.all("option").none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
 end
 
 Then /^the "([^\"]+)" field should be marked in error$/ do |field|
-  element = page.find_field(field) or raise Capybara::ElementNotFound, "Field #{ field.inspect } not found"
+  element = page.find_field(field) or raise Capybara::ElementNotFound, "Field #{field.inspect} not found"
   find(".field_with_errors ##{element['id']}")
 end
 
@@ -140,7 +140,7 @@ When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
   begin
     find_field(field).send_keys(value)
   rescue NotImplementedError
-    fill_in(field, :with => value)
+    fill_in(field, with: value)
   end
 end
 
@@ -149,17 +149,17 @@ When /^I press enter on "([^\"]*)"$/ do |field|
 end
 
 When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
-  find(:xpath,"//input[@id='#{field}']").set(value)
+  find(:xpath, "//input[@id='#{field}']").set(value)
 end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
   selected = find_field(name).find('option[selected]').text
-  assert_equal( value, selected, "Field #{name.inspect} does not have the correct value selected")
+  assert_equal(value, selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^"([^\"]+)" should be selected from a disabled "([^\"]+)"$/ do |value, name|
-  selected = find_field(name,disabled:true).find('option[selected]').text
-  assert_equal( value, selected, "Field #{name.inspect} does not have the correct value selected")
+  selected = find_field(name, disabled: true).find('option[selected]').text
+  assert_equal(value, selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|

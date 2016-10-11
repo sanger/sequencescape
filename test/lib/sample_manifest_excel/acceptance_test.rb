@@ -7,7 +7,7 @@ class AcceptanceTest < ActiveSupport::TestCase
   def setup
 
     SampleManifestExcel.configure do |config|
-      config.folder = File.join("test","data", "sample_manifest_excel", "extract")
+      config.folder = File.join("test", "data", "sample_manifest_excel", "extract")
       config.load!
     end
 

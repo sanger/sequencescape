@@ -26,14 +26,14 @@ class FluidigmFile
 
     class Irods
       def initialize(barcode)
-        @data = IrodsReader::DataObj.find('seq','dcterms:audience' => configatron.irods_audience, :fluidigm_plate => barcode)
+        @data = IrodsReader::DataObj.find('seq', 'dcterms:audience' => configatron.irods_audience, :fluidigm_plate => barcode)
       end
 
       def empty?
         @data.empty?
       end
 
-      def content(index=nil)
+      def content(index = nil)
         raise StandardError, "Multiple files found" if data.size > 1 && index.nil?
         @data[index || 0].retrive
       end
@@ -58,10 +58,10 @@ class FluidigmFile
 
     attr_reader :name, :result
 
-    @@valid_markers = ['XX','XY','YY']
+    @@valid_markers = ['XX', 'XY', 'YY']
     @@gender_map    = { 'XX' => 'F', 'YY' => 'F', 'XY' => 'M' }
 
-    def initialize(name,result)
+    def initialize(name, result)
       @name   = name
       @result = result
     end
@@ -91,8 +91,8 @@ class FluidigmFile
       marker_array.select { |m| m.gender_marker? }.map(&:gender)
     end
 
-    def add_assay(assay,marker)
-      marker_array << Assay.new(assay,marker)
+    def add_assay(assay, marker)
+      marker_array << Assay.new(assay, marker)
     end
 
     def count
@@ -114,7 +114,7 @@ class FluidigmFile
   end
 
   def each_well
-    @wells.each { |_,w| yield(w) }
+    @wells.each { |_, w| yield(w) }
   end
 
   def for_plate?(test_plate)
@@ -126,7 +126,7 @@ class FluidigmFile
   end
 
   def well_at(description)
-    @wells ||= Hash.new { |hash,desc| hash[desc] = FluidigmWell.new(desc) }
+    @wells ||= Hash.new { |hash, desc| hash[desc] = FluidigmWell.new(desc) }
     @wells[description]
   end
 
@@ -136,7 +136,7 @@ class FluidigmFile
 
   private
   def header_start_index
-    @header_start_index ||= (0..@csv.size).detect { |i| @csv[i][0] == 'Experiment Information' } || raise(InvalidFile,'Could not find header')
+    @header_start_index ||= (0..@csv.size).detect { |i| @csv[i][0] == 'Experiment Information' } || raise(InvalidFile, 'Could not find header')
   end
 
   def data_start_index
@@ -156,7 +156,7 @@ class FluidigmFile
       row = @csv[row_index]
       next if row[column('Experiment Information Sample Name')] == 'Water'
       well = well_at(row[column('Experiment Information Chamber ID')].split('-').first)
-      well.add_assay(row[column('Experiment Information SNP Assay and Allele Names Assay')],row[column('Results Call Information Final')])
+      well.add_assay(row[column('Experiment Information SNP Assay and Allele Names Assay')], row[column('Results Call Information Final')])
     end
   end
 

@@ -14,8 +14,8 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     end
 
     def endpoint_details(object, &block)
-      object = @throughs.inject(object) { |t,s| t.send(s) }.send(@name) || return
-      block.call(@options[:json].to_s, endpoint_for_object(object), object)
+      object = @throughs.inject(object) { |t, s| t.send(s) }.send(@name) || return
+      yield(@options[:json].to_s, endpoint_for_object(object), object)
     end
     private :endpoint_details
 
@@ -28,7 +28,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
         @endpoint_helper = endpoint_helper
       end
 
-      delegate :endpoint_details, :to => :@endpoint
+      delegate :endpoint_details, to: :@endpoint
 
       def merge(node)
         super(node) { |children| self.class.new(@endpoint_helper, children) }

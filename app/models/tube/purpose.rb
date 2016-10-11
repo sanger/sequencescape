@@ -1,7 +1,7 @@
 # Base class for the all tube purposes
 class Tube::Purpose < ::Purpose
   # TODO: change to purpose_id
-  has_many :tubes, :foreign_key => :plate_purpose_id
+  has_many :tubes, foreign_key: :plate_purpose_id
 
 
   # Tubes of the general types have no stock plate!

@@ -20,7 +20,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
 
     should 'allow for array generation' do
       @stream.open do |stream|
-        stream.array('key', [1,2,3]) do |stream, object|
+        stream.array('key', [1, 2, 3]) do |stream, object|
           stream.encode(object)
         end
       end
@@ -117,7 +117,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
       end
 
       should 'array' do
-        @value = ['a','b']
+        @value = ['a', 'b']
         @expected = '["a","b"]'
       end
 

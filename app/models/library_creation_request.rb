@@ -13,10 +13,10 @@ class LibraryCreationRequest < CustomerRequest
   # 3. class RequestOptionsValidator
   #
   # These are dependent upon each other
-  has_metadata :as => Request do
+  has_metadata as: Request do
     # /!\ We don't check the read_length, because we don't know the restriction, that depends on the SequencingRequest
-    attribute(:read_length, :integer => true) # meaning , so not required but some people want to set it
-    attribute(:gigabases_expected, :positive_float => true)
+    attribute(:read_length, integer: true) # meaning , so not required but some people want to set it
+    attribute(:gigabases_expected, positive_float: true)
   end
 
   include Request::CustomerResponsibility

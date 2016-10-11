@@ -24,9 +24,9 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
     context "management UI" do
       setup do
-        @user     = create :admin, :email => "project.owner@example.com"
-        @project  = create :project, :approved => false
-        role = FactoryGirl.create :owner_role, :authorizable => @project
+        @user     = create :admin, email: "project.owner@example.com"
+        @project  = create :project, approved: false
+        role = FactoryGirl.create :owner_role, authorizable: @project
         role.users << @user
         @request_type = FactoryGirl.create :request_type
         @other_request_type = FactoryGirl.create :request_type
@@ -37,7 +37,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
       context "#managed_update (without changes)" do
         setup do
-          put :managed_update, :id => @project.id, :project => { :name => @project.name }
+          put :managed_update, id: @project.id, project: { name: @project.name }
         end
 
         should "not send an email" do
@@ -51,7 +51,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
       context "#managed_update (with getting approved)" do
         setup do
           @event_count = Event.count
-          put :managed_update, :id => @project.id, :project => { :approved => true, :name => @project.name }
+          put :managed_update, id: @project.id, project: { approved: true, name: @project.name }
         end
 
         should redirect_to("admin project") { "/admin/projects/#{@project.id}" }

@@ -23,8 +23,8 @@ study_types = [
 ]
 
 study_types.each do |type|
-  StudyType.create(:name => type[0], :valid_type => type[1], :valid_for_creation => type[2])
+  StudyType.create(name: type[0], valid_type: type[1], valid_for_creation: type[2])
 end
 
 # Other study related configuration
-Program.create!(:name => 'General').save
+Program.create!(name: 'General').save

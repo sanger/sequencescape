@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class ExternalProperty < ActiveRecord::Base
-  belongs_to :propertied, :polymorphic => true
+  belongs_to :propertied, polymorphic: true
 end

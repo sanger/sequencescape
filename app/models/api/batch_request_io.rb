@@ -16,7 +16,7 @@ class Api::BatchRequestIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { :request => [:uuid_object, :request_type, { :asset => :uuid_object }, { :target_asset => :uuid_object }] }, { :batch => :uuid_object }] ) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { request: [:uuid_object, :request_type, { asset: :uuid_object }, { target_asset: :uuid_object }] }, { batch: :uuid_object }]) }
       end
     end
   end

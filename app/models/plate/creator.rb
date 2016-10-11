@@ -13,24 +13,24 @@ class Plate::Creator < ActiveRecord::Base
     self.table_name = ('plate_creator_purposes')
 
     belongs_to :plate_purpose
-    belongs_to :plate_creator, :class_name => 'Plate::Creator'
+    belongs_to :plate_creator, class_name: 'Plate::Creator'
 
   end
 
   class ParentPurposeRelationship < ActiveRecord::Base
     self.table_name = ('plate_creator_parent_purposes')
 
-    belongs_to :plate_purpose, :class_name => 'Purpose'
+    belongs_to :plate_purpose, class_name: 'Purpose'
   end
 
   self.table_name = 'plate_creators'
 
   # These are the plate purposes that will be created when this creator is used.
-  has_many :plate_creator_purposes, :class_name => 'Plate::Creator::PurposeRelationship', :dependent => :destroy, :foreign_key => :plate_creator_id
-  has_many :plate_purposes, :through => :plate_creator_purposes
+  has_many :plate_creator_purposes, class_name: 'Plate::Creator::PurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
+  has_many :plate_purposes, through: :plate_creator_purposes
 
-  has_many :parent_purpose_relationships, :class_name => 'Plate::Creator::ParentPurposeRelationship',:dependent => :destroy, :foreign_key => :plate_creator_id
-  has_many :parent_plate_purposes, :through => :parent_purpose_relationships, :source => :plate_purpose
+  has_many :parent_purpose_relationships, class_name: 'Plate::Creator::ParentPurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
+  has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
   # If there are no barcodes supplied then we use the plate purpose we represent
   belongs_to :plate_purpose
@@ -42,7 +42,7 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters=nil)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters = nil)
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
@@ -64,7 +64,7 @@ class Plate::Creator < ActiveRecord::Base
     return [plate]
   end
 
-  def create_plates(source_plate_barcodes, current_user, creator_parameters=nil)
+  def create_plates(source_plate_barcodes, current_user, creator_parameters = nil)
     return create_plate_without_parent(creator_parameters) if source_plate_barcodes.blank?
 
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)
@@ -75,7 +75,7 @@ class Plate::Creator < ActiveRecord::Base
     # Because then you get multiple matches.  So we take the first match, which is just not right.
     scanned_barcodes.map do |scanned|
       plate =
-        Plate.with_machine_barcode(scanned).includes(:location, { :wells => :aliquots }).first or
+        Plate.with_machine_barcode(scanned).includes(:location, { wells: :aliquots }).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
       unless can_create_plates?(plate, plate_purposes)
         raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]"
@@ -85,7 +85,7 @@ class Plate::Creator < ActiveRecord::Base
   end
   private :create_plates
 
-  def create_child_plates_from(plate, current_user,creator_parameters)
+  def create_child_plates_from(plate, current_user, creator_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|

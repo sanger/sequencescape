@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Admin::RolesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   def index
@@ -14,7 +14,7 @@ class Admin::RolesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @roles }
+      format.xml  { render xml: @roles }
     end
   end
 
@@ -23,7 +23,7 @@ class Admin::RolesController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @role }
+      format.xml  { render xml: @role }
     end
   end
 
@@ -32,7 +32,7 @@ class Admin::RolesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @role }
+      format.xml  { render xml: @role }
     end
   end
 
@@ -43,10 +43,10 @@ class Admin::RolesController < ApplicationController
       if @role.save
         flash[:notice] = 'Role was successfully created.'
         format.html { redirect_to(@role) }
-        format.xml  { render :xml => @role, :status => :created, :location => @role }
+        format.xml  { render xml: @role, status: :created, location: @role }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @role.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @role.errors, status: :unprocessable_entity }
       end
     end
   end

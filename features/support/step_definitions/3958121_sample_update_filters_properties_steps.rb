@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^the workflow named "([^\"]+)" exists$/ do |name|
-  FactoryGirl.create(:submission_workflow, :name => name) or raise StandardError, "Cannot create workflow '#{ name }'"
+  FactoryGirl.create(:submission_workflow, name: name) or raise StandardError, "Cannot create workflow '#{name}'"
 end
 
 Given /^I am the owner of sample "([^\"]+)"$/ do |name|
@@ -19,7 +19,7 @@ Given /^I have no associated workflow$/ do
 end
 
 Given /^I have an associated workflow "([^\"]+)"$/ do |name|
-  workflow = Submission::Workflow.find_by!(name: name) or raise StandardError, "Workflow '#{ name }' does not exist"
+  workflow = Submission::Workflow.find_by!(name: name) or raise StandardError, "Workflow '#{name}' does not exist"
   @current_user.update_attribute(:workflow_id, workflow.id)
   @current_user.reload
 end
@@ -27,24 +27,24 @@ end
 Given /^the field labeled "([^\"]+)" should not exist$/ do |field_name|
   # begin
 
-    assert_nil field_labeled(field_name), "Field labeled '#{ field_name }' found!"
+    assert_nil field_labeled(field_name), "Field labeled '#{field_name}' found!"
   # rescue Webrat::NotFoundError => exception
     # Cool, let this pass
   # end
 end
 
 Given /^I am an administrator$/ do
-  @current_user.roles.create!(:name => 'administrator')
+  @current_user.roles.create!(name: 'administrator')
   @current_user.reload
 end
 
 # TODO[xxx]: table cells don't appear to play nicely!
-Then /^I should see "([^\"]+)" set to "([^\"]+)"$/ do |property_name,value|
-  step %Q{I should see "#{ property_name }"}
-  step %Q{I should see "#{ value }"}
+Then /^I should see "([^\"]+)" set to "([^\"]+)"$/ do |property_name, value|
+  step %Q{I should see "#{property_name}"}
+  step %Q{I should see "#{value}"}
 end
 
-Then /^I should not see "([^\"]+)" set to "([^\"]+)"$/ do |property_name,value|
-  step %Q{I should not see "#{ property_name }"}
-  step %Q{I should not see "#{ value }"}
+Then /^I should not see "([^\"]+)" set to "([^\"]+)"$/ do |property_name, value|
+  step %Q{I should not see "#{property_name}"}
+  step %Q{I should not see "#{value}"}
 end

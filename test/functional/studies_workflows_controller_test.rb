@@ -17,7 +17,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
 
       @workflow = create :submission_workflow
-      @user     = create :user, :workflow_id => @workflow.id
+      @user     = create :user, workflow_id: @workflow.id
       session[:user] = @user.id
       @study = create :study
     end
@@ -27,7 +27,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
      context "#show" do
 
         setup do
-          get :show, :id => @workflow.id, :study_id => @study.id
+          get :show, id: @workflow.id, study_id: @study.id
         end
 
         should respond_with :success

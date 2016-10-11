@@ -39,7 +39,7 @@ class AccessionService
 
             Rails::logger.debug { file.each_line.to_a.join("\n") }
 
-            { :name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
+            { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
           end
          )
 
@@ -53,7 +53,7 @@ class AccessionService
         # therefore, we should be ready to get one or not
         number_generated = true
         if success == 'true'
-          #extract and update accession numbers
+          # extract and update accession numbers
           accession_number = submission.all_accessionables.each do |acc|
             accession_number = acc.extract_accession_number(xmldoc)
             if accession_number
@@ -72,7 +72,7 @@ class AccessionService
 
         elsif success == 'false'
           errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
-          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{ errors.map { |e| "\n  - #{e}" } }"
+          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
         else
           raise AccessionServiceError,  "Could not get accession number. Error in submitted data: #{$!}"
         end
@@ -88,7 +88,7 @@ class AccessionService
     raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
 
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
-    #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
+    # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
 
     submit(user,  Accessionable::Sample.new(sample))
   end
@@ -96,12 +96,12 @@ class AccessionService
   def submit_study_for_user(study, user)
     raise NumberNotRequired, 'An accession number is not required for this study' unless study.ena_accession_required?
 
-    #TODO check error
-    #raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
+    # TODO check error
+    # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
 
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
-    #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
+    # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
     return submit(user, Accessionable::Study.new(study))
   end
@@ -153,7 +153,7 @@ private
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.STUDY(:alias => studydata[:alias], :accession => study.study_metadata.study_ebi_accession_number) {
+      xml.STUDY(alias: studydata[:alias], accession: study.study_metadata.study_ebi_accession_number) {
         xml.DESCRIPTOR {
           xml.STUDY_TITLE         studydata[:study_title]
           xml.STUDY_DESCRIPTION   studydata[:description]
@@ -164,9 +164,9 @@ private
           xml.PROJECT_ID(studydata[:study_id] || "0")
           study_type = studydata[:existing_study_type]
           if StudyType.include?(study_type)
-            xml.STUDY_TYPE(:existing_study_type => study_type)
+            xml.STUDY_TYPE(existing_study_type: study_type)
           else
-            xml.STUDY_TYPE(:existing_study_type => Study::Other_type, :new_study_type => study_type)
+            xml.STUDY_TYPE(existing_study_type: Study::Other_type, new_study_type: study_type)
           end
         }
             }
@@ -178,7 +178,7 @@ private
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.SAMPLE(:alias => sampledata[:alias], :accession => sample.sample_metadata.sample_ebi_accession_number) {
+      xml.SAMPLE(alias: sampledata[:alias], accession: sample.sample_metadata.sample_ebi_accession_number) {
         xml.SAMPLE_NAME {
           xml.COMMON_NAME  sampledata[:sample_common_name]
           xml.TAXON_ID     sampledata[:taxon_id]
@@ -210,17 +210,17 @@ private
     ) {
       xml.CONTACTS {
         xml.CONTACT(
-          :inform_on_error  => submission[:contact_inform_on_error],
-          :inform_on_status => submission[:contact_inform_on_status],
-          :name             => submission[:name]
+          inform_on_error: submission[:contact_inform_on_error],
+          inform_on_status: submission[:contact_inform_on_status],
+          name: submission[:name]
         )
       }
       xml.ACTIONS {
         xml.ACTION {
           if accession_number.blank?
-            xml.ADD(:source => submission[:source], :schema => submission[:schema])
+            xml.ADD(source: submission[:source], schema: submission[:schema])
           else
-            xml.MODIFY(:source => submission[:source], :target => "")
+            xml.MODIFY(source: submission[:source], target: "")
           end
         }
         xml.ACTION {
@@ -236,7 +236,7 @@ private
   end
 
   require 'rexml/document'
-  #require 'curb'
+  # require 'curb'
   include REXML
 
   def accession_login
@@ -255,17 +255,17 @@ private
         # UA required to get through Sanger proxy
         # Although currently this UA is actually being set elsewhere in the
         # code as RestClient doesn't pass this header to the proxy.
-        rc.options[:headers] = { :user_agent => "Sequencescape Accession Client (#{Rails.env})" }
+        rc.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
       end
 
       payload = {}
       file_params.map { |p|
         payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap { |f| f.original_filename = p[:remote_name] }
         }
-      #rc.multipart_form_post = true # RC handles automatically
+      # rc.multipart_form_post = true # RC handles automatically
       response = rc.post(payload)
       case response.code
-      when (200...300) #success
+      when (200...300) # success
         return response.body.to_s
       when (400...600)
         Rails.logger.warn($!)

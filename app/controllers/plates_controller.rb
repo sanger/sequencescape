@@ -5,10 +5,10 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class PlatesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :login_required, :except => [:upload_pico_results, :fluidigm_file]
+  before_action :login_required, except: [:upload_pico_results, :fluidigm_file]
 
   def new
     @plate_creators   = Plate::Creator.order(:name)
@@ -17,8 +17,8 @@ class PlatesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml  => @plate }
-      format.json { render :json => @plate }
+      format.xml  { render xml: @plate }
+      format.json { render json: @plate }
     end
   end
 
@@ -59,7 +59,7 @@ class PlatesController < ApplicationController
   def to_sample_tubes
     @locations = Location.all
     @barcode_printers = BarcodePrinter.all
-    @studies = Study.all.sort { |a,b| a.name <=> b.name }
+    @studies = Study.alphabetical
   end
 
   def create_sample_tubes
@@ -74,14 +74,14 @@ class PlatesController < ApplicationController
         # makes request properties partial show
         @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
         @current_user.save!
-        format.html { redirect_to(new_submission_path(:study_id => asset_group.study.id)) }
-        format.xml  { render :xml  => asset_group, :status => :created }
-        format.json { render :json => asset_group, :status => :created }
+        format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }
+        format.xml  { render xml: asset_group, status: :created }
+        format.json { render json: asset_group, status: :created }
       else
         flash[:error] = 'Failed to create sample tubes'
         format.html { redirect_to(to_sample_tubes_plates_path) }
-        format.xml  { render :xml  => flash.to_xml,  :status => :unprocessable_entity }
-        format.json { render :json => flash.to_json, :status => :unprocessable_entity }
+        format.xml  { render xml: flash.to_xml,  status: :unprocessable_entity }
+        format.json { render json: flash.to_json, status: :unprocessable_entity }
       end
     end
   end
@@ -91,7 +91,7 @@ class PlatesController < ApplicationController
       @plate = Plate.find(params[:id])
       @parents = @plate.parents
       respond_to do |format|
-        format.csv { render :csv => @plate, :content_type => "text/csv" }
+        format.csv { render csv: @plate, content_type: "text/csv" }
       end
     end
   end

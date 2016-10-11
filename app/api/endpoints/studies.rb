@@ -10,11 +10,11 @@ class Endpoints::Studies < Core::Endpoint::Base
   end
 
   instance do
-    has_many(:samples,      :json => 'samples',      :to => 'samples')
-    has_many(:projects,     :json => 'projects',     :to => 'projects')
-    has_many(:asset_groups, :json => 'asset_groups', :to => 'asset_groups')
+    has_many(:samples,      json: 'samples',      to: 'samples')
+    has_many(:projects,     json: 'projects',     to: 'projects')
+    has_many(:asset_groups, json: 'asset_groups', to: 'asset_groups')
 
-    has_many(:sample_manifests, :json => 'sample_manifests', :to => 'sample_manifests') do
+    has_many(:sample_manifests, json: 'sample_manifests', to: 'sample_manifests') do
       def self.constructor(name, method)
         line = __LINE__ + 1
         instance_eval("

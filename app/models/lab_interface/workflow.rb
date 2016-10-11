@@ -6,11 +6,11 @@
 
 class LabInterface::Workflow < ActiveRecord::Base
 
-  has_many :tasks, ->() { order('sorted') }, :dependent => :destroy, :foreign_key => :pipeline_workflow_id
+  has_many :tasks, ->() { order('sorted') }, dependent: :destroy, foreign_key: :pipeline_workflow_id
   has_many :families
 
   belongs_to :pipeline, inverse_of: :workflow
-  validates_uniqueness_of :pipeline_id, :message => 'only one workflow per pipeline!'
+  validates_uniqueness_of :pipeline_id, message: 'only one workflow per pipeline!'
 
   validates_uniqueness_of :name
 
@@ -40,7 +40,7 @@ class LabInterface::Workflow < ActiveRecord::Base
     collection
   end
 
-  def deep_copy(suffix="_dup", skip_pipeline=false)
+  def deep_copy(suffix = "_dup", skip_pipeline = false)
     self.dup.tap do |new_workflow|
       ActiveRecord::Base.transaction do
         new_workflow.name = new_workflow.name + suffix
@@ -54,7 +54,7 @@ class LabInterface::Workflow < ActiveRecord::Base
         new_workflow.pipeline = nil
         new_workflow.save!
 
-        #copy of the pipeline
+        # copy of the pipeline
         unless skip_pipeline
           new_workflow.pipeline = pipeline.dup
           new_workflow.pipeline.request_types = self.pipeline.request_types

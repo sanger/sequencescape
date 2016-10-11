@@ -29,7 +29,7 @@ class Accessionable::Base
   end
 
   def schema_type
-    #raise NotImplementedError, "abstract method"
+    # raise NotImplementedError, "abstract method"
     self.class.name.split("::").last.downcase
   end
 
@@ -69,10 +69,10 @@ class Accessionable::Base
 
   def add_updated_event(user, classname,  eventable)
         eventable.events.create(
-          :created_by => user.login,
-          :message => "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
-          :content => "accession number regenerated",
-          :of_interest_to => "administrators"
+          created_by: user.login,
+          message: "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
+          content: "accession number regenerated",
+          of_interest_to: "administrators"
         )
   end
   def label_scope
@@ -88,7 +88,7 @@ class Accessionable::Base
     end
 
     def label
-      I18n.t("#{@scope}.#{ @name }.label").gsub(' ','_').downcase
+      I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').downcase
     end
 
     def build(xml)

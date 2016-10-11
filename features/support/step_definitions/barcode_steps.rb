@@ -32,7 +32,7 @@ end
 
 Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
   printer_type = BarcodePrinterType.find_by_name(type_name) or raise StandardError, "Cannot find barcode printer type #{type_name.inspect}"
-  BarcodePrinter.create!(:name => name, :barcode_printer_type => printer_type, :active => true)
+  BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
 end
 
 Transform /^the last plate$/ do |_|
@@ -52,18 +52,18 @@ Transform /^the plate with ID (\d+)$/ do |id|
 end
 
 Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
-  asset.update_attributes!(:barcode => Barcode.number_to_human(barcode.to_i))
+  asset.update_attributes!(barcode: Barcode.number_to_human(barcode.to_i))
 end
 
 Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
   tube = SampleTube.last or raise StandardError, "There appear to be no sample tubes"
-  tube.update_attributes!(:barcode => barcode)
+  tube.update_attributes!(barcode: barcode)
 end
 
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   SampleTube.order(:id).each do |asset|
-    asset.update_attributes!(:barcode => counter)
+    asset.update_attributes!(barcode: counter)
     counter += 1
   end
 end
@@ -71,7 +71,7 @@ end
 Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   LibraryTube.order(:id).each do |asset|
-    asset.update_attributes!(:barcode => counter)
+    asset.update_attributes!(barcode: counter)
     counter += 1
   end
 end

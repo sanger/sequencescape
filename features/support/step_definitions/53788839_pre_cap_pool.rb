@@ -9,16 +9,16 @@ Then /^there should be (\d+) pre capture pools$/ do |pools|
 end
 
 Then /^the wells should be pooled in column order for 53788839$/ do
-  pooled('12345','A1',[])
-  pooled('12345','B1',[])
-  pooled('12345','C1',['D1'])
-  pooled('12345','E1',['F1'])
-  pooled('12345','G1',[])
-  pooled('12345','H1',['A2'])
-  pooled('12345','B2',[])
+  pooled('12345', 'A1', [])
+  pooled('12345', 'B1', [])
+  pooled('12345', 'C1', ['D1'])
+  pooled('12345', 'E1', ['F1'])
+  pooled('12345', 'G1', [])
+  pooled('12345', 'H1', ['A2'])
+  pooled('12345', 'B2', [])
 end
 
-def pooled(plate,well,wells)
+def pooled(plate, well, wells)
   initial_request = Plate.find_by_barcode(plate).wells.located_at(well).first.requests.first
   group = Submission.last.next_requests(initial_request).first.pre_capture_pool
   wells.each do |w|

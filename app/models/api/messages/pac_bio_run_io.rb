@@ -9,29 +9,29 @@ class Api::Messages::PacBioRunIO < Api::Base
 
   renders_model(::Batch)
 
-  map_attribute_to_json_attribute(:id,'pac_bio_run_id')
-  map_attribute_to_json_attribute(:uuid,'pac_bio_run_uuid')
+  map_attribute_to_json_attribute(:id, 'pac_bio_run_id')
+  map_attribute_to_json_attribute(:uuid, 'pac_bio_run_uuid')
 
   map_attribute_to_json_attribute(:updated_at)
 
   with_association(:first_output_plate) do
-    map_attribute_to_json_attribute(:sanger_human_barcode,'plate_barcode')
-    map_attribute_to_json_attribute(:uuid,'plate_uuid_lims')
+    map_attribute_to_json_attribute(:sanger_human_barcode, 'plate_barcode')
+    map_attribute_to_json_attribute(:uuid, 'plate_uuid_lims')
 
     with_nested_has_many_association(:wells) do
 
-      map_attribute_to_json_attribute(:map_description,'well_label')
-      map_attribute_to_json_attribute(:uuid,'well_uuid_lims')
+      map_attribute_to_json_attribute(:map_description, 'well_label')
+      map_attribute_to_json_attribute(:uuid, 'well_uuid_lims')
 
 
-      with_nested_has_many_association(:requests_as_target, :as => 'samples') do
+      with_nested_has_many_association(:requests_as_target, as: 'samples') do
 
         with_association(:initial_project) do
           map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
         end
 
         with_association(:initial_study) do
-          map_attribute_to_json_attribute(:uuid,'study_uuid')
+          map_attribute_to_json_attribute(:uuid, 'study_uuid')
         end
 
         with_association(:asset) do

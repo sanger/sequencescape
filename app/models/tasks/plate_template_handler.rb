@@ -9,11 +9,11 @@ module Tasks::PlateTemplateHandler
     @robots = Robot.all
     set_plate_purpose_options(task)
     suitable_sizes = @plate_purpose_options.map { |o| o[1] }.uniq
-    if (@batch.pipeline.control_request_type.nil?)
-      @plate_templates = PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
-    else
-      @plate_templates = PlateTemplate.with_sizes(suitable_sizes)
-    end
+    @plate_templates = if (@batch.pipeline.control_request_type.nil?)
+      PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
+                       else
+      PlateTemplate.with_sizes(suitable_sizes)
+                       end
   end
 
   def set_plate_purpose_options(task)
@@ -23,23 +23,23 @@ module Tasks::PlateTemplateHandler
   def do_plate_template_task(task, params)
     return true if params[:file].blank?
 
-    if params[:plate_template].blank?
-      plate_size = PlatePurpose.find(params[:plate_purpose_id]).size
-    else
-      plate_size = PlateTemplate.find(params[:plate_template]["0"].to_i).size
-    end
+    plate_size = if params[:plate_template].blank?
+      PlatePurpose.find(params[:plate_purpose_id]).size
+                 else
+      PlateTemplate.find(params[:plate_template]["0"].to_i).size
+                 end
 
-    parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read,plate_size)
-    @spreadsheet_layout = map_parsed_spreadsheet_to_plate(parsed_plate_details,@batch,plate_size)
+    parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read, plate_size)
+    @spreadsheet_layout = map_parsed_spreadsheet_to_plate(parsed_plate_details, @batch, plate_size)
 
     true
   end
 
-  def parse_uploaded_spreadsheet_layout(layout_data,plate_size)
-    (Hash.new { |h,k| h[k] = {} }).tap do |parsed_plates|
-      CSV.parse(layout_data, :headers => :first_row) do |row|
-        parse_spreadsheet_row(plate_size, row["Request ID"],row["Sample Name"],row["Plate"],row["Destination Well"]) do |plate_key, request_id, location|
-          parsed_plates[plate_key][location.column_order] = [location,request_id]
+  def parse_uploaded_spreadsheet_layout(layout_data, plate_size)
+    (Hash.new { |h, k| h[k] = {} }).tap do |parsed_plates|
+      CSV.parse(layout_data, headers: :first_row) do |row|
+        parse_spreadsheet_row(plate_size, row["Request ID"], row["Sample Name"], row["Plate"], row["Destination Well"]) do |plate_key, request_id, location|
+          parsed_plates[plate_key][location.column_order] = [location, request_id]
         end
       end
     end
@@ -56,7 +56,7 @@ module Tasks::PlateTemplateHandler
   end
   private :parse_spreadsheet_row
 
-  def map_parsed_spreadsheet_to_plate(mapped_plate_wells,batch,plate_size)
+  def map_parsed_spreadsheet_to_plate(mapped_plate_wells, batch, plate_size)
     plates = mapped_plate_wells.map do |plate_key, mapped_wells|
       (0...plate_size).map do |i|
         well, location, request_id = CherrypickTask::EMPTY_WELL, *mapped_wells[i]
@@ -73,9 +73,9 @@ module Tasks::PlateTemplateHandler
   private :map_parsed_spreadsheet_to_plate
 
   def self.generate_spreadsheet(batch)
-    CSV.generate(:row_sep => "\r\n") do |csv|
-      csv << ["Request ID","Sample Name","Plate","Destination Well"]
-      batch.requests.each { |r| csv << [r.id,r.asset.sample.name,"",""] }
+    CSV.generate(row_sep: "\r\n") do |csv|
+      csv << ["Request ID", "Sample Name", "Plate", "Destination Well"]
+      batch.requests.each { |r| csv << [r.id, r.asset.sample.name, "", ""] }
     end
   end
 end

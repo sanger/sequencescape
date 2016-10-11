@@ -26,8 +26,8 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should "cancel request" do
-         request = FactoryGirl.create :request, :user => @user, :request_type => FactoryGirl.create(:request_type), :study => FactoryGirl.create(:study, :name => "ReqCon2"), :workflow => FactoryGirl.create(:submission_workflow)
-         get :cancel, :id => request.id
+         request = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: "ReqCon2"), workflow: FactoryGirl.create(:submission_workflow)
+         get :cancel, id: request.id
 
          assert_equal flash[:notice], "Request #{request.id} has been cancelled"
          assert Request.find(request.id).cancelled?
@@ -35,8 +35,8 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should "cancel started request" do
-         request = FactoryGirl.create :request, :state => "started", :user => @user, :request_type => FactoryGirl.create(:request_type), :study => FactoryGirl.create(:study, :name => "ReqCon2"), :workflow => FactoryGirl.create(:submission_workflow)
-         get :cancel, :id => request.id
+         request = FactoryGirl.create :request, state: "started", user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: "ReqCon2"), workflow: FactoryGirl.create(:submission_workflow)
+         get :cancel, id: request.id
 
          assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
          assert_response :redirect
@@ -51,8 +51,8 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should "when quotas is copied and redirect" do
-        @request_initial = FactoryGirl.create :request, :user => @user, :request_type => FactoryGirl.create(:request_type), :study => FactoryGirl.create(:study, :name => "ReqCon2"), :workflow => FactoryGirl.create(:submission_workflow)
-         get :copy, :id => @request_initial.id
+        @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: "ReqCon2"), workflow: FactoryGirl.create(:submission_workflow)
+         get :copy, id: @request_initial.id
 
          @new_request = Request.last
          assert_equal flash[:notice], "Created request #{@new_request.id}"
@@ -60,8 +60,8 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should "set failed requests to pending" do
-        @request_initial = FactoryGirl.create :request, :user => @user, :request_type => FactoryGirl.create(:request_type), :study => FactoryGirl.create(:study, :name => "ReqCon2"), :workflow => FactoryGirl.create(:submission_workflow), :state => 'failed'
-         get :copy, :id => @request_initial.id
+        @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: "ReqCon2"), workflow: FactoryGirl.create(:submission_workflow), state: 'failed'
+         get :copy, id: @request_initial.id
 
          @new_request = Request.last
          assert_equal flash[:notice], "Created request #{@new_request.id}"
@@ -76,13 +76,13 @@ class RequestsControllerTest < ActionController::TestCase
         @prop_value_before = "999"
         @prop_value_after = 666
 
-        @our_request = FactoryGirl.create :request, :user => @user, :request_type => FactoryGirl.create(:request_type), :study => FactoryGirl.create(:study, :name => "ReqCon"), :workflow => FactoryGirl.create(:submission_workflow)
-        @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'pending', :request_type_id => @our_request.request_type_id }
+        @our_request = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: "ReqCon"), workflow: FactoryGirl.create(:submission_workflow)
+        @params = { request_metadata_attributes: { read_length: "37" }, state: 'pending', request_type_id: @our_request.request_type_id }
       end
 
       context "when not logged in" do
         setup do
-          put :update, :id => @our_request.id, :request => @params
+          put :update, id: @our_request.id, request: @params
         end
         should redirect_to("login page") { login_path }
       end
@@ -92,7 +92,7 @@ class RequestsControllerTest < ActionController::TestCase
           @controller.stubs(:logged_in?).returns(@user)
           session[:user] = @user.id
 
-          put :update, :id => @our_request.id, :request => @params
+          put :update, id: @our_request.id, request: @params
         end
 
         should redirect_to("request path") { request_path(@our_request) }
@@ -108,15 +108,15 @@ class RequestsControllerTest < ActionController::TestCase
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
 
-        @project = FactoryGirl.create(:project_with_order, :name => 'Prj1')
-         @reqwest = FactoryGirl.create :request, :user => @user, :request_type => FactoryGirl.create(:request_type), :study => FactoryGirl.create(:study, :name => "ReqCon XXX"),
-                                  :workflow => FactoryGirl.create(:submission_workflow), :project => @project
+        @project = FactoryGirl.create(:project_with_order, name: 'Prj1')
+         @reqwest = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: "ReqCon XXX"),
+                                  workflow: FactoryGirl.create(:submission_workflow), project: @project
       end
 
       context "update invalid and failed" do
         setup do
-          @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'invalid' }
-          put :update, :id => @reqwest.id, :request => @params
+          @params = { request_metadata_attributes: { read_length: "37" }, state: 'invalid' }
+          put :update, id: @reqwest.id, request: @params
         end
         should redirect_to("request path") { request_path(@reqwest) }
       end
@@ -125,8 +125,8 @@ class RequestsControllerTest < ActionController::TestCase
       context "update to state 'failed'" do
         setup do
           @prop_value_after = 666
-          @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'failed' }
-          put :update, :id => @reqwest.id, :request => @params
+          @params = { request_metadata_attributes: { read_length: "37" }, state: 'failed' }
+          put :update, id: @reqwest.id, request: @params
         end
         should "not update the state" do
           # We really don't want arbitrary changing of state

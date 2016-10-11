@@ -1,10 +1,10 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 # Run from Projects - read in plate barcodes from a file, create asset groups in a given project, create submissions for all asset groups in the project
 
-#get project id
+# get project id
 print "Project ID? : "
 project_id = gets.chomp
 print "Study ID? : "
@@ -20,7 +20,7 @@ myfile.each do |line|
 end
 puts "#{sample_names.size} Sample Names read from file"
 
-asset_group = AssetGroup.create(:name => "#{project_id}_asset_group_#{Time.now}")
+asset_group = AssetGroup.create(name: "#{project_id}_asset_group_#{Time.now}")
 sample_names.each do |sample_name|
   sample = Sample.find_by_name(sample_name)
   raise "Cannot find #{sample_name}" if sample.nil?

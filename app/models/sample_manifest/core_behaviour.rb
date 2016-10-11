@@ -14,13 +14,13 @@ module SampleManifest::CoreBehaviour
 
   def self.included(base)
     base.class_eval do
-      delegate :details, :details_array, :validate_sample_container, :validate_specialized_fields, :specialized_fields, :to => :core_behaviour
+      delegate :details, :details_array, :validate_sample_container, :validate_specialized_fields, :specialized_fields, to: :core_behaviour
 
       attr_accessor :rapid_generation
       alias_method(:rapid_generation?, :rapid_generation)
 
       def self.supported_asset_type?(asset_type)
-        asset_type.nil? || ['1dtube','plate','multiplexed_library'].include?(asset_type)
+        asset_type.nil? || ['1dtube', 'plate', 'multiplexed_library'].include?(asset_type)
       end
     end
   end

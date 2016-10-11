@@ -25,5 +25,5 @@ end
 
 Given /^plate "([^"]*)" has gel analysis results$/ do |barcode|
   plate = Asset.find_from_machine_barcode(barcode)
-  plate.events.create_gel_qc!('passed',User.last)
+  plate.events.create_gel_qc!('passed', User.last)
 end

@@ -127,7 +127,7 @@ module Core
       attr_writer :io, :file, :filename
       attr_reader :ability
 
-      delegate :user, :to => :service
+      delegate :user, to: :service
       attr_reader :identifier, :started_at
 
       def initialize(identifier, *args, &block)
@@ -190,7 +190,7 @@ module Core
       include Core::Benchmarking
 
       class Initializer
-        delegate :status, :headers, :api_path, :to => '@owner.request.service'
+        delegate :status, :headers, :api_path, to: '@owner.request.service'
 
         # Causes a response that will redirect the client to the specified UUID path.
         def redirect_to(uuid)
@@ -208,12 +208,12 @@ module Core
       attr_reader             :request
       initialized_attr_reader :handled_by, :object
 
-      delegate :io, :identifier, :started_at, :to => :request
+      delegate :io, :identifier, :started_at, to: :request
 
-      delegate :status, :to => 'request.service'
+      delegate :status, to: 'request.service'
       initialized_delegate :status
 
-      delegate :endpoint_for_object, :to => 'request.service'
+      delegate :endpoint_for_object, to: 'request.service'
       private :endpoint_for_object
 
       def initialize(request, &block)
@@ -233,11 +233,11 @@ module Core
         ::Core::Io::Buffer.new(block) do |buffer|
           ::Core::Io::Json::Stream.new(buffer).open do |stream|
             ::Core::Io::Registry.instance.lookup_for_object(object).as_json(
-              :response   => self,
-              :target     => object,
-              :stream     => stream,
-              :object     => object,
-              :handled_by => handled_by
+              response: self,
+              target: object,
+              stream: stream,
+              object: object,
+              handled_by: handled_by
             )
           end
         end

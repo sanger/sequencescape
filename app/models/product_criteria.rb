@@ -18,14 +18,14 @@ class ProductCriteria < ActiveRecord::Base
   belongs_to :product
   validates_presence_of :product, :stage, :behaviour
 
-  validates_uniqueness_of :stage, :scope => [:product_id,:deprecated_at]
-  validate :behaviour_exists?, :if => :behaviour?
+  validates_uniqueness_of :stage, scope: [:product_id, :deprecated_at]
+  validate :behaviour_exists?, if: :behaviour?
 
   serialize :configuration
 
-  scope :for_stage, ->(stage) { where(:stage => stage) }
-  scope :stock, ->()          { where(:stage => STAGE_STOCK) }
-  scope :older_than, ->(id)   { wheere(['id < ?',id]) }
+  scope :for_stage, ->(stage) { where(stage: stage) }
+  scope :stock, ->()          { where(stage: STAGE_STOCK) }
+  scope :older_than, ->(id)   { wheere(['id < ?', id]) }
 
   before_create :set_version_number
 
@@ -35,7 +35,7 @@ class ProductCriteria < ActiveRecord::Base
 
 
   def assess(asset)
-    ProductCriteria.const_get(behaviour).new(configuration,asset)
+    ProductCriteria.const_get(behaviour).new(configuration, asset)
   end
 
   def headers
@@ -51,7 +51,7 @@ class ProductCriteria < ActiveRecord::Base
     ProductCriteria.const_get(behaviour)
     true
   rescue NameError
-    errors.add(:behaviour,"#{behaviour} is not recognized")
+    errors.add(:behaviour, "#{behaviour} is not recognized")
     false
   end
 

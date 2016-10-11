@@ -104,7 +104,7 @@ module SampleManifestExcel
     end
 
     def create_columns(columns, conditional_formattings)
-      columns.each do |k,v|
+      columns.each do |k, v|
         begin
           if v.kind_of?(Hash)
             add SampleManifestExcel::Column.new(SampleManifestExcel::Column.build_arguments(v, k, conditional_formattings))

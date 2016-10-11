@@ -8,7 +8,7 @@
 # specific manner.
 module Pipeline::Grouper
   def self.included(base)
-    base.delegate :requests, :group_by_parent?, :group_by_submission?, :to => :@pipeline
+    base.delegate :requests, :group_by_parent?, :group_by_submission?, to: :@pipeline
   end
 
   def initialize(pipeline)
@@ -24,6 +24,6 @@ module Pipeline::Grouper
   def count(selected_groups)
     conditions, variables = [], []
     selected_groups.each { |group, _| call(conditions, variables, group) }
-    requests.inputs(true).group_conditions(conditions, variables).group_requests(:count, :group => grouping)
+    requests.inputs(true).group_conditions(conditions, variables).group_requests(:count, group: grouping)
   end
 end

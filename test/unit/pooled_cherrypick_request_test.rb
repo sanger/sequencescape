@@ -15,13 +15,13 @@ class PooledCherrypickRequestTest < ActiveSupport::TestCase
       @well_a = create :well
       @well_b = create :well
 
-      @a1 = create :aliquot, :receptacle => @well_a, :study => @study
-      @a2 = create :aliquot, :sample => @a1.sample, :study =>  @study, :project => @a1.project, :receptacle => @well_b, :tag => @a1.tag, :tag2 => @a1.tag2
+      @a1 = create :aliquot, receptacle: @well_a, study: @study
+      @a2 = create :aliquot, sample: @a1.sample, study: @study, project: @a1.project, receptacle: @well_b, tag: @a1.tag, tag2: @a1.tag2
 
       @target_well = create :well
 
-      @request_a = create :pooled_cherrypick_request, :asset => @well_a, :target_asset => @target_well, :initial_study => @study
-      @request_b = create :pooled_cherrypick_request, :asset => @well_b, :target_asset => @target_well, :initial_study => @study
+      @request_a = create :pooled_cherrypick_request, asset: @well_a, target_asset: @target_well, initial_study: @study
+      @request_b = create :pooled_cherrypick_request, asset: @well_b, target_asset: @target_well, initial_study: @study
     end
 
     should 'only transfer one aliquot' do

@@ -43,8 +43,8 @@ module Plate::FluidigmBehaviour
 
     wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
       well.stock_wells.each do |sw|
-        sw.update_gender_markers!( fluidigm_file.well_at(well.map_description).gender_markers,'FLUIDIGM' )
-        sw.update_sequenom_count!( fluidigm_file.well_at(well.map_description).count,'FLUIDIGM' )
+        sw.update_gender_markers!(fluidigm_file.well_at(well.map_description).gender_markers, 'FLUIDIGM')
+        sw.update_sequenom_count!(fluidigm_file.well_at(well.map_description).count, 'FLUIDIGM')
       end
     end
     self.events.updated_fluidigm_plate!('FLUIDIGM_DATA')

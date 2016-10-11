@@ -8,7 +8,7 @@ module IlluminaC::Helper
 
   require 'hiseq_2500_helper'
 
-  ACCEPTABLE_REQUEST_TYPES = ['illumina_c_pcr','illumina_c_nopcr', 'illumina_c_multiplexing']
+  ACCEPTABLE_REQUEST_TYPES = ['illumina_c_pcr', 'illumina_c_nopcr', 'illumina_c_multiplexing']
   ACCEPTABLE_SEQUENCING_REQUESTS = [
     'illumina_c_single_ended_sequencing',
     'illumina_c_paired_end_sequencing',
@@ -47,15 +47,15 @@ module IlluminaC::Helper
     end
 
     def validate!
-      [:name,:type,:role].each do |value|
+      [:name, :type, :role].each do |value|
         raise "Must provide a #{value}" if send(value).nil?
       end
       raise "Request Type should be #{ACCEPTABLE_REQUEST_TYPES.join(', ')}" unless ACCEPTABLE_REQUEST_TYPES.include?(type)
       true
     end
 
-    def name_for(cherrypick,sequencing_request_type)
-      "#{PIPELINE} #{cherrypick ? "Cherrypicked - " : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ",'')}"
+    def name_for(cherrypick, sequencing_request_type)
+      "#{PIPELINE} #{cherrypick ? "Cherrypicked - " : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ", '')}"
     end
 
     def build!
@@ -69,36 +69,36 @@ module IlluminaC::Helper
       RequestType.find_by_key!()
     end
 
-    def request_type_ids(cherrypick,sequencing)
+    def request_type_ids(cherrypick, sequencing)
       ids = cherrypick ? [[RequestType.find_by_key('cherrypick_for_illumina_c').id]] : []
       ids << [RequestType.find_by_key(type).id] << [sequencing.id]
     end
 
     def cherrypick_options
-      [!skip_cherrypick,false].uniq
+      [!skip_cherrypick, false].uniq
     end
 
     def each_submission_template
       cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
           yield({
-            :name => name_for(cherrypick,sequencing_request_type),
-            :submission_class_name => 'LinearSubmission',
-            :submission_parameters => submission_parameters(cherrypick,sequencing_request_type),
-            :product_line_id => ProductLine.find_by_name(PIPELINE),
+            name: name_for(cherrypick, sequencing_request_type),
+            submission_class_name: 'LinearSubmission',
+            submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
+            product_line_id: ProductLine.find_by_name(PIPELINE),
           })
         end
       end
     end
 
-    def submission_parameters(cherrypick,sequencing)
+    def submission_parameters(cherrypick, sequencing)
       sp = {
-        :request_type_ids_list => request_type_ids(cherrypick,sequencing),
-        :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
-        :order_role_id => Order::OrderRole.find_or_create_by(role:role).id,
-        :info_differential => Submission::Workflow.find_by_key('short_read_sequencing').id
+        request_type_ids_list: request_type_ids(cherrypick, sequencing),
+        workflow_id: Submission::Workflow.find_by_key('short_read_sequencing').id,
+        order_role_id: Order::OrderRole.find_or_create_by(role: role).id,
+        info_differential: Submission::Workflow.find_by_key('short_read_sequencing').id
       }
-      return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key) || type == 'illumina_c_multiplexing'
+      return sp if ['illumina_c_single_ended_sequencing', 'illumina_c_paired_end_sequencing'].include?(sequencing.key) || type == 'illumina_c_multiplexing'
     end
 
     def sizes_for(sequencing)
@@ -118,15 +118,15 @@ module IlluminaC::Helper
     def update!
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
-        SubmissionTemplate.find_by_name!(options[:name]).update_attributes!(:submission_parameters => options[:submission_parameters])
+        SubmissionTemplate.find_by_name!(options[:name]).update_attributes!(submission_parameters: options[:submission_parameters])
       end
     end
 
-    def self.find_for(name,sequencing=nil)
-      tc = TemplateConstructor.new(:name => name, :sequencing => sequencing)
-      [true,false].map do |cherrypick|
+    def self.find_for(name, sequencing = nil)
+      tc = TemplateConstructor.new(name: name, sequencing: sequencing)
+      [true, false].map do |cherrypick|
         tc.sequencing.map do |sequencing_request_type|
-          SubmissionTemplate.find_by_name!(tc.name_for(cherrypick,sequencing_request_type))
+          SubmissionTemplate.find_by_name!(tc.name_for(cherrypick, sequencing_request_type))
         end
       end.flatten
     end

@@ -17,7 +17,7 @@ class PlateBarcode < ActiveResource::Base
        @barcode = 9000000 if @barcode.zero?
      end
 
-     OpenStruct.new(:barcode => (@barcode += 1))
+     OpenStruct.new(barcode: (@barcode += 1))
    end
   end
 

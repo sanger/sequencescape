@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Failure < ActiveRecord::Base
-  belongs_to :failable, :polymorphic => true
+  belongs_to :failable, polymorphic: true
   after_create :notify_remote
 
   def notify_remote
     if self.notify_remote?
-      #Send event to Studies here
+      # Send event to Studies here
     end
   end
 end

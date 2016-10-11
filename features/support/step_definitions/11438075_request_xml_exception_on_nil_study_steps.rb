@@ -5,24 +5,24 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 Given /^I have a request (\d+) with a study (\d+)$/ do |request_id, study_id|
-  study = FactoryGirl.create(:study, :id => study_id, :name => 'Study 999')
-  project = FactoryGirl.create(:project, :id => 1)
+  study = FactoryGirl.create(:study, id: study_id, name: 'Study 999')
+  project = FactoryGirl.create(:project, id: 1)
   request_type = RequestType.find_by_key('library_creation')
   request = FactoryGirl.create(
     :request,
-    :id => request_id,
-    :study => study, :project => project, :request_type => request_type,
-    :asset => FactoryGirl.create(:sample_tube)
+    id: request_id,
+    study: study, project: project, request_type: request_type,
+    asset: FactoryGirl.create(:sample_tube)
   )
 end
 
 Given /^I have a request (\d+) without a request type$/ do |request_id|
-  study = FactoryGirl.create(:study, :id => 999, :name => 'Study 999')
-  project = FactoryGirl.create(:project, :id => 1)
+  study = FactoryGirl.create(:study, id: 999, name: 'Study 999')
+  project = FactoryGirl.create(:project, id: 1)
   request = FactoryGirl.create(
-    :request, :id => request_id,
-    :study => study, :project => project,
-    :asset => FactoryGirl.create(:sample_tube)
+    :request, id: request_id,
+    study: study, project: project,
+    asset: FactoryGirl.create(:sample_tube)
   )
-  request.update_attributes!(:request_type => nil)
+  request.update_attributes!(request_type: nil)
 end

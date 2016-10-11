@@ -18,8 +18,8 @@ class Api::ProjectIO < Api::Base
 
         scope :including_associations_for_json, -> { includes([
             :uuid_object, {
-              :project_metadata => [:project_manager, :budget_division],
-              :roles => :users
+              project_metadata: [:project_manager, :budget_division],
+              roles: :users
             }
           ])}
       end
@@ -41,14 +41,14 @@ class Api::ProjectIO < Api::Base
   map_attribute_to_json_attribute(:updated_at)
 
   with_association(:project_metadata) do
-    with_association(:project_manager, :lookup_by => :name) do
+    with_association(:project_manager, lookup_by: :name) do
       map_attribute_to_json_attribute(:name, 'project_manager')
     end
     map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
     map_attribute_to_json_attribute(:funding_comments, 'funding_comments')
     map_attribute_to_json_attribute(:collaborators, 'collaborators')
     map_attribute_to_json_attribute(:external_funding_source, 'external_funding_source')
-    with_association(:budget_division, :lookup_by => :name) do
+    with_association(:budget_division, lookup_by: :name) do
       map_attribute_to_json_attribute(:name, 'budget_division')
     end
     map_attribute_to_json_attribute(:sequencing_budget_cost_centre, 'budget_cost_centre')
@@ -66,9 +66,9 @@ class Api::ProjectIO < Api::Base
       object.roles.each do |role|
         json_attributes[role.name.underscore] = role.users.map do |user|
           {
-            :login => user.login,
-            :email => user.email,
-            :name  => user.name
+            login: user.login,
+            email: user.email,
+            name: user.name
           }
         end
       end

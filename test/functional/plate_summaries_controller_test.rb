@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
@@ -20,8 +20,8 @@ class PlateSummariesControllerTest < ActionController::TestCase
       setup do
         @source_plate_a = create :source_plate
         @source_plate_b = create :source_plate
-        @child_plate_a  = create :child_plate, :parent => @source_plate_a
-        @child_plate_b  = create :child_plate, :parent => @source_plate_b
+        @child_plate_a  = create :child_plate, parent: @source_plate_a
+        @child_plate_b  = create :child_plate, parent: @source_plate_b
       end
 
       should "test factory is created" do

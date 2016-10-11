@@ -8,7 +8,7 @@ module Core::Endpoint::BasicHandler::Paged
   def self.page_accessor(action, will_paginate_method, default_value = nil)
     lambda do |object|
       page = object.send(will_paginate_method) || default_value
-      page.nil? ? nil : [action, [1,page].max]
+      page.nil? ? nil : [action, [1, page].max]
     end
   end
 
@@ -34,8 +34,8 @@ module Core::Endpoint::BasicHandler::Paged
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    actions_to_details = [[:first,1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
-    Hash[actions_to_details.map { |action,page| [action,core_path(page, options)] }]
+    actions_to_details = [[:first, 1]] + ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
+    Hash[actions_to_details.map { |action, page| [action, core_path(page, options)] }]
   end
   private :pages_to_actions
 
@@ -47,9 +47,9 @@ module Core::Endpoint::BasicHandler::Paged
   def page_of_results(target, page = 1, model = target)
     raise ActiveRecord::RecordNotFound, 'before the start of the results' if page <= 0
     target.paginate(
-      :page          => page,
-      :per_page      => Core::Endpoint::BasicHandler::Paged.results_per_page,
-      :total_entries => model.count
+      page: page,
+      per_page: Core::Endpoint::BasicHandler::Paged.results_per_page,
+      total_entries: model.count
     ).tap do |results|
       raise ActiveRecord::RecordNotFound, 'past the end of the results' if  (page > 1) && (page > results.total_pages)
     end
@@ -61,7 +61,7 @@ module Core::Endpoint::BasicHandler::Paged
       @model = model
     end
 
-    delegate :count, :to => :@model
+    delegate :count, to: :@model
 
     class PageOfResults
       def initialize(page, total, per_page)

@@ -11,7 +11,7 @@ module Tasks::SetLocationHandler
     if batch.pipeline.group_by_parent?
     groups = task.acts_on_input ? batch.input_group : batch.output_group
     groups.each do |group, requests|
-      next unless group.size > 0 and (asset_id = group.first) #wells which hasn't been cherry picked for example
+      next unless group.size > 0 and (asset_id = group.first) # wells which hasn't been cherry picked for example
       task.set_location(asset_id, location_id)
     end
     else

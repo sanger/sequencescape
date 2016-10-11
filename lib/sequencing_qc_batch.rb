@@ -1,4 +1,4 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
@@ -17,57 +17,12 @@ module SequencingQcBatch
 
   def self.included(base)
     base.instance_eval do
-      extend ClassMethods
 
       # TODO[xxx]: Isn't qc_state supposed to be initialised to 'qc_pending' rather than blank?
-      validates_inclusion_of :qc_state, :in => VALID_QC_STATES, :allow_blank => true
+      validates_inclusion_of :qc_state, in: VALID_QC_STATES, allow_blank: true
 
-      belongs_to :qc_pipeline, :class_name => "Pipeline"
+      belongs_to :qc_pipeline, class_name: "Pipeline"
       before_create :qc_pipeline_update
-    end
-  end
-
-  module ClassMethods
-    # Based on the structure of the document found in test/data/activeMQ_message_example.xml
-    # {"evaluations"=>{"evaluation"=>{"result"=>nil, "checks"=>{"check"=>{"results"=>"Some free form data (no html please)", "criteria"=>{"criterion"=>[{"value"=>"Greater than 80mb", "key"=>"yield"}, {"value"=>"Greater than Q20", "key"=>"count"}]}, "data_source"=>"/somewhere.fastq", "links"=>{"link"=>{"href"=>"http://example.com/some_interesting_image_or_table", "label"=>"display text for hyperlink"}}, "comment"=>"All good", "pass"=>"true"}}, "check"=>"Auto QC", "identifier"=>"batch id", "location"=>"lane number"}}}
-    def qc_evaluations_update(evaluations)
-      if evaluations.has_key?("evaluation")
-        evaluations.each do |key, evaluation|
-          if evaluation.kind_of?(Array)
-            evaluation.each do |ev|
-              Batch.qc_assets_update(ev)
-            end
-          elsif evaluation.kind_of?(Hash)
-            Batch.qc_assets_update(evaluation)
-          end
-        end
-      end
-    end
-
-    def qc_assets_update(evaluation)
-      b = Batch.includes(:requests).find(evaluation["identifier"])
-      # Checks if batch.qc_state is not qc_manual, then change it
-      # so that it appears in the Manual QC pipeline
-      if b.qc_state == "qc_pending" || b.qc_state == "qc_submitted"
-        b.qc_ready_for_manual
-      end
-
-
-      br = b.batch_requests.find_by(:position => evaluation["location"])
-
-      result = evaluation["result"]
-      unless result.nil? || br.request.target_asset.nil? # nil e.g. controls without source/target asset
-        br.request.target_asset.qc_state = result
-        br.save
-        b.lab_events.create(:description => "Auto QC result", :message => result.humanize)
-      end
-      evaluation["checks"].each_value do |v|
-        v = [v] unless v.kind_of?(Array)
-        v.each do |value|
-          br.request.lab_events.create(:description => evaluation["check"], :descriptors => value, :descriptor_fields => value.keys, :batch_id => b.id)
-        end
-      end
-      br.save
     end
   end
 
@@ -108,7 +63,7 @@ module SequencingQcBatch
   def qc_previous_state!(current_user)
     previous_state = self.qc_previous_state
     if previous_state
-      self.lab_events.create(:description => "QC Rollback", :message => "Manual QC moved from #{self.qc_state} to #{previous_state}", :user_id => current_user.id)
+      self.lab_events.create(description: "QC Rollback", message: "Manual QC moved from #{self.qc_state} to #{previous_state}", user_id: current_user.id)
       self.qc_state = previous_state
     end
     self.state = 'started'
@@ -117,7 +72,7 @@ module SequencingQcBatch
 
   def self.adjacent_state_helper(direction, offset, delimiter)
     define_method(:"qc_#{ direction }_state") do
-      raise StandardError, "Current QC state appears to be invalid: '#{ self.qc_state }'" unless qc_states.include?(self.qc_state.to_s)
+      raise StandardError, "Current QC state appears to be invalid: '#{self.qc_state}'" unless qc_states.include?(self.qc_state.to_s)
       return nil if self.qc_state.to_s == qc_states.send(delimiter)
       return qc_states[qc_states.index(self.qc_state.to_s) + offset]
     end
@@ -145,14 +100,14 @@ module SequencingQcBatch
   end
 
   def qc_pipeline_workflow_id
-    pipeline = Pipeline.find_by!(:name => "quality control", :automated => true)
+    pipeline = Pipeline.find_by!(name: "quality control", automated: true)
     pipeline.workflow.id
   end
 
   def qc_ready_for_manual
     ActiveRecord::Base.transaction do
       p = Pipeline.find(self.qc_pipeline_id)
-      self.update_attributes!(:qc_pipeline_id => p.next_pipeline_id, :qc_state => 'qc_manual')
+      self.update_attributes!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
     end
   end
 
@@ -171,7 +126,7 @@ module SequencingQcBatch
   def submit_to_qc_queue
     logger.debug "Batch #{self.id} attempting to be added to QC queue. State is #{self.qc_state}"
     # Get QC workflow and its tasks
-    workflow = LabInterface::Workflow.find_by_name("quality control", :include => [:tasks])
+    workflow = LabInterface::Workflow.find_by_name("quality control", include: [:tasks])
     tasks    = workflow.tasks
     if self.qc_state == "qc_pending"
       # Submit requests for all tasks in the workflow
@@ -187,9 +142,9 @@ module SequencingQcBatch
         task.descriptors.each do |t|
           h_doc["keys"]["#{t.key}"] = t.value
         end
-        doc = h_doc.to_xml(:root => "criteria", :skip_types => true)
+        doc = h_doc.to_xml(root: "criteria", skip_types: true)
         # A *Hacky* solution to get the XML readable for Chainlink
-        doc = doc.to_s.gsub!('-', '_').gsub!('UTF_8', 'UTF-8')
+        doc = doc.to_s.tr!('-', '_').gsub!('UTF_8', 'UTF-8')
         # logger.debug doc
         # Publishing the request to AMQ
         publish :qc_requests, doc
@@ -235,7 +190,7 @@ module SequencingQcBatch
   private
 
     def assets_qc_tasks_results
-      auto_qc_pipeline = Pipeline.firind_by!(:name => "quality control", :automated => true)
+      auto_qc_pipeline = Pipeline.firind_by!(name: "quality control", automated: true)
       qc_workflow = LabInterface::Workflow.find_by_pipeline_id auto_qc_pipeline.id
       qc_tasks = qc_workflow.tasks
       results = []

@@ -21,20 +21,20 @@ class QcDecisionTest < ActiveSupport::TestCase
       setup do
         @lot = create :lot
         @user = create :user
-        @user.roles.create!(:name => 'qa_manager')
+        @user.roles.create!(name: 'qa_manager')
         @user_b = create :user
-        @qcable_a = create :qcable, :lot => @lot, :state => 'pending'
-        @qcable_b = create :qcable, :lot => @lot, :state => 'pending'
+        @qcable_a = create :qcable, lot: @lot, state: 'pending'
+        @qcable_b = create :qcable, lot: @lot, state: 'pending'
       end
 
       context "with valid data" do
         setup do
           @qcd = QcDecision.create(
-            :user => @user,
-            :lot  => @lot,
-            :decisions => [
-              { :qcable => @qcable_a, :decision => 'release' },
-              { :qcable => @qcable_b, :decision => 'fail' }
+            user: @user,
+            lot: @lot,
+            decisions: [
+              { qcable: @qcable_a, decision: 'release' },
+              { qcable: @qcable_b, decision: 'fail' }
             ]
           )
         end
@@ -46,7 +46,7 @@ class QcDecisionTest < ActiveSupport::TestCase
 
         should "record the decision" do
           assert_equal 2, @qcd.qc_decision_qcables.count
-          assert_equal ['fail','release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
+          assert_equal ['fail', 'release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
         end
 
       end
@@ -54,11 +54,11 @@ class QcDecisionTest < ActiveSupport::TestCase
       should "reject invalid state transitions" do
         assert_raise ActiveRecord::RecordInvalid do
           QcDecision.create!(
-            :user => @user,
-            :lot  => @lot,
-            :decisions => [
-              { :qcable => @qcable_a, :decision => 'delete' },
-              { :qcable => @qcable_b, :decision => 'fail' }
+            user: @user,
+            lot: @lot,
+            decisions: [
+              { qcable: @qcable_a, decision: 'delete' },
+              { qcable: @qcable_b, decision: 'fail' }
             ]
           )
         end
@@ -67,11 +67,11 @@ class QcDecisionTest < ActiveSupport::TestCase
       should "reject invalid users" do
         assert_raise ActiveRecord::RecordInvalid do
           QcDecision.create!(
-            :user => @user_b,
-            :lot  => @lot,
-            :decisions => [
-              { :qcable => @qcable_a, :decision => 'release' },
-              { :qcable => @qcable_b, :decision => 'fail' }
+            user: @user_b,
+            lot: @lot,
+            decisions: [
+              { qcable: @qcable_a, decision: 'release' },
+              { qcable: @qcable_b, decision: 'fail' }
             ]
           )
         end

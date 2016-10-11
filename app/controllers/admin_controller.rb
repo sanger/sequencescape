@@ -15,9 +15,9 @@ class AdminController < ApplicationController
     if params[:q].blank?
       @users = User.all
     else
-      @users = User.where(login:params[:q])
+      @users = User.where(login: params[:q])
     end
-    render :partial => 'admin/users/users', :locals => { :users => @users }
+    render partial: 'admin/users/users', locals: { users: @users }
   end
 
 end

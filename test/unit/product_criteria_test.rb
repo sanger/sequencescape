@@ -16,23 +16,23 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     setup do
       @product_a = create :product
-      @criteria_a = create :product_criteria, :product => @product_a, :configuration => { :total_micrograms => { :greater_than => 50 } }
+      @criteria_a = create :product_criteria, product: @product_a, configuration: { total_micrograms: { greater_than: 50 } }
     end
 
 
     should 'only allow one active criteria per product per stage' do
-      assert_raise(ActiveRecord::RecordInvalid) { create :product_criteria, :product => @product_a }
+      assert_raise(ActiveRecord::RecordInvalid) { create :product_criteria, product: @product_a }
     end
 
     should 'allow multiple active criteria with different stages' do
-      @criteria_b = create :product_criteria, :product => @product_a, :stage => 'another_stage'
+      @criteria_b = create :product_criteria, product: @product_a, stage: 'another_stage'
       assert @criteria_b.valid?
     end
 
     should 'allow products with the same name if one is deprecated' do
       @criteria_a.deprecated_at = Time.now
       @criteria_a.save
-      @criteria_2 = create :product_criteria, :product => @product_a
+      @criteria_2 = create :product_criteria, product: @product_a
       assert @criteria_2.valid?
     end
 
@@ -40,14 +40,14 @@ class ProductCriteriaTest < ActiveSupport::TestCase
       assert_equal 1, @criteria_a.version
       @criteria_a.deprecated_at = Time.now
       @criteria_a.save
-      @criteria_b = create :product_criteria, :product => @product_a
+      @criteria_b = create :product_criteria, product: @product_a
       assert_equal 2, @criteria_b.version
     end
 
     should 'not be destroyable' do
       # ActiveRecord::RecordNotDestroyed is the Rails4 exception for this
       # Added here as Rails 2 is a bit useless with appropriate exceptions
-      assert_raise(ActiveRecord::RecordNotDestroyed) { @criteria_a.destroy }
+      assert_raise(ActiveRecord::RecordNotDestroyed) { @criteria_a.destroy! }
     end
 
     should 'be deprecatable' do
@@ -57,7 +57,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'be otherwise immutable' do
-      @criteria_a.configuration = { :something => 'else' }
+      @criteria_a.configuration = { something: 'else' }
       assert_raise(ActiveRecord::RecordNotSaved) { @criteria_a.save! }
     end
 
@@ -68,8 +68,8 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'validate wells with the provided criteria' do
-      well_attribute = create :well_attribute, :concentration => 800, :current_volume => 100
-      well = create :well, :well_attribute => well_attribute
+      well_attribute = create :well_attribute, concentration: 800, current_volume: 100
+      well = create :well, well_attribute: well_attribute
       assesment = @criteria_a.assess(well)
       assert assesment.is_a?(ProductCriteria::Basic)
       assert assesment.passed?
@@ -77,9 +77,9 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     should 'be able to take metrics' do
       well = {
-        :concentration => 800,
-        :current_volume => 100,
-        :total_micrograms => 90
+        concentration: 800,
+        current_volume: 100,
+        total_micrograms: 90
       }
       assesment = @criteria_a.assess(well)
       assert assesment.is_a?(ProductCriteria::Basic)

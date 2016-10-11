@@ -42,7 +42,7 @@ class ::Core::Registry
   end
 
   def inspect
-    Hash[@model_class_to_target.map { |k,v| [k.to_s, v.to_s] }].inspect
+    Hash[@model_class_to_target.map { |k, v| [k.to_s, v.to_s] }].inspect
   end
 
   def is_already_registered?(model_class)

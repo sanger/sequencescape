@@ -5,20 +5,20 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 require 'lib/event_factory'
 class ProjectsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :login_required
-  before_action :set_variables_for_project, :only => [:show, :edit, :update, :destroy, :studies]
- #TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
+  before_action :set_variables_for_project, only: [:show, :edit, :update, :destroy, :studies]
+ # TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
     @projects = Project.alphabetical.page(params[:page])
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml => Project.alphabetical }
-      format.json  { render :json => Project.alphabetical }
+      format.xml  { render xml: Project.alphabetical }
+      format.json  { render json: Project.alphabetical }
     end
   end
 
@@ -31,7 +31,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml
-      format.json  { render :json => @project }
+      format.json  { render json: @project }
     end
   end
 
@@ -40,8 +40,8 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml   { render :xml  => @project }
-      format.json  { render :json => @project }
+      format.xml   { render xml: @project }
+      format.json  { render json: @project }
     end
   end
 
@@ -65,17 +65,17 @@ class ProjectsController < ApplicationController
     flash[:notice] = "Your project has been created"
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
-      format.xml  { render :xml  => @project, :status => :created, :location => @project }
-      format.json { render :json => @project, :status => :created, :location => @project }
+      format.xml  { render xml: @project, status: :created, location: @project }
+      format.json { render json: @project, status: :created, location: @project }
     end
   rescue ActiveRecord::RecordInvalid => exception
     flash.now[:error] = "Problems creating your new project"
     respond_to do |format|
       format.html {
-        render :action => "new"
+        render action: "new"
       }
-      format.xml  { render :xml  => @project.errors, :status => :unprocessable_entity }
-      format.json { render :json => @project.errors, :status => :unprocessable_entity }
+      format.xml  { render xml: @project.errors, status: :unprocessable_entity }
+      format.json { render json: @project.errors, status: :unprocessable_entity }
     end
   end
 
@@ -86,8 +86,8 @@ class ProjectsController < ApplicationController
         format.html { redirect_to(@project) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @project.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -113,8 +113,8 @@ class ProjectsController < ApplicationController
 
   def collaborators
     @project    = Project.find(params[:id])
-    @all_roles  = Role.where(:name => ["owner","follower","manager"]).select(:name).distinct
-    @roles      = Role.where(:authorizable_id => @project.id, :authorizable_type => "Project")
+    @all_roles  = Role.where(name: ["owner", "follower", "manager"]).select(:name).distinct
+    @roles      = Role.where(authorizable_id: @project.id, authorizable_type: "Project")
     @users      = User.order(:first_name)
   end
 
@@ -140,16 +140,16 @@ class ProjectsController < ApplicationController
         @user.has_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:notice] = "Role added"
-        render :partial => "roles", :status => 200
+        render partial: "roles", status: 200
       else
         @roles = @project.roles
         flash[:error] = "A problem occurred while adding the role"
-        render :partial => "roles", :status => 500
+        render partial: "roles", status: 500
       end
     else
       @roles = @project.roles
       flash[:error] = "A problem occurred while adding the role"
-      render :partial => "roles", :status => 401
+      render partial: "roles", status: 401
     end
   end
 
@@ -163,16 +163,16 @@ class ProjectsController < ApplicationController
         @user.has_no_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:error] = "Role was removed"
-        render :partial => "roles", :status => 200
+        render partial: "roles", status: 200
       else
         @roles = @project.roles
         flash[:error] = "A problem occurred while removing the role"
-        render :partial => "roles", :status => 500
+        render partial: "roles", status: 500
       end
     else
       @roles = @project.roles
       flash[:error] = "A problem occurred while removing the role"
-      render :partial => "roles", :status => 401
+      render partial: "roles", status: 401
     end
   end
 

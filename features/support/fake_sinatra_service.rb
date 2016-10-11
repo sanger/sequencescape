@@ -70,7 +70,7 @@ private
       logger       = Logger.new(STDERR)
       logger.level = Logger::FATAL
 
-      service.run!(:host => @host, :port => @port, :webrick => { :Logger => logger, :AccessLog => [] })
+      service.run!(host: @host, port: @port, webrick: { Logger: logger, AccessLog: [] })
     end
     yield(thread)
   end
@@ -105,9 +105,9 @@ private
     # Use webrick as the handler.
     HANDLER, QUIT_HANDLER = Rack::Handler.get('webrick'), :shutdown
 
-    def self.run!(options={})
+    def self.run!(options = {})
       set options
-      HANDLER.run(self, { :Host => bind, :Port => port, :timeout => 1 }.merge(options.fetch(:webrick, {}))) do |server|
+      HANDLER.run(self, { Host: bind, Port: port, timeout: 1 }.merge(options.fetch(:webrick, {}))) do |server|
         set :running, true
         set :quit_handler, Proc.new { server.send(QUIT_HANDLER) }
       end

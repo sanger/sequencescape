@@ -20,7 +20,7 @@ class LibraryTubeTest < ActiveSupport::TestCase
       end
 
       should "return false if it doesn't have a stock asset" do
-        assert ! @library_tube.has_stock_asset?
+        assert !@library_tube.has_stock_asset?
       end
 
       should "return true if it does have a stock asset" do
@@ -49,7 +49,7 @@ class LibraryTubeTest < ActiveSupport::TestCase
 
       context 'should allow overriding of attributes' do
         setup do
-          @stock = @library_tube.create_stock_asset!(:name => 'Foo', :barcode => '1111')
+          @stock = @library_tube.create_stock_asset!(name: 'Foo', barcode: '1111')
         end
 
         should 'use the specified name' do

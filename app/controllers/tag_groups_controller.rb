@@ -6,7 +6,7 @@
 
 class TagGroupsController < ApplicationController
 
-  before_action :admin_login_required, :only => [:new, :edit, :create, :update]
+  before_action :admin_login_required, only: [:new, :edit, :create, :update]
 
   def index
     @tag_groups = TagGroup.all
@@ -59,7 +59,7 @@ class TagGroupsController < ApplicationController
         flash[:notice] = 'Tag Group was successfully updated.'
         format.html { redirect_to(@tag_group) }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end
@@ -70,10 +70,10 @@ class TagGroupsController < ApplicationController
 
   # Permits oligo and mapi_id, filters out any unfilled fields
   def tag_params
-    params.fetch(:tags,[]).reject do |index,attributes|
+    params.fetch(:tags, []).reject do |index, attributes|
       attributes[:oligo].blank?
-    end.map do |index,attributes|
-      attributes.permit(:map_id,:oligo)
+    end.map do |index, attributes|
+      attributes.permit(:map_id, :oligo)
     end
   end
 

@@ -11,7 +11,7 @@ module Tasks::AttachInfiniumBarcodeHandler
 
   def do_attach_infinium_barcode_task(task, params)
     barcodes = params[:barcodes]
-    barcodes.each do |plate_id,barcode|
+    barcodes.each do |plate_id, barcode|
       next if barcode.blank?
       plate = Plate.find_by_id(plate_id)
       return false if plate.nil?

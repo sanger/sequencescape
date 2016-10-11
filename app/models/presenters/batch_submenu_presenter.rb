@@ -20,12 +20,12 @@ module Presenters
       @batch = batch
       @pipeline = @batch.pipeline
 
-      set_defaults({ :controller => :batches, :id => @batch.id, :only_path => true })
+      set_defaults({ controller: :batches, id: @batch.id, only_path: true })
     end
 
     def build_submenu
-      add_submenu_option "View summary", { :controller => :pipelines, :action => :summary }
-      add_submenu_option pluralize(@batch.comments.size, "comment" ), batch_comments_path(@batch)
+      add_submenu_option "View summary", { controller: :pipelines, action: :summary }
+      add_submenu_option pluralize(@batch.comments.size, "comment"), batch_comments_path(@batch)
       load_pipeline_options
       add_submenu_option "NPG run data", "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
       add_submenu_option "SybrGreen images", "#{configatron.sybr_green_images_url}#{@batch.id}"
@@ -102,7 +102,7 @@ module Presenters
 
         if @pipeline.prints_a_worksheet_per_task? and !pacbio_sample_pipeline?
           @tasks.each do |task|
-            add_submenu_option "Print worksheet for #{task.name}", { :action => :print, :task_id => task.id }
+            add_submenu_option "Print worksheet for #{task.name}", { action: :print, task_id: task.id }
           end
         else
           add_submenu_option "Print worksheet", :print
@@ -123,7 +123,7 @@ module Presenters
         # If it is a symbol, it will be the action
         # If not, it will be a Hash with the new content (controller, action, ...)
         if (action_params.is_a?(Symbol))
-          action_params = { :action => action_params }
+          action_params = { action: action_params }
         end
         actionConfig = @defaults.dup
         action_params.each_pair do |key, value|
@@ -131,7 +131,7 @@ module Presenters
         end
         action_params = url_for(actionConfig)
       end
-      @options += [{ :label => text, :url => action_params }]
+      @options += [{ label: text, url: action_params }]
     end
 
     def each_option

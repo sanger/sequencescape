@@ -12,21 +12,21 @@ class Batch < ActiveRecord::Base
 
   self.per_page = 500
 
-  belongs_to :user, :foreign_key => "user_id"
-  belongs_to :assignee, :class_name => "User", :foreign_key => "assignee_id"
+  belongs_to :user, foreign_key: "user_id"
+  belongs_to :assignee, class_name: "User", foreign_key: "assignee_id"
 
-  has_many :failures, :as => :failable
-  has_many :messengers, :as => :target, :inverse_of => :target
-  has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, :inverse_of => :batch
-  has_many :requests, ->() { distinct }, :through => :batch_requests, :inverse_of => :batch
-  has_many :assets, :through => :requests, :source => :target_asset
-  has_many :source_assets,  ->() { distinct }, :through => :requests, source: :asset
-  has_many :submissions,  ->() { distinct }, :through => :requests
-  has_many :orders,  ->() { distinct }, :through => :submissions
-  has_many :studies,  ->() { distinct }, :through => :orders
-  has_many :projects,  ->() { distinct }, :through => :orders
-  has_many :aliquots,  ->() { distinct }, :through => :source_assets
-  has_many :samples,  ->() { distinct }, :through => :assets
+  has_many :failures, as: :failable
+  has_many :messengers, as: :target, inverse_of: :target
+  has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, inverse_of: :batch
+  has_many :requests, ->() { distinct }, through: :batch_requests, inverse_of: :batch
+  has_many :assets, through: :requests, source: :target_asset
+  has_many :source_assets,  ->() { distinct }, through: :requests, source: :asset
+  has_many :submissions,  ->() { distinct }, through: :requests
+  has_many :orders,  ->() { distinct }, through: :submissions
+  has_many :studies,  ->() { distinct }, through: :orders
+  has_many :projects,  ->() { distinct }, through: :orders
+  has_many :aliquots,  ->() { distinct }, through: :source_assets
+  has_many :samples,  ->() { distinct }, through: :assets
 
   def study
     self.studies.first
@@ -42,7 +42,7 @@ class Batch < ActiveRecord::Base
   include ModelExtensions::Batch
   include StandardNamedScopes
 
-  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, :on => :create
+  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
 
   def all_requests_are_ready?
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
@@ -74,7 +74,7 @@ class Batch < ActiveRecord::Base
   include ::Batch::TecanBehaviour
 
   # Named scope for search by query string behavior
- scope :for_search_query, ->(query,with_includes) {
+ scope :for_search_query, ->(query, with_includes) {
     conditions = ['id=?', query]
     if user = User.find_by_login(query)
       conditions = ['user_id=?', user.id]
@@ -83,27 +83,27 @@ class Batch < ActiveRecord::Base
   }
 
   scope :includes_for_ui,    -> { limit(5).includes(:user) }
-  scope :pending_for_ui,     -> { where(:state => 'pending',   :production_state => nil   ).latest_first }
-  scope :released_for_ui,    -> { where(:state => 'released',  :production_state => nil   ).latest_first }
-  scope :completed_for_ui,   -> { where(:state => 'completed', :production_state => nil   ).latest_first }
-  scope :failed_for_ui,      -> { where(                       :production_state => 'fail').latest_first }
-  scope :in_progress_for_ui, -> { where(:state => 'started',   :production_state => nil   ).latest_first }
+  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
+  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
+  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
+  scope :failed_for_ui,      -> { where(production_state: 'fail').latest_first }
+  scope :in_progress_for_ui, -> { where(state: 'started',   production_state: nil).latest_first }
 
   scope :latest_first,       -> { order('created_at DESC') }
   scope :most_recent,     ->(number) { latest_first.limit(number) }
 
-  delegate :size, :to => :requests
+  delegate :size, to: :requests
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
-  def fail(reason, comment, ignore_requests=false)
+  def fail(reason, comment, ignore_requests = false)
     # We've deprecated the ability to fail a batch but not its requests.
     # Keep this check here until we're sure we haven't missed anything.
     raise StandardError, "Can not fail batch without failing requests" if ignore_requests
     # create failures
-    self.failures.create(:reason => reason, :comment => comment, :notify_remote => false)
+    self.failures.create(reason: reason, comment: comment, notify_remote: false)
 
     self.requests.each do |request|
-      request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
+      request.failures.create(reason: reason, comment: comment, notify_remote: true)
       unless request.asset && request.asset.resource?
         EventSender.send_fail_event(request.id, reason, comment, self.id)
       end
@@ -114,7 +114,7 @@ class Batch < ActiveRecord::Base
   end
 
   # Fail specific items on this batch
-  def fail_batch_items(requests, reason, comment, fail_but_charge=false)
+  def fail_batch_items(requests, reason, comment, fail_but_charge = false)
     checkpoint = true
 
     requests.each do |key, value|
@@ -124,7 +124,7 @@ class Batch < ActiveRecord::Base
           ActiveRecord::Base.transaction do
             request = self.requests.find(key)
             request.customer_accepts_responsibility! if fail_but_charge
-            request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
+            request.failures.create(reason: reason, comment: comment, notify_remote: true)
             EventSender.send_fail_event(request.id, reason, comment, self.id)
           end
         end
@@ -138,7 +138,7 @@ class Batch < ActiveRecord::Base
 
   def update_batch_state(reason, comment)
     if self.requests.all?(&:terminated?)
-      self.failures.create(:reason => reason, :comment => comment, :notify_remote => false)
+      self.failures.create(reason: reason, comment: comment, notify_remote: false)
       self.production_state = "fail"
       self.save!
     end
@@ -218,11 +218,11 @@ class Batch < ActiveRecord::Base
   end
 
   def output_group
-    pipeline.group_requests requests.with_target, :by_target => true
+    pipeline.group_requests requests.with_target, by_target: true
   end
 
   def output_group_by_holder
-    pipeline.group_requests requests.with_target, :by_target => true, :group_by_holder_only => true
+    pipeline.group_requests requests.with_target, by_target: true, group_by_holder_only: true
   end
 
   # This looks odd. Why would a request have the same asset as target asset? Why are we filtering them out here?
@@ -275,7 +275,7 @@ class Batch < ActiveRecord::Base
     mpx_name = ""
     if self.multiplexed? && self.requests.size > 0
       mpx_library_tube = self.requests[0].target_asset.child
-      if ! mpx_library_tube.nil?
+      if !mpx_library_tube.nil?
         mpx_name = mpx_library_tube.name
       end
     end
@@ -318,12 +318,12 @@ class Batch < ActiveRecord::Base
       barcode = barcodes["#{request.position}"]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
-          self.errors.add(:base,"The tube at position #{request.position} is incorrect.")
+          self.errors.add(:base, "The tube at position #{request.position} is incorrect.")
         end
       end
     end
     if self.errors.empty?
-      self.lab_events.create(:description => "Tube layout verified", :user => user)
+      self.lab_events.create(description: "Tube layout verified", user: user)
       return true
     else
       return false
@@ -339,12 +339,12 @@ class Batch < ActiveRecord::Base
   end
 
   # Remove the request from the batch and remove asset information
-  def remove_request_ids(request_ids, reason=nil, comment=nil)
+  def remove_request_ids(request_ids, reason = nil, comment = nil)
     ActiveRecord::Base.transaction do
       request_ids.each do |request_id|
         request = Request.find(request_id)
         next if request.nil?
-        request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
+        request.failures.create(reason: reason, comment: comment, notify_remote: true)
         self.detach_request(request)
       end
       update_batch_state(reason, comment)
@@ -354,14 +354,14 @@ class Batch < ActiveRecord::Base
 
   # Remove a request from the batch and reset it to a point where it can be put back into
   # the pending queue.
-  def detach_request(request, current_user=nil)
+  def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
       request.add_comment("Used to belong to Batch #{self.id} removed at #{Time.now()}", current_user) unless current_user.nil?
       self.pipeline.detach_request_from_batch(self, request)
     end
   end
 
-  def return_request_to_inbox(request, current_user=nil)
+  def return_request_to_inbox(request, current_user = nil)
     ActiveRecord::Base.transaction do
       request.add_comment("Used to belong to Batch #{self.id} returned to inbox unstarted at #{Time.now}", current_user) unless current_user.nil?
       request.return_pending_to_inbox!
@@ -382,7 +382,7 @@ class Batch < ActiveRecord::Base
       end
 
       if requests.last.submission_id.present?
-        Request.where(submission_id: requests.last.submission_id,state: 'pending').
+        Request.where(submission_id: requests.last.submission_id, state: 'pending').
           where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
             request.asset_id = nil
             request.save!
@@ -395,7 +395,7 @@ class Batch < ActiveRecord::Base
     return nil if requests.empty?
     requests.first.asset.ancestors.joins(
       'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id').
-      find_by(:plate_purposes => { :name => name })
+      find_by(plate_purposes: { name: name })
   end
 
   def swap(current_user, batch_info = {})
@@ -408,19 +408,19 @@ class Batch < ActiveRecord::Base
 
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
-      batch_request_left.request.lab_events.each  { |event| event.update_attributes!(:batch_id => batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
-      batch_request_right.request.lab_events.each { |event| event.update_attributes!(:batch_id => batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
+      batch_request_left.request.lab_events.each  { |event| event.update_attributes!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
+      batch_request_right.request.lab_events.each { |event| event.update_attributes!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
 
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
       # two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id = batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
       batch_request_right.destroy
-      batch_request_left.update_attributes!(:batch_id => batch_request_right.batch_id, :position => batch_request_right.position)
-      batch_request_right = BatchRequest.create!(:batch_id => original_left_batch_id, :position => original_left_position, :request_id => original_right_request_id)
+      batch_request_left.update_attributes!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
+      batch_request_right = BatchRequest.create!(batch_id: original_left_batch_id, position: original_left_position, request_id: original_right_request_id)
 
       # Finally record the fact that the batch was swapped
-      batch_request_left.batch.lab_events.create!(:description => "Lane swap", :message => "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", :user_id => current_user.id)
-      batch_request_right.batch.lab_events.create!(:description => "Lane swap", :message => "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", :user_id => current_user.id)
+      batch_request_left.batch.lab_events.create!(description: "Lane swap", message: "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", user_id: current_user.id)
+      batch_request_right.batch.lab_events.create!(description: "Lane swap", message: "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", user_id: current_user.id)
     end
 
     return true
@@ -446,8 +446,8 @@ class Batch < ActiveRecord::Base
       self.shift_item_positions(first_control + 1, control_count)
       (1..control_count).each do |index|
         self.batch_requests.create!(
-          :request  => self.pipeline.control_request_type.create_control!(:asset => asset, :study_id => 198),
-          :position => first_control + index
+          request: self.pipeline.control_request_type.create_control!(asset: asset, study_id: 198),
+          position: first_control + index
         )
       end
     end
@@ -492,13 +492,13 @@ class Batch < ActiveRecord::Base
   end
 
   def pulldown_batch_report
-    report_data = CSV.generate( :row_sep => "\r\n") do |csv|
+    report_data = CSV.generate(row_sep: "\r\n") do |csv|
       csv << pulldown_report_headers
 
       self.requests.each do |request|
         raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
         well = request.asset
-        #TODO[mb14] DRY it
+        # TODO[mb14] DRY it
         tagged_well = well
         while transfer_requests = tagged_well.requests.select { |r| r.is_a?(TransferRequest) } and transfer_requests.size == 1
           target_well = transfer_requests.first.target_asset
@@ -533,7 +533,7 @@ class Batch < ActiveRecord::Base
   end
 
   def pulldown_report_headers
-    ['Plate', 'Well', 'Study','Pooled Tube', 'Tag Group', 'Tag', 'Expected Sequence', 'Sample Name', 'Measured Volume', 'Measured Concentration']
+    ['Plate', 'Well', 'Study', 'Pooled Tube', 'Tag Group', 'Tag', 'Expected Sequence', 'Sample Name', 'Measured Volume', 'Measured Concentration']
   end
 
   def show_actions?

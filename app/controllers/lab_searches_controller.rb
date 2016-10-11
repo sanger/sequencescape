@@ -5,14 +5,14 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class LabSearchesController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   include SearchBehaviour
   alias_method(:new, :search)
 
   def index
-    redirect_to :action => :new
+    redirect_to action: :new
   end
 
 private

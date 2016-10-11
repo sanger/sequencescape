@@ -22,13 +22,13 @@ class AssignTagsTaskTest < TaskTestBase
       @user = create :user
       # @controller.s[:user] = @user.id
       @pipeline       = create :pipeline
-      @batch          = create :batch, :pipeline => @pipeline
+      @batch          = create :batch, pipeline: @pipeline
       @controller.batch = @batch
       @br = create :batch_request
       @batch.batch_requests << @br
       @task      = create :assign_tags_task
       @tag_group = create :tag_group
-      @tag       = create :tag, :tag_group => @tag_group
+      @tag       = create :tag, tag_group: @tag_group
 
     end
 
@@ -43,7 +43,7 @@ class AssignTagsTaskTest < TaskTestBase
 
     context "#render_task" do
       setup do
-        params = { :workflow_id => @workflow, :tag_group => @tag_group.id, :batch_id => @batch.id }
+        params = { workflow_id: @workflow, tag_group: @tag_group.id, batch_id: @batch.id }
         @task.render_task(@controller, params)
       end
 
@@ -56,23 +56,23 @@ class AssignTagsTaskTest < TaskTestBase
       setup do
         @multiplexedlibrarytube_count = MultiplexedLibraryTube.count
         @pipeline       = create :pipeline
-        @batch          = create :batch, :pipeline => @pipeline
+        @batch          = create :batch, pipeline: @pipeline
         # TODO: Move this into factory. Create library and sample_tube factory
         @sample_tube    = create(:sample_tube)
         @library        = create(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:dup) }
         @sample_tube.children << @library
 
         submission = Submission.last # probably built in batch ...?
-        @mx_request = create :request, :request_type_id => 1, :submission => submission, :asset => @sample_tube, :target_asset => @library
+        @mx_request = create :request, request_type_id: 1, submission: submission, asset: @sample_tube, target_asset: @library
         $stop = true
-        @cf_request = create :request_without_assets, :request_type_id => 2, :submission => submission, :asset => nil
+        @cf_request = create :request_without_assets, request_type_id: 2, submission: submission, asset: nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
 
-        params = { :workflow_id => @workflow, :batch_id => @batch.id,
-                   :tag_group => @tag_group.id.to_s,
-                   :mx_library_name => "MX library",
-                   :tag => { @mx_request.id.to_s => @tag.id.to_s },
+        params = { workflow_id: @workflow, batch_id: @batch.id,
+                   tag_group: @tag_group.id.to_s,
+                   mx_library_name: "MX library",
+                   tag: { @mx_request.id.to_s => @tag.id.to_s },
                     }
         @task.do_task(@controller, params)
       end

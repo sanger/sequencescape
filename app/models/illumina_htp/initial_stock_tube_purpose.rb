@@ -8,17 +8,17 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
 
   module InitialTube
 
-    def valid_transition?(outer_request,target_state)
+    def valid_transition?(outer_request, target_state)
       target_state != 'started' || outer_request.pending?
     end
 
     def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
       ActiveRecord::Base.transaction do
-        tube.requests_as_target.where.not(state:terminated_states).each do |request|
+        tube.requests_as_target.where.not(state: terminated_states).each do |request|
           request.transition_to(state)
-          new_outer_state = ['started','passed','qc_complete'].include?(state) ? 'started' : state
+          new_outer_state = ['started', 'passed', 'qc_complete'].include?(state) ? 'started' : state
           request.outer_request.customer_accepts_responsibility! if customer_accepts_responsibility
-          request.outer_request.transition_to(new_outer_state)   if valid_transition?(request.outer_request,new_outer_state)
+          request.outer_request.transition_to(new_outer_state)   if valid_transition?(request.outer_request, new_outer_state)
         end
       end
     end
@@ -45,7 +45,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
         ).
         includes([:uuid_object, :barcode_prefix])
 
-      siblings.map { |s| s.id.nil? ? :no_tube : { :name => s.name,:uuid => s.uuid,:ean13_barcode => s.ean13_barcode,:state => s.quick_state } }
+      siblings.map { |s| s.id.nil? ? :no_tube : { name: s.name, uuid: s.uuid, ean13_barcode: s.ean13_barcode, state: s.quick_state } }
     end
 
   end

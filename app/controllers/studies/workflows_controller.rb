@@ -5,16 +5,16 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Studies::WorkflowsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :discover_study, :discover_workflow
 
-  before_action :setup_tabs, :only => [:show, :show_summary]
+  before_action :setup_tabs, only: [:show, :show_summary]
 
   def setup_tabs
     @total_requests = compute_total_request(@study)
-    @cache          = { :total => @total_requests }
+    @cache          = { total: @total_requests }
 
     # Request types are already loaded, so we sort in ruby
     @request_types  = @workflow.request_types.sort_by(&:order).reject { |r| @total_requests[r].zero? }
@@ -46,7 +46,7 @@ class Studies::WorkflowsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml
-      format.json { render :json => Study.all.to_json }
+      format.json { render json: Study.all.to_json }
     end
 
   end
@@ -58,7 +58,7 @@ class Studies::WorkflowsController < ApplicationController
       next if new_key == key
       params[new_key] = value
     end
-    page_params = { :page => params[:page] || 1, :per_page => params[:per_page] || 50 }
+    page_params = { page: params[:page] || 1, per_page: params[:per_page] || 50 }
 
     if request.xhr?
       @default_tab_label = "Assets progress"
@@ -69,33 +69,33 @@ class Studies::WorkflowsController < ApplicationController
       when "Sample progress"
         @page_elements  = @study.samples.paginate(page_params)
         sample_ids      = @page_elements.map(&:id)
-        render :partial => "sample_progress"
+        render partial: "sample_progress"
       when "Assets progress"
         @asset_type = Aliquot::Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
-        @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
+        @asset_type_name = params.fetch(:asset_type, 'All Assets').underscore.humanize
         @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
 
-        @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)
-        render :partial => "asset_progress"
+        @cache.merge!(passed: @passed_asset_request, failed: @failed_asset_request)
+        render partial: "asset_progress"
       when "Summary"
         @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
-        render :partial => "summary"
+        render partial: "summary"
       else
         @request_type = @request_types[@summary - @basic_tabs.size]
         # The include here doesn't load ALL the requests, only those matching the given request type. Ideally we'd just grab the counts,
         # but unfortunately we need to have at least the request id available for linking to in cases where we have
         # only one request in a particular state.
-        @assets_to_detail = Aliquot::Receptacle.for_study_and_request_type(@study,@request_type).includes(:requests).paginate(page_params)
+        @assets_to_detail = Aliquot::Receptacle.for_study_and_request_type(@study, @request_type).includes(:requests).paginate(page_params)
         # Example group by count which would allow us to do returned_hash[[asset_id,state]] to get the count for a particular asset/state
         # Unfortunately this doesn't let us grab the request id. We could use some custom SQL to achieve this, but we'll see how
         # effective the above is before trying that.
         # Aliquot::Receptacle.for_study_and_request_type(@study,@request_type).where(id:@assets_to_detail.map(&:id)).group('assets.id','requests.state').count
         unless @assets_to_detail.empty?
-          render :partial => "summary_for_request_type"
+          render partial: "summary_for_request_type"
         else
-          render :text => "No requests of this type can be found"
+          render text: "No requests of this type can be found"
         end
       end
     else
@@ -106,7 +106,7 @@ class Studies::WorkflowsController < ApplicationController
 
   def summary
     s = UiHelper::Summary.new
-    @summary = s.load(@study, @workflow).paginate :page => params[:page], :order => 'created_at DESC'
+    @summary = s.load(@study, @workflow).paginate page: params[:page], order: 'created_at DESC'
     # @summary.load(@study, @workflow)
     respond_to do |format|
       format.html

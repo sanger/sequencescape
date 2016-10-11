@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class CherrypickTask < Task
-  EMPTY_WELL          = [0,"Empty",""]
-  TEMPLATE_EMPTY_WELL = [0,'---','']
+  EMPTY_WELL          = [0, "Empty", ""]
+  TEMPLATE_EMPTY_WELL = [0, '---', '']
 
   def create_render_element(request)
   end
@@ -39,7 +39,7 @@ class CherrypickTask < Task
       const_get("by_#{cherrypick_direction}".classify)
     end
 
-    def initialize(batch, template, asset_shape=nil, partial = nil)
+    def initialize(batch, template, asset_shape = nil, partial = nil)
       @wells, @size, @batch, @shape = [], template.size, batch, asset_shape || AssetShape.default
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
@@ -227,7 +227,7 @@ class CherrypickTask < Task
         'INNER JOIN maps ON wells.map_id=maps.id'
       ]).
       order('plates.barcode ASC, maps.column_order ASC').
-      where(:requests => { :id => requests }).
+      where(requests: { id: requests }).
       all.map do |request|
       [request.id, request.barcode, request.description]
     end
@@ -236,10 +236,10 @@ class CherrypickTask < Task
 
   def generate_control_request(well)
     # TODO: create a genotyping request for the control request
-    #Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
+    # Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
     workflow.pipeline.control_request_type.create_control!(
-      :asset => well,
-      :target_asset => Well.create!(:aliquots => well.aliquots.map(&:dup))
+      asset: well,
+      target_asset: Well.create!(aliquots: well.aliquots.map(&:dup))
     )
   end
   private :generate_control_request

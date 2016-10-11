@@ -31,8 +31,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
 
   def object_to_encode(attributes)
     OpenStruct.new(attributes.reverse_merge(
-      :created_at => 'created_at_now',
-      :updated_at => 'updated_at_now'
+      created_at: 'created_at_now',
+      updated_at: 'updated_at_now'
     ))
   end
   private :object_to_encode
@@ -55,7 +55,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
   context Core::Io::Base::JsonFormattingBehaviour do
     setup do
       @stream = StringIO.new
-      @options = { :stream => Core::Io::Json::Stream.new(@stream) }
+      @options = { stream: Core::Io::Json::Stream.new(@stream) }
     end
 
     context 'resource' do
@@ -69,7 +69,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             encoder_for(
               'attribute' => 'json'
             ).object_json(
-              object_to_encode(:attribute => @value),
+              object_to_encode(attribute: @value),
               @options
             )
 
@@ -110,8 +110,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'attribute2' => 'json2'
           ).object_json(
             object_to_encode(
-              :attribute1 => 'value1',
-              :attribute2 => 'value2'
+              attribute1: 'value1',
+              attribute2: 'value2'
             ),
             @options
           )
@@ -132,7 +132,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             encoder_for(
               'attribute' => 'nested.json'
             ).object_json(
-              object_to_encode(:attribute => @value),
+              object_to_encode(attribute: @value),
               @options
             )
 
@@ -157,8 +157,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'attribute2' => 'nested.json2'
           ).object_json(
             object_to_encode(
-              :attribute1 => 'value1',
-              :attribute2 => 'value2'
+              attribute1: 'value1',
+              attribute2: 'value2'
             ),
             @options
           )
@@ -182,7 +182,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           encoder_for(
             'level1.attribute' => 'json'
           ).object_json(
-            object_to_encode({ :level1 => nil }),
+            object_to_encode({ level1: nil }),
             @options
           )
 
@@ -196,7 +196,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           encoder_for(
             'level1.attribute' => 'nested.json'
           ).object_json(
-            object_to_encode({ :level1 => nil }),
+            object_to_encode({ level1: nil }),
             @options
           )
 
@@ -213,7 +213,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             encoder_for(
               'level1.attribute' => 'json'
             ).object_json(
-              object_to_encode(:level1 => OpenStruct.new(:attribute => @value)),
+              object_to_encode(level1: OpenStruct.new(attribute: @value)),
               @options
             )
 
@@ -242,8 +242,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'level2.attribute2' => 'nested.json2'
           ).object_json(
             object_to_encode(
-              :level1 => OpenStruct.new(:attribute1 => 'value1'),
-              :level2 => OpenStruct.new(:attribute2 => 'value2')
+              level1: OpenStruct.new(attribute1: 'value1'),
+              level2: OpenStruct.new(attribute2: 'value2')
             ),
             @options
           )
@@ -265,8 +265,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'level2.attribute2' => 'nested2.json2'
           ).object_json(
             object_to_encode(
-              :level1 => OpenStruct.new(:attribute1 => 'value1'),
-              :level2 => OpenStruct.new(:attribute2 => 'value2')
+              level1: OpenStruct.new(attribute1: 'value1'),
+              level2: OpenStruct.new(attribute2: 'value2')
             ),
             @options
           )

@@ -20,7 +20,7 @@ class HashGenerationTest < ActiveSupport::TestCase
     end
 
     def updated_at
-      Date.new(2013,1,2)
+      Date.new(2013, 1, 2)
     end
   end
 
@@ -53,20 +53,20 @@ class HashGenerationTest < ActiveSupport::TestCase
       @test_has_many_more = mock('hasm_more_assn')
       @test_ham_assn = mock('hasm_assn')
 
-      @example_model = ExampleModel.new('example',@test_assn,[@test_ham_assn])
+      @example_model = ExampleModel.new('example', @test_assn, [@test_ham_assn])
 
       @test_assn.stubs(:assn_var).returns('example_2')
       @test_assn.stubs(:destroyed?).returns(false)
-      @test_assn.stubs(:updated_at).returns(Date.new(2013,1,4))
+      @test_assn.stubs(:updated_at).returns(Date.new(2013, 1, 4))
 
       @test_ham_assn.stubs(:ham_assn_var).returns('example_3')
       @test_ham_assn.stubs(:destroyed?).returns(false)
-      @test_ham_assn.stubs(:updated_at).returns(Date.new(2013,1,3))
+      @test_ham_assn.stubs(:updated_at).returns(Date.new(2013, 1, 3))
       @test_ham_assn.stubs(:has_many_more).returns([@test_has_many_more])
 
       @test_has_many_more.stubs(:ham_assn_var).returns('example_4')
       @test_has_many_more.stubs(:destroyed?).returns(false)
-      @test_has_many_more.stubs(:updated_at).returns(Date.new(2013,1,3))
+      @test_has_many_more.stubs(:updated_at).returns(Date.new(2013, 1, 3))
     end
 
     context 'A simple model' do
@@ -76,8 +76,8 @@ class HashGenerationTest < ActiveSupport::TestCase
         assert_equal({
           'name' => 'example',
           'association_value' => 'example_2',
-          'has_many_association' => [{ 'nested_value' => 'example_3','has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
-          'updated_at' => Date.new(2013,1,4)
+          'has_many_association' => [{ 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
+          'updated_at' => Date.new(2013, 1, 4)
         }, hash)
       end
     end
@@ -85,7 +85,7 @@ class HashGenerationTest < ActiveSupport::TestCase
     context 'With newer sub_nested models' do
 
       setup do
-        @test_has_many_more.stubs(:updated_at).returns(Date.new(2013,1,6))
+        @test_has_many_more.stubs(:updated_at).returns(Date.new(2013, 1, 6))
       end
 
       should 'record an updated timestamp' do
@@ -93,8 +93,8 @@ class HashGenerationTest < ActiveSupport::TestCase
         assert_equal({
           'name' => 'example',
           'association_value' => 'example_2',
-          'has_many_association' => [{ 'nested_value' => 'example_3','has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
-          'updated_at' => Date.new(2013,1,6)
+          'has_many_association' => [{ 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
+          'updated_at' => Date.new(2013, 1, 6)
         }, hash)
       end
     end

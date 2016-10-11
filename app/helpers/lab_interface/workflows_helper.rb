@@ -12,7 +12,7 @@ module LabInterface::WorkflowsHelper
   def descriptor_value(descriptor)
     # Refactored to remove reliance on @values
     params[:values].try(:[], descriptor.name) or
-      @study.try(:descriptor_value,descriptor.name) or ""
+      @study.try(:descriptor_value, descriptor.name) or ""
   end
 
   # Returns a link to any available request comments with "None" as a
@@ -39,20 +39,18 @@ module LabInterface::WorkflowsHelper
 
   def batch_tag_index
     @tag_hash ||= Hash[
-      Tag.joins('INNER JOIN aliquots ON aliquots.tag_id = tags.id').
-        select('tags.map_id, aliquots.receptacle_id AS receptacle_id').
-        where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id).uniq }).map do |tag|
-      [tag.receptacle_id,tag.map_id]
-    end].tap { |th| th.default = '-' }
+      Tag.joins(:aliquots).
+        where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id).uniq }).
+        pluck(:receptacle_id, :map_id)].tap { |th| th.default = '-' }
   end
 
-  def qc_select_box(request, status, html_options={})
+  def qc_select_box(request, status, html_options = {})
     select_options = ['pass', 'fail']
     select_options.unshift('') if html_options.delete(:generate_blank)
-    select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(:class => 'qc_state'))
+    select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(class: 'qc_state'))
   end
 
-  def gel_qc_select_box(request, status, html_options={})
+  def gel_qc_select_box(request, status, html_options = {})
     blank = html_options.delete(:generate_blank) ? "<option></option>" : ""
     if status.blank? || status == "Pass"
       status = "OK"
@@ -60,7 +58,4 @@ module LabInterface::WorkflowsHelper
     select_tag("wells[#{request.id}][qc_state]", options_for_select({ "Pass" => "OK", "Fail" => "Fail", "Weak" => "Weak", "No Band" => "Band Not Visible", "Degraded" => "Degraded" }, status), html_options)
   end
 
-  def request_types_sorted_by_total(workflow, project)
-    workflow.request_types.to_a.sort { |a,b| a.name <=> b.name }
-  end
 end

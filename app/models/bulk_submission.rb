@@ -51,7 +51,7 @@ class BulkSubmission
   def persisted?; false; end
   def id; nil; end
 
-  def initialize(attrs={})
+  def initialize(attrs = {})
     self.spreadsheet = attrs[:spreadsheet]
   end
 
@@ -59,7 +59,7 @@ class BulkSubmission
 
   def process_file
     # Slightly inelegant file-type checking
-    #TODO (jr) Find a better way of verifying the CSV file?
+    # TODO (jr) Find a better way of verifying the CSV file?
     unless spreadsheet.blank?
       if spreadsheet.size == 0
         errors.add(:spreadsheet, "The supplied file was empty")
@@ -115,7 +115,7 @@ class BulkSubmission
   end
 
   def max_priority(orders)
-    orders.inject(0) do |max,order|
+    orders.inject(0) do |max, order|
       priority = Submission::Priorities.priorities.index(order['priority']) || order['priority'].to_i
       priority > max ? priority.to_i : max
     end
@@ -142,7 +142,7 @@ class BulkSubmission
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
         submission_details.each do |submissions|
-          submissions.each do |submission_name,orders|
+          submissions.each do |submission_name, orders|
             user = User.find_by_login(orders.first['user login'])
             if user.nil?
               errors.add :spreadsheet, orders.first["user login"].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
@@ -150,7 +150,7 @@ class BulkSubmission
             end
 
             begin
-              submission = Submission.create!(:name => submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority => max_priority(orders))
+              submission = Submission.create!(name: submission_name, user: user, orders: orders.map(&method(:prepare_order)).compact, priority: max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
@@ -166,7 +166,7 @@ class BulkSubmission
       end
 
     end
-  end #process
+  end # process
 
   COMMON_FIELDS = [
     # Needed to construct the submission ...
@@ -198,7 +198,7 @@ class BulkSubmission
     ALIAS_FIELDS[header] || header
   end
 
-  def validate_entry(header,pos,row,index)
+  def validate_entry(header, pos, row, index)
     return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
     errors.add(:spreadsheet, "Row #{index}, column #{pos + 1} contains data but no heading.")
   end
@@ -209,10 +209,10 @@ class BulkSubmission
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
   def submission_structure
-    Hash.new { |h,i| h[i] = Array.new }.tap do |submission|
+    Hash.new { |h, i| h[i] = Array.new }.tap do |submission|
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
-        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index + start_row) }].merge('row' => index + start_row)
+        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header, pos, row, index + start_row) }].merge('row' => index + start_row)
         submission[details['submission name']] << details
       end
     end.map do |submission_name, rows|
@@ -226,7 +226,7 @@ class BulkSubmission
           details['asset names']   = rows.field_list('asset name', 'asset names')
           details['plate well']    = rows.field_list('plate well')
           details['barcode']       = rows.field_list('barcode')
-        end.delete_if { |_,v| v.blank? }
+        end.delete_if { |_, v| v.blank? }
 
       end
       Hash[submission_name, order]
@@ -259,14 +259,14 @@ class BulkSubmission
 
       # The order attributes are initially
       attributes = {
-        :study   => study,
-        :project => project,
-        :user => user,
-        :comments => details['comments'],
-        :request_options => {
-          :read_length => details['read length']
+        study: study,
+        project: project,
+        user: user,
+        comments: details['comments'],
+        request_options: {
+          read_length: details['read length']
         },
-        :pre_cap_group => details['pre-capture group']
+        pre_cap_group: details['pre-capture group']
       }
 
       attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?
@@ -301,11 +301,11 @@ class BulkSubmission
       else
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
-        if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-          found_assets    = []
-        else
-          found_assets    = Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
-        end
+        found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
+          []
+                       else
+          Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                       end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
         raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting

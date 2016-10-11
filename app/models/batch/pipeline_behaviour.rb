@@ -9,8 +9,8 @@ module Batch::PipelineBehaviour
     base.class_eval do
       # The associations with the pipeline
       belongs_to :pipeline
-      delegate :workflow, :item_limit, :multiplexed?, :to => :pipeline
-      delegate :tasks, :to => :workflow
+      delegate :workflow, :item_limit, :multiplexed?, to: :pipeline
+      delegate :tasks, to: :workflow
 
       # The validations that the pipeline & batch are correct
       validates_presence_of :pipeline
@@ -21,10 +21,10 @@ module Batch::PipelineBehaviour
       end
 
       # The batch requires positions on it's requests if the pipeline does
-      delegate :requires_position?, :to => :pipeline
+      delegate :requires_position?, to: :pipeline
 
       # Ensure that the batch is valid to be marked as completed
-      validate(:if => :completed?) do |record|
+      validate(if: :completed?) do |record|
         record.pipeline.validation_of_batch_for_completion(record)
       end
     end
@@ -52,7 +52,7 @@ module Batch::PipelineBehaviour
     @efct ||= if lab_events.loaded
       lab_events.select { |le| le.description == "Complete" }
     else
-      lab_events.where(description:"Complete")
+      lab_events.where(description: "Complete")
     end
   end
 
@@ -64,7 +64,7 @@ module Batch::PipelineBehaviour
 
   def last_completed_task
     unless complete_events.empty?
-      pipeline.workflow.tasks.order(:sorted).where(id:completed_task_ids).last
+      pipeline.workflow.tasks.order(:sorted).where(id: completed_task_ids).last
     end
   end
 

@@ -21,9 +21,9 @@ module Attributable
     base.extend(ClassMethods)
     base.class_eval do
       # NOTE: Do not use 'attributes' because that's an ActiveRecord internal name
-      class_attribute :attribute_details, :instance_writer => false
+      class_attribute :attribute_details, instance_writer: false
       self.attribute_details = []
-      class_attribute :association_details, :instance_writer => false
+      class_attribute :association_details, instance_writer: false
       self.association_details = []
     end
   end
@@ -32,7 +32,7 @@ module Attributable
   class CustomValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       valid = record.validator_for(attribute).valid_options.include?(value)
-      record.errors.add(attribute,"is not a valid option") unless valid
+      record.errors.add(attribute, "is not a valid option") unless valid
       valid
     end
   end
@@ -61,7 +61,7 @@ module Attributable
 
   def field_infos
     self.class.attribute_details.map do |detail|
-      detail.to_field_info(nil,self)
+      detail.to_field_info(nil, self)
     end
   end
 
@@ -116,7 +116,7 @@ module Attributable
       end
 
       def for_select_association
-        for_selection.pluck(:name,:id)
+        for_selection.pluck(:name, :id)
       end
 
       def default
@@ -176,15 +176,15 @@ module Attributable
 
     def to_field_info(*args)
       FieldInfo.new(
-        :display_name  => display_name,
-        :key           => assignable_attribute_name,
-        :kind          => kind,
-        :selection     => selection_options(nil)
+        display_name: display_name,
+        key: assignable_attribute_name,
+        kind: kind,
+        selection: selection_options(nil)
       )
     end
 
     def get_scoped_selection
-      @scope.inject(@owner.reflections[@name.to_s].klass) { |k,v| k.send(v.to_sym) }
+      @scope.inject(@owner.reflections[@name.to_s].klass) { |k, v| k.send(v.to_sym) }
     end
     private :get_scoped_selection
 
@@ -219,7 +219,7 @@ module Attributable
       record[self.name]
     end
 
-    def default_from(origin=nil)
+    def default_from(origin = nil)
       return nil if origin.nil?
       return origin.validator_for(name).default if validator?
     end
@@ -288,13 +288,13 @@ module Attributable
       model.with_options(conditions) do |object|
         # false.blank? == true, so we exclude booleans here, they handle themselves further down.
         object.validates_presence_of(name) if self.required? && !self.boolean?
-        object.with_options(:allow_nil => self.optional?, :allow_blank => allow_blank) do |required|
-          required.validates_inclusion_of(name, :in => [true, false]) if self.boolean?
-          required.validates_numericality_of(name, :only_integer => true) if self.numeric?
-          required.validates_numericality_of(name, :greater_than => 0) if self.float?
-          required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.fixed_selection?
-          required.validates_format_of(name, :with => self.valid_format) if self.valid_format?
-          required.validates name, :custom => true if self.validator?
+        object.with_options(allow_nil: self.optional?, allow_blank: allow_blank) do |required|
+          required.validates_inclusion_of(name, in: [true, false]) if self.boolean?
+          required.validates_numericality_of(name, only_integer: true) if self.numeric?
+          required.validates_numericality_of(name, greater_than: 0) if self.float?
+          required.validates_inclusion_of(name, in: self.selection_values, allow_false: true) if self.fixed_selection?
+          required.validates_format_of(name, with: self.valid_format) if self.valid_format?
+          required.validates name, custom: true if self.validator?
           required.validate(self.validate_method) if self.method?
         end
       end
@@ -318,7 +318,7 @@ module Attributable
     end
 
     def self.find_display_name(klass, name)
-      translation = I18n.t("metadata.#{ klass.name.underscore.gsub('/', '.') }.#{ name }")
+      translation = I18n.t("metadata.#{klass.name.underscore.tr('/', '.')}.#{name}")
       if translation.is_a?(Hash) # translation found, we return the label
         return translation[:label]
       else
@@ -358,15 +358,15 @@ module Attributable
     def to_field_info(object = nil, metadata = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
-        :display_name  => display_name,
-        :key           => assignable_attribute_name,
-        :default_value => find_default(object,metadata),
-        :kind          => kind,
-        :required      => required?
+        display_name: display_name,
+        key: assignable_attribute_name,
+        default_value: find_default(object, metadata),
+        kind: kind,
+        required: required?
       }
-      options.update(:selection => selection_options(metadata)) if self.selection?
-      options.update(:step => 1, :min => self.minimum) if self.numeric?
-      options.update(:step => 0.1, :min => 0) if self.float?
+      options.update(selection: selection_options(metadata)) if self.selection?
+      options.update(step: 1, min: self.minimum) if self.numeric?
+      options.update(step: 0.1, min: 0) if self.float?
       FieldInfo.new(options)
     end
   end

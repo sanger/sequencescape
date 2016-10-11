@@ -7,6 +7,7 @@ AllCops:
     - lib/**/*.rake
   Exclude:
     - db/schema.rb
+    - db/views_schema.rb
     - db/archived_migrations/*
     - vendor/**/*
 # The cop is meant to enforce conventions regarding variables containing numbers

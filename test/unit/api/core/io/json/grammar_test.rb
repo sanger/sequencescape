@@ -23,7 +23,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       end
 
       should 'stream nested attribute value' do
-        @object.expects(:root).returns(OpenStruct.new(:leaf => 'value'))
+        @object.expects(:root).returns(OpenStruct.new(leaf: 'value'))
         @stream.expects(:attribute).with(:attribute_name, 'value', :options)
       end
     end
@@ -32,7 +32,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       target = Core::Io::Json::Grammar::Leaf.new(:attribute_name, ['leaf'])
       stream = mock('Stream')
       stream.expects(:attribute).with(:attribute_name, 'value', :options)
-      target.call(OpenStruct.new(:leaf => 'value'), :options, stream)
+      target.call(OpenStruct.new(leaf: 'value'), :options, stream)
     end
   end
 
@@ -62,7 +62,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
     context 'with object' do
       setup do
-        @object  = OpenStruct.new(:created_at => 'now', :updated_at => 'tomorrow')
+        @object  = OpenStruct.new(created_at: 'now', updated_at: 'tomorrow')
         @handler = mock('Handler')
       end
 
@@ -72,13 +72,13 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
         nested_stream.expects(:attribute).with('created_at', 'now')
         nested_stream.expects(:attribute).with('updated_at', 'tomorrow')
 
-        options  = { :handled_by => @handler }
+        options  = { handled_by: @handler }
 
         children = Hash[['Child 1', 'Child 2'].map do |name|
           child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
           [name, child]
         end]
-        target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(:json_root => :root_json), children)
+        target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children)
         target.call(@object, options, stream)
       end
 

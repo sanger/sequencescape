@@ -23,30 +23,30 @@ require './lib/product_helpers'
 
   COMPLEX_PRODUCTS = [
     {
-    :name => 'GenericPCR',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'GenericPCR',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
       },
     },
     {
-    :name => 'GenericNoPCR',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'GenericNoPCR',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
       },
     },
     {
-    :name => 'ClassicMultiplexed',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'ClassicMultiplexed',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
       }
     },
     {
-      :name => 'Manual',
-      :selection_behaviour => 'Manual',
-      :products => {
+      name: 'Manual',
+      selection_behaviour: 'Manual',
+      products: {
         nil => 'Generic',
         'MWGS' => 'MWGS',
         'PWGS' => 'PWGS',

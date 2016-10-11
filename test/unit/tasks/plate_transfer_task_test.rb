@@ -29,10 +29,10 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @batch                = create :batch
       @workflows_controller.batch = @batch
       @source_plate         = create :plate
-      @source_plate.wells   = ['A1','B1','C1'].map do |loc|
+      @source_plate.wells   = ['A1', 'B1', 'C1'].map do |loc|
         create(:well_with_sample_and_without_plate).tap do |w|
-          w.map = Map.find_by_description_and_asset_size(loc,96)
-          request = create :pac_bio_sample_prep_request, :asset => w
+          w.map = Map.find_by_description_and_asset_size(loc, 96)
+          request = create :pac_bio_sample_prep_request, asset: w
           @batch.requests << request
         end
       end
@@ -50,7 +50,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         setup do
           @plate_count =  Plate.count
           @transferrequest_count = TransferRequest.count
-          params = { :batch_id => @batch.id }
+          params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)
         end
 
@@ -89,7 +89,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         setup do
           @plate_count = Plate.count
-          params = { :batch_id => @batch.id }
+          params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)
           @task.render_task(@workflows_controller, params)
         end
@@ -109,8 +109,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         setup do
           plate_b = create :plate
           plate_b.wells << create(:well_with_sample_and_without_plate).tap do |w|
-            w.map = Map.find_by_description_and_asset_size('A1',96)
-            request = create :well_request, :asset => w, :target_asset => create(:pac_bio_library_tube)
+            w.map = Map.find_by_description_and_asset_size('A1', 96)
+            request = create :well_request, asset: w, target_asset: create(:pac_bio_library_tube)
             w.requests << request
             @batch.requests << request
           end
@@ -118,7 +118,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         should 'raise an exception' do
           assert_raise Tasks::PlateTransferHandler::InvalidBatch do
-            params = { :batch_id => @batch.id }
+            params = { batch_id: @batch.id }
             @task.render_task(@workflows_controller, params)
           end
         end
@@ -133,10 +133,10 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         plate_barcode.stubs(:barcode).returns("1234567")
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
-        params = { :plate_transfer_task => {}, :batch_id => @batch.id }
+        params = { plate_transfer_task: {}, batch_id: @batch.id }
         # @workflows_controller.batch = mock("Batch")
 
-                  params = { :batch_id => @batch.id }
+                  params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)
           @task.do_task(@workflows_controller, params)
       end

@@ -9,10 +9,10 @@ class UpdateQcMetricsStateColumn < ActiveRecord::Migration
   extend ForeignKeyConstraint
 
   def self.up
-    change_column :qc_metrics, :qc_decision, :string, :null => false
+    change_column :qc_metrics, :qc_decision, :string, null: false
   end
 
   def self.down
-    change_column :qc_metrics, :qc_decision, :boolean, :null => false
+    change_column :qc_metrics, :qc_decision, :boolean, null: false
   end
 end

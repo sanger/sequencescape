@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 Given /^freezer location "([^"]*)" exists$/ do |location_name|
-  Location.create!(:name => location_name)
+  Location.create!(name: location_name)
 end

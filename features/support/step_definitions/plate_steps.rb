@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^the system has a plate with a barcode of "([^\"]*)"$/ do |encoded_barcode|
-  FactoryGirl.create(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
+  FactoryGirl.create(:plate, barcode: Barcode.number_to_human(encoded_barcode))
 end
 
 Given /^exactly (\d+) labels? should have been printed/ do |expected_number|
@@ -20,9 +20,9 @@ Given /^the study "([^\"]+)" has a plate with barcode "([^\"]+)"$/ do |study_nam
   study, user = Study.find_by_name(study_name), User.find_by_login('user')
   prefix, number, check = Barcode.split_human_barcode(barcode)
 
-  asset_group = FactoryGirl.create(:asset_group, :name => 'plates', :user => user, :study => study)
-  plate = FactoryGirl.create(:plate, :barcode => number)
-  FactoryGirl.create(:asset_group_asset, :asset_id => plate.id, :asset_group_id => asset_group.id)
+  asset_group = FactoryGirl.create(:asset_group, name: 'plates', user: user, study: study)
+  plate = FactoryGirl.create(:plate, barcode: number)
+  FactoryGirl.create(:asset_group_asset, asset_id: plate.id, asset_group_id: asset_group.id)
 end
 
 Given /^the plate with barcode "([^\"]+)" has events:$/ do |barcode, events_table|
@@ -34,7 +34,7 @@ end
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by_barcode(plate_barcode)
   1.upto(number_of_wells.to_i) do |i|
-    Well.create!(:plate => plate, :map_id => i)
+    Well.create!(plate: plate, map_id: i)
   end
 end
 
@@ -42,7 +42,7 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, nu
   plate = Plate.find_by_barcode(plate_barcode)
   well_data = []
   1.upto(number_of_wells.to_i) do |i|
-    Well.create!(:plate => plate, :map_id => i, :sample => FactoryGirl.create(:sample))
+    Well.create!(plate: plate, map_id: i, sample: FactoryGirl.create(:sample))
   end
 end
 
@@ -52,7 +52,7 @@ Then /^plate with barcode "([^"]*)" should exist$/ do |plate_barcode|
   assert_not_nil plate
 end
 
-Then /^plate with barcode "([^"]*)" is part of study "([^"]*)"$/ do |plate_barcode,study_name|
+Then /^plate with barcode "([^"]*)" is part of study "([^"]*)"$/ do |plate_barcode, study_name|
   plate = Plate.find_from_machine_barcode(plate_barcode)
   assert_not_nil plate
   study = Study.find_by_name(study_name)
@@ -63,30 +63,30 @@ Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barco
   plate = Plate.find_from_machine_barcode(plate_barcode)
   plate.wells.walk_in_column_major_order do |well, index|
     well.well_attribute.update_attributes!(
-      :pico_pass      => "Pass",
-      :concentration  => 5 + (index % 50),
-      :sequenom_count => index % 30,
-      :gender_markers => ['F', 'F', 'F', 'F']
+      pico_pass: "Pass",
+      concentration: 5 + (index % 50),
+      sequenom_count: index % 30,
+      gender_markers: ['F', 'F', 'F', 'F']
     )
   end
 end
 
 Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
-      :current_volume => 10 + (index % 30),
-      :concentration => 205 + (index % 50)
+      current_volume: 10 + (index % 30),
+      concentration: 205 + (index % 50)
     )
   end
 end
 
 Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
-      :current_volume => 10 + (index % 30),
-      :concentration => 50 + (index % 50)
+      current_volume: 10 + (index % 30),
+      concentration: 50 + (index % 50)
     )
   end
 end
@@ -94,7 +94,7 @@ end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
-  well  = FactoryGirl.create(:empty_well).tap { |well| well.aliquots.create!(:sample => FactoryGirl.create(:sample, :name => 'Sample1')) }
+  well  = FactoryGirl.create(:empty_well).tap { |well| well.aliquots.create!(sample: FactoryGirl.create(:sample, name: 'Sample1')) }
   plate.add_and_save_well(well, 0, 0)
 end
 
@@ -113,40 +113,40 @@ end
 
 Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type, machine_barcode|
   plate_type.constantize.create!(
-    :barcode => Barcode.number_to_human("#{machine_barcode}"),
-    :plate_purpose => "#{plate_type}Purpose".constantize.first)
+    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    plate_purpose: "#{plate_type}Purpose".constantize.first)
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   plate_type.constantize.create!(
-    :barcode => Barcode.number_to_human("#{machine_barcode}"),
-    :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name),
-    :name => machine_barcode)
+    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    plate_purpose: PlatePurpose.find_by_name(plate_purpose_name),
+    name: machine_barcode)
 end
 
 Given /^plate (\d+) has is a stock plate$/ do |plate_id|
-  Plate.find(plate_id).update_attributes(:plate_purpose => PlatePurpose.stock_plate_purpose)
+  Plate.find(plate_id).update_attributes(plate_purpose: PlatePurpose.stock_plate_purpose)
 end
 
 Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name|
   purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
-  Plate.find(id).update_attributes!(:plate_purpose => purpose)
+  Plate.find(id).update_attributes!(plate_purpose: purpose)
 end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   # Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
   FactoryGirl.create(:plate,
-    :barcode => Barcode.number_to_human("#{machine_barcode}"),
-    :plate_purpose => Purpose.find_by_name(plate_purpose_name)
+    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    plate_purpose: Purpose.find_by_name(plate_purpose_name)
     )
 end
 
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryGirl.create(:plate,
-    :name => "A_TEST_STOCK_PLATE",
-    :barcode => Barcode.number_to_human("#{machine_barcode}"),
-    :plate_purpose => PlatePurpose.find_by_name("Stock Plate")
+    name: "A_TEST_STOCK_PLATE",
+    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    plate_purpose: PlatePurpose.find_by_name("Stock Plate")
   )
 end
 
@@ -163,14 +163,14 @@ end
 Given /^the well with ID (\d+) is at position "([^\"]+)" on the plate with ID (\d+)$/ do |well_id, position, plate_id|
   plate = Plate.find(plate_id)
   map   = Map.where_description(position).where_plate_size(plate.size).where_plate_shape(plate.asset_shape).first or raise StandardError, "Could not find position #{position}"
-  Well.find(well_id).update_attributes!(:plate => plate, :map => map)
+  Well.find(well_id).update_attributes!(plate: plate, map: map)
 end
 
 Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by_external_id(well_uuid).resource
   plate = Uuid.find_by_external_id(plate_uuid).resource
-  well.update_attributes!(:plate => plate, :map => Map.find_by_description('A1'))
-  plate.update_attributes!(:barcode => 1)
+  well.update_attributes!(plate: plate, map: Map.find_by_description('A1'))
+  plate.update_attributes!(barcode: 1)
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
@@ -180,7 +180,7 @@ end
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   well   = Well.find(well_id)
-  well.aliquots.create!(:sample => sample)
+  well.aliquots.create!(sample: sample)
 end
 
 Then /^the wells with the following UUIDs should all be related to the same plate:$/ do |well_uuids|
@@ -196,54 +196,54 @@ end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose = PlatePurpose.find_by_name!(name)
-  plate_purpose.create!(:name => plate_name)
+  plate_purpose.create!(name: plate_name)
 end
 
-Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name,barcode|
+Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by_name!(name)
-  plate_purpose.create!(name: plate_name,barcode:barcode)
+  plate_purpose.create!(name: plate_name, barcode: barcode)
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, plate_name, parent_name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   parent        = Plate.find_by_name(parent_name) or raise StandardError, "Cannot find parent plate #{parent_name.inspect}"
-  AssetLink.create!(:ancestor => parent, :descendant => plate_purpose.create!(:name => plate_name))
+  AssetLink.create!(ancestor: parent, descendant: plate_purpose.create!(name: plate_name))
 end
 
 Given /^a "(.*?)" plate called "(.*?)" exists as a child of plate (\d+)$/ do |name, plate_name, parent_id|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   parent        = Plate.find(parent_id) or raise StandardError, "Cannot find parent plate #{parent_id.inspect}"
-  AssetLink.create!(:ancestor => parent, :descendant => plate_purpose.create!(:name => plate_name))
+  AssetLink.create!(ancestor: parent, descendant: plate_purpose.create!(name: plate_name))
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" with ID (\d+)$/ do |name, plate_name, id|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
-  plate_purpose.create!(:name => plate_name, :id => id)
+  plate_purpose.create!(name: plate_name, id: id)
 end
 
 Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
   plate.wells.each do |well|
-    well.aliquots.create!(:sample => FactoryGirl.create(:sample))
+    well.aliquots.create!(sample: FactoryGirl.create(:sample))
   end
 end
 
-Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number,plate|
-  plate.wells.in_column_major_order[0,number.to_i].each do |well|
-    well.aliquots.create!(:sample => FactoryGirl.create(:sample))
+Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
+  plate.wells.in_column_major_order[0, number.to_i].each do |well|
+    well.aliquots.create!(sample: FactoryGirl.create(:sample))
   end
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by_barcode(plate_barcode)
   1.upto(number_of_wells.to_i) do |i|
-    Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => FactoryGirl.create(:sample))
+    Well.create!(plate: plate, map_id: i).aliquots.create!(sample: FactoryGirl.create(:sample))
   end
 end
 
 Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do |plate_name, state, user_name|
   plate = Plate.find_by_name(plate_name)
   user = User.find_by_login(user_name)
-  StateChange.create!(:user => user, :target => plate, :target_state => state)
+  StateChange.create!(user: user, target: plate, target_state: state)
 end
 
 
@@ -251,10 +251,10 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   source = Plate.find_by_name(source_name)
   destination = Plate.find_by_name(dest_name)
   (0...count.to_i).each do |i|
-    RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state => state)
-    Well::Link.create!(:source_well => source.wells.in_row_major_order[i],:target_well => destination.wells.in_row_major_order[i], :type => 'stock')
+    RequestType.transfer.create!(asset: source.wells.in_row_major_order[i], target_asset: destination.wells.in_row_major_order[i], state: state)
+    Well::Link.create!(source_well: source.wells.in_row_major_order[i], target_well: destination.wells.in_row_major_order[i], type: 'stock')
   end
-  AssetLink.create(:ancestor => source,:descendant => destination)
+  AssetLink.create(ancestor: source, descendant: destination)
 end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|

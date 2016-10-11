@@ -9,7 +9,7 @@ module Core::Endpoint::BasicHandler::Actions::Standard
     base.class_eval do
       include InstanceMethods
 
-      class_attribute :standard_actions, :instance_writer => false
+      class_attribute :standard_actions, instance_writer: false
       self.standard_actions = {}
     end
   end

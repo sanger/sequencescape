@@ -14,8 +14,8 @@ end
 
 Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)"$/ do |identifier, differential|
   @current_custom_text = CustomText.find_by(
-    :identifier   => identifier,
-    :differential => differential
+    identifier: identifier,
+    differential: differential
   )
 
   assert_not_nil @current_custom_text
@@ -36,7 +36,7 @@ end
 Given /^the application information box should contain "([^\"]*)"$/ do |info_text|
   regexp = Regexp.new(info_text)
   with_scope('#app-info-box') do
-    assert page.has_xpath?('//*', :text => regexp)
+    assert page.has_xpath?('//*', text: regexp)
   end
 end
 
@@ -53,7 +53,7 @@ Then /^I should be at (.+)$/ do |path|
 end
 
 Given /^I am editing the custom text field "([^\"]+)"$/ do |name|
- field = CustomText.find_by_identifier(name) or raise StandardError, "Cannot find custom text field #{ name.inspect }"
+ field = CustomText.find_by_identifier(name) or raise StandardError, "Cannot find custom text field #{name.inspect}"
  visit edit_admin_custom_text_path(field)
 end
 
@@ -67,14 +67,14 @@ end
 When /^I fill in the following fields$/ do |table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    step(%Q{I fill in the field labeled "Custom text #{ hash[:label] }" with "#{ hash[:value] }"})
+    step(%Q{I fill in the field labeled "Custom text #{hash[:label]}" with "#{hash[:value]}"})
   end
 end
 
 Then /^I should be able to (enter|edit) the following fields$/ do |action, table|
    # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    step(%Q{I fill in "#{ hash[:label] }" with "#{ hash[:value] }"})
+    step(%Q{I fill in "#{hash[:label]}" with "#{hash[:value]}"})
   end
 
   step "I press \"Save Custom text\""
@@ -85,6 +85,6 @@ Then /^I should be able to (enter|edit) the following fields$/ do |action, table
     step "I should see \"Details have been updated\""
   end
   table.hashes.each do |hash|
-    step "I should see \"#{ hash[:value] }\""
+    step "I should see \"#{hash[:value]}\""
   end
 end

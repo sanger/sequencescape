@@ -23,10 +23,10 @@ class BaitLibrary < ActiveRecord::Base
     validates_presence_of :name
     validates_uniqueness_of :name
 
-    scope :visible, -> { where(:visible => true) }
+    scope :visible, -> { where(visible: true) }
 
     # They supply many bait libraries
-    has_many :bait_libraries, :foreign_key => :bait_library_supplier_id
+    has_many :bait_libraries, foreign_key: :bait_library_supplier_id
 
     def hide
       self.visible = false
@@ -35,12 +35,12 @@ class BaitLibrary < ActiveRecord::Base
   end
 
   # All bait libraries belong to a supplier
-  belongs_to :bait_library_supplier, :class_name => 'BaitLibrary::Supplier'
+  belongs_to :bait_library_supplier, class_name: 'BaitLibrary::Supplier'
   validates_presence_of :bait_library_supplier
 
   # Within a supplier we have a unique identifier for each bait library.  Custom bait libraries
   # do not have this identifier, so nil is permitted.
-  validates_uniqueness_of :supplier_identifier, :scope => :bait_library_supplier_id, :allow_nil => true
+  validates_uniqueness_of :supplier_identifier, scope: :bait_library_supplier_id, allow_nil: true
   before_validation :blank_as_nil
 
   def blank_as_nil
@@ -50,7 +50,7 @@ class BaitLibrary < ActiveRecord::Base
 
   # The names of the bait library are considered unique within the supplier
   validates_presence_of :name
-  validates_uniqueness_of :name, :scope => :bait_library_supplier_id
+  validates_uniqueness_of :name, scope: :bait_library_supplier_id
 
   # All bait libraries target a specific species and cannot be mixed
   validates_presence_of :target_species
@@ -58,7 +58,7 @@ class BaitLibrary < ActiveRecord::Base
   # All bait libraries have a bait library type
   belongs_to :bait_library_type
 
-  scope :visible, -> { where(:visible => true) }
+  scope :visible, -> { where(visible: true) }
 
   def hide
     self.visible = false

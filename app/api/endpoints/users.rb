@@ -9,6 +9,6 @@ class ::Endpoints::Users < ::Core::Endpoint::Base
   end
 
   instance do
-    action(:update, :to => :standard_update!)
+    action(:update, to: :standard_update!)
   end
 end

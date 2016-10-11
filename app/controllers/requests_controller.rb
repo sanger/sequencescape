@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'lib/event_factory'
 class RequestsController < ApplicationController
-#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  before_action :admin_login_required, :only => [:describe, :undescribe, :destroy]
-  before_action :set_permitted_params, :only => [:update]
+  before_action :admin_login_required, only: [:describe, :undescribe, :destroy]
+  before_action :set_permitted_params, only: [:update]
 
   def set_permitted_params
-    @parameters = params[:request].reject { |k,v| !['request_metadata_attributes'].include?(k.to_s) }
+    @parameters = params[:request].reject { |k, v| !['request_metadata_attributes'].include?(k.to_s) }
   end
   attr_reader :parameters
  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
@@ -23,7 +23,7 @@ class RequestsController < ApplicationController
 
     # Ok, here we pick the initial source for the Requests.  They either come from Request (as in all Requests), or they
     # are limited by the Asset / Item.
-    request_source = Request.order(created_at: :desc).includes(:asset,:request_type).where(search_params).paginate(per_page: 200, page:params[:page])
+    request_source = Request.order(created_at: :desc).includes(:asset, :request_type).where(search_params).paginate(per_page: 200, page: params[:page])
 
     @item = Item.find(params[:item_id]) if params[:item_id]
     @item ||= @asset_id = Asset.find(params[:asset_id]) if params[:asset_id]
@@ -40,7 +40,7 @@ class RequestsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => Request.all.to_xml }
+      format.xml { render xml: Request.all.to_xml }
     end
   end
 
@@ -77,13 +77,13 @@ class RequestsController < ApplicationController
         redirect_to request_path(@request)
       else
         flash[:error] = "Request was not updated. No change specified ?"
-        render :action => "edit", :id => @request.id
+        render action: "edit", id: @request.id
       end
     rescue => exception
       error_message = "An error has occurred, category:'#{exception.class}'\ndescription:'#{exception.message}'"
       EventFactory.request_update_note_to_manager(@request, current_user, error_message)
       flash[:error] = "Failed to update request. " << error_message
-      render :action => "edit", :id => @request.id
+      render action: "edit", id: @request.id
     end
   end
 
@@ -101,7 +101,7 @@ class RequestsController < ApplicationController
 
   def additional
     @request    = Request.find(params[:id])
-    @additional = @request.request_type.create!(:initial_study => @request.study, :items => @request.items)
+    @additional = @request.request_type.create!(initial_study: @request.study, items: @request.items)
     redirect_to request_path(@additional)
   end
 
@@ -147,15 +147,15 @@ class RequestsController < ApplicationController
   end
 
   def expanded(options = {})
-    render :text => "", :status => :gone
+    render text: "", status: :gone
   end
 
   def pending
-    render :text => "", :status => :gone
+    render text: "", status: :gone
   end
 
   def incomplete_requests_for_family(options = {})
-    render :text => "", :status => :gone
+    render text: "", status: :gone
   end
 
   def redirect_if_not_owner_or_admin
@@ -187,35 +187,35 @@ class RequestsController < ApplicationController
   def mpx_requests_details
     @requests = Request.migrate_mpx_requests
     respond_to do |format|
-      format.json { render :json => @requests.to_json }
+      format.json { render json: @requests.to_json }
     end
   end
 
-  before_action :find_request, :only => [:filter_change_decision, :change_decision]
+  before_action :find_request, only: [:filter_change_decision, :change_decision]
 
   def find_request
     @request = Request.find(params[:id])
   end
 
   def filter_change_decision
-    @change_decision = Request::ChangeDecision.new(:request => @request, :user => @current_user)
+    @change_decision = Request::ChangeDecision.new(request: @request, user: @current_user)
     respond_to do |format|
       format.html
     end
   end
 
   def change_decision
-    @change_decision = Request::ChangeDecision.new({ :request => @request, :user => @current_user }.merge(params[:change_decision] || {})).execute!
+    @change_decision = Request::ChangeDecision.new({ request: @request, user: @current_user }.merge(params[:change_decision] || {})).execute!
     flash[:notice] = "Update. Below you find the new situation."
     redirect_to filter_change_decision_request_path(params[:id])
    rescue Request::ChangeDecision::InvalidDecision => exception
       flash[:error] = "Failed! Please, read the list of problem below."
       @change_decision = exception.object
-      render(:action => :filter_change_decision)
+      render(action: :filter_change_decision)
   end
 
   def search_params
-    permitted = params.permit(:asset_id,:item_id,:state,:request_type_id,:workflow_id)
+    permitted = params.permit(:asset_id, :item_id, :state, :request_type_id, :workflow_id)
     permitted[:initial_study_id] = params[:study_id] if params[:study_id]
   end
 end

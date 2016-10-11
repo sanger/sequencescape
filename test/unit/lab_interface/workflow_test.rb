@@ -12,13 +12,13 @@ class LabInterface::WorkflowTest < ActiveSupport::TestCase
     should belong_to :pipeline
 
     setup do
-      pipeline  = create :pipeline, :name => "Pipeline for LabInterface::WorkflowTest"
+      pipeline  = create :pipeline, name: "Pipeline for LabInterface::WorkflowTest"
       @workflow = pipeline.workflow
-      @workflow.update_attributes!(:name => 'Workflow for LabInterface::WorkflowTest')
+      @workflow.update_attributes!(name: 'Workflow for LabInterface::WorkflowTest')
 
-      task = create :task, :workflow => @workflow
-      create :descriptor, :task => task, :name => "prop", :value => "something", :key => "something"
-      create :descriptor, :task => task, :name => "prop_2", :value => "upstairs", :key => "upstairs"
+      task = create :task, workflow: @workflow
+      create :descriptor, task: task, name: "prop", value: "something", key: "something"
+      create :descriptor, task: task, name: "prop_2", value: "upstairs", key: "upstairs"
     end
 
     subject { @workflow }

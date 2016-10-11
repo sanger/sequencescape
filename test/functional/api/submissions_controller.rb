@@ -25,11 +25,11 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
         study = FactoryGirl.create :study
         project = FactoryGirl.create :project
         sample_tube = FactoryGirl.create :sample_tube
-        workflow = FactoryGirl.create :submission_workflow, :id => 1 # Submission needs a workflow
-        rt = FactoryGirl.create :request_type, :workflow => workflow
+        workflow = FactoryGirl.create :submission_workflow, id: 1 # Submission needs a workflow
+        rt = FactoryGirl.create :request_type, workflow: workflow
         template.request_types << rt
 
-        post :create, :order => { :project_id => project.id, :study_id => study.id, :sample_tubes => [sample_tube.id.to_s], :number_of_lanes => "2", :type => template.key }
+        post :create, order: { project_id: project.id, study_id: study.id, sample_tubes: [sample_tube.id.to_s], number_of_lanes: "2", type: template.key }
       end
 
       should "change Submission.count by 1" do

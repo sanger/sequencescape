@@ -12,7 +12,7 @@ class SampleTest < ActiveSupport::TestCase
   context "A Sample" do
 
     should have_many :study_samples
-    should have_many :studies#, :through => :study_samples
+    should have_many :studies # , :through => :study_samples
 
     context "when used in older assets" do
 
@@ -21,8 +21,8 @@ class SampleTest < ActiveSupport::TestCase
         @tube_a = create :empty_library_tube
         @tube_b = create :empty_sample_tube
 
-       create(:aliquot, :sample => @sample, :receptacle => @tube_b)
-       create(:aliquot, :sample => @sample, :receptacle => @tube_a)
+       create(:aliquot, sample: @sample, receptacle: @tube_b)
+       create(:aliquot, sample: @sample, receptacle: @tube_a)
       end
 
       should "have the first tube it was added to as a primary asset" do
@@ -40,7 +40,7 @@ class SampleTest < ActiveSupport::TestCase
           @sample.sample_metadata.sample_ebi_accession_number = nil
         end
         should "return false" do
-          assert ! @sample.accession_number?
+          assert !@sample.accession_number?
         end
       end
       context "with a blank accession number" do
@@ -48,7 +48,7 @@ class SampleTest < ActiveSupport::TestCase
           @sample.sample_metadata.sample_ebi_accession_number = ''
         end
         should "return false" do
-          assert ! @sample.accession_number?
+          assert !@sample.accession_number?
         end
       end
       context "with a valid accession number" do

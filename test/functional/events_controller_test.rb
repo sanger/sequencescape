@@ -28,7 +28,7 @@ class EventsControllerTest < ActionController::TestCase
         # test below, it was probably just a mistake.
         setup do
           @controller.stubs(:login_required).returns(true)
-          put :create, :event => { :key => 'blah' }
+          put :create, event: { key: 'blah' }
         end
         should respond_with :success
       end
@@ -40,7 +40,7 @@ class EventsControllerTest < ActionController::TestCase
       # also feels like the RIGHT behaviour.
       context "XML" do
         setup do
-          get :create, :format => :xml, :event => { :key => 'blah' }
+          get :create, format: :xml, event: { key: 'blah' }
         end
         should respond_with :success
       end

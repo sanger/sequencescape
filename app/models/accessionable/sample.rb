@@ -13,7 +13,7 @@ module Accessionable
 
       sampname = sample.sample_metadata.sample_public_name
       @name = sampname.blank? ? sample.name : sampname
-      @name = @name.gsub(/[^a-z\d]/i,'_') unless @name.blank?
+      @name = @name.gsub(/[^a-z\d]/i, '_') unless @name.blank?
 
       @common_name = sample.sample_metadata.sample_common_name
       @taxon_id    = sample.sample_metadata.sample_taxon_id
@@ -25,7 +25,7 @@ module Accessionable
         Tag.new(label_scope, datum.name, sample.sample_metadata[datum.tag], datum.downcase)
       end
 
-      #TODO maybe unify this with the previous loop
+      # TODO maybe unify this with the previous loop
       # Don't send managed AE data to SRA
       if !sample.accession_service.private?
         ::Sample::ArrayExpressFields.each do |datum|
@@ -54,8 +54,8 @@ module Accessionable
     def sample_element_attributes
       # In case the accession number is defined, we won't send the alias
       {
-        :alias => self.alias,
-        :accession => accession_number
+        alias: self.alias,
+        accession: accession_number
       }.tap do |obj|
         obj.delete(:alias) unless self.accession_number.blank?
       end
@@ -105,15 +105,15 @@ module Accessionable
 
   class ArrayExpressTag < Base::Tag
     def label
-      default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
-      I18n.t("#{@scope}.#{ @name }.era_label", :default => default_tag)
+      default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
+      I18n.t("#{@scope}.#{@name}.era_label", default: default_tag)
     end
   end
 
   class EgaTag < Base::Tag
     def label
-      default_tag = "EGA-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
-      I18n.t("#{@scope}.#{ @name }.era_label", :default => default_tag)
+      default_tag = "EGA-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
+      I18n.t("#{@scope}.#{@name}.era_label", default: default_tag)
     end
   end
 end

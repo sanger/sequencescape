@@ -24,7 +24,7 @@ module Pipeline::InboxExtensions
     if action.present?
       actions << [action]
     elsif pipeline.paginate?
-      actions << [:paginate, { :per_page => 50, :page => current_page }]
+      actions << [:paginate, { per_page: 50, page: current_page }]
     end
 
     actions.inject(requests) { |context, action| context.send(*Array(action)) }

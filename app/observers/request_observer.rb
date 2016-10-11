@@ -8,9 +8,9 @@
 
     def after_create(request)
       request.request_events.create!(
-        :event_name   => 'created',
-        :to_state     => request.state,
-        :current_from => DateTime.now
+        event_name: 'created',
+        to_state: request.state,
+        current_from: DateTime.now
       )
     end
 
@@ -20,10 +20,10 @@
       time = DateTime.now
       request.current_request_event.expire!(time) unless request.current_request_event.nil?
       request.request_events.create!(
-        :event_name   => 'state_changed',
-        :from_state   => from_state,
-        :to_state     => request.state,
-        :current_from => time
+        event_name: 'state_changed',
+        from_state: from_state,
+        to_state: request.state,
+        current_from: time
       )
     end
 
@@ -31,11 +31,11 @@
       time = DateTime.now
       request.current_request_event.expire!(time)  unless request.current_request_event.nil?
       request.request_events.create!(
-        :event_name   => 'destroyed',
-        :from_state   => request.state,
-        :to_state     => request.state,
-        :current_from => time,
-        :current_to   => time
+        event_name: 'destroyed',
+        from_state: request.state,
+        to_state: request.state,
+        current_from: time,
+        current_to: time
       )
     end
 

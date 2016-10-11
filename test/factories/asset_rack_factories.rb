@@ -6,7 +6,7 @@
 FactoryGirl.define do
 
 
-  factory :strip_tube_purpose, :class => PlatePurpose do
+  factory :strip_tube_purpose, class: PlatePurpose do
     name               { FactoryGirl.generate :purpose_name }
     size               "8"
     asset_shape        { AssetShape.find_by_name!('StripTubeColumn') }
@@ -18,7 +18,7 @@ FactoryGirl.define do
     size               "8"
     plate_purpose      { create :strip_tube_purpose }
     after(:create) do |st|
-      st.wells.import(st.maps.map { |map| create(:well, :map => map) })
+      st.wells.import(st.maps.map { |map| create(:well, map: map) })
     end
   end
 

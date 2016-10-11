@@ -8,8 +8,8 @@ module Formtastic
       module Labelling
         def label_html_options
           {
-            :for => input_html_options[:id],
-            :class => ['ft-label'],
+            for: input_html_options[:id],
+            class: ['ft-label'],
           }
         end
       end

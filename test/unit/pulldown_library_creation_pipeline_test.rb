@@ -9,7 +9,7 @@ require "test_helper"
 class PulldownLibraryCreationPipelineTest < ActiveSupport::TestCase
   context "Pipeline" do
     setup do
-      @pipeline = create :pulldown_library_creation_pipeline, :name => "Pulldown Library creation pipeline"
+      @pipeline = create :pulldown_library_creation_pipeline, name: "Pulldown Library creation pipeline"
     end
 
     should "return true for library_creation?" do
@@ -17,7 +17,7 @@ class PulldownLibraryCreationPipelineTest < ActiveSupport::TestCase
     end
 
     should "return false for genotyping?" do
-      assert ! @pipeline.genotyping?
+      assert !@pipeline.genotyping?
     end
 
     should "return true for pulldown?" do
