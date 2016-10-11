@@ -27,7 +27,7 @@ namespace :working do
    user.is_administrator
    faculty_sponsor = FacultySponsor.create!(:name=>'Faculty Sponsor')
 
-   project = Project.create!(:name=>'A project',:enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111', :project_funding_model=>'Internal' })
+   project = Project.create!(:name=>'A project',:enforce_quotas => false, approved: true, :project_metadata_attributes => { :project_cost_code => '1111', :project_funding_model=>'Internal' })
    project.activate!
    study = Study.create!(:name=>'A study',:study_metadata_attributes=>{:study_type=>StudyType.first,:faculty_sponsor=>faculty_sponsor,:data_release_study_type=>DataReleaseStudyType.first, :study_type=>StudyType.first,:study_description=>'A seeded test study',:contaminated_human_dna=>'No',:contains_human_dna=>'No',:commercially_available=>'No', :program_id => program.id})
    study.activate!
@@ -72,8 +72,9 @@ namespace :working do
     BarcodePrinter.create!(:name=>'g316bc',  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'))
     BarcodePrinter.create!(:name=>'g317bc',  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'))
     BarcodePrinter.create!(:name=>'g314bc',  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'))
+    BarcodePrinter.create!(:name=>'h105bc2',  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'))
     BarcodePrinter.create!(:name=>'g311bc1', :barcode_printer_type=>BarcodePrinterType.find_by_name('1D Tube'))
-
+    BarcodePrinter.create!(:name=>'h105bc', :barcode_printer_type=>BarcodePrinterType.find_by_name('1D Tube'))
     Supplier.create!(:name=>'Test Supplier')
 
     puts "Setting up tag plates..."

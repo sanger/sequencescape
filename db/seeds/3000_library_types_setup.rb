@@ -117,7 +117,11 @@ libs_ribozero.each do |lib|
 end
 
 RequestType.find_by_key('illumina_c_chromium_library').library_types = LibraryType.create!(['Chromium genome','Chromium exome','Chromium single cell'].map {|name| {name: name}})
-
+RequestType::Validator.create!(
+  :request_type   => RequestType.find_by_key('illumina_c_chromium_library'),
+  :request_option => 'library_type',
+  :valid_options  => RequestType::Validator::LibraryTypeValidator.new(RequestType.find_by_key('illumina_c_chromium_library').id)
+)
 # PCR Free Hiseq X10 RequestTypeValidator
 lt = LibraryType.find_or_create_by_name!("HiSeqX PCR free")
 rt_pf = RequestType.find_by_key("htp_pcr_free_lib")

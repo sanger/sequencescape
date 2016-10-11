@@ -80,7 +80,8 @@ module IlluminaC::Requests
           :name               => 'Illumina-C Chromium library creation',
           :key                => 'illumina_c_chromium_library',
           :request_class_name => 'IlluminaC::Requests::LibraryRequest', # See class deprecation notice above
-          :for_multiplexing   => false
+          :for_multiplexing   => true,
+          :target_purpose     => Purpose.find_by_name('ILC Lib Pool Norm')
         },
         {
           :name               => 'Illumina-C Multiplexing',

@@ -5,14 +5,15 @@ class AddChromiumRequestType < ActiveRecord::Migration
         :name               => 'Illumina-C Chromium library creation',
         :key                => 'illumina_c_chromium_library',
         :request_class_name => 'IlluminaC::Requests::LibraryRequest', # See class deprecation notice above
-        :for_multiplexing   => false,
+        :for_multiplexing   => true,
         :workflow => Submission::Workflow.find_by_name("Next-gen sequencing"),
         :asset_type => 'Well',
         :order =>1,
         :initial_state =>'pending',
         :billable =>true,
         :product_line => ProductLine.find_by_name('Illumina-C'),
-        :request_purpose => RequestPurpose.standard
+        :request_purpose => RequestPurpose.standard,
+        :target_purpose     => Purpose.find_by_name('ILC Lib Pool Norm')
       )
       rt.acceptable_plate_purposes << Purpose.find_by_name('ILC Stock')
       rt.library_types = LibraryType.where(name:['Chromium genome','Chromium exome','Chromium single cell'])
