@@ -171,8 +171,9 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
     samples.map do |sample|
-      sample.wells.all(:include => :plate).detect { |well| well.plate.present? and (well.plate.plate_purpose_id == plate_purpose.id) } or
-        raise InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}"
+      # Prioritise the newest well
+      sample.wells.on_plate_purpose(plate_purpose).order('id DESC').first ||
+        raise(InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}")
     end
   end
 
@@ -191,15 +192,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
+
     names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
-    samples = Sample.all(
-      :include => :assets,
-      :conditions => [ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ]
-    )
+    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
 
     name_set  = Set.new(names)
-    found_set = Set.new(samples.map { |s| [ s.name, s.sanger_sample_id ] }.flatten)
+    found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
     not_found = name_set - found_set
     raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
     return samples
