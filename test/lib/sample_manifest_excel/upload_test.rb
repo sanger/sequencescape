@@ -44,38 +44,38 @@ class UploadTest < ActiveSupport::TestCase
     end
 
     should "#value should return value for specified key" do
-      assert_equal sample.id, SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).value(:sanger_sample_id)
+      assert_equal sample.id, SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).value(:sanger_sample_id)
     end
 
     should "#at should return value at specified index (offset by 1)" do
-      assert_equal sample.id, SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).at(column_list.find_by(:name, :sanger_sample_id).number)
+      assert_equal sample.id, SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).at(column_list.find_by(:name, :sanger_sample_id).number)
     end
 
     should "#first? should be true if this is the first row" do
-      SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).first?
+      SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).first?
     end
 
     should "not be valid without a valid row number" do
-      assert SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
-      refute SampleManifestExcel::Upload::Row.new(nil, valid_values, column_list).valid?
-      refute SampleManifestExcel::Upload::Row.new("nil", valid_values, column_list).valid?
+      assert SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).valid?
+      refute SampleManifestExcel::Upload::SampleRow.new(nil, valid_values, column_list).valid?
+      refute SampleManifestExcel::Upload::SampleRow.new("nil", valid_values, column_list).valid?
     end
 
     should "not be valid without some data" do
-      refute SampleManifestExcel::Upload::Row.new(1, nil, column_list).valid?
+      refute SampleManifestExcel::Upload::SampleRow.new(1, nil, column_list).valid?
     end
 
     should "not be valid without some columns" do
-      refute SampleManifestExcel::Upload::Row.new(1, valid_values, nil).valid?
+      refute SampleManifestExcel::Upload::SampleRow.new(1, valid_values, nil).valid?
     end
 
     should "not be valid without an associated sample" do
       column_list = build(:column_list_for_plate)
-      refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values, column_list).valid?
+      refute SampleManifestExcel::Upload::SampleRow.new(1, column_list.column_values, column_list).valid?
     end
 
     should "not be valid unless the sample has a primary receptacle" do
-      refute SampleManifestExcel::Upload::Row.new(1, column_list.column_values(
+      refute SampleManifestExcel::Upload::SampleRow.new(1, column_list.column_values(
                                                   sanger_sample_id: create(:sample).id
                                                   ), column_list).valid?
     end
@@ -85,22 +85,22 @@ class UploadTest < ActiveSupport::TestCase
       should "for plate should only be valid if barcode and location match" do
         column_list = build(:column_list_for_plate)
         valid_values = column_list.column_values(sanger_sample_id: sample.id, sanger_plate_id: sample.wells.first.plate.sanger_human_barcode)
-        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+        refute SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).valid?
 
         column_list = build(:column_list_for_plate)
         valid_values = column_list.column_values(sanger_sample_id: sample.id, well: sample.wells.first.map.description)
-        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+        refute SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).valid?
       end
 
       should "for tube should only be valid if barcodes match" do
         tube = create(:sample_tube)
         column_list = build(:column_list_for_tube)
         valid_values = column_list.column_values(sanger_sample_id: tube.sample.id, sanger_tube_id: tube.sample.assets.first.sanger_human_barcode)
-        assert SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+        assert SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).valid?
 
         column_list = build(:column_list_for_tube)
         valid_values = column_list.column_values(sanger_sample_id: tube.sample.id)
-        refute SampleManifestExcel::Upload::Row.new(1, valid_values, column_list).valid?
+        refute SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).valid?
 
       end
 

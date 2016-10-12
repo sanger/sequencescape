@@ -16,5 +16,7 @@ module SampleManifestExcel
         conditional_formattings
       end
     end
+
   end
+
 end

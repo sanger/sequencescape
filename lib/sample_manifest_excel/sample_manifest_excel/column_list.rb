@@ -51,8 +51,8 @@ module SampleManifestExcel
       @bad_keys ||= []
     end
 
-    def add_with_number(column, column_list)
-      add column.set_number(column_list.next_number)
+    def add_with_number(column, column_list = nil)
+      add column.set_number((column_list || self).next_number)
     end
 
     ##

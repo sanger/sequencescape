@@ -16,6 +16,7 @@ FactoryGirl.define do
                           .push(build(:sanger_sample_id_column))
                           .push(build(:sanger_plate_id_column))
                           .push(build(:well_column))
+                          .push(build(:donor_id_column))
                             ) 
                       }
 
@@ -26,6 +27,7 @@ FactoryGirl.define do
       initialize_with { new(build_list(:column, 5)
                           .push(build(:sanger_sample_id_column))
                           .push(build(:sanger_tube_id_column))
+                          .push(build(:donor_id2_column))
                             ) 
                       }
     end

@@ -10,7 +10,10 @@ module SampleManifestExcel
   require_relative "sample_manifest_excel/conditional_formatting_default"
   require_relative "sample_manifest_excel/conditional_formatting_default_list"
   require_relative "sample_manifest_excel/manifest_type_list"
-  require_relative "sample_manifest_excel/specialised_fields"
+  require_relative "sample_manifest_excel/specialised_field"
+  require_relative "sample_manifest_excel/multiplexed_library_tube_field"
+  require_relative "sample_manifest_excel/sample_field"
+  require_relative "sample_manifest_excel/specialised_field_list"
   require_relative "sample_manifest_excel/column"
   require_relative "sample_manifest_excel/column_list"
   require_relative "sample_manifest_excel/conditional_formatting"
@@ -22,13 +25,13 @@ module SampleManifestExcel
   require_relative "sample_manifest_excel/download"
   require_relative "sample_manifest_excel/upload"
 
+  Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
+
   module Helpers
     def load_file(folder, filename)
       YAML::load_file(File.join(Rails.root, folder,"#{filename}.yml")).with_indifferent_access
     end
   end
-
-  Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
 
   mattr_accessor :first_row
   self.first_row = 10

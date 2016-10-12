@@ -1,6 +1,7 @@
 module SampleManifestExcel
-  module SpecialisedFields
+  module MultiplexedLibraryTubeField
     class TagIndex < Base
+      include ValueToInteger
       validates_presence_of :value
     end
   end

@@ -93,6 +93,20 @@ FactoryGirl.define do
       value     { number }
     end
 
+    factory :donor_id_column do
+
+      name      { :donor_id }
+      heading   { "DONOR ID (required for EGA)" }
+      value     { "DONOR ID #{number}" }
+    end
+
+    factory :donor_id2_column do
+
+      name      { :donor_id2 }
+      heading   { "DONOR ID (required for EGA)" }
+      value     { "DONOR ID2 #{number}" }
+    end
+
   end
 
 end

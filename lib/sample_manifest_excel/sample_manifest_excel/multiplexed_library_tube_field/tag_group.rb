@@ -1,5 +1,5 @@
 module SampleManifestExcel
-  module SpecialisedFields
+  module MultiplexedLibraryTubeField
     class TagGroup < Base
       include TagGroupValidation
       validates_presence_of :value

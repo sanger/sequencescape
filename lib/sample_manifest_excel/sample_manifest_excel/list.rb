@@ -70,9 +70,9 @@ module SampleManifestExcel
           @keys ||= options[:keys]
         end
 
-        define_method :model do
-          @model ||= _model.constantize
-        end
+        # define_method :model do
+        #   @model ||= _model.constantize
+        # end
 
         options[:keys].each do |key|
           define_method "#{key.to_s.pluralize}" do

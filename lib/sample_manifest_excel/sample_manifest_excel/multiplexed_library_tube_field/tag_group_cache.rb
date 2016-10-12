@@ -1,6 +1,6 @@
 module SampleManifestExcel
-  module SpecialisedFields
-    class TagGroupCache
+  module MultiplexedLibraryTubeField
+    class TagGroupCache < Base
 
       attr_reader :cache 
       def initialize
