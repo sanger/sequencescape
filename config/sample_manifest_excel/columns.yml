@@ -147,25 +147,8 @@ supplier_sample_name:
 cohort:
   heading: COHORT
   unlocked: true
-  validation:
-    options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "7"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Cohort"
-      prompt: "Please add an abbreviation up to a maximum of 7 uppercase letters."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Cohort"
-      error: "7 uppercase characters, maximum"
   conditional_formattings:
     empty_cell:
-    len:
-      formula:
-        operator: ">"
-        operand: 7
     is_number:
 volume:
   heading: VOLUME (ul)
