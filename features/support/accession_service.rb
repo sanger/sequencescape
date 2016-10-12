@@ -4,13 +4,40 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require File.expand_path(File.join(File.dirname(__FILE__), 'fake_sinatra_service.rb'))
+class FakeAccessionService
+  include Singleton
 
-class FakeAccessionService < FakeSinatraService
-  def initialize(*args, &block)
-    super
-    configatron.accession_url      = "http://#{host}:#{port}/accession_service/"
-    configatron.accession_view_url = "http://#{host}:#{port}/view_accession/"
+  def self.install_hooks(target, tags)
+    target.instance_eval do
+      Before(tags) do |scenario|
+        # We actually know what the value of these will be
+        # but we include the lookup here, as we're more keen
+        # on where they are source from, rather than what they are
+        accession_url = configatron.accession_url
+
+        # Currently logins are encoded in the URL directly
+        # An HTTP auth system is now available though, so we
+        # should switch once we get the chance.
+        era_login = configatron.era_accession_login
+        ega_login = configatron.ega_accession_login
+
+        [era_login,ega_login].each do |service_login|
+          stub_request(:post,"#{accession_url}#{service_login}").to_return do |request|
+            response = FakeAccessionService.instance.next!
+            status = response.nil? ? 500 : 200
+            {
+              headers: {'Content-Type' => 'text/xml'},
+              body: response,
+              status: status
+            }
+          end
+        end
+      end
+
+      After(tags) do |scenario|
+        FakeAccessionService.instance.clear
+      end
+    end
   end
 
   def bodies
@@ -55,23 +82,12 @@ class FakeAccessionService < FakeSinatraService
     sent.push(Hash[*payload.map { |k, v| [k, v.readlines] }.map { |k, v| [k, (v unless v.empty?)] }.flatten])
   end
 
-  class Service < FakeSinatraService::Base
-    post('/accession_service/era_accession_login') do
-      response = FakeAccessionService.instance.next! or halt(500)
-      headers('Content-Type' => 'text/xml')
-      body(response)
-    end
-
-    post('/accession_service/ega_accession_login') do
-      response = FakeAccessionService.instance.next! or halt(500)
-      headers('Content-Type' => 'text/xml')
-      body(response)
-    end
-  end
 end
 
 require 'rest_client'
 
+# Unfortunately Webmock doesn't handle multipart files, so we can't access
+# the payload.
 RestClient::Resource.class_eval do |klass|
   alias_method :original_post, :post
   def post(payload)
