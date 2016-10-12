@@ -18,8 +18,8 @@ module ModelExtensions::Well
                   :bait_library, {
                     tag: :tag_group,
                     sample: [
+                      :study_reference_genome,
                       :uuid_object, {
-                        primary_study: { study_metadata: :reference_genome },
                         sample_metadata: :reference_genome
                       }
                     ]
