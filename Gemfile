@@ -30,8 +30,6 @@ group :default do
 
   gem 'puma'
 
-  gem 'sanger_barcode', '~>0.2',
-    :github => 'sanger/sanger_barcode', :branch => 'ruby-1.9'
   # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
   # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
   # gem code).
@@ -84,6 +82,9 @@ group :default do
 
   gem 'axlsx'
   gem 'roo'
+
+  # Used in XML generation.
+  gem 'builder'
 end
 
 group :warehouse do
@@ -130,6 +131,7 @@ group :cucumber do
   gem "cucumber", :require => false
   gem "cucumber-rails", :require => false
   gem "poltergeist"
+  gem "webmock"
 end
 
 group :deployment do

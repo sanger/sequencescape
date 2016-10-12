@@ -15,6 +15,21 @@ FactoryGirl.define do
     project
     tag
     tag2    {|t| t.association(:tag) }
+
+    factory :untagged_aliquot do
+      tag  nil
+      tag2 nil
+    end
+
+    factory :single_tagged_aliquot do
+      tag2  nil
+    end
+
+    factory :dual_tagged_aliquot do
+    end
+  end
+
+  factory :aliquot_receptacle, class: Aliquot::Receptacle do
   end
 
   factory  :event  do
@@ -35,7 +50,7 @@ FactoryGirl.define do
   end
 
   factory  :study_metadata, :class => Study::Metadata  do
-    faculty_sponsor             { |faculty_sponsor| faculty_sponsor.association(:faculty_sponsor)}
+    faculty_sponsor
     study_description           'Some study on something'
     program                     { Program.find_by_name("General") }
     contaminated_human_dna      'No'
@@ -766,5 +781,11 @@ end
     root 'a_plate'
     template 'FluidigmPlateIO'
     purpose {|purpose| purpose.association(:plate_purpose)}
+  end
+
+  factory(:barcode_printer) do
+    sequence(:name)   { |i| "a#{i}bc" }
+    #plate: barcode_printer_type_id 2, tube: barcode_printer_type_id 1
+    barcode_printer_type_id 2
   end
 end

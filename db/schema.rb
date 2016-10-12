@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160908141215) do
+ActiveRecord::Schema.define(:version => 20160914100113) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -246,6 +246,7 @@ ActiveRecord::Schema.define(:version => 20160908141215) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "label_template_name"
   end
 
   add_index "barcode_printer_types", ["name"], :name => "index_barcode_printer_types_on_name"
@@ -1284,14 +1285,6 @@ ActiveRecord::Schema.define(:version => 20160908141215) do
   add_index "roles_users", ["role_id"], :name => "index_roles_users_on_role_id"
   add_index "roles_users", ["user_id"], :name => "index_roles_users_on_user_id"
 
-  create_table "sample_manifest_templates", :force => true do |t|
-    t.string "name"
-    t.string "asset_type"
-    t.string "path"
-    t.string "default_values"
-    t.string "cell_map"
-  end
-
   create_table "sample_manifests", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1304,6 +1297,7 @@ ActiveRecord::Schema.define(:version => 20160908141215) do
     t.string   "state"
     t.text     "barcodes"
     t.integer  "user_id"
+    t.string   "password"
   end
 
   add_index "sample_manifests", ["asset_type"], :name => "index_sample_manifests_on_asset_type"
