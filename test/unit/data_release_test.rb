@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require_relative '../test_helper'
+require 'test_helper'
 
 class DataReleaseTest < ActiveSupport::TestCase
   context "A study" do
