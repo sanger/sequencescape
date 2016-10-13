@@ -36,12 +36,12 @@ class FakeAccessionService
         era_login = configatron.era_accession_login
         ega_login = configatron.ega_accession_login
 
-        [era_login,ega_login].each do |service_login|
-          stub_request(:post,"#{accession_url}#{service_login}").to_return do |request|
+        [era_login, ega_login].each do |service_login|
+          stub_request(:post, "#{accession_url}#{service_login}").to_return do |request|
             response = FakeAccessionService.instance.next!
             status = response.nil? ? 500 : 200
             {
-              headers: {'Content-Type' => 'text/xml'},
+              headers: { 'Content-Type' => 'text/xml' },
               body: response,
               status: status
             }

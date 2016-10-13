@@ -13,10 +13,10 @@ class FakeBarcodeService
     target.instance_eval do
       Before(tags) do |scenario|
         plate_barcode_url = configatron.plate_barcode_service
-        stub_request(:post,"#{plate_barcode_url}plate_barcodes.xml").to_return do
+        stub_request(:post, "#{plate_barcode_url}plate_barcodes.xml").to_return do
           barcode = FakeBarcodeService.instance.next_barcode!
           {
-            headers: {'Content-Type' => 'text/xml'},
+            headers: { 'Content-Type' => 'text/xml' },
             body: "<plate_barcode><id>42</id><name>Barcode #{barcode}</name><barcode>#{barcode}</barcode></plate_barcode>"
           }
         end
