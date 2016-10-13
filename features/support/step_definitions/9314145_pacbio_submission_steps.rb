@@ -164,14 +164,6 @@ Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode, uuid|
   step(%Q{the UUID for the asset with ID #{Asset.find_by_barcode(barcode).id} is "#{uuid}"})
 end
 
-Given /^the sample validation webservice returns "(true|false)"$/ do |success_boolean|
-  if success_boolean == 'true'
-    FakeSampleValidationService.instance.return_value(true)
-  else
-    FakeSampleValidationService.instance.return_value(false)
-  end
-end
-
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
   worksheet = page.source
   csv_rows = worksheet.split(/\r\n/)
