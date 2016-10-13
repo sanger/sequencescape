@@ -5,6 +5,11 @@
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class AccessionService
+
+  # We overide this in testing to do a bit of evesdropping
+  class_attribute :rest_client_class
+  self.rest_client_class = RestClient::Resource
+
   AccessionServiceError = Class.new(StandardError)
   NumberNotRequired     = Class.new(AccessionServiceError)
   NumberNotGenerated    = Class.new(AccessionServiceError)
@@ -243,11 +248,15 @@ private
     raise NotImplemented, "abstract method"
   end
 
+  def rest_client_resource
+    rest_client_class.new(URI.parse(configatron.accession_url + accession_login).to_s)
+  end
+
   def post_files(file_params)
     raise StandardError, "Cannot connect to EBI to get accession number. Please configure accession_url in config.yml" if configatron.accession_url.blank?
 
     begin
-      rc = RestClient::Resource.new(URI.parse(configatron.accession_url + accession_login).to_s)
+      rc = rest_client_resource
       if configatron.disable_web_proxy == true
         RestClient.proxy = ''
       elsif not configatron.proxy.blank?

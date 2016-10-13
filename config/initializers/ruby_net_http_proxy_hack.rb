@@ -9,7 +9,7 @@
 # Copyright (c) 1999-2007 Minero Aoki
 # Copyright (c) 2001 GOTOU Yuuzou
 #
-# Originally adapted by MAtt Denner.
+# Originally adapted by Matt Denner.
 
 # The sanger Squid proxy requires a user agent to be specified.
 # Unfortunately the standard library does not pass our headers on

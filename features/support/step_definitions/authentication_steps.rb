@@ -37,8 +37,6 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
   visit "/login"
   fill_in("login", with: login)
   fill_in("password", with: 'generic')
-
-  # TODO - Should be "Log in" on the "login" page
   click_button("Login")
 end
 
