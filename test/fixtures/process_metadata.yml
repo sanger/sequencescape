@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  key: MyString
+  value: MyString
+  process_metadatum_collection: 
+
+two:
+  key: MyString
+  value: MyString
+  process_metadatum_collection: 

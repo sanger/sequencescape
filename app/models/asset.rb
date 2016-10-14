@@ -65,6 +65,8 @@ class Asset < ActiveRecord::Base
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
 
+  has_one :process_metadatum_collection
+
  scope :requests_as_source_is_a?, ->(t) { { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *t.descendants ].map(&:name) } } } }
 
   extend ContainerAssociation::Extension
