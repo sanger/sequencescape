@@ -45,6 +45,10 @@ class WellAttribute < ActiveRecord::Base
     super
   end
 
+  def estimated_volume
+    (current_volume||measured_volume).to_f
+  end
+
   def initial_volume=(volume)
     super if initial_volume.nil?
   end
