@@ -5,6 +5,7 @@ module LinefeedFix
   # Replaces consecutive CR and LF characters with a single
   # lineffed character. Warning! Mutates the original string.
   def self.scrub!(string)
-    string.gsub!(/[\r\n]+/,"\n")
+    string.gsub!(/\r{0,1}\r\n/,"\n")
+    string
   end
 end
