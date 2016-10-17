@@ -19,12 +19,14 @@ class QuantParserTest < ActiveSupport::TestCase
 
         @filename = Rails.root.to_s + "/test/data/quant_test.csv"
         @content = read_file @filename
-        @csv = CSV.parse(@content)
+
+        # We WANT to be using this encoding here. So if this line starts failing, fix the encoding in
+        # the actual file.
+        @csv = CSV.parse(@content.force_encoding('iso-8859-1'))
       end
 
       should "return a QuantParser" do
-        Parsers::QuantParser.expects(:new).with(@csv).returns(:pass)
-        assert_equal :pass, Parsers.parser_for(@filename,nil,@content)
+        assert Parsers.parser_for(@filename,nil,@content).is_a?(Parsers::QuantParser)
       end
 
 
