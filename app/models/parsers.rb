@@ -12,7 +12,7 @@ module Parsers
     # While CSV tries to detect line endings, it isn't so great with some excel
     # exported CSVs, where a mix of \n and \r\n are used in the same document
     # This converts everything to \n before processing
-    cleaned_content = content.gsub(/\r\n?/,"\n")
+    cleaned_content = LinefeedFix.scrub!(content.dup)
     csv = parse_with_fallback_encodings(cleaned_content)
     return Parsers::QuantParser.new(csv) if Parsers::QuantParser.is_quant_file?(csv)
     return Parsers::BioanalysisCsvParser.new(csv) if Parsers::BioanalysisCsvParser.is_bioanalyzer?(csv)
@@ -23,12 +23,16 @@ module Parsers
   def self.parse_with_fallback_encodings(content)
     encodings = ENCODINGS.dup
     begin
-      encoding = encodings.shift
-      CSV.parse(content.force_encoding(encoding))
+      CSV.parse(content)
     rescue ArgumentError => exception
+      # Fetch the next fallback encoding
       encoding = encodings.shift
+      # Re-raise the exception if we've run out
+      raise exception if encoding.nil?
+      # Force the new encoding
+      content.force_encoding(encoding)
+      # Try again
       retry unless encoding.nil?
-      raise exception
     end
   end
 
