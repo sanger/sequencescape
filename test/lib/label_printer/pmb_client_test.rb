@@ -49,17 +49,17 @@ class PmbClientTest < ActiveSupport::TestCase
   end
 
   test "should get label template by name from pmb" do
-      RestClient.expects(:get)
-                .with('http://localhost:9292/v1/label_templates?filter[name]=test_template',
-                      content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
-                .returns("{\"data\":[{\"id\":\"1\",\"type\":\"label_templates\",\"attributes\":{\"name\":\"test_template\"},\"relationships\":{\"label_type\":{\"data\":{\"id\":\"1\",\"type\":\"label_types\"}},\"labels\":{\"data\":[{\"id\":\"1\",\"type\":\"labels\"},{\"id\":\"2\",\"type\":\"labels\"},{\"id\":\"3\",\"type\":\"labels\"}]}}}]}")
+    RestClient.expects(:get)
+              .with('http://localhost:9292/v1/label_templates?filter[name]=test_template',
+                    content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
+              .returns("{\"data\":[{\"id\":\"1\",\"type\":\"label_templates\",\"attributes\":{\"name\":\"test_template\"},\"relationships\":{\"label_type\":{\"data\":{\"id\":\"1\",\"type\":\"label_types\"}},\"labels\":{\"data\":[{\"id\":\"1\",\"type\":\"labels\"},{\"id\":\"2\",\"type\":\"labels\"},{\"id\":\"3\",\"type\":\"labels\"}]}}}]}")
 
     assert_equal 'test_template', LabelPrinter::PmbClient.get_label_template_by_name('test_template')['data'][0]['attributes']['name']
   end
 
   test "should return pretty errors" do
-    errors = "{\"errors\":{\"printer\":[\"Something is wrong\",\"Something else is wrong\"],\"labels\":[\"Something is wrong\"]}}"
-    pretty_errors = 'Printer: Something is wrong, Something else is wrong; Labels: Something is wrong'
+    errors = "{\"errors\":[{\"source\":{\"pointer\":\"/data/attributes/printer\"},\"detail\":\"does not exist\"}, {\"source\":{\"pointer\":\"/data/attributes/label_template\"},\"detail\":\"does not exist\"}]}"
+    pretty_errors = 'Printer does not exist; Label template does not exist'
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end
 

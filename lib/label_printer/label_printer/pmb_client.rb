@@ -52,8 +52,9 @@ module LabelPrinter
     def self.pretty_errors(errors)
       if errors.present?
         [].tap do |error_list|
-          JSON.parse(errors)['errors'].each do |k, v|
-            error_list << "%{attribute} %{message}" % {attribute: k.capitalize+":", message: v.join(", ")}
+          JSON.parse(errors)['errors'].each do |error|
+            attribute  = error["source"]["pointer"].split('/').last.humanize
+            error_list << "%{attribute} %{message}" % {attribute: attribute, message: error["detail"]}
           end
         end
         .join("; ")
