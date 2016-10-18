@@ -3,6 +3,8 @@
 #Copyright (C) 2014,2015,2016 Genome Research Ltd.
 
 require 'csv'
+require 'lib/linefeed_fix'
+
 module Parsers
 
   ENCODINGS = ['iso-8859-1','utf-8','utf-16'].freeze
