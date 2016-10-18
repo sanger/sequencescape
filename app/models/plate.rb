@@ -827,11 +827,14 @@ class Plate < Asset
 
   def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
+      well_hash = Hash[wells.include_map.includes(:well_attribute).map { |w| [w.map_description,w] }]
+
       parser.each_well_and_parameters do |position, well_updates|
-        wells.include_map.detect {|w| w.map_description == position }.tap do |well|
-          well.update_qc_values_with_hash(well_updates)
-          well.save!
-        end
+        # We might have a nil well if a plate was only partially cherrypicked
+        well = well_hash[position]
+        next if well.nil?
+        well.update_qc_values_with_hash(well_updates)
+        well.save!
       end
     end
     true

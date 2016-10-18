@@ -120,6 +120,8 @@ class Well < Aliquot::Receptacle
   self.per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
+  accepts_nested_attributes_for :well_attribute
+
   before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
 
   scope :pooled_as_target_by, ->(type) {
