@@ -17,8 +17,16 @@ module LabelPrinter
       "#{base_url}/print_jobs"
     end
 
+    def self.printers_url
+      "#{base_url}/printers"
+    end
+
     def self.label_templates_filter_url
       "#{base_url}/label_templates?filter[name]="
+    end
+
+    def self.printers_filter_url
+      "#{base_url}/printers?filter[name]="
     end
 
     def self.headers
@@ -47,6 +55,17 @@ module LabelPrinter
       raise PmbException.new(e), "PrintMyBarcode is too busy. Please try again later"
     rescue Errno::ECONNREFUSED => e
       raise PmbException.new(e), "PrintMyBarcode service is down"
+    end
+
+    def self.register_printer(name)
+      unless printer_exists?(name)
+        RestClient.post printers_url, {"data"=>{"attributes"=>{"name" => name}}}.to_json, headers
+      end
+    end
+
+    def self.printer_exists?(name)
+      response = JSON.parse(RestClient.get "#{printers_filter_url}#{name}", headers)
+      response["data"].present?
     end
 
     def self.pretty_errors(errors)
