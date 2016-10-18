@@ -76,12 +76,22 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
       context '#show' do
 
+        setup do
+          @collection = create(:process_metadatum_collection_with_metadata, asset: @child_plate_a, user: @user)
+        end
 
         should 'return expected plate' do
           get :show, id: @source_plate_a.sanger_human_barcode
           assert_response :success
           assert_equal @source_plate_a, assigns(:plate)
         end
+
+        should 'show the metadata for the plate' do
+          get :show, id: @child_plate_a.sanger_human_barcode
+          assert_response :success
+          assert_equal @collection.metadata.count, assigns(:plate).metadata.count
+        end
+
       end
 
     end

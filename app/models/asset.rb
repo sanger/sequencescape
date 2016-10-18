@@ -66,6 +66,11 @@ class Asset < ActiveRecord::Base
   has_many :orders, :through => :submitted_assets
 
   has_one :process_metadatum_collection
+  delegate :metadata, to: :process_metadatum_collection
+
+  def process_metadatum_collection
+    super || NullProcessMetadatumCollection.new
+  end
 
  scope :requests_as_source_is_a?, ->(t) { { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *t.descendants ].map(&:name) } } } }
 
