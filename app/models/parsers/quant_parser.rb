@@ -18,16 +18,24 @@ class Parsers::QuantParser
   end
 
   def localization_text(attribute_name)
-    I18n.t("metadata.well.metadata.#{attribute_name}.label")
+    I18n.t("#{attribute_name}.label",scope:[:metadata,:well,:metadata],default:attribute_name)
+  end
+
+  def column_maps
+   @column_maps ||=  {
+      "concentration" => :set_concentration,
+      "volume"        => :set_current_volume,
+      "rin"           => :set_rin
+    }.merge({
+      localization_text("concentration").strip.downcase => :set_concentration,
+      localization_text("volume").strip.downcase        => :set_current_volume,
+      localization_text("rin").strip.downcase           => :set_rin
+    })
   end
 
   def method_set_list
     headers_section.map do |description|
-      {
-        localization_text("concentration").strip.downcase => :set_concentration,
-        localization_text("volume").strip.downcase        => :set_current_volume,
-        localization_text("rin").strip.downcase           => :set_rin
-      }[description.strip.downcase]
+      column_maps[description.strip.downcase]
     end
   end
 
