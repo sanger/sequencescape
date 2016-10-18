@@ -35,6 +35,7 @@ class Parsers::QuantParser
 
   def method_set_list
     headers_section.map do |description|
+      next if description.blank?
       column_maps[description.strip.downcase]
     end
   end
