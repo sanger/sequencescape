@@ -18,7 +18,7 @@ class Parsers::QuantParser
   end
 
   def localization_text(attribute_name)
-    I18n.t("#{attribute_name}.label",scope:[:metadata,:well,:metadata],default:attribute_name)
+    I18n.t(:label,scope:[:metadata,:well,:metadata,attribute_name],default:attribute_name)
   end
 
   def column_maps
