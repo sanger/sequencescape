@@ -248,6 +248,9 @@ Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |b
   assert_equal label, plate.role
 end
 
-
-
-
+Given(/^the plate with ID (\d+) has a process metadatum collection with UUID "(.*?)"$/) do |id, uuid|
+    metadata = [FactoryGirl.build(:process_metadatum, key: "Key1", value: "Value1"),
+              FactoryGirl.build(:process_metadatum, key: "Key2", value: "Value2")]
+    collection = FactoryGirl.create(:process_metadatum_collection, process_metadata: metadata, asset_id: id)
+    set_uuid_for(collection, uuid)
+end

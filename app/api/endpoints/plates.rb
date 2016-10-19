@@ -33,6 +33,7 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
     has_many(:transfers_as_source,       :json => 'source_transfers', :to => 'source_transfers')
     has_many(:transfers_to_tubes,        :json => 'transfers_to_tubes', :to => 'transfers_to_tubes')
     has_many(:transfers_as_destination,   :json => 'creation_transfers', :to => 'creation_transfers')
+    belongs_to(:process_metadatum_collection, :json => 'process_metadatum_collection', :to => 'process_metadatum_collection')  
   end
 
 end

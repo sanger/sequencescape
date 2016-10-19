@@ -8,8 +8,8 @@ class ::Io::ProcessMetadatumCollection < ::Core::Io::Base
 
   define_attribute_and_json_mapping(%Q{
              metadata <=> metadata
-             user <=> user
-             asset <=> asset
+             user <= user
+             asset <= asset
   })
 
 end
