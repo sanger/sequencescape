@@ -16,6 +16,11 @@ FactoryGirl.define do
     tag
     tag2    {|t| t.association(:tag) }
 
+    factory :tagged_aliquot do
+      tag
+      tag2    {|t| t.association(:tag) }
+	end
+
     factory :untagged_aliquot do
       tag  nil
       tag2 nil

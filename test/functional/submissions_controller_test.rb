@@ -185,6 +185,44 @@ class SubmissionsControllerTest < ActionController::TestCase
         assert_equal 9, Order.first.assets.count
       end
     end
+
+    context "A submission with clashing orders" do
+      setup do
+        @shared_template = 'shared_template'
+        @sample  = create :sample
+        @asset_a = create :sample_tube, sample:  @sample
+        @asset_b = create :sample_tube, sample:  @sample
+        @secondary_submission = create :submission
+        @secondary_order = create :order, assets: [@asset_b], template_name: @shared_template, submission: @secondary_submission
+        @submission = create :submission
+        @order   = create :order, assets: [@asset_a], template_name: @shared_template, submission: @submission
+      end
+
+      should "warn the user about duplicates" do
+        get :show, id: @submission.id
+        assert_select 'div.alert-danger' do
+          assert_select 'strong', 'Warning! Similar submissions detected'
+          assert_select 'li.sample', 1
+          assert_select 'li.submission', 1
+        end
+      end
+    end
+
+    context "A submission without clashing orders" do
+      setup do
+        @shared_template = 'shared_template'
+        @sample  = create :sample
+        @asset_a = create :sample_tube, sample:  @sample
+        @submission = create :submission
+        @order   = create :order, assets: [@asset_a], template_name: @shared_template, submission: @submission
+      end
+
+      should "not warn the user about duplicates" do
+        get :show, id: @submission.id
+        assert_select 'div.alert-danger', 0
+      end
+    end
+
   end
 
   def plate_submission(text)

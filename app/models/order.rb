@@ -51,6 +51,8 @@ class Order < ActiveRecord::Base
   before_destroy :is_building_submission?
   after_destroy :on_delete_destroy_submission
 
+  scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples:{id: samples } ) }
+
   def is_building_submission?
     self.submission.building?
   end
@@ -209,6 +211,14 @@ class Order < ActiveRecord::Base
     return new_order
   end
 
+  def duplicates_within(timespan)
+    matching_orders = Order.containing_samples(all_samples).where(template_name:template_name).includes(:submission,{assets: :samples}).where('orders.id != ?',self.id).where('orders.created_at > ?',DateTime.current - timespan)
+    return false if matching_orders.empty?
+    matching_samples = matching_orders.map(&:samples).flatten & all_samples
+    matching_submissions = matching_orders.map(&:submission).uniq
+    yield matching_samples, matching_orders, matching_submissions if block_given?
+    true
+  end
 
   #  attributes which are not saved for a submission but can be pre-set via SubmissionTemplate
   # return a list of request_types lists  (a sequence of choices) to display in the new view
