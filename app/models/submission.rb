@@ -118,7 +118,6 @@ class Submission < ActiveRecord::Base
       order.submission
     end
   end
-  # TODO[xxx]: ... to here really!
 
   def safe_to_delete?
     ActiveSupport::Deprecation.warn "Submission#safe_to_delete? may not recognise all states"
@@ -176,6 +175,17 @@ class Submission < ActiveRecord::Base
           :project_id => self.project_id), &block)
     new_submission.save
     return new_submission
+  end
+
+  def each_submission_warning
+    store = {samples:[],submissions:[]}
+    orders.each do |order|
+      order.duplicates_within(1.month) do |samples,orders,submissions|
+        store[:samples].concat(samples)
+        store[:submissions].concat(submissions)
+      end
+    end
+    yield store[:samples].uniq, store[:submissions].uniq unless store[:samples].empty?
   end
 
  #Required at initial construction time ...

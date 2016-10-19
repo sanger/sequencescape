@@ -34,8 +34,8 @@ FactoryGirl.define do
       plate_purpose {|pp| pp.association(:source_plate_purpose)}
     end
 
-    
-    
+
+
     factory :child_plate do
 
       transient do
@@ -53,7 +53,7 @@ FactoryGirl.define do
     end
   end
 
-  
+
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
   end
@@ -406,9 +406,17 @@ previous_pipeline_id  nil
     barcode             {|a| FactoryGirl.generate :barcode_number }
     purpose             { Tube::Purpose.standard_sample_tube }
   end
+
   factory :sample_tube, :parent => :empty_sample_tube do |sample_tube|
-    after(:create) do |sample_tube|
-      sample_tube.aliquots.create!(:sample => create(:sample))
+
+    transient do
+      sample { create(:sample) }
+      study { create(:study) }
+      project { create(:project) }
+    end
+
+    after(:create) do |sample_tube,evaluator|
+      create_list(:untagged_aliquot,1,sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study,project: evaluator.project)
     end
   end
 
