@@ -3,12 +3,12 @@
     <strong>Warning! Similar submissions detected</strong>
     <p>Submission <%= presenter.id %> contains samples which have recently had similar submissions made on them. Please double check that this submission was not made in error.</p>
     <p>Affected samples:</p>
-    <ul><% samples.each do |sample| %>
-      <li class='sample'><%= link_to sample.sanger_sample_id, sample %></li>
+    <ul class='list-inline'><% samples.each do |sample| %>
+      <li class='sample list-inline-item'><%= link_to sample.sanger_sample_id, sample %></li>
     <% end %></ul>
     <p>Potential duplicate submissions:</p>
-    <ul><% submissions.each do |submission| %>
-      <li class='submission'><%= link_to submission.name, submission %></li>
+    <ul class='list-inline'><% submissions.each do |submission| %>
+      <li class='submission list-inline-item'><%= link_to submission.name, submission %></li>
     <% end %></ul>
   <% end %>
 <% end %>
