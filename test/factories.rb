@@ -19,7 +19,7 @@ FactoryGirl.define do
     factory :tagged_aliquot do
       tag
       tag2    {|t| t.association(:tag) }
-	end
+    end
 
     factory :untagged_aliquot do
       tag  nil
@@ -27,10 +27,13 @@ FactoryGirl.define do
     end
 
     factory :single_tagged_aliquot do
+      tag
       tag2  nil
     end
 
     factory :dual_tagged_aliquot do
+      tag
+      tag2    {|t| t.association(:tag) }
     end
   end
 
