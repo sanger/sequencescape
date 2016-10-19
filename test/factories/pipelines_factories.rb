@@ -385,6 +385,17 @@ previous_pipeline_id  nil
     purpose_id { Purpose.find_by_name('PacBio Sheared').id }
   end
 
+  factory :sample_tube_without_barcode, :class => Tube do |tube|
+    name                {|a| FactoryGirl.generate :asset_name }
+    value               ""
+    descriptors         []
+    descriptor_fields   []
+    qc_state            ""
+    resource            nil
+    barcode             nil
+    purpose             { Tube::Purpose.standard_sample_tube }
+  end
+
   factory :empty_sample_tube, :class => SampleTube do |sample_tube|
     name                {|a| FactoryGirl.generate :asset_name }
     value               ""

@@ -14,13 +14,21 @@ class ExternalLibraryCreationRequest < SystemRequest
     aasm_state :passed, :enter => :on_passed
     aasm_initial_state :pending
 
-    aasm_event :manifest_processed do
-      transitions :to => :passed, :from => [:pending]
+    aasm_event :_manifest_processed do
+      transitions :to => :passed, :from => :pending
     end
+  end
+
+  def manifest_processed!
+    _manifest_processed! if pending?
   end
 
   def on_passed
     perform_transfer_of_contents
+  end
+
+  def allow_library_update?
+    pending?
   end
 
   def perform_transfer_of_contents

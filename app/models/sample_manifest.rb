@@ -6,7 +6,6 @@ class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
-  include SampleManifest::TemplateBehaviour
   include SampleManifest::SampleTubeBehaviour
   include SampleManifest::MultiplexedLibraryBehaviour
   include SampleManifest::CoreBehaviour
@@ -31,13 +30,13 @@ class SampleManifest < ActiveRecord::Base
   has_uploaded_document :uploaded, {:differentiator => "uploaded"}
   has_uploaded_document :generated, {:differentiator => "generated"}
 
+  attr_accessor :override
+  attr_reader :manifest_errors
+
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
-
-  attr_accessor :override
-  attr_reader :manifest_errors
 
   # Needed for the UI to work!
   def barcode_printer ; end
@@ -59,6 +58,8 @@ class SampleManifest < ActiveRecord::Base
   # Too many errors overflow the text column when serialized. This can affect de-serialization
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
+
+  delegate :printables, to: :core_behaviour
 
   def truncate_errors
     if self.last_errors && self.last_errors.join.length > LIMIT_ERROR_LENGTH
@@ -111,20 +112,6 @@ class SampleManifest < ActiveRecord::Base
       core_behaviour.generate
     end
     return nil
-  end
-
-  def print_labels(barcode_printer, options={})
-    return false if barcode_printer.nil?
-    core_behaviour.print_labels do |printables, prefix, *args|
-      unless printables.empty?
-        printables.each { |printable| printable.study = self.study.abbreviation }
-        printables = [printables.first] if options[:only_first_label]==true
-        barcode_printer.print_labels(printables, prefix, *args)
-      end
-    end
-    true
-  rescue SOAP::FaultError => exception
-    false
   end
 
   def create_sample(sanger_sample_id)
