@@ -119,10 +119,6 @@ class Sample < ActiveRecord::Base
     where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
   }
 
-  def self.by_name(sample_id)
-    self.find_by_name(sample_id)
-  end
-
   def select_study(sample_id)
     sample = self.find(sample_id)
     sample.studies
