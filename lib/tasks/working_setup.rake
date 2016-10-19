@@ -27,42 +27,13 @@ namespace :working do
       @program = Program.find_by_name('General')
     end
 
-    def user
-      @user ||= create_or_find_user
-    end
-
-    def create_or_find_user
-      existing = User.find_by_login('admin')
-      return existing if existing
-      User.create!(:login=>'admin',:password=>'admin', :swipecard_code=>'abcdef', :barcode =>'ID99A') do |user|
-        user.is_administrator
-      end
-    end
-
-    def faculty_sponsor
-      @faculty_sponsor ||= FacultySponsor.find_or_create_by(:name=>'Faculty Sponsor')
-    end
-
-    def create_project(name)
-      Project.create!(:name=>name,:enforce_quotas => false, :approved => true, :project_metadata_attributes => { :project_cost_code => '1111', :project_funding_model=>'Internal' }) do |project|
-        project.activate!
-      end
-    end
-
-    def create_study(name)
-      Study.create!(:name=>'A study',:study_metadata_attributes=>{data_access_group:'dag',:study_type=>StudyType.first,:faculty_sponsor=>faculty_sponsor,:data_release_study_type=>DataReleaseStudyType.first, :study_type=>StudyType.first,:study_description=>'A seeded test study',:contaminated_human_dna=>'No',:contains_human_dna=>'No',:commercially_available=>'No', :program_id => program.id}) do |study|
-        study.activate!
-        user.is_owner(study)
-      end
-    end
-
     def seed
 
        create_project('A project')
        study   = create_study('A study')
        study_b = create_study('B study')
 
-       SampleRegistrar.register!([sample_named('sample_a',study,user),sample_named('sample_b',study,user),sample_named('sample_c',study,user),sample_named('sample_d',study,user)])
+       SampleRegistrar.register!([sample_named('sample_a',study),sample_named('sample_b',study),sample_named('sample_c',study),sample_named('sample_d',study)])
 
        Purpose.find(2).create!.tap do |plate|
           plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_stock_well_#{w.map.description}", :studies=>[study])) }
@@ -108,7 +79,42 @@ namespace :working do
 
     end
 
-    def sample_named(name,study,user)
+    private
+
+    def user
+      @user ||= create_or_find_user
+    end
+
+    def create_or_find_user
+      existing = User.find_by_login('admin')
+      return existing if existing
+      User.create!(:login=>'admin',:password=>'admin', :swipecard_code=>'abcdef', :barcode =>'ID99A') do |user|
+        user.is_administrator
+      end
+    end
+
+    def faculty_sponsor
+      @faculty_sponsor ||= FacultySponsor.find_by_name('Faculty Sponsor')||FacultySponsor.create!(:name=>'Faculty Sponsor')
+    end
+
+    def create_project(name)
+      existing = Project.find_by_name(name)
+      return existing if existing
+      Project.create!(:name=>name,:enforce_quotas => false, :approved => true, :project_metadata_attributes => { :project_cost_code => '1111', :project_funding_model=>'Internal' }) do |project|
+        project.activate!
+      end
+    end
+
+    def create_study(name)
+      existing = Study.find_by_name(name)
+      return existing if existing
+      Study.create!(:name=>name,:study_metadata_attributes=>{data_access_group:'dag',:study_type=>StudyType.first,:faculty_sponsor=>faculty_sponsor,:data_release_study_type=>DataReleaseStudyType.first, :study_type=>StudyType.first,:study_description=>'A seeded test study',:contaminated_human_dna=>'No',:contains_human_dna=>'No',:commercially_available=>'No', :program_id => program.id}) do |study|
+        study.activate!
+        user.is_owner(study)
+      end
+    end
+
+    def sample_named(name,study)
       {
           "sample_tube_attributes"=>{"two_dimensional_barcode"=>""},
           "study"=>study,
@@ -159,6 +165,8 @@ namespace :working do
         }
     end
   end
+
+  WorkingSetupSeeder.new.seed
 
  end
 end
