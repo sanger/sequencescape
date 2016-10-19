@@ -47,6 +47,7 @@ Feature: Interacting with studies through the API
             "array_express_accession_number": "AE111",
             "ega_policy_accession_number": "EGA222",
             "ega_dac_accession_number": "DAC333",
+            "data_access_group":"something",
             "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
             "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 
@@ -92,6 +93,7 @@ Feature: Interacting with studies through the API
           "data_release_sort_of_study": "genomic sequencing",
           "data_release_strategy": "open",
           "data_release_timing": "standard",
+          "data_access_group": "something",
           "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
           "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 
