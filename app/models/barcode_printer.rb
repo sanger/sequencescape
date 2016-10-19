@@ -31,4 +31,16 @@ class BarcodePrinter < ActiveRecord::Base
     configatron.register_printers_automatically
   end
 
+  def service_url
+    configatron.barcode_service_url
+  end
+
+  def service
+    @service ||= self.class.service
+  end
+
+  def self.verify(number)
+    service.verify(number)
+  end
+
 end

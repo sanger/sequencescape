@@ -76,9 +76,15 @@ class PmbClientTest < ActiveSupport::TestCase
     refute LabelPrinter::PmbClient.register_printer('test_printer')
   end
 
-  test "should return pretty errors" do
+  test "should return pretty errors with new json" do
     errors = "{\"errors\":[{\"source\":{\"pointer\":\"/data/attributes/printer\"},\"detail\":\"does not exist\"}, {\"source\":{\"pointer\":\"/data/attributes/label_template\"},\"detail\":\"does not exist\"}]}"
     pretty_errors = 'Printer does not exist; Label template does not exist'
+    assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
+  end
+
+  test "should return pretty errors with old json" do
+    errors = "{\"errors\":{\"printer\":[\"Something is wrong\",\"Something else is wrong\"],\"labels\":[\"Something is wrong\"]}}"
+    pretty_errors = 'Printer: Something is wrong, Something else is wrong; Labels: Something is wrong'
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end
 
