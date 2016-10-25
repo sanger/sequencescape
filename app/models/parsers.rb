@@ -5,6 +5,8 @@
 # Copyright (C) 2014,2015,2016 Genome Research Ltd.
 
 require 'csv'
+require 'lib/linefeed_fix'
+
 module Parsers
 
   def self.parser_for(filename, content_type, content)
