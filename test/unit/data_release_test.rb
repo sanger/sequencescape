@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require File.join(File.dirname(__FILE__), *%w[.. test_helper])
+require 'test_helper'
 
 class DataReleaseTest < ActiveSupport::TestCase
   context "A study" do
@@ -36,6 +36,7 @@ class DataReleaseTest < ActiveSupport::TestCase
             setup do
               @study.study_metadata.data_release_study_type.name           = 'genotyping or cytogenetics'
               @study.study_metadata.data_release_strategy                  = 'managed'
+              @study.study_metadata.data_access_group                      = 'dag'
               @study.study_metadata.data_release_timing                    = 'never'
               @study.study_metadata.data_release_prevention_reason         = 'legal'
               @study.study_metadata.data_release_prevention_approval       = 'Yes'

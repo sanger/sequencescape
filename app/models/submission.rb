@@ -120,7 +120,6 @@ class Submission < ActiveRecord::Base
       order.submission
     end
   end
-  # TODO[xxx]: ... to here really!
 
   def safe_to_delete?
     ActiveSupport::Deprecation.warn "Submission#safe_to_delete? may not recognise all states"
@@ -166,11 +165,22 @@ class Submission < ActiveRecord::Base
     return multiplex_started_passed_result
   end
 
+  def each_submission_warning
+    store = { samples: [], submissions: [] }
+    orders.each do |order|
+      order.duplicates_within(1.month) do |samples, orders, submissions|
+        store[:samples].concat(samples)
+        store[:submissions].concat(submissions)
+      end
+    end
+    yield store[:samples].uniq, store[:submissions].uniq unless store[:samples].empty?
+  end
+
   # Required at initial construction time ...
   validate :validate_orders_are_compatible
 
   # Order needs to have the 'structure'
-  def validate_orders_are_compatible()
+  def validate_orders_are_compatible
     return true if orders.size < 2
     # check every order agains the first one
     first_order = orders.first

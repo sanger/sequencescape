@@ -50,7 +50,10 @@ class RequestcreateTest < ActiveSupport::TestCase
   context '.create_assets_requests' do
     setup do
       @study  = create(:study)
-      @assets = [create(:sample_tube), create(:sample_tube)]
+      @assets = [
+        create(:sample_tube, study: nil, project: nil),
+        create(:sample_tube, study: nil, project: nil)
+      ]
 
       RequestFactory.create_assets_requests(@assets, @study)
     end

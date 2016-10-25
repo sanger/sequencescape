@@ -27,10 +27,11 @@ FactoryGirl.define do
   end
 
   factory(:managed_study, parent: :study) do
-    name 'Study: Manages'
+    name 'Study: Managed'
     state 'active'
-    after(:create) do |study|
-      study.study_metadata.update_attributes!(data_release_strategy: 'managed')
+    after(:build) do |study|
+      study.study_metadata.data_access_group = 'dag'
+      study.study_metadata.data_release_strategy = 'managed'
     end
   end
   # These require property definitions to be properly setup
@@ -42,7 +43,7 @@ FactoryGirl.define do
   factory(:study_for_study_list_pending_ethical_approval, parent: :study) do |study|
     name               'Study: Pending ethical approval'
     ethically_approved false
-    after(:create) do |study|
+    after(:build) do |study|
       study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_pending_ethical_approval, study: study, faculty_sponsor: study.study_metadata.faculty_sponsor))
       study.save # Required to re-force before_validation event
     end
@@ -52,8 +53,8 @@ FactoryGirl.define do
     contaminated_human_dna 'Yes'
   end
   factory(:study_for_study_list_contaminated_with_human_dna, parent: :study) do |study|
-    name           'Study: Contaminated with human dna'
-    after(:create) do |study|
+    name 'Study: Contaminated with human dna'
+    after(:build) do |study|
       study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_contaminated_with_human_dna, study: study, faculty_sponsor: study.study_metadata.faculty_sponsor))
     end
   end
@@ -62,8 +63,8 @@ FactoryGirl.define do
     remove_x_and_autosomes 'Yes'
   end
   factory(:study_for_study_list_remove_x_and_autosomes, parent: :study) do |study|
-    name           'Study: Remove x and autosomes'
-    after(:create) do |study|
+    name 'Study: Remove x and autosomes'
+    after(:build) do |study|
       study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_remove_x_and_autosomes, study: study, faculty_sponsor: study.study_metadata.faculty_sponsor))
     end
   end
@@ -73,7 +74,7 @@ FactoryGirl.define do
     name  'Study: Managed & active'
     state 'active'
 
-    after(:create) do |study|
+    after(:build) do |study|
       user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
       user.has_role('manager', study)
     end
@@ -82,7 +83,7 @@ FactoryGirl.define do
     name  'Study: Managed & inactive'
     state 'inactive'
 
-    after(:create) do |study|
+    after(:build) do |study|
       user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
       user.has_role('manager', study)
     end
@@ -90,7 +91,7 @@ FactoryGirl.define do
   factory(:study_for_study_list_followed, parent: :study) do |study|
     name 'Study: Followed'
 
-    after(:create) do |study|
+    after(:build) do |study|
       user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
       user.has_role('follower', study)
     end
@@ -98,7 +99,7 @@ FactoryGirl.define do
   factory(:study_for_study_list_collaborations, parent: :study) do |study|
     name 'Study: Collaborations'
 
-    after(:create) do |study|
+    after(:build) do |study|
       user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
       user.has_role('collaborator', study)
     end
@@ -107,7 +108,7 @@ FactoryGirl.define do
     name 'Study: Interesting'
 
     # NOTE: Doesn't appear to matter what role the user has!
-    after(:create) do |study|
+    after(:build) do |study|
       user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
       user.has_role('follower', study)
     end

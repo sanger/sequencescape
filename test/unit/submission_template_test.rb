@@ -77,6 +77,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         assert_equal 'Standard', field('Library type').default_value
       end
     end
+
   end
 
   def field(field_name)

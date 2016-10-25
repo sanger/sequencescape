@@ -17,6 +17,7 @@ end %>
 </div>
 <%= submission_status_message(@presenter.submission) %>
 
+<%= render partial: 'warnings', locals: { presenter: @presenter } %>
 
 <div class='priority_changer alert alert-info'>
   <h3>Priority</h3>

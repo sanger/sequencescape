@@ -174,8 +174,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
     samples.map do |sample|
       # Prioritise the newest well
-      sample.wells.on_plate_purpose(plate_purpose).order(id: :desc).first or
-        raise InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}"
+      sample.wells.on_plate_purpose(plate_purpose).order(id: :desc).first ||
+        raise(InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}")
     end
   end
 

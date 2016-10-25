@@ -24,9 +24,7 @@
   <% @asset_groups.each do |asset_group| -%>
     <tr>
       <td><%= link_to asset_group.name, study_asset_group_path(@study, asset_group) %></td>
-      <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
-        <td><%= link_to 'Print labels', print_study_asset_group_path(@study, asset_group) %>
-      <% end %>
+      <td><%= link_to 'Print labels', print_study_asset_group_path(@study, asset_group) %></td>
       <% if @current_user.administrator? %>
         <td><%= link_to 'Edit', edit_study_asset_group_path(@study, asset_group) %></td>
         <td><%= link_to 'Destroy', study_asset_group_path(@study, asset_group), :confirm => 'Are you sure?', :method => :delete %></td>

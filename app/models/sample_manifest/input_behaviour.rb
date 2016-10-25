@@ -8,7 +8,7 @@ module SampleManifest::InputBehaviour
 
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
-      csv        = CSV.parse(spreadsheet_file.read)
+      csv        = CSV.parse(LinefeedFix.scrub!(spreadsheet_file.read))
       column_map = compute_column_map(csv[spreadsheet_header_row])
 
       spreadsheet_offset.upto(csv.size - 1) do |n|
@@ -178,7 +178,7 @@ module SampleManifest::InputBehaviour
   end
 
   def each_csv_row(&block)
-    csv = CSV.parse(uploaded.current_data)
+    csv = CSV.parse(LinefeedFix.scrub!(uploaded.current_data))
     clean_up_sheet(csv)
 
     headers = get_headers(csv)

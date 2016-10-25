@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160914100113) do
+ActiveRecord::Schema.define(:version => 20161003085523) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(:version => 20160914100113) do
     t.integer  "insert_size_to",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "bait_library_id",  limit: 4
-    t.integer  "tag2_id",          limit: 4,   default: -1, null: false
+    t.integer  "bait_library_id"
+    t.integer  "tag2_id",          :default => -1
   end
 
   add_index "aliquots", ["library_id"], :name => "index_aliquots_on_library_id"
@@ -1608,30 +1608,21 @@ ActiveRecord::Schema.define(:version => 20160914100113) do
     t.datetime "updated_at"
   end
 
-  create_table "submissions", force: :cascade do |t|
-    t.integer  "study_id_to_delete",         limit: 4
-    t.integer  "workflow_id_to_delete",      limit: 4
+  create_table "submissions", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "state",                      limit: 20
-    t.string   "message",                    limit: 255
-    t.integer  "user_id",                    limit: 4
-    t.text     "item_options_to_delete",     limit: 65535
-    t.text     "request_types",              limit: 65535
-    t.text     "request_options",            limit: 65535
-    t.text     "comments_to_delete",         limit: 65535
-    t.integer  "project_id_to_delete",       limit: 4
-    t.string   "sti_type_to_delete",         limit: 255
-    t.string   "template_name_to_delete",    limit: 255
-    t.integer  "asset_group_id_to_delete",   limit: 4
-    t.string   "asset_group_name_to_delete", limit: 255
-    t.string   "name",                       limit: 255
-    t.integer  "priority",                   limit: 1,     default: 0, null: false
+    t.string   "state",                  limit: 20
+    t.string   "message"
+    t.integer  "user_id"
+    t.text     "request_types"
+    t.text     "request_options"
+    t.string   "name"
+    t.integer  "priority",               limit: 1,  default: 0, null: false
+    t.integer  "submission_template_id"
   end
 
   add_index "submissions", ["name"], name: "index_submissions_on_name", using: :btree
   add_index "submissions", ["state"], name: "index_submissions_on_state", using: :btree
-  add_index "submissions", ["study_id_to_delete"], name: "index_submissions_on_project_id", using: :btree
 
   create_table "submitted_assets", force: :cascade do |t|
     t.integer  "order_id",   limit: 4
@@ -1640,8 +1631,10 @@ ActiveRecord::Schema.define(:version => 20160914100113) do
     t.datetime "updated_at"
   end
 
-  create_table "suppliers", force: :cascade do |t|
-    t.string   "name",         limit: 255
+  add_index "submitted_assets", ["asset_id"], name: "index_submitted_assets_on_asset_id"
+
+  create_table "suppliers", force: true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "email",        limit: 255

@@ -14,12 +14,20 @@ class ExternalLibraryCreationRequest < SystemRequest
     state :passed, enter: :on_passed
 
     event :manifest_processed do
-      transitions to: :passed, from: [:pending]
+      transitions to: :passed, from: :pending
     end
+  end
+
+  def manifest_processed!
+    _manifest_processed! if pending?
   end
 
   def on_passed
     perform_transfer_of_contents
+  end
+
+  def allow_library_update?
+    pending?
   end
 
   def perform_transfer_of_contents

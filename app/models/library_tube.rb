@@ -41,8 +41,15 @@ class LibraryTube < Tube
   end
 
   def specialized_from_manifest=(attributes)
-    aliquots.first.update_attributes!(attributes.merge(library_id: self.id))
-    requests.map(&:manifest_processed!)
+    if first_update?
+      aliquots.first.update_attributes!(attributes.merge(library_id: self.id))
+      requests.each(&:manifest_processed!)
+    end
+  end
+
+  def first_update?
+    external_library_creation_request = requests.find_by(sti_type: 'ExternalLibraryCreationRequest')
+    external_library_creation_request && external_library_creation_request.allow_library_update?
   end
 
   def library_information
