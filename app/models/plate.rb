@@ -379,11 +379,10 @@ class Plate < Asset
   def find_map_by_rowcol(row, col)
     # Count from 0
     description = asset_shape.location_from_row_and_column(row, col + 1, size)
-    Map.where(
+    Map.find_by(
       description: description,
       asset_size: size,
-      asset_shape_id: asset_shape
-     ).first
+      asset_shape_id: asset_shape)
   end
 
   def find_well_by_rowcol(row, col)

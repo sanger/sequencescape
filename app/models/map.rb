@@ -208,11 +208,11 @@ class Map < ActiveRecord::Base
   end
 
   def next_map_position
-    Map.where(
+    Map.find_by(
       asset_size: asset_size,
       asset_shape_id: asset_shape_id,
       row_order: row_order + 1
-    ).first
+    )
   end
 
   def self.horizontal_to_vertical(well_position, plate_size, plate_shape = nil)
@@ -228,11 +228,11 @@ class Map < ActiveRecord::Base
   end
 
   def next_vertical_map_position
-    Map.where(
+    Map.find_by(
       asset_size: asset_size,
       asset_shape_id: asset_shape_id,
       column_order: column_order + 1
-    ).first
+    )
   end
 
   def self.map_96wells
