@@ -27,12 +27,6 @@ FactoryGirl.define do
       tag2 nil
     end
 
-    factory :tagged_aliquot do
-      # Bit of a mistake here with commits on the wrong branch
-      # Added to help tests pass for the moment, but will
-      # shortly get stripped out in the merge.
-    end
-
     factory :single_tagged_aliquot do
       tag
       tag2 nil
