@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: XmlCacheHelper
+  
+    &mdash; Documentation by YARD 0.9.5
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "XmlCacheHelper";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index (X)</a> &raquo;
+    
+    
+    <span class="title">XmlCacheHelper</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <iframe id="search_frame" src="class_list.html"></iframe>
+
+      <div id="content"><h1>Module: XmlCacheHelper
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+  <dl>
+    <dt>Included in:</dt>
+    <dd><span class='object_link'><a href="BatchCacheSweeper.html" title="BatchCacheSweeper (class)">BatchCacheSweeper</a></span>, <span class='object_link'><a href="SampleCacheSweeper.html" title="SampleCacheSweeper (class)">SampleCacheSweeper</a></span>, <span class='object_link'><a href="StudyCacheSweeper.html" title="StudyCacheSweeper (class)">StudyCacheSweeper</a></span></dd>
+  </dl>
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>app/observers/xml_cache_helper.rb</dd>
+  </dl>
+  
+</div>
+
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="XmlCacheHelper/ClassMethods.html" title="XmlCacheHelper::ClassMethods (module)">ClassMethods</a></span>, <span class='object_link'><a href="XmlCacheHelper/ControllerHelper.html" title="XmlCacheHelper::ControllerHelper (module)">ControllerHelper</a></span>
+    
+  
+    
+  
+</p>
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#included-class_method" title="included (class method)">.<strong>included</strong>(base)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_save-instance_method" title="#after_save (instance method)">#<strong>after_save</strong>(record)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_destroy-instance_method" title="#before_destroy (instance method)">#<strong>before_destroy</strong>(record)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#clear_cache-instance_method" title="#clear_cache (instance method)">#<strong>clear_cache</strong>(id)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#handle-instance_method" title="#handle (instance method)">#<strong>handle</strong>(record)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#ids_for-instance_method" title="#ids_for (instance method)">#<strong>ids_for</strong>(record)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#metadata-instance_method" title="#metadata (instance method)">#<strong>metadata</strong>(record) {|(       &quot;INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id&quot;,       &quot;#{metadata}.id=#{record.id}&quot;)| ... } &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#metadata_association-instance_method" title="#metadata_association (instance method)">#<strong>metadata_association</strong>(type, record) {|(       &quot;INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id&quot;,       &quot;#{metadata}.#{type.to_s.singularize}_id=#{record.id}&quot;)| ... } &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#query_conditions_for-instance_method" title="#query_conditions_for (instance method)">#<strong>query_conditions_for</strong>(record)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="included-class_method">
+  
+    .<strong>included</strong>(base)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 27</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_extend'>extend</span> <span class='const'>ClassMethods</span>
+
+    <span class='id identifier rubyid_delegate'>delegate</span> <span class='symbol'>:debug</span><span class='comma'>,</span> <span class='label'>to:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Rails.logger</span><span class='tstring_end'>&#39;</span></span>
+
+    <span class='comment'># NOTE: Getting sweepers to work without a controller is not simple!
+</span>    <span class='comment'>#
+</span>    <span class='comment'># All the documentation suggests that you should be able to simply define the observer methods
+</span>    <span class='comment'># and then call expire_page with the url_for details.  However, this only works if the sweeper
+</span>    <span class='comment'># has been paired with a controller, so that the controller is inserted into the sweeper.
+</span>    <span class='comment'>#
+</span>    <span class='comment'># This is the best way of doing this, hence we simply implement an observer here and then
+</span>    <span class='comment'># include &amp; delegate everything we need to interact with the cache.
+</span>    <span class='id identifier rubyid_include'>include</span> <span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_application'>application</span><span class='period'>.</span><span class='id identifier rubyid_routes'>routes</span><span class='period'>.</span><span class='id identifier rubyid_url_helpers'>url_helpers</span>
+
+    <span class='id identifier rubyid_delegate'>delegate</span> <span class='symbol'>:expire_page</span><span class='comma'>,</span> <span class='symbol'>:perform_caching</span><span class='comma'>,</span> <span class='label'>to:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ActionController::Base</span><span class='tstring_end'>&#39;</span></span>
+    <span class='id identifier rubyid_alias_method'>alias_method</span><span class='lparen'>(</span><span class='symbol'>:perform_caching?</span><span class='comma'>,</span> <span class='symbol'>:perform_caching</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_private'>private</span> <span class='symbol'>:expire_page</span><span class='comma'>,</span> <span class='symbol'>:perform_caching</span><span class='comma'>,</span> <span class='symbol'>:perform_caching?</span>
+    <span class='id identifier rubyid_private'>private</span> <span class='symbol'>:url_for</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="after_save-instance_method">
+  
+    #<strong>after_save</strong>(record)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+51
+52
+53</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 51</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_after_save'>after_save</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_handle'>handle</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="before_destroy-instance_method">
+  
+    #<strong>before_destroy</strong>(record)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+56
+57
+58</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 56</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_before_destroy'>before_destroy</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_handle'>handle</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="clear_cache-instance_method">
+  
+    #<strong>clear_cache</strong>(id)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 68</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_clear_cache'>clear_cache</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_i'>i</span> <span class='op'>=</span> <span class='int'>0</span>
+  <span class='kw'>begin</span>
+    <span class='id identifier rubyid_expire_page'>expire_page</span><span class='lparen'>(</span><span class='id identifier rubyid_url_for'>url_for</span><span class='lparen'>(</span>
+      <span class='label'>controller:</span> <span class='id identifier rubyid_caching_for_controller'>caching_for_controller</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>show</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='label'>format:</span> <span class='symbol'>:xml</span><span class='comma'>,</span>
+      <span class='label'>only_path:</span> <span class='kw'>true</span>
+    <span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_exception'>exception</span>
+    <span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot clear cached XML file as it does not exist (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+  <span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EACCES</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_exception'>exception</span>
+    <span class='id identifier rubyid_i'>i</span> <span class='op'>+=</span> <span class='int'>1</span>
+    <span class='kw'>retry</span> <span class='kw'>unless</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>&gt;</span> <span class='int'>2</span>
+    <span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot clear cached XML file as it is inaccessible</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="handle-instance_method">
+  
+    #<strong>handle</strong>(record)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+60
+61
+62
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 60</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_handle'>handle</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_perform_caching?'>perform_caching?</span>
+  <span class='id identifier rubyid_debug'>debug</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Sweeping </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_controller'>caching_for_controller</span><span class='embexpr_end'>}</span><span class='tstring_content'> cache from </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>(</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_ids_for'>ids_for</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:clear_cache</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_debug'>debug</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cache sweeping of </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_controller'>caching_for_controller</span><span class='embexpr_end'>}</span><span class='tstring_content'> complete for </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>(</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="ids_for-instance_method">
+  
+    #<strong>ids_for</strong>(record)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 86</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_ids_for'>ids_for</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_query_details_for'>query_details_for</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_joins'>joins</span><span class='comma'>,</span> <span class='id identifier rubyid_conditions'>conditions</span><span class='op'>|</span>
+    <span class='id identifier rubyid_query'>query</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>
+      SELECT DISTINCT </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='embexpr_end'>}</span><span class='tstring_content'>.id AS id
+      FROM </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_joins'>joins</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>
+      WHERE </span><span class='embexpr_beg'>#{</span><span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> AND </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>
+    </span><span class='tstring_end'>&quot;</span></span>
+    <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_connection'>connection</span><span class='period'>.</span><span class='id identifier rubyid_select_all'>select_all</span><span class='lparen'>(</span><span class='id identifier rubyid_query'>query</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_result'>result</span><span class='op'>|</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="metadata-instance_method">
+  
+    #<strong>metadata</strong>(record) {|(
+      &quot;INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id&quot;,
+      &quot;#{metadata}.id=#{record.id}&quot;)| ... } &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>(
+      "INNER JOIN #{<span class='object_link'><a href="#metadata-instance_method" title="XmlCacheHelper#metadata (method)">metadata</a></span>} ON #{<span class='object_link'><a href="#metadata-instance_method" title="XmlCacheHelper#metadata (method)">metadata</a></span>}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",
+      "#{<span class='object_link'><a href="#metadata-instance_method" title="XmlCacheHelper#metadata (method)">metadata</a></span>}.id=#{record.id}")</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+103
+104
+105
+106
+107
+108</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 103</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_metadata'>metadata</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_metadata'>metadata</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_singularize'>singularize</span><span class='embexpr_end'>}</span><span class='tstring_content'>_metadata</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>yield</span><span class='lparen'>(</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>INNER JOIN </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_metadata'>metadata</span><span class='embexpr_end'>}</span><span class='tstring_content'> ON </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_metadata'>metadata</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_singularize'>singularize</span><span class='embexpr_end'>}</span><span class='tstring_content'>_id=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_pluralize'>pluralize</span><span class='embexpr_end'>}</span><span class='tstring_content'>.id</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_metadata'>metadata</span><span class='embexpr_end'>}</span><span class='tstring_content'>.id=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="metadata_association-instance_method">
+  
+    #<strong>metadata_association</strong>(type, record) {|(
+      &quot;INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id&quot;,
+      &quot;#{metadata}.#{type.to_s.singularize}_id=#{record.id}&quot;)| ... } &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>(
+      "INNER JOIN #{<span class='object_link'><a href="#metadata-instance_method" title="XmlCacheHelper#metadata (method)">metadata</a></span>} ON #{<span class='object_link'><a href="#metadata-instance_method" title="XmlCacheHelper#metadata (method)">metadata</a></span>}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",
+      "#{<span class='object_link'><a href="#metadata-instance_method" title="XmlCacheHelper#metadata (method)">metadata</a></span>}.#{type.to_s.singularize}_id=#{record.id}")</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+111
+112
+113
+114
+115
+116</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 111</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_metadata_association'>metadata_association</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_metadata'>metadata</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_singularize'>singularize</span><span class='embexpr_end'>}</span><span class='tstring_content'>_metadata</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>yield</span><span class='lparen'>(</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>INNER JOIN </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_metadata'>metadata</span><span class='embexpr_end'>}</span><span class='tstring_content'> ON </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_metadata'>metadata</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_singularize'>singularize</span><span class='embexpr_end'>}</span><span class='tstring_content'>_id=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_caching_for_model'>caching_for_model</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_pluralize'>pluralize</span><span class='embexpr_end'>}</span><span class='tstring_content'>.id</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_metadata'>metadata</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_singularize'>singularize</span><span class='embexpr_end'>}</span><span class='tstring_content'>_id=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="query_conditions_for-instance_method">
+  
+    #<strong>query_conditions_for</strong>(record)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+98
+99
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/observers/xml_cache_helper.rb', line 98</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_query_conditions_for'>query_conditions_for</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_table_name'>table_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>.id=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Tue Oct 25 15:21:36 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.5 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>
