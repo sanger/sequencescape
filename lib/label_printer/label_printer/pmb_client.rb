@@ -17,8 +17,16 @@ module LabelPrinter
       "#{base_url}/print_jobs"
     end
 
+    def self.printers_url
+      "#{base_url}/printers"
+    end
+
     def self.label_templates_filter_url
       "#{base_url}/label_templates?filter[name]="
+    end
+
+    def self.printers_filter_url
+      "#{base_url}/printers?filter[name]="
     end
 
     def self.headers
@@ -49,17 +57,46 @@ module LabelPrinter
       raise PmbException.new(e), "PrintMyBarcode service is down"
     end
 
-    def self.pretty_errors(errors)
-      if errors.present?
-        [].tap do |error_list|
-          JSON.parse(errors)['errors'].each do |k, v|
-            error_list << "%{attribute} %{message}" % {attribute: k.capitalize+":", message: v.join(", ")}
-          end
-        end
-        .join("; ")
+    def self.register_printer(name)
+      unless printer_exists?(name)
+        RestClient.post printers_url, {"data"=>{"attributes"=>{"name" => name}}}.to_json, headers
       end
     end
 
+    def self.printer_exists?(name)
+      response = JSON.parse(RestClient.get "#{printers_filter_url}#{name}", headers)
+      response["data"].present?
+    end
+
+    def self.pretty_errors(errors)
+      if errors.present?
+        parsed_errors = JSON.parse(errors)['errors']
+        if parsed_errors.is_a? Array
+          prettify_new_errors(parsed_errors)
+        elsif parsed_errors.is_a? Hash
+          prettify_old_errors(parsed_errors)
+        end
+      end
+    end
+
+    def self.prettify_new_errors(errors)
+      [].tap do |error_list|
+        errors.each do |error|
+          attribute  = error["source"]["pointer"].split('/').last.humanize
+          error_list << "%{attribute} %{message}" % {attribute: attribute, message: error["detail"]}
+        end
+      end
+      .join("; ")
+    end
+
+    def self.prettify_old_errors(errors)
+      [].tap do |error_list|
+        errors.each do |k, v|
+          error_list << "%{attribute} %{message}" % {attribute: k.capitalize+":", message: v.join(", ")}
+        end
+      end
+      .join("; ")
+    end
 
   end
 
