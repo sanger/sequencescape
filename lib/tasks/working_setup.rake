@@ -19,10 +19,10 @@ namespace :working do
 
     def initialize
       @locations = {
-        htp: Location.find_by_name('Illumina high throughput freezer'),
-        ilc: Location.find_by_name('Library creation freezer')
+        htp: Location.find_by(name: 'Illumina high throughput freezer'),
+        ilc: Location.find_by(name: 'Library creation freezer')
        }
-      @program = Program.find_by_name('General')
+      @program = Program.find_by(name: 'General')
     end
 
     def seed
@@ -38,13 +38,13 @@ namespace :working do
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         8.times do |i|
-          Purpose.find_by_name('Cherrypicked').create!(location: locations[:htp]).tap do |plate|
+          Purpose.find_by(name: 'Cherrypicked').create!(location: locations[:htp]).tap do |plate|
             plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_cp#{i}_well_#{w.map.description}", studies: [study])) }
             puts "Cherrypicked: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
           end
         end
         4.times do |i|
-          Purpose.find_by_name('ILC Stock').create!(location: locations[:ilc]).tap do |plate|
+          Purpose.find_by(name: 'ILC Stock').create!(location: locations[:ilc]).tap do |plate|
             plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_ilc#{i}_well_#{w.map.description}", studies: [study])) }
             puts "ILC Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
           end
@@ -56,25 +56,25 @@ namespace :working do
 
         Sample.all.each { |s| study_b.samples << s }
 
-        BarcodePrinter.create!(name: 'g312bc2', barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'))
-        BarcodePrinter.create!(name: 'g311bc2', barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'))
-        BarcodePrinter.create!(name: 'g316bc',  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'))
-        BarcodePrinter.create!(name: 'g317bc',  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'))
-        BarcodePrinter.create!(name: 'g314bc',  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'))
-        BarcodePrinter.create!(name: 'g311bc1', barcode_printer_type: BarcodePrinterType.find_by_name('1D Tube'))
+
+        BarcodePrinter.create!(name: 'g312bc2', barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'))
+        BarcodePrinter.create!(name: 'g311bc2', barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'))
+        BarcodePrinter.create!(name: 'g316bc',  barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'))
+        BarcodePrinter.create!(name: 'g317bc',  barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'))
+        BarcodePrinter.create!(name: 'g314bc',  barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'))
+        BarcodePrinter.create!(name: 'g311bc1', barcode_printer_type: BarcodePrinterType.find_by(name: '1D Tube'))
 
         Supplier.create!(name: 'Test Supplier')
 
         puts "Setting up tag plates..."
-        lot = LotType.find_by_name('IDT Tags').lots.create!(
+        lot = LotType.find_by(name: 'IDT Tags').lots.create!(
           lot_number: 'UATTaglot',
-          template: TagLayoutTemplate.find_by_name('Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
+          template: TagLayoutTemplate.find_by(name: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
           user: user,
           received_at: DateTime.now
         )
        qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
        qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); qcable.asset.update_attributes!(location: locations[:htp]); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
-
     end
 
     private
@@ -84,7 +84,7 @@ namespace :working do
     end
 
     def create_or_find_user
-      existing = User.find_by_login('admin')
+      existing = User.find_by(login: 'admin')
       return existing if existing
       User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A') do |user|
         user.is_administrator
@@ -92,11 +92,11 @@ namespace :working do
     end
 
     def faculty_sponsor
-      @faculty_sponsor ||= FacultySponsor.find_by_name('Faculty Sponsor') || FacultySponsor.create!(name: 'Faculty Sponsor')
+      @faculty_sponsor ||= FacultySponsor.find_by(name: 'Faculty Sponsor') || FacultySponsor.create!(name: 'Faculty Sponsor')
     end
 
     def create_project(name)
-      existing = Project.find_by_name(name)
+      existing = Project.find_by(name: name)
       return existing if existing
       Project.create!(
         name: name,
@@ -112,7 +112,7 @@ namespace :working do
     end
 
     def create_study(name)
-      existing = Study.find_by_name(name)
+      existing = Study.find_by(name: name)
       return existing if existing
       Study.create!(
         name: name,
@@ -187,6 +187,6 @@ namespace :working do
 
   WorkingSetupSeeder.new.seed
 
- end
+  end
  end
 end
