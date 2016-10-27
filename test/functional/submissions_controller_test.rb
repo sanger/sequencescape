@@ -50,7 +50,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     # Mainly to verify that it isn't the new test that is broken
     context "by sample name" do
       setup do
-        samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
+        @samples  = samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create,
           submission: {

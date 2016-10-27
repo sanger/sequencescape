@@ -70,8 +70,8 @@ class TagSubstitutionTest < ActiveSupport::TestCase
           { sample_id: @sample_b.id, library_id: @library_tube_b.id, original_tag_id: @sample_a_orig_tag.id, substitute_tag_id: @sample_b_orig_tag.id, original_tag2_id: @sample_b_orig_tag2.id, substitute_tag2_id: @sample_a_orig_tag2.id }
         ]
         ts = TagSubstitution.new(instructions)
-        assert !ts.save, "Substitution saved when it should have errord"
-        assert_include ts.errors.full_messages, 'Substitution Matching aliquots could not be found'
+        refute ts.save, "Substitution saved when it should have errord"
+        assert_includes ts.errors.full_messages, 'Substitution Matching aliquots could not be found'
       end
 
       should 'also update allow update of other attributes' do
