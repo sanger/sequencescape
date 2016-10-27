@@ -8,6 +8,7 @@ class SubmittedAsset < ActiveRecord::Base
   belongs_to :order
   belongs_to :asset, class_name: 'Aliquot::Receptacle'
 
-  validates_presence_of :order
-  validates_presence_of :asset
+  validates_presence_of :order, inverse_of: :submitted_assets
+  validates_presence_of :asset, inverse_of: :submitted_assets
+
 end

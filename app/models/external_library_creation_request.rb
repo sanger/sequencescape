@@ -13,7 +13,7 @@ class ExternalLibraryCreationRequest < SystemRequest
     state :pending, initial: true
     state :passed, enter: :on_passed
 
-    event :manifest_processed do
+    event :_manifest_processed do
       transitions to: :passed, from: :pending
     end
   end
