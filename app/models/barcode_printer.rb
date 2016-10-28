@@ -12,16 +12,10 @@ class BarcodePrinter < ActiveRecord::Base
   scope :include_barcode_printer_type, -> { includes(:barcode_printer_type) }
   scope :alphabetical,  -> { order(:name) }
 
+  after_create :register_printer_in_pmb, if: :register_printers_automatically
+
   # for labels printing, if printer is not registered in ss
   BarcodePrinterException = Class.new(ActiveRecord::RecordNotFound)
-
-  def service_url
-    configatron.barcode_service_url
-  end
-
-  def service
-    @service ||= self.class.service
-  end
 
   def printer_type_id
     self.barcode_printer_type.printer_type_id
@@ -29,6 +23,22 @@ class BarcodePrinter < ActiveRecord::Base
 
   def plate384_printer?
     self.barcode_printer_type.name == "384 Well Plate"
+  end
+
+  def register_printer_in_pmb
+    LabelPrinter::PmbClient.register_printer(name)
+  end
+
+  def register_printers_automatically
+    configatron.register_printers_automatically
+  end
+
+  def service_url
+    configatron.barcode_service_url
+  end
+
+  def service
+    @service ||= self.class.service
   end
 
   def self.verify(number)
