@@ -23,14 +23,14 @@ class SubmissionsControllerTest < ActionController::TestCase
         'B1', 'B2', 'B3',
         'C1', 'C2', 'C3'
       ].each do |location|
-        well = build :well_with_sample_and_without_plate, map: Map.find_by_description(location)
+        well = build :well_with_sample_and_without_plate, map: Map.find_by(description: location)
         @plate.wells << well
       end
-      build(:well, map: Map.find_by_description('C5'), plate: @plate)
+      build(:well, map: Map.find_by(description: 'C5'), plate: @plate)
       @plate.save
       @study = create :study, name: 'A study'
       @project = create :project, name: 'A project'
-      @submission_template = SubmissionTemplate.find_by_name!('Cherrypicking for pulldown')
+      @submission_template = SubmissionTemplate.find_by!(name: 'Cherrypicking for pulldown')
     end
 
     context "when a submission exists" do
@@ -50,7 +50,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     # Mainly to verify that it isn't the new test that is broken
     context "by sample name" do
       setup do
-        @samples  = samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
+        @samples = samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create,
           submission: {
@@ -80,8 +80,8 @@ class SubmissionsControllerTest < ActionController::TestCase
       context 'with a more recent plate' do
         setup do
           @new_plate = FactoryGirl.create :plate, plate_purpose: @plate.purpose
-          @well = create :well, map: Map.find_by_description('A1'), plate: @new_plate
-          create(:aliquot, sample: Sample.find_by_name(@samples.first), receptacle: @well)
+          @well = create :well, map: Map.find_by(description: 'A1'), plate: @new_plate
+          create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
           post(:create, submission: {
             is_a_sequencing_order: "false",
             comments: "",
@@ -115,7 +115,7 @@ class SubmissionsControllerTest < ActionController::TestCase
           'B1', 'B2', 'B3',
           'C1', 'C2', 'C3'
         ].each do |location|
-        well = create :empty_well, map: Map.find_by_description(location)
+        well = create :empty_well, map: Map.find_by(description: location)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end

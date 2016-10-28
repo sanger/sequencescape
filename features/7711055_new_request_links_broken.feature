@@ -145,4 +145,3 @@ Feature: Creating new requests from an asset
       | Multiplexed library tube | Illumina-B Single ended hi seq sequencing | 150                         | 400                       |
       | Multiplexed library tube | Illumina-B Paired end sequencing          | 150                         | 400                       |
       | Multiplexed library tube | Illumina-B HiSeq Paired end sequencing    | 150                         | 400                       |
-
