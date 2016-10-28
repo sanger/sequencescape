@@ -6,14 +6,7 @@
 
 <% add(:menu, "Back to study" => study_path(@study)) if @study.present? -%>
 
-<h1>
-<% if @study.present? -%>
- Listing assets for study <%= @study.name %>
-<% else -%>
- Listing assets
-<% end -%>
-</h1>
-<br />
+<%= page_title "Listing assets", @study.try(:name) %>
 
 <%= pagination @assets %>
       <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets, :study => @study }) %>

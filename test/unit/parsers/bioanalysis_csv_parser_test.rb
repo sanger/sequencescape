@@ -26,8 +26,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should "return a BioanalysisCsvParser" do
-        Parsers::BioanalysisCsvParser.expects(:new).with(@csv).returns(:pass)
-        assert_equal :pass, Parsers.parser_for(@filename, nil, @content)
+        assert Parsers.parser_for(@filename, nil, @content).is_a?(Parsers::BioanalysisCsvParser)
       end
     end
 

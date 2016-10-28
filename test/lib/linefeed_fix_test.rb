@@ -1,0 +1,25 @@
+require_relative '../test_helper'
+require './lib/linefeed_fix'
+
+class LinefeedFixTest < ActiveSupport::TestCase
+
+  context 'LinefeedFix' do
+
+    setup do
+      File.open(Rails.root + 'test/data/bad.csv') do |f|
+        @string = f.read
+      end
+    end
+
+    should 'raise if we don\'t do anything' do
+      # Makes sure sublime hasn't 'fixed' the file for us
+      assert_equal "Example,colB\r\r\nUnparse,eg\r\r\n", @string
+    end
+
+    should 'return a readable string' do
+      assert_equal "Example,colB\nUnparse,eg\n", LinefeedFix.scrub!(@string)
+      # And just double check that we've generated a valid csv
+      assert_equal [['Example', 'colB'], ['Unparse', 'eg']], CSV.parse(@string)
+    end
+  end
+end

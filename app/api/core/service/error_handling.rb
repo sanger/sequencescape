@@ -45,6 +45,7 @@ module Core::Service::ErrorHandling
     end
 
     def general_error(code, errors = nil)
+      Rails.logger.error(exception_thrown.backtrace.join("\n"))
       errors ||= [exception_thrown.message]
       error(code, JsonError.new(general: errors))
     end

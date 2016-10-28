@@ -259,7 +259,10 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_reason_comment)
     end
 
+    # Note: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed
+    # Behaviour can't go here, as :if also toggles the saving of the required information.
     attribute(:data_access_group, with: /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
+
 
     # SNP information
     attribute(:snp_study_id, integer: true)
@@ -300,23 +303,23 @@ class Study < ActiveRecord::Base
     end
 
     def managed?
-      self.data_release_strategy == DATA_RELEASE_STRATEGY_MANAGED
+      data_release_strategy == DATA_RELEASE_STRATEGY_MANAGED
     end
 
     def delayed_release?
-      self.data_release_timing == DATA_RELEASE_TIMING_DELAYED
+      data_release_timing == DATA_RELEASE_TIMING_DELAYED
     end
 
     def never_release?
-      self.data_release_timing == DATA_RELEASE_TIMING_NEVER
+      data_release_timing == DATA_RELEASE_TIMING_NEVER
     end
 
     def delayed_for_other_reasons?
-      self.data_release_delay_reason == DATA_RELEASE_DELAY_FOR_OTHER
+      data_release_delay_reason == DATA_RELEASE_DELAY_FOR_OTHER
     end
 
     def delayed_for_long_time?
-      DATA_RELEASE_DELAY_PERIODS.include?(self.data_release_delay_period)
+      DATA_RELEASE_DELAY_PERIODS.include?(data_release_delay_period)
     end
 
     validates_numericality_of :number_of_gigabases_per_sample, greater_than_or_equal_to: 0.15, allow_blank: true, allow_nil: true
@@ -326,12 +329,15 @@ class Study < ActiveRecord::Base
     validates :data_release_non_standard_agreement, presence: true, if: :non_standard_agreement?
     validates_associated :data_release_non_standard_agreement, if: :non_standard_agreement?
 
+    # Please adjust comment above if this behaviour ever changes
+    validates_presence_of :data_access_group, if: :managed?
+
     validate :valid_policy_url?
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
     def sanity_check_y_separation
-      self.errors.add(:separate_y_chromosome_data, 'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
+      errors.add(:separate_y_chromosome_data, 'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
       !remove_x_and_autosomes?
     end
 
@@ -344,11 +350,11 @@ class Study < ActiveRecord::Base
     end
 
     def non_standard_agreement?
-      self.data_release_standard_agreement == NO
+      data_release_standard_agreement == NO
     end
 
     def study_type_valid?
-      self.errors.add(:study_type, "is not specified")  if study_type.name == "Not specified"
+      errors.add(:study_type, "is not specified")  if study_type.name == "Not specified"
     end
 
     def valid_policy_url?
@@ -361,7 +367,7 @@ class Study < ActiveRecord::Base
         uri = URI.parse(dac_policy)
         raise URI::InvalidURIError if configatron.invalid_policy_url_domains.include?(uri.host)
       rescue URI::InvalidURIError
-        self.errors.add(:dac_policy, ": #{dac_policy} is not a valid URL")
+        errors.add(:dac_policy, ": #{dac_policy} is not a valid URL")
         return false
       end
       return true
@@ -389,7 +395,7 @@ class Study < ActiveRecord::Base
 
   # We only need to validate the field if we are enforcing data release
   def validating_ena_required_fields_with_enforce_data_release=(state)
-    self.validating_ena_required_fields_without_enforce_data_release = state if self.enforce_data_release
+    self.validating_ena_required_fields_without_enforce_data_release = state if enforce_data_release
   end
   alias_method_chain(:validating_ena_required_fields=, :enforce_data_release)
 
@@ -401,13 +407,13 @@ class Study < ActiveRecord::Base
   end
 
   def mark_deactive
-    unless self.inactive?
+    unless inactive?
       logger.warn "Study deactivation failed! #{self.errors.map { |e| e.to_s }}"
     end
   end
 
   def mark_active
-    unless self.active?
+    unless active?
       logger.warn "Study activation failed! #{self.errors.map { |e| e.to_s }}"
     end
   end

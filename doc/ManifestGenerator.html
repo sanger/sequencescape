@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: ManifestGenerator
+  
+    &mdash; Documentation by YARD 0.9.5
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "ManifestGenerator";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index (M)</a> &raquo;
+    
+    
+    <span class="title">ManifestGenerator</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <iframe id="search_frame" src="class_list.html"></iframe>
+
+      <div id="content"><h1>Class: ManifestGenerator
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">ManifestGenerator</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>app/models/manifest_generator.rb</dd>
+  </dl>
+  
+</div>
+
+
+  <h2>Constant Summary</h2>
+  <dl class="constants">
+    
+      <dt id="QUOTE_CHAR-constant" class="">QUOTE_CHAR =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>!</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+    
+      <dt id="DEFAULT_VOLUME-constant" class="">DEFAULT_VOLUME =
+        
+      </dt>
+      <dd><pre class="code"><span class='int'>13</span></pre></dd>
+    
+      <dt id="DEFAULT_CONCENTRATION-constant" class="">DEFAULT_CONCENTRATION =
+        
+      </dt>
+      <dd><pre class="code"><span class='int'>50</span></pre></dd>
+    
+      <dt id="DEFAULT_SPECIES-constant" class="">DEFAULT_SPECIES =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Homo sapiens</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+    
+      <dt id="DEFAULT_IS_CONTROL-constant" class="">DEFAULT_IS_CONTROL =
+        
+      </dt>
+      <dd><pre class="code"><span class='int'>0</span></pre></dd>
+    
+  </dl>
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#check_well_sample_exists-class_method" title="check_well_sample_exists (class method)">.<strong>check_well_sample_exists</strong>(well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#construct_sample_label-class_method" title="construct_sample_label (class method)">.<strong>construct_sample_label</strong>(plate_barcode, well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#create_header-class_method" title="create_header (class method)">.<strong>create_header</strong>(csv_obj, study)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#generate_manifest_for_plate_ids-class_method" title="generate_manifest_for_plate_ids (class method)">.<strong>generate_manifest_for_plate_ids</strong>(plate_ids, study)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#generate_manifest_row-class_method" title="generate_manifest_row (class method)">.<strong>generate_manifest_row</strong>(well, plate_barcode, plate_label)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#generate_manifests-class_method" title="generate_manifests (class method)">.<strong>generate_manifests</strong>(batch, study)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#institute_plate_label-class_method" title="institute_plate_label (class method)">.<strong>institute_plate_label</strong>(plate)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_empty_quotes-class_method" title="remove_empty_quotes (class method)">.<strong>remove_empty_quotes</strong>(csv_string)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#well_concentration-class_method" title="well_concentration (class method)">.<strong>well_concentration</strong>(well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#well_map_description-class_method" title="well_map_description (class method)">.<strong>well_map_description</strong>(well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#well_sample_gender-class_method" title="well_sample_gender (class method)">.<strong>well_sample_gender</strong>(well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#well_sample_is_control-class_method" title="well_sample_is_control (class method)">.<strong>well_sample_is_control</strong>(well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#well_sample_parent-class_method" title="well_sample_parent (class method)">.<strong>well_sample_parent</strong>(well, parent)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#well_sample_species-class_method" title="well_sample_species (class method)">.<strong>well_sample_species</strong>(well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#well_volume-class_method" title="well_volume (class method)">.<strong>well_volume</strong>(well)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="check_well_sample_exists-class_method">
+  
+    .<strong>check_well_sample_exists</strong>(well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>StandardError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+65
+66
+67</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 65</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_check_well_sample_exists'>check_well_sample_exists</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Sample not found for well </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_primary_aliquot'>primary_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="construct_sample_label-class_method">
+  
+    .<strong>construct_sample_label</strong>(plate_barcode, well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+132
+133
+134
+135</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 132</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_construct_sample_label'>construct_sample_label</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_barcode'>plate_barcode</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_check_well_sample_exists'>check_well_sample_exists</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_plate_barcode'>plate_barcode</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>_</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_well_map_description'>well_map_description</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>_</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_primary_aliquot'>primary_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span><span class='period'>.</span><span class='id identifier rubyid_sanger_sample_id'>sanger_sample_id</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="create_header-class_method">
+  
+    .<strong>create_header</strong>(csv_obj, study)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+137
+138
+139
+140
+141
+142
+143</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 137</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_create_header'>create_header</span><span class='lparen'>(</span><span class='id identifier rubyid_csv_obj'>csv_obj</span><span class='comma'>,</span> <span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_now'>now</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='id identifier rubyid_csv_obj'>csv_obj</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Institute Name:</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>WTSI</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_csv_obj'>csv_obj</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Date:</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_year'>year</span><span class='embexpr_end'>}</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_month'>month</span><span class='embexpr_end'>}</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_day'>day</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_csv_obj'>csv_obj</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Comments:</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_abbreviation'>abbreviation</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_csv_obj'>csv_obj</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Row</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Institute Plate Label</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Well</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Is Control</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Institute Sample Label</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Species</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Sex</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Comments</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Volume (ul)</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Conc (ng/ul)</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Extraction Method</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>WGA Method (if Applicable)</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Mass of DNA used in WGA</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Parent 1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Parent 2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Replicate(s)</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Tissue Source</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="generate_manifest_for_plate_ids-class_method">
+  
+    .<strong>generate_manifest_for_plate_ids</strong>(plate_ids, study)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 19</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_generate_manifest_for_plate_ids'>generate_manifest_for_plate_ids</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_ids'>plate_ids</span><span class='comma'>,</span> <span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_csv_string'>csv_string</span> <span class='op'>=</span> <span class='const'>CSV</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='label'>row_sep:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>quote_char:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>QUOTE_CHAR</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_csv'>csv</span><span class='op'>|</span>
+    <span class='id identifier rubyid_create_header'>create_header</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='comma'>,</span> <span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_row'>row</span> <span class='op'>=</span> <span class='int'>1</span>
+    <span class='id identifier rubyid_plate_ids'>plate_ids</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_plate_id'>plate_id</span><span class='op'>|</span>
+      <span class='id identifier rubyid_plate'>plate</span> <span class='op'>=</span> <span class='const'>Plate</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_id'>plate_id</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_plate_label'>plate_label</span> <span class='op'>=</span> <span class='id identifier rubyid_institute_plate_label'>institute_plate_label</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='op'>|</span>
+        <span class='id identifier rubyid_csv'>csv</span> <span class='op'>&lt;&lt;</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_generate_manifest_row'>generate_manifest_row</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_barcode'>barcode</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_label'>plate_label</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_unshift'>unshift</span><span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='rparen'>)</span>
+        <span class='id identifier rubyid_row'>row</span> <span class='op'>=</span> <span class='id identifier rubyid_row'>row</span> <span class='op'>+</span> <span class='int'>1</span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_csv_string'>csv_string</span> <span class='op'>=</span> <span class='id identifier rubyid_remove_empty_quotes'>remove_empty_quotes</span><span class='lparen'>(</span><span class='id identifier rubyid_csv_string'>csv_string</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_csv_string'>csv_string</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="generate_manifest_row-class_method">
+  
+    .<strong>generate_manifest_row</strong>(well, plate_barcode, plate_label)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_generate_manifest_row'>generate_manifest_row</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_barcode'>plate_barcode</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_label'>plate_label</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_comments'>comments</span>          <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_extraction_method'>extraction_method</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_wga_method'>wga_method</span>        <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_dna_mass'>dna_mass</span>          <span class='op'>=</span> <span class='int'>0</span>
+  <span class='id identifier rubyid_replicates'>replicates</span>        <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_tissue_source'>tissue_source</span>     <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-</span><span class='tstring_end'>&quot;</span></span>
+
+  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_plate_label'>plate_label</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_map_description'>well_map_description</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_sample_is_control'>well_sample_is_control</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='id identifier rubyid_construct_sample_label'>construct_sample_label</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_barcode'>plate_barcode</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_sample_species'>well_sample_species</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_sample_gender'>well_sample_gender</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_comments'>comments</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_volume'>well_volume</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_concentration'>well_concentration</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_extraction_method'>extraction_method</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_wga_method'>wga_method</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_dna_mass'>dna_mass</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_sample_parent'>well_sample_parent</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>mother</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='id identifier rubyid_well_sample_parent'>well_sample_parent</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>father</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_replicates'>replicates</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_tissue_source'>tissue_source</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="generate_manifests-class_method">
+  
+    .<strong>generate_manifests</strong>(batch, study)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+15
+16
+17</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 15</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_generate_manifests'>generate_manifests</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_generate_manifest_for_plate_ids'>generate_manifest_for_plate_ids</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_plate_ids_in_study'>plate_ids_in_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="institute_plate_label-class_method">
+  
+    .<strong>institute_plate_label</strong>(plate)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+69
+70
+71</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 69</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_institute_plate_label'>institute_plate_label</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_infinium_barcode'>infinium_barcode</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_empty_quotes-class_method">
+  
+    .<strong>remove_empty_quotes</strong>(csv_string)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+145
+146
+147</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 145</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_remove_empty_quotes'>remove_empty_quotes</span><span class='lparen'>(</span><span class='id identifier rubyid_csv_string'>csv_string</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_csv_string'>csv_string</span><span class='period'>.</span><span class='id identifier rubyid_gsub!'>gsub!</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>QUOTE_CHAR</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='const'>QUOTE_CHAR</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="well_concentration-class_method">
+  
+    .<strong>well_concentration</strong>(well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+125
+126
+127
+128
+129
+130</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 125</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_well_concentration'>well_concentration</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_concentration'>concentration</span> <span class='op'>=</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_get_concentration'>get_concentration</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+  <span class='id identifier rubyid_concentration'>concentration</span> <span class='op'>=</span> <span class='const'>DEFAULT_CONCENTRATION</span> <span class='kw'>if</span> <span class='id identifier rubyid_concentration'>concentration</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_concentration'>concentration</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+  <span class='id identifier rubyid_concentration'>concentration</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="well_map_description-class_method">
+  
+    .<strong>well_map_description</strong>(well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+73
+74
+75
+76
+77
+78
+79
+80</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 73</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_well_map_description'>well_map_description</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_description'>description</span> <span class='op'>=</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_map_description'>map_description</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_description'>description</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_description'>description</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>==</span> <span class='int'>2</span>
+    <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_description'>description</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span><span class='embexpr_end'>}</span><span class='tstring_content'>0</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_description'>description</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_description'>description</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="well_sample_gender-class_method">
+  
+    .<strong>well_sample_gender</strong>(well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 87</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_well_sample_gender'>well_sample_gender</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_check_well_sample_exists'>check_well_sample_exists</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id identifier rubyid_gender'>gender</span> <span class='op'>=</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_primary_aliquot'>primary_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_gender'>gender</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:downcase</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>male</span><span class='tstring_end'>&#39;</span></span>           <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>M</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>female</span><span class='tstring_end'>&#39;</span></span>         <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>F</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>not applicable</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>U</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>mixed</span><span class='tstring_end'>&#39;</span></span>          <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>U</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hermaphrodite</span><span class='tstring_end'>&#39;</span></span>  <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>U</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>unknown</span><span class='tstring_end'>&#39;</span></span>        <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>U</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>when</span> <span class='kw'>nil</span>              <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>U</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>else</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unknown gender type </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_gender'>gender</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="well_sample_is_control-class_method">
+  
+    .<strong>well_sample_is_control</strong>(well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 101</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_well_sample_is_control'>well_sample_is_control</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_check_well_sample_exists'>check_well_sample_exists</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_control_value'>control_value</span> <span class='op'>=</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_primary_aliquot'>primary_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:control</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_control_value'>control_value</span> <span class='op'>==</span> <span class='kw'>true</span>
+    <span class='int'>1</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_control_value'>control_value</span> <span class='op'>==</span> <span class='kw'>false</span>
+    <span class='int'>0</span>
+  <span class='kw'>else</span>
+    <span class='const'>DEFAULT_IS_CONTROL</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="well_sample_parent-class_method">
+  
+    .<strong>well_sample_parent</strong>(well, parent)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+82
+83
+84
+85</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 82</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_well_sample_parent'>well_sample_parent</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_check_well_sample_exists'>check_well_sample_exists</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_primary_aliquot'>primary_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='lbracket'>[</span><span class='id identifier rubyid_parent'>parent</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:to_i</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="well_sample_species-class_method">
+  
+    .<strong>well_sample_species</strong>(well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+113
+114
+115
+116</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 113</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_well_sample_species'>well_sample_species</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_check_well_sample_exists'>check_well_sample_exists</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_primary_aliquot'>primary_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_common_name'>sample_common_name</span> <span class='op'>||</span> <span class='const'>DEFAULT_SPECIES</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="well_volume-class_method">
+  
+    .<strong>well_volume</strong>(well)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+118
+119
+120
+121
+122
+123</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/manifest_generator.rb', line 118</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_well_volume'>well_volume</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_volume'>volume</span> <span class='op'>=</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_get_requested_volume'>get_requested_volume</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+  <span class='id identifier rubyid_volume'>volume</span> <span class='op'>=</span> <span class='const'>DEFAULT_VOLUME</span> <span class='kw'>if</span> <span class='id identifier rubyid_volume'>volume</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_volume'>volume</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+  <span class='id identifier rubyid_volume'>volume</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Tue Oct 25 15:22:17 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.5 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

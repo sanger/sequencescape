@@ -78,23 +78,23 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should "deal with followers" do
-        assert !@study.followers.empty?
+        refute @study.followers.empty?
         assert @study.followers.include?(@user1)
         assert @study.followers.include?(@user2)
         assert @another_study.followers.empty?
       end
 
       should "deal with managers" do
-        assert !@study.managers.empty?
-        assert !@study.managers.include?(@user1)
+        refute @study.managers.empty?
+        refute @study.managers.include?(@user1)
         assert @study.managers.include?(@user2)
         assert @another_study.managers.empty?
       end
 
       should "deal with owners" do
-        assert !@study.owners.empty?
+        refute @study.owners.empty?
         assert @study.owners.include?(@user1)
-        assert !@study.owners.include?(@user2)
+        refute @study.owners.include?(@user2)
         assert @another_study.owners.empty?
       end
     end
@@ -197,7 +197,7 @@ class StudyTest < ActiveSupport::TestCase
 
       should "show in the filters" do
         assert Study.with_remove_x_and_autosomes.include?(@study_remove)
-        assert !Study.with_remove_x_and_autosomes.include?(@study_keep)
+        refute Study.with_remove_x_and_autosomes.include?(@study_keep)
       end
     end
 
@@ -241,12 +241,12 @@ class StudyTest < ActiveSupport::TestCase
           FactoryHelp::submission study: @study, state: "failed", assets: [@asset]
         end
         should "return false" do
-          assert !@study.unprocessed_submissions?
+          refute @study.unprocessed_submissions?
         end
       end
       context "with no submissions at all" do
         should "return false" do
-          assert !@study.unprocessed_submissions?
+          refute @study.unprocessed_submissions?
         end
       end
     end
@@ -311,6 +311,12 @@ class StudyTest < ActiveSupport::TestCase
         assert @study.study_metadata.update_attributes!(dac_policy: 'https://www.example.com')
         assert_equal 'https://www.example.com', @study.study_metadata.dac_policy
       end
+
+      should 'require a data access group' do
+        @study.study_metadata.data_access_group = ''
+        refute @study.valid?
+        assert_includes @study.errors['study_metadata.data_access_group'], "can't be blank"
+      end
     end
 
     context 'policy text' do
@@ -335,6 +341,17 @@ class StudyTest < ActiveSupport::TestCase
         end
       end
 
+    end
+
+    context 'non-managed study' do
+      setup do
+        @study = build :study
+      end
+
+      should 'should not require a data access group' do
+        @study.study_metadata.data_access_group = ''
+        assert @study.valid?
+      end
     end
 
     context 'study name' do

@@ -101,7 +101,7 @@ group :development do
   gem "flog", :require => false
   gem "bullet", :require => false
   gem 'pry'
-  gem 'rdoc', :require => false
+  gem 'yard', :require => false
   gem 'rubocop', require: false
 end
 

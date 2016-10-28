@@ -305,21 +305,20 @@ Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcod
 end
 
 Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study_name|
-  asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
+  asset = Asset.find_by!(name: asset_name)
   assign_asset_to_study(asset, study_name)
 end
 
 def assign_asset_to_study(asset, study_name)
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study = Study.find_by!(name: study_name)
   asset_ids = [asset.id]
   asset_ids = asset.wells.map(&:id) if asset.respond_to?(:wells)
   if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
     RequestFactory.create_assets_requests(Asset.find(asset_ids), study)
-  else
-    Asset.find(asset_ids).each do |asset|
-      asset.try(:aliquots).try(:each) do |aliquot|
-        aliquot.update_attributes!(study_id: study.id)
-      end
+  end
+  Asset.find(asset_ids).each do |asset|
+    asset.try(:aliquots).try(:each) do |aliquot|
+      aliquot.update_attributes!(study_id: study.id)
     end
   end
 end
@@ -411,6 +410,7 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step('I follow "Create Study"')
   step(%Q{I fill in "Study name" with "#{study_name}"})
   step('I select "Not suitable for alignment" from "Reference genome"')
+  step('I fill in "Data access group" with "some nonsense"')
   step('I fill in "Study description" with "some description"')
   step(%Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"})
   step('I press "Create"')

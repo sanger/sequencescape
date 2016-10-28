@@ -5,6 +5,8 @@
 # Copyright (C) 2014,2015,2016 Genome Research Ltd.
 
 require 'csv'
+require 'lib/linefeed_fix'
+
 module Parsers
 
   def self.parser_for(filename, content_type, content)
@@ -12,7 +14,7 @@ module Parsers
    # While CSV tries to detect line endings, it isn't so great with some excel
     # exported CSVs, where a mix of \n and \r\n are used in the same document
     # This converts everything to \n before processing
-    cleaned_content = content.gsub(/\r\n?/, "\n")
+    cleaned_content = LinefeedFix.scrub!(content.dup)
     csv = CSV.parse(cleaned_content)
     return Parsers::BioanalysisCsvParser.new(csv) if Parsers::BioanalysisCsvParser.is_bioanalyzer?(csv)
     return Parsers::IscXtenParser.new(csv) if Parsers::IscXtenParser.is_isc_xten_file?(csv)
