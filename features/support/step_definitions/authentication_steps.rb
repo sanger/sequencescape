@@ -13,8 +13,8 @@ Given /^I am logged in as "(.*)"$/ do |login|
 end
 
 Given /^user "(.*)" has a workflow "(.*)"$/ do |login, workflow_name|
-  user = @current_user = User.find_by_login(login) or raise StandardError, "Cannot find a user with login '#{login}'"
-  workflow = Submission::Workflow.find_by_name(workflow_name) or raise StandardError, "Cannot find the workflow #{workflow_name.inspect}"
+  user = @current_user = User.find_by(login: login) or raise StandardError, "Cannot find a user with login '#{login}'"
+  workflow = Submission::Workflow.find_by(name: workflow_name) or raise StandardError, "Cannot find the workflow #{workflow_name.inspect}"
   user.workflow_id = workflow.id
   user.save
 end
@@ -55,7 +55,7 @@ Then /^I should not be on the login page$/ do
 end
 
 Then /^I should be logged in as "([^\"]*)"$/ do |login|
-  user = User.find_by_login(login)
+  user = User.find_by(login: login)
   assert @current_user == user
 end
 
@@ -64,6 +64,6 @@ Given /^a user with human barcode "(ID\d+.)" exists$/ do |human_barcode|
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|
-   user = User.find_by_login(login)
+   user = User.find_by(login: login)
    user.update_attributes!(last_name: nil, first_name: nil)
 end
