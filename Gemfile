@@ -114,8 +114,8 @@ group :test do
   gem "shoulda", :require => false
   gem "timecop", :require => false
   gem 'simplecov', require: false
-  # gem 'rspec-rails', require: false
 end
+
 
 group :cucumber do
   # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
