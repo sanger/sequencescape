@@ -29,9 +29,7 @@ class BarcodePrinter < ActiveRecord::Base
     LabelPrinter::PmbClient.register_printer(name)
   end
 
-  def register_printers_automatically
-    configatron.register_printers_automatically
-  end
+  delegate :register_printers_automatically, to: :configatron
 
   def service_url
     configatron.barcode_service_url

@@ -60,7 +60,7 @@ module LabelPrinter
 
     def self.register_printer(name)
       unless printer_exists?(name)
-        RestClient.post printers_url, {"data"=>{"attributes"=>{"name" => name}}}.to_json, headers
+        RestClient.post printers_url, { "data" => { "attributes" => { "name" => name } } }.to_json, headers
       end
     end
 
@@ -83,8 +83,8 @@ module LabelPrinter
     def self.prettify_new_errors(errors)
       [].tap do |error_list|
         errors.each do |error|
-          attribute  = error["source"]["pointer"].split('/').last.humanize
-          error_list << "%{attribute} %{message}" % {attribute: attribute, message: error["detail"]}
+          attribute = error["source"]["pointer"].split('/').last.humanize
+          error_list << "%{attribute} %{message}" % { attribute: attribute, message: error["detail"] }
         end
       end
       .join("; ")
@@ -93,7 +93,7 @@ module LabelPrinter
     def self.prettify_old_errors(errors)
       [].tap do |error_list|
         errors.each do |k, v|
-          error_list << "%{attribute} %{message}" % {attribute: k.capitalize+":", message: v.join(", ")}
+          error_list << "%{attribute} %{message}" % { attribute: k.capitalize + ":", message: v.join(", ") }
         end
       end
       .join("; ")
