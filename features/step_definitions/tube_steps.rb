@@ -56,6 +56,13 @@ def request_defaults(type)
   }[type]||{}
 end
 
+Given(/^the tube with ID (\d+) has a process metadatum collection with UUID "(.*?)"$/) do |id, uuid|
+    metadata = [FactoryGirl.build(:process_metadatum, key: "Key1", value: "Value1"),
+              FactoryGirl.build(:process_metadatum, key: "Key2", value: "Value2")]
+    collection = FactoryGirl.create(:process_metadatum_collection, process_metadata: metadata, asset_id: id)
+    set_uuid_for(collection, uuid)
+end
+
 Given /^the transfer requests on "([^"]*)" are (pending|passed|started)$/ do |source_id,state|
   unless state == 'pending'
     Asset.find(source_id).requests.each do |request|
@@ -66,3 +73,4 @@ Given /^the transfer requests on "([^"]*)" are (pending|passed|started)$/ do |so
     end
   end
 end
+
