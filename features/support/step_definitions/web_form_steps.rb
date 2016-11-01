@@ -31,10 +31,6 @@ Then /^the field labeled "([^\"]*)" should not be disabled$/ do |label|
   find_field(label)
 end
 
-Then /^option "([^"]*)" in the menu labeled "([^"]*)" should be selected$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
-end
-
 When /^I press exactly "([^\"]*)"$/ do |button|
   click_button(/\A#{button}\z/)
 end
@@ -149,7 +145,7 @@ When /^I press enter on "([^\"]*)"$/ do |field|
 end
 
 When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
-  find(:xpath, "//input[@id='#{field}']").set(value)
+  find("input##{field}",visible: false).set(value)
 end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|

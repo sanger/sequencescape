@@ -22,16 +22,14 @@ Feature: Manage users
     When I fill in the following:
      | First name | Jack              |
      | Last name  | Doe               |
-     | Email      | jack@example.com |
+     | Email      | jack@example.com  |
     And I check "<role>"
     And I press "Update"
     Then I should see "Profile updated"
     And I should see "Jack"
     And I should see "Doe"
-    And the user "jack@example.com" roles should look like:
-      | role    |
-      | <role_name> |
-
+    And the user "jack@example.com" should have just the role "<role_name>"
+    
     Examples:
       | role            | role_name |
       | Administrator   | administrator |
@@ -43,8 +41,6 @@ Feature: Manage users
       | SLF lab manager | slf_manager |
       | SLF Gels        | slf_gel |
 
-  # not anymore. so tell me (xxx) if the fix doesn't work
-  @known_to_fail_randomly
   Scenario Outline: Give a user a role specific
     When I select "administrator" from "<up_case_class> role" within "div#<downcase_class>_role"
     And I select "Test <downcase_class>" from "for <up_case_class>" within "div#<downcase_class>_role"
@@ -57,5 +53,3 @@ Feature: Manage users
       | up_case_class | downcase_class |
       | Project       | project        |
       | Study         | study          |
-
-
