@@ -179,6 +179,11 @@ class PlatesControllerTest < ActionController::TestCase
                     end
 
                     should "set the dilution factor of each children to 7.06 and 9.12" do
+                      # This test showed different behaviour between MRI and jruby
+                      # In particular, the dilution factors are represented as BigDecimals
+                      # and while MRI reports inequality with the float, Jruby declares them equal.
+                      # This isn't actually true for ALL floats and their big decimal 'equivalent'
+                      # so presumably its due to the accuracy of the float.
                       assert_equal 7.06, @parent_plate.children.first.dilution_factor.to_f
                       assert_equal 9.12, @parent_plate2.children.first.dilution_factor.to_f
                     end
