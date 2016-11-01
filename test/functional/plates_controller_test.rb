@@ -179,8 +179,8 @@ class PlatesControllerTest < ActionController::TestCase
                     end
 
                     should "set the dilution factor of each children to 7.06 and 9.12" do
-                      assert_equal 7.06, @parent_plate.children.first.dilution_factor
-                      assert_equal 9.12, @parent_plate2.children.first.dilution_factor
+                      assert_equal 7.06, @parent_plate.children.first.dilution_factor.to_f
+                      assert_equal 9.12, @parent_plate2.children.first.dilution_factor.to_f
                     end
                   end
                 end

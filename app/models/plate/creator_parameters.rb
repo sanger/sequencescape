@@ -11,7 +11,6 @@ class Plate::CreatorParameters
     @params = params_plate_creator
   end
 
-  public
   def set_plate_parameters(plate, parent_plate = nil)
     # All the creation parameters are applied as String values into the ActiveRecord. Maybe in
     # future this will need to be reviewed in case Ruby conversion from strings is not appropriate

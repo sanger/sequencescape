@@ -21,10 +21,9 @@ Then /^the role list table should look like:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#roles_table')))
 end
 
-Then /^the user "([^"]*)" roles should look like:$/ do |user, role_table|
-  user = User.find_by_login(user) || User.find_by_email(user)
-  user_role_table = role_table.class.new([["role"], user.roles.map { |r| r.name }])
-  role_table.diff!(user_role_table)
+Then /^the user "([^"]*)" should have just the role "([^"]*)"$/ do |user, role|
+  user = User.find_by!(email: user)
+  assert_equal user.roles.pluck(:name), [role]
 end
 
 Given /^user "([^"]*)" exists with barcode "([^"]*)"$/ do |user_name, barcode|
