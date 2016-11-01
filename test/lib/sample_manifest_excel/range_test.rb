@@ -59,9 +59,76 @@ class RangeTest < ActiveSupport::TestCase
     end
 
     should "#references should return first_cell reference, reference, fixed_reference and absolute_reference" do
-      assert_equal({first_cell_reference: range.first_cell_reference, 
-        reference: range.reference, fixed_reference: range.fixed_reference, 
+      assert_equal({first_cell_reference: range.first_cell_reference,
+        reference: range.reference, fixed_reference: range.fixed_reference,
         absolute_reference: range.absolute_reference}, range.references)
+    end
+
+  end
+
+  context "with dynamic options" do
+
+    setup do
+      # Ensure we have at least one option.
+      create :library_type
+      @original_option_size = LibraryType.count
+      @options = SampleManifestExcel::DynamicOption.new(
+        klass: LibraryType,
+        scope: :alphabetical,
+        identifier: :name
+      )
+      @range = SampleManifestExcel::Range.new(options: options, first_row: 4)
+    end
+
+    should "have some options" do
+      assert_equal options, range.options
+    end
+
+    should "have a first row" do
+      assert_equal 4, range.first_row
+    end
+
+    should "set the first column" do
+      assert_equal 1, range.first_column
+    end
+
+    should "set the last column" do
+      assert_equal @original_option_size, range.last_column
+
+      assert_equal 3+@original_option_size, SampleManifestExcel::Range.new(options: options, first_column: 4, first_row: 4).last_column
+    end
+
+    should "have a first_cell" do
+      assert_equal SampleManifestExcel::Cell.new(range.first_row, range.first_column), range.first_cell
+    end
+
+    should "have a last_cell" do
+      assert_equal SampleManifestExcel::Cell.new(range.last_row, range.last_column), range.last_cell
+    end
+
+    should "have a first cell reference" do
+      assert_equal range.first_cell.reference, range.first_cell_reference
+    end
+
+    should "set the reference" do
+      assert_equal "#{range.first_cell.reference}:#{range.last_cell.reference}", range.reference
+    end
+
+    should "set the fixed reference" do
+      assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.fixed_reference
+    end
+
+    should "#references should return first_cell reference, reference, fixed_reference and absolute_reference" do
+      assert_equal({first_cell_reference: range.first_cell_reference,
+        reference: range.reference, fixed_reference: range.fixed_reference,
+        absolute_reference: range.absolute_reference}, range.references)
+    end
+
+    should "adjust to changes in option number" do
+      @previous_last_cell = range.last_cell.column
+      create :library_type
+      assert_equal @original_option_size+1, range.last_column
+      assert_equal @previous_last_cell.next, range.last_cell.column
     end
 
   end

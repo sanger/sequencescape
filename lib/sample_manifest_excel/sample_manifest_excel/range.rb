@@ -19,9 +19,11 @@ module SampleManifestExcel
     def initialize(attributes = {})
       create_attributes(attributes)
 
+      @static = options.is_a?(Array)
+
       if valid?
         @first_cell = Cell.new(first_row, first_column)
-        @last_cell = Cell.new(last_row, last_column)
+        @last_cell = Cell.new(last_row, last_column) unless dynamic?
       end
     end
 
@@ -34,11 +36,21 @@ module SampleManifestExcel
     # If not defined and there are options is set to first column plus the
     # the number of options minus one.
     def last_column
-      @last_column ||= if options.empty?
-        first_column
+      @last_column || if dynamic?
+        calculate_last_column
       else
-        options.length + (first_column - 1)
+        @last_column = calculate_last_column
       end
+    end
+
+    # Returns either the cached last cell, or a dynamically created one.
+    # We don't memoize this, as we dymanically recalculate the value
+    # at runtime for some ranges. For static ranges the last_cell is
+    # calculated in the initializer so will be available. Also
+    # we can't just do @last_cell || Cell.new as @last_cell can be
+    # legitimately falsey
+    def last_cell
+      dynamic? ? Cell.new(last_row, last_column) : @last_cell
     end
 
     ##
@@ -97,6 +109,14 @@ module SampleManifestExcel
     end
 
     ##
+    # A dynamic rage uses a se of options that are calculated
+    # at runtime. Such as a SampleManifestExcel::DynamicOption
+    # Arrays are assumed to be static
+    def dynamic?
+      ! @static
+    end
+
+    ##
     # Return a list of references which are generally used together in other
     # classes of the module.
     def references
@@ -106,6 +126,16 @@ module SampleManifestExcel
         fixed_reference: fixed_reference,
         absolute_reference: absolute_reference
       }
+    end
+
+    private
+
+    def calculate_last_column
+      if options.empty?
+        first_column
+      else
+        options.length + (first_column - 1)
+      end
     end
 
   end

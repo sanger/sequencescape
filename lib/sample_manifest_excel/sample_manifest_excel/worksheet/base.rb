@@ -17,7 +17,9 @@ module SampleManifestExcel
       #Adds row to a worksheet with particular value, style and type for each cell
 
     	def add_row(values = [], style = nil, types = nil)
-  			axlsx_worksheet.add_row values, types: types || [:string]*values.length, style: style
+        # We call to_a here to allow us to pass through ANY enumerable. This extends the versitility
+        # of range options and allows us to have dynamically generated ranges.
+  			axlsx_worksheet.add_row values.to_a, types: types || [:string]*values.length, style: style
     	end
 
       #Adds n empty rows
