@@ -4,6 +4,7 @@ group :default do
   gem "rails"
   gem 'rails-observers'
 
+  # State machine
   gem "aasm"
   gem "configatron"
   gem "rest-client" # curb substitute.
@@ -35,10 +36,6 @@ group :default do
   # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
   gem "acts-as-dag", github:'resgraph/acts-as-dag', branch:'5e185dddff6563ee9ee92611555cd9d9a519d280'
 
-  # Better table alterations
-  # gem "alter_table",
-  #   :github => "sanger/alter_table"
-
   # For background processing
   # Locked for ruby version
   gem "delayed_job_active_record"
@@ -53,14 +50,12 @@ group :default do
   gem "uuidtools"
   gem "sinatra", :require => false
   gem "rack-acceptable", :require => 'rack/acceptable'
-  # gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
   gem "json"
-  gem "jrjackson"
+  gem "jrjackson", :platforms => :jruby
   gem "multi_json"
   gem "cancan"
 
   gem "bunny", "~>0.7"
-  #gem "amqp", "~> 0.9.2"
 
   gem "spoon"
   # Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
@@ -77,10 +72,12 @@ group :default do
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyrhino'
-
+  # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
 
+  # Excel file generation
   gem 'axlsx'
+  # Excel file reading
   gem 'roo'
 
   # Used in XML generation.
@@ -99,9 +96,12 @@ end
 group :development do
   gem "flay", :require => false
   gem "flog", :require => false
+  # Detect n+1 queries
   gem "bullet", :require => false
   gem 'pry'
+  # Automatically generate documentation
   gem 'yard', :require => false
+  # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
 end
 
@@ -113,12 +113,8 @@ group :test do
   gem "nokogiri", :require => false
   gem "shoulda", :require => false
   gem "timecop", :require => false
-  gem "treetop", :require => false
-  # gem 'parallel_tests', :require => false
-  gem 'rgl', :require => false
   gem 'simplecov', require: false
-  # Temporarily disabled as causes cukes to fail
-  # gem 'rspec', require: false
+  # gem 'rspec-rails', require: false
 end
 
 group :cucumber do
@@ -129,7 +125,6 @@ group :cucumber do
   gem "capybara", :require => false
   gem 'mime-types'
   gem "database_cleaner", :require => false
-  gem "cucumber", :require => false
   gem "cucumber-rails", :require => false
   gem "poltergeist"
   gem "webmock"

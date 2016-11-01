@@ -41,19 +41,9 @@ module User::Authentication
     def authenticate(login, password)
       if configatron.authentication == "ldap"
         authenticated = authenticate_with_ldap(login, password)
+        authenticated ? register_or_update_via_ldap : nil
       else
         authenticated = authenticate_by_local(login, password)
-      end
-      if authenticated
-        u = find_or_create_by(login: login)
-        if u.nil?
-          logger.error "Failed to find or create user #{login}"
-        else
-          u.send(:update_profile_via_ldap) unless u.profile_complete?
-        end
-        u
-      else
-        nil
       end
     end
   end
@@ -86,11 +76,21 @@ module User::Authentication
         false
       end
     end
+
+    def register_or_update_via_ldap(login)
+      u = find_or_create_by(login: login)
+      if u.nil?
+        logger.error "Failed to find or create user #{login}"
+      else
+        u.send(:update_profile_via_ldap) unless u.profile_complete?
+      end
+      u
+    end
   end
 
   module Local
     def authenticate_by_local(login, password)
-      u = find_by_login(login) # need to get the salt
+      u = find_by(login: login) # need to get the salt
       u && u.authenticated?(password) ? u : nil
     end
   end

@@ -1,6 +1,7 @@
 language: ruby
 rvm:
   - jruby-9.1.5.0
+  - 2.3.1
 sudo: false
 cache: bundler
 bundler_args: --without warehouse deployment
@@ -12,3 +13,6 @@ before_script:
   - "RAILS_ENV=test bundle exec rake db:setup"
 script:
   - "bundle exec $SUITE"
+matrix:
+  allow_failures:
+  - rvm: 2.3.1
