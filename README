@@ -15,14 +15,19 @@ of labware and is used in a organisation of 900 people.
 
 === Getting started ===
 
+It is strongly recommended that you use a ruby version manager such as RVM to
+manage the Ruby version you are using. Sequencescape is developed using jruby-9.0.5.0
+
 $ cp config/config.yml.example config/config.yml
 $ $EDITOR config/config.yml
 $ gem install bundler
 $ bundle install
-$ bundle exec rake db:schema:load
-$ bundle exec rake db:seed
+$ bundle exec rake db:create db:setup
+# The task below is optional, but creates an admin user account and a 
+# few example studies and plates
+$ bundle exec rake working:setup
 $ bundle exec ./script/delayed_job start
-$ bundle exec ./script/server
+$ bundle exec rails s
 # Login as admin/admin
 
 === Data model ===
