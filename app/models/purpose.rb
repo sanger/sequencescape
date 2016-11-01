@@ -69,3 +69,5 @@ class Purpose < ActiveRecord::Base
   end
   private :target_class
 end
+
+require_dependency 'tube/purpose'
