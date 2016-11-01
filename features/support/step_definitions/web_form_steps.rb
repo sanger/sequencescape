@@ -145,7 +145,7 @@ When /^I press enter on "([^\"]*)"$/ do |field|
 end
 
 When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
-  find("input##{field}",visible: false).set(value)
+  find("input##{field}", visible: false).set(value)
 end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
