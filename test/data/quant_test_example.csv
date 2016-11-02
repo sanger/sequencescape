@@ -1,0 +1,339 @@
+Assay Plate Barcode,ID1: QNTE_A_55,,User: Someone,Path: C:\xxx\,Test run no.: 48,,
+,,,Test name: DNAQ_v1.0,Date: 17/10/2016,Time: 12:41:55,,
+,,,ID1: QNTE_A_55,,,,
+,,,Fluorescence (FI),,,,
+,,,,,,,
+,,,Linear regression fit,,,,
+,,,log(Y) = Slope * log(x) + Offset,,,,
+,,,,Parameter,Value,,
+,,,485/520,Slope,1.07997,,
+,,,,Offset,3.21681,,
+,,,,r,0.99997,,
+,,,,r²,0.99993,,
+,,,,,,,
+Headers,,,,,,,
+Well Location,Concentration,,Well Row,Well Col,Content,Sample IDs,Linear regression fit based on Blank corrected in ng/uL (485/520)
+,,,P,2,Blank B,,
+,,,P,4,Blank B,,
+,,,P,6,Blank B,,
+,,,B,8,Control C1,,24.778
+,,,B,10,Control C1,,24.778
+,,,B,12,Control C1,,22.765
+,,,D,8,Control C2,,10.127
+,,,D,10,Control C2,,9.823
+,,,D,12,Control C2,,9.397
+,,,F,8,Control C3,,2.973
+,,,F,10,Control C3,,2.91
+,,,F,12,Control C3,,2.939
+,,,H,8,Control C4,,1.078
+,,,H,10,Control C4,,1.075
+,,,H,12,Control C4,,0.895
+,,,A,1,Sample X1,A1,137.047
+,,,A,2,Sample X1,A1,137.829
+A1,134.47,,B,1,Sample X1,A1,128.529
+,,,C,1,Sample X2,B1,269.59
+,,,C,2,Sample X2,B1,282.698
+B1,271.04,,D,1,Sample X2,B1,260.814
+,,,E,1,Sample X3,C1,84.775
+,,,E,2,Sample X3,C1,100.072
+C1,96.18,,F,1,Sample X3,C1,103.686
+,,,G,1,Sample X4,D1,111.02
+,,,G,2,Sample X4,D1,111.012
+D1,104.96,,H,1,Sample X4,D1,92.843
+,,,I,1,Sample X5,E1,103.08
+,,,I,2,Sample X5,E1,119.861
+E1,114.76,,J,1,Sample X5,E1,121.335
+,,,K,1,Sample X6,F1,119.457
+,,,K,2,Sample X6,F1,131.028
+F1,123.05,,L,1,Sample X6,F1,118.647
+,,,M,1,Sample X7,G1,162.468
+,,,M,2,Sample X7,G1,171.807
+G1,165.17,,N,1,Sample X7,G1,161.235
+,,,O,1,Sample X8,H1,259.644
+,,,O,2,Sample X8,H1,180.714
+H1,217.14,,P,1,Sample X8,H1,211.034
+,,,A,3,Sample X9,A2,83.514
+,,,A,4,Sample X9,A2,87.036
+A2,81.96,,B,3,Sample X9,A2,75.315
+,,,C,3,Sample X10,B2,89.114
+,,,C,4,Sample X10,B2,90.698
+B2,89.26,,D,3,Sample X10,B2,87.946
+,,,E,3,Sample X11,C2,83.55
+,,,E,4,Sample X11,C2,88.598
+C2,84.7,,F,3,Sample X11,C2,81.947
+,,,G,3,Sample X12,D2,112.525
+,,,G,4,Sample X12,D2,118.474
+D2,113.67,,H,3,Sample X12,D2,109.998
+,,,I,3,Sample X13,E2,130.74
+,,,I,4,Sample X13,E2,155.101
+E2,148.36,,J,3,Sample X13,E2,159.213
+,,,K,3,Sample X14,F2,172.155
+,,,K,4,Sample X14,F2,169.804
+F2,172.99,,L,3,Sample X14,F2,176.997
+,,,M,3,Sample X15,G2,51.365
+,,,M,4,Sample X15,G2,58.828
+G2,56.86,,N,3,Sample X15,G2,60.361
+,,,O,3,Sample X16,H2,n.a.
+,,,O,4,Sample X16,H2,n.a.
+H2,#DIV/0!,,P,3,Sample X16,H2,n.a.
+,,,A,5,Sample X17,A3,37.764
+,,,A,6,Sample X17,A3,38.54
+A3,36.76,,B,5,Sample X17,A3,33.948
+,,,C,5,Sample X18,B3,194.077
+,,,C,6,Sample X18,B3,199.389
+B3,191.25,,D,5,Sample X18,B3,180.266
+,,,E,5,Sample X19,C3,160.969
+,,,E,6,Sample X19,C3,154.501
+C3,158.02,,F,5,Sample X19,C3,158.57
+,,,G,5,Sample X20,D3,46.237
+,,,G,6,Sample X20,D3,49.971
+D3,47.49,,H,5,Sample X20,D3,46.242
+,,,I,5,Sample X21,E3,n.a.
+,,,I,6,Sample X21,E3,n.a.
+E3,#DIV/0!,,J,5,Sample X21,E3,n.a.
+,,,K,5,Sample X22,F3,n.a.
+,,,K,6,Sample X22,F3,n.a.
+F3,#DIV/0!,,L,5,Sample X22,F3,n.a.
+,,,M,5,Sample X23,G3,55.387
+,,,M,6,Sample X23,G3,67.661
+G3,62.89,,N,5,Sample X23,G3,65.606
+,,,O,5,Sample X24,H3,113.049
+,,,O,6,Sample X24,H3,143.943
+H3,133.1,,P,5,Sample X24,H3,142.307
+,,,A,7,Sample X25,A4,48.551
+,,,A,8,Sample X25,A4,54.921
+A4,49.93,,B,7,Sample X25,A4,46.313
+,,,C,7,Sample X26,B4,0.013
+,,,C,8,Sample X26,B4,n.a.
+B4,0.02,,D,7,Sample X26,B4,n.a.
+,,,E,7,Sample X27,C4,86.108
+,,,E,8,Sample X27,C4,80.972
+C4,81.02,,F,7,Sample X27,C4,75.963
+,,,G,7,Sample X28,D4,57.195
+,,,G,8,Sample X28,D4,54.793
+D4,55.09,,H,7,Sample X28,D4,53.278
+,,,I,7,Sample X29,E4,44.061
+,,,I,8,Sample X29,E4,46.204
+E4,44.8,,J,7,Sample X29,E4,44.13
+,,,K,7,Sample X30,F4,175.097
+,,,K,8,Sample X30,F4,176.882
+F4,175.22,,L,7,Sample X30,F4,173.664
+,,,M,7,Sample X31,G4,156.568
+,,,M,8,Sample X31,,144.702
+G4,142.54,,N,7,Sample X31,G4,126.331
+,,,O,7,Sample X32,H4,154.129
+,,,O,8,Sample X32,H4,133.957
+H4,140.21,,P,7,Sample X32,H4,132.526
+,,,A,9,Sample X33,A5,53.917
+,,,A,10,Sample X33,A5,68.026
+A5,59.14,,B,9,Sample X33,A5,55.46
+,,,C,9,Sample X34,B5,74.703
+,,,C,10,Sample X34,B5,79.929
+B5,69.72,,D,9,Sample X34,B5,54.509
+,,,E,9,Sample X35,C5,113.689
+,,,E,10,Sample X35,C5,124.608
+C5,120.22,,F,9,Sample X35,C5,122.336
+,,,G,9,Sample X36,D5,128.476
+,,,G,10,Sample X36,D5,152.076
+D5,149.58,,H,9,Sample X36,D5,168.167
+,,,I,9,Sample X37,E5,124.236
+,,,I,10,Sample X37,E5,160.663
+E5,137.59,,J,9,Sample X37,E5,127.855
+,,,K,9,Sample X38,F5,53.344
+,,,K,10,Sample X38,F5,53.539
+F5,51.44,,L,9,Sample X38,F5,47.41
+,,,M,9,Sample X39,G5,0.005
+,,,M,10,Sample X39,G5,n.a.
+G5,0.01,,N,9,Sample X39,G5,n.a.
+,,,O,9,Sample X40,H5,181.401
+,,,O,10,Sample X40,H5,175.108
+H5,173.6,,P,9,Sample X40,H5,164.274
+,,,A,11,Sample X41,A6,75.079
+,,,A,12,Sample X41,A6,97.509
+A6,93.09,,B,11,Sample X41,A6,106.658
+,,,C,11,Sample X42,B6,87.701
+,,,C,12,Sample X42,B6,89.934
+B6,86.56,,D,11,Sample X42,B6,82.019
+,,,E,11,Sample X43,C6,115.33
+,,,E,12,Sample X43,C6,122.633
+C6,110.07,,F,11,Sample X43,C6,92.245
+,,,G,11,Sample X44,D6,84.116
+,,,G,12,Sample X44,D6,100.009
+D6,93.16,,H,11,Sample X44,D6,95.348
+,,,I,11,Sample X45,E6,82.346
+,,,I,12,Sample X45,E6,83.005
+E6,79.77,,J,11,Sample X45,E6,73.933
+,,,K,11,Sample X46,F6,111.525
+,,,K,12,Sample X46,F6,116.285
+F6,114.54,,L,11,Sample X46,F6,115.806
+,,,M,11,Sample X47,G6,142.2
+,,,M,12,Sample X47,G6,138.663
+G6,137.3,,N,11,Sample X47,G6,131.014
+,,,O,11,Sample X48,H6,117.317
+,,,O,12,Sample X48,H6,108.438
+H6,112.57,,P,11,Sample X48,H6,111.942
+,,,A,13,Sample X49,A7,85.334
+,,,A,14,Sample X49,A7,97.913
+A7,90.64,,B,13,Sample X49,A7,88.646
+,,,C,13,Sample X50,B7,147.333
+,,,C,14,Sample X50,B7,149.744
+B7,148.65,,D,13,Sample X50,B7,148.861
+,,,E,13,Sample X51,C7,195.778
+,,,E,14,Sample X51,C7,193.32
+C7,192.78,,F,13,Sample X51,C7,189.235
+,,,G,13,Sample X52,D7,64.411
+,,,G,14,Sample X52,D7,70.838
+D7,67.05,,H,13,Sample X52,D7,65.888
+,,,I,13,Sample X53,E7,85.592
+,,,I,14,Sample X53,E7,100.034
+E7,93.74,,J,13,Sample X53,E7,95.577
+,,,K,13,Sample X54,F7,74.07
+,,,K,14,Sample X54,F7,77.257
+F7,76.75,,L,13,Sample X54,F7,78.896
+,,,M,13,Sample X55,G7,84.997
+,,,M,14,Sample X55,G7,89.349
+G7,88.63,,N,13,Sample X55,G7,91.524
+,,,O,13,Sample X56,H7,90.076
+,,,O,14,Sample X56,H7,94.977
+H7,93.18,,P,13,Sample X56,H7,94.478
+,,,A,15,Sample X57,A8,126.82
+,,,A,16,Sample X57,A8,131.399
+A8,128.19,,B,15,Sample X57,A8,126.347
+,,,C,15,Sample X58,B8,52.532
+,,,C,16,Sample X58,B8,50.857
+B8,49.37,,D,15,Sample X58,B8,44.697
+,,,E,15,Sample X59,C8,161.249
+,,,E,16,Sample X59,C8,159.156
+C8,157.57,,F,15,Sample X59,C8,152.282
+,,,G,15,Sample X60,D8,n.a.
+,,,G,16,Sample X60,D8,n.a.
+D8,#DIV/0!,,H,15,Sample X60,D8,n.a.
+,,,I,15,Sample X61,E8,186.347
+,,,I,16,Sample X61,E8,198.981
+E8,195.41,,J,15,Sample X61,E8,200.877
+,,,K,15,Sample X62,F8,182.778
+,,,K,16,Sample X62,F8,189.048
+F8,188.05,,L,15,Sample X62,F8,192.322
+,,,M,15,Sample X63,G8,84.311
+,,,M,16,Sample X63,G8,87.543
+G8,85.81,,N,15,Sample X63,G8,85.576
+,,,O,15,Sample X64,H8,165.092
+,,,O,16,Sample X64,H8,166.097
+H8,164.91,,P,15,Sample X64,H8,163.525
+,,,A,17,Sample X65,A9,123.619
+,,,A,18,Sample X65,A9,128.407
+A9,122.81,,B,17,Sample X65,A9,116.385
+,,,C,17,Sample X66,B9,82.32
+,,,C,18,Sample X66,B9,82.482
+B9,79.77,,D,17,Sample X66,B9,74.493
+,,,E,17,Sample X67,C9,165.081
+,,,E,18,Sample X67,C9,172.92
+C9,162.77,,F,17,Sample X67,C9,150.291
+,,,G,17,Sample X68,D9,156.617
+,,,G,18,Sample X68,D9,157.11
+D9,154.21,,H,17,Sample X68,D9,148.892
+,,,I,17,Sample X69,E9,90.249
+,,,I,18,Sample X69,E9,91.754
+E9,93.58,,J,17,Sample X69,E9,98.721
+,,,K,17,Sample X70,F9,119.256
+,,,K,18,Sample X70,F9,141.434
+F9,129.22,,L,17,Sample X70,F9,126.961
+,,,M,17,Sample X71,G9,100.009
+,,,M,18,Sample X71,G9,100.804
+G9,97.96,,N,17,Sample X71,G9,93.059
+,,,O,17,Sample X72,H9,
+,,,O,18,Sample X72,H9,237.416
+H9,252.04,,P,17,Sample X72,H9,266.648
+,,,A,19,Sample X73,A10,174.006
+,,,A,20,Sample X73,A10,172.16
+A10,172.16,,B,19,Sample X73,A10,170.288
+,,,C,19,Sample X74,B10,0.09
+,,,C,20,Sample X74,B10,0.009
+B10,0.04,,D,19,Sample X74,B10,0.005
+,,,E,19,Sample X75,C10,0.017
+,,,E,20,Sample X75,C10,n.a.
+C10,0.02,,F,19,Sample X75,C10,n.a.
+,,,G,19,Sample X76,D10,n.a.
+,,,G,20,Sample X76,D10,n.a.
+D10,#DIV/0!,,H,19,Sample X76,D10,n.a.
+,,,I,19,Sample X77,E10,151.979
+,,,I,20,Sample X77,E10,141.249
+E10,148.55,,J,19,Sample X77,E10,152.403
+,,,K,19,Sample X78,F10,114.808
+,,,K,20,Sample X78,F10,120.847
+F10,116.32,,L,19,Sample X78,F10,113.285
+,,,M,19,Sample X79,G10,111.603
+,,,M,20,Sample X79,G10,114.57
+G10,111.92,,N,19,Sample X79,G10,109.575
+,,,O,19,Sample X80,H10,n.a.
+,,,O,20,Sample X80,H10,n.a.
+H10,#DIV/0!,,P,19,Sample X80,H10,n.a.
+,,,A,21,Sample X81,A11,203.284
+,,,A,22,Sample X81,A11,205.232
+A11,203.06,,B,21,Sample X81,A11,200.655
+,,,C,21,Sample X82,B11,192.562
+,,,C,22,Sample X82,B11,196.17
+B11,190.88,,D,21,Sample X82,B11,183.882
+,,,E,21,Sample X83,C11,117.609
+,,,E,22,Sample X83,C11,119.174
+C11,114.63,,F,21,Sample X83,C11,107.081
+,,,G,21,Sample X84,D11,226.146
+,,,G,22,Sample X84,D11,251.697
+D11,248.5,,H,21,Sample X84,D11,267.657
+,,,I,21,Sample X85,E11,n.a.
+,,,I,22,Sample X85,E11,n.a.
+E11,#DIV/0!,,J,21,Sample X85,E11,n.a.
+,,,K,21,Sample X86,F11,167.68
+,,,K,22,Sample X86,F11,183.419
+F11,174.85,,L,21,Sample X86,F11,173.422
+,,,M,21,Sample X87,G11,55.648
+,,,M,22,Sample X87,G11,55.671
+G11,55.11,,N,21,Sample X87,G11,53.985
+,,,O,21,Sample X88,H11,80.634
+,,,O,22,Sample X88,H11,82.568
+H11,81.16,,P,21,Sample X88,H11,80.265
+,,,A,23,Sample X89,A12,179.273
+,,,A,24,Sample X89,A12,185.348
+A12,182.48,,B,23,Sample X89,A12,182.81
+,,,C,23,Sample X90,B12,181.969
+,,,C,24,Sample X90,B12,183.867
+B12,180.66,,D,23,Sample X90,B12,176.121
+,,,E,23,Sample X91,C12,112.224
+,,,E,24,Sample X91,C12,122.134
+C12,116.04,,F,23,Sample X91,C12,113.736
+,,,G,23,Sample X92,D12,190.827
+,,,G,24,Sample X92,D12,204.893
+D12,197.64,,H,23,Sample X92,D12,197.184
+,,,I,23,Sample X93,E12,177.864
+,,,I,24,Sample X93,E12,179.812
+E12,176.93,,J,23,Sample X93,E12,173.105
+,,,K,23,Sample X94,F12,0.005
+,,,K,24,Sample X94,F12,0.017
+F12,0.02,,L,23,Sample X94,F12,n.a.
+,,,M,23,Sample X95,G12,110.509
+,,,M,24,Sample X95,G12,110.453
+G12,109.08,,N,23,Sample X95,G12,106.266
+,,,O,23,Sample X96,H12,n.a.
+,,,O,24,Sample X96,H12,n.a.
+H12,#DIV/0!,,P,23,Sample X96,H12,n.a.
+,,,B,2,Standard S1,,24.347 ng/uL
+,,,B,4,Standard S1,,25.331 ng/uL
+,,,B,6,Standard S1,,23.896 ng/uL
+,,,D,2,Standard S2,,10.093 ng/uL
+,,,D,4,Standard S2,,10.459 ng/uL
+,,,D,6,Standard S2,,9.987 ng/uL
+,,,F,2,Standard S3,,2.992 ng/uL
+,,,F,4,Standard S3,,2.985 ng/uL
+,,,F,6,Standard S3,,2.97 ng/uL
+,,,H,2,Standard S4,,1.029 ng/uL
+,,,H,4,Standard S4,,1.018 ng/uL
+,,,H,6,Standard S4,,1.054 ng/uL
+,,,J,2,Standard S5,,0.298 ng/uL
+,,,J,4,Standard S5,,0.287 ng/uL
+,,,J,6,Standard S5,,0.297 ng/uL
+,,,L,2,Standard S6,,0.096 ng/uL
+,,,L,4,Standard S6,,0.097 ng/uL
+,,,L,6,Standard S6,,0.103 ng/uL
+,,,N,2,Standard S7,,0.031 ng/uL
+,,,N,4,Standard S7,,0.024 ng/uL
+,,,N,6,Standard S7,,0.036 ng/uL
