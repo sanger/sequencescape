@@ -169,19 +169,8 @@ end
 
 Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created will be "([^\"]+)"$/ do |model, uuid_value|
   model_class = model.gsub(/\s+/, '_').classify.constantize
-  root_class = model_class.base_class
-  query = ActiveRecord::Base.connection.execute("SHOW TABLE STATUS WHERE `name` = '#{model_class.table_name}'")
-
-  # Behaviour changes between MRI and Jruby MySQl drivers.
-  # TODO: See if we can do this through the ORM
-  if query.respond_to?(:fetch_hash)
-    next_id = query.fetch_hash['Auto_increment']
-  else
-    next_id = query.first['Auto_increment']
-  end
-
-  uuid = Uuid.new(resource_type: root_class.sti_name, resource_id: next_id, external_id: uuid_value)
-  uuid.save(validate: false)
+  Uuid.store_for_tests ||= UuidStore.new
+  Uuid.store_for_tests.next_uuid_for(model_class.base_class, uuid_value)
 end
 
 Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id, core_uuid|

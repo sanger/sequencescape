@@ -5,6 +5,10 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Uuid < ActiveRecord::Base
+
+  # Allows tests to dictate the next UUID generted for a given class
+  class_attribute :store_for_tests
+
   module Uuidable
     def self.included(base)
       base.class_eval do
@@ -28,11 +32,12 @@ class Uuid < ActiveRecord::Base
     # UUIDs.
     if ['test', 'cucumber'].include?(Rails.env)
       def ensure_uuid_created
-        self.create_uuid_object!(resource: self) unless self.uuid_object(true).present?
+        new_uuid = Uuid.store_for_tests && Uuid.store_for_tests.next_uuid_for(self.class.base_class)
+        create_uuid_object!(resource: self, external_id: new_uuid)
       end
     else
       def ensure_uuid_created
-        self.create_uuid_object!(resource: self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
+        create_uuid_object!(resource: self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
       end
     end
     private :ensure_uuid_created
