@@ -4,8 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-
-
 Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/ do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})

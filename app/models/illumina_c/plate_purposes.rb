@@ -37,11 +37,10 @@ module IlluminaC::PlatePurposes
     'ILC Lib PCR-XP'
   ]
 
-  STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
-    'ILC Stock'  => 'illumina_c_pcr',
-    'ILC Stock'  => 'illumina_c_nopcr'
-
-  }
+  STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = [
+    ['ILC Stock', 'illumina_c_pcr'],
+    ['ILC Stock', 'illumina_c_nopcr']
+  ]
 
   OUTPUT_PLATE_PURPOSES = []
 
