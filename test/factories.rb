@@ -76,7 +76,7 @@ FactoryGirl.define do
     name                 { |a| FactoryGirl.generate :study_name }
     user                 {|user| user.association(:user)}
     blocked              false
-    state                "pending"
+    state                "active"
     enforce_data_release false
     enforce_accessioning false
     reference_genome     { ReferenceGenome.find_by_name("") }
@@ -130,7 +130,7 @@ FactoryGirl.define do
   factory  :submission_template  do
     submission_class_name LinearSubmission.name
     name                  "my_template"
-    submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
+    submission_parameters {|pc| { :workflow_id => 1, :request_type_ids_list => [] } }
     product_catalogue {|pc| pc.association(:single_product_catalogue) }
   end
 

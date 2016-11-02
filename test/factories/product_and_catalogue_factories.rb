@@ -6,6 +6,10 @@ FactoryGirl.define do
     pc.name      { |x| FactoryGirl.generate :product_catalogue_name }
   end
 
+  factory :library_driven_product_catalogue, :parent => :product_catalogue do |pc|
+    pc.selection_behaviour 'LibraryDriven'
+  end
+
   factory :single_product_catalogue, :parent => :product_catalogue do |pc|
     pc.selection_behaviour 'SingleProduct'
   end
@@ -20,5 +24,9 @@ FactoryGirl.define do
     pc.stage         'stock'
     pc.behaviour     'Basic'
     pc.configuration { {:total_micrograms=>{:greater_than=>50},:sanger_sample_id=>{}} }
+  end
+
+  factory :product_product_catalogue do |pc|
+
   end
 end

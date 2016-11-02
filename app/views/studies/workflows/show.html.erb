@@ -26,9 +26,9 @@
 <% add :menu, "&nbsp;" => '' -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <% if @study.active? -%>
-    <% add :manager_option, { 'Deactivate Study' => state_study_path(@study) }, { :confirm => "Are you sure you want to deactivate this study?" }   -%>
+    <% add :manager_option, { 'Deactivate Study' => state_study_path(@study) }   -%>
   <% else -%>
-    <% add :manager_option, { 'Activate Study' => state_study_path(@study) }, { :confirm => "Are you sure you want to activate this study?" } -%>
+    <% add :manager_option, { 'Activate Study' => state_study_path(@study) } -%>
   <% end -%>
 <% end -%>
 

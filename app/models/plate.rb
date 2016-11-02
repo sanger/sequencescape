@@ -5,6 +5,7 @@
 require 'lib/lab_where_client'
 
 class Plate < Asset
+
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
@@ -42,6 +43,14 @@ class Plate < Asset
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
     plate_purpose.state_of(self)
+  end
+
+  def update_volume(volume_change)
+    ActiveRecord::Base.transaction do
+      wells.each do |w|
+        w.update_volume(volume_change)
+      end
+    end
   end
 
   def occupied_well_count
@@ -819,14 +828,16 @@ class Plate < Asset
     PlatePurpose.compatible_with_purpose(self.purpose)
   end
 
-  def update_concentrations_from(parser)
+  def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
-      parser.each_well_and_parameters do |position,concentration,molarity|
-        wells.include_map.detect {|w| w.map_description == position }.tap do |well|
-          well.set_concentration(concentration)
-          well.set_molarity(molarity)
-          well.save!
-        end
+      well_hash = Hash[wells.include_map.includes(:well_attribute).map { |w| [w.map_description,w] }]
+
+      parser.each_well_and_parameters do |position, well_updates|
+        # We might have a nil well if a plate was only partially cherrypicked
+        well = well_hash[position]
+        next if well.nil?
+        well.update_qc_values_with_hash(well_updates)
+        well.save!
       end
     end
     true
