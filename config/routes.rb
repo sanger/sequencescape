@@ -307,7 +307,11 @@ Sequencescape::Application.routes.draw do
     end
 
     resources :robots do
-      resources :robot_properties
+      resources :robot_properties do
+        member do
+          get :print_labels
+        end
+      end
     end
     resources :bait_libraries
 
