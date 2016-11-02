@@ -1,6 +1,6 @@
 class ProcessMetadatumCollection < ActiveRecord::Base
   include Uuid::Uuidable
-  
+
   belongs_to :user
   belongs_to :asset
   has_many :process_metadata,  dependent: :destroy
@@ -8,7 +8,7 @@ class ProcessMetadatumCollection < ActiveRecord::Base
   validates_presence_of :asset_id, :user_id
 
   def metadata
-    process_metadata.collect(&:to_h).inject(:merge!)
+    process_metadata.collect(&:to_h).inject(:merge!) || {}
   end
 
   def metadata=(attributes)
