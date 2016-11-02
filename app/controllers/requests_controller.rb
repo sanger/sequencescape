@@ -165,27 +165,6 @@ class RequestsController < ApplicationController
     @tasks = Task.all
   end
 
-  def print
-    @request = Request.find(params[:id])
-  end
-
-  def print_items
-    @request   = Request.find(params[:request_id])
-    printables = []
-    params[:printable].each do |key, value|
-      item = Item.find(key)
-      printables.push PrintBarcode::Label.new({ :number => key, :study => item.name, :suffix => "" })
-    end
-    if !printables.empty?
-      BarcodePrinter.print(printables, params[:printer])
-    end
-    flash[:notice] = "Your labels have been sent to printer #{params[:printer]}."
-    redirect_to request_path(@request)
-  rescue SOAP::FaultError
-    flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-    redirect_to request_path(@request)
-  end
-
   def expanded(options = {})
     render :text => "", :status => :gone
   end

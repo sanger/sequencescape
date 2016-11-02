@@ -45,7 +45,10 @@ class Plate::Creator < ActiveRecord::Base
       new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
-        barcode_printer.print_labels(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", plate_purpose.name.to_s, scanned_user.login)
+        print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
+                                              LabelPrinter::Label::PlateCreator,
+                                              plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+        return false unless print_job.execute
       end
       true
     end

@@ -369,22 +369,6 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  def self.print_assets(assets, barcode_printer)
-    printables = []
-    assets.each do |asset|
-      printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => asset.tube_name, :suffix => "", :prefix => asset.prefix })
-    end
-    begin
-      unless printables.empty?
-        barcode_printer.print_labels(printables)
-      end
-    rescue
-      return false
-    end
-
-    true
-  end
-
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
   # to their appropriate query conditions (as though they operated on their own) and then we join

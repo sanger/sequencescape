@@ -22,6 +22,10 @@ configatron.api_url = "http://localhost:3000"
 
 configatron.authentication = "local"
 configatron.barcode_service_url = "http://localhost:9998/barcode_service.wsdl"
+
+configatron.pmb_api = "http://localhost:9292/v1"
+configatron.register_printers_automatically = true
+
 configatron.default_policy_text = "https://www.example.com/"
 configatron.default_policy_title = "Default Policy Title"
 configatron.fluidigm_data.source = "directory"
@@ -97,6 +101,8 @@ if Rails.env == 'development'
   configatron.sequencing_admin_email = "admin@example.com"
   configatron.api.authorisation_code = "development"
   configatron.api.flush_response_at = 32768
+
+  configatron.register_printers_automatically = false
 end
 if (Rails.env == 'test')||(Rails.env == 'cucumber')
 
@@ -143,4 +149,5 @@ if (Rails.env == 'test')||(Rails.env == 'cucumber')
   configatron.sequencing_admin_email = "admin@example.com"
   configatron.api.authorisation_code = "cucumber"
   configatron.api.flush_response_at = 32768
+  configatron.register_printers_automatically = false
 end

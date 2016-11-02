@@ -34,8 +34,8 @@ FactoryGirl.define do
       plate_purpose {|pp| pp.association(:source_plate_purpose)}
     end
 
-    
-    
+
+
     factory :child_plate do
 
       transient do
@@ -44,7 +44,7 @@ FactoryGirl.define do
 
       plate_purpose { |pp| pp.association(:plate_purpose, source_purpose: parent.purpose)}
 
-     
+
 
       after(:build) do |child_plate, evaluator|
         child_plate.parents << evaluator.parent
@@ -53,7 +53,7 @@ FactoryGirl.define do
     end
   end
 
-  
+
 
   factory :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
   end
@@ -385,6 +385,17 @@ previous_pipeline_id  nil
     purpose_id { Purpose.find_by_name('PacBio Sheared').id }
   end
 
+  factory :sample_tube_without_barcode, :class => Tube do |tube|
+    name                {|a| FactoryGirl.generate :asset_name }
+    value               ""
+    descriptors         []
+    descriptor_fields   []
+    qc_state            ""
+    resource            nil
+    barcode             nil
+    purpose             { Tube::Purpose.standard_sample_tube }
+  end
+
   factory :empty_sample_tube, :class => SampleTube do |sample_tube|
     name                {|a| FactoryGirl.generate :asset_name }
     value               ""
@@ -395,9 +406,17 @@ previous_pipeline_id  nil
     barcode             {|a| FactoryGirl.generate :barcode_number }
     purpose             { Tube::Purpose.standard_sample_tube }
   end
+
   factory :sample_tube, :parent => :empty_sample_tube do |sample_tube|
-    after(:create) do |sample_tube|
-      sample_tube.aliquots.create!(:sample => create(:sample))
+
+    transient do
+      sample { create(:sample) }
+      study { create(:study) }
+      project { create(:project) }
+    end
+
+    after(:create) do |sample_tube,evaluator|
+      create_list(:untagged_aliquot,1,sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study,project: evaluator.project)
     end
   end
 

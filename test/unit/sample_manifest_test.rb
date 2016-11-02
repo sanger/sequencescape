@@ -65,26 +65,6 @@ class SampleManifestTest < ActiveSupport::TestCase
       end
     end
 
-    context 'converts to a spreadsheet' do
-      setup do
-        @manifest = create :sample_manifest, :study => @study, :count => 1
-        @manifest.generate
-        SampleManifestTemplate.first.generate(@manifest)
-
-        @spreadsheet = Spreadsheet.open(StringIO.new(@manifest.generated_document.current_data))
-        @worksheet   = @spreadsheet.worksheets.first
-      end
-
-      should "have 1 worksheet,study name, supplier name, well A1 and vertical order" do
-        assert_equal 1, @spreadsheet.worksheets.size
-        assert_equal 'CARD1', @worksheet[4, 1]
-        assert_equal 'Test supplier', @worksheet[5, 1]
-
-        assert_equal 'A1',  @worksheet[  9, 1]
-        assert_equal 'B1',  @worksheet[ 10, 1]
-        assert_equal 'H12', @worksheet[104, 1]
-      end
-    end
   end
 
   context "update event" do

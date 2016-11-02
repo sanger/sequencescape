@@ -21,7 +21,7 @@ module SampleManifestExcel
 
       def type
         @type ||= case sample_manifest.asset_type
-        when "1dtube", "multiplexedlibrary"
+        when "1dtube", "multiplexed_library"
           "Tubes"
         when "plate"
           "Plates"
@@ -54,9 +54,8 @@ module SampleManifestExcel
       def add_columns
         columns.update(first_row, last_row, ranges, axlsx_worksheet)
         add_row columns.headings, styles[:wrap_text].reference
-
-        sample_manifest.samples.each do |sample| 
-          create_row(sample)
+        sample_manifest.details_array.each do |detail| 
+          create_row(detail)
         end
 
       end
@@ -64,13 +63,13 @@ module SampleManifestExcel
       #Creates row filled in with required column values, also unlocks (adds unlock style)
       #the cells that should be filled in by clients
 
-      def create_row(sample)
+      def create_row(detail)
         axlsx_worksheet.add_row do |row|
           columns.each do |k, column|
             if column.unlocked?
-              row.add_cell column.attribute_value(sample), type: column.type, style: styles[:unlocked].reference
+              row.add_cell column.attribute_value(detail), type: column.type, style: styles[:unlocked].reference
             else
-              row.add_cell column.attribute_value(sample), type: column.type
+              row.add_cell column.attribute_value(detail), type: column.type
             end
           end
         end
@@ -104,7 +103,7 @@ module SampleManifestExcel
       #The row where the table with data end
 
       def last_row
-        @last_row ||= sample_manifest.samples.count + first_row - 1
+        @last_row ||= sample_manifest.details_array.count + first_row - 1
       end
 
       def styles

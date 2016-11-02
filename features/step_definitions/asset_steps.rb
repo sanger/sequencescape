@@ -11,6 +11,10 @@ Given /^tube "([^"]*)" has a public name of "([^"]*)"$/ do |name, public_name|
   Asset.find_by_name(name).update_attributes!(:public_name => public_name)
 end
 
+Given /^(?:I have )?a phiX tube called "([^\"]+)"$/ do |name|
+  FactoryGirl.create(:sample_tube, :name => name, :study => nil, :project => nil)
+end
+
 Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, name|
   FactoryGirl.create(:"#{ tube_type }_tube", :name => name)
 end

@@ -7,6 +7,7 @@ Feature: Sample manifest
 
   Background:
     Given I am an "External" user logged in as "john"
+    And the configuration exists for creating sample manifest Excel spreadsheets
     And the "1D Tube" barcode printer "xyz" exists
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
@@ -22,7 +23,7 @@ Feature: Sample manifest
     When I follow "Create manifest for multiplexed libraries"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "Simple multiplexed library manifest" from "Template"
+    And I select "Multiplexed Library Tube" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Number of samples in library" with "5"
@@ -69,6 +70,31 @@ Feature: Sample manifest
       | NT83         | tube_sample_3         | test tag group | 3         | Standard     | 100              | 200            |            |            |
       | NT84         | tube_sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
       | NT85         | tube_sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
+
+    When I fill in "File to upload" with the file "test/data/updated_multiplexed_library_manifest.csv"
+    And I check "Override previously uploaded samples"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I refresh the page
+    Then print any manifest errors for debugging
+
+    Then the samples table should look like:
+      | sanger_sample_id      | supplier_name | empty_supplier_sample_name | sample_taxon_id |
+      | tube_sample_1         | ffff          | false                      | 9606            |
+      | tube_sample_2         | gggg          | false                      | 9606            |
+      | tube_sample_3         | hhhh          | false                      | 9606            |
+      | tube_sample_4         | iiii          | false                      | 9606            |
+      | tube_sample_5         | jjjj          | false                      | 9606            |
+
+    # Ideally we'd update everywhere, but until we can, we won't update anywhere
+    And the samples should be tagged in library and multiplexed library tubes with:
+      | tube_barcode | sanger_sample_id      | tag_group      | tag_index | library_type | insert_size_from | insert_size_to | tag2_group | tag2_index |
+      | NT81         | tube_sample_1         | test tag group | 1         | Standard     | 100              | 200            |            |            |
+      | NT82         | tube_sample_2         | test tag group | 2         | Standard     | 100              | 200            |            |            |
+      | NT83         | tube_sample_3         | test tag group | 3         | Standard     | 100              | 200            |            |            |
+      | NT84         | tube_sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
+      | NT85         | tube_sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
+
 
 Scenario: Create a dual indexed mx manifest
 
