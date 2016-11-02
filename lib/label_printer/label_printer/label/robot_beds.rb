@@ -17,11 +17,6 @@ module LabelPrinter
       def bottom_right(bed)
         "#{bed.ean13_barcode}"
       end
-
-      def far_bottom_right(bed)
-        "#{bed.robot.barcode}"
-      end
-
     end
   end
 end
