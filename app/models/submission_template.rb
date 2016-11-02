@@ -14,7 +14,6 @@ class SubmissionTemplate < ActiveRecord::Base
 
   serialize :submission_parameters
 
-
   has_many :orders
   belongs_to :product_line
 
@@ -55,6 +54,7 @@ class SubmissionTemplate < ActiveRecord::Base
   def create_and_build_submission!(attributes)
     Submission.build!(attributes.merge(:template => self))
   end
+
   def create_order!(attributes)
     self.new_order(attributes).tap do |order|
       yield(order) if block_given?
@@ -77,7 +77,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
     submission_class.new(attributes).tap do |order|
       order.template_name = self.name
-      order.product = product_for(params)
+      order.product = product_for(attributes)
       order.set_input_field_infos(infos) unless infos.nil?
     end
   end

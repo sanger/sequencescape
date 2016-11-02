@@ -89,6 +89,15 @@ Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_ba
   end
 end
 
+Given /^plate "([^\"]*)" has concentration and high volume results$/ do |plate_barcode|
+  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate.wells.each_with_index do |well,index|
+    well.well_attribute.update_attributes!(
+      :current_volume      => 30 + (index%30),
+      :concentration  => 205 + (index%50)
+    )
+  end
+end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
@@ -248,9 +257,37 @@ Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |b
   assert_equal label, plate.role
 end
 
+
 Given(/^the plate with ID (\d+) has a process metadatum collection with UUID "(.*?)"$/) do |id, uuid|
     metadata = [FactoryGirl.build(:process_metadatum, key: "Key1", value: "Value1"),
               FactoryGirl.build(:process_metadatum, key: "Key2", value: "Value2")]
     collection = FactoryGirl.create(:process_metadatum_collection, process_metadata: metadata, asset_id: id)
     set_uuid_for(collection, uuid)
 end
+
+Then(/^the volume of each well in "(.*?)" should be:$/) do |machine, table|
+  plate = Plate.with_machine_barcode(machine).first
+  table.rows.each {|well,volume| assert_equal volume.to_f, plate.wells.located_at(well).first.get_current_volume}
+end
+
+Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid, well_details|
+  #plate = FactoryGirl.create :plate, :barcode => plate_barcode
+  plate = Uuid.find_by_external_id(uuid).resource
+  well_details.hashes.each do |well_detail|
+    well = Well.create!(:map => Map.find_by_description_and_asset_size(well_detail[:well_location],96), :plate => plate)
+    well.well_attribute.update_attributes!(:concentration => well_detail[:measured_concentration], :measured_volume => well_detail[:measured_volume])
+  end
+end
+
+
+Then /^I should have a plate with uuid "([^"]*)" with the following wells volumes:$/ do |uuid, well_details|
+  well_details.hashes.each do |well_detail|
+    plate = Uuid.find_by_external_id(uuid).resource
+    vol1 = plate.wells.select do |w|
+      w.map.description == well_detail[:well_location]
+    end.first.get_current_volume
+    assert_equal well_detail[:current_volume].to_f, vol1
+  end
+end
+
+

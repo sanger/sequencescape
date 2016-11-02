@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
-    t.integer  "tag2_id",          :default => -1, :null => false
+    t.integer  "tag2_id",          :default => -1
   end
 
   add_index "aliquots", ["library_id"], :name => "index_aliquots_on_library_id"
@@ -1628,29 +1628,20 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
   end
 
   create_table "submissions", :force => true do |t|
-    t.integer  "study_id_to_delete"
-    t.integer  "workflow_id_to_delete"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "state",                      :limit => 20
+    t.string   "state",                  :limit => 20
     t.string   "message"
     t.integer  "user_id"
-    t.text     "item_options_to_delete"
     t.text     "request_types"
     t.text     "request_options"
-    t.text     "comments_to_delete"
-    t.integer  "project_id_to_delete"
-    t.string   "sti_type_to_delete"
-    t.string   "template_name_to_delete"
-    t.integer  "asset_group_id_to_delete"
-    t.string   "asset_group_name_to_delete"
     t.string   "name"
-    t.integer  "priority",                   :limit => 1,  :default => 0, :null => false
+    t.integer  "priority",               :limit => 1,  :default => 0, :null => false
+    t.integer  "submission_template_id"
   end
 
   add_index "submissions", ["name"], :name => "index_submissions_on_name"
   add_index "submissions", ["state"], :name => "index_submissions_on_state"
-  add_index "submissions", ["study_id_to_delete"], :name => "index_submissions_on_project_id"
 
   create_table "submitted_assets", :force => true do |t|
     t.integer  "order_id"
@@ -1658,6 +1649,8 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "submitted_assets", ["asset_id"], :name => "index_submitted_assets_on_asset_id"
 
   create_table "suppliers", :force => true do |t|
     t.string   "name"
@@ -1837,6 +1830,14 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
   add_index "uuids", ["external_id"], :name => "index_uuids_on_external_id"
   add_index "uuids", ["resource_type", "resource_id"], :name => "index_uuids_on_resource_type_and_resource_id"
 
+  create_table "volume_updates", :force => true do |t|
+    t.integer  "target_id"
+    t.string   "created_by"
+    t.float    "volume_change"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "well_attributes", :force => true do |t|
     t.integer  "well_id"
     t.string   "gel_pass",         :limit => 20
@@ -1855,6 +1856,7 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.float    "measured_volume"
     t.float    "initial_volume"
     t.float    "molarity"
+    t.float    "rin"
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"

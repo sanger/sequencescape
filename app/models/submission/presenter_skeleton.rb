@@ -54,6 +54,11 @@ class Submission::PresenterSkeleton
     end
   end
 
+
+  def each_submission_warning(&block)
+    submission.each_submission_warning(&block)
+  end
+
   def lanes_from_request_options
     return order.request_options.fetch(:multiplier, {}).values.last||1 if order.request_types[-2].nil?
 

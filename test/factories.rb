@@ -16,16 +16,24 @@ FactoryGirl.define do
     tag
     tag2    {|t| t.association(:tag) }
 
+    factory :tagged_aliquot do
+      tag
+      tag2    {|t| t.association(:tag) }
+    end
+
     factory :untagged_aliquot do
       tag  nil
       tag2 nil
     end
 
     factory :single_tagged_aliquot do
+      tag
       tag2  nil
     end
 
     factory :dual_tagged_aliquot do
+      tag
+      tag2    {|t| t.association(:tag) }
     end
   end
 
@@ -61,13 +69,14 @@ FactoryGirl.define do
     reference_genome            { ReferenceGenome.find_by_name("") }
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
+    data_access_group           'something'
   end
 
   factory  :study  do
     name                 { |a| FactoryGirl.generate :study_name }
     user                 {|user| user.association(:user)}
     blocked              false
-    state                "pending"
+    state                "active"
     enforce_data_release false
     enforce_accessioning false
     reference_genome     { ReferenceGenome.find_by_name("") }
@@ -121,7 +130,7 @@ FactoryGirl.define do
   factory  :submission_template  do
     submission_class_name LinearSubmission.name
     name                  "my_template"
-    submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
+    submission_parameters {|pc| { :workflow_id => 1, :request_type_ids_list => [] } }
     product_catalogue {|pc| pc.association(:single_product_catalogue) }
   end
 

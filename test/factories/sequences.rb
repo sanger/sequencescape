@@ -87,6 +87,10 @@ FactoryGirl.define do
     "Study #{n}"
   end
 
+  sequence :submission_template_name do |n|
+    "Submission Template #{n}"
+  end
+
   sequence :pipeline_name do |n|
     "Lab Pipeline #{n}"
   end

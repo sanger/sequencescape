@@ -65,7 +65,7 @@ class Parsers::ISCXTenParser
 
   def each_well_and_parameters
     locations.each do |location_name|
-      yield(location_name, concentration(location_name))
+      yield(location_name, { :set_concentration => concentration(location_name) })
     end
   end
 

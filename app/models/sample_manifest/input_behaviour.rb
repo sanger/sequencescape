@@ -2,11 +2,13 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
+require 'lib/linefeed_fix'
+
 module SampleManifest::InputBehaviour
 
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
-      csv        = CSV.parse(spreadsheet_file.read)
+      csv        = CSV.parse(LinefeedFix.scrub!(spreadsheet_file.read))
       column_map = compute_column_map(csv[spreadsheet_header_row])
 
       spreadsheet_offset.upto(csv.size-1) do |n|
@@ -176,7 +178,7 @@ module SampleManifest::InputBehaviour
   end
 
   def each_csv_row(&block)
-    csv = CSV.parse(uploaded.current_data)
+    csv = CSV.parse(LinefeedFix.scrub!(uploaded.current_data))
     clean_up_sheet(csv)
 
     headers = get_headers(csv)
