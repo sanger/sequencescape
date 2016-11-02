@@ -271,7 +271,7 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should 'not cancel any associated requests' do
-        assert @study.requests.all? { |request| not request.cancelled? }
+        assert @study.requests.all? { |request| request.passed? }
       end
 
     end
