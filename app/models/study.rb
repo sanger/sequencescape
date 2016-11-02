@@ -425,6 +425,10 @@ class Study < ActiveRecord::Base
     end
   end
 
+  def text_comments
+    comments.collect{|c| c.description unless c.description.blank?}.compact.join(", ")
+  end
+
   def completed(workflow=nil)
     rts = workflow.present? ? workflow.request_types.map(&:id) : RequestType.all.map(&:id)
     total = self.requests.request_type(rts).count
