@@ -682,17 +682,16 @@ And I have a "full" authorised user with the key "cucumber"
             "create": "http://www.example.com/api/1/tube_from_tube_creations"
           }
         },
-<<<<<<< HEAD
         "process_metadatum_collections": {
           "actions": {
             "read": "http://www.example.com/api/1/process_metadatum_collections",
             "create": "http://www.example.com/api/1/process_metadatum_collections"
-=======
+          }
+        },
         "volume_updates": {
           "actions": {
             "read": "http://www.example.com/api/1/volume_updates",
             "create": "http://www.example.com/api/1/volume_updates"
->>>>>>> 095547ed2ca33587b7a532f00cb4fdabc82573a0
           }
         },
         "reference_genomes": {
