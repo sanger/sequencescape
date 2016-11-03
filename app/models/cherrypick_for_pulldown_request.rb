@@ -70,6 +70,7 @@ class CherrypickForPulldownRequest < TransferRequest
   private :build_stock_well_links
 
   def reduce_source_volume
+    return unless asset.get_current_volume
     subtracted_volume = target_asset.get_picked_volume
     new_volume = asset.get_current_volume - subtracted_volume
     asset.set_current_volume(new_volume)
