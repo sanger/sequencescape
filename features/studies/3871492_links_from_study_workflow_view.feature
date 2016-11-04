@@ -1,4 +1,4 @@
-@request
+@request @javascript
 Feature: Links from the study workflow page
 
   Background:
@@ -21,17 +21,14 @@ Feature: Links from the study workflow page
   Scenario: The count for started requests is not a link
     Then the started requests for "Asset 1 - 3871492" should not be a link
 
-  @javascript
   Scenario: The count for 1 passed request goes to the request summary page
     When I view the passed requests for "Asset 1 - 3871492"
     Then I should see "This request for paired end sequencing is PASSED"
 
-  @javascript
   Scenario: The count for 2 failed requests goes to the asset overview
     When I view the failed requests for "Asset 1 - 3871492"
     Then I should see "Failed paired end sequencing requests for study 'Study 3871492'"
 
-  @javascript
   Scenario: I can filter the asset overview page
     When I follow "Assets progress"
     Then I should see "SampleTube" within "#summary"

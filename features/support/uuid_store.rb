@@ -21,3 +21,6 @@ class UuidStore
     @store = Hash.new {|h,i| h[i] = [] }
   end
 end
+After do |s|
+  Uuid.store_for_tests.try(:clear!)
+end
