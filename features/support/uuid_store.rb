@@ -1,7 +1,7 @@
 # Used in tests to provide a pool of predicatable uuids
 class UuidStore
   def initialize
-    @store = Hash.new {|h,i| h[i] = [] }
+    @store = Hash.new { |h, i| h[i] = [] }
   end
 
   # Set or retrieve the next uuid for a given resource type
@@ -9,7 +9,7 @@ class UuidStore
   # @param [Class] resource_type Base class of the resource (eg. Asset for a Well )
   # @param [String] uuid Optional: String of the next uuid provided. If none is set, shift the first one off the list.
   # @return [String] A uuid
-  def next_uuid_for(resource_type,uuid=nil)
+  def next_uuid_for(resource_type, uuid = nil)
     if uuid
       @store[resource_type] << uuid
       uuid
@@ -18,7 +18,7 @@ class UuidStore
     end
   end
   def clear!
-    @store = Hash.new {|h,i| h[i] = [] }
+    @store = Hash.new { |h, i| h[i] = [] }
   end
 end
 After do |s|

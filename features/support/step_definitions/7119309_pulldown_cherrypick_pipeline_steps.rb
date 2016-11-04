@@ -105,7 +105,7 @@ def interpreter_is?(interpreter)
   defined?(JRuby).nil? == (interpreter == 'MRI')
 end
 
-Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpreter,expected_results_table|
+Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpreter, expected_results_table|
   if interpreter_is?(interpreter.strip)
     actual_table = table(fetch_table('table.plate_layout'))
     expected_results_table.column_names.each do |column_name|

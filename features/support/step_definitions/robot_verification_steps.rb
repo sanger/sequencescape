@@ -118,7 +118,7 @@ Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do
       _expect_line, expect_root, expect_round = /(.*)(\.\d)/.match(tecan_file_lines[index])
       _actual_line, actual_root, actual_round = /(.*)(\.\d)/.match(line)
       assert_equal expect_root, actual_root
-      valid_end = (expect_round==actual_round) || # The rounded digets match
+      valid_end = (expect_round == actual_round) || # The rounded digets match
         (expect_round.to_i - actual_round.to_i == 1) && (actual_round.to_i.even?) # The digit has been rounded down to even
         assert valid_end
     end

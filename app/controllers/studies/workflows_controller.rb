@@ -67,7 +67,7 @@ class Studies::WorkflowsController < ApplicationController
 
       case @summaries[@summary]
       when "Sample progress"
-        @page_elements  = @study.samples.paginate(page_params)
+        @page_elements = @study.samples.paginate(page_params)
         render partial: "sample_progress"
       when "Assets progress"
         @asset_type = Aliquot::Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
