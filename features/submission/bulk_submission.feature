@@ -19,7 +19,7 @@ Feature: Bulk Submission
     And study "abc123_study" has assets registered
    # And the sample tube "testing123" is in the asset group "assetgroup123"
     When I go to the create bulk submissions page
-    Then I should see "Create a bulk submission"
+    Then I should see "Bulk Submission New"
 
   @this
   Scenario: Link samples to the corresponding study when using bulk_submission (User story ss448)
@@ -106,7 +106,16 @@ Feature: Bulk Submission
     Then I should see "The supplied file does not contain a valid header row"
     Then there should be no submissions
 
+  Scenario: Uploading an invalid file with 1 submissions Windows-1252 encoded characters
+    When I upload a file with invalid data and Windows-1252 characters
+    Then I should see "abc123 — study"
+    Then there should be no submissions
+
+  Scenario: Uploading an invalid file with 1 submissions utf-8 encoded characters
+    When I upload a file with invalid data and utf-8 characters
+    Then I should see "abc123 — study"
+    Then there should be no submissions
+
   Scenario: Leaving the file field blank
     When I submit an empty form
     Then I should see "can't be blank"
-

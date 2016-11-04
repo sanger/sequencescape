@@ -9,9 +9,9 @@ mysql: &MYSQL
   adapter: mysql
   username: root
   password:
-  encoding: UTF8
+  encoding: utf8
   properties:
-    characterSetResults: UTF8
+    characterSetResults: utf8
   host: localhost
   port: 3306
   pool: 5

@@ -2,8 +2,11 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
-def upload_submission_spreadsheet(name)
+def upload_submission_spreadsheet(name,encoding=nil)
   attach_file("bulk_submission_spreadsheet", File.join(Rails.root,'features', 'submission', 'csv', "#{name}.csv"))
+  if encoding
+    step(%Q{I select "#{encoding}" from "Encoding"})
+  end
   click_button "Create Bulk submission"
 end
 
@@ -53,6 +56,14 @@ end
 
 When /^I upload a file with (.*) data for (\d+) submissions$/ do |type,number|
   upload_submission_spreadsheet("#{number}_#{type}_rows")
+end
+
+When /^I upload a file with invalid data and Windows-1252 characters$/ do
+  upload_submission_spreadsheet("invalid_cp1252_rows")
+end
+
+When /^I upload a file with invalid data and utf-8 characters$/ do
+  upload_submission_spreadsheet("invalid_utf8_rows",'uft-8')
 end
 
 When /^I upload a file with valid data for 1 tube submissions$/ do

@@ -204,7 +204,7 @@ Sequencescape::Application.routes.draw do
 
   end
 
-  match 'bulk_submissions' => 'bulk_submissions#new'
+  resources :bulk_submissions, only: [:new,:create,:index]
 
   resources :submissions do
     collection do
