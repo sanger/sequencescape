@@ -75,7 +75,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.3.8)
+    addressable (2.4.0)
     amq-protocol (2.0.0)
     arel (6.0.3)
     ast (2.3.0)
@@ -209,7 +209,7 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.12.1)
     multi_test (0.1.2)
-    mysql (2.9.1)
+    mysql2 (0.4.5)
     net-ldap (0.12.1)
     netrc (0.11.0)
     nokogiri (1.6.8.1)
@@ -407,7 +407,7 @@ DEPENDENCIES
   mime-types
   mocha
   multi_json
-  mysql
+  mysql2
   net-ldap
   nokogiri
   poltergeist

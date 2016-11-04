@@ -18,7 +18,7 @@ group :default do
   gem "activerecord-jdbc-adapter", :platforms => :jruby
   gem "activeresource", require: 'active_resource'
   gem "jdbc-mysql", :platforms => :jruby
-  gem "mysql", :platforms => :mri
+  gem "mysql2", :platforms => :mri
   gem "spreadsheet"
   gem "will_paginate"
   # Will paginate clashes awkwardly with bootstrap

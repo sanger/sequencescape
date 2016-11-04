@@ -4,8 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-
-
 Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/ do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
@@ -102,13 +100,20 @@ Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
   end
 end
 
-Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table|
-  actual_table = table(fetch_table('table.plate_layout'))
-  expected_results_table.column_names.each do |column_name|
-    expected_results_table.map_column!("#{column_name}") { |text| text.squish }
-  end
-  expected_results_table.diff!(actual_table)
+def interpreter_is?(interpreter)
+  return true if interpreter.blank?
+  defined?(JRuby).nil? == (interpreter == 'MRI')
 end
+
+Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpreter, expected_results_table|
+  if interpreter_is?(interpreter.strip)
+    actual_table = table(fetch_table('table.plate_layout'))
+    expected_results_table.column_names.each do |column_name|
+      expected_results_table.map_column!("#{column_name}") { |text| text.squish }
+    end
+    expected_results_table.diff!(actual_table)
+   end
+ end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
   expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : "" } })

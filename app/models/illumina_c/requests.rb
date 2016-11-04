@@ -32,7 +32,7 @@ module IlluminaC::Requests
         RequestType.create!(params)
       end
       IlluminaC::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose, request|
-        RequestType.find_by_key(request).acceptable_plate_purposes << Purpose.find_by_name(purpose)
+        RequestType.find_by(key: request).acceptable_plate_purposes << Purpose.find_by_name(purpose)
       end
     end
 

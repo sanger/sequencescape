@@ -257,7 +257,6 @@ class Well < Aliquot::Receptacle
   def buffer_required?
     get_buffer_volume > 0.0
   end
-  private :buffer_required?
 
   # If we eager load, things fair badly, and we end up returning all children.
   def find_latest_child_well
