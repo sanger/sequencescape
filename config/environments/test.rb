@@ -38,6 +38,11 @@ Sequencescape::Application.configure do
 
   config.time_zone = 'London'
 
+  # Avoids threading issues with cucumber and some ajax requests
+  # particularly: features/studies/3871492_links_from_study_workflow_view.feature
+  # under MRI. If hit to overall test performance is grim, might need to
+  # unpick this further.
+  config.allow_concurrency = false
 
   # config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
   config.active_record.observers = [:request_observer]
