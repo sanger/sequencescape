@@ -62,8 +62,8 @@ When /^I upload a file with invalid data and Windows-1252 characters$/ do
   upload_submission_spreadsheet("invalid_cp1252_rows")
 end
 
-When /^I upload a file with invalid data and utf-8 characters$/ do
-  upload_submission_spreadsheet("invalid_utf8_rows",'uft-8')
+When /^I upload a file with invalid data and UTF-8 characters$/ do
+  upload_submission_spreadsheet("invalid_utf8_rows",'UTF-8')
 end
 
 When /^I upload a file with valid data for 1 tube submissions$/ do

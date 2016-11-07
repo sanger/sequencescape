@@ -112,7 +112,7 @@ Feature: Bulk Submission
     Then there should be no submissions
 
   Scenario: Uploading an invalid file with 1 submissions utf-8 encoded characters
-    When I upload a file with invalid data and utf-8 characters
+    When I upload a file with invalid data and UTF-8 characters
     Then I should see "abc123 — study"
     Then there should be no submissions
 
