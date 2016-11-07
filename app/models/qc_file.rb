@@ -23,7 +23,7 @@ class QcFile < ActiveRecord::Base
           qc_files.create!(opts) unless file.blank?
         end
 
-        def update_concentrations_from(parser)
+        def update_qc_values_with_parser(parser)
           true
         end
       ", __FILE__, line)
@@ -67,7 +67,7 @@ class QcFile < ActiveRecord::Base
 
   def store_file_extracted_data
     return if parser.nil?
-    asset.update_concentrations_from(parser)
+    asset.update_qc_values_with_parser(parser)
   end
 
   # Save Size/content_type Metadata

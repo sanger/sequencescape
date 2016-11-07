@@ -4,7 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require File.dirname(__FILE__) + '/../../test_helper'
+#require File.dirname(__FILE__) + '/../../test_helper'
+
+require 'test_helper'
 
 class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
 
@@ -21,6 +23,27 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
           measured_volume: { greater_than: 10 }
         }
       }
+    end
+
+    context "with a list of target wells" do
+      setup do
+        @well_attribute = create :well_attribute, :concentration => 800, :current_volume => 100, :gel_pass => 'OKAY', :gender_markers => ["M", "M", "U"]
+        @well = create :well, :well_attribute => @well_attribute
+
+        @target_wells = create_list :well, 7
+        @target_wells.last.set_concentration(30)
+        @criteria = ProductCriteria::Advanced.new(@params,@well, @target_wells)
+      end
+      should "get the most recent target well from the supplied list" do
+        assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date, @target_wells.last.get_concentration
+        @criteria2 = ProductCriteria::Advanced.new(@params,@well, nil)
+        assert_equal nil, @criteria2.most_recent_concentration_from_target_well_by_updating_date
+      end
+      should "get the most recent concentration from normalization" do
+        assert_equal @criteria.concentration_from_normalization, 30
+        @criteria2 = ProductCriteria::Advanced.new(@params,@well, nil)
+        assert_equal nil, @criteria2.concentration_from_normalization
+      end
     end
 
     context "with a good well" do

@@ -17,5 +17,11 @@
   <strong>Value:</strong><%= @robot_property.value %>
 </p>
 
+
+<%= form_tag(print_labels_admin_robot_robot_property_path(@robot, @robot_property), :method => :get) do %>
+  <%= render :partial => "shared/printer_list" %>
+  <button type="submit" class="btn btn-default">Print</button>
+<% end %>
+
 <%= link_to 'Edit', edit_admin_robot_robot_property_path(@robot, @robot_property) %> | <%= link_to 'Back', admin_robot_robot_properties_path(@robot) %>
 | <%= link_to 'Back to Robot', [:admin,@robot] %>

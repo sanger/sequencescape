@@ -50,6 +50,7 @@ class Asset < ActiveRecord::Base
   has_many :asset_group_assets, dependent: :destroy
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
+  has_many :volume_updates, :foreign_key => :target_id
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests

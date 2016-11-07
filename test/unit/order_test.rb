@@ -6,22 +6,18 @@ require "test_helper"
 
 class OrderTest < ActiveSupport::TestCase
 
-  context "An order" do
-    setup do
-      @shared_template = 'shared_template'
-      @asset_a = create :sample_tube
-      @order   = create :order, assets: [@asset_a], template_name: @shared_template
-    end
+  attr_reader :study, :asset, :project
 
-    should "not detect duplicates when there are none" do
-      refute @order.duplicates_within(1.month)
-    end
+  def setup
+    @study =  create :study, state: 'pending'
+    @project =  create :project
+    @asset = create :empty_sample_tube
+  end
 
-    context "with the same asset in a different order" do
-      setup do
-        @other_template = 'other_template'
-        @secondary_order = create :order, assets: [@asset_a], template_name: @other_template
-      end
+  test "order should not be valid if study is not active" do
+    order = build :order,  study: study, assets: [asset], project: project
+    refute order.valid?
+  end
 
       should "not detect duplicates" do
         refute @order.duplicates_within(1.month)
@@ -50,7 +46,15 @@ class OrderTest < ActiveSupport::TestCase
         assert yielded, "duplicates_within failed to yield"
       end
     end
-
   end
 
+  test "order should be valid if study is active on create" do
+    study.activate!
+    order = create :order,  study: study, assets: [asset], project: project
+    assert order.valid?
+    study.deactivate!
+    new_asset = create :empty_sample_tube
+    order.assets << new_asset
+    assert order.valid?
+  end
 end

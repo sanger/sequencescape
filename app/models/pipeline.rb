@@ -250,4 +250,8 @@ class Pipeline < ActiveRecord::Base
     true
   end
 
+  def robot_verified!(batch)
+    # Do nothing!
+  end
+
 end

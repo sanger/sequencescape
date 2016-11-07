@@ -6,11 +6,14 @@
 
 class ::Endpoints::Plates < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
     has_many(:comments,                  json: 'comments', to: 'comments') do
+      action(:create, to: :standard_create!)
+    end
+
+    has_many(:volume_updates,            json: 'volume_updates', to: 'volume_updates') do
       action(:create, to: :standard_create!)
     end
 

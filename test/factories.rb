@@ -88,7 +88,7 @@ FactoryGirl.define do
     name                 { |a| generate :study_name }
     user
     blocked              false
-    state                "pending"
+    state                "active"
     enforce_data_release false
     enforce_accessioning false
     reference_genome     { ReferenceGenome.find_by_name("") }

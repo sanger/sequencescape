@@ -1812,6 +1812,14 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
   add_index "uuids", ["external_id"], name: "index_uuids_on_external_id", using: :btree
   add_index "uuids", ["resource_type", "resource_id"], name: "index_uuids_on_resource_type_and_resource_id", using: :btree
 
+  create_table "volume_updates", force: :cascade do |t|
+    t.integer  "target_id"
+    t.string   "created_by"
+    t.float    "volume_change"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "well_attributes", force: :cascade do |t|
     t.integer  "well_id",          limit: 4
     t.string   "gel_pass",         limit: 20
@@ -1830,6 +1838,7 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
     t.float    "measured_volume",  limit: 24
     t.float    "initial_volume",   limit: 24
     t.float    "molarity",         limit: 24
+    t.float    "rin"
   end
 
   add_index "well_attributes", ["well_id"], name: "index_well_attributes_on_well_id", using: :btree

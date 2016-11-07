@@ -49,7 +49,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'tube',
   'tag group',
   'robot',
-  'reference genome'
+  'reference genome',
+  'volume update'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
