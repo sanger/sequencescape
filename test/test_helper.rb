@@ -16,7 +16,8 @@ require 'factory_girl'
 
 begin
   require 'pry'
-rescue LoadError => exception
+rescue LoadError
+  # No pry? That's okay, we're probably on the CI server
 end
 
 require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
