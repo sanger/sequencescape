@@ -10,7 +10,7 @@ class ::Endpoints::Tubes < ::Core::Endpoint::Base
   instance do
     has_many(:requests, :json => 'requests', :to => 'requests')
     belongs_to(:purpose, :json => 'purpose')
-    belongs_to(:process_metadatum_collection, :json => 'process_metadatum_collection', :to => 'process_metadatum_collection')
+    belongs_to(:custom_metadatum_collection, :json => 'custom_metadatum_collection', :to => 'custom_metadatum_collection')
 
     has_many(:qc_files,  :json => 'qc_files', :to => 'qc_files', :include=>[]) do
       action(:create, :as=>'create') do |request, _|

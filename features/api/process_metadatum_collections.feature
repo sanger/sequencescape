@@ -13,8 +13,8 @@ Feature: Access plates through the API
 
   @read
   Scenario: Reading the JSON for a UUID
-    Given a process metadatum collection exists with ID 1
-    And the UUID for the process metadatum collection with ID 1 is "00000000-1111-2222-3333-444444444444"
+    Given a custom metadatum collection exists with ID 1
+    And the UUID for the custom metadatum collection with ID 1 is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -22,7 +22,7 @@ Feature: Access plates through the API
 
   """
       {
-        "process_metadatum_collection": {
+        "custom_metadatum_collection": {
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
@@ -48,13 +48,13 @@ Feature: Access plates through the API
 
   """
 
-  Scenario: Creating a process_metadatum_collection
+  Scenario: Creating a custom_metadatum_collection
 
     Given the asset and the user exist and have UUID
-    When I make an authorised POST with the following JSON to the API path "/process_metadatum_collections":
+    When I make an authorised POST with the following JSON to the API path "/custom_metadatum_collections":
       """
       {
-        "process_metadatum_collection": {
+        "custom_metadatum_collection": {
           "user": "00000000-1111-2222-3333-444444444446",
           "asset": "00000000-1111-2222-3333-444444444445",
           "metadata": {"Key1": "Value1", "Key2": "Value2"}
@@ -65,7 +65,7 @@ Feature: Access plates through the API
     And the JSON should match the following for the specified fields:
       """
       {
-        "process_metadatum_collection": {
+        "custom_metadatum_collection": {
           "user": {
             "uuid":"00000000-1111-2222-3333-444444444446"
           },
@@ -79,12 +79,12 @@ Feature: Access plates through the API
 
   Scenario: Updating metadata
 
-    Given a process metadatum collection exists with ID 1
-    And the UUID for the process metadatum collection with ID 1 is "00000000-1111-2222-3333-444444444444"
+    Given a custom metadatum collection exists with ID 1
+    And the UUID for the custom metadatum collection with ID 1 is "00000000-1111-2222-3333-444444444444"
     When I make an authorised PUT with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
-        "process_metadatum_collection": {
+        "custom_metadatum_collection": {
           "metadata": {"Key1": "Value1", "Key3": "Value3", "Key4": "Value4"}
         }
       }
@@ -93,7 +93,7 @@ Feature: Access plates through the API
     And the JSON should match the following for the specified fields:
       """
       {
-        "process_metadatum_collection": {
+        "custom_metadatum_collection": {
           "metadata": {"Key1": "Value1", "Key3": "Value3", "Key4": "Value4"}
         }
       }

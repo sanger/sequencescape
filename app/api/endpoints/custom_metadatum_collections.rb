@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 
-class ::Endpoints::ProcessMetadatumCollections < ::Core::Endpoint::Base
+class ::Endpoints::CustomMetadatumCollections < ::Core::Endpoint::Base
   model do
     action(:create, :to => :standard_create!)
   end

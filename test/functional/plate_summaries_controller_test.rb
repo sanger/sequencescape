@@ -44,12 +44,12 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
         should "find expected plates" do
           plates = {
-            @source_plate_a => [@source_plate_a.sanger_human_barcode, 
-                                @source_plate_a.ean13_barcode, 
+            @source_plate_a => [@source_plate_a.sanger_human_barcode,
+                                @source_plate_a.ean13_barcode,
                                 @child_plate_a.sanger_human_barcode,
                                 @child_plate_a.ean13_barcode],
-            @source_plate_b => [@source_plate_b.sanger_human_barcode, 
-                                @source_plate_b.ean13_barcode, 
+            @source_plate_b => [@source_plate_b.sanger_human_barcode,
+                                @source_plate_b.ean13_barcode,
                                 @child_plate_b.sanger_human_barcode,
                                 @child_plate_b.ean13_barcode]
           }
@@ -70,14 +70,14 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
           should redirect_to "back"
           should set_the_flash.to "No suitable plates found for barcode abcd"
-        
+
         end
       end
 
       context '#show' do
 
         setup do
-          @collection = create(:process_metadatum_collection_with_metadata, asset: @child_plate_a, user: @user)
+          @collection = create(:custom_metadatum_collection_with_metadata, asset: @child_plate_a, user: @user)
         end
 
         should 'return expected plate' do

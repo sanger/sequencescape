@@ -907,25 +907,25 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.datetime "updated_at"
   end
 
-  create_table "process_metadata", :force => true do |t|
+  create_table "custom_metadata", :force => true do |t|
     t.string   "key"
     t.string   "value"
-    t.integer  "process_metadatum_collection_id"
+    t.integer  "custom_metadatum_collection_id"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
   end
 
-  add_index "process_metadata", ["process_metadatum_collection_id"], :name => "index_process_metadata_on_process_metadatum_collection_id"
+  add_index "custom_metadata", ["custom_metadatum_collection_id"], :name => "index_custom_metadata_on_custom_metadatum_collection_id"
 
-  create_table "process_metadatum_collections", :force => true do |t|
+  create_table "custom_metadatum_collections", :force => true do |t|
     t.integer  "user_id"
     t.integer  "asset_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
-  add_index "process_metadatum_collections", ["asset_id"], :name => "index_process_metadatum_collections_on_asset_id"
-  add_index "process_metadatum_collections", ["user_id"], :name => "index_process_metadatum_collections_on_user_id"
+  add_index "custom_metadatum_collections", ["asset_id"], :name => "index_custom_metadatum_collections_on_asset_id"
+  add_index "custom_metadatum_collections", ["user_id"], :name => "index_custom_metadatum_collections_on_user_id"
 
   create_table "product_catalogues", :force => true do |t|
     t.string   "name",                                             :null => false
