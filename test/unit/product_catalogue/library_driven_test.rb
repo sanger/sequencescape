@@ -1,6 +1,6 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -9,9 +9,9 @@ class LibraryDrivenTest < ActiveSupport::TestCase
     setup do
       def link_product_with_pc(product, product_catalogue, library_type_name)
         FactoryGirl.create :product_product_catalogue, {
-          :product => product,
-          :product_catalogue => product_catalogue,
-          :selection_criterion => library_type_name
+          product: product,
+          product_catalogue: product_catalogue,
+          selection_criterion: library_type_name
         }
       end
 
@@ -20,13 +20,13 @@ class LibraryDrivenTest < ActiveSupport::TestCase
       @product2 = FactoryGirl.create :product
       @product3 = FactoryGirl.create :product
 
-      @library_type = FactoryGirl.create :library_type, :name => "LibraryType 1"
-      @library_type2 = FactoryGirl.create :library_type, :name => "LibraryType 2"
+      @library_type = FactoryGirl.create :library_type, name: "LibraryType 1"
+      @library_type2 = FactoryGirl.create :library_type, name: "LibraryType 2"
 
       @product_catalogue = FactoryGirl.create :library_driven_product_catalogue
 
       # The selection criterion is the library type name
-      link_product_with_pc(@product,@product_catalogue, @library_type.name)
+      link_product_with_pc(@product, @product_catalogue, @library_type.name)
       link_product_with_pc(@product2, @product_catalogue, @library_type2.name)
 
     end
@@ -36,20 +36,20 @@ class LibraryDrivenTest < ActiveSupport::TestCase
         context "with no library or incorrect type" do
           setup do
             @submission_template = FactoryGirl.create :submission_template, {
-              :name => "ST 1",
-             :product_catalogue => @product_catalogue,
-             :submission_parameters => {
-               :workflow_id => 1,
-               :request_type_ids_list => [],
-               :request_options => { :library_type => "Another library" } }
+              name: "ST 1",
+             product_catalogue: @product_catalogue,
+             submission_parameters: {
+               workflow_id: 1,
+               request_type_ids_list: [],
+               request_options: { library_type: "Another library" } }
             }
 
             @submission_template2 = FactoryGirl.create :submission_template, {
-              :name => "ST 2",
-             :product_catalogue => @product_catalogue,
-             :submission_parameters => {
-               :workflow_id => 1,
-               :request_type_ids_list => []
+              name: "ST 2",
+             product_catalogue: @product_catalogue,
+             submission_parameters: {
+               workflow_id: 1,
+               request_type_ids_list: []
                }
             }
           end
@@ -73,21 +73,21 @@ class LibraryDrivenTest < ActiveSupport::TestCase
         context "with a library type selected" do
           setup do
             @submission_template = FactoryGirl.create :submission_template, {
-              :name => "ST 1",
-             :product_catalogue => @product_catalogue,
-             :submission_parameters => {
-               :workflow_id => 1,
-               :request_type_ids_list => [],
-               :request_options => { :library_type => @library_type.name } }
+              name: "ST 1",
+             product_catalogue: @product_catalogue,
+             submission_parameters: {
+               workflow_id: 1,
+               request_type_ids_list: [],
+               request_options: { library_type: @library_type.name } }
             }
 
             @submission_template2 = FactoryGirl.create :submission_template, {
-              :name => "ST 2",
-             :product_catalogue => @product_catalogue,
-             :submission_parameters => {
-               :workflow_id => 1,
-               :request_type_ids_list => [],
-               :request_options => { :library_type => @library_type2.name } }
+              name: "ST 2",
+             product_catalogue: @product_catalogue,
+             submission_parameters: {
+               workflow_id: 1,
+               request_type_ids_list: [],
+               request_options: { library_type: @library_type2.name } }
             }
           end
 
@@ -103,11 +103,11 @@ class LibraryDrivenTest < ActiveSupport::TestCase
         context "without a library type selected" do
           setup do
             @submission_template3 = FactoryGirl.create :submission_template, {
-              :name => "ST 3",
-             :product_catalogue => @product_catalogue,
-             :submission_parameters => {
-               :workflow_id => 1,
-               :request_type_ids_list => []
+              name: "ST 3",
+             product_catalogue: @product_catalogue,
+             submission_parameters: {
+               workflow_id: 1,
+               request_type_ids_list: []
              }
             }
           end
@@ -120,12 +120,12 @@ class LibraryDrivenTest < ActiveSupport::TestCase
         context "with a library type unsupported by the product catalogue" do
           setup do
             @submission_template4 = FactoryGirl.create :submission_template, {
-              :name => "ST 4",
-             :product_catalogue => @product_catalogue,
-             :submission_parameters => {
-               :workflow_id => 1,
-               :request_type_ids_list => [],
-               :request_options => { :library_type => "Standard" } }
+              name: "ST 4",
+             product_catalogue: @product_catalogue,
+             submission_parameters: {
+               workflow_id: 1,
+               request_type_ids_list: [],
+               request_options: { library_type: "Standard" } }
              }
           end
           should "select the first product of the default products" do
@@ -140,12 +140,12 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             link_product_with_pc(@product4, @product_catalogue, @library_type.name)
 
             @submission_template5 = FactoryGirl.create :submission_template, {
-              :name => "ST 5",
-             :product_catalogue => @product_catalogue,
-             :submission_parameters => {
-               :workflow_id => 1,
-               :request_type_ids_list => [],
-               :request_options => { :library_type => @library_type.name } }
+              name: "ST 5",
+             product_catalogue: @product_catalogue,
+             submission_parameters: {
+               workflow_id: 1,
+               request_type_ids_list: [],
+               request_options: { library_type: @library_type.name } }
              }
           end
           should "select the first product of the default products" do

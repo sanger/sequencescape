@@ -464,7 +464,7 @@ class Batch < ActiveRecord::Base
   def robot_verified!(user_id)
     return if has_event('robot verified')
     pipeline.robot_verified!(self)
-    lab_events.create(:description => "Robot verified",:message=>'Robot verification completed and source volumes updated.',user_id:user_id)
+    lab_events.create(description: "Robot verified", message: 'Robot verification completed and source volumes updated.', user_id: user_id)
   end
 
   def self.prefix

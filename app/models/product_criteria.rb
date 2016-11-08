@@ -37,7 +37,7 @@ class ProductCriteria < ActiveRecord::Base
     configuration.fetch('target_plate_purposes', nil)
   end
 
-  def assess(asset, target_wells=nil)
+  def assess(asset, target_wells = nil)
     ProductCriteria.const_get(behaviour).new(configuration, asset, target_wells)
   end
 

@@ -15,7 +15,7 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
 
   TARGET_PLATE_PURPOSES = 'target_plate_purposes'
 
-  CONFIG_KEYS = [ TARGET_PLATE_PURPOSES ]
+  CONFIG_KEYS = [TARGET_PLATE_PURPOSES]
 
   class << self
     def headers(configuration)

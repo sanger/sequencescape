@@ -36,7 +36,7 @@ class Well < Aliquot::Receptacle
 
   def self.hash_stock_with_targets(wells, purpose_names)
     return {} unless purpose_names
-    purposes = PlatePurpose.where(:name => purpose_names)
+    purposes = PlatePurpose.where(name: purpose_names)
     # We might need to be careful about this line in future.
     target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
 
@@ -98,8 +98,8 @@ class Well < Aliquot::Receptacle
   scope :target_wells_for, ->(wells) {
     select('assets.*, well_links.source_well_id AS stock_well_id').
     joins(:stock_well_links).where({
-      :well_links =>{
-        :source_well_id => wells
+      well_links: {
+        source_well_id: wells
         }
     })
   }
@@ -230,9 +230,9 @@ class Well < Aliquot::Receptacle
 
   def update_qc_values_with_hash(updated_data)
     ActiveRecord::Base.transaction do
-      unless updated_data.nil? || !(updated_data.values.all?{|v| v.nil? || v.downcase.strip.match(/^\d/) })
-        updated_data.each do|method_name, value|
-          send(method_name, value.strip) unless (value.nil? || value.blank?)
+      unless updated_data.nil? || !(updated_data.values.all? { |v| v.nil? || v.downcase.strip.match(/^\d/) })
+        updated_data.each do |method_name, value|
+          send(method_name, value.strip) unless value.nil? || value.blank?
         end
       end
     end

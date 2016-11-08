@@ -419,7 +419,7 @@ class Study < ActiveRecord::Base
   end
 
   def text_comments
-    comments.collect{|c| c.description unless c.description.blank?}.compact.join(", ")
+    comments.collect { |c| c.description unless c.description.blank? }.compact.join(", ")
   end
 
   def completed(workflow = nil)

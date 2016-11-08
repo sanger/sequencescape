@@ -57,7 +57,7 @@ class WellAttribute < ActiveRecord::Base
   end
 
   def estimated_volume
-    (current_volume||measured_volume).try(:to_f)
+    (current_volume || measured_volume).try(:to_f)
   end
 
   def initial_volume=(volume)

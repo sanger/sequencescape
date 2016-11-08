@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161003085523) do
+ActiveRecord::Schema.define(version: 20161003085523) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -36,11 +36,11 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
     t.integer  "insert_size_to",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "bait_library_id"
-    t.integer  "tag2_id",          :default => -1
+    t.integer  "bait_library_id",  limit: 4
+    t.integer  "tag2_id",          limit: 4,   default: -1
   end
 
-  add_index "aliquots", ["library_id"], :name => "index_aliquots_on_library_id"
+  add_index "aliquots", ["library_id"], name: "index_aliquots_on_library_id", using: :btree
   add_index "aliquots", ["receptacle_id", "tag_id", "tag2_id"], name: "aliquot_tags_and_tag2s_are_unique_within_receptacle", unique: true, using: :btree
   add_index "aliquots", ["sample_id"], name: "index_aliquots_on_sample_id", using: :btree
   add_index "aliquots", ["study_id"], name: "index_aliquots_on_study_id", using: :btree
@@ -241,12 +241,12 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
   add_index "barcode_prefixes", ["prefix"], name: "index_barcode_prefixes_on_prefix", using: :btree
 
   create_table "barcode_printer_types", force: :cascade do |t|
-    t.string   "name",            limit: 255
-    t.integer  "printer_type_id", limit: 4
-    t.string   "type",            limit: 255
+    t.string   "name",                limit: 255
+    t.integer  "printer_type_id",     limit: 4
+    t.string   "type",                limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "label_template_name"
+    t.string   "label_template_name", limit: 255
   end
 
   add_index "barcode_printer_types", ["name"], name: "index_barcode_printer_types_on_name", using: :btree
@@ -1286,7 +1286,7 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
   add_index "roles_users", ["role_id"], name: "index_roles_users_on_role_id", using: :btree
   add_index "roles_users", ["user_id"], name: "index_roles_users_on_user_id", using: :btree
 
-  create_table "sample_manifests", :force => true do |t|
+  create_table "sample_manifests", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "study_id",    limit: 4
@@ -1298,7 +1298,7 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
     t.string   "state",       limit: 255
     t.text     "barcodes",    limit: 65535
     t.integer  "user_id",     limit: 4
-    t.string   "password"  
+    t.string   "password",    limit: 255
   end
 
   add_index "sample_manifests", ["asset_type"], name: "index_sample_manifests_on_asset_type", using: :btree
@@ -1608,17 +1608,17 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
     t.datetime "updated_at"
   end
 
-  create_table "submissions", force: true do |t|
+  create_table "submissions", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state",                  limit: 20
-    t.string   "message"
-    t.integer  "user_id"
-    t.text     "request_types"
-    t.text     "request_options"
-    t.string   "name"
-    t.integer  "priority",               limit: 1,  default: 0, null: false
-    t.integer  "submission_template_id"
+    t.string   "message",                limit: 255
+    t.integer  "user_id",                limit: 4
+    t.text     "request_types",          limit: 65535
+    t.text     "request_options",        limit: 65535
+    t.string   "name",                   limit: 255
+    t.integer  "priority",               limit: 1,     default: 0, null: false
+    t.integer  "submission_template_id", limit: 4
   end
 
   add_index "submissions", ["name"], name: "index_submissions_on_name", using: :btree
@@ -1631,10 +1631,10 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
     t.datetime "updated_at"
   end
 
-  add_index "submitted_assets", ["asset_id"], name: "index_submitted_assets_on_asset_id"
+  add_index "submitted_assets", ["asset_id"], name: "index_submitted_assets_on_asset_id", using: :btree
 
-  create_table "suppliers", force: true do |t|
-    t.string   "name"
+  create_table "suppliers", force: :cascade do |t|
+    t.string   "name",         limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "email",        limit: 255
@@ -1669,13 +1669,13 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
   end
 
   create_table "tag2_layouts", force: :cascade do |t|
-    t.integer  "tag_id",     limit: 4
-    t.integer  "plate_id",   limit: 4
-    t.integer  "user_id",    limit: 4
+    t.integer  "tag_id",                limit: 4
+    t.integer  "plate_id",              limit: 4
+    t.integer  "user_id",               limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "source_id"
-    t.text     "target_well_locations"
+    t.integer  "source_id",             limit: 4
+    t.text     "target_well_locations", limit: 65535
   end
 
   create_table "tag_groups", force: :cascade do |t|
@@ -1813,11 +1813,11 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
   add_index "uuids", ["resource_type", "resource_id"], name: "index_uuids_on_resource_type_and_resource_id", using: :btree
 
   create_table "volume_updates", force: :cascade do |t|
-    t.integer  "target_id"
-    t.string   "created_by"
-    t.float    "volume_change"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "target_id",     limit: 4
+    t.string   "created_by",    limit: 255
+    t.float    "volume_change", limit: 24
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "well_attributes", force: :cascade do |t|
@@ -1838,7 +1838,7 @@ ActiveRecord::Schema.define(:version => 20161003085523) do
     t.float    "measured_volume",  limit: 24
     t.float    "initial_volume",   limit: 24
     t.float    "molarity",         limit: 24
-    t.float    "rin"
+    t.float    "rin",              limit: 24
   end
 
   add_index "well_attributes", ["well_id"], name: "index_well_attributes_on_well_id", using: :btree

@@ -382,8 +382,8 @@ end
 
       class MockParser
         def each_well_and_parameters
-          yield('B1',{:set_concentration =>'2', :set_molarity => '3'})
-          yield('C1',{:set_concentration =>'4', :set_molarity => '5'})
+          yield('B1', { set_concentration: '2', set_molarity: '3' })
+          yield('C1', { set_concentration: '4', set_molarity: '5' })
         end
       end
 

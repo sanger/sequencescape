@@ -93,10 +93,10 @@ end
 
 Given /^plate "([^\"]*)" has concentration and high volume results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
-      :current_volume      => 30 + (index%30),
-      :concentration  => 205 + (index%50)
+      current_volume: 30 + (index % 30),
+      concentration: 205 + (index % 50)
     )
   end
 end
@@ -273,15 +273,15 @@ end
 
 Then(/^the volume of each well in "(.*?)" should be:$/) do |machine, table|
   plate = Plate.with_machine_barcode(machine).first
-  table.rows.each {|well,volume| assert_equal volume.to_f, plate.wells.located_at(well).first.get_current_volume}
+  table.rows.each { |well, volume| assert_equal volume.to_f, plate.wells.located_at(well).first.get_current_volume }
 end
 
 Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid, well_details|
-  #plate = FactoryGirl.create :plate, :barcode => plate_barcode
+  # plate = FactoryGirl.create :plate, :barcode => plate_barcode
   plate = Uuid.find_by_external_id(uuid).resource
   well_details.hashes.each do |well_detail|
-    well = Well.create!(:map => Map.find_by_description_and_asset_size(well_detail[:well_location],96), :plate => plate)
-    well.well_attribute.update_attributes!(:concentration => well_detail[:measured_concentration], :measured_volume => well_detail[:measured_volume])
+    well = Well.create!(map: Map.find_by_description_and_asset_size(well_detail[:well_location], 96), plate: plate)
+    well.well_attribute.update_attributes!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
   end
 end
 
