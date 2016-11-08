@@ -21,7 +21,7 @@ And I have a "full" authorised user with the key "cucumber"
       And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-444444444444"
       And the plate with ID 1 has a plate purpose of "Stock plate"
       And the UUID for the plate purpose "Stock plate" is "11111111-2222-3333-4444-555555555555"
-      And the plate with ID 1 has a process metadatum collection with UUID "11111111-2222-3333-4444-666666666666"
+      And the plate with ID 1 has a custom metadatum collection with UUID "11111111-2222-3333-4444-666666666666"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"

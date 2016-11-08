@@ -13,8 +13,8 @@ Feature: Access plates through the API
 
   @read
   Scenario: Reading the JSON for a UUID
-    Given a custom metadatum collection exists with ID 1
-    And the UUID for the custom metadatum collection with ID 1 is "00000000-1111-2222-3333-444444444444"
+    Given a custom metadatum collection exists with ID 7
+    And the UUID for the custom metadatum collection with ID 7 is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
