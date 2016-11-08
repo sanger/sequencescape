@@ -92,12 +92,7 @@ FactoryGirl.define do
     "Submission Template #{n}"
   end
 
-  sequence :pipeline_name do |n|
-    "Lab Pipeline #{n}"
-  end
-
   sequence :data_release_study_type_name do |n|
     "Data release study Type #{n}"
   end
-
 end

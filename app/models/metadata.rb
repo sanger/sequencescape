@@ -137,7 +137,7 @@ private
     include Attributable
 
     def validating_ena_required_fields?
-      @validating_ena_required_fields
+      @validating_ena_required_fields ||= false
     end
 
     def validating_ena_required_fields=(state)
