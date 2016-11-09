@@ -228,7 +228,6 @@ end
 # Ensure rails eager loading behaves as intended
 # We should consider renaming our classes to make this easier to maintain
 require_dependency 'dilution_plate_purpose'
-require_dependency 'pulldown_pcr_plate_purpose'
 require_dependency 'qcable_library_plate_purpose'
 require_dependency 'qcable_plate_purpose'
 require_dependency 'illumina_c/al_libs_tagged_purpose'
