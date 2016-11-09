@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 # Lays out the tags in the specified tag group in a particular pattern.
 #
@@ -52,7 +54,7 @@ class TagLayout < ActiveRecord::Base
       'inverse column' => 'TagLayout::InInverseColumns',
       'inverse row'    => 'TagLayout::InInverseRows'
     }[new_direction]
-    errors.add(:base,"#{new_direction} is not a valid direction")if self.direction_algorithm.nil?
+    errors.add(:base, "#{new_direction} is not a valid direction") if self.direction_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.direction_algorithm.nil?
     extend(direction_algorithm.constantize)
   end
@@ -65,19 +67,19 @@ class TagLayout < ActiveRecord::Base
       'as group by plate'  => 'TagLayout::AsGroupByPlate',
       'manual by plate'    => 'TagLayout::WalkManualWellsOfPlate'
     }[walk]
-    errors.add(:base,"#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
+    errors.add(:base, "#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.walking_algorithm.nil?
     extend(walking_algorithm.constantize)
   end
 
 
   def wells_in_walking_order
-    plate.wells.send(:"in_#{direction.gsub(' ', '_')}_major_order")
+    plate.wells.send(:"in_#{direction.tr(' ', '_')}_major_order")
   end
   private :wells_in_walking_order
 
   # After creating the instance we can layout the tags into the wells.
-  after_create :layout_tags_into_wells, :if => :valid?
+  after_create :layout_tags_into_wells, if: :valid?
 
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells
@@ -85,22 +87,22 @@ class TagLayout < ActiveRecord::Base
     # to the wells.
 
     tag_map_id_to_tag = ActiveSupport::OrderedHash[tag_group.tags.sort_by(&:map_id).map { |tag| [tag.map_id.to_s, tag] }]
-    tags              = tag_map_id_to_tag.map { |k,tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
+    tags              = tag_map_id_to_tag.map { |k, tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
     walk_wells do |well, index|
-      apply_tag(tags[(index+initial_tag) % tags.length],well)
+      apply_tag(tags[(index + initial_tag) % tags.length], well)
     end
 
     # We can now check that the pools do not contain duplicate tags.
-    pool_to_tag = Hash.new { |h,k| h[k] = [] }
+    pool_to_tag = Hash.new { |h, k| h[k] = [] }
     plate.wells.walk_in_pools do |pool_id, wells|
       pool_to_tag[pool_id] = wells.map { |well| well.aliquots.map(&:tag).uniq }.flatten
     end
-    errors.add(:base,'duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
+    errors.add(:base, 'duplicate tags within a pool') if pool_to_tag.any? { |_, t| t.uniq.size > 1 }
   end
   private :layout_tags_into_wells
 
   # Over-ridden in the as group by plate module to allow the application of multiple tags.
-  def apply_tag(tag,well)
+  def apply_tag(tag, well)
     tag.tag!(well) unless well.aliquots.empty?
   end
   private :apply_tag

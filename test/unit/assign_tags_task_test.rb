@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -15,18 +17,18 @@ class AssignTagsTaskTest < TaskTestBase
       # Basically 'flash' is pulled from 'session[:flash]' which is not configured properly on @workflow
       # @workflow needs 'workflow' and 'stage' set
       # @workflow does not like redirect_to (think this might be shoulda)
-      @controller  = TestWorkflowsController.new
+      @controller = TestWorkflowsController.new
       @workflow = create :lab_workflow_for_pipeline
       @user = create :user
-      @controller.stubs(:current_user).returns(@user)
+      # @controller.s[:user] = @user.id
       @pipeline       = create :pipeline
-      @batch          = create :batch, :pipeline => @pipeline
+      @batch          = create :batch, pipeline: @pipeline
       @controller.batch = @batch
-      @br        = create :batch_request
+      @br = create :batch_request
       @batch.batch_requests << @br
       @task      = create :assign_tags_task
       @tag_group = create :tag_group
-      @tag       = create :tag, :tag_group => @tag_group
+      @tag       = create :tag, tag_group: @tag_group
 
     end
 
@@ -41,7 +43,7 @@ class AssignTagsTaskTest < TaskTestBase
 
     context "#render_task" do
       setup do
-        params = { :workflow_id => @workflow, :tag_group => @tag_group.id, :batch_id => @batch.id }
+        params = { workflow_id: @workflow, tag_group: @tag_group.id, batch_id: @batch.id }
         @task.render_task(@controller, params)
       end
 
@@ -52,25 +54,25 @@ class AssignTagsTaskTest < TaskTestBase
 
     context "#do_task" do
       setup do
-        @multiplexedlibrarytube_count =  MultiplexedLibraryTube.count
+        @multiplexedlibrarytube_count = MultiplexedLibraryTube.count
         @pipeline       = create :pipeline
-        @batch          = create :batch, :pipeline => @pipeline
+        @batch          = create :batch, pipeline: @pipeline
         # TODO: Move this into factory. Create library and sample_tube factory
         @sample_tube    = create(:sample_tube)
         @library        = create(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:dup) }
         @sample_tube.children << @library
 
         submission = Submission.last # probably built in batch ...?
-        @mx_request     = create :request, :request_type_id => 1, :submission => submission, :asset => @sample_tube, :target_asset => @library
+        @mx_request = create :request, request_type_id: 1, submission: submission, asset: @sample_tube, target_asset: @library
         $stop = true
-        @cf_request     = create :request_without_assets, :request_type_id => 2, :submission => submission, :asset => nil
+        @cf_request = create :request_without_assets, request_type_id: 2, submission: submission, asset: nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
 
-        params = { :workflow_id => @workflow, :batch_id => @batch.id,
-                   :tag_group => @tag_group.id.to_s,
-                   :mx_library_name => "MX library",
-                   :tag => { @mx_request.id.to_s => @tag.id.to_s },
+        params = { workflow_id: @workflow, batch_id: @batch.id,
+                   tag_group: @tag_group.id.to_s,
+                   mx_library_name: "MX library",
+                   tag: { @mx_request.id.to_s => @tag.id.to_s },
                     }
         @task.do_task(@controller, params)
       end
@@ -81,7 +83,7 @@ class AssignTagsTaskTest < TaskTestBase
 
 
       should "change MultiplexedLibraryTube.count by 1" do
-        assert_equal 1,  MultiplexedLibraryTube.count  - @multiplexedlibrarytube_count, "Expected MultiplexedLibraryTube.count to change by 1"
+        assert_equal 1,  MultiplexedLibraryTube.count - @multiplexedlibrarytube_count, "Expected MultiplexedLibraryTube.count to change by 1"
       end
 
       should "should update library" do

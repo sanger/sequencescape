@@ -1,31 +1,35 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
+require 'lib/linefeed_fix'
 
 module SampleManifest::InputBehaviour
 
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
-      csv        = CSV.parse(spreadsheet_file.read)
+      csv        = CSV.parse(LinefeedFix.scrub!(spreadsheet_file.read))
       column_map = compute_column_map(csv[spreadsheet_header_row])
 
-      spreadsheet_offset.upto(csv.size-1) do |n|
+      spreadsheet_offset.upto(csv.size - 1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
-        sample           = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
+        sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
         return sample.sample_manifest
       end
       nil
     end
 
-    def read_column_by_name(csv, row, name, column_map, default_value=nil)
+    def read_column_by_name(csv, row, name, column_map, default_value = nil)
       col = column_map[name]
       return default_value unless col
       return csv[row][col]
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index]}].tap do |columns|
+      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/, " "), index] }].tap do |columns|
         raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
       end
     end
@@ -40,8 +44,8 @@ module SampleManifest::InputBehaviour
 
           # These need to be checked when updating from a sample manifest.  We need to be able to display
           # the sample ID so this can't be done with validates_presence_of
-          validates_each(:volume, :concentration, :if => :updating_from_manifest?) do |record, attr, value|
-            record.errors.add_on_blank(attr, message:"can't be blank for #{record.sample.sanger_sample_id}")
+          validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, value|
+            record.errors.add_on_blank(attr, message: "can't be blank for #{record.sample.sanger_sample_id}")
           end
 
         end
@@ -61,12 +65,12 @@ module SampleManifest::InputBehaviour
         extend ValidationStateGuard
 
         # You cannot create a sample through updating the sample manifest
-        validates_each(:id, :on => :create, :if => :updating_from_manifest?) do |record, attr, value|
-          record.errors.add(:base,"Could not find sample #{record.sanger_sample_id}") if value.blank?
+        validates_each(:id, on: :create, if: :updating_from_manifest?) do |record, attr, value|
+          record.errors.add(:base, "Could not find sample #{record.sanger_sample_id}") if value.blank?
         end
 
         # We ensure that certain fields are updated properly if we're doing so through a manifest
-        before_validation(:if => :updating_from_manifest?) do |record|
+        before_validation(if: :updating_from_manifest?) do |record|
           if record.sample_supplier_name_empty?(record.sample_metadata.supplier_name)
             record.reset_all_attributes_to_previous_values
             record.empty_supplier_sample_name = true
@@ -79,13 +83,13 @@ module SampleManifest::InputBehaviour
 
         # If the sample has already been updated by a manifest, and we're not overriding it
         # then we should reset the sample information
-        before_validation(:if => :updating_from_manifest?) do |record|
+        before_validation(if: :updating_from_manifest?) do |record|
           record.reset_all_attributes_to_previous_values unless record.can_override_previous_manifest?
         end
 
         # We need to record any updates if we're working through a manifest update
         attr_accessor :user_performing_manifest_update
-        after_save(:handle_update_event, :if => :updating_from_manifest?)
+        after_save(:handle_update_event, if: :updating_from_manifest?)
 
         # The validation guards need declaring last so that they are reset after all of the after_save
         # callbacks that may need them are executed.
@@ -151,7 +155,7 @@ module SampleManifest::InputBehaviour
 
   def clean_up_sheet(csv)
     # Clean up CSV
-    0.upto(csv.size-1) do |row|
+    0.upto(csv.size - 1) do |row|
       0.upto(csv[row].size) do |col|
         csv[row][col] = clean_up_value(csv[row][col])
       end
@@ -176,7 +180,7 @@ module SampleManifest::InputBehaviour
   end
 
   def each_csv_row(&block)
-    csv = CSV.parse(uploaded.current_data)
+    csv = CSV.parse(LinefeedFix.scrub!(uploaded.current_data))
     clean_up_sheet(csv)
 
     headers = get_headers(csv)
@@ -188,8 +192,8 @@ module SampleManifest::InputBehaviour
     end
 
     column_map = SampleManifest.compute_column_map(headers)
-    spreadsheet_offset.upto(csv.size-1) do |row|
-      yield(Hash[headers.each_with_index.map { |header, column| [ header, csv[row][column] ] }])
+    spreadsheet_offset.upto(csv.size - 1) do |row|
+      yield(Hash[headers.each_with_index.map { |header, column| [header, csv[row][column]] }])
     end
   rescue CSV::MalformedCSVError => exception
     raise InvalidManifest, "Invalid CSV file, did you upload an Excel file by accident? - #{exception.message}"
@@ -223,7 +227,7 @@ module SampleManifest::InputBehaviour
           sample_errors.push(message)
           errors = true
         end
-        validate_specialized_fields(sample,row) do |message|
+        validate_specialized_fields(sample, row) do |message|
           sample_errors.push(message)
           errors = true
         end
@@ -233,19 +237,19 @@ module SampleManifest::InputBehaviour
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
-          [ attribute, row[csv_column] ]
+          [attribute, row[csv_column]]
         end
       ].merge(
-        :is_resubmitted => convert_yes_no_to_boolean(row['IS RE-SUBMITTED SAMPLE?'])
+        is_resubmitted: convert_yes_no_to_boolean(row['IS RE-SUBMITTED SAMPLE?'])
       )
 
       samples_to_updated_attributes.push([
         sample.id, {
-          :id                         => sample.id,
-          :sanger_sample_id           => sanger_sample_id,
-          :control                    => convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
-          :sample_metadata_attributes => metadata.delete_if { |_,v| v.nil? }
-        }.merge( specialized_fields(row) )
+          id: sample.id,
+          sanger_sample_id: sanger_sample_id,
+          control: convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
+          sample_metadata_attributes: metadata.delete_if { |_, v| v.nil? }
+        }.merge(specialized_fields(row))
       ])
     end
 
@@ -253,8 +257,8 @@ module SampleManifest::InputBehaviour
 
     ActiveRecord::Base.transaction do
       update_attributes!({
-        :override_previous_manifest => override_sample_information,
-        :samples_attributes         => samples_to_updated_attributes.map(&:last)
+        override_previous_manifest: override_sample_information,
+        samples_attributes: samples_to_updated_attributes.map(&:last)
       }, user_updating_manifest)
       core_behaviour.updated_by!(user_updating_manifest, samples_to_updated_attributes.map(&:first).compact)
     end
@@ -262,7 +266,7 @@ module SampleManifest::InputBehaviour
     self.last_errors = nil
     self.finished!
   rescue ActiveRecord::RecordInvalid => exception
-    errors.add(:base,exception.message)
+    errors.add(:base, exception.message)
     fail_with_errors!(errors.full_messages)
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)
@@ -278,12 +282,12 @@ module SampleManifest::InputBehaviour
   def ensure_samples_are_being_updated_by_manifest(attributes, user)
     attributes.fetch(:samples_attributes, []).each do |sample_attributes|
       sample_attributes.merge!(
-        :updating_from_manifest          => true,
-        :can_rename_sample               => true,
-        :user_performing_manifest_update => user,
-        :override_previous_manifest      => (override_previous_manifest? || attributes[:override_previous_manifest])
+        updating_from_manifest: true,
+        can_rename_sample: true,
+        user_performing_manifest_update: user,
+        override_previous_manifest: (override_previous_manifest? || attributes[:override_previous_manifest])
       )
-      sample_attributes[:sample_metadata_attributes].delete_if { |_,v| v.nil? }
+      sample_attributes[:sample_metadata_attributes].delete_if { |_, v| v.nil? }
       sample_attributes[:sample_metadata_attributes][:updating_from_manifest] = true
     end
   end
@@ -292,7 +296,7 @@ module SampleManifest::InputBehaviour
   def update_attributes_with_sample_manifest!(attributes, user = nil)
     ActiveRecord::Base.transaction do
       ensure_samples_are_being_updated_by_manifest(attributes, user)
-      update_attributes_without_sample_manifest!(attributes)
+      update_attributes_without_sample_manifest!(attributes.with_indifferent_access)
     end
   end
 end

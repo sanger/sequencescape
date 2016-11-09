@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Core::Endpoint::Base
   module InstanceBehaviour
@@ -13,7 +15,7 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_attribute :instance_handler, :instance_writer => false
+      base.class_attribute :instance_handler, instance_writer: false
     end
 
     def instance(&block)
@@ -28,7 +30,7 @@ class Core::Endpoint::Base
       include Core::Endpoint::BasicHandler::Paged
 
       def _read(request, _)
-        request.target.send(:with_scope, :find => { :order => 'id ASC' }) do
+        request.target.order(:id).scoping do
           page    = request.path.first.try(:to_i) || 1
           results = page_of_results(request.io.eager_loading_for(request.target).include_uuid, page, request.target)
           results.singleton_class.send(:define_method, :model) { request.target }
@@ -40,7 +42,7 @@ class Core::Endpoint::Base
     end
 
     def self.extended(base)
-      base.class_attribute :model_handler, :instance_writer => false
+      base.class_attribute :model_handler, instance_writer: false
     end
 
     def model(&block)

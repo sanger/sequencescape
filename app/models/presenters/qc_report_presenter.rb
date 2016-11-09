@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 class Presenters::QcReportPresenter
 
@@ -10,14 +12,14 @@ class Presenters::QcReportPresenter
     'Study' => :study_name,
     'Product' => :product_name,
     'Criteria Version' => :criteria_version,
-    'Report Identifier'=> :report_identifier,
+    'Report Identifier' => :report_identifier,
     'Generated on' => :created_date,
     'Contents' => :new_or_all
   }
 
   attr_reader :qc_report, :queue_count
 
-  def initialize(qc_report,queue_count=0)
+  def initialize(qc_report, queue_count = 0)
     @qc_report = qc_report
     @queue_count = queue_count
   end
@@ -56,7 +58,7 @@ class Presenters::QcReportPresenter
   end
 
   def state_description
-    I18n.t(qc_report.state, :scope=>'qc_reports.state_descriptions', :default => :default, :queue_count => queue_count )
+    I18n.t(qc_report.state, scope: 'qc_reports.state_descriptions', default: :default, queue_count: queue_count)
   end
 
   def to_csv(io)
@@ -68,11 +70,11 @@ class Presenters::QcReportPresenter
     @csv
   end
 
-  delegate :available?, :study, :report_identifier, :to => :qc_report
+  delegate :available?, :study, :report_identifier, to: :qc_report
 
   def each_header
-    HEADER_FIELDS.each do |field,lookup|
-      yield [field,send(lookup)]
+    HEADER_FIELDS.each do |field, lookup|
+      yield [field, send(lookup)]
     end
   end
 
@@ -80,7 +82,7 @@ class Presenters::QcReportPresenter
 
   # Information about the qc_report itself
   def csv_headers
-    @csv << [REPORT_IDENTITY,VERSION]
+    @csv << [REPORT_IDENTITY, VERSION]
     @csv << [I18n.t('qc_reports.fixed_content')]
     @csv << [I18n.t('qc_reports.instruction')]
     each_header do |pair|
@@ -94,12 +96,12 @@ class Presenters::QcReportPresenter
 
   # The headers for the qc information table
   def csv_field_headers
-    @csv << ['Asset ID'] + criteria_headers.map {|h| h.to_s.humanize } + ['Qc Decision','Proceed']
+    @csv << ['Asset ID'] + criteria_headers.map { |h| h.to_s.humanize } + ['Qc Decision', 'Proceed']
   end
 
   def csv_body
     qc_report.qc_metrics.each do |m|
-      @csv << [m.asset_id] + criteria_headers.map {|h| m.metrics[h] } + [m.qc_decision,m.human_proceed]
+      @csv << [m.asset_id] + criteria_headers.map { |h| m.metrics[h] } + [m.qc_decision, m.human_proceed]
     end
   end
 

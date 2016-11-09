@@ -9,7 +9,7 @@ class CreatePrograms < ActiveRecord::Migration
         t.references :program, index: true
       end
       # Default program
-      Program.create!(:name => 'General').save
+      Program.create!(name: 'General').save
     end
   end
 

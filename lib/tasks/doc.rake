@@ -1,6 +1,8 @@
-namespace :doc do 
+require 'rdoc/task'
+
+namespace :doc do
   desc "Generate documentation for the application"
-  Rake::RDocTask.new("app") { |rdoc|
+  RDoc::Task.new("app") { |rdoc|
     rdoc.rdoc_dir = "public/doc"
     rdoc.title    = "Sequencescape Studies"
     rdoc.template = "doc/template.rb"

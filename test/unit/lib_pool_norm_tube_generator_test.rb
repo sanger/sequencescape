@@ -10,7 +10,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
     plate.stubs(:state).returns("qc_complete")
     plate
   end
-  
+
   def setup
     @plate = valid_plate
     @user = create(:admin)
@@ -58,7 +58,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
     setup do
       @plate = valid_plate
       Plate.stubs(:with_machine_barcode).returns(Plate.where(id: plate.id))
-      @generator =  LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study)
+      @generator = LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study)
       generator.stubs(:plate).returns(valid_plate)
     end
 

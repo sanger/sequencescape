@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: AuthenticatedSystem
+  
+    &mdash; Documentation by YARD 0.9.5
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "AuthenticatedSystem";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index (A)</a> &raquo;
+    
+    
+    <span class="title">AuthenticatedSystem</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <iframe id="search_frame" src="class_list.html"></iframe>
+
+      <div id="content"><h1>Module: AuthenticatedSystem
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+  <dl>
+    <dt>Included in:</dt>
+    <dd><span class='object_link'><a href="ApplicationController.html" title="ApplicationController (class)">ApplicationController</a></span></dd>
+  </dl>
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/authenticated_system.rb</dd>
+  </dl>
+  
+</div>
+
+
+  <h2>Constant Summary</h2>
+  <dl class="constants">
+    
+      <dt id="http_auth_headers-classvariable" class="">@@http_auth_headers =
+        
+      </dt>
+      <dd><pre class="code"><span class='qwords_beg'>%w(</span><span class='tstring_content'>X-HTTP_AUTHORIZATION</span><span class='words_sep'> </span><span class='tstring_content'>HTTP_AUTHORIZATION</span><span class='words_sep'> </span><span class='tstring_content'>Authorization</span><span class='words_sep'>)</span></pre></dd>
+    
+  </dl>
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#included-class_method" title="included (class method)">.<strong>included</strong>(base)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#access_denied-instance_method" title="#access_denied (instance method)">#<strong>access_denied</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#admin_login_required-instance_method" title="#admin_login_required (instance method)">#<strong>admin_login_required</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#authorized%3F-instance_method" title="#authorized? (instance method)">#<strong>authorized?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#current_user-instance_method" title="#current_user (instance method)">#<strong>current_user</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#current_user%3D-instance_method" title="#current_user= (instance method)">#<strong>current_user=</strong>(new_user)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_auth_data-instance_method" title="#get_auth_data (instance method)">#<strong>get_auth_data</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#lab_manager_login_required-instance_method" title="#lab_manager_login_required (instance method)">#<strong>lab_manager_login_required</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#logged_in%3F-instance_method" title="#logged_in? (instance method)">#<strong>logged_in?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#login_from_cookie-instance_method" title="#login_from_cookie (instance method)">#<strong>login_from_cookie</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#login_required-instance_method" title="#login_required (instance method)">#<strong>login_required</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#manager_login_required-instance_method" title="#manager_login_required (instance method)">#<strong>manager_login_required</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#redirect_back_or_default-instance_method" title="#redirect_back_or_default (instance method)">#<strong>redirect_back_or_default</strong>(default)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setup_current_user-instance_method" title="#setup_current_user (instance method)">#<strong>setup_current_user</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#slf_gel_login_required-instance_method" title="#slf_gel_login_required (instance method)">#<strong>slf_gel_login_required</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#slf_manager_login_required-instance_method" title="#slf_manager_login_required (instance method)">#<strong>slf_manager_login_required</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#store_location-instance_method" title="#store_location (instance method)">#<strong>store_location</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="included-class_method">
+  
+    .<strong>included</strong>(base)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+187
+188
+189</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 187</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span> <span class='symbol'>:helper_method</span><span class='comma'>,</span> <span class='symbol'>:current_user</span><span class='comma'>,</span> <span class='symbol'>:logged_in?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="access_denied-instance_method">
+  
+    #<strong>access_denied</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 155</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_access_denied'>access_denied</span>
+  <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_accepts'>accepts</span><span class='op'>|</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_html'>html</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_store_location'>store_location</span>
+      <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='label'>controller:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/sessions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>action:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>login</span><span class='tstring_end'>&#39;</span></span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_render'>render</span> <span class='label'>xml:</span> <span class='lbrace'>{</span> <span class='label'>error:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Couldn&#39;t authenticate you</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>status:</span> <span class='symbol'>:unauthorized</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='lbrace'>{</span> <span class='label'>error:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Couldn&#39;t authenticate you</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>status:</span> <span class='symbol'>:unauthorized</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='kw'>false</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="admin_login_required-instance_method">
+  
+    #<strong>admin_login_required</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 86</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_admin_login_required'>admin_login_required</span>
+  <span class='id identifier rubyid_setup_current_user'>setup_current_user</span>
+  <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_accepts'>accepts</span><span class='op'>|</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_html'>html</span>   <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_administrator?'>administrator?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_disable_api_authentication'>disable_api_authentication</span> <span class='op'>==</span> <span class='kw'>true</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_administrator?'>administrator?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_administrator?'>administrator?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="authorized?-instance_method">
+  
+    #<strong>authorized?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+36
+37
+38</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 36</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_authorized?'>authorized?</span>
+  <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="current_user-instance_method">
+  
+    #<strong>current_user</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+14
+15
+16</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 14</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_current_user'>current_user</span>
+  <span class='ivar'>@current_user</span> <span class='op'>||=</span> <span class='lparen'>(</span><span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:user</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='label'>id:</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:user</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='symbol'>:false</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="current_user=-instance_method">
+  
+    #<strong>current_user=</strong>(new_user)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+19
+20
+21
+22</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 19</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_current_user='>current_user=</span><span class='lparen'>(</span><span class='id identifier rubyid_new_user'>new_user</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:user</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_new_user'>new_user</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_new_user'>new_user</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='id identifier rubyid_new_user'>new_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
+  <span class='ivar'>@current_user</span> <span class='op'>=</span> <span class='id identifier rubyid_new_user'>new_user</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_auth_data-instance_method">
+  
+    #<strong>get_auth_data</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+207
+208
+209
+210
+211</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 207</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_auth_data'>get_auth_data</span>
+  <span class='id identifier rubyid_auth_key'>auth_key</span>  <span class='op'>=</span> <span class='cvar'>@@http_auth_headers</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='op'>|</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='period'>.</span><span class='id identifier rubyid_has_key?'>has_key?</span><span class='lparen'>(</span><span class='id identifier rubyid_h'>h</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_auth_data'>auth_data</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='lbracket'>[</span><span class='id identifier rubyid_auth_key'>auth_key</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span> <span class='kw'>unless</span> <span class='id identifier rubyid_auth_key'>auth_key</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_auth_data'>auth_data</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_auth_data'>auth_data</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Basic</span><span class='tstring_end'>&#39;</span></span> <span class='op'>?</span> <span class='const'>Base64</span><span class='period'>.</span><span class='id identifier rubyid_decode64'>decode64</span><span class='lparen'>(</span><span class='id identifier rubyid_auth_data'>auth_data</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>:</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>0</span><span class='op'>..</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="lab_manager_login_required-instance_method">
+  
+    #<strong>lab_manager_login_required</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 114</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_lab_manager_login_required'>lab_manager_login_required</span>
+  <span class='id identifier rubyid_setup_current_user'>setup_current_user</span>
+  <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_accepts'>accepts</span><span class='op'>|</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_html'>html</span>   <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_lab_manager?'>lab_manager?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_disable_api_authentication'>disable_api_authentication</span> <span class='op'>==</span> <span class='kw'>true</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_lab_manager?'>lab_manager?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_lab_manager?'>lab_manager?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="logged_in?-instance_method">
+  
+    #<strong>logged_in?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+9
+10
+11</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 9</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span>
+  <span class='id identifier rubyid_current_user'>current_user</span> <span class='op'>!=</span> <span class='symbol'>:false</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="login_from_cookie-instance_method">
+  
+    #<strong>login_from_cookie</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 193</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_login_from_cookie'>login_from_cookie</span>
+  <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_cookies'>cookies</span><span class='lbracket'>[</span><span class='symbol'>:auth_token</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_logged_in?'>logged_in?</span>
+  <span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_find_by_remember_token'>find_by_remember_token</span><span class='lparen'>(</span><span class='id identifier rubyid_cookies'>cookies</span><span class='lbracket'>[</span><span class='symbol'>:auth_token</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_user'>user</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_remember_token?'>remember_token?</span>
+    <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_remember_me'>remember_me</span>
+    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span> <span class='op'>=</span> <span class='id identifier rubyid_user'>user</span>
+    <span class='id identifier rubyid_cookies'>cookies</span><span class='lbracket'>[</span><span class='symbol'>:auth_token</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>value:</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_remember_token'>remember_token</span><span class='comma'>,</span> <span class='label'>expires:</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_remember_token_expires_at'>remember_token_expires_at</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:notice</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Logged in successfully</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="login_required-instance_method">
+  
+    #<strong>login_required</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 54</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_login_required'>login_required</span>
+  <span class='id identifier rubyid_username'>username</span><span class='comma'>,</span> <span class='id identifier rubyid_passwd'>passwd</span> <span class='op'>=</span> <span class='id identifier rubyid_get_auth_data'>get_auth_data</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_username'>username</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_passwd'>passwd</span>
+    <span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_authenticate'>authenticate</span><span class='lparen'>(</span><span class='id identifier rubyid_username'>username</span><span class='comma'>,</span> <span class='id identifier rubyid_passwd'>passwd</span><span class='rparen'>)</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span> <span class='op'>=</span> <span class='symbol'>:false</span>
+    <span class='kw'>else</span>
+      <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span> <span class='op'>=</span> <span class='id identifier rubyid_user'>user</span>
+    <span class='kw'>end</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:api_key</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_find_by_api_key'>find_by_api_key</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:api_key</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span> <span class='op'>=</span> <span class='symbol'>:false</span>
+    <span class='kw'>else</span>
+      <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span> <span class='op'>=</span> <span class='id identifier rubyid_user'>user</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_accepts'>accepts</span><span class='op'>|</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_html'>html</span>   <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_csv'>csv</span>   <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_disable_api_authentication'>disable_api_authentication</span> <span class='op'>==</span> <span class='kw'>true</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="manager_login_required-instance_method">
+  
+    #<strong>manager_login_required</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 100</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_manager_login_required'>manager_login_required</span>
+  <span class='id identifier rubyid_setup_current_user'>setup_current_user</span>
+  <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_accepts'>accepts</span><span class='op'>|</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_html'>html</span>   <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_manager_or_administrator?'>manager_or_administrator?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_disable_api_authentication'>disable_api_authentication</span> <span class='op'>==</span> <span class='kw'>true</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_xml'>xml</span>  <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_manager_or_administrator?'>manager_or_administrator?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_json'>json</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_manager_or_administrator?'>manager_or_administrator?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="redirect_back_or_default-instance_method">
+  
+    #<strong>redirect_back_or_default</strong>(default)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+180
+181
+182
+183</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 180</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_redirect_back_or_default'>redirect_back_or_default</span><span class='lparen'>(</span><span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:return_to</span><span class='rbracket'>]</span> <span class='op'>?</span> <span class='id identifier rubyid_redirect_to'>redirect_to</span><span class='lparen'>(</span><span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:return_to</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_redirect_to'>redirect_to</span><span class='lparen'>(</span><span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:return_to</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="setup_current_user-instance_method">
+  
+    #<strong>setup_current_user</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+142
+143
+144
+145</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 142</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_setup_current_user'>setup_current_user</span>
+  <span class='id identifier rubyid_username'>username</span><span class='comma'>,</span> <span class='id identifier rubyid_passwd'>passwd</span> <span class='op'>=</span> <span class='id identifier rubyid_get_auth_data'>get_auth_data</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span> <span class='op'>||=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_authenticate'>authenticate</span><span class='lparen'>(</span><span class='id identifier rubyid_username'>username</span><span class='comma'>,</span> <span class='id identifier rubyid_passwd'>passwd</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='symbol'>:false</span> <span class='kw'>if</span> <span class='id identifier rubyid_username'>username</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_passwd'>passwd</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="slf_gel_login_required-instance_method">
+  
+    #<strong>slf_gel_login_required</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+135
+136
+137
+138
+139
+140</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 135</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_slf_gel_login_required'>slf_gel_login_required</span>
+  <span class='id identifier rubyid_setup_current_user'>setup_current_user</span>
+  <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_accepts'>accepts</span><span class='op'>|</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_html'>html</span>   <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_slf_manager?'>slf_manager?</span> <span class='op'>||</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_slf_gel?'>slf_gel?</span> <span class='op'>||</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_administrator?'>administrator?</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="slf_manager_login_required-instance_method">
+  
+    #<strong>slf_manager_login_required</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+128
+129
+130
+131
+132
+133</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 128</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_slf_manager_login_required'>slf_manager_login_required</span>
+  <span class='id identifier rubyid_setup_current_user'>setup_current_user</span>
+  <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_accepts'>accepts</span><span class='op'>|</span>
+    <span class='id identifier rubyid_accepts'>accepts</span><span class='period'>.</span><span class='id identifier rubyid_html'>html</span>   <span class='lbrace'>{</span> <span class='id identifier rubyid_logged_in?'>logged_in?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_authorized?'>authorized?</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_slf_manager?'>slf_manager?</span> <span class='op'>||</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_administrator?'>administrator?</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_access_denied'>access_denied</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="store_location-instance_method">
+  
+    #<strong>store_location</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+174
+175
+176</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/authenticated_system.rb', line 174</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_store_location'>store_location</span>
+  <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:return_to</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_original_url'>original_url</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Tue Oct 25 15:21:31 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.5 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

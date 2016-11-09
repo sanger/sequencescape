@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Api::LaneIO < Api::Base
   module Extensions
@@ -14,7 +16,7 @@ class Api::LaneIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix ] ) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix]) }
       end
     end
 
@@ -38,5 +40,5 @@ class Api::LaneIO < Api::Base
     map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
   end
 
-  self.related_resources = [ :requests ]
+  self.related_resources = [:requests]
 end

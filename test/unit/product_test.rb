@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 require "test_helper"
@@ -16,12 +18,12 @@ class ProductTest < ActiveSupport::TestCase
 
     should 'only allow one active product with each name' do
       @product_a = create :product
-      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create :product, :name=> @product_a.name }
+      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create :product, name: @product_a.name }
     end
 
     should 'allow products with the same name if one is deprecated' do
-      @product_a = create :product, :deprecated_at => Time.now
-      @product_b = create :product, :name=> @product_a.name
+      @product_a = create :product, deprecated_at: Time.now
+      @product_b = create :product, name: @product_a.name
       assert @product_b.valid?
     end
 
@@ -29,7 +31,7 @@ class ProductTest < ActiveSupport::TestCase
       @product_a = create :product
       # ActiveRecord::RecordNotDestroyed is the Rails4 exception for this
       # Added here as Rails 2 is a bit useless with appropriate exceptions
-      assert_raise(ActiveRecord::RecordNotDestroyed) { @product_a.destroy }
+      assert_raise(ActiveRecord::RecordNotDestroyed) { @product_a.destroy! }
     end
 
     should 'be deprecatable' do
@@ -43,7 +45,7 @@ class ProductTest < ActiveSupport::TestCase
   context 'Product' do
 
     setup do
-      @product_a = create :product, :deprecated_at => Time.now
+      @product_a = create :product, deprecated_at: Time.now
       @product_b = create :product
     end
 

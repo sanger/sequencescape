@@ -1,11 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class SequenomQcPlatesController < ApplicationController
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
   def new
     @barcode_printers  = BarcodePrinterType.find_by_name("384 Well Plate").barcode_printers
-    @barcode_printers  = BarcodePrinter.find(:all, :order => "name asc") if @barcode_printers.blank?
+    @barcode_printers  = BarcodePrinter.order(:name) if @barcode_printers.blank?
     @input_plate_names = input_plate_names()
   end
 
@@ -28,16 +33,20 @@ class SequenomQcPlatesController < ApplicationController
     ActiveRecord::Base.transaction do
       (1..number_of_barcodes).each do
         sequenom_qc_plate = SequenomQcPlate.new(
-          :plate_prefix        => params[:plate_prefix],
-          :gender_check_bypass => gender_check_bypass,
-          :user_barcode        => user_barcode
+          plate_prefix: params[:plate_prefix],
+          gender_check_bypass: gender_check_bypass,
+          user_barcode: user_barcode
         )
-        #TODO: create a factory object
+        # TODO: create a factory object
 
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
-        errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k=>v) }
-        if sequenom_qc_plate.save and valid and sequenom_qc_plate.add_event_to_stock_plates(user_barcode)
+        errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k => v) }
+
+        saved = sequenom_qc_plate.save
+        sequenom_qc_plate.connect_input_plates(input_plate_names.values.reject(&:blank?))
+
+        if saved and valid and sequenom_qc_plate.add_event_to_stock_plates(user_barcode)
           new_plates << sequenom_qc_plate
         else
           # If saving any of our new plates fails then catch that plate, for errors
@@ -63,7 +72,7 @@ class SequenomQcPlatesController < ApplicationController
 
         # and redirect to a fresh page with an appropriate flash[:notice]
 
-        first_plate    = new_plates.first
+        first_plate = new_plates.first
 
         if print_job.execute
           flash[:notice] = "Sequenom #{first_plate.plate_prefix} Plate #{first_plate.name} successfully created and labels printed."
@@ -78,7 +87,7 @@ class SequenomQcPlatesController < ApplicationController
   end
 
   def index
-    @sequenom_qc_plates = SequenomQcPlate.paginate(:page => params[:page], :order => "created_at desc")
+    @sequenom_qc_plates = SequenomQcPlate.page(params[:page]).order(created_at: :desc)
   end
 
   private
@@ -94,7 +103,7 @@ class SequenomQcPlatesController < ApplicationController
 
   def input_plate_names
     input_plate_names = {}
-    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[],i.to_s) || "" }
+    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[], i.to_s) || "" }
     input_plate_names
   end
 

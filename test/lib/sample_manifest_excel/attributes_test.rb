@@ -35,5 +35,5 @@ class AttributesTest < ActiveSupport::TestCase
   test "column which has other attribute should return nothing" do
     assert_nil SampleManifestExcel::Attributes.find(:no_attribute_here).value(sample)
   end
-  
+
 end

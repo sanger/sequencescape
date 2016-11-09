@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class Api::Messages::FluidigmPlateIO < Api::Base
 
@@ -29,13 +31,13 @@ class Api::Messages::FluidigmPlateIO < Api::Base
 
   renders_model(::Plate)
 
-  map_attribute_to_json_attribute(:id,'id_flgen_plate_lims')
-  map_attribute_to_json_attribute(:sanger_human_barcode,'plate_barcode_lims')
-  map_attribute_to_json_attribute(:fluidigm_barcode,'plate_barcode')
-  map_attribute_to_json_attribute(:uuid,'plate_uuid_lims')
-  map_attribute_to_json_attribute(:size,'plate_size')
-  map_attribute_to_json_attribute(:updated_at,'last_updated') # We do it for the whole plate to ensure the message has a timestamp
-  map_attribute_to_json_attribute(:occupied_well_count,'plate_size_occupied')
+  map_attribute_to_json_attribute(:id, 'id_flgen_plate_lims')
+  map_attribute_to_json_attribute(:sanger_human_barcode, 'plate_barcode_lims')
+  map_attribute_to_json_attribute(:fluidigm_barcode, 'plate_barcode')
+  map_attribute_to_json_attribute(:uuid, 'plate_uuid_lims')
+  map_attribute_to_json_attribute(:size, 'plate_size')
+  map_attribute_to_json_attribute(:updated_at, 'last_updated') # We do it for the whole plate to ensure the message has a timestamp
+  map_attribute_to_json_attribute(:occupied_well_count, 'plate_size_occupied')
 
   with_nested_has_many_association(:wells) do
      map_attribute_to_json_attribute(:map_description,     'well_label')
@@ -48,5 +50,3 @@ class Api::Messages::FluidigmPlateIO < Api::Base
 
 
 end
-
-

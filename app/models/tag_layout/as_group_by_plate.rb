@@ -1,6 +1,6 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 # Assigns multiple tags to each well.
 
@@ -33,7 +33,7 @@ module TagLayout::AsGroupByPlate
   private :walk_wells
 
   # Over-ridden in the as group by plate module to allow the application of multiple tags.
-  def apply_tag(tag,well)
+  def apply_tag(tag, well)
     tag.multitag!(well) unless well.aliquots.empty?
   end
   private :apply_tag

@@ -6,12 +6,12 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
 
   def setup
     @worksheet = Axlsx::Workbook.new.add_worksheet
-    @rule = { style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
+    @rule = { style: { bg_color: '82CAFA', type: :dxf }, options: { option1: "some_value", option2: "another_value" } }.with_indifferent_access
   end
 
   test "should be comparable" do
     assert_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule)
-    refute_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule.merge(options: {option1: "another_value"}))
+    refute_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule.merge(options: { option1: "another_value" }))
   end
 
   context "without formula" do
@@ -55,7 +55,7 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
 
     setup do
       @references = build(:range).references
-      @formula = { type: :len, operator: "<", operand: 333}
+      @formula = { type: :len, operator: "<", operand: 333 }
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule.merge(formula: formula))
     end
 

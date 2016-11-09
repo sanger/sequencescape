@@ -10,8 +10,7 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
     Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
     And the plate barcode webservice returns "99997..99999"
-    Given the sample validation webservice returns "true"
-      And the reference genome "Mouse" exists
+    And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
 
   Scenario: No kit number entered for sequencing step
@@ -117,4 +116,3 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
     When I press "Release this batch"
     Then I should see "Batch released!"
-

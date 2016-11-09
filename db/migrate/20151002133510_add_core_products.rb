@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class AddCoreProducts < ActiveRecord::Migration
 
@@ -21,30 +23,30 @@ require './lib/product_helpers'
 
   COMPLEX_PRODUCTS = [
     {
-    :name => 'GenericPCR',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'GenericPCR',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
       },
     },
     {
-    :name => 'GenericNoPCR',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'GenericNoPCR',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
       },
     },
     {
-    :name => 'ClassicMultiplexed',
-    :selection_behaviour => 'LibraryDriven',
-    :products => {
+    name: 'ClassicMultiplexed',
+    selection_behaviour: 'LibraryDriven',
+    products: {
       nil => 'Generic'
       }
     },
     {
-      :name => 'Manual',
-      :selection_behaviour => 'Manual',
-      :products => {
+      name: 'Manual',
+      selection_behaviour: 'Manual',
+      products: {
         nil => 'Generic',
         'MWGS' => 'MWGS',
         'PWGS' => 'PWGS',

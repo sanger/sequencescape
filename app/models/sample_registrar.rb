@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require 'rexml/text'
 # An instance of this class is responsible for the registration of a sample and its sample tube.
@@ -16,8 +18,8 @@ require 'rexml/text'
 class SampleRegistrar < ActiveRecord::Base
 
   # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
-  def initialize(attributes = {},what = {})
-    super({ :sample_attributes => {}, :sample_tube_attributes => {} }.merge(attributes.symbolize_keys),what)
+  def initialize(attributes = {}, what = {})
+    super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys), what)
   end
 
   # Raised if the call to SampleRegistrar.register! fails for any reason, and so that calling code
@@ -50,13 +52,13 @@ class SampleRegistrar < ActiveRecord::Base
     # Note that we're explicitly ignoring the ignored records here!
 
     helper     = AssetGroupHelper.new
-    registrars = registration_attributes.map { |attributes| new(attributes.merge(:asset_group_helper => helper)) }.reject(&:ignore?)
+    registrars = registration_attributes.map { |attributes| new(attributes.merge(asset_group_helper: helper)) }.reject(&:ignore?)
     raise NoSamplesError, registrars if registrars.empty?
     begin
       # We perform this in a database wide transaction because it is altering several tables.  It also locks
       # the tables from change whilst we validate our instances.
       ActiveRecord::Base.transaction do
-        all_valid = registrars.inject(true) { |all_valid_so_far,registrar| registrar.valid? && all_valid_so_far }
+        all_valid = registrars.inject(true) { |all_valid_so_far, registrar| registrar.valid? && all_valid_so_far }
         raise RegistrationError, registrars unless all_valid
         registrars.each { |registrar| registrar.save! }
       end
@@ -75,7 +77,7 @@ class SampleRegistrar < ActiveRecord::Base
   belongs_to :study
   validates_presence_of :study
 
-  belongs_to :sample, :validate => true, :autosave => true
+  belongs_to :sample, validate: true, autosave: true
   accepts_nested_attributes_for :sample
   validates_presence_of :sample
 
@@ -89,7 +91,7 @@ class SampleRegistrar < ActiveRecord::Base
   end
 
   # Samples always come in a SampleTube when coming through us
-  belongs_to :sample_tube, :validate => true, :autosave => true
+  belongs_to :sample_tube, validate: true, autosave: true
   accepts_nested_attributes_for :sample_tube
   validates_presence_of :sample_tube
 
@@ -97,14 +99,14 @@ class SampleRegistrar < ActiveRecord::Base
     record.sample_tube.name = record.sample.name
   end
   after_create do |record|
-    record.sample_tube.aliquots.create!(:sample => record.sample, :study=>record.study)
+    record.sample_tube.aliquots.create!(sample: record.sample, study: record.study)
   end
 
   # SampleTubes are registered within an AssetGroup, unless the AssetGroup is unspecified.
   attr_accessor :asset_group_helper
   attr_accessor :asset_group_name
-  belongs_to :asset_group, :validate => true, :autosave => true
-  validates_each(:asset_group_name, :if => :new_record?) do |record, attr, value|
+  belongs_to :asset_group, validate: true, autosave: true
+  validates_each(:asset_group_name, if: :new_record?) do |record, attr, value|
     record.errors.add(:asset_group, "#{value} already exists, please enter another name") if record.asset_group_helper.existing_asset_group?(value)
   end
 
@@ -118,7 +120,7 @@ class SampleRegistrar < ActiveRecord::Base
 
   def self.create_asset_group_by_name(name, study)
     return nil if name.blank?
-    AssetGroup.find_by_name(name) || AssetGroup.create!(:name => name, :study => study)
+    AssetGroup.find_by_name(name) || AssetGroup.create!(name: name, study: study)
   end
 
   # This model does not really need to exist but, without Rails 3, we can't easily use the ActiveRecord stuff.
@@ -143,8 +145,8 @@ class SampleRegistrar < ActiveRecord::Base
   REMAPPED_COLUMN_NAMES = { 'Asset group name' => 'Asset group' }
 
   # Columns that are required for the spreadsheet to be considered valid.
-  REQUIRED_COLUMNS = [ 'Asset group', 'Sample name' ]
-  REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ')
+  REQUIRED_COLUMNS = ['Asset group', 'Sample name']
+  REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
 
   def self.from_spreadsheet(file, study, user)
     workbook = Spreadsheet.open(file.path) or raise SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted'
@@ -164,7 +166,7 @@ class SampleRegistrar < ActiveRecord::Base
     # needs to be decoded using CGI HTML unescaping (the old format), and the other needs the column decoded
     # using the XML encoding (the new format).  Every column is mapped using both encodings, with the XML version
     # being the preferred decoding.
-    definitions = Sample::Metadata.attribute_details.inject({}) do |hash,attribute|
+    definitions = Sample::Metadata.attribute_details.inject({}) do |hash, attribute|
       label   = attribute.to_field_info.display_name
       handler = ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][attribute.name] = value }
       hash.tap do
@@ -180,7 +182,7 @@ class SampleRegistrar < ActiveRecord::Base
 
     # Map the headers to their attribute handlers.  Ensure that the required headers are present.
     used_definitions, headers = [], []
-    column_index, column_name = 0, worksheet.cell(0, 0).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
+    column_index, column_name = 0, worksheet.cell(0, 0).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
     until column_name.empty?
       column_name = REMAPPED_COLUMN_NAMES.fetch(column_name, column_name)
       handler     = definitions[column_name]
@@ -190,7 +192,7 @@ class SampleRegistrar < ActiveRecord::Base
       end
 
       column_index = column_index + 1
-      column_name  = worksheet.cell(0, column_index).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
+      column_name  = worksheet.cell(0, column_index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
     end
 
     if (headers & REQUIRED_COLUMNS) != REQUIRED_COLUMNS
@@ -202,16 +204,16 @@ class SampleRegistrar < ActiveRecord::Base
     sample_registrars = []
     1.upto(num_samples) do |row|
       attributes = {
-        :asset_group_helper => SampleRegistrar::AssetGroupHelper.new,
-        :sample_attributes => {
-          :sample_metadata_attributes => { }
+        asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
+        sample_attributes: {
+          sample_metadata_attributes: {}
         },
-        :sample_tube_attributes => { }
+        sample_tube_attributes: {}
       }
 
       used_definitions.each_with_index do |handler, index|
         next if handler.nil?
-        value = worksheet.cell(row,index).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
+        value = worksheet.cell(row, index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
         handler.call(attributes, value) unless value.blank?
       end
       next if attributes[:sample_attributes][:name].blank?
@@ -219,7 +221,7 @@ class SampleRegistrar < ActiveRecord::Base
       # Store the sample registration and check that it is valid.  This will mean that the
       # UI will display any errors without the user having to submit the form to find out.
 
-      SampleRegistrar.new(attributes.merge(:study => study, :user => user)).tap do |sample_registrar|
+      SampleRegistrar.new(attributes.merge(study: study, user: user)).tap do |sample_registrar|
         sample_registrars.push(sample_registrar)
         sample_registrar.valid?
       end

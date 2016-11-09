@@ -1,4 +1,4 @@
-threads 8,32
+threads 8, 32
 
 on_worker_boot do
   ActiveSupport.on_load(:active_record) do

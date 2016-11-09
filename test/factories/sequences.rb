@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 FactoryGirl.define do
   sequence :asset_group_name do |n|
     "Asset_Group #{n}"
@@ -10,11 +11,11 @@ FactoryGirl.define do
     "Asset #{n}"
   end
 
-  sequence :barcode do |n|
+  sequence :sanger_barcode do |n|
     "DN#{n}"
   end
 
-  sequence :barcode_number do |n|
+  sequence :barcode do |n|
     "#{n}"
   end
 
@@ -30,10 +31,6 @@ FactoryGirl.define do
     "Item #{n}"
   end
 
-  sequence :item_version do |n|
-    n
-  end
-
   sequence :keys do |n|
     "Key #{n}"
   end
@@ -42,8 +39,8 @@ FactoryGirl.define do
     "Lab Workflow #{n}"
   end
 
-  sequence :library_type_id do |n|
-    n
+  sequence :pipeline_name do |n|
+    "Lab Pipeline #{n}"
   end
 
   sequence :purpose_name do |n|
@@ -87,7 +84,15 @@ FactoryGirl.define do
     "Study #{n}"
   end
 
-  sequence :pipeline_name do |n|
-    "Lab Pipeline #{n}"
+  sequence :study_type_name do |n|
+    "Study Type #{n}"
+  end
+
+  sequence :submission_template_name do |n|
+    "Submission Template #{n}"
+  end
+
+  sequence :data_release_study_type_name do |n|
+    "Data release study Type #{n}"
   end
 end

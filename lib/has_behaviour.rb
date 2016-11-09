@@ -5,9 +5,9 @@
 # object.
 module HasBehaviour
   module ClassMethods
-    def has_behaviour(klass,behaviour_name:nil)
+    def has_behaviour(klass, behaviour_name: nil)
       @registered_behaviours ||= {}
-      @registered_behaviours[behaviour_name||klass.name] = klass
+      @registered_behaviours[behaviour_name || klass.name] = klass
     end
     def has_behaviour?(behaviour_name)
       @registered_behaviours.key?(behaviour_name)

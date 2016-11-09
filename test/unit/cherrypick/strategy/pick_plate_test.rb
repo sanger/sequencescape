@@ -1,21 +1,23 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 require 'test_helper'
 
 class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
   context Cherrypick::Strategy::PickPlate do
     context '#dimension' do
-      [ 96, 384 ].each do |size|
+      [96, 384].each do |size|
         context "when the plate size is #{size}" do
           should 'return plate width if purpose picked in rows' do
-            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => size, :cherrypick_direction => 'row'))
+            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: size, cherrypick_direction: 'row'))
             assert_equal(Map::Coordinate.plate_width(size), plate.dimension)
           end
 
           should 'return plate length if purpose picked in column' do
-            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => size, :cherrypick_direction => 'column'))
+            plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: size, cherrypick_direction: 'column'))
             assert_equal(Map::Coordinate.plate_length(size), plate.dimension)
           end
         end
@@ -24,7 +26,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
 
     context 'empty plate' do
       setup do
-        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => 96, :cherrypick_direction => 'row'))
+        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: 96, cherrypick_direction: 'row'))
       end
 
       context '#available' do
@@ -69,12 +71,12 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
         end
 
         should 'be empty with empty picks' do
-          @target.concat([ Cherrypick::Strategy::Empty ])
+          @target.concat([Cherrypick::Strategy::Empty])
           assert(@target.species.empty?)
         end
 
         should 'be the last pick species if there have been picks' do
-          @target.concat([ OpenStruct.new(:species => [ :last ]) ])
+          @target.concat([OpenStruct.new(species: [:last])])
           assert_equal([:last], @target.species)
         end
       end
@@ -82,7 +84,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
 
     context 'partial plate' do
       setup do
-        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => 96, :cherrypick_direction => 'column'), 12, [:plate])
+        @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: 96, cherrypick_direction: 'column'), 12, [:plate])
       end
 
       context '#available' do
@@ -111,7 +113,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
 
       context '#remainder' do
         teardown do
-          @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => 96, :cherrypick_direction => 'column'), @filled)
+          @target = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(size: 96, cherrypick_direction: 'column'), @filled)
           assert_equal(@expected, @target.remainder)
         end
 
@@ -127,7 +129,7 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
       context '#to_a' do
         should 'represent the occupied space as empty' do
           assert_equal(
-            ([ Cherrypick::Strategy::Empty ] * 12).map(&:representation),
+            ([Cherrypick::Strategy::Empty] * 12).map(&:representation),
             @target.to_a
           )
         end
@@ -139,12 +141,12 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
         end
 
         should 'be the species in the last non-empty well after empty pick' do
-          @target.concat([ Cherrypick::Strategy::Empty ])
+          @target.concat([Cherrypick::Strategy::Empty])
           assert_equal([:plate], @target.species)
         end
 
         should 'be the last pick species if there have been picks' do
-          @target.concat([ OpenStruct.new(:species => [ :last ]) ])
+          @target.concat([OpenStruct.new(species: [:last])])
           assert_equal([:last], @target.species)
         end
       end

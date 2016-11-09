@@ -15,9 +15,9 @@ class AddChromiumSubmissionTemplates < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do
       IlluminaC::Helper::TemplateConstructor.new(
-        name:'Chromium Library Creation',
-        role:'Chromium',
-        type:'illumina_c_chromium_library',
+        name: 'Chromium Library Creation',
+        role: 'Chromium',
+        type: 'illumina_c_chromium_library',
         sequencing: SEQUENCING_KEYS,
         catalogue: product_catalogue
       ).build!
@@ -26,7 +26,7 @@ class AddChromiumSubmissionTemplates < ActiveRecord::Migration
 
   def down
     ActiveRecord::Base.transaction do
-      IlluminaC::Helper::TemplateConstructor.find_for('Chromium Library Creation',SEQUENCING_KEYS).each {|st| st.destroy }
+      IlluminaC::Helper::TemplateConstructor.find_for('Chromium Library Creation', SEQUENCING_KEYS).each { |st| st.destroy }
     end
   end
 

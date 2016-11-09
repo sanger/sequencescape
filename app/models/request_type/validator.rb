@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 ##
 # A request type validator belongs to a request type, and is responsible for
@@ -27,7 +29,7 @@ class RequestType::Validator < ActiveRecord::Base
     def to_a
       request_type.library_types.map(&:name)
     end
-    delegate :to_sentence, :to => :to_a
+    delegate :to_sentence, to: :to_a
   end
 
   ##
@@ -38,14 +40,14 @@ class RequestType::Validator < ActiveRecord::Base
   class ArrayWithDefault
     attr_accessor :default
 
-    def initialize(array,default)
+    def initialize(array, default)
       raise StandardError, "Default is not in array" unless array.include?(default)
       @default = default
       @array = array
     end
 
-    def method_missing(method,*args,&block)
-      @array.send(method,*args,&block)
+    def method_missing(method, *args, &block)
+      @array.send(method, *args, &block)
     end
 
     def include?(option)
@@ -59,7 +61,7 @@ class RequestType::Validator < ActiveRecord::Base
   end
 
   belongs_to :request_type
-  validates :request_type, :request_option, :valid_options, :presence => true
+  validates :request_type, :request_option, :valid_options, presence: true
   serialize :valid_options
 
   def include?(option)

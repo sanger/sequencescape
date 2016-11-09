@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.%>
 
 <div class="info">
   <table class="sortable table table-stripped">
@@ -9,7 +11,7 @@
         <% if edit -%>
           <th width="3%"><%= link_to 'Drag', "javascript:void(0);" %></th>
         <% elsif stage %>
-          <th class="nosort" width="7%"><%= link_to_function 'Select', "select_all()" -%> | <%= link_to_function 'Deselect', "deselect_all()" -%></th>
+          <th class="nosort" width="7%"><input type='checkbox' class='select_all'></th>
         <% end -%>
         <th>Position</th>
         <th>Sample</th>
@@ -34,7 +36,7 @@
           <% if edit -%>
             <td class="center" style="cursor:move;"><%= image_tag "arrow_out.png", :size =>"13x13" %></td>
           <% elsif stage %>
-              <td><input name='request[<%= request.id %>]' id="sample <%= i+1  %> checkbox" class='sample_check' value="on" type='checkbox' checked></td>
+              <td><input name='request[<%= request.id %>]' id="sample <%= i+1  %> checkbox" class='sample_check select_all_target' value="on" type='checkbox' checked></td>
           <% end -%>
           <td><%= request.position %></td>
 

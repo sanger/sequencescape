@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'lib/eventful_record'
 require 'lib/external_properties'
@@ -12,6 +14,7 @@ class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
   include AssetLink::Associations
+  include SharedBehaviour::Named
 
   SAMPLE_PARTIAL = 'assets/samples_partials/blank'
 
@@ -28,12 +31,12 @@ class Asset < ActiveRecord::Base
   end
   include InstanceMethods
 
-  class VolumeError< StandardError
+  class VolumeError < StandardError
   end
 
   def summary_hash
     {
-      :asset_id => id
+      asset_id: id
     }
   end
 
@@ -44,28 +47,29 @@ class Asset < ActiveRecord::Base
   self.per_page = 500
   self.inheritance_column = "sti_type"
 
-  has_many :asset_group_assets, :dependent => :destroy
-  has_many :asset_groups, :through => :asset_group_assets
+  has_many :asset_group_assets, dependent: :destroy
+  has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
+  has_many :volume_updates, foreign_key: :target_id
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
-  has_one  :source_request,     :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
-  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
-  has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
+  has_one  :source_request,     ->() { includes(:request_metadata) },      class_name: "Request", foreign_key: :target_asset_id
+  has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
+  has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
   has_many :state_changes, foreign_key: :target_id
 
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
-  scope :where_is_a?,     ->(clazz) { where( sti_type: [ clazz, *clazz.descendants ].map(&:name) ) }
-  scope :where_is_not_a?, ->(clazz) { where([ 'sti_type NOT IN (?)', [ clazz, *clazz.descendants ].map(&:name) ]) }
+  scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
+  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
 
-  #Orders
+  # Orders
   has_many :submitted_assets
-  has_many :orders, :through => :submitted_assets
+  has_many :orders, through: :submitted_assets
 
- scope :requests_as_source_is_a?, ->(t) { { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *t.descendants ].map(&:name) } } } }
+  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
 
   extend ContainerAssociation::Extension
 
@@ -76,15 +80,14 @@ class Asset < ActiveRecord::Base
 
   belongs_to :map
   belongs_to :barcode_prefix
-  scope :sorted , order("map_id ASC")
+  scope :sorted, ->() { order("map_id ASC") }
 
   scope :position_name, ->(*args) {
     joins(:map).where(["description = ? AND asset_size = ?", args[0], args[1]])
   }
-  scope :get_by_type, ->(*args) { {:conditions => { :sti_type => args[0]} } }
-  scope :for_summary, -> { includes([:map,:barcode_prefix]) }
+  scope :for_summary, -> { includes([:map, :barcode_prefix]) }
 
- scope :of_type, ->(*args) { { :conditions => { :sti_type => args.map { |t| [t, *t.descendants] }.flatten.map(&:name) } } }
+  scope :of_type, ->(*args) {  where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
   scope :recent_first, -> { order('id DESC') }
 
@@ -95,8 +98,8 @@ class Asset < ActiveRecord::Base
   def barcode_and_created_at_hash
     return {} if barcode.blank?
     {
-      :barcode    => generate_machine_barcode,
-      :created_at => created_at
+      barcode: generate_machine_barcode,
+      created_at: created_at
     }
   end
 
@@ -106,18 +109,18 @@ class Asset < ActiveRecord::Base
 
   # All studies related to this asset
   def related_studies
-    (orders.map(&:study)+studies).compact.uniq
+    (orders.map(&:study) + studies).compact.uniq
   end
   # Named scope for search by query string behaviour
- scope :for_search_query, ->(query,with_includes) {
+ scope :for_search_query, ->(query, with_includes) {
 
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
-    arguments = {:name => "%#{query}%"}
+    arguments = { name: "%#{query}%" }
 
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
     if /\A\d+\z/ === query
       search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
-      arguments.merge!({:id => query.to_i, :barcode => query.to_s})
+      arguments.merge!({ id: query.to_i, barcode: query.to_s })
     end
 
     # If We're a Sanger Human barcode
@@ -125,17 +128,20 @@ class Asset < ActiveRecord::Base
       prefix_id = BarcodePrefix.find_by_prefix(match[1]).try(:id)
       number = match[2]
       search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
-      arguments.merge!({:barcode => number, :prefix_id => prefix_id})
+      arguments.merge!({ barcode: number, prefix_id: prefix_id })
     end
 
-    search <<')'
+    search << ')'
 
-    {
-      :conditions => [ search, arguments ]
-    }.tap {|cond| cond.merge!(:include => :requests, :order => 'requests.pipeline_id ASC') if with_includes }
+    if with_includes
+      where(search, arguments)
+    else
+      where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
+    end
+
   }
 
- scope :with_name, ->(*names) { { :conditions => { :name => names.flatten } } }
+ scope :with_name, ->(*names) {  where(name: names.flatten) }
 
   extend EventfulRecord
   has_many_events do
@@ -163,7 +169,7 @@ class Asset < ActiveRecord::Base
   # Key/value stores and attributes
   include ExternalProperties
   acts_as_descriptable :serialized
-  include PolymorphicAttributable
+
   include Uuid::Uuidable
 
   # Links to other databases
@@ -171,8 +177,6 @@ class Asset < ActiveRecord::Base
 
   include Commentable
   include Event::PlateEvents
-
-  #set_polymorphic_attributes :sample
 
   # Returns the request options used to create this asset.  By default assumed to be empty.
   def created_with_request_options
@@ -205,10 +209,10 @@ class Asset < ActiveRecord::Base
     return self.stock_plate
   end
 
-  has_one :creation_request, :class_name => 'Request', :foreign_key => :target_asset_id
+  has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
 
   def label
-    self.sti_type || 'Unknown'
+    sti_type || 'Unknown'
   end
 
   def label=(new_type)
@@ -216,15 +220,15 @@ class Asset < ActiveRecord::Base
   end
 
   def request_types
-    RequestType.find(:all, :conditions => {:asset_type => label})
+    RequestType.where(asset_type: label)
   end
 
   def scanned_in_date
-    self.scanned_into_lab_event.try(:content) || ''
+    scanned_into_lab_event.try(:content) || ''
   end
 
   def moved_to_2D_tube_date
-    self.moved_to_2d_tube_event.try(:content) || ''
+    moved_to_2d_tube_event.try(:content) || ''
   end
 
   def create_asset_group_wells(user, params)
@@ -237,7 +241,7 @@ class Asset < ActiveRecord::Base
     if asset_group.study
       wells.each do |well|
         next unless well.sample
-        well.sample.studies<< asset_group.study
+        well.sample.studies << asset_group.study
         well.sample.save!
       end
     end
@@ -246,7 +250,7 @@ class Asset < ActiveRecord::Base
 
   end
 
-  after_create :generate_name_with_id, :if => :name_needs_to_be_generated?
+  after_create :generate_name_with_id, if: :name_needs_to_be_generated?
 
   def name_needs_to_be_generated?
     @name_needs_to_be_generated
@@ -254,7 +258,7 @@ class Asset < ActiveRecord::Base
   private :name_needs_to_be_generated?
 
   def generate_name_with_id
-    self.update_attributes!(:name => "#{self.name} #{self.id}")
+    self.update_attributes!(name: "#{self.name} #{self.id}")
   end
 
   def generate_name(new_name)
@@ -262,7 +266,7 @@ class Asset < ActiveRecord::Base
     @name_needs_to_be_generated = self.library_prep?
   end
 
-  #todo unify with parent/children
+  # todo unify with parent/children
   def parent
     self.parents.first
   end
@@ -292,21 +296,21 @@ class Asset < ActiveRecord::Base
     nil
   end
 
-  QC_STATES =  [
-    [ 'passed',  'pass' ],
-    [ 'failed',  'fail' ],
-    [ 'pending', 'pending' ],
-    [  nil, '']
+  QC_STATES = [
+    ['passed',  'pass'],
+    ['failed',  'fail'],
+    ['pending', 'pending'],
+    [nil, '']
   ]
 
-  QC_STATES.reject { |k,v| k.nil? }.each do |state, qc_state|
+  QC_STATES.reject { |k, v| k.nil? }.each do |state, qc_state|
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def qc_#{qc_state}
         self.qc_state = #{state.inspect}
         self.save!
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   def compatible_qc_state
@@ -330,7 +334,7 @@ class Asset < ActiveRecord::Base
       when state == 'passed'  then self.external_release = true
       when state == 'pending' then self # Do nothing
       when state.nil?         then self # TODO: Ignore for the moment, correct later
-      when [ 'scanned_into_lab' ].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
+      when ['scanned_into_lab'].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
       else raise StandardError, "Invalid external release state #{state.inspect}"
       end
     end
@@ -375,33 +379,31 @@ class Asset < ActiveRecord::Base
  scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       case source_barcode.to_s
-      when /^\d{13}$/ #An EAN13 barcode
+      when /^\d{13}$/ # An EAN13 barcode
         barcode_number = Barcode.number_to_human(source_barcode)
         prefix_string  = Barcode.prefix_from_barcode(source_barcode)
         barcode_prefix = BarcodePrefix.find_by_prefix(prefix_string)
 
         if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
-          { :query => 'FALSE' }
+          { query: 'FALSE' }
         else
-          { :query => '(barcode=? AND barcode_prefix_id=?)', :conditions => [ barcode_number, barcode_prefix.id ] }
+          { query: '(barcode=? AND barcode_prefix_id=?)', parameters: [barcode_number, barcode_prefix.id] }
         end
       when /^\d{10}$/ # A Fluidigm barcode
-        { :joins => 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', :query=>'(pmmb.fluidigm_barcode=?)', :conditions => source_barcode.to_s }
+        { joins: 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', query: '(pmmb.fluidigm_barcode=?)', parameters: source_barcode.to_s }
       else
-        { :query => 'FALSE' }
+        { query: 'FALSE' }
       end
-    end.inject({ :query => ['FALSE'], :conditions => [nil], :joins=>[] }) do |building, current|
+    end.inject({ query: ['FALSE'], parameters: [nil], joins: [] }) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]
-        building[:conditions] << current[:conditions]
+        building[:parameters] << current[:parameters]
       end
     end
 
-    {
-      :conditions => [ query_details[:query].join(' OR '), *query_details[:conditions].flatten.compact ],
-      :joins => query_details[:joins].compact.uniq
-    }
+      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact]).
+      joins(query_details[:joins].compact.uniq)
   }
 
 
@@ -410,12 +412,12 @@ class Asset < ActiveRecord::Base
     if destination_asset
       source_asset_ids = destination_asset.parents.map(&:id)
       unless source_asset_ids.empty?
-        { :conditions => ["id IN (?)",source_asset_ids ] }
+         where(id: source_asset_ids)
       else
-        { :conditions => 'FALSE' }
+        none
       end
     else
-      { :conditions => 'FALSE' }
+      none
     end
   }
 
@@ -426,7 +428,7 @@ class Asset < ActiveRecord::Base
       with_machine_barcode(source_barcode).first
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
-      find_by_barcode_and_barcode_prefix_id(match[2],prefix.id)
+      find_by_barcode_and_barcode_prefix_id(match[2], prefix.id)
     elsif /\A[0-9]{1,7}\z/.match(source_barcode) # Just a number
       find_by_barcode(source_barcode)
     end
@@ -438,7 +440,7 @@ class Asset < ActiveRecord::Base
   end
 
   def generate_machine_barcode
-    "#{Barcode.calculate_barcode( barcode_prefix.prefix,barcode.to_i)}"
+    "#{Barcode.calculate_barcode(barcode_prefix.prefix, barcode.to_i)}"
   end
 
   def external_release_text
@@ -448,7 +450,7 @@ class Asset < ActiveRecord::Base
 
   def add_parent(parent)
     return unless parent
-    #should be self.parents << parent but that doesn't work
+    # should be self.parents << parent but that doesn't work
 
     self.save!
     parent.save!
@@ -460,18 +462,18 @@ class Asset < ActiveRecord::Base
   end
 
   def requests_status(request_type)
-    requests.order('id ASC').where(request_type:request_type).pluck(:state)
+    requests.order('id ASC').where(request_type: request_type).pluck(:state)
   end
 
   def transfer(max_transfer_volume)
 
     transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
-    raise VolumeError, "not enough volume left" if transfer_volume <=0
+    raise VolumeError, "not enough volume left" if transfer_volume <= 0
 
-    self.class.create!(:name => self.name) do |new_asset|
+    self.class.create!(name: self.name) do |new_asset|
       new_asset.aliquots = self.aliquots.map(&:dup)
       new_asset.volume   = transfer_volume
-      update_attributes!(:volume => self.volume - transfer_volume)  # Update ourselves
+      update_attributes!(volume: self.volume - transfer_volume)  #  Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end
@@ -512,7 +514,7 @@ class Asset < ActiveRecord::Base
   end
 
   # We only support wells for the time being
-  def latest_stock_metrics(product,*args)
+  def latest_stock_metrics(product, *args)
     []
   end
 

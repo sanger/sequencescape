@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -9,37 +11,37 @@ class StudyTest < ActiveSupport::TestCase
 
     should belong_to :user
 
-    should have_many :samples#, :through => :study_samples
+    should have_many :samples # , :through => :study_samples
 
     context "Request" do
       setup do
-        @study         = create :study
+        @study = create :study
         @request_type    = create :request_type
-        @request_type_2  = create :request_type, :name => "request_type_2", :key => "request_type_2"
-        @request_type_3  = create :request_type, :name => "request_type_3", :key => "request_type_3"
+        @request_type_2  = create :request_type, name: "request_type_2", key: "request_type_2"
+        @request_type_3  = create :request_type, name: "request_type_3", key: "request_type_3"
         requests = []
         # Cancelled
         3.times do
-          requests << (create :cancelled_request, :study => @study, :request_type => @request_type)
+          requests << (create :cancelled_request, study: @study, request_type: @request_type)
         end
 
         # Failed
-        requests << (create :failed_request, :study => @study, :request_type => @request_type)
+        requests << (create :failed_request, study: @study, request_type: @request_type)
         # Passed
         3.times do
-          requests << (create :passed_request, :study => @study, :request_type => @request_type)
+          requests << (create :passed_request, study: @study, request_type: @request_type)
         end
-        requests << (create :passed_request, :study => @study, :request_type => @request_type_2)
-        requests << (create :passed_request, :study => @study, :request_type => @request_type_3)
-        requests << (create :passed_request, :study => @study, :request_type => @request_type_3)
+        requests << (create :passed_request, study: @study, request_type: @request_type_2)
+        requests << (create :passed_request, study: @study, request_type: @request_type_3)
+        requests << (create :passed_request, study: @study, request_type: @request_type_3)
         # Pending
-        requests << (create :pending_request, :study => @study, :request_type => @request_type)
-        requests << (create :pending_request, :study => @study, :request_type => @request_type_3)
+        requests << (create :pending_request, study: @study, request_type: @request_type)
+        requests << (create :pending_request, study: @study, request_type: @request_type_3)
 
-        #we have to hack t
+        # we have to hack t
         requests.each do |request|
           request.asset.aliquots.each do |a|
-            a.update_attributes(:study => @study)
+            a.update_attributes(study: @study)
           end
         end
         @study.save!
@@ -63,8 +65,8 @@ class StudyTest < ActiveSupport::TestCase
 
     context "Role system" do
       setup do
-        @study = create :study, :name => "role test1"
-        @another_study = create :study, :name => "role test2"
+        @study = create :study, name: "role test1"
+        @another_study = create :study, name: "role test2"
 
         @user1 = create :user
         @user2 = create :user
@@ -76,23 +78,23 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should "deal with followers" do
-        assert ! @study.followers.empty?
+        refute @study.followers.empty?
         assert @study.followers.include?(@user1)
         assert @study.followers.include?(@user2)
         assert @another_study.followers.empty?
       end
 
       should "deal with managers" do
-        assert ! @study.managers.empty?
-        assert ! @study.managers.include?(@user1)
+        refute @study.managers.empty?
+        refute @study.managers.include?(@user1)
         assert @study.managers.include?(@user2)
         assert @another_study.managers.empty?
       end
 
       should "deal with owners" do
-        assert ! @study.owners.empty?
+        refute @study.owners.empty?
         assert @study.owners.include?(@user1)
-        assert ! @study.owners.include?(@user2)
+        refute @study.owners.include?(@user2)
         assert @another_study.owners.empty?
       end
     end
@@ -195,7 +197,7 @@ class StudyTest < ActiveSupport::TestCase
 
       should "show in the filters" do
         assert Study.with_remove_x_and_autosomes.include?(@study_remove)
-        assert !Study.with_remove_x_and_autosomes.include?(@study_keep)
+        refute Study.with_remove_x_and_autosomes.include?(@study_keep)
       end
     end
 
@@ -225,9 +227,9 @@ class StudyTest < ActiveSupport::TestCase
       end
       context "with submissions still unprocessed" do
         setup do
-          FactoryHelp::submission :study => @study, :state => 'building', :assets => [@asset]
-          FactoryHelp::submission :study => @study, :state => "pending", :assets => [@asset]
-          FactoryHelp::submission :study => @study, :state => "processing", :assets => [@asset]
+          FactoryHelp::submission study: @study, state: 'building', assets: [@asset]
+          FactoryHelp::submission study: @study, state: "pending", assets: [@asset]
+          FactoryHelp::submission study: @study, state: "processing", assets: [@asset]
         end
         should "return true" do
           assert @study.unprocessed_submissions?
@@ -235,16 +237,16 @@ class StudyTest < ActiveSupport::TestCase
       end
       context "with no submissions unprocessed" do
         setup do
-          FactoryHelp::submission :study => @study, :state => "ready", :assets => [@asset]
-          FactoryHelp::submission :study => @study, :state => "failed", :assets => [@asset]
+          FactoryHelp::submission study: @study, state: "ready", assets: [@asset]
+          FactoryHelp::submission study: @study, state: "failed", assets: [@asset]
         end
         should "return false" do
-          assert ! @study.unprocessed_submissions?
+          refute @study.unprocessed_submissions?
         end
       end
       context "with no submissions at all" do
         should "return false" do
-          assert ! @study.unprocessed_submissions?
+          refute @study.unprocessed_submissions?
         end
       end
     end
@@ -253,12 +255,12 @@ class StudyTest < ActiveSupport::TestCase
       setup do
         @study, @request_type = create(:study), create(:request_type)
         2.times do
-          r=create(:passed_request, :request_type => @request_type, :initial_study_id => @study.id)
-          r.asset.aliquots.each {|al| al.study=@study; al.save!}
+          r = create(:passed_request, request_type: @request_type, initial_study_id: @study.id)
+          r.asset.aliquots.each { |al| al.study = @study; al.save! }
         end
-        2.times { create(:order, :study => @study ) }
+        2.times { create(:order, study: @study) }
         @study.projects.each do |project|
-          project.enforce_quotas=true
+          project.enforce_quotas = true
         end
         @study.save!
 
@@ -271,7 +273,7 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should 'not cancel any associated requests' do
-        assert @study.requests.all? { |request| not request.cancelled? }
+        assert @study.requests.all? { |request| request.passed? }
       end
 
     end
@@ -283,31 +285,37 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should 'accept valid urls' do
-        assert @study.study_metadata.update_attributes!(:dac_policy=>'http://www.example.com')
+        assert @study.study_metadata.update_attributes!(dac_policy: 'http://www.example.com')
         assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
       end
 
       should 'reject free text' do
         assert_raise ActiveRecord::RecordInvalid do
-         @study.study_metadata.update_attributes!(:dac_policy=>'Not a URL')
+         @study.study_metadata.update_attributes!(dac_policy: 'Not a URL')
         end
       end
 
       should 'reject invalid domains' do
         # In this context invalid domains refers to those on internal domains inaccessible outside the unit
         assert_raise ActiveRecord::RecordInvalid do
-          @study.study_metadata.update_attributes!(:dac_policy=>'http://internal.example.com')
+          @study.study_metadata.update_attributes!(dac_policy: 'http://internal.example.com')
         end
       end
 
       should 'add http:// before testing a url' do
-        assert @study.study_metadata.update_attributes!(:dac_policy=>'www.example.com')
+        assert @study.study_metadata.update_attributes!(dac_policy: 'www.example.com')
         assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
       end
 
       should 'not add http for eg. https' do
-        assert @study.study_metadata.update_attributes!(:dac_policy=>'https://www.example.com')
+        assert @study.study_metadata.update_attributes!(dac_policy: 'https://www.example.com')
         assert_equal 'https://www.example.com', @study.study_metadata.dac_policy
+      end
+
+      should 'require a data access group' do
+        @study.study_metadata.data_access_group = ''
+        refute @study.valid?
+        assert_includes @study.errors['study_metadata.data_access_group'], "can't be blank"
       end
     end
 
@@ -319,20 +327,31 @@ class StudyTest < ActiveSupport::TestCase
 
       should 'accept valid data access group names' do
         # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
-        ['goodname','g00dname','good_name','_goodname','good-name','goodname1  goodname2'].each do |name|
-          assert @study.study_metadata.update_attributes!(:data_access_group=>name)
+        ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
+          assert @study.study_metadata.update_attributes!(data_access_group: name)
           assert_equal name, @study.study_metadata.data_access_group
         end
       end
 
       should 'reject non-alphanumeric data access groups' do
-        ['b@dname','1badname','averylongbadnamewouldbebadsowesouldblockit','baDname'].each do |name|
+        ['b@dname', '1badname', 'averylongbadnamewouldbebadsowesouldblockit', 'baDname'].each do |name|
           assert_raise ActiveRecord::RecordInvalid do
-            @study.study_metadata.update_attributes!(:data_access_group=>name)
+            @study.study_metadata.update_attributes!(data_access_group: name)
           end
         end
       end
 
+    end
+
+    context 'non-managed study' do
+      setup do
+        @study = build :study
+      end
+
+      should 'should not require a data access group' do
+        @study.study_metadata.data_access_group = ''
+        assert @study.valid?
+      end
     end
 
     context 'study name' do
@@ -342,21 +361,20 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should 'accept names shorter than 200 characters' do
-        assert @study.update_attributes!(:name=>'Short name')
+        assert @study.update_attributes!(name: 'Short name')
       end
 
       should 'reject names longer than 200 characters' do
         assert_raise(ActiveRecord::RecordInvalid) do
-          @study.update_attributes!(:name=>'a'*201)
+          @study.update_attributes!(name: 'a' * 201)
         end
       end
 
       should ' squish whitespace' do
-        assert @study.update_attributes!(:name=>'   Squish   double spaces and flanking whitespace but not double letters ')
+        assert @study.update_attributes!(name: '   Squish   double spaces and flanking whitespace but not double letters ')
         assert_equal 'Squish double spaces and flanking whitespace but not double letters', @study.name
       end
     end
 
   end
 end
-

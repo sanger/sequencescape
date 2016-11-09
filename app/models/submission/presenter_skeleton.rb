@@ -1,9 +1,11 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class Submission::PresenterSkeleton
-  class_attribute :attributes, :instance_writer => false
+  class_attribute :attributes, instance_writer: false
   self.attributes = Array.new
 
   def initialize(user, submission_attributes = {})
@@ -39,7 +41,7 @@ class Submission::PresenterSkeleton
       yield(order.study.name, order.study)
     else # Cross study
       Study.in_assets(order.all_assets).each do |study|
-        yield(study.name,study)
+        yield(study.name, study)
       end
     end
   end
@@ -49,17 +51,22 @@ class Submission::PresenterSkeleton
       yield(order.project.name, order.project)
     else # Cross Project
       Project.in_assets(order.all_assets).each do |project|
-        yield(project.name,project)
+        yield(project.name, project)
       end
     end
   end
 
-  def lanes_from_request_options
-    return order.request_options.fetch(:multiplier, {}).values.last||1 if order.request_types[-2].nil?
 
-    sequencing_request    = RequestType.find(order.request_types.last)
+  def each_submission_warning(&block)
+    submission.each_submission_warning(&block)
+  end
+
+  def lanes_from_request_options
+    return order.request_options.fetch(:multiplier, {}).values.last || 1 if order.request_types[-2].nil?
+
+    sequencing_request = RequestType.find(order.request_types.last)
     multiplier_hash = order.request_options.fetch(:multiplier, {})
-    sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s]||multiplier_hash.fetch(sequencing_request.id, 1)).to_i
+    sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s] || multiplier_hash.fetch(sequencing_request.id, 1)).to_i
 
     if order.multiplexed?
       sequencing_multiplier

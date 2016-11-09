@@ -41,7 +41,8 @@ Feature: Study administration
 
   @javascript
   Scenario: Data access coordinator edits study properties
-    Given I am an "data_access_coordinator and administrator" user logged in as "xyz1"
+    Given I am an "data_access_coordinator" user logged in as "xyz1"
+    And user "xyz1" is an administrator
     Given I am visiting study "Study B" homepage
     When I follow "Manage"
     Then I should see "Manage Study Study B"

@@ -1,23 +1,28 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Assets::CommentsController < ApplicationController
-  before_filter :discover_asset
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
+  before_action :discover_asset
 
   def index
     @comments = @asset.comments.order("created_at ASC")
     if request.xhr?
-      render :partial => "simple_list", :locals => { :descriptions => @comments.pluck(:description) }
+      render partial: "simple_list", locals: { descriptions: @comments.pluck(:description) }
     else
       # Perform default
     end
   end
 
   def create
-    @asset.comments.create(:description => params[:comment], :user => current_user)
+    @asset.comments.create(description: params[:comment], user: current_user)
     @comments = @asset.comments
-    render :partial => "list", :locals => { :commentable => @asset, :visible => true }
+    render partial: "list", locals: { commentable: @asset, visible: true }
   end
 
   def destroy
@@ -26,7 +31,7 @@ class Assets::CommentsController < ApplicationController
       comment.destroy
     end
     @comments = @asset.comments
-    render :partial => "list", :locals => { :commentable => @asset, :visible => true }
+    render partial: "list", locals: { commentable: @asset, visible: true }
   end
 
   private

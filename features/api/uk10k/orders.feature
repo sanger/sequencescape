@@ -168,7 +168,11 @@ And I have a "full" authorised user with the key "cucumber"
       {
         "order": {
           "request_options": {
-            "number_of_lanes": <number of lanes>
+            "number_of_lanes": <number of lanes>,
+            "fragment_size_required": {
+              "from": 100,
+              "to": 200
+            }
           }
         }
       }

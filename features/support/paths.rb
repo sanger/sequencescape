@@ -1,13 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
     object = model.find_by_name!(name)
-    routing_method = "#{ model.name.underscore }_path"
-    routing_method = "#{ page }_#{ routing_method }" unless page == 'show'
+    routing_method = "#{model.name.underscore}_path"
+    routing_method = "#{page}_#{routing_method}" unless page == 'show'
     send(routing_method.to_sym, object)
   end
 
@@ -70,11 +72,11 @@ module NavigationHelpers
 
     when /the (show|edit|related studies) page for study "([^\"]+)"/
       page, name = $1, $2
-      page_for_model(Study, page.sub(" ", "_"), name )
+      page_for_model(Study, page.sub(" ", "_"), name)
 
     when /the show accession page for study named "([^\"]+)"/
       study_name = $1
-      study = Study.first(:conditions => { :name => study_name }) or raise StandardError, "study '#{ study_name }' does not exist"
+      study = Study.find_by!(name: study_name)
       study_show_accession_path(study)
 
     when /the page for editing the last request/
@@ -83,22 +85,21 @@ module NavigationHelpers
 
     when /the update page for sample "([^\"]+)"/
       sample_name = $1
-      sample      = Sample.first(:conditions => { :name => sample_name }) or raise StandardError, "Sample '#{ sample_name }' does not exist"
+      sample      = Sample.find_by!(name: sample_name)
       sample_path(sample)
 
     when /the study workflow page for "([^\"]+)"/, /the workflow page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by!(name: study_name)
       study_workflow_path(study, @current_user.workflow)
 
     when /the study named "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or
-                    raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by!(name: study_name)
       study_path(study)
 
     when /the edit page for the last batch/
-      batch = Batch.last or raise StandardError, "Cannot find the last batch"
+      batch = Batch.last!
       edit_batch_path(batch)
     when /the new plate page/
       new_plate_path
@@ -107,12 +108,12 @@ module NavigationHelpers
 
     when /the show page for library tube "([^\"]+)"/
       tube_name = $1
-      library_tube = LibraryTube.find_by_name(tube_name) or raise StandardError, "Cannot find library tube #{ tube_name.inspect }"
+      library_tube = LibraryTube.find_by_name!(tube_name)
       asset_path(library_tube)
 
     when /^the show page for asset "([^\"]+)"$/
       asset_name = $1
-      asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
+      asset = Asset.find_by_name!(asset_name)
       asset_path(asset)
 
     when /^the show page for asset "([^\"]+)" within "([^\"]+)"$/
@@ -144,22 +145,22 @@ module NavigationHelpers
     # displayed if there is something wrong!  So it goes "choose how" -> "sample registration" -> "sample error".
     when /the page for choosing how to register samples for study "([^\"]+)"$/, /the sample error page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       study_sample_registration_index_path(study)
 
     when /the sample registration page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       new_study_sample_registration_path(study)
 
     when /the spreadsheet sample registration page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       spreadsheet_study_sample_registration_index_path(study)
 
     when /the sample error page for study "([^\"]+)"/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       study_sample_registration_index_path(study)
 
     when /the Submissions Inbox page/
@@ -169,11 +170,11 @@ module NavigationHelpers
     when /the show page for the last submission/
       submission = Submission.last or raise StandardError, "There are no submissions!"
       order = submission.orders.first
-      #study_workflow_submission_path(order.study, order.workflow, submission)
+      # study_workflow_submission_path(order.study, order.workflow, submission)
       submission_path(submission)
 
     when /the submissions page for study "([^\"]+)"/
-      study    = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
+      study = Study.find_by_name($1) or raise StandardError, "No study defined with name #{$1.inspect}"
       study_workflow_submissions_path(study, @current_user.workflow)
 
     when /the Qc reports homepage/
@@ -197,31 +198,31 @@ module NavigationHelpers
       sample_logistics_path
 
     when /the delayed jobs admin page/
-      url_for(:controller => "admin/delayed_jobs", :action => :index)
+      url_for(controller: "admin/delayed_jobs", action: :index)
 
     when /the management page for (study|project) "([^\"]+)"/
       model, model_name = $1, $2
       object = model.classify.constantize.find_by_name(model_name) or raise StandardError, "Could not find #{model} #{model_name.inspect}"
-      url_for(:controller => "admin/#{model.pluralize}", :action => :show, :id => object)
+      url_for(controller: "admin/#{model.pluralize}", action: :show, id: object)
 
     when /the details page for (study) "([^"]+)"/
       page, name = $1, $2
-      page_for_model(Study, "properties", name )
+      page_for_model(Study, "properties", name)
 
     when /the asset group "([^"]+)" page for study "([^"]+)"$/
       asset_group_name, study_name = $1, $2
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       asset_group = study.asset_groups.find_by_name(asset_group_name) or raise StandardError, "No asset group defined with name '#{asset_group_name}'"
       study_asset_group_path(study, asset_group)
 
     when /the samples page for study "([^"]+)"$/
       study_name = $1
-      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       study_samples_path(study)
 
     when /the show page for pipeline "([^"]+)"/
       pipeline_name = $1
-      pipeline = Pipeline.first(:conditions => {:name => pipeline_name}) or raise StandardError, "No Pipeline defined with name '#{ pipeline_name} '"
+      pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "No Pipeline defined with name '#{pipeline_name} '"
       pipeline_path(pipeline)
 
     when /the show page for batch "(\d+)"/
@@ -237,7 +238,7 @@ module NavigationHelpers
 
     when /the edit page for the first tag in "([^"]+)"/
       tag_group = TagGroup.find_by_name($1)
-      edit_tag_group_tag_path(tag_group,tag_group.tags.first)
+      edit_tag_group_tag_path(tag_group, tag_group.tags.first)
 
     when /the Tag Group new page/
       new_tag_group_path
@@ -286,7 +287,7 @@ module NavigationHelpers
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)
-      request_path(request, :format => :xml)
+      request_path(request, format: :xml)
 
     when /the show page for request (\d+)/
       request = Request.find($1)
@@ -294,7 +295,7 @@ module NavigationHelpers
 
     when /^the new request page for "([^\"]+)"$/
       asset = Asset.find_by_name($1) or raise StandardError, "Cannot find asset #{$1.inspect}"
-      new_request_asset_path(:id => asset)
+      new_request_asset_path(id: asset)
 
     when /the faculty sponsor homepage/
       admin_faculty_sponsors_path

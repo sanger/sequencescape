@@ -28,33 +28,33 @@ module Authorization
       # 2) Replace all <role> matches that aren't one of our other terminals ('not', 'or', 'and', or preposition)
       # 3) Eval
 
-      def parse_authorization_expression( str )
+      def parse_authorization_expression(str)
         if str =~ /[^A-Za-z0-9_:'\(\)\s]/
           raise AuthorizationExpressionInvalid, "Invalid authorization expression (#{str})"
           return false
         end
         @replacements = []
-        expr = replace_temporarily_role_of_model( str )
-        expr = replace_role( expr )
-        expr = replace_role_of_model( expr )
+        expr = replace_temporarily_role_of_model(str)
+        expr = replace_role(expr)
+        expr = replace_role_of_model(expr)
         begin
-          instance_eval( expr )
+          instance_eval(expr)
         rescue
           raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})"
         end
       end
 
-      def replace_temporarily_role_of_model( str )
+      def replace_temporarily_role_of_model(str)
         role_regex = '\s*(\'\s*(.+?)\s*\'|(\w+))\s+'
         model_regex = '\s+(:*\w+)'
         parse_regex = Regexp.new(role_regex + '(' + VALID_PREPOSITIONS.join('|') + ')' + model_regex)
         str.gsub(parse_regex) do |match|
           @replacements.push " process_role_of_model('#{$2 || $3}', '#{$5}') "
-          " <#{@replacements.length-1}> "
+          " <#{@replacements.length - 1}> "
         end
       end
 
-      def replace_role( str )
+      def replace_role(str)
         role_regex = '\s*(\'\s*(.+?)\s*\'|([A-Za-z]\w*))\s*'
         parse_regex = Regexp.new(role_regex)
         str.gsub(parse_regex) do |match|
@@ -66,22 +66,22 @@ module Authorization
         end
       end
 
-      def replace_role_of_model( str )
+      def replace_role_of_model(str)
         str.gsub(/<(\d+)>/) do |match|
           @replacements[$1.to_i]
         end
       end
 
-      def process_role_of_model( role_name, model_name )
-        model = get_model( model_name )
-        raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" ) if not model.respond_to? :accepts_role?
-        model.send( :accepts_role?, role_name, @current_user )
+      def process_role_of_model(role_name, model_name)
+        model = get_model(model_name)
+        raise(ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?") if not model.respond_to? :accepts_role?
+        model.send(:accepts_role?, role_name, @current_user)
       end
 
-      def process_role( role_name )
+      def process_role(role_name)
         return false if @current_user.nil? || @current_user == :false
-        raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?
-        @current_user.has_role?( role_name )
+        raise(UserDoesntImplementRoles, "User doesn't implement #has_role?") if not @current_user.respond_to? :has_role?
+        @current_user.has_role?(role_name)
       end
 
     end
@@ -123,40 +123,40 @@ module Authorization
       ROLE_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s*$')
       ROLE_OF_MODEL_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s+(' + VALID_PREPOSITIONS_PATTERN + ')\s+' + MODEL_PATTERN + '\s*$')
 
-      def parse_authorization_expression( str )
+      def parse_authorization_expression(str)
         @stack = []
-        raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})" if not parse_expr( str )
+        raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})" if not parse_expr(str)
         return @stack.pop
       end
 
-      def parse_expr( str )
-        parse_parenthesis( str ) or
-        parse_not( str ) or
-        parse_or( str ) or
-        parse_and( str ) or
-        parse_term( str )
+      def parse_expr(str)
+        parse_parenthesis(str) or
+        parse_not(str) or
+        parse_or(str) or
+        parse_and(str) or
+        parse_term(str)
       end
 
-      def parse_not( str )
+      def parse_not(str)
         if str =~ NOT_REGEX
-          can_parse = parse_expr( $1 )
-          @stack.push( !@stack.pop ) if can_parse
+          can_parse = parse_expr($1)
+          @stack.push(!@stack.pop) if can_parse
         end
         false
       end
 
-      def parse_or( str )
+      def parse_or(str)
         if str =~ OR_REGEX
-          can_parse = parse_expr( $1 ) and parse_expr( $8 )
-          @stack.push( @stack.pop | @stack.pop ) if can_parse
+          can_parse = parse_expr($1) and parse_expr($8)
+          @stack.push(@stack.pop | @stack.pop) if can_parse
           return can_parse
         end
         false
       end
 
-      def parse_and( str )
+      def parse_and(str)
         if str =~ AND_REGEX
-          can_parse = parse_expr( $1 ) and parse_expr( $8 )
+          can_parse = parse_expr($1) and parse_expr($8)
           @stack.push(@stack.pop & @stack.pop) if can_parse
           return can_parse
         end
@@ -164,25 +164,25 @@ module Authorization
       end
 
       # Descend down parenthesis (allow up to 5 levels of nesting)
-      def parse_parenthesis( str )
-        str =~ PARENTHESES_REGEX ? parse_expr( $1 ) : false
+      def parse_parenthesis(str)
+        str =~ PARENTHESES_REGEX ? parse_expr($1) : false
       end
 
-      def parse_term( str )
-        parse_role_of_model( str ) or
-        parse_role( str )
+      def parse_term(str)
+        parse_role_of_model(str) or
+        parse_role(str)
       end
 
       # Parse <role> of <model>
-      def parse_role_of_model( str )
+      def parse_role_of_model(str)
         if str =~ ROLE_OF_MODEL_REGEX
           role_name = $2 || $3
           model_name = $5
-          model_obj = get_model( model_name )
-          raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" ) if not model_obj.respond_to? :accepts_role?
+          model_obj = get_model(model_name)
+          raise(ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?") if not model_obj.respond_to? :accepts_role?
 
-          has_permission = model_obj.send( :accepts_role?, role_name, @current_user )
-          @stack.push( has_permission )
+          has_permission = model_obj.send(:accepts_role?, role_name, @current_user)
+          @stack.push(has_permission)
           true
         else
           false
@@ -190,14 +190,14 @@ module Authorization
       end
 
       # Parse <role> of the User-like object
-      def parse_role( str )
+      def parse_role(str)
         if str =~ ROLE_REGEX
           role_name = $1
           if @current_user.nil? || @current_user == :false
             @stack.push(false)
           else
-            raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?
-            @stack.push( @current_user.has_role?(role_name) )
+            raise(UserDoesntImplementRoles, "User doesn't implement #has_role?") if not @current_user.respond_to? :has_role?
+            @stack.push(@current_user.has_role?(role_name))
           end
           true
         else

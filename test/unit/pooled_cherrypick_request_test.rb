@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -13,13 +15,13 @@ class PooledCherrypickRequestTest < ActiveSupport::TestCase
       @well_a = create :well
       @well_b = create :well
 
-      @a1 = create :aliquot, :receptacle => @well_a, :study => @study
-      @a2 = create :aliquot, :sample => @a1.sample, :study =>  @study, :project => @a1.project, :receptacle => @well_b, :tag => @a1.tag, :tag2 => @a1.tag2
+      @a1 = create :aliquot, receptacle: @well_a, study: @study
+      @a2 = create :aliquot, sample: @a1.sample, study: @study, project: @a1.project, receptacle: @well_b, tag: @a1.tag, tag2: @a1.tag2
 
       @target_well = create :well
 
-      @request_a = create :pooled_cherrypick_request, :asset=> @well_a, :target_asset => @target_well, :initial_study => @study
-      @request_b = create :pooled_cherrypick_request, :asset=> @well_b, :target_asset => @target_well, :initial_study => @study
+      @request_a = create :pooled_cherrypick_request, asset: @well_a, target_asset: @target_well, initial_study: @study
+      @request_b = create :pooled_cherrypick_request, asset: @well_b, target_asset: @target_well, initial_study: @study
     end
 
     should 'only transfer one aliquot' do

@@ -1,15 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Batch::PipelineBehaviour
   def self.included(base)
     base.class_eval do
       # The associations with the pipeline
       belongs_to :pipeline
-      attr_protected :pipeline_id
-      delegate :workflow, :item_limit, :multiplexed?, :to => :pipeline
-      delegate :tasks, :to => :workflow
+      delegate :workflow, :item_limit, :multiplexed?, to: :pipeline
+      delegate :tasks, to: :workflow
 
       # The validations that the pipeline & batch are correct
       validates_presence_of :pipeline
@@ -20,10 +21,10 @@ module Batch::PipelineBehaviour
       end
 
       # The batch requires positions on it's requests if the pipeline does
-      delegate :requires_position?, :to => :pipeline
+      delegate :requires_position?, to: :pipeline
 
       # Ensure that the batch is valid to be marked as completed
-      validate(:if => :completed?) do |record|
+      validate(if: :completed?) do |record|
         record.pipeline.validation_of_batch_for_completion(record)
       end
     end
@@ -47,39 +48,23 @@ module Batch::PipelineBehaviour
   end
   alias_method(:has_limit?, :has_item_limit?)
 
-  def events_for_completed_tasks
-    self.lab_events.select{ |le| le.description == "Complete" }
+  def complete_events
+    @efct ||= if lab_events.loaded
+      lab_events.select { |le| le.description == "Complete" }
+    else
+      lab_events.where(description: "Complete")
+    end
   end
 
-  def tasks_for_completed_task_events(events)
-    completed_tasks = []
-    events.each do |event|
-      task_id = event.descriptors.detect{ |d| d.name == "task_id" }
-      if task_id
-        begin
-          task = Task.find(task_id.value)
-        rescue ActiveRecord::RecordNotFound
-          return []
-        end
-        unless task.nil?
-          completed_tasks << task
-        end
-      end
-    end
-    completed_tasks
+  def completed_task_ids
+    complete_events.map do |event|
+      event.descriptor_value_allow_nil('task_id')
+    end.compact
   end
 
   def last_completed_task
-    unless self.events_for_completed_tasks.empty?
-      completed_tasks = self.tasks_for_completed_task_events(self.events_for_completed_tasks)
-      tasks = self.pipeline.workflow.tasks
-      tasks.sort!{ |a, b| b.sorted <=> a.sorted }
-      tasks.each do |task|
-        if completed_tasks.include?(task)
-          return task
-        end
-      end
-      return nil
+    unless complete_events.empty?
+      pipeline.workflow.tasks.order(:sorted).where(id: completed_task_ids).last
     end
   end
 

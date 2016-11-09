@@ -1,19 +1,21 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class DataReleaseStudyType < ActiveRecord::Base
   extend Attributable::Association::Target
 
   has_many :study
 
-  validates_presence_of  :name
-  validates_uniqueness_of :name, :message => "of data release study type already present in database"
+  validates_presence_of :name
+  validates_uniqueness_of :name, message: "of data release study type already present in database"
 
- scope :assay_types, -> { where( :is_assay_type => true ) }
- scope :non_assay_types, -> { where( :is_assay_type => false ) }
+ scope :assay_types, -> { where(is_assay_type: true) }
+ scope :non_assay_types, -> { where(is_assay_type: false) }
 
-  DATA_RELEASE_TYPES_SAMPLES = ['genotyping or cytogenetics' ]
+  DATA_RELEASE_TYPES_SAMPLES = ['genotyping or cytogenetics']
   DATA_RELEASE_TYPES_STUDIES = []
 
   def is_not_specified?
@@ -29,7 +31,7 @@ class DataReleaseStudyType < ActiveRecord::Base
   end
 
   def self.default
-    first(:conditions => { :is_default => true })
+    find_by(is_default: true)
   end
 
   module Associations

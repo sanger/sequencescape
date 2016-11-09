@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require File.join(File.dirname(__FILE__), 'sanger_macros', 'resource_test')
 
@@ -8,8 +10,6 @@ module Sanger
   module Testing
     module Controller
       module Macros
-
-
 
         def should_have_instance_methods(*methods)
           dt = described_type
@@ -22,23 +22,23 @@ module Sanger
 
         def should_have_successful_submission
           # FIXME: routing doesnt work property
-          #should redirect_to("study workflow submission page"){ study_workflow_submission_url(@study, @workflow, @submission) }
+          # should redirect_to("study workflow submission page"){ study_workflow_submission_url(@study, @workflow, @submission) }
           should "have a successful submission" do
             assert_not_nil @controller.session.try(:[], :flash).try(:[], :notice).try(:include?, "Submission successfully created")
-            assert_equal @submission_count +1 , Submission.count
+            assert_equal @submission_count + 1, Submission.count
           end
         end
 
         def should_require_login(*actions)
+          params = actions.pop if actions.last.is_a?(Hash)
           actions << :index if actions.empty?
           actions.each do |action|
             context "#{action}" do
               context "when logged in" do
                 setup do
-                  @controller.stubs(:logged_in?).returns(true)
-                  @controller.stubs(:current_user).returns(create(:user))
+                  session[:user] = create(:user)
                   begin
-                    get action
+                    get action, params
                   rescue AbstractController::ActionNotFound
                      flunk "Testing for an unknown action: #{action}"
                   rescue ActiveRecord::RecordNotFound
@@ -51,30 +51,22 @@ module Sanger
                   end
                 end
                 should "not redirect" do
-                  assert ! (300..307).to_a.include?(@response.code)
+                  assert !(300..307).to_a.include?(@response.code)
                 end
               end
               context "when not logged in" do
                 setup do
-                  @controller.stubs(:logged_in?).returns(false)
+
+                  session[:user] = nil
+
                   begin
-                    get action
+                    get action, params
                   rescue AbstractController::ActionNotFound
                     flunk "Testing for an unknown action: #{action}"
                   end
                 end
-                should redirect_to("login page"){login_path}
+                should redirect_to("login page") { login_path }
               end
-              # TODO - Include API passthrough checking
-              # context "when requesting XML" do
-              #   setup do
-              #     @request.accept = "application/xml"
-              #     get action
-              #   end
-              #   should "not redirect" do
-              #     assert ! (300..307).to_a.include?(@response.code)
-              #   end
-              # end
             end
           end
         end

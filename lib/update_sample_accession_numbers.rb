@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011 Genome Research Ltd.
 accession_needed = []
 Study.all.each do |study|
   next unless study.data_release_strategy == "open"
@@ -16,7 +17,6 @@ end
 
 app = ActiveResource::Connection.new("http://#{configatron.site_url}")
 accession_needed.each do |sample_id|
-  puts "#{sample_id}"
   sample = Sample.find(sample_id)
   next if sample.nil?
   if sample.ebi_accession_number

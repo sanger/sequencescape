@@ -3,7 +3,7 @@ Feature: Creating Spiked phiX
   Background:
     Given I am an "administrator" user logged in as "me"
 
-    Given I have a sample tube called "Stock of phiX"
+    Given I have a phiX tube called "Stock of phiX"
       And the "volume" of the asset called "Stock of phiX" is "200.0"
 
   Scenario: A member of the library creation team creates a "batch" of indexed phiX.
@@ -96,7 +96,7 @@ Feature: Creating Spiked phiX
 
   # TODO: use factories for controls and batch
   @npg @xml
-  Scenario: Create a batch and check the xm
+  Scenario: Create a batch and check the xml
     # create control
     Given I am on the asset creation page
     When I select "Library Tube" from "Type"

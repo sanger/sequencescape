@@ -7,7 +7,7 @@ class ManifestTypeListTest < ActiveSupport::TestCase
   attr_reader :yaml, :manifest_type_list
 
   def setup
-    folder = File.join("test","data", "sample_manifest_excel", "extract")
+    folder = File.join("test", "data", "sample_manifest_excel", "extract")
     @yaml = load_file(folder, "manifest_types")
     @manifest_type_list = SampleManifestExcel::ManifestTypeList.new(yaml)
   end
@@ -46,5 +46,5 @@ class ManifestTypeListTest < ActiveSupport::TestCase
     yaml.shift
     refute_equal SampleManifestExcel::ManifestTypeList.new(yaml), manifest_type_list
   end
-  
+
 end

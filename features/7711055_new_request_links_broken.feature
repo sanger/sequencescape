@@ -34,13 +34,6 @@ Feature: Creating new requests from an asset
      Then I should be on the new request page for "<asset type> for testing new request"
       And "Study testing new request" should be selected from "Study"
 
-    @sample_tube
-    Scenarios:
-      | asset type  | link to follow        | page                                       |
-      | Sample tube | Request a new library | show page                                  |
-      | Sample tube | Request a new library | "Next-gen sequencing" workflow show page   |
-      | Sample tube | Request a new library | "Microarray genotyping" workflow show page |
-
     @library_tube
     Scenarios:
       | asset type   | link to follow                | page                                     |
@@ -152,4 +145,3 @@ Feature: Creating new requests from an asset
       | Multiplexed library tube | Illumina-B Single ended hi seq sequencing | 150                         | 400                       |
       | Multiplexed library tube | Illumina-B Paired end sequencing          | 150                         | 400                       |
       | Multiplexed library tube | Illumina-B HiSeq Paired end sequencing    | 150                         | 400                       |
-

@@ -1,8 +1,8 @@
 
-require File.dirname(__FILE__)+'/view/menu/item'
-require File.dirname(__FILE__)+'/view/menu/list'
-require File.dirname(__FILE__)+'/view/tabs/item'
-require File.dirname(__FILE__)+'/view/tabs/list'
+require File.dirname(__FILE__) + '/view/menu/item'
+require File.dirname(__FILE__) + '/view/menu/list'
+require File.dirname(__FILE__) + '/view/tabs/item'
+require File.dirname(__FILE__) + '/view/tabs/list'
 
 module ApplicationHelper
 
@@ -17,7 +17,7 @@ module ApplicationHelper
         @menu = add_link(@menu, l, o, options)
       when :back_menu
         @back_menu = Informatics::View::Menu::List.new unless @back_menu
-        @back_menu.add_item :text => l.first_key, :link => l.first_value
+        @back_menu.add_item text: l.first_key, link: l.first_value
       when :about # Replaces :title
         @about = link
       when :title # This option is deprecated in favour of :about as that is how it was getting used
@@ -36,7 +36,7 @@ module ApplicationHelper
         @legend = add_link(@legend, l, o, options)
       when :tab
         @tabs = Informatics::View::Tabs::List.new unless @tabs
-        @tabs.add_item :text => l.first_key, :link => l.first_value
+        @tabs.add_item text: l.first_key, link: l.first_value
     end
   end
 
@@ -51,13 +51,13 @@ module ApplicationHelper
     unless options.nil?
       if o.key_is_present?(:confirm)
         if o.key_is_present?(:method)
-          menu.add_item :text => l.first_key, :link => l.first_value, :confirm => o.value_for(:confirm), :method => o.value_for(:method)
+          menu.add_item text: l.first_key, link: l.first_value, confirm: o.value_for(:confirm), method: o.value_for(:method)
         else
-          menu.add_item :text => l.first_key, :link => l.first_value, :confirm => o.value_for(:confirm)
+          menu.add_item text: l.first_key, link: l.first_value, confirm: o.value_for(:confirm)
         end
       end
     else
-      menu.add_item :text => l.first_key, :link => l.first_value
+      menu.add_item text: l.first_key, link: l.first_value
     end
     menu
   end

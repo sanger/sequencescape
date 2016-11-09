@@ -1,17 +1,20 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 require "test_helper"
 require 'timecop'
+require 'csv'
 
 class QcReport::FileTest < ActiveSupport::TestCase
   context "QcReport File" do
 
     context 'given a non-csv file' do
       setup do
-        @file = File.open("#{Rails.root}/test/data/190_tube_sample_info.xls")
-        @qcr_file = QcReport::File.new(@file,false,'190_tube_sample_info.xls','application/excel')
+        @file = ::File.open("#{Rails.root}/test/data/190_tube_sample_info.xls")
+        @qcr_file = QcReport::File.new(@file, false, '190_tube_sample_info.xls', 'application/excel')
       end
 
       should 'fail processing' do
@@ -26,8 +29,8 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'given a non-compatible csv file' do
       setup do
-        @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
-        @qcr_file = QcReport::File.new(@file,false,'fluidigm.csv','text/csv')
+        @file = ::File.open("#{Rails.root}/test/data/fluidigm.csv")
+        @qcr_file = QcReport::File.new(@file, false, 'fluidigm.csv', 'text/csv')
       end
 
       should 'fail processing' do
@@ -42,8 +45,8 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'given a file with no report' do
       setup do
-        @file = File.open("#{Rails.root}/test/data/qc_report.csv")
-        @qcr_file = QcReport::File.new(@file,false)
+        @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
+        @qcr_file = QcReport::File.new(@file, false)
       end
 
       should 'fail processing' do
@@ -58,24 +61,24 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'given a file with a report' do
       setup do
-        @product = create :product, :name => 'Demo Product'
-        @criteria = create :product_criteria, :product => @product, :version => 1
-        @study  = create :study, :name => 'Example study'
+        @product = create :product, name: 'Demo Product'
+        @criteria = create :product_criteria, product: @product, version: 1
+        @study = create :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
-            :study => @study,
-            :exclude_existing => false,
-            :product_criteria => @criteria,
-            :state => 'awaiting_proceed'
+            study: @study,
+            exclude_existing: false,
+            product_criteria: @criteria,
+            state: 'awaiting_proceed'
           }
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id=>i+1)
+          create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
         end
-        @file = File.open("#{Rails.root}/test/data/qc_report.csv")
+        @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
-        @qcr_file = QcReport::File.new(@file,false,'qc_report.csv','text/csv')
+        @qcr_file = QcReport::File.new(@file, false, 'qc_report.csv', 'text/csv')
       end
 
       should 'pass processing' do
@@ -87,12 +90,12 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @qcr_file.process
         @report.reload
         assert_equal "complete", @report.state
-        assert @report.qc_metrics.all? {|met| met.proceed }, "Not all metrics are proceed"
+        assert @report.qc_metrics.all? { |met| met.proceed }, "Not all metrics are proceed"
       end
 
       should "not adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['passed','failed'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:qc_decision)
+        assert_equal ['passed', 'failed'], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
       end
 
       teardown do
@@ -102,30 +105,30 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'On overriding' do
       setup do
-        @product = FactoryGirl.build :product, :name => 'Demo Product'
-        @criteria = FactoryGirl.build :product_criteria, :product => @product, :version => 1
-        @study  = FactoryGirl.build :study, :name => 'Example study'
+        @product = FactoryGirl.build :product, name: 'Demo Product'
+        @criteria = FactoryGirl.build :product_criteria, product: @product, version: 1
+        @study = FactoryGirl.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
-            :study => @study,
-            :exclude_existing => false,
-            :product_criteria => @criteria,
-            :state => 'awaiting_proceed'
+            study: @study,
+            exclude_existing: false,
+            product_criteria: @criteria,
+            state: 'awaiting_proceed'
           }
         end
         @asset_ids = []
         2.times do |i|
-          m = create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => create(:well, :id=>i+1)
+          m = create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
           @asset_ids << m.asset_id
         end
-        @file = File.open("#{Rails.root}/test/data/qc_report.csv")
+        @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
-        @qcr_file = QcReport::File.new(@file,true,'qc_report.csv','text/csv')
+        @qcr_file = QcReport::File.new(@file, true, 'qc_report.csv', 'text/csv')
       end
 
       should "adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['passed','manually_passed'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:qc_decision)
+        assert_equal ['passed', 'manually_passed'], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 
       teardown do
@@ -135,24 +138,24 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'With missing assets' do
       setup do
-        @product = FactoryGirl.build :product, :name => 'Demo Product'
-        @criteria = FactoryGirl.build :product_criteria, :product => @product, :version => 1
-        @study  = FactoryGirl.build :study, :name => 'Example study'
+        @product = FactoryGirl.build :product, name: 'Demo Product'
+        @criteria = FactoryGirl.build :product_criteria, product: @product, version: 1
+        @study = FactoryGirl.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, {
-            :study => @study,
-            :exclude_existing => false,
-            :product_criteria => @criteria,
-            :state => 'awaiting_proceed'
+            study: @study,
+            exclude_existing: false,
+            product_criteria: @criteria,
+            state: 'awaiting_proceed'
           }
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i]
+          create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i]
         end
-        @file = File.open("#{Rails.root}/test/data/qc_report.csv")
+        @file = ::File.open("#{Rails.root}/test/data/qc_report.csv")
 
-        @qcr_file = QcReport::File.new(@file,true,'qc_report.csv','text/csv')
+        @qcr_file = QcReport::File.new(@file, true, 'qc_report.csv', 'text/csv')
       end
 
       should "adjust the qc_decision flag" do

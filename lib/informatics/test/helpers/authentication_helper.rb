@@ -32,7 +32,7 @@ module AuthenticatedTestHelper
   #      # ...
   #    end
   #  end
-  # 
+  #
   def assert_difference(object, method = nil, difference = 1)
     initial_value = object.send(method)
     yield
@@ -44,7 +44,7 @@ module AuthenticatedTestHelper
   end
 
   # Assert the block redirects to the login
-  # 
+  #
   #   assert_requires_login(:bob) { |c| c.get :edit, :id => 1 }
   #
   def assert_requires_login(login = nil)
@@ -76,11 +76,11 @@ class BaseLoginProxy
     def authenticated
       raise NotImplementedError
     end
-    
+
     def check
       raise NotImplementedError
     end
-    
+
     def method_missing(method, *args)
       @controller.reset!
       authenticate
@@ -94,9 +94,9 @@ class HttpLoginProxy < BaseLoginProxy
     def authenticate
       @controller.login_as @login if @login
     end
-    
+
     def check
-      @controller.assert_redirected_to :controller => 'sessions', :action => 'login'
+      @controller.assert_redirected_to controller: 'sessions', action: 'login'
     end
 end
 
@@ -106,7 +106,7 @@ class XmlLoginProxy < BaseLoginProxy
       @controller.accept 'application/xml'
       @controller.authorize_as @login if @login
     end
-    
+
     def check
       @controller.assert_response 401
     end

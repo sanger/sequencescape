@@ -1,52 +1,52 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 class CherrypickForPulldownRequest < TransferRequest
 
-  redefine_state_machine do
+  redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has less states.
-    aasm_column :state
-    aasm_state :pending
-    aasm_state :started
-    aasm_state :failed,     :enter => :on_failed
-    aasm_state :passed
-    aasm_state :cancelled,  :enter => :on_cancelled
-    aasm_state :hold
-    aasm_initial_state :pending
+    state :pending, initial: true
+    state :started
+    state :failed,     enter: :on_failed
+    state :passed
+    state :cancelled,  enter: :on_cancelled
+    state :hold
 
-    aasm_event :hold do
-      transitions :to => :hold, :from => [ :pending ]
+    event :hold do
+      transitions to: :hold, from: [:pending]
     end
 
     # State Machine events
-    aasm_event :start do
-      transitions :to => :started, :from => [:pending,:hold]
+    event :start do
+      transitions to: :started, from: [:pending, :hold]
     end
 
-    aasm_event :pass do
-      transitions :to => :passed, :from => [:pending, :started, :failed]
+    event :pass do
+      transitions to: :passed, from: [:pending, :started, :failed]
     end
 
-    aasm_event :fail do
-      transitions :to => :failed, :from => [:pending, :started, :passed]
+    event :fail do
+      transitions to: :failed, from: [:pending, :started, :passed]
     end
 
-    aasm_event :cancel do
-      transitions :to => :cancelled, :from => [:started, :passed]
+    event :cancel do
+      transitions to: :cancelled, from: [:started, :passed]
     end
 
-    aasm_event :cancel_before_started do
-      transitions :to => :cancelled, :from => [:pending,:hold]
+    event :cancel_before_started do
+      transitions to: :cancelled, from: [:pending, :hold]
     end
 
-    aasm_event :submission_cancelled do
-      transitions :to => :cancelled, :from => [:pending, :cancelled]
+    event :submission_cancelled do
+      transitions to: :cancelled, from: [:pending, :cancelled]
     end
 
-    aasm_event :detach do
-      transitions :to => :pending, :from => [:pending, :cancelled]
+    event :detach do
+      transitions to: :pending, from: [:pending, :cancelled]
     end
   end
 
@@ -68,5 +68,12 @@ class CherrypickForPulldownRequest < TransferRequest
     target_asset.stock_wells.attach!(stock_wells)
   end
   private :build_stock_well_links
+
+  def reduce_source_volume
+    return unless asset.get_current_volume
+    subtracted_volume = target_asset.get_picked_volume
+    new_volume = asset.get_current_volume - subtracted_volume
+    asset.set_current_volume(new_volume)
+  end
 
 end

@@ -1,82 +1,77 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 FactoryGirl.define do
-  sequence :lot_number do |n|
-    "lot#{n}"
-  end
-  sequence :lot_type_name do |n|
-    "lot_type#{n}"
-  end
 
-  factory :lot_type do |lot_type|
-    name           { FactoryGirl.generate :lot_type_name }
+  factory :lot_type do
+    sequence(:name) { |n| "lot_type#{n}" }
     template_class 'PlateTemplate'
     target_purpose { Tube::Purpose.stock_library_tube }
+
+    factory :tag2_lot_type do |lot_type|
+      template_class 'Tag2LayoutTemplate'
+    end
+
   end
 
-  factory :pending_purpose, :parent => :tube_purpose do |pp|
+  factory :pending_purpose, parent: :tube_purpose do |pp|
     name { FactoryGirl.generate :purpose_name }
     default_state 'pending'
   end
 
-  factory :created_purpose, :parent => :tube_purpose do |pp|
+  factory :created_purpose, parent: :tube_purpose do |pp|
     name { FactoryGirl.generate :purpose_name }
     default_state 'created'
   end
 
-  factory :tag2_lot_type, :parent=> :lot_type do |lot_type|
-    name           { FactoryGirl.generate :lot_type_name }
-    template_class 'Tag2LayoutTemplate'
-    target_purpose { Tube::Purpose.stock_library_tube }
-  end
-
   factory :qcable_creator do |qcable_creator|
-    count    0
-    user    { create :user }
-    lot     { create :lot }
+    count 0
+    user
+    lot
   end
 
   factory :lot do |lot|
-    lot_number  { FactoryGirl.generate :lot_number }
-    lot_type    { create :lot_type }
+    sequence(:lot_number)  { |n| "lot#{n}" }
+    lot_type
     template    { create :plate_template_with_well }
-    user        { create :user }
+    user
     received_at '2014-02-01'
-  end
 
-  factory :tag2_lot, :parent => :lot do |lot|
-    lot_number  { FactoryGirl.generate :lot_number }
-    lot_type    { |a| create(:tag2_lot_type) }
-    template    { |a| create(:tag2_layout_template) }
-    user        { |a| create(:user) }
-    received_at '2014-02-01'
+    factory :tag2_lot do
+      lot_type    { |a| create(:tag2_lot_type) }
+      template    { |a| create(:tag2_layout_template) }
+    end
   end
 
   factory :stamp do |stamp|
-    lot     { create :lot }
-    user    { create :user }
-    robot   { create :robot }
+    lot
+    user
+    robot
     tip_lot '555'
   end
 
   factory :qcable do |qcable|
-    lot    { create :lot }
+    # Note: We don't use the automatic association building here as
+    # we rely on attributes_for, which doesn't seem to handle it well.
+    # Incidentally we use attributes_for here as factory_girl instantiates
+    # the object before setting attributes, which messes up the state machine
+    # callbacks.
+    lot { create :lot }
     qcable_creator { create :qcable_creator }
+
+    factory :qcable_with_asset do |qcable|
+      state  'created'
+      asset  { create :full_plate }
+    end
   end
 
-  factory :plate_template_with_well, :class=>PlateTemplate do |p|
+  factory :plate_template_with_well, class: PlateTemplate do |p|
     name      "testtemplate2"
     value     96
     size      96
-    wells    { [create(:well_with_sample_and_without_plate,:map=>create(:map))] }
-  end
-
-  factory :qcable_with_asset, :class=>Qcable do |qcable|
-    state  'created'
-    lot    { create :lot }
-    qcable_creator { create :qcable_creator }
-    asset  {create :full_plate }
+    wells    { [create(:well_with_sample_and_without_plate, map: create(:map))] }
   end
 end

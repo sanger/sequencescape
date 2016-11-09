@@ -1,23 +1,24 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem "rails", "~>3.2"
+  gem "rails"
+  gem 'rails-observers'
 
-  gem "aasm", "~>2.4.0"
+  # State machine
+  gem "aasm"
   gem "configatron"
   gem "rest-client" # curb substitute.
   gem "formtastic"
 
-  # By default formtastic applies styles which clash with bootstrap.
-  # The configuration provides no means of overriding this
-  # Fixing it means monkey patches, or extensive re-implementation
-  # formtastic-bootstrap is essentially these cludgy fixes in a gem
-  # Fixing things proper means actually updating formtastic
-  # gem "formtastic-bootstrap"
+  # Caching, primarily of batch.xml Can be removed once our xml interfaces are retired.
+  gem 'actionpack-page_caching'
+  # Legacy support for parsing XML into params
+  gem 'actionpack-xml_parser'
 
   gem "activerecord-jdbc-adapter", :platforms => :jruby
+  gem "activeresource", require: 'active_resource'
   gem "jdbc-mysql", :platforms => :jruby
-  gem "mysql", :platforms => :mri
+  gem "mysql2", :platforms => :mri
   gem "spreadsheet"
   gem "will_paginate"
   # Will paginate clashes awkwardly with bootstrap
@@ -30,14 +31,10 @@ group :default do
 
   gem 'puma'
 
-  # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
-  # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
-  # gem code).
-  gem "acts-as-dag", '~>3.0.0'
-
-  # Better table alterations
-  # gem "alter_table",
-  #   :github => "sanger/alter_table"
+  # We pull down a slightly later version as there are commits on head
+  # which we depend on, but don't have an official release yet.
+  # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
+  gem "acts-as-dag", github:'resgraph/acts-as-dag', branch:'5e185dddff6563ee9ee92611555cd9d9a519d280'
 
   # For background processing
   # Locked for ruby version
@@ -51,16 +48,14 @@ group :default do
 
   # For the API level
   gem "uuidtools"
-  gem "sinatra", "~>1.1.0", :require => false
+  gem "sinatra", :require => false
   gem "rack-acceptable", :require => 'rack/acceptable'
-  # gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
   gem "json"
-  gem "jrjackson"
+  gem "jrjackson", :platforms => :jruby
   gem "multi_json"
   gem "cancan"
 
   gem "bunny", "~>0.7"
-  #gem "amqp", "~> 0.9.2"
 
   gem "spoon"
   # Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
@@ -77,10 +72,12 @@ group :default do
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyrhino'
-
+  # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
 
+  # Excel file generation
   gem 'axlsx'
+  # Excel file reading
   gem 'roo'
 
   # Used in XML generation.
@@ -99,11 +96,13 @@ end
 group :development do
   gem "flay", :require => false
   gem "flog", :require => false
+  # Detect n+1 queries
   gem "bullet", :require => false
-  gem "debugger", :platforms => :mri
-  gem "ruby-debug", :platforms => :jruby
   gem 'pry'
-  gem 'rdoc', :require => false
+  # Automatically generate documentation
+  gem 'yard', :require => false
+  # Enforces coding styles and detects some bad practices
+  gem 'rubocop', require: false
 end
 
 group :test do
@@ -112,13 +111,11 @@ group :test do
   gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
   gem "nokogiri", :require => false
-  gem "shoulda", "~>3.4.0", :require => false
+  gem "shoulda", :require => false
   gem "timecop", :require => false
-  gem "treetop", :require => false
-  # gem 'parallel_tests', :require => false
-  gem 'rgl', :require => false
   gem 'simplecov', require: false
 end
+
 
 group :cucumber do
   # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
@@ -128,7 +125,6 @@ group :cucumber do
   gem "capybara", :require => false
   gem 'mime-types'
   gem "database_cleaner", :require => false
-  gem "cucumber", :require => false
   gem "cucumber-rails", :require => false
   gem "poltergeist"
   gem "webmock"
@@ -140,4 +136,3 @@ group :deployment do
   gem "gmetric", "~>0.1.3"
   gem "exception_notification"
 end
-
