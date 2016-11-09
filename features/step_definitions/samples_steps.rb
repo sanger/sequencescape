@@ -238,6 +238,7 @@ end
 Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
   study_name = "study for sample #{sample_name}"
   step(%Q{a study named "#{study_name}" exists for accession})
+  step(%Q{study "#{study_name}" has an accession number})
   step(%Q{the sample named "#{sample_name}" exists with ID 200})
   step(%Q{I am the owner of sample "sample"})
   step(%Q{the sample "#{sample_name}" belongs to the study "#{study_name}"})

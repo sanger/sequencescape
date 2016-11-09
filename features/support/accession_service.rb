@@ -54,7 +54,7 @@ class FakeAccessionService < FakeSinatraService
   end
 
   class Service < FakeSinatraService::Base
-    post('/accession_service/era_accession_login') do
+    post('/accession_service/ena_accession_login') do
       response = FakeAccessionService.instance.next! or halt(500)
       headers('Content-Type' => 'text/xml')
       body(response)

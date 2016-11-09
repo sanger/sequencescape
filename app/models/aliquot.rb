@@ -146,6 +146,8 @@ class Aliquot < ActiveRecord::Base
         has_many :requests, :through => :assets
         has_many :submissions, :through => :requests
 
+        scope :contained_in, ->(receptacles) { joins(:receptacles).where(:assets=>{id:receptacles}) }
+
       end
     end
 

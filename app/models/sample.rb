@@ -29,8 +29,8 @@ class Sample < ActiveRecord::Base
 
   acts_as_authorizable
 
-  has_many :study_samples, :dependent => :destroy
-  has_many :studies, :through => :study_samples
+  has_many :study_samples, :dependent => :destroy, :inverse_of => :sample
+  has_many :studies, :through => :study_samples, :inverse_of => :samples
 
   has_many :roles, :as => :authorizable
   has_many :comments, :as => :commentable
@@ -118,6 +118,16 @@ class Sample < ActiveRecord::Base
     ]).
     where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
   }
+
+  scope :without_accession, ->() {
+    # Pick up samples where the accession number is either NULL or blank.
+    # MySQL automatically trims '  ' so '  '=''
+    joins(:sample_metadata).where(sample_metadata:{sample_ebi_accession_number:[nil,'']})
+  }
+
+  def self.by_name(sample_id)
+    self.find_by_name(sample_id)
+  end
 
   def select_study(sample_id)
     sample = self.find(sample_id)
@@ -239,8 +249,12 @@ class Sample < ActiveRecord::Base
   end
 
   def accession_service
-    return nil if self.studies.empty?
-    self.studies.first.accession_service
+    services = studies.group_by {|s| s.accession_service.priority }
+    return UnsuitableAccessionService.new([]) if services.empty?
+    highest_priority = services.keys.max
+    suitable_study = services[highest_priority].detect {|study| study.send_samples_to_service? }
+    return suitable_study.accession_service if suitable_study
+    UnsuitableAccessionService.new(services[highest_priority])
   end
 
   # at the moment return a string which is a comma separated list of snp plate id
@@ -330,8 +344,6 @@ class Sample < ActiveRecord::Base
 
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
-      # ena_required_fields.validates_presence_of :sample_common_name
-      # ena_required_fields.validates_presence_of :sample_taxon_id
       ena_required_fields.validates_presence_of :service_specific_fields
     end
 

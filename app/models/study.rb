@@ -65,10 +65,10 @@ class Study < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :study_samples #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
+  has_many :study_samples, :inverse_of => :study #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
   has_many :orders
   has_many :submissions, :through => :orders
-  has_many :samples, :through => :study_samples
+  has_many :samples, :through => :study_samples, :inverse_of => :studies
   has_many :batches
 
   has_many :asset_groups
@@ -399,6 +399,7 @@ class Study < ActiveRecord::Base
       return nil if self.snp_study_id.nil?
       self.class.all(:conditions => { :snp_parent_study_id => self.snp_study_id }, :include => :study).map(&:study)
     end
+
   end
 
   # We only need to validate the field if we are enforcing data release
@@ -597,7 +598,7 @@ class Study < ActiveRecord::Base
   end
 
   def accession_number?
-    not ebi_accession_number.blank?
+    ebi_accession_number.present?
   end
 
   def data_release_strategy
@@ -626,12 +627,16 @@ class Study < ActiveRecord::Base
 
   def accession_service
     if data_release_strategy == "open"
-      EraAccessionService.new
+      EnaAccessionService.new
     elsif data_release_strategy == "managed"
       EgaAccessionService.new
     else
       NoAccessionService.new(self)
     end
+  end
+
+  def send_samples_to_service?
+    accession_service.no_study_accession_needed || ((!study_metadata.never_release?) && accession_number?)
   end
 
   def validate_ena_required_fields!

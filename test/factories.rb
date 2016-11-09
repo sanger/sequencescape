@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 require 'factory_girl'
 
 FactoryGirl.define do
@@ -459,7 +459,7 @@ FactoryGirl.define do
   end
 
   factory  :sample  do
-    name            {|a| FactoryGirl.generate :sample_name }
+    name            { generate :sample_name }
 
     factory :sample_with_well do
       sequence(:sanger_sample_id) {|n| n.to_s }
