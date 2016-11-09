@@ -24,3 +24,4 @@ tags
 lib/sample_manifest_excel/doc/
 coverage
 .yardoc
+rerun

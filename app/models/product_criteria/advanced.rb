@@ -13,6 +13,16 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
 
   STATE_ORDER = ['failed', 'unprocessable']
 
+  TARGET_PLATE_PURPOSES = 'target_plate_purposes'
+
+  CONFIG_KEYS = [TARGET_PLATE_PURPOSES]
+
+  class << self
+    def headers(configuration)
+      (configuration.slice(*STATE_ORDER).values.reduce(&:merge).keys + [:comment]).uniq
+    end
+  end
+
   def invalid(attribute, message, decision)
     @qc_decision = decision
     @comment << message % attribute.to_s.humanize

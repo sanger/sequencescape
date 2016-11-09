@@ -6,7 +6,7 @@ sudo: false
 cache: bundler
 bundler_args: --without warehouse deployment
 env:
-  - "TZ=Europe/London SUITE='rake test'"
+  - "TZ=Europe/London SUITE='rake test' RUBYOPT='-W0'" # RUBYOPT disables warnings turned on by default in rake 11. See note in README 
   - "JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='cucumber'"
   - "SUITE=rubocop"
 before_script:

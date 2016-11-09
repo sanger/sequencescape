@@ -52,7 +52,12 @@ class WellAttribute < ActiveRecord::Base
 
   def measured_volume=(volume)
     self.initial_volume = volume
+    self.current_volume = volume
     super
+  end
+
+  def estimated_volume
+    (current_volume || measured_volume).try(:to_f)
   end
 
   def initial_volume=(volume)
@@ -60,16 +65,16 @@ class WellAttribute < ActiveRecord::Base
   end
 
   def quantity_in_nano_grams
-    return nil if measured_volume.nil? || concentration.nil?
-    return nil if measured_volume < 0 || concentration < 0
+    return nil if estimated_volume.nil? || concentration.nil?
+    return 0   if estimated_volume < 0 || concentration < 0
 
-    (measured_volume * concentration).to_i
+    (estimated_volume * concentration).to_i
   end
 
   def quantity_in_micro_grams
-    return nil if measured_volume.nil? || concentration.nil?
-    return nil if measured_volume < 0 || concentration < 0
-    (measured_volume * concentration) / 1000
+    return nil if estimated_volume.nil? || concentration.nil?
+    return 0   if estimated_volume < 0 || concentration < 0
+    (estimated_volume * concentration) / 1000
   end
 
 end

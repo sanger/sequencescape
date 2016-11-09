@@ -10,7 +10,7 @@ Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_n
 end
 
 Given /^I have a study called "([^\"]*)"$/ do |study|
-  FactoryGirl.create :study, name: study
+  FactoryGirl.create :study, name: study, state: "pending"
 end
 
 Given /^I have a study called "([^\"]*)" that requires ethical approval and has HMDMC approval number "(.*?)"$/ do |study, number|
@@ -20,6 +20,10 @@ Given /^I have a study called "([^\"]*)" that requires ethical approval and has 
   study.study_metadata.commercially_available = "No"
   study.study_metadata.hmdmc_approval_number = number
   study.save
+end
+
+Given /^a study "(.*?)" is pending$/  do |study|
+  Study.find_by_name(study).reset!
 end
 
 Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|

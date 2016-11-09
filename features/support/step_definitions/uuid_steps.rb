@@ -139,7 +139,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'qc decision',
   'robot',
   'reference genome',
-  'transfer'
+  'transfer',
+  'volume update'
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')

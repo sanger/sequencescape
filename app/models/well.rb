@@ -34,6 +34,21 @@ class Well < Aliquot::Receptacle
     end
   end
 
+  def self.hash_stock_with_targets(wells, purpose_names)
+    return {} unless purpose_names
+    purposes = PlatePurpose.where(name: purpose_names)
+    # We might need to be careful about this line in future.
+    target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
+
+    target_wells.group_by(&:stock_well_id)
+
+  end
+
+  scope :with_concentration, ->() {
+    joins(:well_attribute).
+    where("well_attributes.concentration IS NOT NULL")
+  }
+
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
 
   # hams_many due to eager loading requirement and can't have a has one through a has_many
@@ -80,6 +95,15 @@ class Well < Aliquot::Receptacle
     where(well_links: { target_well_id: [wells].flatten.map(&:id) })
   }
 
+  scope :target_wells_for, ->(wells) {
+    select('assets.*, well_links.source_well_id AS stock_well_id').
+    joins(:stock_well_links).where({
+      well_links: {
+        source_well_id: wells
+        }
+    })
+  }
+
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
   contained_by :plate
@@ -94,6 +118,8 @@ class Well < Aliquot::Receptacle
   self.per_page = 500
 
   has_one :well_attribute, inverse_of: :well
+  accepts_nested_attributes_for :well_attribute
+
   before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
 
   scope :pooled_as_target_by, ->(type) {
@@ -170,6 +196,7 @@ class Well < Aliquot::Receptacle
   delegate_to_well_attribute(:gel_pass)
   delegate_to_well_attribute(:study_id)
   delegate_to_well_attribute(:gender)
+  delegate_to_well_attribute(:rin)
 
   delegate_to_well_attribute(:concentration)
   alias_method(:get_pico_result, :get_concentration)
@@ -182,6 +209,14 @@ class Well < Aliquot::Receptacle
   alias_method(:get_volume, :get_current_volume)
   writer_for_well_attribute_as_float(:current_volume)
 
+  def update_volume(volume_change)
+    value_current_volume = get_current_volume.nil? ? 0 : get_current_volume
+    set_current_volume([0, value_current_volume + volume_change].max)
+  end
+  alias_method(:set_volume, :set_current_volume)
+  delegate_to_well_attribute(:initial_volume)
+  writer_for_well_attribute_as_float(:initial_volume)
+
   delegate_to_well_attribute(:buffer_volume, default: 0.0)
   writer_for_well_attribute_as_float(:buffer_volume)
 
@@ -192,6 +227,16 @@ class Well < Aliquot::Receptacle
   writer_for_well_attribute_as_float(:picked_volume)
 
   delegate_to_well_attribute(:gender_markers)
+
+  def update_qc_values_with_hash(updated_data)
+    ActiveRecord::Base.transaction do
+      unless updated_data.nil? || !(updated_data.values.all? { |v| v.nil? || v.downcase.strip.match(/^\d/) })
+        updated_data.each do |method_name, value|
+          send(method_name, value.strip) unless value.nil? || value.blank?
+        end
+      end
+    end
+  end
 
   def update_gender_markers!(gender_markers, resource)
     if self.well_attribute.gender_markers == gender_markers

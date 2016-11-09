@@ -128,8 +128,8 @@ Sequencescape::Application.routes.draw do
       put :assembly
       get :new_plate_submission
       post :create_plate_submission
-      get :close
-      get :open
+      post :close
+      post :open
       get :follow
       get :projects
       get :study_status
@@ -317,7 +317,11 @@ Sequencescape::Application.routes.draw do
     # end
 
     resources :robots do
-      resources :robot_properties
+      resources :robot_properties do
+        member do
+          get :print_labels
+        end
+      end
     end
     resources :bait_libraries
 

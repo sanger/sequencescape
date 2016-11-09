@@ -2,7 +2,7 @@
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# Copyright (C) 2007-2011,2012,2015, 2016 Genome Research Ltd.
 
 module Cherrypick::Task::PickByNanoGramsPerMicroLitre
   def pick_by_nano_grams_per_micro_litre(*args)
@@ -21,7 +21,8 @@ module Cherrypick::Task::PickByNanoGramsPerMicroLitre
     robot_minimum_picking_volume = robot.minimum_volume
 
     lambda do |well, request|
-      well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, request.asset.get_concentration, robot_minimum_picking_volume)
+      source = request.asset
+      well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, source.get_concentration, source.get_volume, robot_minimum_picking_volume)
     end
   end
   private :create_nano_grams_per_micro_litre_picker

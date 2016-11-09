@@ -15,11 +15,16 @@ module SampleManifestExcel
 
     attr_reader :range
 
+    ##
+    # Defaults to a NullValidation object
+    attr_reader :validation
+
     validates_presence_of :name, :heading
 
     delegate :range_name, to: :validation
 
     def initialize(attributes = {})
+      @validation = NullValidation.new
       create_attributes(attributes)
 
       # @attribute = Attributes.find(name) if valid?
@@ -71,12 +76,6 @@ module SampleManifestExcel
 
     def attribute_value(detail)
       detail[attribute] || value
-    end
-
-    ##
-    # Defaults to a NullValidation object
-    def validation
-      @validation || NullValidation.new
     end
 
     ##

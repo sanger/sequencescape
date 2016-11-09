@@ -88,8 +88,11 @@ FactoryGirl.define do
     "Study Type #{n}"
   end
 
+  sequence :submission_template_name do |n|
+    "Submission Template #{n}"
+  end
+
   sequence :data_release_study_type_name do |n|
     "Data release study Type #{n}"
   end
-
 end
