@@ -103,6 +103,7 @@ module IlluminaC::Helper
             submission_class_name: 'LinearSubmission',
             submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
             product_line_id: ProductLine.find_by(name: PIPELINE).id,
+            product_catalogue: catalogue
           })
         end
       end
