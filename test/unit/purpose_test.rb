@@ -25,7 +25,7 @@ class PurposeTest < ActiveSupport::TestCase
       end
 
       should 'return the specific transfer request type' do
-        assert_equal @custom_request, @purpose.transfer_request_type_from(@other_purpose)
+        assert_equal  @custom_request, @purpose.transfer_request_type_from(@other_purpose)
       end
     end
   end
