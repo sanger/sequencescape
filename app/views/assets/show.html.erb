@@ -141,5 +141,31 @@
     </tr>
     <% end %>
   </tbody>
- </table>
+</table>
+
+<% if @asset.custom_metadatum_collection.present?%>
+  <h3>Metadata</h3>
+  <div class='help'>
+    Metadata table
+    <a data-collapse-element-id="metadata-table" data-hidden="false" class="shown-button">Collapse</a>
+  </div>
+
+  <table id="metadata-table" width='100%' class='sortable asset_relations' >
+    <thead>
+      <tr>
+        <th><%= link_to "Key", "javascript:void(0);" %></th>
+        <th><%= link_to "Value", "javascript:void(0);" %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @asset.metadata.each do |k, v| %>
+        <tr>
+          <td><%= k %></td>
+          <td><%= v %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<%end%>
 

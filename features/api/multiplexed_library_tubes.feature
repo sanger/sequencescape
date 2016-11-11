@@ -18,6 +18,7 @@ And I have a "full" authorised user with the key "cucumber"
   Scenario: Reading the JSON for a UUID
     Given the multiplexed library tube exists with ID 1
       And the UUID for the multiplexed library tube with ID 1 is "00000000-1111-2222-3333-444444444444"
+      And the tube with ID 1 has a custom metadatum collection with UUID "11111111-2222-3333-4444-666666666666"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -27,6 +28,11 @@ And I have a "full" authorised user with the key "cucumber"
         "multiplexed_library_tube": {
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+          },
+          "custom_metadatum_collection": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-666666666666"
+            }
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161005155153) do
+ActiveRecord::Schema.define(:version => 20161013121344) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -907,6 +907,26 @@ ActiveRecord::Schema.define(version: 20161005155153) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "custom_metadata", force: :cascade do |t|
+    t.string   "key"
+    t.string   "value"
+    t.integer  "custom_metadatum_collection_id"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
+  add_index "custom_metadata", ["custom_metadatum_collection_id"], :name => "index_custom_metadata_on_custom_metadatum_collection_id"
+
+  create_table "custom_metadatum_collections", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "asset_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "custom_metadatum_collections", ["asset_id"], :name => "index_custom_metadatum_collections_on_asset_id"
+  add_index "custom_metadatum_collections", ["user_id"], :name => "index_custom_metadatum_collections_on_user_id"
 
   create_table "product_catalogues", force: :cascade do |t|
     t.string   "name",                limit: 255,                           null: false
