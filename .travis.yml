@@ -7,7 +7,8 @@ cache: bundler
 bundler_args: --without warehouse deployment
 env:
   - "TZ=Europe/London SUITE='rake test' RUBYOPT='-W0'" # RUBYOPT disables warnings turned on by default in rake 11. See note in README
-  - "JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='cucumber'"
+  - "CI_NODE_TOTAL=2 CI_NODE_INDEX=0 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake knapsack:cucumber'"
+  - "CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake knapsack:cucumber'"
   - "SUITE=rubocop"
 before_script:
   - "RAILS_ENV=test bundle exec rake db:setup"
