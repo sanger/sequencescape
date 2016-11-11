@@ -183,7 +183,7 @@ class Plate < Asset
     # Adding to the horrible: The :all passed in to the super is to address a
     # rails bug with count and custom selects.
     def size(*args)
-      s = super(:all)
+      s = super
       return s.length if s.respond_to?(:length)
       s
     end
