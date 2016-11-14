@@ -18,15 +18,15 @@ class AcceptanceTest < ActiveSupport::TestCase
     @sample_manifest = create :sample_manifest, rapid_generation: true
     sample_manifest.generate
 
-    @download = SampleManifestExcel::Download.new(sample_manifest, 
-        SampleManifestExcel.configuration.columns.test.dup, 
+    @download = SampleManifestExcel::Download.new(sample_manifest,
+        SampleManifestExcel.configuration.columns.test.dup,
         SampleManifestExcel.configuration.ranges.dup)
     download.save('test.xlsx')
   end
 
   test "should create a worksheet" do
     assert File.file?('test.xlsx')
-    p download.password
+    assert download.password
   end
 
   def teardown
