@@ -6,11 +6,6 @@
 <%= page_title "Home" %>
 <% add :about, "This page lets you quickly get to where you want to. It provides links to your most recent work." -%>
 
-<%= alert(:info) do %>
-  <strong>Lost?</strong>
-  <p>Not what you were expecting? You can access the studies list that used to be the home page by clicking 'Studies' in the menu bar above. If you use that page regularly you may wish to update your bookmark.</p>
-<% end %>
-
 <% unless current_user.swipecard_code? %>
   <%= alert(:warning) do %>
     You don't currently have a swipe-card configured. This is required to use some of the pipeline applications.

@@ -373,7 +373,8 @@ And I have a "full" authorised user with the key "cucumber"
 
         "plate_purposes": {
           "actions": {
-            "read": "http://www.example.com/api/1/plate_purposes"
+            "read": "http://www.example.com/api/1/plate_purposes",
+            "create": "http://www.example.com/api/1/plate_purposes"
           }
         },
         "tube_purposes": {
@@ -691,4 +692,3 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
-

@@ -1,4 +1,4 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+ This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
@@ -175,7 +175,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if (@asset.update_attributes(params[:asset]) && @asset.update_attributes(params[:lane]))
+      if @asset.update_attributes(asset_params.merge(params.fetch(:lane,{})))
         flash[:notice] = 'Asset was successfully updated.'
         unless params[:lab_view]
           format.html { redirect_to(action: :show, id: @asset.id) }
@@ -188,6 +188,13 @@ class AssetsController < ApplicationController
         format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  private def asset_params
+    permitted = [:location_id]
+    permitted << :name if current_user.administrator?#
+    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
+    params.require(:asset).permit(permitted)
   end
 
   def destroy

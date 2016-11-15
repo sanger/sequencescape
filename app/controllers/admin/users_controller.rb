@@ -16,9 +16,9 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user_roles = @user.roles.select { |r| r.name == "administrator" || r.name == "manager" || r.name == "internal" }
-    @all_roles = Role.select(:name).uniq
-    @users_roles = @user.study_and_project_roles.sort_by(&:name)
+    @user_roles = @user.roles.where(name: ["administrator", "manager", "internal"])
+    @all_roles = Role.select(:name).uniq.pluck(:name)
+    @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)
     @projects = Project.order(:id)
 
@@ -38,7 +38,6 @@ class Admin::UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-
     Role.general_roles.each do |role|
       if params[:role] && params[:role][role.name]
         @user.has_role(role.name)
@@ -67,17 +66,17 @@ class Admin::UsersController < ApplicationController
           Study.find(params[:role][:authorizable_id])
                               end
         @user.has_role(params[:role][:authorizable_name].to_s, authorizable_object)
-        @users_roles = @user.study_and_project_roles.sort_by(&:name)
+        @users_roles = @user.study_and_project_roles.order(name: :asc)
 
         flash[:notice] = "Role added"
         render partial: "roles", status: 200
       else
-        @users_roles = @user.study_and_project_roles.sort_by(&:name)
+        @users_roles = @user.study_and_project_roles.order(name: :asc)
         flash[:error] = "A problem occurred while adding the role"
         render partial: "roles", status: 500
       end
     else
-      @users_roles = @user.study_and_project_roles.sort_by(&:name)
+      @users_roles = @user.study_and_project_roles.order(name: :asc)
       flash[:error] = "A problem occurred while adding the role"
       render partial: "roles", status: 401
     end
@@ -92,17 +91,17 @@ class Admin::UsersController < ApplicationController
           Study.find(params[:role][:authorizable_id])
                               end
         @user.has_no_role(params[:role][:authorizable_name].to_s, authorizable_object)
-        @users_roles = @user.study_and_project_roles.sort_by(&:name)
+        @users_roles = @user.study_and_project_roles.order(name: :asc)
 
         flash[:error] = "Role was removed"
         render partial: "roles", status: 200
       else
-        @users_roles = @user.study_and_project_roles.sort_by(&:name)
+        @users_roles = @user.study_and_project_roles.order(name: :asc)
         flash[:error] = "A problem occurred while removing the role"
         render partial: "roles", status: 500
       end
     else
-      @users_roles = @user.study_and_project_roles.sort_by(&:name)
+      @users_roles = @user.study_and_project_roles.order(name: :asc)
       flash[:error] = "A problem occurred while removing the role"
       render partial: "roles", status: 401
     end

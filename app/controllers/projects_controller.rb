@@ -113,7 +113,7 @@ class ProjectsController < ApplicationController
 
   def collaborators
     @project    = Project.find(params[:id])
-    @all_roles  = Role.where(name: ["owner", "follower", "manager"]).select(:name).distinct
+    @all_roles  = ["owner", "follower", "manager"]
     @roles      = Role.where(authorizable_id: @project.id, authorizable_type: "Project")
     @users      = User.order(:first_name)
   end

@@ -91,6 +91,8 @@ class Asset < ActiveRecord::Base
 
   scope :recent_first, -> { order('id DESC') }
 
+  scope :include_for_show, ->() { includes(requests: :request_metadata) }
+
   def studies
     []
   end

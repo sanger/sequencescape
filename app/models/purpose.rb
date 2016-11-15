@@ -8,15 +8,6 @@ class Purpose < ActiveRecord::Base
   self.table_name = ('plate_purposes')
 
   class Relationship < ActiveRecord::Base
-    self.table_name = ('plate_purpose_relationships')
-    belongs_to :parent, class_name: 'Purpose'
-    belongs_to :child, class_name: 'Purpose'
-
-    belongs_to :transfer_request_type, class_name: 'RequestType'
-
-    scope :with_parent, ->(plate_purpose) { where(parent_id: plate_purpose) }
-    scope :with_child,  ->(plate_purpose) { where(child_id: plate_purpose) }
-
     module Associations
       def self.included(base)
         base.class_eval do
@@ -36,6 +27,24 @@ class Purpose < ActiveRecord::Base
         relationship.transfer_request_type
       end
     end
+
+    self.table_name = ('plate_purpose_relationships')
+    belongs_to :parent, class_name: 'Purpose'
+    belongs_to :child, class_name: 'Purpose'
+
+    belongs_to :transfer_request_type, class_name: 'RequestType'
+
+    before_validation :set_default_transfer_request
+
+    scope :with_parent, ->(plate_purpose) { where(parent_id: plate_purpose) }
+    scope :with_child,  ->(plate_purpose) { where(child_id: plate_purpose) }
+
+    private
+
+    def set_default_transfer_request
+      self.transfer_request_type ||= RequestType.transfer
+    end
+
   end
 
   include Relationship::Associations
@@ -51,6 +60,10 @@ class Purpose < ActiveRecord::Base
 
   def barcode_type
     barcode_printer_type.printer_type_id
+  end
+
+  def parents_io=(uuids)
+    self.parent_purposes = Uuid.includes(:resource).where(external_id:uuids).map(&:resource)
   end
 
   # Things that are created are often in a default location!

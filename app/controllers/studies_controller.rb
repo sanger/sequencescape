@@ -156,7 +156,7 @@ class StudiesController < ApplicationController
 
   def collaborators
     @study = Study.find(params[:id])
-    @all_roles  = Role.select(:name).uniq
+    @all_roles  = Role.select(:name).uniq.pluck(:name)
     @roles      = Role.where(authorizable_id: @study.id, authorizable_type: "Study")
     @users      = User.order(:first_name)
   end

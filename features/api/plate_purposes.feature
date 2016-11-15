@@ -12,9 +12,70 @@ Feature: Access plate purposes through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
-
+    And I have a "full" authorised user with the key "cucumber"
     Given no plate purposes exist
+
+  @create
+  Scenario: Creating a new purpose via the API
+    Given a plate purpose "Example purpose" with UUID "00000000-1111-2222-3333-444444444443"
+    Given the UUID of the next plate purpose created will be "00000000-1111-2222-3333-444444444444"
+    When I make an authorised POST with the following JSON to the API path "/plate_purposes":
+      """
+      {
+        "plate_purpose": {
+          "name": "External Plate Purpose",
+          "stock_plate": true,
+          "parents": ["00000000-1111-2222-3333-444444444443"]
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+     """
+     {
+       "plate_purpose": {
+         "actions": {
+           "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+         },
+         "uuid": "00000000-1111-2222-3333-444444444444",
+         "name": "External Plate Purpose",
+         "stock_plate": "true",
+         "plates": {
+           "actions": {
+             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/plates"
+           }
+         },
+         "children": {
+           "actions": {
+             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/children"
+           }
+         }
+       }
+     }
+     """
+     When I GET the API path "/00000000-1111-2222-3333-444444444443/children"
+     Then the HTTP response should be "200 OK"
+     And the JSON should match the following for the specified fields:
+     """
+      {
+        "actions": {
+          "read":"http://www.example.com/api/1/00000000-1111-2222-3333-444444444443/children/1",
+          "first":"http://www.example.com/api/1/00000000-1111-2222-3333-444444444443/children/1",
+          "last":"http://www.example.com/api/1/00000000-1111-2222-3333-444444444443/children/1"
+        },
+        "size":1,
+        "purposes":[
+          {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+            },
+            "uuid": "00000000-1111-2222-3333-444444444444",
+            "name": "External Plate Purpose"
+          }
+        ]
+      }
+     """
+
 
   @read
   Scenario: Reading the JSON for a UUID

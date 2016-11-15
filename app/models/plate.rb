@@ -89,6 +89,16 @@ class Plate < Asset
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
 
+  scope :include_for_show, ->() {
+    includes(
+      requests: :request_metadata,
+      wells: [
+        :map_id,
+        { aliquots: [:samples, :tag, :tag2] }
+      ]
+    )
+  }
+
 
   # About 10x faster than going through the wells
   def submission_ids
