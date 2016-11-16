@@ -105,8 +105,7 @@ group :development do
   gem 'rubocop', require: false
 end
 
-group :test do
-  # bundler requires these gems while running tests
+group :test,:cucumber do
   gem "factory_girl", :require => false
   gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
@@ -115,7 +114,6 @@ group :test do
   gem "timecop", :require => false
   gem 'simplecov', require: false
 end
-
 
 group :cucumber do
   # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
