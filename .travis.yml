@@ -11,7 +11,7 @@ env:
   - "DB_REQUIRED='true' RAILS_ENV=test CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake knapsack:cucumber'"
   - "SUITE=rubocop"
 before_script:
-  - "if [[ "$DB_REQUIRED" == "true" ]]; then RAILS_ENV=test bundle exec rake db:setup; fi"
+  - 'if [[ "$DB_REQUIRED" == "true" ]]; then RAILS_ENV=test bundle exec rake db:setup; fi'
 script:
   - "bundle exec $SUITE"
 matrix:
