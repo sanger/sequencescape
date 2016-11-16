@@ -140,18 +140,7 @@ Feature: move samples and assets between studies
     And I should not see "Well" within "#assets"
     Then I should not see "Plate" within "#assets"
 
-  @wip
-  Scenario: Niel bug
-    Given data are preloaded from "RT211312" renaming:
-      | old name            | new name       |
-      | Study_1700_name     | study from     |
-      | Study_1787_name     | study 17878 to |
-      | Sample_1115606_name | sample_to_move |
-    When I move samples between studies using the spreadsheet "RT211312_samples_to_move.xls"
-    Then the sample "sample_to_move" should belong to the study named "study 17878 to"
-
-  # The aliquot on the lane of a multiplexed library should change study
-  Scenario: Niel other bug
+  Scenario: The aliquot on the lane of a multiplexed library should change study
     Given data are preloaded from "17802275_move_aliquots" renaming:
       | old_name | new_name |
       | Study_700_name | study_from |

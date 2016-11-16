@@ -116,9 +116,6 @@ group :test,:cucumber do
 end
 
 group :cucumber do
-  # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
-  # making sensible choices.  Should ...
-  # Yeah well, it doesn't.
   gem "rubyzip", "~>0.9"
   gem "capybara"
   gem 'mime-types'
