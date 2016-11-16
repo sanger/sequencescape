@@ -1,28 +1,30 @@
-# require Rails.root + '/lib/rails-authorization-plugin/lib/authorization'
+require 'rails-authorization-plugin/lib/authorization'
+
 ActionController::Base.send(:include, Authorization::Base)
 ActionView::Base.send(:include, Authorization::Base::ControllerInstanceMethods)
+
+# Can be 'object roles' or 'hardwired'
+AUTHORIZATION_MIXIN = "object roles"
+
+# NOTE : If you use modular controllers like '/admin/products' be sure
+# to redirect to something like '/sessions' controller (with a leading slash)
+# as shown in the example below or you will not get redirected properly
+#
+# This can be set to a hash or to an explicit path like '/login'
+#
+LOGIN_REQUIRED_REDIRECTION = { controller: '/sessions', action: 'login' }
+PERMISSION_DENIED_REDIRECTION = { controller: '/home', action: 'index' }
+
+# The method your auth scheme uses to store the location to redirect back to
+STORE_LOCATION_METHOD = :store_location
+
 
 # You can perform authorization at varying degrees of complexity.
 # Choose a style of authorization below (see README.txt) and the appropriate
 # mixin will be used for your app.
 
-# When used with the auth_test app, we define this in config/environment.rb
-# AUTHORIZATION_MIXIN = "hardwired"
-if not Object.constants.include? :AUTHORIZATION_MIXIN
-  AUTHORIZATION_MIXIN = "object roles"
-end
-
-case AUTHORIZATION_MIXIN
-  when "hardwired"
-    require Rails.root.to_s + '/lib/rails-authorization-plugin/lib/publishare/hardwired_roles'
-    ActiveRecord::Base.send(:include,
-      Authorization::HardwiredRoles::UserExtensions,
-      Authorization::HardwiredRoles::ModelExtensions
-    )
-  when "object roles"
-    require Rails.root.to_s + '/lib/rails-authorization-plugin/lib/publishare/object_roles_table'
-    ActiveRecord::Base.send(:include,
-      Authorization::ObjectRolesTable::UserExtensions,
-      Authorization::ObjectRolesTable::ModelExtensions
-    )
-end
+require 'rails-authorization-plugin/lib/publishare/object_roles_table'
+ActiveRecord::Base.send(:include,
+  Authorization::ObjectRolesTable::UserExtensions,
+  Authorization::ObjectRolesTable::ModelExtensions
+)

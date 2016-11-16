@@ -4,7 +4,7 @@
 # Copyright (C) 2013,2014 Genome Research Ltd.
 class CreateMiseqSubmissionTemplates < ActiveRecord::Migration
 
-  require 'lib/hiseq_2500_helper'
+  require 'hiseq_2500_helper'
 
   def self.up
     ActiveRecord::Base.transaction do

@@ -41,7 +41,7 @@ module User::Authentication
     def authenticate(login, password)
       if configatron.authentication == "ldap"
         authenticated = authenticate_with_ldap(login, password)
-        authenticated ? register_or_update_via_ldap : nil
+        authenticated ? register_or_update_via_ldap(login) : nil
       else
         authenticated = authenticate_by_local(login, password)
       end

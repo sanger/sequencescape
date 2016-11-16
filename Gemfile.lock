@@ -75,7 +75,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.4.0)
+    addressable (2.5.0)
+      public_suffix (~> 2.0, >= 2.0.2)
     amq-protocol (2.0.0)
     arel (6.0.3)
     ast (2.3.0)
@@ -191,6 +192,9 @@ GEM
     jrjackson (0.3.8)
     json (1.8.3)
     json (1.8.3-java)
+    knapsack (1.13.0)
+      rake
+      timecop (>= 0.1.0)
     launchy (2.4.3)
       addressable (~> 2.3)
     launchy (2.4.3-java)
@@ -233,9 +237,10 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
+    public_suffix (2.0.4)
     puma (3.6.0)
     puma (3.6.0-java)
-    rack (1.6.4)
+    rack (1.6.5)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
     rack-protection (1.5.3)
@@ -357,7 +362,7 @@ GEM
     websocket-driver (0.6.3-java)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    will_paginate (3.0.7)
+    will_paginate (3.1.5)
     will_paginate-bootstrap (1.0.1)
       will_paginate (>= 3.0.3)
     xpath (2.0.0)
@@ -403,6 +408,7 @@ DEPENDENCIES
   jquery-ui-rails
   jrjackson
   json
+  knapsack
   launchy
   mime-types
   mocha

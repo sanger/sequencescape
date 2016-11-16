@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require 'lib/lab_where_client'
+require 'lab_where_client'
 
 class Plate < Asset
 
@@ -190,13 +190,15 @@ class Plate < Asset
     # Grouped return a hash, for which we want the length
     # otherwise we get an integer
     # We need to urgently revisit this, as this solution is horrible.
+    # Adding to the horrible: The :all passed in to the super is to address a
+    # rails bug with count and custom selects.
     def size(*args)
       s = super
       return s.length if s.respond_to?(:length)
       s
     end
     def count(*args)
-      s = super
+      s = super(:all)
       return s.length if s.respond_to?(:length)
       s
     end

@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require 'lib/eventful_record'
-require 'lib/external_properties'
+require 'eventful_record'
+require 'external_properties'
 
-require 'lib/eventful_record'
-require 'lib/external_properties'
+require 'eventful_record'
+require 'external_properties'
 
 class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails
@@ -68,6 +68,9 @@ class Asset < ActiveRecord::Base
   # Orders
   has_many :submitted_assets
   has_many :orders, through: :submitted_assets
+
+  has_one :custom_metadatum_collection
+  delegate :metadata, to: :custom_metadatum_collection
 
   scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
 

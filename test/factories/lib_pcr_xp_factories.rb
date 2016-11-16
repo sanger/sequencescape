@@ -5,7 +5,9 @@ FactoryGirl.define do
     after(:create) do |plate|
       plate.wells.import(
         ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'].map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          map = Map.where_description(location).
+            where_plate_size(plate.size).
+            where_plate_shape(AssetShape.default).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
         end
       )
@@ -20,7 +22,9 @@ FactoryGirl.define do
     after(:create) do |plate|
       plate.wells.import(
         ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'].map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          map = Map.where_description(location).
+            where_plate_size(plate.size).
+            where_plate_shape(AssetShape.default).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
         end
       )
@@ -32,7 +36,7 @@ FactoryGirl.define do
       parent { create(:lib_pcr_xp_plate) }
     end
 
-    after(:build) do |child_plate, evaluator|
+    after(:create) do |child_plate, evaluator|
       child_plate.parents << evaluator.parent
       child_plate.purpose.source_purpose = evaluator.parent.purpose
     end
