@@ -106,8 +106,7 @@ group :development do
   gem 'rdoc', :require => false
 end
 
-group :test do
-  # bundler requires these gems while running tests
+group :test,:cucumber do
   gem "factory_girl", :require => false
   gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
