@@ -122,10 +122,10 @@ group :cucumber do
   # making sensible choices.  Should ...
   # Yeah well, it doesn't.
   gem "rubyzip", "~>0.9"
-  gem "capybara", :require => false
+  gem "capybara"
   gem 'mime-types'
-  gem "database_cleaner", :require => false
-  gem "cucumber-rails", :require => false
+  gem "database_cleaner"
+  gem "cucumber-rails"
   gem "poltergeist"
   gem "webmock"
   gem "knapsack"
