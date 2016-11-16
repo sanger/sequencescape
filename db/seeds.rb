@@ -11,12 +11,12 @@
 # WARNING: Seeding anything other than the development or test DB takes someone who knows exactly what
 # they are doing.  So here we're preventing you from actually doing that.
 ##########################################################################################################
-unless [:development, :test, :seeding].include?(Rails.env.to_sym)
+unless [:development, :test, :seeding, :cucumber].include?(Rails.env.to_sym)
   raise StandardError, <<-END_OF_MESSAGE
 **********************************************************************************************************
 ********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************
 
-You are quite clearly either wreckless, incompetent or insane.  You are trying to seed the #{Rails.env}
+You are quite clearly either wreckless, incompetent or careless.  You are trying to seed the #{Rails.env}
 database which should never be done.  Please recheck your shell environment to ensure that Rails.env
 is not set, or is set to either 'development' or 'test'.
 
