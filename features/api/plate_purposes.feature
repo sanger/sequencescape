@@ -25,7 +25,7 @@ Feature: Access plate purposes through the API
         "plate_purpose": {
           "name": "External Plate Purpose",
           "stock_plate": true,
-          "parents": ["00000000-1111-2222-3333-444444444443"]
+          "parent_uuids": ["00000000-1111-2222-3333-444444444443"]
         }
       }
       """
