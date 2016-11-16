@@ -3,7 +3,7 @@
 # authorship of this file.
 # Copyright (C) 2014 Genome Research Ltd.
 class AddX10SubmissionTemplates < ActiveRecord::Migration
-  require 'lib/hiseq_2500_helper'
+  require 'hiseq_2500_helper'
 
   def self.up
     ActiveRecord::Base.transaction do

@@ -2,7 +2,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
-require 'lib/eventful_mailer'
+require 'eventful_mailer'
 class EventFactory
 
   #################################
