@@ -8,7 +8,7 @@ bundler_args: --without warehouse deployment
 env:
   - "DB_REQUIRED='true' RAILS_ENV=test TZ=Europe/London SUITE='rake test' RUBYOPT='-W0'" # RUBYOPT disables warnings turned on by default in rake 11. See note in README
   - "DB_REQUIRED='true' RAILS_ENV=test CI_NODE_TOTAL=2 CI_NODE_INDEX=0 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake knapsack:cucumber'"
-  - "DB_REQUIRED='true' RAILS_ENV=test CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake knapsack:cucumber'"
+  - "DB_REQUIRED='true' RAILS_ENV=test CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='cucumber'"
   - "SUITE=rubocop"
 before_script:
   - 'if [[ "$DB_REQUIRED" == "true" ]]; then RAILS_ENV=test bundle exec rake db:setup; fi'
