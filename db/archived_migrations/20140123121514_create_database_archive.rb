@@ -3,7 +3,7 @@
 # authorship of this file.
 # Copyright (C) 2014 Genome Research Ltd.
 class CreateDatabaseArchive < ActiveRecord::Migration
-  require 'lib/db_table_archiver'
+  require 'db_table_archiver'
   def self.up
     DbTableArchiver.create_archive!
   end

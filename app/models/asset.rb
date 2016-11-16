@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require 'lib/eventful_record'
-require 'lib/external_properties'
+require 'eventful_record'
+require 'external_properties'
 
-require 'lib/eventful_record'
-require 'lib/external_properties'
+require 'eventful_record'
+require 'external_properties'
 
 class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails

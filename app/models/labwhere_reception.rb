@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require 'lib/lab_where_client'
+require 'lab_where_client'
 # A simple class to handle the behaviour from the labwhere reception controller
 class LabwhereReception
   # The following two modules include methods used by a number of rails

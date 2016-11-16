@@ -12,6 +12,7 @@ Sequencescape::Application.configure do
   # break Cucumber's use_transactional_fixtures method.
   # For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
   config.cache_classes = true
+  config.active_support.deprecation = :log
 
   config.serve_static_files = true
 
@@ -21,8 +22,6 @@ Sequencescape::Application.configure do
 
   # we don't need :debug unless we're debugging tests
   config.log_level = :error
-
-  config.active_record.whitelist_attributes = false
 
   # Show full error reports and disable caching
   # config.action_controller.consider_all_requests_local = true

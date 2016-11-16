@@ -6,7 +6,7 @@
 
 class UpdateIscRepoolTubes < ActiveRecord::Migration
 
-  require 'lib/tube_purpose_helper'
+  require 'tube_purpose_helper'
   extend TubePurposeHelper
 
   def self.up
