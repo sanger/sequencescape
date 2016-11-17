@@ -105,7 +105,11 @@ group :development do
   gem 'rubocop', require: false
 end
 
-group :test,:cucumber do
+group :test do
+  gem 'rspec-rails', require: false
+end
+
+group :test, :cucumber do
   gem "factory_girl", :require => false
   gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
@@ -116,14 +120,14 @@ group :test,:cucumber do
 end
 
 group :cucumber do
-  gem "rubyzip", "~>0.9"
-  gem "capybara"
-  gem 'mime-types'
-  gem "database_cleaner"
-  gem "cucumber-rails"
-  gem "poltergeist"
-  gem "webmock"
-  gem "knapsack"
+  gem "rubyzip", "~>0.9", require: false
+  gem "capybara", require: false
+  gem 'mime-types', require: false
+  gem "database_cleaner", require: false
+  gem "cucumber-rails", require: false
+  gem "poltergeist", require: false
+  gem "webmock", require: false
+  gem "knapsack", require: false
 end
 
 group :deployment do
