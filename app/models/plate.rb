@@ -102,7 +102,7 @@ class Plate < Asset
 
   # About 10x faster than going through the wells
   def submission_ids
-    @siat ||=  container_associations.
+    @siat ||= container_associations.
       joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id').
       where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE }).
       uniq.pluck(:submission_id)

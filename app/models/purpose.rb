@@ -63,11 +63,11 @@ class Purpose < ActiveRecord::Base
   end
 
   def parent_uuids=(uuids)
-    self.parent_purposes = Uuid.includes(:resource).where(external_id:uuids).map(&:resource)
+    self.parent_purposes = Uuid.includes(:resource).where(external_id: uuids).map(&:resource)
   end
 
   def child_uuids=(uuids)
-    self.child_purposes = Uuid.includes(:resource).where(external_id:uuids).map(&:resource)
+    self.child_purposes = Uuid.includes(:resource).where(external_id: uuids).map(&:resource)
   end
 
   # Things that are created are often in a default location!

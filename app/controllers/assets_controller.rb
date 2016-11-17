@@ -175,7 +175,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @asset.update_attributes(asset_params.merge(params.fetch(:lane,{})))
+      if @asset.update_attributes(asset_params.merge(params.fetch(:lane, {})))
         flash[:notice] = 'Asset was successfully updated.'
         unless params[:lab_view]
           format.html { redirect_to(action: :show, id: @asset.id) }
@@ -192,7 +192,7 @@ class AssetsController < ApplicationController
 
   private def asset_params
     permitted = [:location_id]
-    permitted << :name if current_user.administrator?#
+    permitted << :name if current_user.administrator? #
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)
   end

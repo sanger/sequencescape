@@ -62,7 +62,7 @@ class User < ActiveRecord::Base
   end
 
   def study_and_project_roles
-    roles.where(authorizable_type: ['Study','Project'])
+    roles.where(authorizable_type: ['Study', 'Project'])
   end
 
   def user_roles(authorizable_class_name)
