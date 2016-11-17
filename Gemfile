@@ -105,6 +105,10 @@ group :development do
   gem 'rubocop', require: false
 end
 
+group :test do
+  gem 'rspec-rails', require: false
+end
+
 group :test,:cucumber do
   gem 'factory_girl', require: false
   gem 'launchy', require: false
