@@ -17,6 +17,9 @@ class Pipeline < ActiveRecord::Base
   include Pipeline::InboxUngrouped
   include Pipeline::BatchValidation
 
+  class_attribute :batch_worksheet
+  self.batch_worksheet = "detailed_worksheet"
+
   INBOX_PARTIAL               = 'default_inbox'
   ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
 

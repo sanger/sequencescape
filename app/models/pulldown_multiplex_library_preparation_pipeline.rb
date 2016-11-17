@@ -6,6 +6,8 @@ class PulldownMultiplexLibraryPreparationPipeline < Pipeline
   INBOX_PARTIAL               = 'group_by_parent'
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
+  self.batch_worksheet = "pulldown_worksheet"
+
   def inbox_partial
     INBOX_PARTIAL
   end

@@ -477,42 +477,24 @@ class BatchesController < ApplicationController
   end
 
   def print
-    if params[:task_id]
-      @task = Task.find(params[:task_id])
-    end
-
+    @task     = Task.find(params[:task_id]) if params[:task_id]
     @workflow = @batch.workflow
     @pipeline = @batch.pipeline
     @comments = @batch.comments
 
     # TODO: Re-factor this.
-
     if @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
       @plate = @batch.requests.first.asset.plate
-      render :action => "pulldown_worksheet", :layout => false
     elsif @pipeline.is_a?(CherrypickingPipeline)
-      if params[:barcode]
-        @plates = [Plate.find_by_barcode(params[:barcode])]
-      else
-        @plates = @batch.output_plates
-      end
-      render :action => "cherrypick_worksheet", :layout => false
-    elsif @batch.has_item_limit?
-      # Currently cluster formation pipelines
-      render :action => "simplified_worksheet", :layout => false
-    elsif @batch.multiplexed?
-      if @task
-        render :action => "multiplexed_library_worksheet", :layout => false, :locals => {:task => @task}
-      else
-        render :action => "multiplexed_library_worksheet", :layout => false
-      end
-    else
-      if @task
-        render :action => "detailed_worksheet", :layout => false, :locals => {:task => @task}
-      else
-        render :action => "detailed_worksheet", :layout => false
-      end
+      @plates = if params[:barcode]
+                  [Plate.find_by_barcode(params[:barcode])]
+                else
+                  @batch.output_plates
+                end
     end
+
+    template = @pipeline.batch_worksheet
+    render :action => template, :layout => false
   end
 
   def verify
