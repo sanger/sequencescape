@@ -4,7 +4,7 @@
 # Copyright (C) 2013 Genome Research Ltd.
 class AddFluidigmMaps < ActiveRecord::Migration
 
-  require 'lib/fluidigm_helper'
+  require 'fluidigm_helper'
 
   def self.up
     ActiveRecord::Base.transaction do

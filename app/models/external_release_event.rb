@@ -3,7 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
-require 'lib/eventful_mailer'
+require 'eventful_mailer'
 class ExternalReleaseEvent < Event
   after_create :physically_send_email, if: :send_email
 

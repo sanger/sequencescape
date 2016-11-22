@@ -4,7 +4,7 @@ namespace :db do
     task dump_schema: :environment do
       File.open('./db/views_schema.tmp', 'w') do |schema|
         schema.puts "# This is an automatically generated file by rake:db:views:dump_schema"
-        schema.puts "require 'lib/views_schema'"
+        schema.puts "require 'views_schema'"
         ViewsSchema.each_view do |name, definition|
           schema.puts "ViewsSchema.create_view("
           schema.puts "'#{name}',"

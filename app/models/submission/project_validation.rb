@@ -61,7 +61,7 @@ module Submission::ProjectValidation
   # from pulled data
   def save_after_unmarshalling
     @saving_without_validation = true
-    save_without_validation
+    save(validate: false)
     @saving_without_validation = false
   end
 

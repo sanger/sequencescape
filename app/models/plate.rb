@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require 'lib/lab_where_client'
+require 'lab_where_client'
 
 class Plate < Asset
 
