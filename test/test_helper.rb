@@ -11,6 +11,7 @@ require 'minitest/autorun'
 require 'shoulda'
 require 'rails/test_help'
 require 'factory_girl'
+require 'webmock/minitest'
 
 begin
   require 'pry'

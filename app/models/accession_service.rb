@@ -3,6 +3,10 @@
 #Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class AccessionService
+
+  class_attribute :rest_client_class
+  self.rest_client_class = RestClient::Resource
+
   AccessionServiceError = Class.new(StandardError)
   NumberNotRequired     = Class.new(AccessionServiceError)
   NumberNotGenerated    = Class.new(AccessionServiceError)
@@ -95,7 +99,7 @@ class AccessionService
   end
 
   def submit_sample_for_user(sample, user)
-    raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
+    # raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
 
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
     #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
@@ -255,11 +259,16 @@ private
     raise NotImplemented, "abstract method"
   end
 
+  def rest_client_resource
+    rest_client_class.new(URI.parse(configatron.accession_url + accession_login).to_s)
+  end
+
   def post_files(file_params)
     raise StandardError, "Cannot connect to EBI to get accession number. Please configure accession_url in config.yml" if configatron.accession_url.blank?
 
     begin
-      rc = RestClient::Resource.new(URI.parse(configatron.accession_url+accession_login).to_s)
+      # rc = RestClient::Resource.new(URI.parse(configatron.accession_url+accession_login).to_s)
+      rc = rest_client_resource
       if configatron.disable_web_proxy == true
         RestClient.proxy = ''
       elsif not configatron.proxy.blank?

@@ -290,6 +290,76 @@ class SampleTest < ActiveSupport::TestCase
           assert_accession_service(:unsuitable)
         end
       end
+
+    end
+
+    context "accessioning" do
+
+      attr_reader :metadata_with_an, :metadata_wo_an
+
+      setup do
+        create(:user, api_key: configatron.accession_local_key)
+        @metadata_with_an = {sample_taxon_id: "1", sample_common_name: "A common name", sample_ebi_accession_number: "ENA123" }
+        @metadata_wo_an = metadata_with_an.except(:sample_ebi_accession_number)
+      end
+
+      should 'proceed if the sample meets accessioning requirements' do
+        assert create(:sample, studies: [create(:open_study)], sample_metadata: Sample::Metadata.new(metadata_wo_an)).accessionable?
+      end
+
+      should 'not proceed if the sample has already been accessioned' do
+
+        refute create(:sample, studies: [create(:open_study, accession_number: 'ENA123')], sample_metadata: Sample::Metadata.new(metadata_with_an)).accessionable?
+      end
+
+      should 'not proceed if the sample metadata has no taxon and common name' do
+        refute create(:sample, sample_metadata: Sample::Metadata.new(metadata_wo_an.except(:sample_taxon_id))).accessionable?
+        refute create(:sample, sample_metadata: Sample::Metadata.new(metadata_wo_an.except(:sample_common_name))).accessionable?
+      end
+
+      should 'not proceed if the studies are not suitable' do
+        open_study = create(:open_study)
+        assert create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata_wo_an)).accessionable?
+        assert create(:sample, studies: [create(:managed_study)], sample_metadata: Sample::Metadata.new(metadata_wo_an)).accessionable?
+        refute create(:sample, studies: [create(:not_app_study)], sample_metadata: Sample::Metadata.new(metadata_wo_an)).accessionable?
+        open_study.study_metadata.update_attributes(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes', data_release_prevention_reason_comment: "blah, blah, blah") 
+        refute create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata_wo_an)).accessionable?
+      end
+
+      should 'not proceed if the current user is not valid' do
+        configatron.accession_local_key = nil
+        refute create(:sample, studies: [create(:open_study)], sample_metadata: Sample::Metadata.new(metadata_wo_an)).accessionable?
+        configatron.accession_local_key = "abc"
+      end
+
+      context 'delayed job' do
+
+        setup do
+          Delayed::Worker.delay_jobs = false
+          WebMock.stub_request(:post, "#{configatron.accession_url}#{configatron.ena_accession_login}").to_return( {
+            headers: {'Content-Type' => 'text/xml'},
+            body: '<RECEIPT success="true"><SAMPLE accession="EGA00001000240" /></RECEIPT>',
+            status: 200
+          })
+        end
+
+        should 'succeed if the sample is acccessionable' do
+          sample = create(:sample, studies: [create(:open_study, accession_number: 'ENA123')], sample_metadata: Sample::Metadata.new(metadata_wo_an))
+          sample.save
+          assert(sample.sample_metadata.sample_ebi_accession_number.present?)
+        end
+
+        should 'fail if the sample is not accessionable' do
+          sample = create(:sample, studies: [create(:open_study)], sample_metadata: Sample::Metadata.new(metadata_wo_an.except(:sample_taxon_id)))
+          refute(sample.sample_metadata.sample_ebi_accession_number.present?)
+        end
+
+        teardown do
+          Delayed::Worker.delay_jobs = true
+        end
+      end
+
     end
   end
+
 end

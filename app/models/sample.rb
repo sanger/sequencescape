@@ -79,6 +79,8 @@ class Sample < ActiveRecord::Base
   end
   private :safe_to_destroy
 
+  after_save :create_accession_number, if: :accessionable?
+
   scope :with_name, ->(*names) { where(:name => names.flatten) }
 
 
@@ -187,6 +189,8 @@ class Sample < ActiveRecord::Base
 
     return has_ebi_accession_number
   end
+
+
 
   # TODO: remove as this is no longer needed (validation of name change will fail)
   # On update, checks if updating the name is possible
@@ -485,6 +489,14 @@ class Sample < ActiveRecord::Base
 
   def friendly_name
     sanger_sample_id||name
+  end
+
+  def accessionable?
+    SampleAccessioningValidator.new(self).valid?
+  end
+
+  def create_accession_number
+    Delayed::Job.enqueue SampleAccessioningJob.new(self)
   end
 
   # These don't really belong here, but exist due to the close coupling between sample
