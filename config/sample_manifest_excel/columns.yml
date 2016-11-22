@@ -83,13 +83,18 @@ library_type:
   unlocked: true
   validation:
     options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "255"
+      type: :list
+      formula1: "$A$1:$A$2"
       allowBlank: false
+      showDropDown: false
       showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Library type"
+      error: "You must enter a Library type from the list provided."
       promptTitle: "Library type"
       prompt: "Provide a library type from the approved list"
+    range_name: :library_type
   conditional_formattings:
     empty_cell:
 insert_size_from:

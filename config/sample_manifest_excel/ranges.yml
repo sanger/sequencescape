@@ -1,5 +1,5 @@
 gender:
-  - Male 
+  - Male
   - Female
   - Mixed
   - Hermaphrodite
@@ -36,3 +36,7 @@ dna_storage_conditions:
   - +4C
   - '-20C'
   - '-80C'
+library_type: !ruby/object:SampleManifestExcel::DynamicOption
+  identifier: :name
+  klass: !ruby/class 'LibraryType'
+  scope: :alphabetical
