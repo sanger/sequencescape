@@ -42,12 +42,6 @@ FactoryGirl.define do
     end
   end
 
-  factory :lib_pcr_xp_request, parent: :request_without_assets do
-    request_type { |rt|    rt.association(:lib_pcr_xp_request_type) }
-    asset        { |asset| asset.association(:well)  }
-    target_asset { |asset| asset.association(:empty_library_tube) }
-  end
-
   factory :lib_pcr_xp_request_type, parent: :request_type  do
     asset_type     'Well'
     request_class CustomerRequest

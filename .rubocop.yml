@@ -32,3 +32,13 @@ Lint/Debugger:
 # numbers, we're more likely to see it shout at use about barcodes.
 Style/NumericLiterals:
   Enabled: false
+
+# Blocks are used to structure tests and are part of the shoulda dsl.
+# The standard BlockLength limits are too stringent for this purpose.
+Metrics/BlockLength:
+  Exclude:
+    - 'test/**/*'
+
+# Enforces the new rails 5 style. Re-enable on Rails 5 upgrade.
+Rails/HttpPositionalArguments:
+  Enabled: false

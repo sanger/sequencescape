@@ -85,61 +85,21 @@ class BatchesController < ApplicationController
     @bp ||= params.require(:batch).permit(:assignee_id)
   end
 
-  def hide_from_inbox(requests)
-    ActiveRecord::Base.transaction do
-      requests.map(&:hold!)
-    end
-
-    respond_to do |format|
-      flash[:notice] = 'Requests hidden from inbox'
-      format.html { redirect_to controller: :pipelines, action: :show, id: @pipeline.id }
-      format.xml  { head :ok }
-    end
-  end
-
-  def cancel_requests(requests)
-    ActiveRecord::Base.transaction do
-      requests.map(&:cancel_before_started!)
-    end
-
-    respond_to do |format|
-      flash[:notice] = 'Requests canceled'
-      format.html { redirect_to controller: :pipelines, action: :show, id: @pipeline.id }
-      format.xml  { head :ok }
-    end
-  end
-
   def create
-    ActiveRecord::Base.transaction do
       @pipeline = Pipeline.find(params[:id])
 
-      unless @pipeline.valid_number_of_checked_request_groups?(params)
-        return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
-      end
-
+      # TODO: These should be different endpoints
       requests = @pipeline.extract_requests_from_input_params(params)
 
-      return cancel_requests(requests) if params[:action_on_requests] == "cancel_requests"
-
-      return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
-      return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
-      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
-
-      @batch = @pipeline.batches.create!(requests: requests, user: current_user)
-
-    end # of transaction
-
-    respond_to do |format|
-      format.html {
-        if @pipeline.has_controls?
-          flash[:notice] = 'Batch created - now add a control'
-          redirect_to action: :control, id: @batch.id
-        else
-          redirect_to action: :show, id: @batch.id
-        end
-      }
-      format.xml { head :created, location: batch_url(@batch) }
-    end
+      case params[:action_on_requests]
+      when "cancel_requests"
+        return cancel_requests(requests)
+      when "hide_from_inbox"
+        return hide_from_inbox(requests)
+      else
+        # This is the standard create action
+        standard_create(requests)
+      end
   rescue ActiveRecord::RecordInvalid => exception
     respond_to do |format|
       format.html {
@@ -483,42 +443,24 @@ class BatchesController < ApplicationController
   end
 
   def print
-    if params[:task_id]
-      @task = Task.find(params[:task_id])
-    end
-
+    @task     = Task.find(params[:task_id]) if params[:task_id]
     @workflow = @batch.workflow
     @pipeline = @batch.pipeline
     @comments = @batch.comments
 
     # TODO: Re-factor this.
-
     if @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
       @plate = @batch.requests.first.asset.plate
-      render action: "pulldown_worksheet", layout: false
     elsif @pipeline.is_a?(CherrypickingPipeline)
-      if params[:barcode]
-        @plates = [Plate.find_by_barcode(params[:barcode])]
-      else
-        @plates = @batch.output_plates
-      end
-      render action: "cherrypick_worksheet", layout: false
-    elsif @batch.has_item_limit?
-      # Currently cluster formation pipelines
-      render action: "simplified_worksheet", layout: false
-    elsif @batch.multiplexed?
-      if @task
-        render action: "multiplexed_library_worksheet", layout: false, locals: { task: @task }
-      else
-        render action: "multiplexed_library_worksheet", layout: false
-      end
-    else
-      if @task
-        render action: "detailed_worksheet", layout: false, locals: { task: @task }
-      else
-        render action: "detailed_worksheet", layout: false
-      end
+      @plates = if params[:barcode]
+                  [Plate.find_by(barcode: params[:barcode])]
+                else
+                  @batch.output_plates
+                end
     end
+
+    template = @pipeline.batch_worksheet
+    render action: template, layout: false
   end
 
   def verify
@@ -675,8 +617,9 @@ class BatchesController < ApplicationController
 
 
   def find_batch_by_barcode
+    # Caution! This isn't actually a rails finder.
     batch_id = LabEvent.find_by_barcode(params[:id])
-    if batch_id == 0
+    if batch_id.zero?
       @batch_error = "Batch id not found."
       render action: "batch_error", format: :xml
       return
@@ -687,12 +630,62 @@ class BatchesController < ApplicationController
   end
 
   private
+
   def pipeline_error_on_batch_creation(message)
     respond_to do |format|
       flash[:error] = message
       format.html { redirect_to pipeline_url(@pipeline) }
     end
     return
+  end
+
+  def hide_from_inbox(requests)
+    ActiveRecord::Base.transaction do
+      requests.map(&:hold!)
+    end
+
+    respond_to do |format|
+      flash[:notice] = 'Requests hidden from inbox'
+      format.html { redirect_to controller: :pipelines, action: :show, id: @pipeline.id }
+      format.xml  { head :ok }
+    end
+  end
+
+  def cancel_requests(requests)
+    ActiveRecord::Base.transaction do
+      requests.map(&:cancel_before_started!)
+    end
+
+    respond_to do |format|
+      flash[:notice] = 'Requests canceled'
+      format.html { redirect_to controller: :pipelines, action: :show, id: @pipeline.id }
+      format.xml  { head :ok }
+    end
+  end
+
+  # This is the expected create behaviour, and is only in a seperate
+  # method due to the overloading on the create endpoint.
+  def standard_create(requests)
+    ActiveRecord::Base.transaction do
+      unless @pipeline.valid_number_of_checked_request_groups?(params)
+        return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
+      end
+      return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
+      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
+      @batch = @pipeline.batches.create!(requests: requests, user: current_user)
+    end
+
+    respond_to do |format|
+      format.html {
+        if @pipeline.has_controls?
+          flash[:notice] = 'Batch created - now add a control'
+          redirect_to action: :control, id: @batch.id
+        else
+          redirect_to action: :show, id: @batch.id
+        end
+      }
+      format.xml { head :created, location: batch_url(@batch) }
+    end
   end
 
 end

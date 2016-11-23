@@ -20,6 +20,9 @@ class Pipeline < ActiveRecord::Base
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
 
+  class_attribute :batch_worksheet
+  self.batch_worksheet = "detailed_worksheet"
+
   INBOX_PARTIAL               = 'default_inbox'
   ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
 
@@ -153,7 +156,7 @@ class Pipeline < ActiveRecord::Base
 
   # to overwrite by subpipeline if needed
   def group_requests(requests, option = {})
-    requests.group_requests(:all, option).group_by(&grouping_function(option))
+    requests.group_requests(option).all.group_by(&grouping_function(option))
   end
 
   def finish_batch(batch, user)
@@ -214,7 +217,7 @@ class Pipeline < ActiveRecord::Base
   end
   private :selected_values_from
 
-  def extract_requests_from_input_params(params = {})
+  def extract_requests_from_input_params(params)
     if (request_ids = params["request"]).present?
       requests.inputs(true).order(:id).find(selected_values_from(request_ids).map(&:first))
     elsif (selected_groups = params["request_group"]).present?

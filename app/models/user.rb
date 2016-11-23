@@ -235,7 +235,7 @@ class User < ActiveRecord::Base
     rescue
       return false
     end
-    return false unless User.find_by_barcode(human_code)
+    return false unless User.find_by(barcode: human_code)
 
     true
   end
