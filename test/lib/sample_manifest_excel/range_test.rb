@@ -14,7 +14,7 @@ class RangeTest < ActiveSupport::TestCase
     refute_equal SampleManifestExcel::Range.new(attributes), SampleManifestExcel::Range.new(attributes.except(:last_row))
   end
 
-  context "with options" do
+  context "with static options" do
 
     setup do
       @range = SampleManifestExcel::Range.new(options: options, first_row: 4)
@@ -64,6 +64,11 @@ class RangeTest < ActiveSupport::TestCase
         absolute_reference: range.absolute_reference}, range.references)
     end
 
+    should "be static, not dynamic" do
+      assert range.static?
+      refute range.dynamic?
+    end
+
   end
 
   context "with dynamic options" do
@@ -72,16 +77,12 @@ class RangeTest < ActiveSupport::TestCase
       # Ensure we have at least one option.
       create :library_type
       @original_option_size = LibraryType.count
-      @options = SampleManifestExcel::DynamicOption.new(
-        klass: LibraryType,
-        scope: :alphabetical,
-        identifier: :name
-      )
-      @range = SampleManifestExcel::Range.new(options: options, first_row: 4)
+      @attributes = {name: "library_type", identifier: :name, scope: :alphabetical, first_row: 4}
+      @range = SampleManifestExcel::Range.new(@attributes)
     end
 
     should "have some options" do
-      assert_equal options, range.options
+      assert_equal @original_option_size, range.options.count
     end
 
     should "have a first row" do
@@ -94,8 +95,7 @@ class RangeTest < ActiveSupport::TestCase
 
     should "set the last column" do
       assert_equal @original_option_size, range.last_column
-
-      assert_equal 3+@original_option_size, SampleManifestExcel::Range.new(options: options, first_column: 4, first_row: 4).last_column
+      assert_equal 3+@original_option_size, SampleManifestExcel::Range.new(@attributes.merge(first_column: 4)).last_column
     end
 
     should "have a first_cell" do
@@ -122,6 +122,11 @@ class RangeTest < ActiveSupport::TestCase
       assert_equal({first_cell_reference: range.first_cell_reference,
         reference: range.reference, fixed_reference: range.fixed_reference,
         absolute_reference: range.absolute_reference}, range.references)
+    end
+
+    should 'know it is dynamic' do
+      refute range.static?
+      assert range.dynamic?
     end
 
     should "adjust to changes in option number" do

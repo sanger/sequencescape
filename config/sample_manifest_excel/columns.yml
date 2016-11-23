@@ -97,6 +97,7 @@ library_type:
     range_name: :library_type
   conditional_formattings:
     empty_cell:
+    is_error:
 insert_size_from:
   heading: INSERT SIZE FROM
   unlocked: true

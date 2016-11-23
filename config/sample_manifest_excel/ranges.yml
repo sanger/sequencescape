@@ -1,42 +1,47 @@
 gender:
-  - Male
-  - Female
-  - Mixed
-  - Hermaphrodite
-  - Unknown
-  - Not Applicable
+  options:
+    - Male
+    - Female
+    - Mixed
+    - Hermaphrodite
+    - Unknown
+    - Not Applicable
 dna_source:
-  - Blood
-  - Cell Line
-  - Saliva
-  - Whole Genome Amplified
-  - FFPE
-  - Amniocentesis Uncultured
-  - Amniocentesis Cultured
-  - CVS Uncultured
-  - CVS Cultured
-  - Fetal Blood
-  - Tissue
+  options:
+    - Blood
+    - Cell Line
+    - Saliva
+    - Whole Genome Amplified
+    - FFPE
+    - Amniocentesis Uncultured
+    - Amniocentesis Cultured
+    - CVS Uncultured
+    - CVS Cultured
+    - Fetal Blood
+    - Tissue
 yes_no:
-  - 'Yes'
-  - 'No'
+  options:
+    - 'Yes'
+    - 'No'
 purification_method:
-  - Glassmilk/Qiagen
-  - Ultrapure
-  - Column/Qiagen
-  - Microdialyser/Spectrum
-  - Ethanol
-  - Other
+  options:
+    - Glassmilk/Qiagen
+    - Ultrapure
+    - Column/Qiagen
+    - Microdialyser/Spectrum
+    - Ethanol
+    - Other
 concentration_determined_by:
-  - PicoGreen
-  - Nanodrop
-  - Spectrophotometer
-  - Other
+  options:
+    - PicoGreen
+    - Nanodrop
+    - Spectrophotometer
+    - Other
 dna_storage_conditions:
-  - +4C
-  - '-20C'
-  - '-80C'
-library_type: !ruby/object:SampleManifestExcel::DynamicOption
+  options:
+    - +4C
+    - '-20C'
+    - '-80C'
+library_type:
   identifier: :name
-  klass: !ruby/class 'LibraryType'
   scope: :alphabetical

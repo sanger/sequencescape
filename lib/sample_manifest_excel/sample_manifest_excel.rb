@@ -20,7 +20,6 @@ module SampleManifestExcel
   require_relative "sample_manifest_excel/range_list"
   require_relative "sample_manifest_excel/worksheet"
   require_relative "sample_manifest_excel/download"
-  require_relative "sample_manifest_excel/dynamic_option"
 
   module Helpers
     def load_file(folder, filename)

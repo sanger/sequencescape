@@ -16,6 +16,17 @@ class RangeListTest < ActiveSupport::TestCase
     assert_equal ranges.count, range_list.count
   end
 
+  test 'should create the right ranges' do
+    static_range = range_list.first[1]
+    dynamic_range = range_list.find_by(ranges.keys.last)
+    refute static_range.dynamic?
+    assert static_range.static?
+    assert static_range.name
+    assert dynamic_range.dynamic?
+    refute dynamic_range.static?
+    assert dynamic_range.name
+  end
+
   test "#find_by returns correct range" do
     assert range_list.find_by(ranges.keys.first)
     assert range_list.find_by(ranges.keys.first.to_sym)

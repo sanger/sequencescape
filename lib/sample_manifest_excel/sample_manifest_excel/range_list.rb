@@ -52,8 +52,9 @@ module SampleManifestExcel
 
     def create(ranges_data)
       {}.tap do |ranges|
-        ranges_data.each_with_index do |(name, options), i|
-        	ranges[name] = SampleManifestExcel::Range.new(options: options, first_row: i+1)
+        ranges_data.each_with_index do |(name, attributes), i|
+          attributes = Hash(attributes.each {|k, v| [k, v]}).merge(name: name, first_row: i+1)
+          ranges[name] = SampleManifestExcel::Range.new(attributes)
         end
       end
     end

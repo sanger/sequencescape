@@ -11,7 +11,7 @@ class ColumnListTest < ActiveSupport::TestCase
     @yaml = load_file(folder, "columns")
     @conditional_formattings = SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, "conditional_formattings"))
     @column_list = SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
-    @ranges = build(:range_list, options: load_file(folder, "ranges"))
+    @ranges = build(:range_list, ranges_data: load_file(folder, "ranges"))
   end
 
   test "should create a list of columns" do

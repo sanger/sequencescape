@@ -5,7 +5,7 @@ class ColumnTest < ActiveSupport::TestCase
   attr_reader :column, :sample, :range_list, :worksheet
 
   def setup
-    @range_list = build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range)})
+    @range_list = build(:range_list, ranges_data: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range)})
     @worksheet = Axlsx::Workbook.new.add_worksheet
   end
 

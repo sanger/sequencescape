@@ -9,7 +9,7 @@ module SampleManifestExcel
 
     include HashAttributes
 
-    set_attributes :options, :first_row, :last_row, :first_column, :last_column, :worksheet_name
+    set_attributes :options, :identifier, :name, :scope, :first_row, :last_row, :first_column, :last_column, :worksheet_name
 
     attr_reader :first_cell, :last_cell, :reference, :absolute_reference
 
@@ -18,8 +18,6 @@ module SampleManifestExcel
     # these are used for references.
     def initialize(attributes = {})
       create_attributes(attributes)
-
-      @static = options.is_a?(Array)
 
       if valid?
         @first_cell = Cell.new(first_row, first_column)
@@ -62,7 +60,13 @@ module SampleManifestExcel
     ##
     # If not defined is set to an empty hash.
     def options
-      @options ||= {}
+      if static?
+        @options
+      elsif dynamic?
+        create_dynamic_options
+      else
+        {}
+      end
     end
 
     ##
@@ -113,7 +117,11 @@ module SampleManifestExcel
     # at runtime. Such as a SampleManifestExcel::DynamicOption
     # Arrays are assumed to be static
     def dynamic?
-      ! @static
+      @identifier.present?
+    end
+
+    def static?
+      @options.present?
     end
 
     ##
@@ -136,6 +144,10 @@ module SampleManifestExcel
       else
         options.length + (first_column - 1)
       end
+    end
+
+    def create_dynamic_options
+      @name.classify.constantize.public_send(@scope).pluck(@identifier) unless @name.classify.constantize.public_send(scope).none?
     end
 
   end
