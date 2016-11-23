@@ -11,7 +11,7 @@ class Studies::CommentsController < ApplicationController
   before_action :discover_study
 
   def index
-    @comments = @study.comments.order(:create_at)
+    @comments = @study.comments.order(:created_at)
   end
 
   def create
