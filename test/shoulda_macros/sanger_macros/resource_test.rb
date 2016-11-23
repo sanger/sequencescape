@@ -12,7 +12,7 @@ module Sanger
           params.symbolize_keys!
           resource_name = resource_name.to_sym
 
-          restful_actions = ['index', 'new', 'create', 'show', 'update', 'destroy', 'edit']
+          restful_actions = %w(index new create show update destroy edit)
           ignore_actions  = params[:ignore_actions] || []
           actions         = params[:actions] || (restful_actions - ignore_actions)
           path_prefix     = params[:with_prefix] || ""

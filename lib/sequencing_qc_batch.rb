@@ -7,13 +7,13 @@ module SequencingQcBatch
   # NOTE: Be careful that the length of these do not exceed 25 characters, otherwise you will have to alter the
   # batches.qc_state field in the DB to accommodate.  FYI, 25 characters is:
   #  <----------------------->
-  VALID_QC_STATES = [
-    "qc_pending",
-    "qc_submitted",
-    "qc_manual",
-    "qc_manual_in_progress",
-    "qc_completed"
-  ]
+  VALID_QC_STATES = %w(
+qc_pending
+qc_submitted
+qc_manual
+qc_manual_in_progress
+qc_completed
+)
 
   def self.included(base)
     base.instance_eval do

@@ -112,7 +112,7 @@ class BatchesControllerTest < ActionController::TestCase
           post :create, id: @pipeline.id,
                         utf8: "✓",
                         action_on_requests: "create_batch",
-                        request_group: {"#{@plate.id}, #{@submission.id}"=>"1"},
+                        request_group: { "#{@plate.id}, #{@submission.id}" => "1" },
                         "request_group_#{@plate.id}_#{@submission.id}_size": "1",
                         commit: "Submit"
         end

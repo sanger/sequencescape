@@ -46,7 +46,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       end
     end
 
-    ["show", "edit", "print", "printing"].each do |controller_method|
+    %w(show edit print printing).each do |controller_method|
       context "##{controller_method}" do
         setup do
           @assetgroup_count = AssetGroup.count

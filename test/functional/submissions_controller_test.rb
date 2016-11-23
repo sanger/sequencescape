@@ -18,11 +18,11 @@ class SubmissionsControllerTest < ActionController::TestCase
       session[:user] = @user
 
       @plate = build :plate, barcode: 123456
-      [
-        'A1', 'A2', 'A3',
-        'B1', 'B2', 'B3',
-        'C1', 'C2', 'C3'
-      ].each do |location|
+      %w(
+A1 A2 A3
+B1 B2 B3
+C1 C2 C3
+).each do |location|
         well = build :well_with_sample_and_without_plate, map: Map.find_by(description: location)
         @plate.wells << well
       end
@@ -110,11 +110,11 @@ class SubmissionsControllerTest < ActionController::TestCase
       setup do
         @order_count = Order.count
         @wd_plate = create :working_dilution_plate, barcode: 123457
-        [
-          'A1', 'A2', 'A3',
-          'B1', 'B2', 'B3',
-          'C1', 'C2', 'C3'
-        ].each do |location|
+        %w(
+A1 A2 A3
+B1 B2 B3
+C1 C2 C3
+).each do |location|
         well = create :empty_well, map: Map.find_by(description: location)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well

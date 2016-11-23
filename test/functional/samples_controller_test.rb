@@ -27,7 +27,7 @@ class SamplesControllerTest < ActionController::TestCase
       'sample', {
         defaults: { name: "Sample22" },
         formats: ['html'],
-        ignore_actions: ['show', 'create', 'update', 'destroy'],
+        ignore_actions: %w(show create update destroy),
         user: -> { user = FactoryGirl.create(:user); user.is_administrator; user }
       }
     )

@@ -4,7 +4,7 @@ FactoryGirl.define do
     size 96
     after(:create) do |plate|
       plate.wells.import(
-        ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'].map do |location|
+        %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
           map = Map.where_description(location).
             where_plate_size(plate.size).
             where_plate_shape(AssetShape.default).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
@@ -21,7 +21,7 @@ FactoryGirl.define do
 
     after(:create) do |plate|
       plate.wells.import(
-        ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'].map do |location|
+        %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
           map = Map.where_description(location).
             where_plate_size(plate.size).
             where_plate_shape(AssetShape.default).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
@@ -43,7 +43,7 @@ FactoryGirl.define do
   end
 
   factory :lib_pcr_xp_request_type, parent: :request_type  do
-    asset_type     'Well'
+    asset_type 'Well'
     request_class CustomerRequest
     key "Illumina_Lib_PCR_XP_Lib_Pool"
   end

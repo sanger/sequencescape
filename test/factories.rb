@@ -590,7 +590,7 @@ FactoryGirl.define do
     end
   end
 
-  factory  :broken_multiplexed_library_tube, parent: :multiplexed_library_tube
+  factory :broken_multiplexed_library_tube, parent: :multiplexed_library_tube
 
   factory :stock_library_tube  do
     name     { |a| generate :asset_name }

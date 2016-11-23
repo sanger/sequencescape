@@ -96,6 +96,6 @@ end
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
 
-['al_libs_tagged', 'lib_pcr', 'lib_pcr_xp', 'mx_tube', 'qc_pool', 'stock'].each do |type|
+%w(al_libs_tagged lib_pcr lib_pcr_xp mx_tube qc_pool stock).each do |type|
   require_dependency "app/models/illumina_c/#{type}_purpose"
 end

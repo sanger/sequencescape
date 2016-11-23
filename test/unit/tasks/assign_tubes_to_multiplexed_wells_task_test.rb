@@ -33,7 +33,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
       @fake_plate = mock('plate', wells: @wells)
       @workflows_controller.stubs(:find_or_create_plate).returns(@fake_plate)
 
-      @dest_wells = ["A1", "B1", "C1", "D1", "E1", "F1", "G1"]
+      @dest_wells = %w(A1 B1 C1 D1 E1 F1 G1)
 
       @mock_wells = @dest_wells.map { |loc| mock('well', map_description: loc) }
     end
@@ -69,7 +69,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
               request.expects(:shared_attributes).at_least_once.returns("match")
             end
           end
-          @wells.expects(:located_at).with(['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1']).returns(@mock_wells)
+          @wells.expects(:located_at).with(%w(A1 B1 C1 D1 E1 F1 G1)).returns(@mock_wells)
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch
@@ -92,7 +92,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
               request.expects(:id).at_least_once.returns(i)
             end
           end
-          @wells.expects(:located_at).with(['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1']).returns(@mock_wells)
+          @wells.expects(:located_at).with(%w(A1 B1 C1 D1 E1 F1 G1)).returns(@mock_wells)
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch
@@ -123,7 +123,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
               request.expects(:shared_attributes).at_least_once.returns("clash#{i}")
             end
           end
-          @wells.expects(:located_at).with(['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1']).returns(@mock_wells)
+          @wells.expects(:located_at).with(%w(A1 B1 C1 D1 E1 F1 G1)).returns(@mock_wells)
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch

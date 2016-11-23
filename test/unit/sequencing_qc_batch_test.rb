@@ -7,7 +7,7 @@
 require "test_helper"
 
 class SequencingQcBatchTest < ActiveSupport::TestCase
-  STATES = ['qc_pending', 'qc_submitted', 'qc_manual', 'qc_manual_in_progress', 'qc_completed']
+  STATES = %w(qc_pending qc_submitted qc_manual qc_manual_in_progress qc_completed)
 
   context SequencingQcBatch do
     context '.included' do

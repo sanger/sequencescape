@@ -7,19 +7,19 @@
 class AddCoreProducts < ActiveRecord::Migration
 
 require './lib/product_helpers'
-  SINGLE_PRODUCTS = [
-    'MWGS',
-    'PWGS',
-    'ISC',
-    'SC',
-    'HSqX',
-    'PFHSqX',
-    'ReISC',
-    'PacBio',
-    'Fluidigm',
-    'InternalQC',
-    'Genotyping'
-  ]
+  SINGLE_PRODUCTS = %w(
+MWGS
+PWGS
+ISC
+SC
+HSqX
+PFHSqX
+ReISC
+PacBio
+Fluidigm
+InternalQC
+Genotyping
+)
 
   COMPLEX_PRODUCTS = [
     {

@@ -1,5 +1,5 @@
 class ChangeCriteriaIhtp < ActiveRecord::Migration
-  PRODUCTS_LIST = ["MWGS", "PWGS", "ISC", "HSqX"]
+  PRODUCTS_LIST = %w(MWGS PWGS ISC HSqX)
   ADDED_CRITERIA = {
     concentration: { less_than: 1 },
     concentration_from_normalization: { less_than: 1 },

@@ -18,7 +18,7 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 6,
-    request_types:      ["pick_to_sta", "pick_to_sta2", "pick_to_snp_type", "pick_to_fluidigm"],
+    request_types:      %w(pick_to_sta pick_to_sta2 pick_to_snp_type pick_to_fluidigm),
     workflow: "microarray_genotyping" } },
  { name: "Cherrypick for pulldown - Pulldown WGS - Single ended sequencing",
   submission_class_name: "LinearSubmission",
@@ -1009,10 +1009,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_single_ended_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_single_ended_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pooled PATH - Single ended sequencing",
@@ -1028,10 +1028,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_single_ended_hi_seq_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_single_ended_hi_seq_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pooled PATH - Single ended hi seq sequencing",
@@ -1047,10 +1047,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pooled PATH - Paired end sequencing",
@@ -1066,10 +1066,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_hiseq_2500_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_hiseq_2500_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pooled PATH - HiSeq 2500 Paired end sequencing",
@@ -1085,10 +1085,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_hiseq_2500_single_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_hiseq_2500_single_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pooled PATH - HiSeq 2500 Single end sequencing",
@@ -1104,10 +1104,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_hiseq_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_hiseq_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pooled PATH - HiSeq Paired end sequencing",
@@ -1123,10 +1123,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_single_ended_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_single_ended_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pippin PATH - Single ended sequencing",
@@ -1142,10 +1142,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_single_ended_hi_seq_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_single_ended_hi_seq_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pippin PATH - Single ended hi seq sequencing",
@@ -1161,10 +1161,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pippin PATH - Paired end sequencing",
@@ -1180,10 +1180,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_hiseq_2500_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_hiseq_2500_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pippin PATH - HiSeq 2500 Paired end sequencing",
@@ -1199,10 +1199,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_hiseq_2500_single_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_hiseq_2500_single_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pippin PATH - HiSeq 2500 Single end sequencing",
@@ -1218,10 +1218,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_hiseq_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_hiseq_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB PATH" } },
  { name: "Illumina-B - Pippin PATH - HiSeq Paired end sequencing",
@@ -1237,10 +1237,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_single_ended_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_single_ended_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pooled HWGS - Single ended sequencing",
@@ -1256,10 +1256,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_single_ended_hi_seq_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_single_ended_hi_seq_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pooled HWGS - Single ended hi seq sequencing",
@@ -1275,10 +1275,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pooled HWGS - Paired end sequencing",
@@ -1294,10 +1294,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_hiseq_2500_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_hiseq_2500_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pooled HWGS - HiSeq 2500 Paired end sequencing",
@@ -1313,10 +1313,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_hiseq_2500_single_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_hiseq_2500_single_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pooled HWGS - HiSeq 2500 Single end sequencing",
@@ -1332,10 +1332,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pool",
-      "illumina_b_hiseq_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pool
+illumina_b_hiseq_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pooled HWGS - HiSeq Paired end sequencing",
@@ -1351,10 +1351,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_single_ended_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_single_ended_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pippin HWGS - Single ended sequencing",
@@ -1370,10 +1370,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_single_ended_hi_seq_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_single_ended_hi_seq_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pippin HWGS - Single ended hi seq sequencing",
@@ -1389,10 +1389,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pippin HWGS - Paired end sequencing",
@@ -1408,10 +1408,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_hiseq_2500_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_hiseq_2500_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pippin HWGS - HiSeq 2500 Paired end sequencing",
@@ -1427,10 +1427,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_hiseq_2500_single_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_hiseq_2500_single_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pippin HWGS - HiSeq 2500 Single end sequencing",
@@ -1446,10 +1446,10 @@
   submission_class_name: "LinearSubmission",
   product_catalogue: "Generic",
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_b_shared",
-      "illumina_b_pippin",
-      "illumina_b_hiseq_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_b_shared
+illumina_b_pippin
+illumina_b_hiseq_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILB HWGS" } },
  { name: "Illumina-B - Pippin HWGS - HiSeq Paired end sequencing",
@@ -1466,10 +1466,10 @@
   product_catalogue: "Generic",
   superceeded_by_id: -2,
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_a_shared",
-      "illumina_a_isc",
-      "illumina_a_single_ended_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_a_shared
+illumina_a_isc
+illumina_a_single_ended_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILA ISC" } },
  { name: "Illumina-A - HTP ISC - Single ended sequencing",
@@ -1487,10 +1487,10 @@
   product_catalogue: "Generic",
   superceeded_by_id: -2,
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_a_shared",
-      "illumina_a_isc",
-      "illumina_a_single_ended_hi_seq_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_a_shared
+illumina_a_isc
+illumina_a_single_ended_hi_seq_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILA ISC" } },
  { name: "Illumina-A - HTP ISC - Single ended hi seq sequencing",
@@ -1508,10 +1508,10 @@
   product_catalogue: "Generic",
   superceeded_by_id: -2,
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_a_shared",
-      "illumina_a_isc",
-      "illumina_a_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_a_shared
+illumina_a_isc
+illumina_a_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILA ISC" } },
  { name: "Illumina-A - HTP ISC - Paired end sequencing",
@@ -1529,10 +1529,10 @@
   product_catalogue: "Generic",
   superceeded_by_id: -2,
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_a_shared",
-      "illumina_a_isc",
-      "illumina_a_hiseq_2500_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_a_shared
+illumina_a_isc
+illumina_a_hiseq_2500_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILA ISC" } },
  { name: "Illumina-A - HTP ISC - HiSeq 2500 Paired end sequencing",
@@ -1550,10 +1550,10 @@
   product_catalogue: "Generic",
   superceeded_by_id: -2,
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_a_shared",
-      "illumina_a_isc",
-      "illumina_a_hiseq_2500_single_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_a_shared
+illumina_a_isc
+illumina_a_hiseq_2500_single_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILA ISC" } },
  { name: "Illumina-A - HTP ISC - HiSeq 2500 Single end sequencing",
@@ -1571,10 +1571,10 @@
   product_catalogue: "Generic",
   superceeded_by_id: -2,
   submission_parameters:    { info_differential: 5,
-    request_types:      ["cherrypick_for_pulldown",
-      "illumina_a_shared",
-      "illumina_a_isc",
-      "illumina_a_hiseq_paired_end_sequencing"],
+    request_types:      %w(cherrypick_for_pulldown
+illumina_a_shared
+illumina_a_isc
+illumina_a_hiseq_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "ILA ISC" } },
  { name: "Illumina-A - HTP ISC - HiSeq Paired end sequencing",
@@ -1723,10 +1723,10 @@
   submission_class_name: "FlexibleSubmission",
   product_line: "Illumina-B",
   product_catalogue: "Generic",
-  submission_parameters:    { request_types:      ["illumina_b_shared",
-      "illumina_htp_library_creation",
-      "illumina_htp_strip_tube_creation",
-      "illumina_b_hiseq_x_paired_end_sequencing"],
+  submission_parameters:    { request_types:      %w(illumina_b_shared
+illumina_htp_library_creation
+illumina_htp_strip_tube_creation
+illumina_b_hiseq_x_paired_end_sequencing),
     workflow: "short_read_sequencing",
     order_role: "HSqX" } },
  { name: "HiSeq-X library re-sequencing",

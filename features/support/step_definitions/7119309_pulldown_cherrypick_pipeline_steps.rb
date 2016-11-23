@@ -120,7 +120,7 @@ When /^I look at the pulldown report for the batch it should be:$/ do |expected_
 end
 
 Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
-  oligos = ['ATCACG', 'CGATGT', 'TTAGGC', 'TGACCA']
+  oligos = %w(ATCACG CGATGT TTAGGC TGACCA)
   tag_group = TagGroup.create!(name: tag_group_name)
   tags = []
   1.upto(number_of_tags.to_i) do |i|
