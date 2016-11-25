@@ -5,7 +5,7 @@
 <ul id="study_annotations_<%= @study.id %>" class="list-group">
   <% if @study.comments.size > 0 %>
     <% @comments.each do |comment| %>
-      <li class="list-group-item"><%= render :partial => "comment" , :locals => {:comment => comment, :study => @study}%></li>
+      <li class="list-group-item"><%= render partial: "comment" , locals: { comment: comment, commentable: @study }%></li>
     <% end %>
   <% else %>
     <%= display_user_guide(I18n.t('studies.comments.no_comments')) %>

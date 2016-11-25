@@ -106,8 +106,7 @@ group :development do
   gem 'rdoc', :require => false
 end
 
-group :test do
-  # bundler requires these gems while running tests
+group :test,:cucumber do
   gem "factory_girl", :require => false
   gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
@@ -125,13 +124,13 @@ group :cucumber do
   # making sensible choices.  Should ...
   # Yeah well, it doesn't.
   gem "rubyzip", "~>0.9"
-  gem "capybara", :require => false
+  gem "capybara"
   gem 'mime-types'
-  gem "database_cleaner", :require => false
-  gem "cucumber", :require => false
-  gem "cucumber-rails", :require => false
+  gem "database_cleaner"
+  gem "cucumber-rails"
   gem "poltergeist"
   gem "webmock"
+  gem "knapsack"
 end
 
 group :deployment do
