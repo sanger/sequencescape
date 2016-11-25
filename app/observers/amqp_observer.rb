@@ -23,7 +23,7 @@ class AmqpObserver < ActiveRecord::Observer
     class_eval(%Q{def after_save(record) ; self << record ; true ; end})
     class_eval(%Q{def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end})
 
-  # To prevent ActiveRecord::Observer doing something insane when we test this, we pull
+  # To prevent ActiveRecord::Observer doing something unwanted when we test this, we pull
   # out the implementation in a module (which can be tested) and leave the rest behind.
   module Implementation
     # A transaction is (potentially) a bulk send of messages and hence we can create a buffer that
