@@ -10,6 +10,7 @@ Sequencescape::Application.configure do
 # break Cucumber's use_transactional_fixtures method.
 # For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
 config.cache_classes = true
+config.active_support.deprecation = :log
 
 # Log error messages when you accidentally call methods on nil.
 config.whiny_nils = true
@@ -23,6 +24,8 @@ config.action_controller.perform_caching             = false
 
 # Disable request forgery protection in test environment
 config.action_controller.allow_forgery_protection    = false
+
+config.active_record.whitelist_attributes = false
 
 # Tell Action Mailer not to deliver emails to the real world.
 # The :test delivery method accumulates sent emails in the
