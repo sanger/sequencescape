@@ -5,9 +5,24 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module Submission::RequestOptionsBehaviour
+
+  # Ensures the hash gets loaded with indifferent access.
+  # Note: We can't just specify the class, as otherwise legacy
+  # hashes throw an exception
+  class HashWrapper
+    def self.load(hash_yaml)
+      return hash_yaml if hash_yaml.nil?
+      YAML.load(hash_yaml)
+    end
+
+    def self.dump(hash)
+      YAML.dump(hash)
+    end
+  end
+
   def self.included(base)
     base.class_eval do
-      serialize :request_options, ActiveSupport::HashWithIndifferentAccess
+      serialize :request_options, HashWrapper
       validate :check_request_options, if: :request_options_changed?
     end
   end
