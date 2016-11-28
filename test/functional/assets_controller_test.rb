@@ -36,6 +36,17 @@ class AssetsControllerTest < ActionController::TestCase
     end
   end
 
+  context "an asset_id" do
+    setup do
+      @asset = create :sample_tube
+      @location = create :location
+      put :update, id: @asset.id, asset: { location_id: @location.id }
+    end
+    should "be updateable" do
+      assert_equal @location, @asset.location
+    end
+  end
+
   context "create request with JSON input" do
     setup do
       @submission_count = Submission.count

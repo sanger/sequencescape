@@ -175,7 +175,8 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if (@asset.update_attributes(params[:asset]) && @asset.update_attributes(params[:lane]))
+      joint_params = params.fetch(:asset, {}).merge(params.fetch(:lane, {}))
+      if @asset.update_attributes(joint_params)
         flash[:notice] = 'Asset was successfully updated.'
         unless params[:lab_view]
           format.html { redirect_to(action: :show, id: @asset.id) }
@@ -415,6 +416,7 @@ class AssetsController < ApplicationController
   end
 
   private
+
   def discover_asset
     @asset = Asset.includes(requests: :request_metadata).find(params[:id])
   end
@@ -442,5 +444,4 @@ class AssetsController < ApplicationController
     end
     return true
   end
-
 end
