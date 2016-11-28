@@ -14,20 +14,19 @@ class BatchesControllerTest < ActionController::TestCase
       @controller = BatchesController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @user       = create :admin
     end
     should_require_login
 
     context "with a false user for npg" do
 
       setup do
-        @controller.stubs(:current_user).returns(:false)
+        session[:current_user] = :false
       end
 
 
       context "NPG xml view" do
         setup do
-          pipeline = Pipeline.find_by_name('Cluster formation PE (no controls)') or raise StandardError, "Cannot find 'Cluster formation PE (no controls)' pipeline"
+          pipeline = Pipeline.find_by!(name: 'Cluster formation PE (no controls)')
 
           @study, @project = FactoryGirl.create(:study), FactoryGirl.create(:project)
           @sample = FactoryGirl.create :sample
@@ -70,7 +69,53 @@ class BatchesControllerTest < ActionController::TestCase
 
     context "with a user logged in" do
       setup do
+        @user = create :user
         session[:user] = @user.id
+      end
+
+      context "with a few batches" do
+
+        setup do
+          @batch_one = create :batch
+          @batch_two = create :batch
+        end
+
+        should "#index" do
+          get :index
+          assert_response :success
+          assert assigns(:batches)
+        end
+
+        should "#show" do
+          get :show, id: @batch_one.id
+          assert_response :success
+          assert_equal @batch_one, assigns(:batch)
+        end
+
+        should "#edit" do
+          get :edit, id: @batch_one
+          assert_response :success
+          assert_equal @batch_one, assigns(:batch)
+        end
+      end
+
+      context 'with a cherrypick pipeline' do
+        setup do
+          @pipeline = create :cherrypick_pipeline
+          @requests = create_list(:cherrypick_request_for_pipeline, 2, request_type: @pipeline.request_types.first)
+          @selected_request = @requests.first
+          @submission = @selected_request.submission || raise("No Sub")
+          @plate      = @selected_request.asset.plate || raise("No plate")
+        end
+
+        should '#create' do
+          post :create, id: @pipeline.id,
+                        utf8: "✓",
+                        action_on_requests: "create_batch",
+                        request_group: { "#{@plate.id}, #{@submission.id}" => "1" },
+                        "request_group_#{@plate.id}_#{@submission.id}_size": "1",
+                        commit: "Submit"
+        end
       end
 
       context "actions" do
@@ -88,13 +133,10 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_two = create(:batch, pipeline: @pipeline_qc)
 
           @sample   = create :sample_tube
-          @library1 = create :empty_library_tube
+          @library1 = create :empty_library_tube, location: @pipeline.location
           @library1.parents << @sample
-          @library2 = create :empty_library_tube
+          @library2 = create :empty_library_tube, location: @pipeline.location
           @library2.parents << @sample
-
-          @library1.update_attributes(location: @pipeline.location)
-          @library2.update_attributes(location: @pipeline.location)
 
           @target_one = create(:sample_tube)
           @target_two = create(:sample_tube)
@@ -107,23 +149,7 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_one.reload
         end
 
-        should "#index" do
-          get :index
-          assert_response :success
-          assert assigns(:batches)
-        end
-
-        should "#show" do
-          @ws_three = @pipeline_next.workflow # :name => 'Yet Another workflow', :item_limit => 2
-          get :show, id: @batch_one.id
-          assert_response :success
-        end
-
         context "#edit" do
-          should "edit batch" do
-            get :edit, id: @batch_one
-            assert_response :success
-          end
 
           context "with control" do
             setup do
@@ -156,7 +182,6 @@ class BatchesControllerTest < ActionController::TestCase
         context "#create" do
           setup do
             @old_count = Batch.count
-            # @user.expects(:batches).returns(Batch.all)
 
             @request_three = @pipeline.request_types.first.create!(asset: @library1, project: FactoryGirl.create(:project))
             @request_four  = @pipeline.request_types.first.create!(asset: @library2, project: FactoryGirl.create(:project))
@@ -187,7 +212,7 @@ class BatchesControllerTest < ActionController::TestCase
             end
           end
 
-          context "create and assign requests" do
+          context "create batch and assign requests" do
             setup do
               @old_count = Batch.count
               post :create, id: @pipeline.id, request: { @request_three.id => "1", @request_four.id => "1" }
@@ -266,6 +291,7 @@ class BatchesControllerTest < ActionController::TestCase
           end
         end
       end
+
     end
 
     context "Find by barcode (found)" do

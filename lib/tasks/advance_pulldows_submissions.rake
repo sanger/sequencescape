@@ -54,7 +54,7 @@ namespace :benchmark do
       $stderr.puts "Passing Requests"
       sub.requests.each do |r|
         $stderr.print "."
-        next unless r.is_a?(CherrypickForPulldownRequest)
+        next unless r.is_a?(CherrypickRequest)
         next if r.passed?
         r.start!
         r.pass!

@@ -23,7 +23,7 @@ FactoryGirl.define do
   end
 
   factory :plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
+    plate_purpose { PlatePurpose.find_by_name('Stock plate') }
     name                "Plate name"
     value               ""
     qc_state            ""
@@ -165,8 +165,8 @@ FactoryGirl.define do
     locale                "Internal"
   end
 
-  factory :pipeline, class: Pipeline do |p|
-    name                  { |a| FactoryGirl.generate :pipeline_name }
+  factory :pipeline do
+    name                  { generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -176,6 +176,25 @@ FactoryGirl.define do
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
+    end
+  end
+
+  factory :cherrypick_pipeline do
+    name            { generate :pipeline_name }
+    automated       false
+    active          true
+    location
+    group_by_parent true
+    asset_type      'Well'
+    max_size        3000
+    summary         true
+    externally_managed false
+    min_size 1
+
+    after(:build) do |pipeline|
+      pipeline.request_types << build(:well_request_type)
+      pipeline.add_control_request_type
+      pipeline.build_workflow(name: pipeline.name, item_limit: 3000, locale: 'Internal') if pipeline.workflow.nil?
     end
   end
 
@@ -487,7 +506,7 @@ FactoryGirl.define do
     plate_purpose { PlatePurpose.find_by_name('Stock plate') }
     after(:create) do |plate|
       plate.wells.import(
-        ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'].map do |location|
+        %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
           map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map)
         end

@@ -506,7 +506,7 @@ class Plate < Asset
     @storage_location_service = 'ETS'
     return "Control" if self.is_a?(ControlPlate)
     return "" if self.barcode.blank?
-    return ['storage_area', 'storage_device', 'building_area', 'building'].map do |key|
+    return %w(storage_area storage_device building_area building).map do |key|
       self.get_external_value(key)
     end.compact.join(' - ')
 

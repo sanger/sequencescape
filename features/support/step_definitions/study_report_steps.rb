@@ -41,7 +41,7 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
     well = Well.create!(plate: plate, map_id: i)
     well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
     well.well_attribute.update_attributes!(
-      gender_markers: ['F', 'F', 'F', 'F'],
+      gender_markers: %w(F F F F),
       sequenom_count: 29,
       concentration: 1,
       pico_pass: "Pass",

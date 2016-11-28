@@ -11,7 +11,7 @@ class AddForMultiplexingToRequestType < ActiveRecord::Migration
     end
 
     def for_multiplexing?
-      request_class.ancestors.include?(MultiplexedLibraryCreationRequest) || request_class.ancestors.include?(PulldownMultiplexedLibraryCreationRequest) || request_class.ancestors.include?(CherrypickForPulldownRequest)
+      request_class.ancestors.include?(MultiplexedLibraryCreationRequest) || request_class.ancestors.include?(PulldownMultiplexedLibraryCreationRequest) || request_class.ancestors.include?(CherrypickRequest)
     end
   end
 

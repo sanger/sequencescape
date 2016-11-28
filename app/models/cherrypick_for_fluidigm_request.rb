@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
-class CherrypickForFluidigmRequest < CherrypickForPulldownRequest
+class CherrypickForFluidigmRequest < CherrypickRequest
 
   has_metadata as: Request do
     belongs_to :target_purpose, class_name: 'Purpose'

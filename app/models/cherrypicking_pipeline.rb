@@ -6,6 +6,8 @@
 
 class CherrypickingPipeline < GenotypingPipeline
 
+  self.batch_worksheet = "cherrypick_worksheet"
+
   def custom_inbox_actions
     [:holder_not_control]
   end

@@ -7,6 +7,8 @@
 class Pipeline::GrouperForPipeline
   include Pipeline::Grouper
 
+  private
+
   def call(conditions, variables, group)
     condition, keys = [], group.split(', ')
     if group_by_parent?
@@ -19,7 +21,6 @@ class Pipeline::GrouperForPipeline
     end
     conditions << "(#{condition.join(" AND ")})"
   end
-  private :call
 
   def grouping
     grouping = []
@@ -27,5 +28,5 @@ class Pipeline::GrouperForPipeline
     grouping << 'requests.submission_id' if group_by_submission?
     grouping.join(',')
   end
-  private :grouping
+
 end

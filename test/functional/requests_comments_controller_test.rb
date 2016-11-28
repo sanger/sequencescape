@@ -20,13 +20,13 @@ class Requests::CommentsControllerTest < ActionController::TestCase
 
     should_require_login
 
-    resource_test('comment', { actions: ['index'], ignore_actions: ["new", "edit", "update", "show", 'destroy', 'create'], formats: ['html'], parent: "request" })
+    resource_test('comment', { actions: ['index'], ignore_actions: %w(new edit update show destroy create), formats: ['html'], parent: "request" })
 
     context "with an ajax request" do
       setup do
         @rq = create :request
 
-        ['this', 'is', 'a', 'test'].each do |description|
+        %w(this is a test).each do |description|
           create :comment, description: description, commentable: @rq
         end
       end

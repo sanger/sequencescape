@@ -266,7 +266,7 @@ class Request < ActiveRecord::Base
     where([conditions.join(' OR '), *variables])
   }
 
-  def self.group_requests(finder_method, options = {})
+  def self.group_requests(options = {})
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
     groupings = options.delete(:group) || {}
 
@@ -274,8 +274,7 @@ class Request < ActiveRecord::Base
     joins("INNER JOIN container_associations tca ON tca.content_id=#{target}").
     readonly(false).
     preload(:request_metadata).
-    group(groupings).
-    send(finder_method)
+    group(groupings)
   end
 
   scope :for_submission_id, ->(id) { where(submission_id: id)  }

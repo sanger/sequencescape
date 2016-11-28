@@ -80,7 +80,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
           @plate = create :plate
 
-          @well_array = ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "G1"]
+          @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
 
           @barcode = @plate.ean13_barcode
           @purpose_id = "33"
@@ -119,7 +119,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         PlateBarcode.stubs(:create).returns(MockBc.new('12345'))
         @purpose = create :plate_purpose
         @purpose_id = @purpose.id.to_s
-        @well_array = ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "G1"]
+        @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
 
       end
 
@@ -135,7 +135,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
             r
           end
 
-          @well_array = ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"]
+          @well_array = %w(A1 B1 C1 D1 E1 F1 G1 H1)
 
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
@@ -169,7 +169,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
             r
           end
 
-          @well_array = ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"]
+          @well_array = %w(A1 B1 C1 D1 E1 F1 G1 H1)
           @batch = mock('batch')
           @batch.stubs(:requests).returns(@requests)
           @workflows_controller.batch = @batch

@@ -24,7 +24,7 @@ class StudiesControllerTest < ActionController::TestCase
         defaults: { name: "study name" },
         user: :admin,
         other_actions: ['properties', 'study_status'],
-        ignore_actions: ['show', 'create', 'update', 'destroy'],
+        ignore_actions: %w(show create update destroy),
         formats: ['xml']
       }
     )

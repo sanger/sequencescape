@@ -1,28 +1,28 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem "rails"
+  gem 'rails'
   gem 'rails-observers'
 
   # State machine
-  gem "aasm"
-  gem "configatron"
-  gem "rest-client" # curb substitute.
-  gem "formtastic"
+  gem 'aasm'
+  gem 'configatron'
+  gem 'rest-client' # curb substitute.
+  gem 'formtastic'
 
   # Caching, primarily of batch.xml Can be removed once our xml interfaces are retired.
   gem 'actionpack-page_caching'
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
-  gem "activerecord-jdbc-adapter", :platforms => :jruby
-  gem "activeresource", require: 'active_resource'
-  gem "jdbc-mysql", :platforms => :jruby
-  gem "mysql2", :platforms => :mri
-  gem "spreadsheet"
-  gem "will_paginate"
+  gem 'activerecord-jdbc-adapter', :platforms => :jruby
+  gem 'activeresource', require: 'active_resource'
+  gem 'jdbc-mysql', :platforms => :jruby
+  gem 'mysql2', :platforms => :mri
+  gem 'spreadsheet'
+  gem 'will_paginate'
   # Will paginate clashes awkwardly with bootstrap
-  gem "will_paginate-bootstrap"
+  gem 'will_paginate-bootstrap'
   gem 'net-ldap'
   gem 'carrierwave'
 
@@ -34,40 +34,40 @@ group :default do
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
   # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
-  gem "acts-as-dag", github:'resgraph/acts-as-dag', branch:'5e185dddff6563ee9ee92611555cd9d9a519d280'
+  gem 'acts-as-dag', github:'resgraph/acts-as-dag', branch:'5e185dddff6563ee9ee92611555cd9d9a519d280'
 
   # For background processing
   # Locked for ruby version
-  gem "delayed_job_active_record"
+  gem 'delayed_job_active_record'
 
-  gem "ruby_walk",  ">= 0.0.3",
-    :github => "sanger/ruby_walk"
+  gem 'ruby_walk',  '>= 0.0.3',
+    :github => 'sanger/ruby_walk'
 
-  gem "irods_reader", '>=0.0.2',
+  gem 'irods_reader', '>=0.0.2',
     :github => 'sanger/irods_reader'
 
   # For the API level
-  gem "uuidtools"
-  gem "sinatra", :require => false
-  gem "rack-acceptable", :require => 'rack/acceptable'
-  gem "json"
-  gem "jrjackson", :platforms => :jruby
-  gem "multi_json"
-  gem "cancan"
+  gem 'uuidtools'
+  gem 'sinatra', require: false
+  gem 'rack-acceptable', require: 'rack/acceptable'
+  gem 'json'
+  gem 'jrjackson', :platforms => :jruby
+  gem 'multi_json'
+  gem 'cancan'
 
-  gem "bunny", "~>0.7"
+  gem 'bunny', '~>0.7'
 
-  gem "spoon"
+  gem 'spoon'
   # Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
   # but we'll need it in production if dbconsole is to work
 
-  gem "jquery-rails"
+  gem 'jquery-rails'
   gem 'jquery-ui-rails'
-  gem "jquery-tablesorter"
+  gem 'jquery-tablesorter'
   gem 'bootstrap-sass'
   gem 'sass-rails'
   gem 'coffee-rails'
-  gem "select2-rails"
+  gem 'select2-rails'
   # gem 'font-awesome-sass'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
@@ -86,21 +86,21 @@ end
 
 group :warehouse do
   #the most recent one that actually compiles
-  gem "ruby-oci8", :platforms => :mri
+  gem 'ruby-oci8', :platforms => :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   #any newer version requires ruby-oci8 => 2.0.1
-  gem "activerecord-oracle_enhanced-adapter", '~> 1.4.0'
+  gem 'activerecord-oracle_enhanced-adapter', '~> 1.4.0'
 
 end
 
 group :development do
-  gem "flay", :require => false
-  gem "flog", :require => false
+  gem 'flay', require: false
+  gem 'flog', require: false
   # Detect n+1 queries
-  gem "bullet", :require => false
+  gem 'bullet', require: false
   gem 'pry'
   # Automatically generate documentation
-  gem 'yard', :require => false
+  gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
 end
@@ -120,19 +120,19 @@ group :test, :cucumber do
 end
 
 group :cucumber do
-  gem "rubyzip", "~>0.9", require: false
-  gem "capybara", require: false
-  gem 'mime-types', require: false
-  gem "database_cleaner", require: false
-  gem "cucumber-rails", require: false
-  gem "poltergeist", require: false
-  gem "webmock", require: false
-  gem "knapsack", require: false
+  gem 'rubyzip', '~>0.9'
+  gem 'capybara'
+  gem 'mime-types'
+  gem 'database_cleaner'
+  gem 'cucumber-rails', require: false
+  gem 'poltergeist'
+  gem 'webmock'
+  gem 'knapsack'
 end
 
 group :deployment do
-  gem "psd_logger",
-    :github => "sanger/psd_logger"
-  gem "gmetric", "~>0.1.3"
-  gem "exception_notification"
+  gem 'psd_logger',
+    :github => 'sanger/psd_logger'
+  gem 'gmetric', '~>0.1.3'
+  gem 'exception_notification'
 end

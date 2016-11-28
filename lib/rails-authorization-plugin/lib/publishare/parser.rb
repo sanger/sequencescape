@@ -1,7 +1,7 @@
 module Authorization
   module Base
 
-    VALID_PREPOSITIONS = ['of', 'for', 'in', 'on', 'to', 'at', 'by']
+    VALID_PREPOSITIONS = %w(of for in on to at by)
     BOOLEAN_OPS = ['not', 'or', 'and']
     VALID_PREPOSITIONS_PATTERN = VALID_PREPOSITIONS.join('|')
 

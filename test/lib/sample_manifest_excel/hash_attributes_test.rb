@@ -62,7 +62,7 @@ class HashAttributesTest < ActiveSupport::TestCase
   end
 
   test "#to_a should return array of instance variables that have been set" do
-    assert_equal ["Bert", "Ernie", "Liz", "Lisa"].sort, goose.to_a.sort
+    assert_equal %w(Bert Ernie Liz Lisa).sort, goose.to_a.sort
     goose.update_attributes(gosling_a: nil)
     assert_equal ["Ernie", "Liz", "Lisa"].sort, goose.to_a.sort
   end
