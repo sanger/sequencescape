@@ -147,7 +147,11 @@ module SampleManifestExcel
     end
 
     def create_dynamic_options
-      @name.classify.constantize.public_send(@scope).pluck(@identifier) unless @name.classify.constantize.public_send(scope).none?
+      klass.public_send(@scope).pluck(@identifier)
+    end
+
+    def klass
+      @klass ||= @name.classify.constantize
     end
 
   end

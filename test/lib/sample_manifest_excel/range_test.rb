@@ -81,7 +81,9 @@ class RangeTest < ActiveSupport::TestCase
       @range = SampleManifestExcel::Range.new(@attributes)
     end
 
-    should "have some options" do
+    should "have identifier, scope, options" do
+      assert range.identifier
+      assert range.scope
       assert_equal @original_option_size, range.options.count
     end
 
