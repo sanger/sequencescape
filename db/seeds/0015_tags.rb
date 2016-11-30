@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2014,2015 Genome Research Ltd.
 
 # Create all of the TagGroups first.  These are in the order of the production environment.
 tag_group_names = [
@@ -28,7 +30,7 @@ tag_group_names = [
 ]
 
 # Now we can load the tag information from production in a much more controlled fashion
-tags = {"TruSeq small RNA index tags - 6 mer tags"=>
+tags = { "TruSeq small RNA index tags - 6 mer tags" =>
   [[7, "CAGATC"],
    [12, "CTTGTA"],
    [23, "GAGTGG"],
@@ -77,7 +79,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [33, "CAGGCG"],
    [44, "TATAAT"],
    [6, "GCCAAT"]],
- "Pulldown 8 tag set - 8 mer tags"=>
+ "Pulldown 8 tag set - 8 mer tags" =>
   [[7, "CAGATCTG"],
    [8, "ACTTGATG"],
    [1, "ATCACGTT"],
@@ -86,7 +88,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [4, "TGACCACT"],
    [5, "ACAGTGGT"],
    [6, "GCCAATGT"]],
- "Illumina set - 6 mer tags"=>
+ "Illumina set - 6 mer tags" =>
   [[1, "ATCACG"],
    [2, "CGATGT"],
    [3, "TTAGGC"],
@@ -99,7 +101,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [10, "TAGCTT"],
    [11, "GGCTAC"],
    [12, "CTTGTA"]],
- "Sanger no PCR set (12) - 10 mer tags"=>
+ "Sanger no PCR set (12) - 10 mer tags" =>
   [[1, "ATCACGTTAT"],
    [2, "CGATGTTTAT"],
    [3, "TTAGGCATAT"],
@@ -112,7 +114,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [10, "TAGCTTGTAT"],
    [11, "GGCTACAGAT"],
    [12, "CTTGTACTAT"]],
- "NEXTERA 1-12 - 5 mer tags"=>
+ "NEXTERA 1-12 - 5 mer tags" =>
   [[7, "TGCAT"],
    [12, "AATTA"],
    [8, "GGTTG"],
@@ -125,7 +127,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [5, "TCGAT"],
    [11, "ACACA"],
    [6, "CAACC"]],
- "Back-filled Illumina multiplexing  - various 4 to 12 mer tags"=>
+ "Back-filled Illumina multiplexing  - various 4 to 12 mer tags" =>
   [[1, "ATCACGATATCC"],
    [2, "CGATGTATCTCC"],
    [3, "TTAGGCATCTCC"],
@@ -178,14 +180,14 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [2, "AGGCT"],
    [3, "TACTC"],
    [4, "TCACG"]],
- "RInV 3.5 to 3.13 - 6 mer tags"=>
+ "RInV 3.5 to 3.13 - 6 mer tags" =>
   [[1, "CTAGGT"],
    [2, "CACTAT"],
    [3, "AGCAGT"],
    [4, "TCTGAT"],
    [5, "TGTTGG"],
    [6, "ACCTTG"]],
- "25 to 48 - 10 mer tags"=>
+ "25 to 48 - 10 mer tags" =>
   [[25, "TGCGATCTAT"],
    [26, "TTCCTGCTAT"],
    [27, "TAGTGACTAT"],
@@ -210,7 +212,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [46, "TCAGATTCAT"],
    [47, "TACTAGTCAT"],
    [48, "TTCAGCTCAT"]],
- "73 to 96 - 10 mer tags"=>
+ "73 to 96 - 10 mer tags" =>
   [[73, "GCAACATTAT"],
    [74, "GGTCGTGTAT"],
    [75, "GAATCTGTAT"],
@@ -235,7 +237,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [94, "GCTAACTCAT"],
    [95, "GATTCATCAT"],
    [96, "GTCTTGGCAT"]],
- "RInV Transposon indexing primers - 8 mer tags"=>
+ "RInV Transposon indexing primers - 8 mer tags" =>
   [[7, "CAGATCTG"],
    [12, "TGACCACT"],
    [23, "TGCATAGT"],
@@ -376,7 +378,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [138, "CGTGTCAC"],
    [139, "CCATGCAC"],
    [140, "CGTTACTA"]],
- "Sanger_168tags - 10 mer tags"=>
+ "Sanger_168tags - 10 mer tags" =>
   [[55, "TTCGCACC"],
    [26, "TTCCTGCT"],
    [83, "GCTCCTTG"],
@@ -546,8 +548,8 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [140, "CGTTACTA"],
    [168, "ACAACGCAAT"]],
  "Control Tag Group 888" =>
- [[888,"ACAACGCAAT"]],
- "NEXTFLEX_48 - 6 mer tags"=>
+ [[888, "ACAACGCAAT"]],
+ "NEXTFLEX_48 - 6 mer tags" =>
   [[16, "CCGTCC"],
    [37, "CGGAAT"],
    [9, "ACTTGA"],
@@ -596,8 +598,8 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [8, "TTAGGC"],
    [36, "CCAACA"],
    [15, "ATGTCA"]],
- "Pulldown tag 1 and 2 - 8 mer tags"=>[[1, "ATCACGTT"], [2, "CGATGTTT"]],
- "Sanger 2 primer PCR set - 10 mer tags"=>
+ "Pulldown tag 1 and 2 - 8 mer tags" => [[1, "ATCACGTT"], [2, "CGATGTTT"]],
+ "Sanger 2 primer PCR set - 10 mer tags" =>
   [[7, "CAGATCTGAT"],
    [12, "CTTGTACTAT"],
    [8, "ACTTGATGAT"],
@@ -610,7 +612,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [5, "ACAGTGGTAT"],
    [11, "GGCTACAGAT"],
    [6, "GCCAATGTAT"]],
- "NEXTFLEX - 6 mer tags"=>
+ "NEXTFLEX - 6 mer tags" =>
   [[7, "CGTGAT"],
    [12, "AAGCTA"],
    [8, "GCCTAA"],
@@ -623,7 +625,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [5, "GATCTG"],
    [11, "AAGCTA"],
    [6, "TACAAG"]],
- "RNA multiplexed samples - 6 mer tags"=>
+ "RNA multiplexed samples - 6 mer tags" =>
   [[7, "AGCGAC"],
    [12, "AUUCGC"],
    [8, "AGUAAC"],
@@ -636,7 +638,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [5, "ACGUUC"],
    [11, "AUCUAC"],
    [6, "AGAAUC"]],
- "49 to 72 - 10 mer tags"=>
+ "49 to 72 - 10 mer tags" =>
   [[49, "TGTCTATCAT"],
    [50, "TATGTGGCAT"],
    [51, "TTACTCGCAT"],
@@ -661,7 +663,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [70, "GATCTCTTAT"],
    [71, "GTGTCCTTAT"],
    [72, "GACGGATTAT"]],
- "1 to 24 - 10 mer tags"=>
+ "1 to 24 - 10 mer tags" =>
   [[1, "ATCACGTTAT"],
    [2, "CGATGTTTAT"],
    [3, "TTAGGCATAT"],
@@ -686,7 +688,7 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [22, "TGATACGTAT"],
    [23, "TGCATAGTAT"],
    [24, "TTGACTCTAT"]],
- "Old 12 TagTubes - do not use"=>
+ "Old 12 TagTubes - do not use" =>
   [[5, ""],
    [11, ""],
    [6, ""],
@@ -699,107 +701,107 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [9, ""],
    [4, ""],
    [10, ""]],
-"NEXTflex-96 barcoded adapters"=>
-   [[1,"AACGTGAT"],
-   [2,"AAACATCG"],
-   [3,"ATGCCTAA"],
-   [4,"AGTGGTCA"],
-   [5,"ACCACTGT"],
-   [6,"ACATTGGC"],
-   [7,"CAGATCTG"],
-   [8,"CATCAAGT"],
-   [9,"CGCTGATC"],
-   [10,"ACAAGCTA"],
-   [11,"CTGTAGCC"],
-   [12,"AGTACAAG"],
-   [13,"AACAACCA"],
-   [14,"AACCGAGA"],
-   [15,"AACGCTTA"],
-   [16,"AAGACGGA"],
-   [17,"AAGGTACA"],
-   [18,"ACACAGAA"],
-   [19,"ACAGCAGA"],
-   [20,"ACCTCCAA"],
-   [21,"ACGCTCGA"],
-   [22,"ACGTATCA"],
-   [23,"ACTATGCA"],
-   [24,"AGAGTCAA"],
-   [25,"AGATCGCA"],
-   [26,"AGCAGGAA"],
-   [27,"AGTCACTA"],
-   [28,"ATCCTGTA"],
-   [29,"ATTGAGGA"],
-   [30,"CAACCACA"],
-   [31,"GACTAGTA"],
-   [32,"CAATGGAA"],
-   [33,"CACTTCGA"],
-   [34,"CAGCGTTA"],
-   [35,"CATACCAA"],
-   [36,"CCAGTTCA"],
-   [37,"CCGAAGTA"],
-   [38,"CCGTGAGA"],
-   [39,"CCTCCTGA"],
-   [40,"CGAACTTA"],
-   [41,"CGACTGGA"],
-   [42,"CGCATACA"],
-   [43,"CTCAATGA"],
-   [44,"CTGAGCCA"],
-   [45,"CTGGCATA"],
-   [46,"GAATCTGA"],
-   [47,"CAAGACTA"],
-   [48,"GAGCTGAA"],
-   [49,"GATAGACA"],
-   [50,"GCCACATA"],
-   [51,"GCGAGTAA"],
-   [52,"GCTAACGA"],
-   [53,"GCTCGGTA"],
-   [54,"GGAGAACA"],
-   [55,"GGTGCGAA"],
-   [56,"GTACGCAA"],
-   [57,"GTCGTAGA"],
-   [58,"GTCTGTCA"],
-   [59,"GTGTTCTA"],
-   [60,"TAGGATGA"],
-   [61,"TATCAGCA"],
-   [62,"TCCGTCTA"],
-   [63,"TCTTCACA"],
-   [64,"TGAAGAGA"],
-   [65,"TGGAACAA"],
-   [66,"TGGCTTCA"],
-   [67,"TGGTGGTA"],
-   [68,"TTCACGCA"],
-   [69,"AACTCACC"],
-   [70,"AAGAGATC"],
-   [71,"AAGGACAC"],
-   [72,"AATCCGTC"],
-   [73,"AATGTTGC"],
-   [74,"ACACGACC"],
-   [75,"ACAGATTC"],
-   [76,"AGATGTAC"],
-   [77,"AGCACCTC"],
-   [78,"AGCCATGC"],
-   [79,"AGGCTAAC"],
-   [80,"ATAGCGAC"],
-   [81,"ATCATTCC"],
-   [82,"ATTGGCTC"],
-   [83,"CAAGGAGC"],
-   [84,"CACCTTAC"],
-   [85,"CCATCCTC"],
-   [86,"CCGACAAC"],
-   [87,"CCTAATCC"],
-   [88,"CCTCTATC"],
-   [89,"CGACACAC"],
-   [90,"CGGATTGC"],
-   [91,"CTAAGGTC"],
-   [92,"GAACAGGC"],
-   [93,"GACAGTGC"],
-   [94,"GAGTTAGC"],
-   [95,"GATGAATC"],
-   [96,"GCCAAGAC"]]
+"NEXTflex-96 barcoded adapters" =>
+   [[1, "AACGTGAT"],
+   [2, "AAACATCG"],
+   [3, "ATGCCTAA"],
+   [4, "AGTGGTCA"],
+   [5, "ACCACTGT"],
+   [6, "ACATTGGC"],
+   [7, "CAGATCTG"],
+   [8, "CATCAAGT"],
+   [9, "CGCTGATC"],
+   [10, "ACAAGCTA"],
+   [11, "CTGTAGCC"],
+   [12, "AGTACAAG"],
+   [13, "AACAACCA"],
+   [14, "AACCGAGA"],
+   [15, "AACGCTTA"],
+   [16, "AAGACGGA"],
+   [17, "AAGGTACA"],
+   [18, "ACACAGAA"],
+   [19, "ACAGCAGA"],
+   [20, "ACCTCCAA"],
+   [21, "ACGCTCGA"],
+   [22, "ACGTATCA"],
+   [23, "ACTATGCA"],
+   [24, "AGAGTCAA"],
+   [25, "AGATCGCA"],
+   [26, "AGCAGGAA"],
+   [27, "AGTCACTA"],
+   [28, "ATCCTGTA"],
+   [29, "ATTGAGGA"],
+   [30, "CAACCACA"],
+   [31, "GACTAGTA"],
+   [32, "CAATGGAA"],
+   [33, "CACTTCGA"],
+   [34, "CAGCGTTA"],
+   [35, "CATACCAA"],
+   [36, "CCAGTTCA"],
+   [37, "CCGAAGTA"],
+   [38, "CCGTGAGA"],
+   [39, "CCTCCTGA"],
+   [40, "CGAACTTA"],
+   [41, "CGACTGGA"],
+   [42, "CGCATACA"],
+   [43, "CTCAATGA"],
+   [44, "CTGAGCCA"],
+   [45, "CTGGCATA"],
+   [46, "GAATCTGA"],
+   [47, "CAAGACTA"],
+   [48, "GAGCTGAA"],
+   [49, "GATAGACA"],
+   [50, "GCCACATA"],
+   [51, "GCGAGTAA"],
+   [52, "GCTAACGA"],
+   [53, "GCTCGGTA"],
+   [54, "GGAGAACA"],
+   [55, "GGTGCGAA"],
+   [56, "GTACGCAA"],
+   [57, "GTCGTAGA"],
+   [58, "GTCTGTCA"],
+   [59, "GTGTTCTA"],
+   [60, "TAGGATGA"],
+   [61, "TATCAGCA"],
+   [62, "TCCGTCTA"],
+   [63, "TCTTCACA"],
+   [64, "TGAAGAGA"],
+   [65, "TGGAACAA"],
+   [66, "TGGCTTCA"],
+   [67, "TGGTGGTA"],
+   [68, "TTCACGCA"],
+   [69, "AACTCACC"],
+   [70, "AAGAGATC"],
+   [71, "AAGGACAC"],
+   [72, "AATCCGTC"],
+   [73, "AATGTTGC"],
+   [74, "ACACGACC"],
+   [75, "ACAGATTC"],
+   [76, "AGATGTAC"],
+   [77, "AGCACCTC"],
+   [78, "AGCCATGC"],
+   [79, "AGGCTAAC"],
+   [80, "ATAGCGAC"],
+   [81, "ATCATTCC"],
+   [82, "ATTGGCTC"],
+   [83, "CAAGGAGC"],
+   [84, "CACCTTAC"],
+   [85, "CCATCCTC"],
+   [86, "CCGACAAC"],
+   [87, "CCTAATCC"],
+   [88, "CCTCTATC"],
+   [89, "CGACACAC"],
+   [90, "CGGATTGC"],
+   [91, "CTAAGGTC"],
+   [92, "GAACAGGC"],
+   [93, "GACAGTGC"],
+   [94, "GAGTTAGC"],
+   [95, "GATGAATC"],
+   [96, "GCCAAGAC"]]
 }
 
-TagGroup.create!(tag_group_names.map { |n| { :name => n } })
+TagGroup.create!(tag_group_names.map { |n| { name: n } })
 tags.each do |tag_group_name, tags_in_group|
   tag_group = TagGroup.find_by_name(tag_group_name) or raise ActiveRecord::RecordNotFound, "Cannot find tag group #{tag_group_name.inspect}"
-  tags_in_group.each { |m,o| tag_group.tags.create!(:map_id => m, :oligo => o) }
+  tags_in_group.each { |m, o| tag_group.tags.create!(map_id: m, oligo: o) }
 end

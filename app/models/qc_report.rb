@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 
 class QcReport < ActiveRecord::Base
@@ -15,7 +17,7 @@ class QcReport < ActiveRecord::Base
 
     module ClassMethods
       def available_states
-        QcReport.aasm_states.map {|state| state.name.to_s }
+        QcReport.aasm.states.map { |state| state.name.to_s }
       end
     end
 
@@ -25,48 +27,48 @@ class QcReport < ActiveRecord::Base
         # When adding new states, please make sure you update the config/locals/en.yml file
         # with decriptions.
 
-        aasm_column :state
+        aasm column: :state, whiny_persistence: true do
 
         # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
-        aasm_state :queued
+        state :queued, initial: true
 
         # A report has failed one or more times. Generally this means there is a problem.
-        aasm_state :requeued
+        state :requeued
 
         # The report has been picked up by the delayed job. Entry into this state triggers building.
-        aasm_state :generating, :after_enter => :generate_report
+        state :generating, after_enter: :generate_report
 
         # The report has been generated and is awaiting customer feedback
-        aasm_state :awaiting_proceed
+        state :awaiting_proceed
 
         # Customer feedback has been uploaded. This is generally an end state, but a report can be re-uploaded
         # at a later date if necessary.
-        aasm_state :complete
+        state :complete
 
         # Triggered automatically on after_create. This event is handled by delayed_job
         # Call generate_without_delay! to bypass delayed job, although make sure there aren't
         # any existing jobs first.
-        aasm_event :generate do
-          transitions :from => [:queued,:requeued], :to => :generating
+        event :generate do
+          transitions from: [:queued, :requeued], to: :generating
         end
 
         # Called on report failure. Generally the delayed job will cycle it through a few times
         # but most reports in this state will require manual intervention.
-        aasm_event :requeue do
-          transitions :from => :generating, :to => :requeued
+        event :requeue do
+          transitions from: :generating, to: :requeued
         end
 
         # Called automatically when a report is generated
-        aasm_event :generation_complete do
-          transitions :from => :generating, :to => :awaiting_proceed
+        event :generation_complete do
+          transitions from: :generating, to: :awaiting_proceed
         end
 
-        # A QC report might be uploaded multiple times
-        aasm_event :proceed_decision do
-          transitions :from => [:complete,:awaiting_proceed], :to => :complete
-        end
+          # A QC report might be uploaded multiple times
+          event :proceed_decision do
+            transitions from: [:complete, :awaiting_proceed], to: :complete
+          end
 
-        aasm_initial_state :queued
+        end
 
         def available?
           awaiting_proceed? or complete?
@@ -89,7 +91,7 @@ class QcReport < ActiveRecord::Base
     # This bypasses the delayed job, but ensures that the state machine is obeyed.
     def generate_report
       begin
-        study.each_well_for_qc_report_in_batches(exclude_existing,product_criteria) do |assets|
+        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria) do |assets|
           # If there are some wells of interest, we get them in a list
           connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
 
@@ -101,7 +103,7 @@ class QcReport < ActiveRecord::Base
           ActiveRecord::Base.transaction do
             assets.each do |asset|
               criteria = product_criteria.assess(asset, connected_wells[asset.id])
-              QcMetric.create!(:asset=>asset,:qc_decision=>criteria.qc_decision,:metrics=>criteria.metrics,:qc_report=>self)
+              QcMetric.create!(asset: asset, qc_decision: criteria.qc_decision, metrics: criteria.metrics, qc_report: self)
             end
           end
         end
@@ -121,11 +123,11 @@ class QcReport < ActiveRecord::Base
   include ReportBehaviour
 
   belongs_to :product_criteria
-  has_one :product, :through => :product_criteria
+  has_one :product, through: :product_criteria
   belongs_to :study
   has_many :qc_metrics
 
-  before_validation :generate_report_identifier, :if => :identifier_required?
+  before_validation :generate_report_identifier, if: :identifier_required?
 
   after_create :generate!
 
@@ -137,7 +139,7 @@ class QcReport < ActiveRecord::Base
 
   validates_presence_of :product_criteria, :study, :state
 
-  validates_inclusion_of :exclude_existing, :in => [true, false], :message => 'should be true or false.'
+  validates_inclusion_of :exclude_existing, in: [true, false], message: 'should be true or false.'
 
   # Reports are handled asynchronously
   handle_asynchronously :generate
@@ -170,8 +172,10 @@ class QcReport < ActiveRecord::Base
       study.abbreviation,
       product_criteria.product.name,
       DateTime.now.to_formatted_s(:number)
-    ].compact.join('_').downcase.gsub(/[^\w]/,'_')
+    ].compact.join('_').downcase.gsub(/[^\w]/, '_')
     self.report_identifier = rid
   end
 
 end
+
+require_dependency 'qc_report/file'

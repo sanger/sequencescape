@@ -16,8 +16,8 @@ module Authorization
   module HardwiredRoles
 
     module UserExtensions
-      def self.included( recipient )
-        recipient.extend( ClassMethods )
+      def self.included(recipient)
+        recipient.extend(ClassMethods)
       end
 
       module ClassMethods
@@ -28,18 +28,18 @@ module Authorization
 
       module InstanceMethods
         # If roles aren't explicitly defined in user class then return false
-        def has_role?( role, authorizable_object = nil )
+        def has_role?(role, authorizable_object = nil)
           false
         end
 
-        def has_role( role, authorizable_object = nil )
-          raise( CannotSetRoleWhenHardwired,
+        def has_role(role, authorizable_object = nil)
+          raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot set user to role #{role}. Don't use #has_role, use code in models."
           )
         end
 
-        def has_no_role( role, authorizable_object = nil )
-          raise( CannotSetRoleWhenHardwired,
+        def has_no_role(role, authorizable_object = nil)
+          raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot remove user role #{role}. Don't use #has_no_role, use code in models."
           )
         end
@@ -47,8 +47,8 @@ module Authorization
     end
 
     module ModelExtensions
-      def self.included( recipient )
-        recipient.extend( ClassMethods )
+      def self.included(recipient)
+        recipient.extend(ClassMethods)
       end
 
       module ClassMethods
@@ -58,18 +58,18 @@ module Authorization
       end
 
       module InstanceMethods
-        def accepts_role?( role, user )
+        def accepts_role?(role, user)
           return false
         end
 
-        def accepts_role( role, user )
-          raise( CannotSetRoleWhenHardwired,
+        def accepts_role(role, user)
+          raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot set user to role #{role}. Don't use #accepts_role, use code in models."
           )
         end
 
-        def accepts_no_role( role, user )
-          raise( CannotSetRoleWhenHardwired,
+        def accepts_no_role(role, user)
+          raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot set user to role #{role}. Don't use #accepts_no_role, use code in models."
           )
         end
@@ -79,4 +79,3 @@ module Authorization
   end
 
 end
-

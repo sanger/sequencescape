@@ -85,7 +85,7 @@ Feature: Sample manifest
 
   Scenario: Create a manifest then upload an excel file instead of a csv file
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with the file "data/base_manifest.xls"
+    When I fill in "File to upload" with the file "data/sample_information.xls"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     Then I should see the manifest table:

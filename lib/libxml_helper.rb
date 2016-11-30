@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012 Genome Research Ltd.
 require "xml/libxml"
 
 class XML::Node
@@ -41,7 +42,7 @@ class XML::Node
   end
 
   # alias for inner_xml
- def inner_html
+  def inner_html
     inner_xml
   end
 
@@ -68,14 +69,14 @@ class XML::Node
 
   # register a namespace, of the form "foo:http://example.com/ns"
   def register_namespace(name_and_href)
-    (@default_namespaces ||= []) <<name_and_href
+    (@default_namespaces ||= []) << name_and_href
   end
 
-  def find_with_default_ns(xpath_expr, namespace=nil)
+  def find_with_default_ns(xpath_expr, namespace = nil)
     find_base(xpath_expr, namespace || default_namespaces)
   end
 
-  def find_first_with_default_ns(xpath_expr, namespace=nil)
+  def find_first_with_default_ns(xpath_expr, namespace = nil)
     find_first_base(xpath_expr, namespace || default_namespaces)
   end
 

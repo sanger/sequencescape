@@ -1,25 +1,28 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.%>
 
 <h2>Create a bulk submission:</h2>
 
 <p class="info">Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors, <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
 
 <%= semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
-    <%= form.semantic_errors :base %>
-    <%= form.inputs do %>
-      <%= form.input :spreadsheet, :as => :file, :label => 'Spreadsheet' %>
-    <% end %>
-    <%= form.button do %>
-      <%= form.action(:submit, class:'btn btn-success btn-lg') %>
+  <%= form.semantic_errors :base %>
 
-    <% end %>
-    <div id="being_created" style="display: none;">
-      <p>Your spreadsheet is being processed...</p>
-      <%= loading_bar %>
-    </div>
+  <%= form.inputs do %>
+    <%= form.input :spreadsheet, :as => :file, :label => 'Spreadsheet' %>
+  <% end %>
 
+  <%= form.button do %>
+    <%= form.action(:submit, class:'btn btn-success btn-lg') %>
+  <% end %>
+
+  <div id="being_created" style="display: none;">
+    <p>Your spreadsheet is being processed...</p>
+    <%= loading_bar %>
+  </div>
 <% end %>
 
 <h3>Templates &amp; Guidance</h3>

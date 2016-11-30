@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -13,19 +15,19 @@ class CommentTest < ActiveSupport::TestCase
 
   context "while adding comments to requests" do
     setup do
-      @study =  create :study
-      @project =  create :project
+      @study = create :study
+      @project = create :project
 
       @asset = create :empty_sample_tube
-      @asset.aliquots.create!(:sample => create(:sample, :studies => [@study]))
+      @asset.aliquots.create!(sample: create(:sample, studies: [@study]))
 
       @asset2 = create :empty_sample_tube
-      @asset2.aliquots.create!(:sample => create(:sample, :studies => [@study]))
+      @asset2.aliquots.create!(sample: create(:sample, studies: [@study]))
 
-      @order1 = create :order_with_submission, :study => @study, :assets => [@asset], :project => @project
-      @order2 = create :order,  :study => @study, :assets => [@asset], :project => @project
-      @order3 = create :order,  :study => @study, :assets => [@asset2], :project => @project
-      @order4 = create :order_with_submission,  :study => @study, :assets => [@asset2], :project => @project
+      @order1 = create :order_with_submission, study: @study, assets: [@asset], project: @project
+      @order2 = create :order,  study: @study, assets: [@asset], project: @project
+      @order3 = create :order,  study: @study, assets: [@asset2], project: @project
+      @order4 = create :order_with_submission,  study: @study, assets: [@asset2], project: @project
 
       @submission = @order1.submission
       @submission.orders.push(@order2)
@@ -33,12 +35,12 @@ class CommentTest < ActiveSupport::TestCase
 
       @submission2 = @order4.submission
 
-      @sequencing_request = create :request_with_sequencing_request_type, :submission => @submission
-      @request = create :request, :order => @order1, :asset => @asset, :submission => @submission
-      @request2 = create :request, :order => @order2, :submission => @submission
+      @sequencing_request = create :request_with_sequencing_request_type, submission: @submission
+      @request = create :request, order: @order1, asset: @asset, submission: @submission
+      @request2 = create :request, order: @order2, submission: @submission
 
-      @request3 = create :request, :order => @order4, :submission => @order4.submission
-      @sequencing_request2 = create :request_with_sequencing_request_type, :submission => @order4.submission
+      @request3 = create :request, order: @order4, submission: @order4.submission
+      @sequencing_request2 = create :request_with_sequencing_request_type, submission: @order4.submission
     end
     context "from an order" do
       setup do
@@ -70,8 +72,8 @@ class CommentTest < ActiveSupport::TestCase
         @submission2.add_comment("My comment from submission 2", @user)
       end
       should "include that comment in all the requests of the submission" do
-        @submission.requests.all?{|r|r.comments.length == 1}
-        @submission2.requests.all?{|r|r.comments.length == 1}
+        @submission.requests.all? { |r| r.comments.length == 1 }
+        @submission2.requests.all? { |r| r.comments.length == 1 }
       end
     end
   end

@@ -12,6 +12,6 @@ Feature: I want to scan an asset into a lab reception freezer
       And I press "Submit"
       Then I should see "I have placed the above barcoded Samples in the reception fridge in the following lab"
       And I should see "DN1234567"
-      When I select "Sample logistics freezer" from "asset_location_id"
+      When I select "Sample logistics freezer" from "Freezers"
       And I press "Confirm"
       Then I should see "Successfully updated"

@@ -1,11 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 module SampleManifest::SampleTubeBehaviour
   module ClassMethods
     def create_for_sample_tube!(attributes, *args, &block)
-      create!(attributes.merge(:asset_type => '1dtube'), *args, &block).tap do |manifest|
+      create!(attributes.merge(asset_type: '1dtube'), *args, &block).tap do |manifest|
         manifest.generate
       end
     end
@@ -19,17 +21,17 @@ module SampleManifest::SampleTubeBehaviour
       @manifest = manifest
     end
 
-    delegate :generate_1dtubes, :to => :@manifest
+    delegate :generate_1dtubes, to: :@manifest
     alias_method(:generate, :generate_1dtubes)
 
-    delegate :samples, :to => :@manifest
+    delegate :samples, to: :@manifest
 
     def io_samples
       samples.map do |sample|
         {
-          :sample    => sample,
-          :container => {
-            :barcode => sample.primary_receptacle.sanger_human_barcode
+          sample: sample,
+          container: {
+            barcode: sample.primary_receptacle.sanger_human_barcode
           }
         }
       end
@@ -42,8 +44,8 @@ module SampleManifest::SampleTubeBehaviour
     def details(&block)
       samples.each do |sample|
         yield({
-          :barcode   => sample.assets.first.sanger_human_barcode,
-          :sample_id => sample.sanger_sample_id
+          barcode: sample.assets.first.sanger_human_barcode,
+          sample_id: sample.sanger_sample_id
         })
       end
     end
@@ -52,8 +54,8 @@ module SampleManifest::SampleTubeBehaviour
       [].tap do |details|
         samples.each do |sample|
           details << {
-            :barcode   => sample.assets.first.sanger_human_barcode,
-            :sample_id => sample.sanger_sample_id
+            barcode: sample.assets.first.sanger_human_barcode,
+            sample_id: sample.sanger_sample_id
           }
         end
       end
@@ -66,7 +68,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def printables
-      samples.map {|sample| sample.assets.first}
+      samples.map { |sample| sample.assets.first }
     end
 
   end

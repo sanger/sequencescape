@@ -5,14 +5,14 @@ class ColumnTest < ActiveSupport::TestCase
   attr_reader :column, :sample, :range_list, :worksheet
 
   def setup
-    @range_list = build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range)})
+    @range_list = build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range) })
     @worksheet = Axlsx::Workbook.new.add_worksheet
   end
 
   def options
-    { heading: "PUBLIC NAME", name: :public_name, value: "a value", type: :string, value: 10, number: 125, attribute: :barcode,
+    { heading: "PUBLIC NAME", name: :public_name, type: :string, value: 10, number: 125, attribute: :barcode,
       validation: FactoryGirl.attributes_for(:validation),
-      conditional_formattings: {simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula)}
+      conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) }
     }
   end
 
@@ -54,10 +54,10 @@ class ColumnTest < ActiveSupport::TestCase
   # end
 
   test "should have an attribute value" do
-    detail = {barcode: 'barcode', sanger_id: 'sanger_id', position: 'position'}
+    detail = { barcode: 'barcode', sanger_id: 'sanger_id', position: 'position' }
     assert_equal detail[:barcode], SampleManifestExcel::Column.new(options).attribute_value(detail)
     assert_equal options[:value], SampleManifestExcel::Column.new(options.except(:attribute)).attribute_value(detail)
-    refute  SampleManifestExcel::Column.new(options.except(:value, :attribute)).attribute_value(detail)
+    refute SampleManifestExcel::Column.new(options.except(:value, :attribute)).attribute_value(detail)
   end
 
   test "should have a number" do
@@ -138,7 +138,7 @@ class ColumnTest < ActiveSupport::TestCase
 
   end
 
-  #TODO: Need to improve way keys are found to reduce brittleness of tests.
+  # TODO: Need to improve way keys are found to reduce brittleness of tests.
   # would break if column names changed.
   context "argument builder" do
 
@@ -147,7 +147,7 @@ class ColumnTest < ActiveSupport::TestCase
     attr_reader :columns, :defaults
 
     setup do
-      folder = File.join("test","data", "sample_manifest_excel", "extract")
+      folder = File.join("test", "data", "sample_manifest_excel", "extract")
       @columns = load_file(folder, "columns")
       @defaults = SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, "conditional_formattings"))
     end

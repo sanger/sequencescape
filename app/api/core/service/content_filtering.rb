@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 # Everything coming in and going out should be JSON.
 module Core::Service::ContentFiltering
@@ -27,7 +29,7 @@ module Core::Service::ContentFiltering
     def process_request_body
       content = request.body.read
       raise Core::Service::ContentFiltering::InvalidBodyContentType if not content.blank? and !acceptable_types.include?(request.content_type)
-      @json   = content.blank? ? {} : MultiJson.load(content) if request.content_type == 'application/json' || content.blank?
+      @json = content.blank? ? {} : MultiJson.load(content) if request.content_type == 'application/json' || content.blank?
     ensure
       # It's important to ensure that the body IO object has been rewound to the start for other requests.
       request.body.rewind
@@ -41,7 +43,7 @@ module Core::Service::ContentFiltering
      headers('Content-Type' => 'application/json')
     end
 
-    ACCEPTABLE_TYPES = [ 'application/json' ]
+    ACCEPTABLE_TYPES = ['application/json']
     ACCEPTABLE_TYPES << '*/*' if Rails.env == 'development'
 
     def acceptable_types

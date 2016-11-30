@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 module PlatePurpose::Stock
   def _pool_wells(wells)
@@ -14,17 +16,17 @@ module PlatePurpose::Stock
 
   def state_of(plate)
     # If there are no wells with aliquots we're pending
-    wells_with_aliquots = plate.wells.with_aliquots.all
-    return UNREADY_STATE if wells_with_aliquots.empty?
+    ids_of_wells_with_aliquots = plate.wells.with_aliquots.pluck(:id)
+    return UNREADY_STATE if ids_of_wells_with_aliquots.empty?
 
     # All of the wells with aliquots must have requests for us to be considered passed
-    well_requests = Request::LibraryCreation.all(:conditions => { :asset_id => wells_with_aliquots.map(&:id) })
+    well_requests = Request::LibraryCreation.where(asset_id: ids_of_wells_with_aliquots)
 
     wells_states = well_requests.group_by(&:asset_id).map do |well_id, requests|
       calculate_state_of_well(requests.map(&:state))
     end
 
-    return UNREADY_STATE unless wells_states.count == wells_with_aliquots.count
+    return UNREADY_STATE unless wells_states.count == ids_of_wells_with_aliquots.count
     return calculate_state_of_plate(wells_states)
   end
 
@@ -34,7 +36,7 @@ module PlatePurpose::Stock
     case unique_states.sort
      when ['failed'] then 'failed'
      when ['cancelled'] then 'cancelled'
-     when ['cancelled','failed'] then 'failed'
+     when ['cancelled', 'failed'] then 'failed'
      else READY_STATE
     end
   end

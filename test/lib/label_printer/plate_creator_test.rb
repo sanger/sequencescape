@@ -18,14 +18,14 @@ class PlateCreatorTest < ActiveSupport::TestCase
     @plates = [plate1]
     @user = 'user'
     @study_abbreviation = "WTCCC"
-    options = {plate_purpose: plate_purpose, plates: plates, user_login: user}
+    options = { plate_purpose: plate_purpose, plates: plates, user_login: user }
     @plate_label = LabelPrinter::Label::PlateCreator.new(options)
-    @label =  {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
+    @label =  { top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
               bottom_left: "#{plate1.sanger_human_barcode}",
               top_right: "#{purpose_name}",
               bottom_right: "#{user} #{study_abbreviation}",
               top_far_right: "#{parent_barcode}",
-              barcode: "#{plate1.ean13_barcode}"}
+              barcode: "#{plate1.ean13_barcode}" }
   end
 
   test 'should have plates' do

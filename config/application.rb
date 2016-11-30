@@ -1,13 +1,9 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'action_dispatch/xml_params_parser'
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+Bundler.require(:default, Rails.env)
 
 module Sequencescape
   class Application < Rails::Application
@@ -47,17 +43,9 @@ module Sequencescape
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    # Enforce whitelist mode for mass assignment.
-    # This will create an empty whitelist of attributes available for mass-assignment for all models
-    # in your app. As such, your models will need to explicitly whitelist or blacklist accessible
-    # parameters by using an attr_accessible or attr_protected declaration.
-    config.active_record.whitelist_attributes = true
+    config.filter_parameters += [:password, :credential_1, :uploaded_data]
 
-    config.filter_parameters += [:password,:credential_1, :uploaded_data]
-
-    # Enable the asset pipeline
-    config.assets.enabled = true
-    config.assets.prefix = 'public'
+    config.assets.prefix = '/public'
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -66,21 +54,13 @@ module Sequencescape
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W{ #{Rails.root}/app/observers }
-    config.autoload_paths += %W{ #{Rails.root}/app/metal }
-    config.autoload_paths += %W{ #{Rails.root}/app }
-    config.autoload_paths += %W{ #{Rails.root}/lib }
-    config.autoload_paths += %W{ #{Rails.root}/lib/sample_manifest_excel }
+    config.autoload_paths += %W{#{Rails.root}/app/observers}
+    config.autoload_paths += %W{#{Rails.root}/app/metal}
+    config.autoload_paths += %W{#{Rails.root}/app}
+    config.autoload_paths += %W{#{Rails.root}/lib}
+    config.autoload_paths += %W{#{Rails.root}/lib/sample_manifest_excel}
 
-    # config.middleware.use "Api::EndpointHandler"
-    # config.middleware.use "Api::RootService"
-
-    # UPDATE ? - Is this old rails code or custom code?
-    # if %w(development test sandbox production cucumber).include? Rails.env
-    #   config.load_paths += Dir["#{Rails.root}/vendor/gems/**"].map do |dir|
-    #     File.directory?(lib = "#{dir}/lib") ? lib : dir
-    #   end
-    # end
+    config.middleware.insert_after ActionDispatch::ParamsParser, ActionDispatch::XmlParamsParser
 
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.

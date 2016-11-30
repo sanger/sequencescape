@@ -132,12 +132,23 @@ Feature: Pick a ng quantity using the Tecan robot
     C; DEST1 = 1220099999705
     """
     When I follow "Print worksheet for Plate 99999"
-    Then I should see the cherrypick worksheet table:
+    Then I should see the JRuby cherrypick worksheet table:
      | 1                               | 2                               |
      | B1        222        v10.0 b0.0 | C5        333        v1.1  b8.9 |
      | B2        222        v8.3  b1.7 | C6        333        v1.3  b8.8 |
      | B3        222        v7.1  b2.9 | C7        333        v1.4  b8.6 |
      | B4        222        v6.3  b3.8 | C8        333        v1.7  b8.3 |
+     | B5        222        v50.0 b0.0 | D1        333        v10.0 b0.0 |
+     | B6        222        v20.0 b0.0 | D2        333        v10.0 b0.0 |
+     | C3        333        v30.0 b0.0 | D3        333        v15.0 b0.0 |
+     | C4        333        v1.0  b9.0 | D4        333        v20.0 b0.0 |
+     | 1                               | 2                               |
+    Then I should see the MRI cherrypick worksheet table:
+     | 1                               | 2                               |
+     | B1        222        v10.0 b0.0 | C5        333        v1.1  b8.9 |
+     | B2        222        v8.3  b1.7 | C6        333        v1.2  b8.8 |
+     | B3        222        v7.1  b2.9 | C7        333        v1.4  b8.6 |
+     | B4        222        v6.2  b3.8 | C8        333        v1.7  b8.3 |
      | B5        222        v50.0 b0.0 | D1        333        v10.0 b0.0 |
      | B6        222        v20.0 b0.0 | D2        333        v10.0 b0.0 |
      | C3        333        v30.0 b0.0 | D3        333        v15.0 b0.0 |
@@ -207,5 +218,3 @@ Feature: Pick a ng quantity using the Tecan robot
        | abc            | 20             | 1000      |
        | 10             | 0.0            | 1.0       |
        | 10             | 5              | 1000      |
-
-

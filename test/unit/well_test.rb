@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -12,27 +14,27 @@ class WellTest < ActiveSupport::TestCase
 
     context "with gender_markers results" do
       setup do
-        @well.well_attribute.update_attributes!(:gender_markers => ['M','F','F'])
+        @well.well_attribute.update_attributes!(gender_markers: ['M', 'F', 'F'])
       end
       should "create an event if nothings changed and there are no previous events" do
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 1, @well.events.count
       end
 
       should "an event for each resource if nothings changed" do
-        @well.update_gender_markers!(['M','F','F'], 'MSPEC')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'MSPEC')
         assert_equal 1, @well.events.count
         assert 'MSPEC', @well.events.last.content
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 2, @well.events.count
         assert 'SNP', @well.events.last.content
       end
 
       should "only 1 event if nothings changed for the same resource" do
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 1, @well.events.count
         assert 'SNP', @well.events.last.content
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 1, @well.events.count
         assert 'SNP', @well.events.last.content
       end
@@ -40,10 +42,10 @@ class WellTest < ActiveSupport::TestCase
 
     context "without gender_markers results" do
       should "an event for each resource if its changed" do
-        @well.update_gender_markers!(['M','F','F'], 'MSPEC')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'MSPEC')
         assert_equal 1, @well.events.count
         assert 'MSPEC', @well.events.last.content
-        @well.update_gender_markers!(['M','F','F'], 'SNP')
+        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
         assert_equal 2, @well.events.count
         assert 'SNP', @well.events.last.content
       end
@@ -51,7 +53,7 @@ class WellTest < ActiveSupport::TestCase
 
     context "with sequenom_count results" do
       setup do
-       @well.well_attribute.update_attributes!(:sequenom_count => 5)
+       @well.well_attribute.update_attributes!(sequenom_count: 5)
      end
 
      should "add an event if its changed" do
@@ -77,12 +79,12 @@ class WellTest < ActiveSupport::TestCase
 
   should "return a correct hash of target wells" do
     purposes = create_list :plate_purpose, 4
-    stock_plate = create :plate, { :wells => create_list(:well, 96) }
+    stock_plate = create :plate, { wells: create_list(:well, 96) }
     norm_plates = create_list :plate, 4
     norm_plates.each_with_index do |plate, index|
-      plate.update_attributes(:plate_purpose => purposes[index], :wells => create_list(:well, 96))
+      plate.update_attributes(plate_purpose: purposes[index], wells: create_list(:well, 96))
       plate.wells.each do |w|
-        w.well_attribute.update_attributes(:concentration => nil)
+        w.well_attribute.update_attributes(concentration: nil)
       end
     end
 
@@ -168,7 +170,7 @@ class WellTest < ActiveSupport::TestCase
     should "have a parent plate" do
       parent = @well.plate
       assert parent.is_a?(Plate)
-      assert_equal parent.id,@plate.id
+      assert_equal parent.id, @plate.id
     end
 
     context "for a tecan" do
@@ -180,6 +182,11 @@ class WellTest < ActiveSupport::TestCase
           assert !@well.map.nil?
           assert @well.valid_well_on_plate
         end
+      end
+      should "have a parent plate" do
+        parent = @well.plate
+        assert parent.is_a?(Plate)
+        assert_equal parent.id, @plate.id
       end
 
       context "with nil parameters" do
@@ -194,17 +201,17 @@ class WellTest < ActiveSupport::TestCase
   end
 
   [
-   [1000 , 10  , 50, 50, 0, nil],
-   [1000 , 10  , 10, 10, 0, nil],
-   [1000 , 10  , 20, 10, 0, 10 ],
-   [100  , 100 , 50, 1 , 9, nil],
-   [1000 , 1000, 50, 1 , 9, nil],
-   [5000 , 1000, 50, 5 , 5, nil],
-   [10   , 100 , 50, 1 , 9, nil],
-   [1000 , 250 , 50, 4 , 6, nil],
-   [10000, 250 , 50, 40, 0, nil],
-   [10000, 250 , 30, 30, 0, nil]
-   ].each do |target_ng,  measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
+   [1000, 10, 50, 50, 0, nil],
+   [1000, 10, 10, 10, 0, nil],
+   [1000, 10, 20, 10, 0, 10],
+   [100, 100, 50, 1, 9, nil],
+   [1000, 1000, 50, 1, 9, nil],
+   [5000, 1000, 50, 5, 5, nil],
+   [10, 100, 50, 1, 9, nil],
+   [1000, 250, 50, 4, 6, nil],
+   [10000, 250, 50, 40, 0, nil],
+   [10000, 250, 30, 30, 0, nil]
+   ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
     context "cherrypick by nano grams" do
       setup do
         @source_well = create :well
@@ -240,7 +247,7 @@ class WellTest < ActiveSupport::TestCase
         stock_to_pick = 0.1
         buffer_added = 9.9
         robot_minimum_picking_volume = nil
-        @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+        @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
         @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -249,7 +256,7 @@ class WellTest < ActiveSupport::TestCase
         stock_to_pick = 1
         buffer_added = 9
         robot_minimum_picking_volume = 1.0
-        @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+        @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
         @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -258,7 +265,7 @@ class WellTest < ActiveSupport::TestCase
         stock_to_pick = 10.0
         buffer_added = 0.0
         robot_minimum_picking_volume = 10.0
-        @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+        @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
         @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -267,7 +274,7 @@ class WellTest < ActiveSupport::TestCase
         stock_to_pick = 5.0
         buffer_added = 5.0
         robot_minimum_picking_volume = 5.0
-        @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+        @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
         @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
         assert_equal stock_to_pick, @target_well.get_picked_volume
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -280,39 +287,39 @@ class WellTest < ActiveSupport::TestCase
     context "with no source concentration" do
       should "raise an error" do
         assert_raises Cherrypick::ConcentrationError do
-          @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(1.1, 2.2, 0.0,20)
-          @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(1.2, 2.2, "",20)
+          @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(1.1, 2.2, 0.0, 20)
+          @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(1.2, 2.2, "", 20)
         end
       end
     end
 
     should "return volume to pick" do
-      assert_equal 1.25, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0,20)
-      assert_equal 3.9,  @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0,20)
+      assert_equal 1.25, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
+      assert_equal 3.9,  @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
       assert_equal 9.1,  @well.get_buffer_volume
     end
 
     should "sets the buffer volume" do
-      vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0,20)
+      vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
       assert_equal 3.75, @well.get_buffer_volume
-      vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0,20)
+      vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
       assert_equal 9.1,  @well.get_buffer_volume
     end
 
     should "sets buffer and volume_to_pick correctly" do
-      vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0,20)
+      vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
       assert_equal @well.get_picked_volume, vol_to_pick
       assert_equal 5.0, @well.get_buffer_volume + vol_to_pick
     end
 
     [
-      [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0, 'Standard scenario, sufficient material, buffer and dna both added' ],
-      [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0, 'Insufficient source material for concentration or volume. Make up with buffer' ],
-      [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme' ],
-      [100.0, 5.0,  100.0,  5.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick' ],
-      [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0, 'Lowish concentration, non zero, but less than robot buffer required' ],
-      [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA' ],
-      [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer' ]
+      [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0, 'Standard scenario, sufficient material, buffer and dna both added'],
+      [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0, 'Insufficient source material for concentration or volume. Make up with buffer'],
+      [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme'],
+      [100.0, 5.0,  100.0,  5.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick'],
+      [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0, 'Lowish concentration, non zero, but less than robot buffer required'],
+      [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA'],
+      [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer']
     ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, volume_obtained, buffer_volume_obtained, scenario|
       context "when testing #{scenario}" do
         setup do
@@ -335,19 +342,19 @@ class WellTest < ActiveSupport::TestCase
         @our_product_criteria = create :product_criteria
         @other_criteria = create :product_criteria
 
-        @old_report = create :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.day, :report_identifier => "A#{Time.now}"
-        @current_report = create :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.hour, :report_identifier => "B#{Time.now}"
-        @unrelated_report = create :qc_report, :product_criteria => @other_criteria, :created_at => Time.now, :report_identifier => "C#{Time.now}"
+        @old_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.now - 1.day, report_identifier: "A#{Time.now}"
+        @current_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.now - 1.hour, report_identifier: "B#{Time.now}"
+        @unrelated_report = create :qc_report, product_criteria: @other_criteria, created_at: Time.now, report_identifier: "C#{Time.now}"
 
         @stock_well = create :well
 
         @well.stock_wells.attach!([@stock_well])
         @well.reload
 
-        create :qc_metric, :asset => @stock_well, :qc_report => @old_report, :qc_decision => 'passed', :proceed => true
-        create :qc_metric, :asset => @stock_well, :qc_report => @unrelated_report, :qc_decision => 'passed', :proceed => true
+        create :qc_metric, asset: @stock_well, qc_report: @old_report, qc_decision: 'passed', proceed: true
+        create :qc_metric, asset: @stock_well, qc_report: @unrelated_report, qc_decision: 'passed', proceed: true
 
-        @expected_metric = create :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
+        @expected_metric = create :qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true
       end
 
       should 'report appropriate metrics' do

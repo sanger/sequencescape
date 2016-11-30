@@ -1,27 +1,32 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class SamplesController < ApplicationController
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
-  #require 'curb'
+  # require 'curb'
 
-  before_filter :admin_login_required, :only => [ :administer, :destroy ]
+  before_action :admin_login_required, only: [:administer, :destroy]
 
   def index
-    @samples = Sample.order('created_at DESC').page(params[:page])
+    @samples = Sample.order(created_at: :desc).page(params[:page])
     respond_to do |format|
       format.html
       format.xml
-      format.json { render :json => Sample.all.to_json }
+      format.json { render json: Sample.all.to_json }
     end
   end
 
   def new
     @sample = Sample.new
-    @workflows  = Submission::Workflow.all
-    @studies   = Study.all.sort_by {|p| p.name }
+    @workflows = Submission::Workflow.all
+    @studies = Study.alphabetical
   end
 
   def create
@@ -37,26 +42,26 @@ class SamplesController < ApplicationController
       if @sample.save
         flash[:notice] = "Sample successfully created"
         format.html { redirect_to sample_path(@sample) }
-        format.xml  { render :xml => @sample, :status => :created, :location => @sample }
-        format.json  { render :json => @sample, :status => :created, :location => @sample }
+        format.xml  { render xml: @sample, status: :created, location: @sample }
+        format.json  { render json: @sample, status: :created, location: @sample }
       else
         @workflows = Submission::Workflow.all
         flash[:error] = "Problems creating your new sample"
-        format.html { render :action => :new }
-        format.xml  { render :xml => @sample.errors, :status => :unprocessable_entity }
-        format.json  { render :json => @sample.errors, :status => :unprocessable_entity }
+        format.html { render action: :new }
+        format.xml  { render xml: @sample.errors, status: :unprocessable_entity }
+        format.json  { render json: @sample.errors, status: :unprocessable_entity }
       end
     end
   end
 
   def show
-    @sample  = Sample.find(params[:id], :include => :assets)
-    @studies = Study.all(:conditions => ["state = ? OR state = ?", "pending", "active"], :order => :name)
+    @sample  = Sample.includes(:assets).find(params[:id])
+    @studies = Study.where(state: ["pending", "active"]).alphabetical
 
     respond_to do |format|
       format.html
-      format.xml { render :layout => false }
-      format.json { render :json => @sample.to_json }
+      format.xml { render layout: false }
+      format.json { render json: @sample.to_json }
     end
   end
 
@@ -77,7 +82,7 @@ class SamplesController < ApplicationController
   def edit
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
-      if @sample.released? && ! current_user.is_administrator?
+      if @sample.released? && !current_user.is_administrator?
         flash[:error] = "Cannot edit publically released sample"
         redirect_to sample_path(@sample)
         return
@@ -85,8 +90,8 @@ class SamplesController < ApplicationController
 
       respond_to do |format|
         format.html
-        format.xml  { render :xml => @samples.to_xml }
-        format.json { render :json => @samples.to_json }
+        format.xml  { render xml: @samples.to_xml }
+        format.json { render json: @samples.to_json }
       end
     end
   end
@@ -96,14 +101,14 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
       begin
-        cleaned_params  = clean_params_from_check(params[:sample])
+        cleaned_params = clean_params_from_check(params[:sample])
         @sample.update_attributes!(cleaned_params)
         flash[:notice] = "Sample details have been updated"
         redirect_to sample_path(@sample)
       rescue ActiveRecord::RecordInvalid => exception
         @workflows = Submission::Workflow.all
         flash[:error] = "Failed to update attributes for sample"
-        render :action => "edit", :id => @sample.id
+        render action: "edit", id: @sample.id
       end
     end
   end
@@ -128,7 +133,7 @@ class SamplesController < ApplicationController
   def remove_from_study
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
-    StudySample.find(:first, :conditions=>{:study_id=>params[:study_id],:sample_id=>params[:id]}).destroy
+    StudySample.find_by(study_id: params[:study_id], sample_id: params[:id]).destroy
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end
@@ -136,8 +141,8 @@ class SamplesController < ApplicationController
   def show_accession
     @sample = Sample.find(params[:id])
     respond_to do |format|
-      xml_text =@sample.accession_service.accession_sample_xml(@sample)
-      format.xml  { render(:text => xml_text) }
+      xml_text = @sample.accession_service.accession_sample_xml(@sample)
+      format.xml  { render(text: xml_text) }
     end
   end
 
@@ -146,7 +151,7 @@ class SamplesController < ApplicationController
     @sample.validate_ena_required_fields!
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
 
-    flash[:notice] = "Accession number generated: #{ @sample.sample_metadata.sample_ebi_accession_number }"
+    flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
     redirect_to(sample_path(@sample))
   rescue ActiveRecord::RecordInvalid => exception
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
@@ -164,9 +169,9 @@ class SamplesController < ApplicationController
 
    def taxon_lookup
      if params[:term]
-       url= configatron.taxon_lookup_url+"/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
+       url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
      elsif params[:id]
-       url = configatron.taxon_lookup_url+"/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
+       url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
      else return
      end
 
@@ -174,15 +179,15 @@ class SamplesController < ApplicationController
      if configatron.disable_web_proxy == true
        RestClient.proxy = ''
      elsif not configatron.proxy.blank?
-       RestClient.proxy= configatron.proxy
+       RestClient.proxy = configatron.proxy
        rc.headers["User-Agent"] = "Internet Explorer 5.0"
      end
-     #rc.verbose = true
+     # rc.verbose = true
      body = rc.get.body
 
      respond_to do |format|
-       format.js {render :text =>body}
-       format.xml {render :text =>body}
+       format.js { render text: body }
+       format.xml { render text: body }
        #      format.html {render :nothing}
      end
    end

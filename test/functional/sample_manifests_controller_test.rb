@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 
 require "test_helper"
 require 'sdb/sample_manifests_controller'
@@ -14,10 +16,10 @@ class SampleManifestsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user       = create :user
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
 
       SampleManifestExcel.configure do |config|
-        config.folder = File.join("test","data", "sample_manifest_excel")
+        config.folder = File.join("test", "data", "sample_manifest_excel")
         config.load!
       end
     end
@@ -53,28 +55,25 @@ class SampleManifestsControllerTest < ActionController::TestCase
         supplier.save
 
         barcode_printer = create :barcode_printer
-        LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+        LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
 
         RestClient.expects(:post)
-        post :create, sample_manifest: {template: "plate_default",
+        post :create, sample_manifest: { template: "plate_default",
                                        study_id: study.id,
                                        supplier_id: supplier.id,
                                        count: "3",
                                        barcode_printer: barcode_printer.name,
                                        only_first_label: "0",
-                                       asset_type: ""}
+                                       asset_type: "" }
         RestClient.expects(:post)
-        post :create, sample_manifest: {template: "tube_default",
+        post :create, sample_manifest: { template: "tube_default",
                                        study_id: study.id,
                                        supplier_id: supplier.id,
                                        count: "3",
                                        barcode_printer: barcode_printer.name,
                                        only_first_label: "0",
-                                       asset_type: ""}
+                                       asset_type: "" }
       end
-
     end
-
   end
-
 end

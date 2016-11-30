@@ -1,9 +1,9 @@
 namespace :studies do
   desc "Runs the annotation callbacks"
-  task :annotate => :environment do
+  task annotate: :environment do
     puts "Annotating items"
     a = []
-    Annotation.find(:all).each do |annotation|
+    Annotation.all.each do |annotation|
       annotation.send('external_callback')
       a << annotation
     end

@@ -10,5 +10,5 @@ namespace :railroad do
     end
   end
 
-  task :diagrams => %w(diagram:models diagram:controllers)
+  task diagrams: %w(diagram:models diagram:controllers)
 end

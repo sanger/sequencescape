@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -14,7 +16,7 @@ if false
 
     context "authenticate" do
       setup do
-          @user = create :admin, :login => 'xyz987', :api_key => 'my_key', :crypted_password => '1'
+          @user = create :admin, login: 'xyz987', api_key: 'my_key', crypted_password: '1'
           @ldap = mock("LDAP")
           @ldap.stubs(:bind).returns(true)
           Net::LDAP.stubs(:new).returns(@ldap)
@@ -25,7 +27,7 @@ if false
       end
 
       should "login_in_user" do
-        assert_equal true, User.authenticate_with_ldap("someone","password")
+        assert_equal true, User.authenticate_with_ldap("someone", "password")
       end
 
     end
@@ -60,7 +62,7 @@ if false
       end
 
       should "not be able to access admin functions" do
-        assert ! @user.administrator?
+        assert !@user.administrator?
       end
 
       should "be able to access manager functions" do
@@ -88,15 +90,15 @@ if false
       end
 
       should "not be able to access admin functions" do
-        assert ! @user.administrator?
+        assert !@user.administrator?
       end
 
       should "not be able to access manager functions" do
-        assert ! @user.manager_or_administrator?
+        assert !@user.manager_or_administrator?
       end
 
       should "not have access to privileged functions generally" do
-        assert ! @user.privileged?
+        assert !@user.privileged?
       end
 
       # should "not have access to privileged functions when not owner" do
@@ -114,9 +116,9 @@ if false
 
     context "admins and emails" do
       setup do
-        admin = create :role, :name => "administrator"
-        user1 = create :user, :login => "bla"
-        user2 = create :user, :login => "wow"
+        admin = create :role, name: "administrator"
+        user1 = create :user, login: "bla"
+        user2 = create :user, login: "wow"
         user2.roles << admin
         user1.roles << admin
       end
@@ -132,7 +134,7 @@ if false
     context "#name" do
       context "when profile is complete" do
         setup do
-          @user = create :user, :first_name => "Alan", :last_name => "Brown"
+          @user = create :user, first_name: "Alan", last_name: "Brown"
           assert @user.valid?
         end
         should "return full name" do
@@ -141,7 +143,7 @@ if false
       end
       context "when profile is incomplete" do
         setup do
-          @user = create :user, :login => "abc123", :first_name => "Alan", :last_name => nil
+          @user = create :user, login: "abc123", first_name: "Alan", last_name: nil
           assert @user.valid?
         end
         should "return login" do
@@ -152,7 +154,7 @@ if false
 
     context "#new_api_key" do
       setup do
-         @user = create :user, :first_name => "Alan", :last_name => "Brown"
+         @user = create :user, first_name: "Alan", last_name: "Brown"
          @old_api_key = @user.api_key
          @user.new_api_key
          @user.save
@@ -164,7 +166,7 @@ if false
     end
     context "#profile_complete? with no api_key" do
       setup do
-        @user = create :user, :first_name => "Alan", :last_name => "Brown", :email => "ab1",:api_key => nil
+        @user = create :user, first_name: "Alan", last_name: "Brown", email: "ab1", api_key: nil
         @old_api_key = @user.api_key
         @profile_complete = @user.profile_complete?
       end
@@ -176,7 +178,7 @@ if false
     end
     context "#profile_complete? with preexisting api_key" do
       setup do
-        @user = create :user, :first_name => "Alan", :last_name => "Brown", :email => "ab1",:api_key => 'da57c7a7e600b-2736f3329f3d99cdb2e52d4f184f39f1'
+        @user = create :user, first_name: "Alan", last_name: "Brown", email: "ab1", api_key: 'da57c7a7e600b-2736f3329f3d99cdb2e52d4f184f39f1'
         @old_api_key = @user.api_key
         @profile_complete = @user.profile_complete?
       end
@@ -189,12 +191,12 @@ if false
 
     context 'workflow' do
       should 'have "Next-gen sequencing" workflow set' do
-        assert_not_nil(User.create!(:login => 'foo').workflow, 'workflow has not been defaulted')
+        assert_not_nil(User.create!(login: 'foo').workflow, 'workflow has not been defaulted')
       end
 
       should 'not override the user choice' do
         workflow = create(:submission_workflow)
-        assert_equal(workflow, User.create!(:login => 'foo', :workflow => workflow).workflow, 'workflow differs from what was requested')
+        assert_equal(workflow, User.create!(login: 'foo', workflow: workflow).workflow, 'workflow differs from what was requested')
       end
     end
 
@@ -209,7 +211,7 @@ if false
 
       should "be able to have one assigned" do
         code = "code"
-        @user.swipecard_code=code
+        @user.swipecard_code = code
       end
     end
 

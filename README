@@ -1,6 +1,6 @@
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with
-large numbers of samples. 
- 
+large numbers of samples.
+
  * Work order tracking
  * Sample and study management
  * Capacity management for pipelines
@@ -11,7 +11,7 @@ large numbers of samples.
  * API support for 3rd party applications
 
 Current installation supports a million sampled and 1.3 million pieces
-of labware and is used in a organisation of 900 people. 
+of labware and is used in a organisation of 900 people.
 
 === Getting started ===
 
@@ -23,7 +23,7 @@ $ $EDITOR config/config.yml
 $ gem install bundler
 $ bundle install
 $ bundle exec rake db:create db:setup
-# The task below is optional, but creates an admin user account and a 
+# The task below is optional, but creates an admin user account and a
 # few example studies and plates
 $ bundle exec rake working:setup
 $ bundle exec ./script/delayed_job start
@@ -63,7 +63,7 @@ we use for barcode printing.
 == Plate barcode service ==
 
 Due to DNA plate barcode series being stored in a legacy system
-in Sanger your required to use a webservice for supplying numbers 
+in Sanger your required to use a webservice for supplying numbers
 for plates with a simple service.
 
 == Barcode rendering (danio) ==
@@ -80,6 +80,14 @@ To analyse Pico green plats you need for the pico green application.
 There is a client application for building a data warehouse based
 on the information in Sequencescape.
 
+== Ruby warnings and rake 11 ==
+Rake 11 enables ruby warnings by default when running the test suite. These can
+be disabled with RUBYOPT='-W0', (eg. RUBYOPT='-W0' bundle exec rake test).
+Currently these warnings are excessive, covering both our own code and external
+dependencies. As it stands it makes the output of the test suite unusable in
+travis, as it fills the buffer. These warning WILL need to be fixed, especially
+in our own code.
+
 == NPG - Illumina tracking software ==
 
 For tracking illumina instruments you need the NPG systems.
@@ -87,5 +95,3 @@ NPG is linked to Sequencescape via a cluster formation batch
 which represents a flowcell.
 
 http://www.sanger.ac.uk/resources/software/npg/
-
-

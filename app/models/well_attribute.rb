@@ -1,29 +1,40 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 require 'aasm'
 
 class WellAttribute < ActiveRecord::Base
   include AASM
 
-  belongs_to :well, :inverse_of => :well_attribute
+  belongs_to :well, inverse_of: :well_attribute
 
   serialize :gender_markers
   def gender_markers_string
     gender_markers.try(:to_s)
   end
 
-  aasm_column :pico_pass
+  aasm column: :pico_pass, whiny_persistence: true do
 
-  aasm_initial_state :ungraded
 
-  aasm_state :ungraded
-  # These states are originally used in SNP
-  aasm_state :Pass
-  aasm_state :Repeat
-  aasm_state :Fail
+    state :ungraded, initial: true
+    # These states are originally used in SNP
+    state :Pass
+    state :Repeat
+    state :Fail
 
+    event :pass_pico_test do
+      transitions to: :Pass, from: [:ungraded, :Repeat, :Fail, :Pass]
+    end
+
+    event :fail_pico_test do
+      transitions to: :Fail, from: [:Repeat, :Fail, :Pass]
+      transitions to: :Repeat, from: [:ungraded]
+    end
+
+  end
   # TODO Remvoe 'Too Low To Normalise' from the pico_pass column
   # The state of 'Too Low To Normalise' exists in the database (from SNP?)
   # but it doesn't look like AASM can handle spaces in state names.
@@ -46,7 +57,7 @@ class WellAttribute < ActiveRecord::Base
   end
 
   def estimated_volume
-    (current_volume||measured_volume).try(:to_f)
+    (current_volume || measured_volume).try(:to_f)
   end
 
   def initial_volume=(volume)
@@ -63,16 +74,7 @@ class WellAttribute < ActiveRecord::Base
   def quantity_in_micro_grams
     return nil if estimated_volume.nil? || concentration.nil?
     return 0   if estimated_volume < 0 || concentration < 0
-    (estimated_volume * concentration)/1000
-  end
-
-  aasm_event :pass_pico_test do
-    transitions :to => :Pass, :from => [:ungraded, :Repeat, :Fail, :Pass]
-  end
-
-  aasm_event :fail_pico_test do
-    transitions :to => :Fail, :from => [:Repeat, :Fail, :Pass]
-    transitions :to => :Repeat, :from => [:ungraded]
+    (estimated_volume * concentration) / 1000
   end
 
 end

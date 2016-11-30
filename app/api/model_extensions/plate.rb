@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 module ModelExtensions::Plate
   module NamedScopeHelpers
@@ -11,7 +13,7 @@ module ModelExtensions::Plate
 
   PLATE_INCLUDES = [
     :plate_metadata, {
-      :wells => [
+      wells: [
         :map,
         :transfer_requests_as_target,
         :uuid_object
@@ -23,7 +25,7 @@ module ModelExtensions::Plate
     base.class_eval do
       scope :include_plate_purpose, -> { includes(:plate_purpose) }
       scope :include_plate_metadata, -> { includes(:plate_metadata) }
-      delegate :pool_id_for_well, :to => :plate_purpose, :allow_nil => true
+      delegate :pool_id_for_well, to: :plate_purpose, allow_nil: true
     end
   end
 
@@ -53,7 +55,7 @@ module ModelExtensions::Plate
   def pools
     ActiveSupport::OrderedHash.new.tap do |pools|
       Request.include_request_metadata.for_pooling_of(self).each do |request|
-        pools[request.pool_id] = { :wells => request.pool_into.split(',') }.tap do |pool_information|
+        pools[request.pool_id] = { wells: request.pool_into.split(',') }.tap do |pool_information|
           request.update_pool_information(pool_information)
         end unless request.pool_id.nil?
       end
@@ -64,7 +66,7 @@ module ModelExtensions::Plate
   def pre_cap_groups
     ActiveSupport::OrderedHash.new.tap do |groups|
       Request.include_request_metadata.for_pre_cap_grouping_of(self).each do |request|
-        groups[request.group_id] = { :wells => request.group_into.split(',') }.tap do |pool_information|
+        groups[request.group_id] = { wells: request.group_into.split(',') }.tap do |pool_information|
           pool_information[:pre_capture_plex_level] ||= request.request_metadata.pre_capture_plex_level
           # We supply the submission id to assist with correctly tagging transfer requests later
           pool_information[:submission_id] ||= request.submission_id

@@ -78,7 +78,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     When I follow "Reception"
     And I fill in "barcode_0" with "1221234567841"
     And I press "Submit"
-    When I select "Sample logistics freezer" from "asset_location_id"
+    When I select "Sample logistics freezer" from "Freezers"
     And I press "Confirm"
 
     Given I am on the show page for pipeline "DNA QC"

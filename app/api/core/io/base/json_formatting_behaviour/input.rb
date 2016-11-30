@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module ::Core::Io::Base::JsonFormattingBehaviour::Input
   class ReadOnlyAttribute < ::Core::Service::Error
@@ -10,19 +12,19 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end
 
     def api_error(response)
-      response.content_error(422, { @attribute => [ self.message ] })
+      response.content_error(422, { @attribute => [self.message] })
     end
   end
 
   def self.extended(base)
     base.class_eval do
-      class_attribute :model_for_input, :instance_writer => false
+      class_attribute :model_for_input, instance_writer: false
       extend AssociationHandling
     end
   end
 
   def set_model_for_input(model)
-    self.model_for_input =  model
+    self.model_for_input = model
   end
 
   def generate_json_to_object_mapping(json_to_attribute)
@@ -32,16 +34,16 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     # handled right now, provided there is not a read_write one that shares their name.
     read_only, read_write = json_to_attribute.partition { |_, v| v.nil? }
     common_keys = read_only.map(&:first) & read_write.map(&:first)
-    read_only.delete_if { |k,_| common_keys.include?(k) }
+    read_only.delete_if { |k, _| common_keys.include?(k) }
     code.concat(read_only.map do |json, _|
-      %Q{process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }}
+      "process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }"
     end)
 
     # Now the harder bit: for attribute we need to work out how we would fill in the attribute
     # structure for an update_attributes! call.
     initial_structure = {}
     read_write.each do |json, attribute|
-      steps       = attribute.split('.').map(&:to_sym)
+      steps       = attribute.split('.')
       trunk, leaf = steps[0..-2], steps.last
 
       # This bit ends up with the 'path' for the inner bit of the attribute (i.e. if the attribute
@@ -49,18 +51,18 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       # b_attributes, c_attributes') and the final model, or rather association, that we end at.
       # 'model' is nil if there is no association and we're assuming that we need a Hash of
       # some form.
-      model, path = trunk.inject([ model_for_input, [] ]) do |(model, parts), step|
+      model, path = trunk.inject([model_for_input, []]) do |(model, parts), step|
         next_model, next_step =
           if model.nil?
-            [ nil, step ]
+            [nil, step]
           elsif association = model.reflections[step]
-            raise StandardError, "Nested attributes only works with belongs_to or has_one" unless [ :belongs_to, :has_one ].include?(association.macro.to_sym)
-            [ association.klass, :"#{step}_attributes" ]
+            raise StandardError, "Nested attributes only works with belongs_to or has_one" unless [:belongs_to, :has_one].include?(association.macro.to_sym)
+            [association.klass, :"#{step}_attributes"]
           else
-            [ nil, step ]
+            [nil, step]
           end
 
-        [ next_model, parts << next_step ]
+        [next_model, parts << next_step]
       end
 
       # Build the necessary structure for the attributes.  The code can also be generated
@@ -69,21 +71,21 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       # JSON.
       path.inject(initial_structure) { |part, step| part[step] ||= {} }
       code << "process_if_present(params, #{json.split('.').inspect}) do |value|"
-      if path.empty?
-        code << "  attributes.tap do |section|"
-      else
-        code << "  #{path.inspect}.inject(attributes) { |a,s| a[s] }.tap do |section|"
-      end
+      code << if path.empty?
+        "  attributes.tap do |section|"
+              else
+        "  #{path.inspect}.inject(attributes) { |a,s| a[s] }.tap do |section|"
+              end
 
-      if model.nil?
-        code << "    section[#{leaf.inspect}] = value #nil"
-      elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
-        code << "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
-      elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]
-        code << "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
-      else
-        code << "    section[#{leaf.inspect}] = value"
-      end
+      code << if model.nil?
+        "    section[:#{leaf}] = value #nil"
+              elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
+        "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
+              elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]
+        "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
+              else
+        "    section[:#{leaf}] = value"
+              end
       code << "  end"
       code << "end"
     end
@@ -109,7 +111,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   # If the specified path is present all of the way to the end then the value at the
   # leaf is yielded, otherwise this method simply returns.
   def process_if_present(json, path)
-    value = path.inject(json) do |current,step|
+    value = path.inject(json) do |current, step|
       return unless current.respond_to?(:key?)    # Could be nested attribute but not present!
       return unless current.key?(step)
       current[step]
@@ -120,7 +122,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
   module AssociationHandling
     def association_class(association, object)
-      object.try(association).try(:class) || model_for_input.reflections[association.to_sym].klass
+      object.try(association).try(:class) || model_for_input.reflections[association.to_s].klass
     end
     private :association_class
 

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 # A pipeline that has its inbox grouped by submission needs to provide specific paging capabilities.
 # All requests for a submission must appear on the same page, i.e. if a submission has 200 requests
@@ -8,7 +10,7 @@
 # across two.
 module Pipeline::InboxGroupedBySubmission
   def self.included(base)
-    base.has_many :inbox, :class_name => 'Request', :extend => [ Pipeline::RequestsInStorage, Pagination ]
+    base.has_many :inbox, class_name: 'Request', extend: [Pipeline::RequestsInStorage, Pagination]
   end
 
   # Always group by submission
@@ -21,13 +23,13 @@ module Pipeline::InboxGroupedBySubmission
   # limiting the query so that it only includes requests from these submissions.
   module Pagination
     def paginate(*args)
-      super(*args.push(args.extract_options!.merge(:finder => :paginated_by_submission, :total_entries => submissions(:count))))
+      super(*args.push(args.extract_options!.merge(finder: :paginated_by_submission, total_entries: submissions(:count))))
     end
 
     def paginated_by_submission(*args)
       options                      = args.extract_options!
-      options_for_submission_query = Hash[[ :limit, :offset ].map { |k| [ k, options.delete(k) ] if options.key?(k) }.compact]
-      all(options.deep_merge(:conditions => { :submission_id => submissions(:all, options_for_submission_query).map(&:submission_id) }))
+      options_for_submission_query = Hash[[:limit, :offset].map { |k| [k, options.delete(k)] if options.key?(k) }.compact]
+      all(options.deep_merge(conditions: { submission_id: submissions(:all, options_for_submission_query).map(&:submission_id) }))
     end
 
     #--
@@ -37,7 +39,7 @@ module Pipeline::InboxGroupedBySubmission
     #++
     def submissions(finder_method, options = {})
       with_exclusive_scope do
-        ready_in_storage.full_inbox.send(finder_method, options.merge(:select => 'DISTINCT submission_id', :order => 'submission_id ASC'))
+        ready_in_storage.full_inbox.send(finder_method, options.merge(select: 'DISTINCT submission_id', order: 'submission_id ASC'))
       end
     end
     private :submissions

@@ -37,6 +37,9 @@ The authorization plugin provides the following:
 == Example Usage
 
   class MeetingController < ApplicationController
+#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
 
     permit "rubyists and wanna_be_rubyists", :except => :public_page
 
@@ -275,7 +278,7 @@ typically includes any objects that need to be queried:
 The difference between permit and permit? is redirection. permit is a
 declarative statement and redirects by default. It can also be used as a class
 or an instance method, gating the access to an entire controller in a
-before_filter fashion.
+before_action fashion.
 
 permit? is only an instance method, can be used within expressions, does not
 redirect by default.

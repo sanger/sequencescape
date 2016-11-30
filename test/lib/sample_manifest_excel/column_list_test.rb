@@ -4,10 +4,10 @@ class ColumnListTest < ActiveSupport::TestCase
 
   include SampleManifestExcel::Helpers
 
-  attr_reader :column_list,:yaml, :ranges, :conditional_formattings
+  attr_reader :column_list, :yaml, :ranges, :conditional_formattings
 
   def setup
-    folder = File.join("test","data", "sample_manifest_excel", "extract")
+    folder = File.join("test", "data", "sample_manifest_excel", "extract")
     @yaml = load_file(folder, "columns")
     @conditional_formattings = SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, "conditional_formattings"))
     @column_list = SampleManifestExcel::ColumnList.new(yaml, conditional_formattings)
@@ -32,8 +32,8 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "each column should have a number" do
-    column_list.each_with_index do |(k,v), i|
-      assert_equal i+1,column_list.find_by(k).number
+    column_list.each_with_index do |(k, v), i|
+      assert_equal i + 1, column_list.find_by(k).number
     end
   end
 
@@ -43,7 +43,7 @@ class ColumnListTest < ActiveSupport::TestCase
     assert_equal yaml.length, column_list.count
     assert_equal names.length, list.count
     names.each_with_index do |name, i|
-      assert_equal i+1, list.find_by(name).number
+      assert_equal i + 1, list.find_by(name).number
     end
   end
 

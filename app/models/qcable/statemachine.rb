@@ -1,13 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 module Qcable::Statemachine
 
   module ClassMethods
     # A little more sensitive than the request state machine
     def suggested_transition_between(current, target)
-      aasm_events.select do |name, event|
+      aasm.state_machine.events.select do |name, event|
 
         event.transitions_from_state(current.to_sym).any? do |transition|
           transition.options[:allow_automated?] && transition.to == target.to_sym
@@ -23,53 +25,55 @@ module Qcable::Statemachine
       extend ClassMethods
 
       ## State machine
-      aasm_column :state
+      ## namespace: true as destroyed clashes with rails, but we can't easily rename the state
+      aasm column: :state, whiny_persistence: true, namespace: true, name: 'qc_state' do
 
-      aasm_state :created
-      aasm_state :pending,        :enter => :on_stamp
-      aasm_state :failed,         :enter => :on_failed
-      aasm_state :passed,         :enter => :on_passed
-      aasm_state :available,      :enter => :on_released
-      aasm_state :destroyed,      :enter => :on_destroyed
-      aasm_state :qc_in_progress, :enter => :on_qc
-      aasm_state :exhausted,      :enter => :on_used
+        state :created
+        state :pending,        enter: :on_stamp
+        state :failed,         enter: :on_failed
+        state :passed,         enter: :on_passed
+        state :available,      enter: :on_released
+        state :destroyed,      enter: :on_destroyed
+        state :qc_in_progress, enter: :on_qc
+        state :exhausted,      enter: :on_used
 
-      aasm_initial_state Proc.new {|qcable| qcable.default_state }
+        initial_state Proc.new { |qcable| qcable.default_state }
 
-      # State Machine events
-      aasm_event :do_stamp do
-        transitions :to => :pending, :from => [ :created ]
-      end
+        # State Machine events
+        event :do_stamp do
+          transitions to: :pending, from: [:created]
+        end
 
-      aasm_event :destroy do
-        transitions :to => :destroyed, :from => [:pending,:available], :allow_automated? => true
-      end
+        event :destroy_labware do
+          transitions to: :destroyed, from: [:pending, :available], allow_automated?: true
+        end
 
-      aasm_event :qc do
-        transitions :to => :qc_in_progress, :from => [:pending], :allow_automated? => true
-      end
+        event :qc do
+          transitions to: :qc_in_progress, from: [:pending], allow_automated?: true
+        end
 
-      aasm_event :release do
-        transitions :to => :available, :from => [:pending]
-      end
+        event :release do
+          transitions to: :available, from: [:pending]
+        end
 
-      aasm_event :pass do
-        transitions :to => :passed, :from => [:qc_in_progress]
-      end
+        event :pass do
+          transitions to: :passed, from: [:qc_in_progress]
+        end
 
-      aasm_event :fail do
-        transitions :to => :failed, :from => [:qc_in_progress,:pending]
-      end
+        event :fail do
+          transitions to: :failed, from: [:qc_in_progress, :pending]
+        end
 
-      aasm_event :use do
-        transitions :to => :exhausted, :from => [:available], :allow_automated? => true
+        event :use do
+          transitions to: :exhausted, from: [:available], allow_automated?: true
+        end
       end
 
       # new version of combinable named_scope
-     scope :for_state, ->(state) { { :conditions => { :state => state } } }
+     scope :for_state, ->(state) { where(state: state) }
 
-     scope :available,   -> { where(:state => :available) }
-     scope :unavailable, -> { where(:state => [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]) }
+     scope :available,   -> { where(state: :available) }
+     scope :unavailable, -> { where(state: [:created, :pending, :failed, :passed, :destroyed, :qc_in_progress, :exhausted]) }
 
     end
   end

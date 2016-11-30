@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -27,10 +29,10 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @batch                = create :batch
       @workflows_controller.batch = @batch
       @source_plate         = create :plate
-      @source_plate.wells   = ['A1','B1','C1'].map do |loc|
+      @source_plate.wells   = ['A1', 'B1', 'C1'].map do |loc|
         create(:well_with_sample_and_without_plate).tap do |w|
-          w.map = Map.find_by_description_and_asset_size(loc,96)
-          request = create :pac_bio_sample_prep_request, :asset => w
+          w.map = Map.find_by_description_and_asset_size(loc, 96)
+          request = create :pac_bio_sample_prep_request, asset: w
           @batch.requests << request
         end
       end
@@ -47,24 +49,24 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         setup do
           @plate_count =  Plate.count
-          @transferrequest_count =  TransferRequest.count
-          params = { :batch_id => @batch.id }
+          @transferrequest_count = TransferRequest.count
+          params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)
         end
 
 
          should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
         end
 
 
          should "change TransferRequest.count by 6" do
-           assert_equal 6,  TransferRequest.count  - @transferrequest_count, "Expected TransferRequest.count to change by 6"
+           assert_equal 6,  TransferRequest.count - @transferrequest_count, "Expected TransferRequest.count to change by 6"
         end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
-            assert_equal w.aliquots.map{|a| a.sample.name}, Plate.last.wells.located_at(w.map_description).first.aliquots.map{|a| a.sample.name}
+            assert_equal w.aliquots.map { |a| a.sample.name }, Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name }
           end
         end
 
@@ -77,7 +79,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         should 'create transfer to the Library tubes' do
           @batch.requests.each do |r|
             w = r.asset
-            assert_equal r.target_asset, Plate.last.wells.located_at(w.map_description).first.requests.first.target_asset
+            assert_equal r.target_asset, Plate.order(:id).last.wells.located_at(w.map_description).first.requests.first.target_asset
           end
         end
 
@@ -86,15 +88,15 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       context 'when used subsequently' do
 
         setup do
-          @plate_count =  Plate.count
-          params = { :batch_id => @batch.id }
+          @plate_count = Plate.count
+          params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)
           @task.render_task(@workflows_controller, params)
         end
 
 
          should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
         end
 
         should 'find the existing plate' do
@@ -107,8 +109,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         setup do
           plate_b = create :plate
           plate_b.wells << create(:well_with_sample_and_without_plate).tap do |w|
-            w.map = Map.find_by_description_and_asset_size('A1',96)
-            request = create :well_request, :asset => w, :target_asset => create(:pac_bio_library_tube)
+            w.map = Map.find_by_description_and_asset_size('A1', 96)
+            request = create :well_request, asset: w, target_asset: create(:pac_bio_library_tube)
             w.requests << request
             @batch.requests << request
           end
@@ -116,7 +118,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         should 'raise an exception' do
           assert_raise Tasks::PlateTransferHandler::InvalidBatch do
-            params = { :batch_id => @batch.id }
+            params = { batch_id: @batch.id }
             @task.render_task(@workflows_controller, params)
           end
         end
@@ -131,10 +133,10 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         plate_barcode.stubs(:barcode).returns("1234567")
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
-        params = {:plate_transfer_task => {}, :batch_id => @batch.id}
+        params = { plate_transfer_task: {}, batch_id: @batch.id }
         # @workflows_controller.batch = mock("Batch")
 
-                  params = { :batch_id => @batch.id }
+                  params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)
           @task.do_task(@workflows_controller, params)
       end

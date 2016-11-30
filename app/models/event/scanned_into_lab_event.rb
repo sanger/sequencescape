@@ -1,17 +1,19 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Event::ScannedIntoLabEvent < Event
-  after_create :set_qc_state_pending, :unless => :test?
+  after_create :set_qc_state_pending, unless: :test?
   alias_method :asset, :eventful
 
   def self.create_for_asset!(asset, location)
     self.create!(
-      :eventful => asset,
-      :message => "Scanned into #{location.name}",
-      :content => Date.today.to_s,
-      :family => "scanned_into_lab"
+      eventful: asset,
+      message: "Scanned into #{location.name}",
+      content: Date.today.to_s,
+      family: "scanned_into_lab"
     )
 
   end

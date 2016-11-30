@@ -6,11 +6,11 @@ class LibPoolNormTubeGenerator
   attr_accessor :plate
   attr_reader :user, :asset_group, :study
 
-  validates_presence_of :plate, message: "Barcode does not relate to any existing plate" 
+  validates_presence_of :plate, message: "Barcode does not relate to any existing plate"
   validates_presence_of :user, :study
 
   validate :check_state, :check_plate_purpose, if: Proc.new { |g| g.plate.present? }
-  
+
   def initialize(barcode, user, study)
     self.plate = barcode
     @user = user
@@ -26,16 +26,16 @@ class LibPoolNormTubeGenerator
   end
 
   def set_plate(barcode)
-    Plate.with_machine_barcode(barcode).includes(wells: {requests: [:request_type, :target_asset]}).first
+    Plate.with_machine_barcode(barcode).includes(wells: { requests: [:request_type, :target_asset] }).first
   end
 
   def lib_pool_tubes
     @lib_pool_tubes ||= plate.wells.map(&:requests).flatten.select do |r|
-      r.request_type.key=='Illumina_Lib_PCR_XP_Lib_Pool'
+      r.request_type.key == 'Illumina_Lib_PCR_XP_Lib_Pool'
     end
     .map(&:target_asset)
     .uniq
-    .reject { |tube| tube.state == "failed" || tube.state == "qc_complete"  || tube.state == "cancelled" }
+    .reject { |tube| tube.state == "failed" || tube.state == "qc_complete" || tube.state == "cancelled" }
   end
 
   def destination_tubes
@@ -50,13 +50,14 @@ class LibPoolNormTubeGenerator
             pass_and_complete(tube)
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
-          
+
           @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.sanger_human_barcode}_qc_completed_tubes")
           Location.find_by_name("Cluster formation freezer").set_locations(destination_tubes)
         end
         true
       rescue => e
-        p e.message
+        Rails.logger.error("Pool generation error: #{e.message}")
+        Rails.logger.error(e.backtrace)
         false
       end
     end

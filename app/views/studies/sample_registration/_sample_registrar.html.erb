@@ -1,8 +1,10 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
 
-<%= form_for(:sample_registrars, :url => study_sample_registration_index_path, :method => :post) do |registrars_fields| %>
+<%= form_for(:sample_registrars, :url => study_sample_registration_index_path, :method => :post, html:{autocomplete:"off"}) do |registrars_fields| %>
   <%= error_messages_for(:sample_registrars, :object => @sample_registrars, :object_name => "set of sample(s)") %>
 
   <h2>1. Enter sample information</h2>
@@ -228,8 +230,7 @@
   <br />
 
   <div class="add_row_button">
-    <%= link_to(image_tag('add.png'), '', :title => 'Add one more sample (will insert an extra row into the table)', :class => 'add_row') %>
-    <%= link_to('Add row',            '', :title => 'Add one more sample (will insert an extra row into the table)', :class => 'add_row') %>
+    <a title='Add one more sample (will insert an extra row into the table)', class='add_row'><%= image_tag('add.png') %> Add row</a>
   </div>
 
    <p>Data in this form can be amended later.</p>
@@ -237,37 +238,37 @@
 <% end %>
 
 <script type="text/javascript">
-(function() {
+(function($) {
+
   var updateIgnoreState = function(ignored, row) {
-    ignored ? row.addClassName('disabled') : row.removeClassName('disabled');
+    ignored ? row.addClass('disabled') : row.removeClass('disabled');
     row.select('input[type=text]', 'select', 'textarea').each(function(field) {
       ignored ? field.disable() : field.enable();
     });
   };
   var attachIgnoreHandlerToRow = function(row) {
-    $(".ignore", row).each(function(pos, checkbox) {
-      $(checkbox).on('click', function() { updateIgnoreState(checkbox.checked, row); });
-    });
+    row.children(".ignore").on('click', function() { updateIgnoreState(checkbox.checked, $(this).parent('tr')); });
   };
   var addNewSampleRow = function() {
+
     sampleRows = $('.sample_row');
     var row_number = sampleRows.length;
 
     // Perform a deep clone of the first sample row.  Change any fields so that they are properly
     // setup for the new row.  Note that 'hidden' fields don't have an ID attribute.
-    newRow = sampleRows[0].clone(true);
-    $('input, textarea, select', newRow).each(function(pos, e) {
+    newRow = sampleRows.first().clone();
+    newRow.children('input, textarea, select').each(function(pos, e) {
       if (e.attr('type') != 'hidden') {
         e.attr('id', e.attr('id').sub(/_0_/, '_' + row_number + '_'));
       }
       e.attr('name', e.attr('name').sub(/\[0\]/, '[' + row_number + ']'));
       e.value = ''
     });
-    newRow.select('label').each(function(e) {
+    newRow.children('label').each(function(e) {
       e.attr('for', e.attr('for').sub(/_0_/, '_' + row_number + '_'));
       e.innerHTML = e.innerHTML.gsub('0', row_number);
     });
-    newRow.select('.ignore').each(function(e) {
+    newRow.children('.ignore').each(function(e) {
       e.value = '1';      // Got reset in the previous loop!
       e.attr('id', "ignore_" + row_number);
       e.attr('name', "ignore[" + row_number + "]");
@@ -275,7 +276,7 @@
     });
 
     // Remove any field_with_errors elements
-    $('.field_with_errors', newRow).each(function(pos, field) {
+    newRow.children('.field_with_errors').each(function(pos, field) {
       field.childElements().reverse().each(function(child) {
         field.insert({ after: child });
       });
@@ -283,31 +284,25 @@
     });
 
     // Now we can append the new row to the end of our table.
-    $('#samples_to_register tbody')[0].insert(newRow);
+    $('#samples_to_register tbody').append(newRow);
     newRow.show("highlight");
     //new Effect.Highlight(newRow);
 
     attachIgnoreHandlerToRow(newRow);
   };
 
-  $(document).on('dom:loaded', function() {
+  $(document).ready(function() {
     $('.sample_row').each(function(row) {
-      attachIgnoreHandlerToRow(row);
+      attachIgnoreHandlerToRow($('.sample_row'));
+    })
 
-      // Firefox has a nasty habit of keeping the state of the checkbox but we know that it should
-      // always be unchecked on the initial load of the page.
-      $('.ignore', row).each(function(pos, checkbox) { updateIgnoreState(checkbox.checked = false, row); });
-    });
-
-    $('.add_row').each(function(pos, link) {
-      $(link).on('click', function(event) {
-        event.preventDefault();
-        addNewSampleRow();
-        return false;
-      });
+    $('.add_row').on('click', function(event) {
+      event.preventDefault();
+      addNewSampleRow();
+      return false;
     });
   });
-})();
+})(jQuery);
 
 // Fix Firefox tooltip layout
 $('#property_sample_name').css("overflow", "auto;");
@@ -347,6 +342,10 @@ $('#property_sample_name').css("overflow", "auto;");
     toggleCellVisibility('th', 'property_group_'+group_name, group_name, visible);
     resetColumnVisibility("#samples_to_register tbody > tr");
   }
+
+  $(document).ready(function() {
+    $('a[data-visible-toggle-group]').on('click',function(){ toggleGroupVisibility(this.dataset.visibleToggleGroup,this.dataset.visibleToggleDirection==='show'); } );
+  })
 
   function toggleCellVisibility(tag, classname, group_name,visible)
   {

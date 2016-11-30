@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 # require './app/api/core/service'
 module Api
@@ -8,7 +10,7 @@ module Api
     # NOTE: This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
     ALL_SERVICES_AVAILABLE = Hash[Dir.glob(File.join(Rails.root, %w{app api endpoints ** *.rb})).map do |file|
       handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
-      [ handler.root.gsub('/', '_'), handler ]
+      [handler.root.tr('/', '_'), handler]
     end]
 
     use Api::EndpointHandler
@@ -26,9 +28,9 @@ module Api
                     endpoint.model_handler.send(
                       :actions,
                       endpoint.model_handler,
-                      :response => self, :endpoint => endpoint
-                    ).map do |action,url|
-                      actions_stream.attribute(action,url)
+                      response: self, endpoint: endpoint
+                    ).map do |action, url|
+                      actions_stream.attribute(action, url)
                     end
                   end
                 end
@@ -55,7 +57,7 @@ module Api
           request.service = self
           request.path    = '/'
         end.response do |response|
-          class << response ; include RootResponse ; end
+          class << response; include RootResponse; end
           response.services(ALL_SERVICES_AVAILABLE)
         end
       end
@@ -63,9 +65,9 @@ module Api
       body(result)
     end
 
-    [ :post, :put, :delete ].each do |action|
+    [:post, :put, :delete].each do |action|
       send(action, %r{^/?$}) do
-        raise MethodNotAllowed, [ :get ]
+        raise MethodNotAllowed, [:get]
       end
     end
   end

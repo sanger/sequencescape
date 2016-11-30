@@ -1,15 +1,17 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 # The following module is included where we have deprecated behaviours that rely on sample or request.
 module Aliquot::DeprecatedBehaviours
   module Request
     def self.included(base)
       base.class_eval do
-        #Shouldn't be used . Here for compatibility with the previous code
-        #having request having one sample
-        has_many :samples, :through => :asset
+        # Shouldn't be used . Here for compatibility with the previous code
+        # having request having one sample
+        has_many :samples, through: :asset
         deprecate :samples,  :sample_ids
       end
     end
@@ -40,8 +42,8 @@ module Aliquot::DeprecatedBehaviours
     end
     deprecate :sample_name?
 
-    def sample_name(default=nil, &block)
-      #return the name of the underlying samples
+    def sample_name(default = nil, &block)
+      # return the name of the underlying samples
       # used mainly for compatibility with the old codebase
       # # default is used if no smaple
       # # block is used to aggregate the samples

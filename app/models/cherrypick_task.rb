@@ -1,10 +1,12 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class CherrypickTask < Task
-  EMPTY_WELL          = [0,"Empty",""]
-  TEMPLATE_EMPTY_WELL = [0,'---','']
+  EMPTY_WELL          = [0, "Empty", ""]
+  TEMPLATE_EMPTY_WELL = [0, '---', '']
 
   def create_render_element(request)
   end
@@ -37,8 +39,8 @@ class CherrypickTask < Task
       const_get("by_#{cherrypick_direction}".classify)
     end
 
-    def initialize(batch, template, asset_shape=nil, partial = nil)
-      @wells, @size, @batch, @shape = [], template.size, batch, asset_shape||AssetShape.default
+    def initialize(batch, template, asset_shape = nil, partial = nil)
+      @wells, @size, @batch, @shape = [], template.size, batch, asset_shape || AssetShape.default
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
     end
@@ -46,7 +48,7 @@ class CherrypickTask < Task
     # Deals with generating the pick plate by travelling in a row direction, so A1, A2, A3 ...
     class ByRow < PickTarget
       def well_position(wells)
-        (wells.size+1) > @size ? nil : wells.size+1
+        (wells.size + 1) > @size ? nil : wells.size + 1
       end
       private :well_position
 
@@ -54,7 +56,7 @@ class CherrypickTask < Task
         @wells.dup.tap do |wells|
           complete(wells)
         end.each_with_index.inject([]) do |wells, (well, index)|
-          wells.tap { wells[@shape.horizontal_to_vertical(index+1, @size)] = well }
+          wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
         end.compact
       end
     end
@@ -62,7 +64,7 @@ class CherrypickTask < Task
     # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
     class ByColumn < PickTarget
       def well_position(wells)
-         @shape.vertical_to_horizontal(wells.size+1, @size)
+         @shape.vertical_to_horizontal(wells.size + 1, @size)
       end
       private :well_position
 
@@ -74,7 +76,7 @@ class CherrypickTask < Task
     # Deals with generating the pick plate by travelling in an interlaced column direction, so A1, C1, E1 ...
     class ByInterlacedColumn < PickTarget
       def well_position(wells)
-         @shape.interlaced_vertical_to_horizontal(wells.size+1, @size)
+         @shape.interlaced_vertical_to_horizontal(wells.size + 1, @size)
       end
       private :well_position
 
@@ -82,7 +84,7 @@ class CherrypickTask < Task
         @wells.dup.tap do |wells|
           complete(wells)
         end.each_with_index.inject([]) do |wells, (well, index)|
-          wells.tap { wells[@shape.vertical_to_interlaced_vertical(index+1, @size)] = well }
+          wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
         end.compact
       end
     end
@@ -129,7 +131,7 @@ class CherrypickTask < Task
     # the next position on the pick plate is known to be empty.
     def add_any_wells_from_template_or_partial(wells)
       wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size >= @size or @used_wells[well_position(wells)].nil?
-      return unless @control_well_required and wells.size == (@size-1)
+      return unless @control_well_required and wells.size == (@size - 1)
 
       # Control well is always in the bottom right corner of the plate
       @batch.create_control_request_view_details do |control_request_view|
@@ -225,7 +227,7 @@ class CherrypickTask < Task
         'INNER JOIN maps ON wells.map_id=maps.id'
       ]).
       order('plates.barcode ASC, maps.column_order ASC').
-      where(:requests => { :id => requests }).
+      where(requests: { id: requests }).
       all.map do |request|
       [request.id, request.barcode, request.description]
     end
@@ -234,10 +236,10 @@ class CherrypickTask < Task
 
   def generate_control_request(well)
     # TODO: create a genotyping request for the control request
-    #Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
+    # Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
     workflow.pipeline.control_request_type.create_control!(
-      :asset => well,
-      :target_asset => Well.create!(:aliquots => well.aliquots.map(&:dup))
+      asset: well,
+      target_asset: Well.create!(aliquots: well.aliquots.map(&:dup))
     )
   end
   private :generate_control_request

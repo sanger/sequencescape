@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: QcReport::File
+  
+    &mdash; Documentation by YARD 0.9.5
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "QcReport::File";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../class_list.html"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (F)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../QcReport.html" title="QcReport (class)">QcReport</a></span></span>
+     &raquo; 
+    <span class="title">File</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <iframe id="search_frame" src="../class_list.html"></iframe>
+
+      <div id="content"><h1>Class: QcReport::File
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">QcReport::File</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>app/models/qc_report/file.rb</dd>
+  </dl>
+  
+</div>
+
+
+  <h2>Constant Summary</h2>
+  <dl class="constants">
+    
+      <dt id="ACCEPTED_MIMETYPE-constant" class="">ACCEPTED_MIMETYPE =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text/csv</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+    
+      <dt id="ACCEPTED_EXTENSTION-constant" class="">ACCEPTED_EXTENSTION =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>csv</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+    
+      <dt id="FILE_VERSION_KEY-constant" class="">FILE_VERSION_KEY =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Sequencescape QC Report</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+    
+      <dt id="REPORT_ID_KEY-constant" class="">REPORT_ID_KEY =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Report Identifier</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+    
+      <dt id="MAXIMUM_HEADER_SIZE-constant" class="">MAXIMUM_HEADER_SIZE =
+        
+      </dt>
+      <dd><pre class="code"><span class='int'>40</span></pre></dd>
+    
+      <dt id="GROUP_SIZE-constant" class="">GROUP_SIZE =
+        
+      </dt>
+      <dd><pre class="code"><span class='int'>400</span></pre></dd>
+    
+      <dt id="DataError-constant" class="">DataError =
+        
+      </dt>
+      <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>StandardError</span><span class='rparen'>)</span></pre></dd>
+    
+  </dl>
+
+
+
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#%3Aerrors-instance_method" title="#:errors (instance method)">#<strong>:errors</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute :errors.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#%3Afilename-instance_method" title="#:filename (instance method)">#<strong>:filename</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute :filename.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#%3Amime_type-instance_method" title="#:mime_type (instance method)">#<strong>:mime_type</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute :mime_type.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#body_csv-instance_method" title="#body_csv (instance method)">#<strong>body_csv</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#each_group_of_decisions-instance_method" title="#each_group_of_decisions (instance method)">#<strong>each_group_of_decisions</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fetch_group-instance_method" title="#fetch_group (instance method)">#<strong>fetch_group</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#headers-instance_method" title="#headers (instance method)">#<strong>headers</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(file, set_decision, filename = nil, mime_type = ACCEPTED_MIMETYPE)  &#x21d2; File </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of File.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#invalid-instance_method" title="#invalid (instance method)">#<strong>invalid</strong>(message)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#is_a_csv%3F-instance_method" title="#is_a_csv? (instance method)">#<strong>is_a_csv?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#is_a_report%3F-instance_method" title="#is_a_report? (instance method)">#<strong>is_a_report?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#is_header%3F-instance_method" title="#is_header? (instance method)">#<strong>is_header?</strong>(row)  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse_headers-instance_method" title="#parse_headers (instance method)">#<strong>parse_headers</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#process-instance_method" title="#process (instance method)">#<strong>process</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#process_group-instance_method" title="#process_group (instance method)">#<strong>process_group</strong>(group)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#process_line-instance_method" title="#process_line (instance method)">#<strong>process_line</strong>(line)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#qc_report-instance_method" title="#qc_report (instance method)">#<strong>qc_report</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#report_identifier-instance_method" title="#report_identifier (instance method)">#<strong>report_identifier</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#valid%3F-instance_method" title="#valid? (instance method)">#<strong>valid?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(file, set_decision, filename = nil, mime_type = ACCEPTED_MIMETYPE)  &#x21d2; <tt><span class='object_link'><a href="" title="QcReport::File (class)">File</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of File</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25
+26
+27
+28
+29</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 23</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='comma'>,</span> <span class='id identifier rubyid_set_decision'>set_decision</span><span class='comma'>,</span> <span class='id identifier rubyid_filename'>filename</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_mime_type'>mime_type</span> <span class='op'>=</span> <span class='const'>ACCEPTED_MIMETYPE</span><span class='rparen'>)</span>
+  <span class='ivar'>@file</span> <span class='op'>=</span> <span class='id identifier rubyid_file'>file</span>
+  <span class='ivar'>@filename</span> <span class='op'>=</span> <span class='id identifier rubyid_filename'>filename</span> <span class='op'>||</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_basename'>basename</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
+  <span class='ivar'>@mime_type</span> <span class='op'>=</span> <span class='id identifier rubyid_mime_type'>mime_type</span>
+  <span class='ivar'>@errors</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@set_decision</span> <span class='op'>=</span> <span class='id identifier rubyid_set_decision'>set_decision</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id=":errors-instance_method">
+  
+    #<strong>:errors</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute :errors</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 21</span>
+
+def :errors
+  @:errors
+end</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id=":filename-instance_method">
+  
+    #<strong>:filename</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute :filename</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 21</span>
+
+def :filename
+  @:filename
+end</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id=":mime_type-instance_method">
+  
+    #<strong>:mime_type</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute :mime_type</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 21</span>
+
+def :mime_type
+  @:mime_type
+end</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="body_csv-instance_method">
+  
+    #<strong>body_csv</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+75
+76
+77</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 75</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_body_csv'>body_csv</span>
+  <span class='ivar'>@body_csv</span> <span class='op'>||=</span> <span class='const'>CSV</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@file</span><span class='comma'>,</span> <span class='label'>headers:</span> <span class='symbol'>:first_row</span><span class='comma'>,</span> <span class='label'>header_converters:</span> <span class='lbracket'>[</span><span class='symbol'>:symbol</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="each_group_of_decisions-instance_method">
+  
+    #<strong>each_group_of_decisions</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+79
+80
+81
+82
+83</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 79</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_each_group_of_decisions'>each_group_of_decisions</span>
+  <span class='kw'>while</span> <span class='lparen'>(</span><span class='id identifier rubyid_group'>group</span> <span class='op'>=</span> <span class='id identifier rubyid_fetch_group'>fetch_group</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_group'>group</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
+    <span class='kw'>yield</span> <span class='id identifier rubyid_group'>group</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fetch_group-instance_method">
+  
+    #<strong>fetch_group</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 85</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fetch_group'>fetch_group</span>
+  <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_asset_collection'>asset_collection</span><span class='op'>|</span>
+    <span class='const'>GROUP_SIZE</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_line'>line</span> <span class='op'>=</span> <span class='id identifier rubyid_body_csv'>body_csv</span><span class='period'>.</span><span class='id identifier rubyid_gets'>gets</span>
+      <span class='kw'>break</span> <span class='kw'>if</span> <span class='id identifier rubyid_line'>line</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='id identifier rubyid_asset_id'>asset_id</span> <span class='op'>=</span> <span class='id identifier rubyid_line'>line</span><span class='lbracket'>[</span><span class='symbol'>:asset_id</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+      <span class='id identifier rubyid_asset_collection'>asset_collection</span><span class='lbracket'>[</span><span class='id identifier rubyid_asset_id'>asset_id</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_process_line'>process_line</span><span class='lparen'>(</span><span class='id identifier rubyid_line'>line</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="headers-instance_method">
+  
+    #<strong>headers</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+62
+63
+64</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 62</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_headers'>headers</span>
+  <span class='ivar'>@headers</span> <span class='op'>||</span> <span class='id identifier rubyid_parse_headers'>parse_headers</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="invalid-instance_method">
+  
+    #<strong>invalid</strong>(message)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+113
+114
+115
+116</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 113</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_invalid'>invalid</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_errors'>errors</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_message'>message</span>
+  <span class='ivar'>@valid</span> <span class='op'>=</span> <span class='kw'>false</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="is_a_csv?-instance_method">
+  
+    #<strong>is_a_csv?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+121
+122
+123</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 121</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_is_a_csv?'>is_a_csv?</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_extname'>extname</span><span class='lparen'>(</span><span class='id identifier rubyid_filename'>filename</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>==</span> <span class='const'>ACCEPTED_EXTENSTION</span> <span class='op'>||</span> <span class='id identifier rubyid_mime_type'>mime_type</span> <span class='op'>==</span> <span class='const'>ACCEPTED_MIMETYPE</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="is_a_report?-instance_method">
+  
+    #<strong>is_a_report?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+125
+126
+127</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 125</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_is_a_report?'>is_a_report?</span>
+  <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='const'>FILE_VERSION_KEY</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="is_header?-instance_method">
+  
+    #<strong>is_header?</strong>(row)  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+129
+130
+131</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 129</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_is_header?'>is_header?</span><span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_row'>row</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse_headers-instance_method">
+  
+    #<strong>parse_headers</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 133</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parse_headers'>parse_headers</span>
+  <span class='id identifier rubyid_headers'>headers</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_header_parser'>header_parser</span> <span class='op'>=</span> <span class='const'>CSV</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@file</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lines_read'>lines_read</span> <span class='op'>=</span> <span class='int'>0</span>
+  <span class='kw'>while</span> <span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span> <span class='op'>=</span> <span class='id identifier rubyid_header_parser'>header_parser</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_is_header?'>is_header?</span><span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_lines_read'>lines_read</span> <span class='op'>&lt;</span> <span class='const'>MAXIMUM_HEADER_SIZE</span>
+    <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='id identifier rubyid_row'>row</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
+    <span class='id identifier rubyid_lines_read'>lines_read</span> <span class='op'>+=</span> <span class='int'>1</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_invalid'>invalid</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Please make sure there is an empty line before the column headers.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_lines_read'>lines_read</span> <span class='op'>&gt;=</span> <span class='const'>MAXIMUM_HEADER_SIZE</span>
+  <span class='ivar'>@headers</span> <span class='op'>=</span> <span class='id identifier rubyid_headers'>headers</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="process-instance_method">
+  
+    #<strong>process</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_process'>process</span>
+  <span class='ivar'>@valid</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_valid?'>valid?</span>
+  <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
+    <span class='kw'>begin</span>
+      <span class='id identifier rubyid_each_group_of_decisions'>each_group_of_decisions</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_group'>group</span><span class='op'>|</span>
+        <span class='id identifier rubyid_process_group'>process_group</span><span class='lparen'>(</span><span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span>
+      <span class='kw'>end</span>
+    <span class='kw'>rescue</span> <span class='const'>DataError</span><span class='comma'>,</span> <span class='const'>QcMetric</span><span class='op'>::</span><span class='const'>InvalidValue</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_exception'>exception</span>
+      <span class='id identifier rubyid_invalid'>invalid</span><span class='lparen'>(</span><span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Rollback</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_qc_report'>qc_report</span><span class='period'>.</span><span class='id identifier rubyid_proceed_decision!'>proceed_decision!</span> <span class='kw'>if</span> <span class='ivar'>@valid</span>
+  <span class='ivar'>@valid</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="process_group-instance_method">
+  
+    #<strong>process_group</strong>(group)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="#DataError-constant" title="QcReport::File::DataError (constant)">DataError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 96</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_process_group'>process_group</span><span class='lparen'>(</span><span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_asset_ids'>asset_ids</span> <span class='op'>=</span> <span class='id identifier rubyid_group'>group</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span>
+  <span class='id identifier rubyid_assets'>assets</span> <span class='op'>=</span> <span class='id identifier rubyid_qc_report'>qc_report</span><span class='period'>.</span><span class='id identifier rubyid_qc_metrics'>qc_metrics</span><span class='period'>.</span><span class='id identifier rubyid_with_asset_ids'>with_asset_ids</span><span class='lparen'>(</span><span class='id identifier rubyid_asset_ids'>asset_ids</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>DataError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Could not find assets </span><span class='embexpr_beg'>#{</span><span class='lparen'>(</span><span class='id identifier rubyid_asset_ids'>asset_ids</span> <span class='op'>-</span> <span class='id identifier rubyid_assets'>assets</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:id</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_sentence'>to_sentence</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_asset_ids'>asset_ids</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span> <span class='op'>!=</span> <span class='id identifier rubyid_assets'>assets</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
+  <span class='id identifier rubyid_assets'>assets</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_metric'>metric</span><span class='op'>|</span>
+    <span class='id identifier rubyid_metric'>metric</span><span class='period'>.</span><span class='id identifier rubyid_human_proceed'>human_proceed</span> <span class='op'>=</span> <span class='id identifier rubyid_group'>group</span><span class='lbracket'>[</span><span class='id identifier rubyid_metric'>metric</span><span class='period'>.</span><span class='id identifier rubyid_asset_id'>asset_id</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:proceed</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_metric'>metric</span><span class='period'>.</span><span class='id identifier rubyid_manual_qc_decision'>manual_qc_decision</span> <span class='op'>=</span> <span class='id identifier rubyid_group'>group</span><span class='lbracket'>[</span><span class='id identifier rubyid_metric'>metric</span><span class='period'>.</span><span class='id identifier rubyid_asset_id'>asset_id</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:qc_decision</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='ivar'>@set_decision</span>
+    <span class='id identifier rubyid_metric'>metric</span><span class='period'>.</span><span class='id identifier rubyid_save!'>save!</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="process_line-instance_method">
+  
+    #<strong>process_line</strong>(line)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+107
+108
+109
+110
+111</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 107</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_process_line'>process_line</span><span class='lparen'>(</span><span class='id identifier rubyid_line'>line</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_qc_decision'>qc_decision</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_line'>line</span><span class='lbracket'>[</span><span class='symbol'>:qc_decision</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
+  <span class='id identifier rubyid_proceed'>proceed</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_line'>line</span><span class='lbracket'>[</span><span class='symbol'>:proceed</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
+  <span class='lbrace'>{</span> <span class='label'>qc_decision:</span> <span class='id identifier rubyid_qc_decision'>qc_decision</span><span class='comma'>,</span> <span class='label'>proceed:</span> <span class='id identifier rubyid_proceed'>proceed</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="qc_report-instance_method">
+  
+    #<strong>qc_report</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+57
+58
+59</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 57</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_qc_report'>qc_report</span>
+  <span class='ivar'>@qc_report</span> <span class='op'>||=</span> <span class='const'>QcReport</span><span class='period'>.</span><span class='id identifier rubyid_find_by_report_identifier'>find_by_report_identifier</span><span class='lparen'>(</span><span class='id identifier rubyid_report_identifier'>report_identifier</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="report_identifier-instance_method">
+  
+    #<strong>report_identifier</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 67</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_report_identifier'>report_identifier</span>
+  <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='const'>REPORT_ID_KEY</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="valid?-instance_method">
+  
+    #<strong>valid?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+49
+50
+51
+52
+53
+54</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report/file.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_valid?'>valid?</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_invalid'>invalid</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_filename'>filename</span><span class='embexpr_end'>}</span><span class='tstring_content'> was not a csv file</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_is_a_csv?'>is_a_csv?</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_invalid'>invalid</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_filename'>filename</span><span class='embexpr_end'>}</span><span class='tstring_content'> does not appear to be a qc report file. Make sure the </span><span class='embexpr_beg'>#{</span><span class='const'>FILE_VERSION_KEY</span><span class='embexpr_end'>}</span><span class='tstring_content'> line has not been removed.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_is_a_report?'>is_a_report?</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_invalid'>invalid</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Couldn&#39;t find the report </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_report_identifier'>report_identifier</span><span class='embexpr_end'>}</span><span class='tstring_content'>. Check that the report identifier has not been modified.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_qc_report'>qc_report</span>
+  <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Tue Oct 25 15:22:10 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.5 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

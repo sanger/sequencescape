@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 module QcableStatemachineChecks
   class StatemachineHelper
@@ -26,14 +28,14 @@ module QcableStatemachineChecks
           end
 
           acceptable_states.map(&:to_s).each do |state|
-            should "transition from #{state} to #{end_state.to_s}" do
+            should "transition from #{state} to #{end_state}" do
               @qcable.state = state
               @qcable.send(:"#{name}")
               assert_equal end_state.to_s, @qcable.state
             end
           end
 
-          (target.aasm_states.map(&:name).map(&:to_s) - acceptable_states.map(&:to_s)).each do |state|
+          (target.aasm.states.map(&:name).map(&:to_s) - acceptable_states.map(&:to_s)).each do |state|
             should "not transition from #{state}" do
               @qcable.state = state
               assert_raises(AASM::InvalidTransition) { @qcable.send(:"#{name}") }
