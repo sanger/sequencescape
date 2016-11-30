@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
 <%- add :title, "This page displays details of a asset" %>
 <% add :menu, (pluralize @asset.comments.size, "comment") => asset_comments_path(@asset) -%>
@@ -139,5 +141,31 @@
     </tr>
     <% end %>
   </tbody>
- </table>
+</table>
+
+<% if @asset.custom_metadatum_collection.present?%>
+  <h3>Metadata</h3>
+  <div class='help'>
+    Metadata table
+    <a data-collapse-element-id="metadata-table" data-hidden="false" class="shown-button">Collapse</a>
+  </div>
+
+  <table id="metadata-table" width='100%' class='sortable asset_relations' >
+    <thead>
+      <tr>
+        <th><%= link_to "Key", "javascript:void(0);" %></th>
+        <th><%= link_to "Value", "javascript:void(0);" %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @asset.metadata.each do |k, v| %>
+        <tr>
+          <td><%= k %></td>
+          <td><%= v %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<%end%>
 

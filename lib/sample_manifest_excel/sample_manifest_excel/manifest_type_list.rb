@@ -37,7 +37,7 @@ module SampleManifestExcel
     end
 
     def <=>(other)
-      return unless other.is_a?(self.class) 
+      return unless other.is_a?(self.class)
       manifest_types <=> other.manifest_types
     end
 

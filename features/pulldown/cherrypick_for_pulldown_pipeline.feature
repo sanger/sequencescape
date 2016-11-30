@@ -161,8 +161,8 @@ Feature: Cherrypicking for Pulldown pipeline
    C; DEST1 = 1220099999705
    """
    When I follow "Print worksheet for Plate 99999"
-   Then I should see the cherrypick worksheet table:
-    | 1                                       | 2                                  |
+   Then I should see the JRuby cherrypick worksheet table:
+    | 1                                     | 2                                |
     | A1        1234567        v13.0 b0.0   | A1        222        v13.0 b0.0  |
     | A2        1234567        v13.0 b0.0   | A2        222        v13.0 b0.0  |
     | A3        1234567        v8.1  b4.9   | A3        222        v8.1  b4.9  |
@@ -171,6 +171,16 @@ Feature: Cherrypicking for Pulldown pipeline
     | A6        1234567        v3.3  b9.8   | A6        222        v3.3  b9.8  |
     | A7        1234567        v2.7  b10.3  | A7        222        v2.7  b10.3 |
     | A8        1234567        v2.3  b10.7  | A8        222        v2.3  b10.7 |
-    | 1                                       | 2                                  |
-
-
+    | 1                                     | 2                                |
+    # Jruby and MRI round differently.
+    And I should see the MRI cherrypick worksheet table:
+     | 1                                     | 2                                |
+     | A1        1234567        v13.0 b0.0   | A1        222        v13.0 b0.0  |
+     | A2        1234567        v13.0 b0.0   | A2        222        v13.0 b0.0  |
+     | A3        1234567        v8.1  b4.9   | A3        222        v8.1  b4.9  |
+     | A4        1234567        v5.4  b7.6   | A4        222        v5.4  b7.6  |
+     | A5        1234567        v4.1  b8.9   | A5        222        v4.1  b8.9  |
+     | A6        1234567        v3.2  b9.8   | A6        222        v3.2  b9.8  |
+     | A7        1234567        v2.7  b10.3  | A7        222        v2.7  b10.3 |
+     | A8        1234567        v2.3  b10.7  | A8        222        v2.3  b10.7 |
+     | 1                                     | 2                                |

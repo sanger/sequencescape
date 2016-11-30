@@ -16,7 +16,7 @@ class TagSubstitution
     valid = true
     @substitutions.each do |sub|
       next if sub.valid?
-      errors.add(:substitution,sub.errors.full_messages)
+      errors.add(:substitution, sub.errors.full_messages)
       valid = false
     end
     valid
@@ -58,11 +58,11 @@ class TagSubstitution
       tags_hash = {}
       tags_hash[:tag_id]  = nil if original_tag_id
       tags_hash[:tag2_id] = nil if original_tag2_id
-      Aliquot.where(id:matching_aliquots).update_all(tags_hash)
+      Aliquot.where(id: matching_aliquots).update_all(tags_hash)
     end
 
     def substitute_tags
-      Aliquot.where(id:matching_aliquots).find_each do |aliquot|
+      Aliquot.where(id: matching_aliquots).find_each do |aliquot|
         aliquot.tag_id = substitute_tag_id if original_tag_id
         aliquot.tag2_id = substitute_tag2_id if original_tag2_id
         aliquot.update_attributes(@other_attributes)
@@ -73,7 +73,7 @@ class TagSubstitution
     private
 
     def find_matching_aliquots
-      attributes = {sample_id:sample_id,library_id:library_id}
+      attributes = { sample_id: sample_id, library_id: library_id }
       attributes[:tag_id] = original_tag_id if original_tag_id
       attributes[:tag2_id] = original_tag2_id if original_tag2_id
       Aliquot.where(attributes).pluck(:id)
@@ -93,9 +93,9 @@ class TagSubstitution
   # user: the user performing the substitution [optional]
   # ticket: support ticket number [optional]
   # comment: any additional comment [optional]
-  def initialize(substitutions,user: nil, ticket: nil, comment: nil)
+  def initialize(substitutions, user: nil, ticket: nil, comment: nil)
     @user, @ticket, @comment = user, ticket, comment
-    @substitutions = substitutions.map {|attrs| Substitution.new(attrs)}
+    @substitutions = substitutions.map { |attrs| Substitution.new(attrs) }
   end
 
   def save

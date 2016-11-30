@@ -1,11 +1,12 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
-# Re-raise errors caught by the controller.
-class SearchesController; def rescue_action(e) raise e end; end
+
 
 class SearchesControllerTest < ActionController::TestCase
   context "Searches controller" do
@@ -19,16 +20,16 @@ class SearchesControllerTest < ActionController::TestCase
 
     context "searching (when logged in)" do
       setup do
-        @user =FactoryGirl.create :user
+        @user = FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
 
-        @study                    =FactoryGirl.create :study, :name => "FindMeStudy"
-        @study2                   =FactoryGirl.create :study, :name => "Another study"
-        @sample                   =FactoryGirl.create :sample, :name => "FindMeSample"
-        @asset                    =FactoryGirl.create(:sample_tube, :name => 'FindMeAsset')
-        @asset_group_to_find      =FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
-        @asset_group_to_not_find  =FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
+        @study = FactoryGirl.create :study, name: "FindMeStudy"
+        @study2 = FactoryGirl.create :study, name: "Another study"
+        @sample = FactoryGirl.create :sample, name: "FindMeSample"
+        @asset = FactoryGirl.create(:sample_tube, name: 'FindMeAsset')
+        @asset_group_to_find = FactoryGirl.create :asset_group, name: "FindMeAssetGroup", study: @study
+        @asset_group_to_not_find = FactoryGirl.create :asset_group, name: "IgnoreAssetGroup"
 
         @submission = FactoryGirl.create :submission, name: 'FindMe'
         @ignore_submission = FactoryGirl.create :submission, name: 'IgnoreMeSub'
@@ -41,18 +42,18 @@ class SearchesControllerTest < ActionController::TestCase
 
         context "with the valid search" do
           setup do
-            get :index, :q => "FindMe"
+            get :index, q: "FindMe"
           end
 
           should respond_with :success
 
           context "results" do
             define_method(:assert_link_to) do |url|
-              assert_tag :tag => 'a', :attributes => { :href => url }
+              assert_tag tag: 'a', attributes: { href: url }
             end
 
             define_method(:deny_link_to) do |url|
-              assert_no_tag :tag => 'a', :attributes => { :href => url }
+              assert_no_tag tag: 'a', attributes: { href: url }
             end
 
             should "contain a link to the study that was found" do
@@ -96,7 +97,7 @@ class SearchesControllerTest < ActionController::TestCase
 
         context "with a too short query" do
           setup do
-            get :index, :q => "A"
+            get :index, q: "A"
           end
 
           should 'set the flash' do

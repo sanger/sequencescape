@@ -109,4 +109,3 @@ Feature: Bulk Submission
   Scenario: Leaving the file field blank
     When I submit an empty form
     Then I should see "can't be blank"
-

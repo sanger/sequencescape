@@ -21,13 +21,13 @@ module ActiveRecord # :nodoc:
           end
           conditions.gsub!(/ or $/, "")
           logger.info "Searching for: " + conditions
-          self.find(:all, :conditions => conditions)
+          self.where(conditions)
         end
 
         def find_descriptors
           logger.info "Finding all descriptors"
           response = []
-          self.find(:all).each do |object|
+          self.find_each do |object|
             object.descriptors.each do |descriptor|
               response.push descriptor
             end
@@ -40,14 +40,14 @@ module ActiveRecord # :nodoc:
         module Active
           def self.included(base)
             base.class_eval do
-              has_many :descriptors, :order => 'sorter', :dependent => :destroy
+              has_many :descriptors, ->() { order('sorter') }, dependent: :destroy
             end
           end
 
           def create_descriptors(params)
-            self.descriptors << params.sort_by { |k,_| k.to_i }.each_with_index.map do |(field_id, value), index|
+            self.descriptors << params.sort_by { |k, _| k.to_i }.each_with_index.map do |(field_id, value), index|
               value[:required] = (value[:required] == 'on') ? 1 : 0
-              Descriptor.new(value.merge(:sorter => index+1))
+              Descriptor.new(value.merge(sorter: index + 1))
             end
           end
 
@@ -57,7 +57,7 @@ module ActiveRecord # :nodoc:
           end
 
           def delete_descriptors
-            self.descriptors.clear
+            descriptors.clear
           end
         end
 
@@ -70,11 +70,11 @@ module ActiveRecord # :nodoc:
           end
 
           def descriptor_xml(options = {})
-            xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+            xml = options[:builder] ||= Builder::XmlMarkup.new(indent: options[:indent])
             xml.instruct! unless options[:skip_instruct]
 
             xml.descriptors {
-              self.descriptors.each do |field|
+              descriptors.each do |field|
                 xml.descriptor {
                   descriptor.name  field.name.to_s
                   descriptor.value field.value
@@ -86,7 +86,7 @@ module ActiveRecord # :nodoc:
           def descriptors
             [].tap do |response|
               each_descriptor do |field, value|
-                response.push(Descriptor.new(:name => field, :value => value))
+                response.push(Descriptor.new(name: field, value: value))
               end
             end
           end
@@ -103,6 +103,12 @@ module ActiveRecord # :nodoc:
             read_descriptor_hash.fetch(key, '')
           end
 
+          # I'm going to unpick this completely soon
+          # but need to work out exactly what's used
+          def descriptor_value_allow_nil(key)
+            read_descriptor_hash[key]
+          end
+
           def add_descriptor(descriptor)
             write_attribute(:descriptors,       read_descriptor_hash.merge(descriptor.name => descriptor.value))
             write_attribute(:descriptor_fields, read_descriptor_fields.push(descriptor.name))
@@ -114,7 +120,7 @@ module ActiveRecord # :nodoc:
           private :read_descriptor_hash
 
           def read_descriptor_fields
-            read_attribute(:descriptor_fields) || []
+            descriptor_fields || []
           end
           private :read_descriptor_fields
         end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class Accessionable::Base
   InvalidData = Class.new(AccessionService::AccessionServiceError)
@@ -27,7 +29,7 @@ class Accessionable::Base
   end
 
   def schema_type
-    #raise NotImplementedError, "abstract method"
+    # raise NotImplementedError, "abstract method"
     self.class.name.split("::").last.downcase
   end
 
@@ -41,12 +43,12 @@ class Accessionable::Base
 
   def extract_accession_number(xmldoc)
           element = xmldoc.root.elements["/RECEIPT/#{schema_type.upcase}"]
-          accession_number       = element &&  element.attributes['accession']
+          accession_number = element && element.attributes['accession']
   end
 
   def extract_array_express_accession_number(xmldoc)
           element = xmldoc.root.elements["/RECEIPT/#{schema_type.upcase}/EXT_ID[@type='ArrayExpress']"]
-          accession_number       = element &&  element.attributes['accession']
+          accession_number = element && element.attributes['accession']
   end
 
   def update_accession_number!(user, accession_number)
@@ -67,10 +69,10 @@ class Accessionable::Base
 
   def add_updated_event(user, classname,  eventable)
         eventable.events.create(
-          :created_by => user.login,
-          :message => "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
-          :content => "accession number regenerated",
-          :of_interest_to => "administrators"
+          created_by: user.login,
+          message: "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
+          content: "accession number regenerated",
+          of_interest_to: "administrators"
         )
   end
   def label_scope
@@ -86,7 +88,7 @@ class Accessionable::Base
     end
 
     def label
-      I18n.t("#{@scope}.#{ @name }.label").gsub(' ','_').downcase
+      I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').downcase
     end
 
     def build(xml)

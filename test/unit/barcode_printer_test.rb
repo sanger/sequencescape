@@ -23,7 +23,7 @@ class BarcodePrinterTest < ActiveSupport::TestCase
               .returns("{\"data\":[]}")
     RestClient.expects(:post)
               .with('http://localhost:9292/v1/printers',
-                        {"data"=>{"attributes"=>{"name" => "test_printer"}}}.to_json,
+                        { "data" => { "attributes" => { "name" => "test_printer" } } }.to_json,
                         content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
               .returns(201)
     create :barcode_printer, name: 'test_printer'

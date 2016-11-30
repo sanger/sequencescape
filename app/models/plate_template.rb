@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class PlateTemplate < Plate
 
@@ -24,14 +26,14 @@ class PlateTemplate < Plate
   def stamp_to(plate)
     ActiveRecord::Base.transaction do
       self.wells.each do |well|
-        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map {|a| a.dup }
+        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map { |a| a.dup }
       end
     end
   end
 
 
   def set_control_well(result)
-    self.add_descriptor(Descriptor.new({:name => "control_well", :value => result}))
+    self.add_descriptor(Descriptor.new({ name: "control_well", value: result }))
     self.save
   end
 

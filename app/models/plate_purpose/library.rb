@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 module PlatePurpose::Library
   def self.included(base)
@@ -9,7 +11,7 @@ module PlatePurpose::Library
     end
   end
 
-  STATES_TO_ASSIGN_LIBRARY_INFORMATION = [ 'started', 'passed' ]
+  STATES_TO_ASSIGN_LIBRARY_INFORMATION = ['started', 'passed']
 
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super

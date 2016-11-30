@@ -1,16 +1,18 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module Submission::AssetGroupBehaviour
   def self.included(base)
     base.class_eval do
       belongs_to    :asset_group
-      before_create :find_asset_group,             :unless => :asset_group?
-      before_create :pull_assets_from_asset_group, :if     => :asset_group?
+      before_create :find_asset_group,             unless: :asset_group?
+      before_create :pull_assets_from_asset_group, if: :asset_group?
 
       # Required once out of the building state ...
-      validates_presence_of :assets, :if => :assets_need_validating?
+      validates_presence_of :assets, if: :assets_need_validating?
 
     end
   end
@@ -45,16 +47,16 @@ module Submission::AssetGroupBehaviour
     group_name = self.uuid if asset_group_name.blank?
 
     asset_group = self.study.asset_groups.create!(
-      :name   => group_name,
-      :user   => self.user,
-      :assets => self.assets
+      name: group_name,
+      user: self.user,
+      assets: self.assets
     )
-    self.update_attributes!(:asset_group_id => asset_group.id)
+    self.update_attributes!(asset_group_id: asset_group.id)
   end
   private :create_our_asset_group
 
   def find_asset_group
-    self.asset_group = self.study.asset_groups.first(:conditions => { :name => asset_group_name }) unless asset_group_name.blank?
+    self.asset_group = study.asset_groups.find_by(name: asset_group_name) unless asset_group_name.blank?
     true
   end
   private :find_asset_group

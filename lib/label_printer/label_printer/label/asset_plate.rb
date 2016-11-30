@@ -15,7 +15,7 @@ module LabelPrinter
       end
 
       def bottom_right(plate)
-        "#{plate.name_for_label.to_s} #{plate.barcode}"
+        "#{plate.name_for_label} #{plate.barcode}"
       end
 
     end

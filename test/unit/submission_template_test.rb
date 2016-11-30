@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 
@@ -12,7 +14,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     setup do
       @template = FactoryGirl.build :submission_template
       @product = create(:product)
-      @template.product_catalogue.products <<  @product
+      @template.product_catalogue.products << @product
     end
 
     should "be able to create a new order" do
@@ -25,8 +27,8 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
   context "A Order" do
     setup do
-      @workflow = create :submission_workflow,:key => 'microarray_genotyping'
-      @order = Order.new(:workflow => @workflow)
+      @workflow = create :submission_workflow, key: 'microarray_genotyping'
+      @order = Order.new(workflow: @workflow)
     end
     context "with a comment" do
       setup do
@@ -62,9 +64,9 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
         @test_request_typ_b = create :library_creation_request_type
         @test_request_typ_b
-        @test_request_type  = create :sequencing_request_type
+        @test_request_type = create :sequencing_request_type
         @order.request_types = [@test_request_typ_b, @test_request_type]
-        @order.request_type_ids_list = [[@test_request_typ_b.id],[@test_request_type.id]]
+        @order.request_type_ids_list = [[@test_request_typ_b.id], [@test_request_type.id]]
       end
 
       should "load the parameters properly" do
@@ -79,7 +81,6 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
   end
 
   def field(field_name)
-    @order.input_field_infos.detect {|ifi| ifi.display_name == field_name} || raise("#{field_name} field not found")
+    @order.input_field_infos.detect { |ifi| ifi.display_name == field_name } || raise("#{field_name} field not found")
   end
 end
-

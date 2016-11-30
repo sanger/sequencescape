@@ -9,9 +9,9 @@ class BatchTubeTest < ActiveSupport::TestCase
     should "when multiplexed should return the right tubes and top line" do
 
       pipeline = create :pipeline,
-        :name          => 'Test pipeline',
-        :workflow      => LabInterface::Workflow.create!(:item_limit => 8),
-        :multiplexed => true
+        name: 'Test pipeline',
+        workflow: LabInterface::Workflow.create!(item_limit: 8),
+        multiplexed: true
       batch = pipeline.batches.create!
 
       library_tube_with_stock_tube = create :library_tube, barcode: "111"
@@ -22,8 +22,8 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       request = create :multiplexed_library_creation_request, target_asset: library_tube_with_stock_tube
       batch.requests << request
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: true}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: true }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
@@ -41,8 +41,8 @@ class BatchTubeTest < ActiveSupport::TestCase
       @batch = create :batch
       @batch.requests << request
 
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: true}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: true }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
@@ -57,21 +57,21 @@ class BatchTubeTest < ActiveSupport::TestCase
     should "when multiplexed should return the right tubes and top line" do
 
       @pipeline = create :pipeline,
-        :name          => 'Test pipeline',
-        :workflow      => LabInterface::Workflow.create!(:item_limit => 8),
-        :multiplexed => true
+        name: 'Test pipeline',
+        workflow: LabInterface::Workflow.create!(item_limit: 8),
+        multiplexed: true
 
       batch = @pipeline.batches.create!
       request = create :multiplexed_library_creation_request, target_asset: (create :library_tube, barcode: "111")
       batch.requests << request
 
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: false}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: false }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal "(#{request.target_asset.tag}) #{request.target_asset.id}" , tube_label.top_line(tube)
+      assert_equal "(#{request.target_asset.tag}) #{request.target_asset.id}", tube_label.top_line(tube)
 
     end
 
@@ -81,8 +81,8 @@ class BatchTubeTest < ActiveSupport::TestCase
       @batch = create :batch
       @batch.requests << request
 
-      printable = {request.id => "on"}
-      options = {count: '1', printable: printable, batch: batch, stock: false}
+      printable = { request.id => "on" }
+      options = { count: '1', printable: printable, batch: batch, stock: false }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count

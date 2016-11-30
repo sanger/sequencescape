@@ -1,9 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Admin::RobotPropertiesController < ApplicationController
-  before_filter :find_robot_by_id
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
+  before_action :find_robot_by_id
 
   def index
     @robot_properties = @robot.robot_properties
@@ -32,7 +37,7 @@ class Admin::RobotPropertiesController < ApplicationController
     if @robot_property.save
       redirect_to [:admin, @robot, @robot_property]
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -45,7 +50,7 @@ class Admin::RobotPropertiesController < ApplicationController
     if @robot_property.update_attributes(params[:robot_property])
       redirect_to [:admin, @robot, @robot_property]
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 

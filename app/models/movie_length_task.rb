@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class MovieLengthTask < Task
   class MovieLengthData < Task::RenderElement
@@ -29,18 +31,18 @@ class MovieLengthTask < Task
   def valid_movie_length?(movie_length)
     return false if movie_length.blank?
     movie_length.split(/,/).each do |movie_timing|
-      return false if (movie_timing.blank? || ! movie_timing.to_i.is_a?(Integer) || movie_timing.to_i < 0)
+      return false if (movie_timing.blank? || !movie_timing.to_i.is_a?(Integer) || movie_timing.to_i < 0)
     end
 
     true
   end
 
   def included_for_do_task
-    [{:requests=>:asset}, :pipeline ]
+    [{ requests: :asset }, :pipeline]
   end
 
   def included_for_render_task
-    [{:requests=>:asset}, :pipeline ]
+    [{ requests: :asset }, :pipeline]
   end
 
 end

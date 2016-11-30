@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 
 # A class for requests that have some business meaning outside of Sequencescape
@@ -12,7 +14,7 @@ class CustomerRequest < Request
   end
 
   def customer_accepts_responsibility!
-    self.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+    self.request_metadata.update_attributes!(customer_accepts_responsibility: true)
   end
 
 end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 # This is effectively pooling: all wells that have come from the same submission will be transferred
 # into the same well on the destination plate.
@@ -25,7 +27,7 @@ class Transfer::BetweenPlatesBySubmission < Transfer
   def well_to_destination
     {}.tap do |sources_to_target|
       # Group the wells based on the submission
-      groups = source.wells.in_column_major_order.with_pool_id.group_by(&:pool_id).delete_if { |k,_| k.nil? }.values
+      groups = source.wells.in_column_major_order.with_pool_id.group_by(&:pool_id).delete_if { |k, _| k.nil? }.values
 
       # Submission group 1 will go into A1, group 2 into B1, group 3 C1, etc.
       Map.walk_plate_in_column_major_order(source.size) do |position, index|

@@ -1,36 +1,40 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 class Request::Multiplexing < CustomerRequest
 
   after_create :register_transfer_callback
 
+  # Triggers immediate transfer into the tubes if the source asset already
+  # exists. This allows multiplexing requests to be made on plates at the
+  # end of library prep, after the plate is qc_complete.
+  # If no asset is present then we haven't got to that stage yet and transfer
+  # will be triggered as part of the standard workflow.
   def register_transfer_callback
     # We go via order as we need to get a particular instance of submission
     order.submission.register_callback(:once) do
       Transfer::FromPlateToTubeByMultiplex.create!(
-        :source => self.asset.plate,
-        :user   => self.order.user
-      )
+        source: self.asset.plate,
+        user: self.order.user
+      ) if self.asset.present?
     end
   end
 
 
-  redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
+  redefine_aasm column: :state, whiny_persistence: true do
+      state :pending, initial: true
+      state :started
+      state :passed
+      state :failed
+      state :cancelled
 
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :failed
-      aasm_state :cancelled
-
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started] end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
+      event :start  do transitions to: :started,     from: [:pending]                    end
+      event :pass   do transitions to: :passed,      from: [:pending, :started] end
+      event :fail   do transitions to: :failed,      from: [:pending, :started] end
+      event :cancel do transitions to: :cancelled,   from: [:started, :passed]           end
     end
 
 end

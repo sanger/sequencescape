@@ -23,15 +23,15 @@ class BatchPlateTest < ActiveSupport::TestCase
     batch.requests << request
     @plate1 = batch.plate_group_barcodes.keys[0]
     @barcode1 = plate1.barcode
-    @printable = {@plate1.barcode => "on"}
-    options = {count: '3', printable: printable, batch: batch}
+    @printable = { @plate1.barcode => "on" }
+    options = { count: '3', printable: printable, batch: batch }
     @plate_label = LabelPrinter::Label::BatchPlate.new(options)
-    @label = {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
+    @label = { top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
             bottom_left: "#{plate1.sanger_human_barcode}",
             top_right: "#{study_abbreviation}",
             bottom_right: "#{role} #{purpose} #{barcode1}",
             top_far_right: nil,
-            barcode: "#{plate1.ean13_barcode}"}
+            barcode: "#{plate1.ean13_barcode}" }
 
   end
 

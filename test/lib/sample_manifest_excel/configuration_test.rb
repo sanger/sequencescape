@@ -14,7 +14,7 @@ class ConfigurationTest < ActiveSupport::TestCase
 
   test "should be able to add a new file" do
     configuration.add_file "a_new_file"
-    assert_equal SampleManifestExcel::Configuration::FILES.length+1, configuration.files.length
+    assert_equal SampleManifestExcel::Configuration::FILES.length + 1, configuration.files.length
     assert configuration.files.include?(:a_new_file)
     assert configuration.respond_to?("a_new_file=")
   end
@@ -47,7 +47,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     should "load the columns" do
       columns = SampleManifestExcel::ColumnList.new(configuration.load_file(folder, "columns"), configuration.conditional_formattings)
       assert_equal columns, configuration.columns.all
-      configuration.manifest_types.each do |k,v|
+      configuration.manifest_types.each do |k, v|
         assert_equal columns.extract(v.columns), configuration.columns.send(k)
         assert_equal columns.extract(v.columns), configuration.columns.find(k)
         assert_equal columns.extract(v.columns), configuration.columns.find(k.to_sym)
@@ -72,11 +72,11 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert configuration.ranges.frozen?
       assert configuration.columns.frozen?
       assert configuration.columns.all.frozen?
-      configuration.manifest_types.each do |k,v|
+      configuration.manifest_types.each do |k, v|
         assert configuration.columns.send(k).frozen?
       end
     end
 
   end
-  
+
 end

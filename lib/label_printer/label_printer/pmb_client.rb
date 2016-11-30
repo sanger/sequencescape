@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011 Genome Research Ltd.
 require 'rest-client'
 
 module LabelPrinter
@@ -30,11 +31,11 @@ module LabelPrinter
     end
 
     def self.headers
-      {content_type: "application/vnd.api+json", accept: "application/vnd.api+json"}
+      { content_type: "application/vnd.api+json", accept: "application/vnd.api+json" }
     end
 
     def self.print(attributes)
-      RestClient.post print_job_url, {"data"=>{"attributes"=>attributes}}.to_json, headers
+      RestClient.post print_job_url, { "data" => { "attributes" => attributes } }.to_json, headers
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
@@ -59,7 +60,7 @@ module LabelPrinter
 
     def self.register_printer(name)
       unless printer_exists?(name)
-        RestClient.post printers_url, {"data"=>{"attributes"=>{"name" => name}}}.to_json, headers
+        RestClient.post printers_url, { "data" => { "attributes" => { "name" => name } } }.to_json, headers
       end
     end
 
@@ -82,8 +83,8 @@ module LabelPrinter
     def self.prettify_new_errors(errors)
       [].tap do |error_list|
         errors.each do |error|
-          attribute  = error["source"]["pointer"].split('/').last.humanize
-          error_list << "%{attribute} %{message}" % {attribute: attribute, message: error["detail"]}
+          attribute = error["source"]["pointer"].split('/').last.humanize
+          error_list << "%{attribute} %{message}" % { attribute: attribute, message: error["detail"] }
         end
       end
       .join("; ")
@@ -92,7 +93,7 @@ module LabelPrinter
     def self.prettify_old_errors(errors)
       [].tap do |error_list|
         errors.each do |k, v|
-          error_list << "%{attribute} %{message}" % {attribute: k.capitalize+":", message: v.join(", ")}
+          error_list << "%{attribute} %{message}" % { attribute: k.capitalize + ":", message: v.join(", ") }
         end
       end
       .join("; ")

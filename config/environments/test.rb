@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Sequencescape::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
@@ -12,8 +14,11 @@ Sequencescape::Application.configure do
   config.cache_classes = true
   config.active_support.deprecation = :log
 
+  config.serve_static_files = true
+
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
+  config.eager_load = true
 
   # we don't need :debug unless we're debugging tests
   config.log_level = :error
@@ -25,18 +30,20 @@ Sequencescape::Application.configure do
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection    = false
 
-  # Rails 4 provides much more sensible protection
-  config.active_record.whitelist_attributes = false
-
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
-  config.reload_plugins = true
 
   config.time_zone = 'London'
 
+  # Avoids threading issues with cucumber and some ajax requests
+  # particularly: features/studies/3871492_links_from_study_workflow_view.feature
+  # under MRI. If hit to overall test performance is grim, might need to
+  # unpick this further.
+  # https://github.com/rails/rails/issues/15089
+  config.allow_concurrency = false
 
-  #config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
-  config.active_record.observers = [ :request_observer ]
+  # config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
+  config.active_record.observers = [:request_observer]
 end

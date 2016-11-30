@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 class Transfer::BetweenTubesBySubmission < Transfer
   include TransfersToKnownDestination
@@ -20,7 +22,7 @@ class Transfer::BetweenTubesBySubmission < Transfer
 
   after_create :update_destination_tube_name
   def update_destination_tube_name
-    destination.update_attributes!(:name => source.name_for_child_tube)
+    destination.update_attributes!(name: source.name_for_child_tube)
   end
   private :update_destination_tube_name
 

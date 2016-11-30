@@ -2,7 +2,7 @@ require 'test_helper'
 
 class FactoryGirlTest < ActiveSupport::TestCase
 
-  Dir[File.join(Rails.root,"test","lib","sample_manifest_excel","factories","*.rb")].each do |filename|
+  Dir[File.join(Rails.root, "test", "lib", "sample_manifest_excel", "factories", "*.rb")].each do |filename|
 
     factory = File.basename(filename, File.extname(filename)).singularize
 
