@@ -193,8 +193,8 @@ end
 
 class ActiveRecord::Base
   class << self
-    def transaction_with_amqp(&block)
-      transaction_without_amqp { AmqpObserver.instance.transaction(&block) }
+    def transaction_with_amqp(opts={},&block)
+      transaction_without_amqp(opts) { AmqpObserver.instance.transaction(&block) }
     end
     alias_method_chain(:transaction, :amqp)
   end
