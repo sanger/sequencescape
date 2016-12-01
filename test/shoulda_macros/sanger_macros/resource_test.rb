@@ -8,14 +8,18 @@ module Sanger
   module Testing
     module Controller
       module Macros
+
+        RESTFUL_ACTIONS = %w(index new create show update destroy edit).freeze
+
         def resource_test(resource_name, params = {})
           params.symbolize_keys!
           resource_name = resource_name.to_sym
 
-          restful_actions = %w(index new create show update destroy edit)
-          ignore_actions  = params[:ignore_actions] || []
-          actions         = params[:actions] || (restful_actions - ignore_actions)
-          path_prefix     = params[:with_prefix] || ""
+          ignore_actions   = params[:ignore_actions] || []
+          actions          = params[:actions] || (RESTFUL_ACTIONS - ignore_actions)
+          untested_actions = (RESTFUL_ACTIONS - ignore_actions) - actions
+          path_prefix      = params[:with_prefix] || ""
+
           raise Exception.new, ":actions need to be an Array" unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
@@ -25,8 +29,8 @@ module Sanger
             setup do
               @factory_options = params[:defaults] || {}
               @create_options  = params[:defaults] || {}
-              @update_options  = params[:defaults].reject do |k,v|
-                params.fetch(:protect_on_update,[]).include?(k)
+              @update_options  = params[:defaults].reject do |k, v|
+                params.fetch(:protect_on_update, []).include?(k)
               end.deep_merge!(params.fetch(:extra_on_update, {}))
               @input_params = {}
             end
@@ -168,19 +172,8 @@ module Sanger
                   end
                   should redirect_to("index page") { eval(index_url) }
                 end
-
-                # context "destroy without object in database" do
-                #   setup do
-                #     assert_raise ActiveRecord::RecordNotFound do
-                #       # Should this be a POST/PUT?
-                #       delete :destroy, :id => -1
-                #     end
-                #   end
-                #   should_not set_flash
-                # end
               end
 
-              untested_actions = (restful_actions - ignore_actions) - actions
               context "should not have untested action" do
                 untested_actions.each do |action|
                   should "#{action}" do
