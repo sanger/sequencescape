@@ -203,7 +203,7 @@ private
       :sample_type, :sample_storage_conditions, :supplier_name, :reference_genome_id, :genotype, :phenotype, :age,
       :developmental_stage, :cell_type, :disease_state, :compound, :dose, :immunoprecipitate, :growth_condition,
       :rnai, :organism_part, :time_point, :disease, :subject, :treatment, :donor_id
-    ]}
+    ] }
   end
 
   def redirect_if_not_owner_or_admin_otherwise(&block)

@@ -20,7 +20,7 @@ feature 'Batches controller', js: true do
     click_link('Edit batch')
 
     request_list = find('#requests_list')
-    request_list.should have_css('tr', count: request_count)
+    expect(request_list).to have_css('tr', count: request_count)
     first_request, last_request = *request_list.all('tr')
     last_request.drag_to(first_request)
   end
