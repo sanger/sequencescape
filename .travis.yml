@@ -1,7 +1,7 @@
 language: ruby
 rvm:
   - jruby-9.1.6.0
-  - 2.3.2
+  - 2.3.3
 sudo: false
 cache: bundler
 bundler_args: --without warehouse deployment
@@ -16,4 +16,4 @@ script:
   - "bundle exec $SUITE"
 matrix:
   allow_failures:
-  - rvm: 2.3.2
+  - rvm: 2.3.3
