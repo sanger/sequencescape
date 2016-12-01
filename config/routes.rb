@@ -622,6 +622,8 @@ Sequencescape::Application.routes.draw do
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
 
+  # These endpoints should be defined explicitly
   get '/:controller(/:action(/:id))'
+  post '/:controller(/:action(/:id))'
 
 end
