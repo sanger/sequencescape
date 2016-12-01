@@ -21,13 +21,22 @@ class SamplesControllerTest < ActionController::TestCase
 
     should_require_login
 
-    # NOTE: You can update a sample through this controller, you just can't change the name, which is
-    # why, if you remove 'update' from the 'ignore_actions' you'll find the test fails!
     resource_test(
       'sample', {
-        defaults: { name: "Sample22" },
+        defaults: {
+          name: "Sample22",
+          sample_metadata_attributes: {
+             cohort: 'Cohort',
+             gender: 'Male',
+             genotype: '',
+             phenotype: '',
+             reference_genome_id: FactoryGirl.create(:reference_genome).id
+            }
+        },
         formats: ['html'],
-        ignore_actions: %w(show create update destroy),
+        ignore_actions: %w(show create destroy),
+        protect_on_update: [:name],
+        extra_on_update: { sample_metadata_attributes: { check: { genotype: 'false', phenotype: 'true' } } },
         user: -> { user = FactoryGirl.create(:user); user.is_administrator; user }
       }
     )
