@@ -257,16 +257,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 40
 
-# Offense count: 6
-# Cop supports --auto-correct.
-Performance/RedundantMatch:
-  Exclude:
-    - 'app/controllers/assets_controller.rb'
-    - 'app/models/asset.rb'
-    - 'app/models/bulk_submission.rb'
-    - 'app/models/cherrypick_task.rb'
-    - 'app/models/dna_qc_task.rb'
-
 # Offense count: 15
 # Cop supports --auto-correct.
 # Configuration parameters: MaxKeyValuePairs.

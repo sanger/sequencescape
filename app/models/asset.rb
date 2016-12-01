@@ -428,7 +428,7 @@ class Asset < ActiveRecord::Base
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
       find_by_barcode_and_barcode_prefix_id(match[2], prefix.id)
-    elsif /\A[0-9]{1,7}\z/.match(source_barcode) # Just a number
+    elsif /\A[0-9]{1,7}\z/ =~ source_barcode # Just a number
       find_by_barcode(source_barcode)
     end
   end

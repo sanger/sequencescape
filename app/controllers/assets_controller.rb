@@ -382,7 +382,7 @@ class AssetsController < ApplicationController
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
       @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2], prefix.id) if prefix
-    elsif /\A[0-9]{1,7}\z/.match(barcode) # Just a number
+    elsif /\A[0-9]{1,7}\z/ =~ barcode # Just a number
       @asset = Asset.find_by_barcode(barcode)
     else
       flash[:error] = "'#{barcode}' is not a recognized barcode format"

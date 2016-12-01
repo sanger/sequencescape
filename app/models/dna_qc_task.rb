@@ -86,9 +86,9 @@ class DnaQcTask < Task
 
     def gender_status
       return "*" if @gender_value == "Unknown" || @gender_value.nil?
-      if @gender_value.match(/^f/i)
+      if @gender_value =~ /^f/i
         @gender_value = 'F'
-      elsif @gender_value.match(/^m/i)
+      elsif @gender_value =~ /^m/i
         @gender_value = 'M'
       end
 

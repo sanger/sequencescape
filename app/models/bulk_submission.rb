@@ -65,7 +65,7 @@ class BulkSubmission
       if spreadsheet.size == 0
         errors.add(:spreadsheet, "The supplied file was empty")
       else
-        if /^.*\.csv$/.match(spreadsheet.original_filename)
+        if spreadsheet.original_filename.end_with?('.csv')
           process
         else
           errors.add(:spreadsheet, "The supplied file was not a CSV file")
