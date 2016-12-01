@@ -28,7 +28,7 @@ module Sanger
             setup do
               @factory_options = params[:defaults] || {}
               @create_options  = params[:defaults] || {}
-              @update_options  = params[:defaults].reject do |k, v|
+              @update_options  = (params[:defaults] || {}).reject do |k, v|
                 params.fetch(:protect_on_update, []).include?(k)
               end.deep_merge!(params.fetch(:extra_on_update, {}))
               @input_params = {}
