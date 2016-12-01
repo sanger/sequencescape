@@ -59,7 +59,7 @@ class QcReportsController < ApplicationController
     respond_to do |format|
       format.html
 
-      format.csv  do
+      format.csv do
         file = nil
         begin
           file = Tempfile.new(@report_presenter.filename)

@@ -18,8 +18,8 @@ class Stamp < ActiveRecord::Base
     belongs_to :stamp, inverse_of: :stamp_qcables
     belongs_to :qcable, inverse_of: :stamp_qcable
     validates :stamp, presence: true
-    validates :qcable,  presence: true
-    validates :bed,  presence: true
+    validates :qcable, presence: true
+    validates :bed, presence: true
     validates :order, presence: true
   end
 

@@ -14,7 +14,7 @@ module Authorization
           has_many :roles, roles_relationship_opts.merge(through: :user_role_bindings, source: :role)
 #          has_and_belongs_to_many :roles, roles_relationship_opts
           include Authorization::ObjectRolesTable::UserExtensions::InstanceMethods
-          include Authorization::Identity::UserExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
+          include Authorization::Identity::UserExtensions::InstanceMethods # Provides all kinds of dynamic sugar via method_missing
         end
       end
 
@@ -22,7 +22,7 @@ module Authorization
         # If roles aren't explicitly defined in user class then check roles table
         def has_role?(role_name, authorizable_obj = nil)
           if authorizable_obj.nil?
-            self.roles.find_by_name(role_name) || self.roles.member?(get_role(role_name, authorizable_obj)) ? true : false    # If we ask a general role question, return true if any role is defined.
+            self.roles.find_by_name(role_name) || self.roles.member?(get_role(role_name, authorizable_obj)) ? true : false # If we ask a general role question, return true if any role is defined.
           else
             role = get_role(role_name, authorizable_obj)
             role ? self.roles.exists?(role.id) : false
@@ -160,7 +160,7 @@ module Authorization
           end
 
           include Authorization::ObjectRolesTable::ModelExtensions::InstanceMethods
-          include Authorization::Identity::ModelExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
+          include Authorization::Identity::ModelExtensions::InstanceMethods # Provides all kinds of dynamic sugar via method_missing
         end
       end
 

@@ -24,7 +24,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"
 
       new_indexes = AliquotIndex.where(lane_id: @lane.id)
-      assert_equal 4, new_indexes.count,  "#{new_indexes.count} indexes belonged to the lane, 4 expected"
+      assert_equal 4, new_indexes.count, "#{new_indexes.count} indexes belonged to the lane, 4 expected"
 
       new_indexes.each do |ai|
         aliquot_number = @aliquots.index(ai.aliquot)
@@ -51,7 +51,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"
 
         new_indexes = AliquotIndex.where(lane_id: @lane.id)
-        assert_equal 4, new_indexes.count,  "#{new_indexes.count} indexes belonged to the lane, 4 expected"
+        assert_equal 4, new_indexes.count, "#{new_indexes.count} indexes belonged to the lane, 4 expected"
 
         new_indexes.each do |ai|
           aliquot_number = @aliquots.index(ai.aliquot)

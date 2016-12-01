@@ -29,9 +29,9 @@ class Request::Multiplexing < CustomerRequest
       state :failed
       state :cancelled
 
-      event :start  do transitions to: :started,     from: [:pending]                    end
+      event :start  do transitions to: :started,     from: [:pending] end
       event :pass   do transitions to: :passed,      from: [:pending, :started] end
       event :fail   do transitions to: :failed,      from: [:pending, :started] end
-      event :cancel do transitions to: :cancelled,   from: [:started, :passed]           end
+      event :cancel do transitions to: :cancelled,   from: [:started, :passed] end
     end
 end

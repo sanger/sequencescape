@@ -17,8 +17,8 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: Project.alphabetical }
-      format.json  { render json: Project.alphabetical }
+      format.xml { render xml: Project.alphabetical }
+      format.json { render json: Project.alphabetical }
     end
   end
 
@@ -31,7 +31,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml
-      format.json  { render json: @project }
+      format.json { render json: @project }
     end
   end
 

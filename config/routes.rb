@@ -259,7 +259,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :studies, except: [:destroy]  do
+    resources :studies, except: [:destroy] do
       collection do
         get :index
         post :filter

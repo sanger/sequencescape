@@ -25,12 +25,12 @@ class AssetsController < ApplicationController
         format.html
       end
       if params[:study_id]
-        format.xml  { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
+        format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
-          format.xml  { render xml: Sample.find(params[:sample_id]).assets.to_xml }
+          format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml  { render xml: ["relations" => { "parents" => @asset.parents, "children" => @asset.children }].to_xml }
+        format.xml { render xml: ["relations" => { "parents" => @asset.parents, "children" => @asset.children }].to_xml }
       end
     end
   end
@@ -53,7 +53,7 @@ class AssetsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @asset }
+      format.xml { render xml: @asset }
     end
   end
 
@@ -207,7 +207,7 @@ class AssetsController < ApplicationController
     @asset.closed = !@asset.closed
     @asset.save
     respond_to do |format|
-      if  @asset.closed
+      if @asset.closed
         flash[:notice] = "Asset #{@asset.name} was closed."
       else
         flash[:notice] = "Asset #{@asset.name} was opened."

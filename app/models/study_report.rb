@@ -38,7 +38,7 @@ class StudyReport < ActiveRecord::Base
         Study.find(self.study_id).progress_report_on_all_assets do |fields|
           tempfile.puts(CSV.generate_line(fields, csv_options))
         end
-        tempfile.open  # Reopen the temporary file
+        tempfile.open # Reopen the temporary file
         self.update_attributes!(report: tempfile)
       end
     end

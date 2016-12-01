@@ -77,14 +77,14 @@ module Authorization
 
         def has_role_for_objects(role_name, type)
           roles = if type.nil?
-            self.roles.where(name:  role_name)
+            self.roles.where(name: role_name)
                   else
-            self.roles.where(authorizable_type:  type.name, name: role_name)
+            self.roles.where(authorizable_type: type.name, name: role_name)
                   end
           roles.collect do |role|
             if role.authorizable_id.nil?
               role.authorizable_type.nil? ?
-                nil : Module.const_get(role.authorizable_type)   # Returns class
+                nil : Module.const_get(role.authorizable_type) # Returns class
             else
               role.authorizable
             end

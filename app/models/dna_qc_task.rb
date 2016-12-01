@@ -60,7 +60,7 @@ class DnaQcTask < Task
 
     def gel_status
       case
-      when ["Fail", "Weak", "Band Not Visible", "Degraded"].include?(gel_value) then  "fail"
+      when ["Fail", "Weak", "Band Not Visible", "Degraded"].include?(gel_value) then "fail"
       when gel_value == "OK" then "*"
       when gel_value.blank? then "fail"
       else ""

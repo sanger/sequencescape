@@ -194,7 +194,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           end
 
          should "change Request.count by #{SX_ASSET_COUNT * 3}" do
-           assert_equal SX_ASSET_COUNT * 3,  Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
+           assert_equal SX_ASSET_COUNT * 3, Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
         end
 
           context "#create_requests_for_items" do
@@ -305,7 +305,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           end
 
            should "change Request.count by 12" do
-             assert_equal 12,  Request.count - @request_count, "Expected Request.count to change by 12"
+             assert_equal 12, Request.count - @request_count, "Expected Request.count to change by 12"
           end
 
           should "create 2 library requests" do

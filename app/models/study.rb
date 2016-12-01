@@ -346,7 +346,7 @@ class Study < ActiveRecord::Base
     end
 
     def study_type_valid?
-      errors.add(:study_type, "is not specified")  if study_type.name == "Not specified"
+      errors.add(:study_type, "is not specified") if study_type.name == "Not specified"
     end
 
     def valid_policy_url?

@@ -18,7 +18,7 @@ FactoryGirl.define do
     qc_state            ""
     resource            nil
     barcode
-    barcode_prefix      { |b| b.association(:barcode_prefix) }
+    barcode_prefix { |b| b.association(:barcode_prefix) }
   end
 
   factory :plate do
@@ -128,7 +128,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |batch, evaluator|
-      create_list(:batch_request, evaluator.request_count,  batch: batch)
+      create_list(:batch_request, evaluator.request_count, batch: batch)
     end
   end
 
@@ -172,7 +172,7 @@ FactoryGirl.define do
     next_pipeline_id      nil
     previous_pipeline_id  nil
     location              { |location| location.association(:location) }
-    after(:build)          do |pipeline|
+    after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
@@ -205,7 +205,7 @@ FactoryGirl.define do
     next_pipeline_id      nil
     previous_pipeline_id  nil
     location              { |location| location.association(:location) }
-    after(:build)          do |pipeline|
+    after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
@@ -440,7 +440,7 @@ FactoryGirl.define do
     qc_state            ""
     resource            nil
     barcode
-    purpose             { Tube::Purpose.standard_sample_tube }
+    purpose { Tube::Purpose.standard_sample_tube }
   end
 
   factory :sample_tube, parent: :empty_sample_tube do |sample_tube|
@@ -457,7 +457,7 @@ FactoryGirl.define do
 
   factory :cherrypick_task do |t|
     name "New task"
-    pipeline_workflow_id      { |workflow| workflow.association(:lab_workflow) }
+    pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil
     location              ""

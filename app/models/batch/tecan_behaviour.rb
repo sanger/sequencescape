@@ -56,7 +56,7 @@ module Batch::TecanBehaviour
       data_object["destination"][full_destination_barcode]["mapping"] << {
         "src_well"  => [full_source_barcode, request.asset.map.description],
         "dst_well"  => request.target_asset.map.description,
-        "volume"    => (request.target_asset.get_picked_volume)  }
+        "volume"    => (request.target_asset.get_picked_volume) }
     end
 
     data_object
@@ -71,12 +71,12 @@ module Batch::TecanBehaviour
 
   def tecan_gwl_file_as_text(target_barcode, volume_required = 13, plate_type = nil)
     data_object = generate_tecan_data(target_barcode, plate_type)
-    Sanger::Robots::Tecan::Generator.mapping(data_object,  volume_required.to_i)
+    Sanger::Robots::Tecan::Generator.mapping(data_object, volume_required.to_i)
   end
 
   def tecan_gwl_file(target_barcode, volume_required = 13)
     data_object = generate_tecan_data(target_barcode)
-    gwl_data = Sanger::Robots::Tecan::Generator.mapping(data_object,  volume_required.to_i)
+    gwl_data = Sanger::Robots::Tecan::Generator.mapping(data_object, volume_required.to_i)
     begin
       year = Time.now.year
       base_directory = "#{configatron.tecan_files_location}/#{year}"

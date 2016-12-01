@@ -69,14 +69,14 @@ class AssignTagsToWellsTask < Task
     source_well_to_intermediate_wells.each do |source_well, assets|
       library_well, tagged_well, pooled_well, tube = assets
 
-      RequestType.transfer.create!(asset: source_well,  target_asset: library_well, state: 'passed')
+      RequestType.transfer.create!(asset: source_well, target_asset: library_well, state: 'passed')
       library_well.aliquots.each { |aliquot| aliquot.update_attributes!(library: library_well) }
 
-      RequestType.transfer.create!(asset: library_well, target_asset: tagged_well,  state: 'passed')
+      RequestType.transfer.create!(asset: library_well, target_asset: tagged_well, state: 'passed')
       tag_id = well_id_tag_id_map[source_well.id]
       Tag.find(tag_id).tag!(tagged_well) if tag_id.present?
 
-      RequestType.transfer.create!(asset: tagged_well,  target_asset: pooled_well,  state: 'passed')
+      RequestType.transfer.create!(asset: tagged_well, target_asset: pooled_well, state: 'passed')
 
       raise StandardError, "Pooled well into different tube!" unless tube == (pooled_well_to_tube[pooled_well] || tube)
       pooled_well_to_tube[pooled_well] = tube

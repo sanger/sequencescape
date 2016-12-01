@@ -19,7 +19,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should "have a checksum" do
-      assert_equal @checksum,  Barcode.calculate_checksum(@prefix, @number)
+      assert_equal @checksum, Barcode.calculate_checksum(@prefix, @number)
     end
 
     should "generate a barcode" do

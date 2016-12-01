@@ -26,7 +26,7 @@ class PmbClientTest < ActiveSupport::TestCase
     }
   end
 
-  test "should have base url"  do
+  test "should have base url" do
     assert LabelPrinter::PmbClient.base_url
   end
 

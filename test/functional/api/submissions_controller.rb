@@ -32,7 +32,7 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
       end
 
       should "change Submission.count by 1" do
-        assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
+        assert_equal 1, Submission.count - @submission_count, "Expected Submission.count to change by 1"
       end
 
       should "output a correct error message" do

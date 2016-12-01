@@ -25,7 +25,7 @@ class Parsers::IscXtenParser
   def concentration(location)
     begin
       get_row(location)[get_column_for_header(:concentration)]
-    rescue NoMethodError  # Ugh! I want to catch these where they happen
+    rescue NoMethodError # Ugh! I want to catch these where they happen
       raise InvalidFile
     end
   end

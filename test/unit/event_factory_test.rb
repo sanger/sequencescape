@@ -32,7 +32,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
      should "change Event.count by 1" do
-       assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
+       assert_equal 1, Event.count - @event_count, "Expected Event.count to change by 1"
      end
 
       context "send 1 email to 1 recipient" do
@@ -69,7 +69,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       should "change Event.count by 1" do
-        assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
+        assert_equal 1, Event.count - @event_count, "Expected Event.count to change by 1"
       end
 
       context "send email to project manager" do
@@ -98,7 +98,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       should "change Event.count by 1" do
-        assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
+        assert_equal 1, Event.count - @event_count, "Expected Event.count to change by 1"
       end
 
       context ": send emails to everyone administrators" do
@@ -198,7 +198,7 @@ class EventFactoryTest < ActiveSupport::TestCase
         @user2.roles << follower
         @study = create :study, user: @user2
         @submission = FactoryHelp::submission(project: @project, study: @study, assets: [create(:sample_tube)])
-        @request = create :request, study: @study, project: @project,  submission: @submission
+        @request = create :request, study: @study, project: @project, submission: @submission
         @user3 = create :user, login: "east"
         message = "An error has occurred"
         EventFactory.request_update_note_to_manager(@request, @user3, message)

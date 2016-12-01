@@ -22,7 +22,7 @@ Given /^I have a study called "([^\"]*)" that requires ethical approval and has 
   study.save
 end
 
-Given /^a study "(.*?)" is pending$/  do |study|
+Given /^a study "(.*?)" is pending$/ do |study|
   Study.find_by_name(study).reset!
 end
 
@@ -258,7 +258,7 @@ Given /^study "([^\"]*)" has plate and assetgroup$/ do |study_name|
   study.samples << sample
   map   = FactoryGirl.create :map
   plate = FactoryGirl.create :plate, name: 'Cucumberirbattle', barcode: '123', closed: '0'
-  well = FactoryGirl.create :well, name: 'Well 1', closed: '0',  sample: sample, map: map
+  well = FactoryGirl.create :well, name: 'Well 1', closed: '0', sample: sample, map: map
   well.plate = plate
   well.save
   id_aga = FactoryGirl.create :asset_group_asset, asset_id: well.id, asset_group_id: id_asset_group.id

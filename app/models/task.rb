@@ -92,7 +92,7 @@ class Task < ActiveRecord::Base
     init_class
     raise ArgumentError, "subclass attribute #{name} already in use" if @subclass_attributes.include? name
 
-    @subclass_attributes[name] =  options
+    @subclass_attributes[name] = options
     @subclass_attributes_ordered_names << name
 
     kind = options[:kind]

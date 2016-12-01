@@ -70,7 +70,7 @@ class Submission < ActiveRecord::Base
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
-        request.submission_cancelled!  # Cancel first to prevent event doing something stupid
+        request.submission_cancelled! # Cancel first to prevent event doing something stupid
         request.events.create!(message: "Submission #{self.id} as destroyed")
       end
     end
@@ -285,6 +285,6 @@ end
 
 class Array
   def intersperse(separator)
-    (inject([]) { |a, v|  a + [v, separator] })[0...-1]
+    (inject([]) { |a, v| a + [v, separator] })[0...-1]
   end
 end

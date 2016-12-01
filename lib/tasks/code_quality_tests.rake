@@ -5,7 +5,7 @@ FLAY_DUPLICATION_THRESHOLD = 200
 
 namespace :test do
   desc "Run all static code analysis tasks"
-  task analytics: ["test:analytics:flay", "test:analytics:roodi",  "test:analytics:roodi_strict"]
+  task analytics: ["test:analytics:flay", "test:analytics:roodi", "test:analytics:roodi_strict"]
   namespace :analytics do
     task :load_rails_env do
       require 'config/environment'

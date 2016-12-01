@@ -160,7 +160,7 @@ class CherrypickTask < Task
 
     perform_pick(requests, robot, batch) do |batch|
       target_type.new(batch, template, purpose.try(:asset_shape), partial_plate).tap do
-        partial_plate = nil  # Ensure that subsequent calls have no partial plate
+        partial_plate = nil # Ensure that subsequent calls have no partial plate
       end
     end
   end

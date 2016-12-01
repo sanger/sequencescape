@@ -24,7 +24,7 @@ class StudyRelation < ActiveRecord::Base
       base.has_many :related_studies, through: :study_relations, class_name: "Study"
       # Inverse
       base.has_many :reversed_study_relations, class_name: "StudyRelation", foreign_key: :related_study_id
-      base.has_many :reversed_related_studies, through: :reversed_study_relations, class_name: "Study",  source: :study
+      base.has_many :reversed_related_studies, through: :reversed_study_relations, class_name: "Study", source: :study
     end
 
     # related studies

@@ -57,13 +57,13 @@ class OrderTest < ActiveSupport::TestCase
   end
 
   test "order should not be valid if study is not active" do
-    order = build :order,  study: study, assets: [asset], project: project
+    order = build :order, study: study, assets: [asset], project: project
     refute order.valid?
   end
 
   test "order should be valid if study is active on create" do
     study.activate!
-    order = create :order,  study: study, assets: [asset], project: project
+    order = create :order, study: study, assets: [asset], project: project
     assert order.valid?
     study.deactivate!
     new_asset = create :empty_sample_tube

@@ -9,7 +9,7 @@ class SequencingRequest < CustomerRequest
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 
-  has_metadata as: Request  do
+  has_metadata as: Request do
     # redundant with library creation , but THEY are using it .
     attribute(:fragment_size_required_from, required: true, integer: true)
     attribute(:fragment_size_required_to, required: true, integer: true)

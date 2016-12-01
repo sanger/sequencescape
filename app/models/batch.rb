@@ -19,13 +19,13 @@ class Batch < ActiveRecord::Base
   has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, inverse_of: :batch
   has_many :requests, ->() { distinct }, through: :batch_requests, inverse_of: :batch
   has_many :assets, through: :requests, source: :target_asset
-  has_many :source_assets,  ->() { distinct }, through: :requests, source: :asset
-  has_many :submissions,  ->() { distinct }, through: :requests
-  has_many :orders,  ->() { distinct }, through: :submissions
-  has_many :studies,  ->() { distinct }, through: :orders
+  has_many :source_assets, ->() { distinct }, through: :requests, source: :asset
+  has_many :submissions, ->() { distinct }, through: :requests
+  has_many :orders, ->() { distinct }, through: :submissions
+  has_many :studies, ->() { distinct }, through: :orders
   has_many :projects,  ->() { distinct }, through: :orders
   has_many :aliquots,  ->() { distinct }, through: :source_assets
-  has_many :samples,  ->() { distinct }, through: :assets
+  has_many :samples, ->() { distinct }, through: :assets
 
   def study
     self.studies.first
@@ -85,10 +85,10 @@ class Batch < ActiveRecord::Base
   scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
   scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
   scope :failed_for_ui,      -> { where(production_state: 'fail').latest_first }
-  scope :in_progress_for_ui, -> { where(state: 'started',   production_state: nil).latest_first }
+  scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
 
   scope :latest_first,       -> { order('created_at DESC') }
-  scope :most_recent,     ->(number) { latest_first.limit(number) }
+  scope :most_recent, ->(number) { latest_first.limit(number) }
 
   delegate :size, to: :requests
 
@@ -496,7 +496,7 @@ class Batch < ActiveRecord::Base
       csv << pulldown_report_headers
 
       self.requests.each do |request|
-        raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
+        raise 'Invalid request data' unless request.valid_request_for_pulldown_report?
         well = request.asset
         # TODO[mb14] DRY it
         tagged_well = well

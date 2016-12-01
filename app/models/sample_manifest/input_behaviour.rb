@@ -28,7 +28,7 @@ module SampleManifest::InputBehaviour
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/, " "), index] }].tap do |columns|
+      Hash[names.each_with_index.map { |name, index| [name && name.strip.gsub(/\s+/, " "), index] }].tap do |columns|
         raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
       end
     end

@@ -65,7 +65,7 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "change BatchRequest.count by 2" do
-   assert_equal 2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by 2"
+   assert_equal 2, BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by 2"
 end
   end
 
@@ -306,7 +306,7 @@ end
       end
 
       should "change Asset.count by 12" do
-        assert_equal 12,  Asset.count - @asset_count, "Expected Asset.count to change by 12"
+        assert_equal 12, Asset.count - @asset_count, "Expected Asset.count to change by 12"
       end
 
       should "not have same asset name" do
@@ -319,7 +319,7 @@ end
 
       should "have request position corresponding to the request creation order" do
         @batch.batch_requests.each do |br|
-          assert_equal @requests[br.position - 1].id,  br.request_id
+          assert_equal @requests[br.position - 1].id, br.request_id
         end
       end
     end
@@ -695,11 +695,11 @@ end
         end
 
  should "change BatchRequest.count by -2" do
- assert_equal(-2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by -2")
+ assert_equal(-2, BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by -2")
  end
 
  should "change Asset.count by -2" do
- assert_equal(-2,  Asset.count - @asset_count, "Expected Asset.count to change by -2")
+ assert_equal(-2, Asset.count - @asset_count, "Expected Asset.count to change by -2")
  end
 
         should "change Request.count by 0" do

@@ -35,7 +35,7 @@ class LotTypeTest < ActiveSupport::TestCase
         end
 
         should "change Lot.count by 1" do
-          assert_equal 1,  Lot.count - @lot_count, "Expected Lot.count to change by 1"
+          assert_equal 1, Lot.count - @lot_count, "Expected Lot.count to change by 1"
         end
 
         should 'set the lot properties' do

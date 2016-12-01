@@ -35,7 +35,7 @@ class SubmissionsController < ApplicationController
   end
 
   def edit
-    @presenter = Submission::SubmissionCreator.new(current_user,  id: params[:id])
+    @presenter = Submission::SubmissionCreator.new(current_user, id: params[:id])
   end
 
   # This method will build a submission then redirect to the submission on completion

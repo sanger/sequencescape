@@ -12,8 +12,8 @@ class UnifyInitialTransferRequests < ActiveRecord::Migration
       # Create Initial Transfer Request TYpe for future Use
       initial_transfer = RequestType.create!(
         name: 'Initial Transfer', key: 'initial_transfer', order: 1,
-        asset_type: 'Asset',  multiples_allowed: false,
-        request_class_name: 'TransferRequest::InitialTransfer',  morphology: RequestType::CONVERGENT,
+        asset_type: 'Asset', multiples_allowed: false,
+        request_class_name: 'TransferRequest::InitialTransfer', morphology: RequestType::CONVERGENT,
         for_multiplexing: 0, billable: 0,
         request_purpose: RequestPurpose.find_by_key('internal')
       )

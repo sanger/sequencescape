@@ -14,7 +14,7 @@ FactoryGirl.define do
   # easier to keep it here at the moment because we are moving stuff between both
   factory :order do |order|
     study
-    workflow              { |workflow| workflow.association(:submission_workflow) }
+    workflow { |workflow| workflow.association(:submission_workflow) }
     project
     user
     item_options          {}

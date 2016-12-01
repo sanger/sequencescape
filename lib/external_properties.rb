@@ -9,7 +9,7 @@ module ExternalProperties
     # that wil load all the properties , which is faster if we access more than one property
     # and if we pre-load them with eager loaging
     external_properties.each do |property|
-      return  property.value if property.key == key
+      return property.value if property.key == key
     end
     return nil
   end

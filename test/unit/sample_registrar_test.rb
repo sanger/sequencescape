@@ -83,7 +83,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should "change AssetGroup.count by 1" do
-          assert_equal 1,  AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by 1"
+          assert_equal 1, AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by 1"
         end
 
         should 'put the sample tube into the asset groups' do
@@ -114,7 +114,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           end
 
           should "not change Sample.count" do
-            assert_equal @initial_sc,  Sample.count
+            assert_equal @initial_sc, Sample.count
            end
         end
       end
@@ -182,7 +182,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should "not change SampleRegistrar.count" do
-          assert_equal @initial_src,  SampleRegistrar.count
+          assert_equal @initial_src, SampleRegistrar.count
          end
 
         should "change Sample.count by 1" do
@@ -193,7 +193,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           assert_equal 1,  SampleTube.count       - @sampletube_count, "Expected SampleTube.count to change by 1"
         end
         should "not change AssetGroup.count" do
-          assert_equal @initial_agc,  AssetGroup.count
+          assert_equal @initial_agc, AssetGroup.count
          end
 
         should 'not registered the ignored sample' do
@@ -242,7 +242,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should "not change SampleRegistrar.count" do
-          assert_equal @initial_sample_registrar,  SampleRegistrar.count
+          assert_equal @initial_sample_registrar, SampleRegistrar.count
         end
 
         should "change Sample.count by 4" do

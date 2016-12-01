@@ -14,7 +14,7 @@ class EraAccessionService < AccessionService
   end
 
   def accession_login
-    configatron.era_accession_login or raise RuntimeError,  "Can't find ERA  accession login in configuration file"
+    configatron.era_accession_login or raise RuntimeError, "Can't find ERA  accession login in configuration file"
   end
 
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data

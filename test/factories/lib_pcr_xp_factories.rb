@@ -40,7 +40,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :lib_pcr_xp_request_type, parent: :request_type  do
+  factory :lib_pcr_xp_request_type, parent: :request_type do
     asset_type 'Well'
     request_class CustomerRequest
     key "Illumina_Lib_PCR_XP_Lib_Pool"
@@ -52,7 +52,7 @@ FactoryGirl.define do
 
   factory :lib_pcr_xp_tube, class: LibraryTube do
     name    { |a| FactoryGirl.generate :asset_name }
-    purpose { create(:illumina_htp_mx_tube_purpose)  }
+    purpose { create(:illumina_htp_mx_tube_purpose) }
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end
 

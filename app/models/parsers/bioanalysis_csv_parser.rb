@@ -133,7 +133,7 @@ class Parsers::BioanalysisCsvParser
 
   def parsed_content
     @parsed_content ||= parse_samples
-  rescue NoMethodError => e  # Ugh! I want to catch these where they happen
+  rescue NoMethodError => e # Ugh! I want to catch these where they happen
     raise InvalidFile
   end
 

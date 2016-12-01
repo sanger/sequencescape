@@ -112,7 +112,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 1" do
-          assert_equal 1,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 1"
+          assert_equal 1, @study.samples.count - @sscount, "Expected @study.samples.count to change by 1"
           end
         end
 
@@ -135,7 +135,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2, @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
         end
 
@@ -163,7 +163,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2, @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
 
           should 'not have registered sample 2' do

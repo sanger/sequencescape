@@ -124,7 +124,7 @@ class SampleManifestTest < ActiveSupport::TestCase
       end
 
       should "change Well.count by 96" do
-        assert_equal 96,  Sample.count - @well_count, "Expected Well.count to change by 96"
+        assert_equal 96, Sample.count - @well_count, "Expected Well.count to change by 96"
       end
     end
   end

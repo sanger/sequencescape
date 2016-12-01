@@ -11,7 +11,7 @@ class AssetGroup < ActiveRecord::Base
 
   belongs_to :study
   belongs_to :user
-  belongs_to :submission      # Optional, present if created by a particular submission
+  belongs_to :submission # Optional, present if created by a particular submission
 
   has_many :asset_group_assets
   has_many :assets, through: :asset_group_assets

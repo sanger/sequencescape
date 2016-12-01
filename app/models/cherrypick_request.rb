@@ -11,9 +11,9 @@ class CherrypickRequest < TransferRequest
     # as being more concise as it has less states.
     state :pending, initial: true
     state :started
-    state :failed,     enter: :on_failed
+    state :failed, enter: :on_failed
     state :passed
-    state :cancelled,  enter: :on_cancelled
+    state :cancelled, enter: :on_cancelled
     state :hold
 
     event :hold do

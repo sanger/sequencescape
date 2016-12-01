@@ -53,7 +53,7 @@ class WorkflowsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.xml  { render xml: @workflow.to_xml }
+      format.xml { render xml: @workflow.to_xml }
     end
   end
 

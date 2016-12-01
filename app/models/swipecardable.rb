@@ -26,7 +26,7 @@ module Swipecardable
         User.encrypt(code, nil)
       end
       # won't work, because of the salt.
-     scope :with_swipecard_code, ->(*swipecard_codes) { where(encrypted_swipecard_code: swipecard_codes.flatten.map { |sw| encrypt_swipecard_code(sw)   }) }
+     scope :with_swipecard_code, ->(*swipecard_codes) { where(encrypted_swipecard_code: swipecard_codes.flatten.map { |sw| encrypt_swipecard_code(sw) }) }
     end
   end
 end

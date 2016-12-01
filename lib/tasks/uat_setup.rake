@@ -226,7 +226,7 @@ tasks transfer_templates users
 
       puts "Adding UAT user"
 
-      user = User.create!(login: 'UAT user',  swipecard_code: 'uat_test', workflow_id: 1).tap do |u|
+      user = User.create!(login: 'UAT user', swipecard_code: 'uat_test', workflow_id: 1).tap do |u|
         u.roles.create!(name: 'administrator')
       end
 

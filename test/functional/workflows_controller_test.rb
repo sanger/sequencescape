@@ -102,7 +102,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     context "#stage" do
       setup do
         @pipeline = FactoryGirl.create :pipeline, name: "Generic workflow"
-        @ws1      = @pipeline.workflow  # :item_limit => 5
+        @ws1      = @pipeline.workflow # :item_limit => 5
 
         @ws2 = FactoryGirl.create(:pipeline, name: 'Old workflow').workflow
 
@@ -138,11 +138,11 @@ class WorkflowsControllerTest < ActionController::TestCase
         setup do
           @batch_lab_events = Batch.find(@batch.id).lab_events.size
           request_data = @batch.requests(true).map { |r| r.id }.inject({}) { |result, element| result[element.to_s] = "1"; result }
-          post :stage, { :controller => "workflows", :id => 0, :action => "stage", "next_stage" => "true", "fields" => { "1" => "Passed?", "2" => "Operator", "3" => "Chip Barcode", "4" => "Comment" }, "descriptors" => { "Comment" => "Some Comment", "Chip Barcode" => "3290000006714", "Operator" => "2470000002799", "Passed?" => "Yes" }, :batch_id => @batch.id,  :workflow_id => @ws1.id, :request => request_data }
+          post :stage, { :controller => "workflows", :id => 0, :action => "stage", "next_stage" => "true", "fields" => { "1" => "Passed?", "2" => "Operator", "3" => "Chip Barcode", "4" => "Comment" }, "descriptors" => { "Comment" => "Some Comment", "Chip Barcode" => "3290000006714", "Operator" => "2470000002799", "Passed?" => "Yes" }, :batch_id => @batch.id, :workflow_id => @ws1.id, :request => request_data }
         end
 
         should "change batch.lab_events by 1" do
-          assert_equal 1,  Batch.find(@batch.id).lab_events.size - @batch_lab_events, "Expected batch.lab_events to change by 1"
+          assert_equal 1, Batch.find(@batch.id).lab_events.size - @batch_lab_events, "Expected batch.lab_events to change by 1"
         end
 
         should "change number of events on batch" do

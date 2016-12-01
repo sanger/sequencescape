@@ -115,7 +115,7 @@ FactoryGirl.define do
   factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do |transfer|
     user        { |target| target.association(:user) }
     source      { |target| target.association(:source_transfer_plate) }
-    destination { |target| target.association(:library_tube)   }
+    destination { |target| target.association(:library_tube) }
     transfers(['A1', 'B1'])
 
     after(:build) do |transfer|

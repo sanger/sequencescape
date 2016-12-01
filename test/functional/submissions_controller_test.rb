@@ -223,7 +223,7 @@ C1 C2 C3
       setup do
         @shared_template = 'shared_template'
         @sample  = create :sample
-        @asset_a = create :sample_tube, sample:  @sample
+        @asset_a = create :sample_tube, sample: @sample
         @submission = create :submission
         @order = create :order, assets: [@asset_a], template_name: @shared_template, submission: @submission
       end

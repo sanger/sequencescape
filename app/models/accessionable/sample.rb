@@ -87,7 +87,7 @@ module Accessionable
 
     def update_accession_number!(user, accession_number)
       @accession_number = accession_number
-      add_updated_event(user, "Sample #{@sample.id}",  @sample) if @accession_number
+      add_updated_event(user, "Sample #{@sample.id}", @sample) if @accession_number
       @sample.sample_metadata.sample_ebi_accession_number = accession_number
       @sample.save!
     end

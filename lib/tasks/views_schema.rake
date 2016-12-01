@@ -18,7 +18,7 @@ namespace :db do
     end
 
     desc 'Reload the dumped schema'
-    task schema_load: :environment  do
+    task schema_load: :environment do
       require './db/views_schema'
     end
   end

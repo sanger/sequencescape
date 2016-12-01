@@ -153,7 +153,7 @@ module Attributable
     end
 
     def display_name
-      Attribute::find_display_name(@owner,  name)
+      Attribute::find_display_name(@owner, name)
     end
 
     def kind
@@ -330,7 +330,7 @@ module Attributable
     end
 
     def display_name
-      Attribute::find_display_name(@owner,  name)
+      Attribute::find_display_name(@owner, name)
     end
 
     def find_default(object = nil, metadata = nil)

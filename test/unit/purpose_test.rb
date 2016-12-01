@@ -20,7 +20,7 @@ class PurposeTest < ActiveSupport::TestCase
       setup do
         @other_purpose = create :purpose
         @custom_request = create :request_type
-        create :purpose_relationship, parent: @other_purpose, child: @purpose, transfer_request_type:  @custom_request
+        create :purpose_relationship, parent: @other_purpose, child: @purpose, transfer_request_type: @custom_request
       end
 
       should 'return the specific transfer request type' do

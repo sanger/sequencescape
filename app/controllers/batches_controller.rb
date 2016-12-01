@@ -29,8 +29,8 @@ class BatchesController < ApplicationController
     end
     respond_to do |format|
       format.html
-      format.xml  { render xml: @batches.to_xml }
-      format.json  { render json: @batches.to_json.gsub(/null/, "\"\"") }
+      format.xml { render xml: @batches.to_xml }
+      format.json { render json: @batches.to_json.gsub(/null/, "\"\"") }
     end
   end
 
@@ -105,7 +105,7 @@ class BatchesController < ApplicationController
         flash[:error] = exception.record.errors.full_messages
         redirect_to(pipeline_path(@pipeline))
       }
-      format.xml  { render xml: @batch.errors.to_xml }
+      format.xml { render xml: @batch.errors.to_xml }
     end
   end
 
@@ -128,7 +128,7 @@ class BatchesController < ApplicationController
             flash[:info] = message
             redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
           end
-          format.xml  { render text: nil, status: :success }
+          format.xml { render text: nil, status: :success }
         end
       else
         respond_to do |format|
@@ -555,7 +555,7 @@ class BatchesController < ApplicationController
         unless @batch.requests.first.target_asset.children.empty?
           multiplexed_library = @batch.requests.first.target_asset.children.first
 
-          if  !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
+          if !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
             @batch_assets = [multiplexed_library]
           else
             flash[:error] = "Already has a Stock tube."

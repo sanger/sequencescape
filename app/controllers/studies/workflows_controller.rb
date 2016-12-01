@@ -121,7 +121,7 @@ class Studies::WorkflowsController < ApplicationController
     map = Hash.new { |hash, key| hash[key] = Hash.new 0 } # defining default value for nested hash
     enumerable.each do |e|
       groups = yield(e)
-      groups.each do  |g_id, count|
+      groups.each do |g_id, count|
         map[g_id.to_i][e] = count
       end
     end

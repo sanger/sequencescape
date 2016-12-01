@@ -88,7 +88,7 @@ module Presenters
       # Printing of labels is enabled for anybody
       add_submenu_option "Print labels", :print_labels if is_pulldown_pipeline?
       add_submenu_option "Print pool label", :print_multiplex_labels if is_multiplexed?
-      add_submenu_option "Print labels",  :print_labels if is_multiplexed?
+      add_submenu_option "Print labels", :print_labels if is_multiplexed?
       add_submenu_option "Print stock pool label", :print_stock_multiplex_labels if is_multiplexed?
       add_submenu_option "Print plate labels", :print_plate_labels if has_plate_labels?
       add_submenu_option "Print stock labels", :print_stock_labels if has_stock_labels?

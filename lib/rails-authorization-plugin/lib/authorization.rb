@@ -42,7 +42,7 @@ module Authorization
     end
 
     module ControllerInstanceMethods
-      include Authorization::Base::EvalParser  # RecursiveDescentParser is another option
+      include Authorization::Base::EvalParser # RecursiveDescentParser is another option
 
       # Permit? turns off redirection by default and takes no blocks
       def permit?(authorization_expression, *args)
@@ -100,7 +100,7 @@ module Authorization
           flash[:notice] = @options[:login_required_message] || "Login is required to access the requested page."
           redirect_to @options[:login_required_redirection] || LOGIN_REQUIRED_REDIRECTION
         end
-        false  # Want to short-circuit the filters
+        false # Want to short-circuit the filters
       end
 
       # Try to find current user by checking options hash and instance method in that order.

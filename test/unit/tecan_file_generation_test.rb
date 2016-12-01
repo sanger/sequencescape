@@ -92,8 +92,8 @@ class GeneratorTest < ActiveSupport::TestCase
             "name" => "ABgene 0800",
             "plate_size" => 96,
             "mapping" => [
-                { "src_well" =>  ["122289", "G7"], "dst_well" => "D4", "volume" => 3.33   },
-                { "src_well" =>  ["80785", "A1"],  "dst_well" => "E4", "volume" => 13   },
+                { "src_well" =>  ["122289", "G7"], "dst_well" => "D4", "volume" => 3.33 },
+                { "src_well" =>  ["80785", "A1"],  "dst_well" => "E4", "volume" => 13 },
                 { "src_well" =>  ["122289", "H7"], "dst_well" => "F4", "volume" => 3.27   },
                 { "src_well" =>  ["122290", "A1"], "dst_well" => "E9", "volume" => 2.8    },
                 { "src_well" =>  ["122290", "B1"], "dst_well" => "F9", "volume" => 4.08   }
@@ -141,31 +141,31 @@ class GeneratorTest < ActiveSupport::TestCase
 
         context "when mapping wells from 1 96 well source plate to 1 96 well destination plate" do
           should "return a String object" do
-            assert_kind_of String, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            assert_kind_of String, Sanger::Robots::Tecan::Generator.mapping(@data_object, 13)
           end
 
           should "generate the expected output" do
-            assert_equal @expected_output, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+            assert_equal @expected_output, Sanger::Robots::Tecan::Generator.mapping(@data_object, 13)
           end
 
           should "have a header section" do
             assert_match(
               /^C;\nC; This file created by (.+?) on (.+?)\nC;\n/,
-              Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+              Sanger::Robots::Tecan::Generator.mapping(@data_object, 13)
             )
           end
 
           should "contain buffers" do
             assert_match(
               /(?:A;BUFF;;.*?\nD;DEST[0-9].*?\nW;\n)?/,
-              Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+              Sanger::Robots::Tecan::Generator.mapping(@data_object, 13)
             )
           end
 
           should "contain a footer" do
             assert_match(
               /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = [0-9]+\n$/,
-              Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
+              Sanger::Robots::Tecan::Generator.mapping(@data_object, 13)
             )
           end
         end

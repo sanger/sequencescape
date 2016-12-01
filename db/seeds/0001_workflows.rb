@@ -736,7 +736,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   ['a', 'b', 'c'].each do |pl|
-    pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
@@ -872,7 +872,7 @@ DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'DNA QC').tap do |workflow|
     [
-      { class: DnaQcTask,                 name: 'QC result',               sorted: 1, batched: false, interactive: false }
+      { class: DnaQcTask, name: 'QC result', sorted: 1, batched: false, interactive: false }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end

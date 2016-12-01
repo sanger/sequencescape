@@ -81,7 +81,7 @@ module Informatics
 
     def repository(r)
       @repository_location = r
-      cap.set :repository,  r
+      cap.set :repository, r
     end
 
     private

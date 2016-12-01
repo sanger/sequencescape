@@ -72,7 +72,7 @@ module Accessionable
           self.related_studies.each do |study|
             study.build(xml)
           end
-        }   unless self.related_studies.blank?
+        } unless self.related_studies.blank?
       }
       xml.STUDY_ATTRIBUTES {
         self.tags.each do |tag|
@@ -109,7 +109,7 @@ module Accessionable
 
   private
 
-  class  RelatedStudy
+  class RelatedStudy
     def initialize(study, role, primary = false)
       @study = study
       @role = role

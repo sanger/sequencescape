@@ -40,7 +40,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
 
   # Validates that the requests in the batch lead into the same pipeline.
   def validation_of_requests(requests, &block)
-    super  # Could throw, which means that the rest of this function does not get executed
+    super # Could throw, which means that the rest of this function does not get executed
 
     yield('cannot be mixed across pulldown pipelines') if requests.map do |request|
       request.submission.next_requests(request).map(&:request_type)

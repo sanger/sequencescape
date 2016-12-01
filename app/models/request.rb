@@ -263,7 +263,7 @@ class Request < ActiveRecord::Base
     group(groupings)
   end
 
-  scope :for_submission_id, ->(id) { where(submission_id: id)  }
+  scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
        joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
@@ -307,7 +307,7 @@ class Request < ActiveRecord::Base
 
   delegate :study, :study_id, to: :asset, allow_nil: true
 
-  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow })  }
+  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query, with_includes) {

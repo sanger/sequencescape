@@ -6,7 +6,7 @@
 
 module Plate::Iterations
   def iteration
-    return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
+    return nil if parent.nil? # No parent means no iteration, not a 0 iteration.
 
     # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
     # tables to find all of the child plates of our parent that have the same plate purpose, numbering

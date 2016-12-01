@@ -698,12 +698,6 @@ Style/EmptyElse:
 Style/EmptyLiteral:
   Enabled: false
 
-# Offense count: 411
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Style/ExtraSpacing:
-  Enabled: false
-
 # Offense count: 4
 # Configuration parameters: ExpectMatchingDefinition, Regex, IgnoreExecutableScripts.
 Style/FileName:

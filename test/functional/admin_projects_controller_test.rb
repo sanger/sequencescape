@@ -54,7 +54,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         should set_flash.to("Your project has been updated")
 
         should "change Event.count by 1" do
-          assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
+          assert_equal 1, Event.count - @event_count, "Expected Event.count to change by 1"
         end
 
         should "send an email" do

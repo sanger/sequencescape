@@ -49,7 +49,7 @@ class SamplesController < ApplicationController
         flash[:error] = "Problems creating your new sample"
         format.html { render action: :new }
         format.xml  { render xml: @sample.errors, status: :unprocessable_entity }
-        format.json  { render json: @sample.errors, status: :unprocessable_entity }
+        format.json { render json: @sample.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -139,7 +139,7 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     respond_to do |format|
       xml_text = @sample.accession_service.accession_sample_xml(@sample)
-      format.xml  { render(text: xml_text) }
+      format.xml { render(text: xml_text) }
     end
   end
 

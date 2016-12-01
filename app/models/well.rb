@@ -21,7 +21,7 @@ class Well < Aliquot::Receptacle
     belongs_to :target_well, class_name: 'Well'
     belongs_to :source_well, class_name: 'Well'
   end
-  has_many :stock_well_links,  ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :target_well_id
+  has_many :stock_well_links, ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :target_well_id
 
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
@@ -87,7 +87,7 @@ class Well < Aliquot::Receptacle
     having("NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)", product_criteria.product_id, product_criteria.stage)
   }
 
-  has_many :target_well_links,  ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
+  has_many :target_well_links, ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
   scope :stock_wells_for, ->(wells) {

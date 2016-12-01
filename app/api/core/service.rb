@@ -246,7 +246,7 @@ module Core
       end
 
       def close
-        identifier, started_at = self.identifier, self.started_at  # Save for later as next line discards our request!
+        identifier, started_at = self.identifier, self.started_at # Save for later as next line discards our request!
         discard_all_references
       ensure
         Rails.logger.info("API[finished]: #{identifier} in #{Time.now - started_at}s")

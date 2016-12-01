@@ -6,7 +6,7 @@ module Commentable
   def self.included(base)
     base.class_eval do
       has_many :comments, as: :commentable
-      scope :with_comments, -> {  joins(:comments).where("commentable_type = '#{base.name}'") } do
+      scope :with_comments, -> { joins(:comments).where("commentable_type = '#{base.name}'") } do
         def group(ids)
           conditions = {}
           if ids

@@ -16,8 +16,8 @@ class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:user,   json: 'user')
-    belongs_to(:lot,  json: 'lot')
-    has_many(:qcables,  json: 'qcables', to: 'qcables')
+    belongs_to(:user, json: 'user')
+    belongs_to(:lot, json: 'lot')
+    has_many(:qcables, json: 'qcables', to: 'qcables')
   end
 end

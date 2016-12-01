@@ -55,8 +55,8 @@ private
   def perform_rename_action!
     begin
       ActiveRecord::Base.transaction do
-        perform_rename_action_for_sample!  unless sample_rename_absent?
-        perform_rename_action_for_asset!  unless asset_rename_absent?
+        perform_rename_action_for_sample! unless sample_rename_absent?
+        perform_rename_action_for_asset! unless asset_rename_absent?
       end
     rescue ActiveRecord::RecordInvalid => exception
       reload_objects

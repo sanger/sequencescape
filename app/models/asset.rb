@@ -54,7 +54,7 @@ class Asset < ActiveRecord::Base
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
-  has_one  :source_request,     ->() { includes(:request_metadata) },      class_name: "Request", foreign_key: :target_asset_id
+  has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: "Request", foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
   has_many :state_changes, foreign_key: :target_id
@@ -90,7 +90,7 @@ class Asset < ActiveRecord::Base
   }
   scope :for_summary, -> { includes([:map, :barcode_prefix]) }
 
-  scope :of_type, ->(*args) {  where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
+  scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
   scope :recent_first, -> { order('id DESC') }
 
@@ -142,7 +142,7 @@ class Asset < ActiveRecord::Base
     end
   }
 
- scope :with_name, ->(*names) {  where(name: names.flatten) }
+ scope :with_name, ->(*names) { where(name: names.flatten) }
 
   extend EventfulRecord
   has_many_events do
@@ -158,7 +158,7 @@ class Asset < ActiveRecord::Base
     event_constructor(:create_pico!,                   Event::SampleLogisticsQcEvent, :create_pico_result_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
-    event_constructor(:updated_fluidigm_plate!,         Event::SequenomLoading,        :updated_fluidigm_plate!)
+    event_constructor(:updated_fluidigm_plate!, Event::SequenomLoading, :updated_fluidigm_plate!)
     event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
   end
@@ -470,7 +470,7 @@ class Asset < ActiveRecord::Base
     self.class.create!(name: self.name) do |new_asset|
       new_asset.aliquots = self.aliquots.map(&:dup)
       new_asset.volume   = transfer_volume
-      update_attributes!(volume: self.volume - transfer_volume)  #  Update ourselves
+      update_attributes!(volume: self.volume - transfer_volume) #  Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end

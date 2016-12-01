@@ -72,8 +72,8 @@ module AuthenticatedSystem
       end
 
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? ? true : access_denied }
-        accepts.csv   { logged_in? && authorized? ? true : access_denied }
+        accepts.html { logged_in? && authorized? ? true : access_denied }
+        accepts.csv { logged_in? && authorized? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -87,7 +87,7 @@ module AuthenticatedSystem
     def admin_login_required
       setup_current_user
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? && current_user.administrator? ? true : access_denied }
+        accepts.html { logged_in? && authorized? && current_user.administrator? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -101,7 +101,7 @@ module AuthenticatedSystem
     def manager_login_required
       setup_current_user
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
+        accepts.html { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -115,7 +115,7 @@ module AuthenticatedSystem
     def lab_manager_login_required
       setup_current_user
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
+        accepts.html { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }

@@ -302,7 +302,7 @@ class WellTest < ActiveSupport::TestCase
       vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
       assert_equal 3.75, @well.get_buffer_volume
       vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
-      assert_equal 9.1,  @well.get_buffer_volume
+      assert_equal 9.1, @well.get_buffer_volume
     end
 
     should "sets buffer and volume_to_pick correctly" do

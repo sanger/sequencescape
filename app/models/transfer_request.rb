@@ -12,10 +12,10 @@ class TransferRequest < SystemRequest
     # as being more concise as it has fewer states.
     state :pending, initial: true
     state :started
-    state :failed,	    enter: :on_failed
+    state :failed, enter: :on_failed
     state :passed
     state :qc_complete
-    state :cancelled,  enter: :on_cancelled
+    state :cancelled, enter: :on_cancelled
 
     # State Machine events
     event :start do

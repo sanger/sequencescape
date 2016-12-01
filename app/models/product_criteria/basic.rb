@@ -21,10 +21,10 @@ class ProductCriteria::Basic
   Comparison = Struct.new(:method, :message)
 
   METHOD_ALIAS = {
-    greater_than: Comparison.new(:>,    '%s too low'),
-    less_than: Comparison.new(:<,    '%s too high'),
-    at_least: Comparison.new(:>=,   '%s too low'),
-    at_most: Comparison.new(:<=,   '%s too high'),
+    greater_than: Comparison.new(:>, '%s too low'),
+    less_than: Comparison.new(:<, '%s too high'),
+    at_least: Comparison.new(:>=, '%s too low'),
+    at_most: Comparison.new(:<=, '%s too high'),
     equals: Comparison.new(:==,   '%s not suitable'),
     not_equal: Comparison.new(:'!=', '%s not suitable')
   }

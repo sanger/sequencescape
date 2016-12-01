@@ -128,7 +128,7 @@ def work_pipeline_for(submissions, name, template = nil)
   source_plate.wells.each do |w|
     next if w.aliquots.empty?
     FactoryGirl.create(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
-    w.requests_as_source.first.start!                           # Ensure request is considered started
+    w.requests_as_source.first.start! # Ensure request is considered started
   end
 
   source_plate.plate_purpose.child_relationships.create!(child: final_plate_type, transfer_request_type: RequestType.transfer)
