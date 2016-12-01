@@ -55,3 +55,8 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
+# Allows us to use transactions for the specs. Which is faster.
+# Worth keeping an eye on this one, as its the kind of thing that might
+# get patched into the Rails main-line
+require 'transactional_capybara/rspec'

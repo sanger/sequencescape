@@ -2,16 +2,6 @@
 require 'rails_helper'
 require 'pry'
 
-# We'll need to either move this to a helper, or look for a less monkey patch solution
-class ActiveRecord::Base
-  mattr_accessor :shared_connection
-  @@shared_connection = {}
-
-  def self.connection
-    @@shared_connection[self.connection_config[:database]] ||= retrieve_connection
-  end
-end
-
 feature 'Batches controller', js: true do
 
   let(:request_count) { 3 }
