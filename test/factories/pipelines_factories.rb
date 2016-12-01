@@ -129,10 +129,18 @@ FactoryGirl.define do
     qc_state              "qc_pending"
     assignee_id           { |user| user.association(:user) }
     production_state      nil
+
+    transient do
+      request_count 0
+    end
+
+    after(:create) do |batch, evaluator|
+      create_list(:batch_request, evaluator.request_count,  batch: batch)
+    end
   end
 
   factory :control do |c|
-    name                  "New control"
+    name "New control"
     pipeline
   end
 
@@ -300,6 +308,7 @@ FactoryGirl.define do
   factory :batch_request do |br|
     batch
     request
+    sequence(:position) { |i| i }
   end
 
   factory :delayed_message do |dm|

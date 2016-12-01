@@ -443,11 +443,11 @@ FactoryGirl.define do
     email             { |a| "#{a.login}@example.com".downcase }
     workflow          { |workflow| workflow.association(:submission_workflow) }
     api_key           "123456789"
+    password              "password"
+    password_confirmation "password"
 
     factory :admin do
       roles                 { |role| [role.association(:admin_role)] }
-      password              "password"
-      password_confirmation "password"
     end
 
     factory :manager do
