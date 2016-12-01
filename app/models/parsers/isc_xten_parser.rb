@@ -69,5 +69,4 @@ class Parsers::IscXtenParser
       yield(location_name, { set_concentration: concentration(location_name) })
     end
   end
-
 end

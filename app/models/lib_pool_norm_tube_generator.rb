@@ -1,6 +1,5 @@
 
 class LibPoolNormTubeGenerator
-
   include ActiveModel::Validations
 
   attr_accessor :plate

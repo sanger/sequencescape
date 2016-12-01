@@ -9,9 +9,7 @@ require "test_helper"
 require 'sdb/sample_manifests_controller'
 
 class SequenomQcPlatesControllerTest < ActionController::TestCase
-
   context "#create" do
-
     setup do
       @controller = SequenomQcPlatesController.new
       @request    = ActionController::TestRequest.new
@@ -21,7 +19,6 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
     end
 
     should "send print request" do
-
       barcode = mock("barcode")
       barcode.stubs(:barcode).returns(23)
       PlateBarcode.stubs(:create).returns(barcode)

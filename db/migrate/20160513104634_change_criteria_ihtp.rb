@@ -20,6 +20,5 @@ class ChangeCriteriaIhtp < ActiveRecord::Migration
   end
 
   def down
-
   end
 end

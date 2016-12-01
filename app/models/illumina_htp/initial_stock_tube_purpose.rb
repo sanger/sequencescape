@@ -5,9 +5,7 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
-
   module InitialTube
-
     def valid_transition?(outer_request, target_state)
       target_state != 'started' || outer_request.pending?
     end
@@ -47,9 +45,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
 
       siblings.map { |s| s.id.nil? ? :no_tube : { name: s.name, uuid: s.uuid, ean13_barcode: s.ean13_barcode, state: s.quick_state } }
     end
-
   end
 
   include InitialTube
-
 end

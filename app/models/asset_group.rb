@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class AssetGroup < ActiveRecord::Base
-
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
   include SharedBehaviour::Named
@@ -55,6 +54,4 @@ class AssetGroup < ActiveRecord::Base
   def move(assets)
     # TODO: Implement me
   end
-
-
 end

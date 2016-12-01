@@ -6,7 +6,6 @@
 # Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.
 
 class SequencingRequest < CustomerRequest
-
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 

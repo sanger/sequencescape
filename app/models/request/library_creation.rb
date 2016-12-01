@@ -50,7 +50,6 @@ class Request::LibraryCreation < CustomerRequest
   end
 
   has_metadata as: Request do
-
   end
 
   include Request::CustomerResponsibility

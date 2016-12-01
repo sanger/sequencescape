@@ -71,5 +71,4 @@ class Admin::CustomTextsController < ApplicationController
     end
     redirect_to admin_custom_texts_url
   end
-
 end

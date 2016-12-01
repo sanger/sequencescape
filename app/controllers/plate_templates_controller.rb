@@ -63,5 +63,4 @@ class PlateTemplatesController < ApplicationController
       format.html { redirect_to(plate_templates_path) }
     end
   end
-
 end

@@ -107,7 +107,6 @@ end
         assert_equal(expected, actual, "Positions of requests do not match")
       end
     end
-
   end
 
   context "when batch is created" do
@@ -161,7 +160,6 @@ end
         assert_not_equal Asset.first.name, Asset.last.name
       end
     end
-
   end
 
   context "batch #has_event(event_name)" do
@@ -190,7 +188,6 @@ end
       end
     end
   end
-
 
   context "#requests_by_study" do
     setup do
@@ -240,7 +237,6 @@ end
     end
   end
 
-
   context "#plate_ids_in_study" do
     setup do
       @batch = @pipeline.batches.create!
@@ -284,7 +280,6 @@ end
     end
   end
 
-
   context "Batch" do
     should belong_to :user
     should belong_to :pipeline
@@ -309,7 +304,6 @@ end
         @requests = (1..4).map { |_| create(:request, request_type: @pipeline.request_types.last) }
         @batch = @pipeline.batches.create!(requests: @requests)
       end
-
 
       should "change Asset.count by 12" do
         assert_equal 12,  Asset.count - @asset_count, "Expected Asset.count to change by 12"
@@ -381,7 +375,6 @@ end
           assert_equal nil, @bps_initial
           assert_equal 'fail', @batch.production_state
         end
-
       end
     end
 
@@ -428,7 +421,6 @@ end
         end
 
         should "fail control request"
-
       end
 
       should "not fail requests if value passed is not set to ON" do
@@ -451,7 +443,6 @@ end
         end
 
         should "change @batch.failures.count, :from => 0, :to => 1"
-
       end
     end
 
@@ -703,11 +694,9 @@ end
           @batch.reset!(@user)
         end
 
-
  should "change BatchRequest.count by -2" do
  assert_equal(-2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by -2")
  end
-
 
  should "change Asset.count by -2" do
  assert_equal(-2,  Asset.count - @asset_count, "Expected Asset.count to change by -2")
@@ -716,7 +705,6 @@ end
         should "change Request.count by 0" do
           assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
         end
-
 
         should "change Batch.count by 0" do
           assert_equal 0,  Batch.count - @batch_count, "Expected Batch.count to change by 0"
@@ -878,7 +866,6 @@ end
         assert_equal @task2, @batch.last_completed_task
       end
     end
-
   end
 
   context "completing a batch" do
@@ -917,7 +904,6 @@ end
     end
 
     should "check that I cannot create a batch with invalid requests (ready?)" do
-
       assert_equal false, @batch.save
     end
 
@@ -930,8 +916,5 @@ end
       @library_creation_request_2.save!
       assert_equal true, @batch.save!
     end
-
   end
-
-
 end

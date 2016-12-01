@@ -37,7 +37,6 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (count * 96), Well.count - @initial_wells
             assert_equal (count * 96), @study.samples.count - @initial_in_study
           end
-
         end
       end
     end
@@ -62,11 +61,9 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
             assert_equal (count), @study.samples.count         - @initial_in_study
           end
-
         end
       end
     end
-
   end
 
   context "update event" do
@@ -97,7 +94,6 @@ class SampleManifestTest < ActiveSupport::TestCase
         assert_not_nil @well_with_sample_and_plate.plate.events.last
       end
     end
-
   end
 
   # This is testing a specific case pulled from production where the size of the delayed job 'handler' column was
@@ -126,7 +122,6 @@ class SampleManifestTest < ActiveSupport::TestCase
         @well_count = Sample.count
         Delayed::Job.first.invoke_job
       end
-
 
       should "change Well.count by 96" do
         assert_equal 96,  Sample.count - @well_count, "Expected Well.count to change by 96"

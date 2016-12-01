@@ -4,6 +4,7 @@
 # Copyright (C) 2007-2011,2013 Genome Research Ltd.
 module AuthenticatedSystem
   protected
+
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
     def logged_in?
@@ -202,6 +203,7 @@ module AuthenticatedSystem
     end
 
   private
+
     @@http_auth_headers = %w(X-HTTP_AUTHORIZATION HTTP_AUTHORIZATION Authorization)
     # gets BASIC auth info
     def get_auth_data

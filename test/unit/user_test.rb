@@ -29,7 +29,6 @@ if false
       should "login_in_user" do
         assert_equal true, User.authenticate_with_ldap("someone", "password")
       end
-
     end
 
     context "is an administrator" do
@@ -112,7 +111,6 @@ if false
       #   assert @user.privileged?(@sample)
       # end
     end
-
 
     context "admins and emails" do
       setup do
@@ -223,8 +221,6 @@ if false
       should "be able to access data_access_coordinator functions" do
         assert @user.data_access_coordinator?
       end
-
     end
-
   end
 end

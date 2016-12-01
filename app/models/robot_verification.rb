@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class RobotVerification
-
   attr_reader :errors
 
   def validate_barcode_params(barcode_hash)

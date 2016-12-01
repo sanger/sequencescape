@@ -11,7 +11,6 @@ class TagGroup < ActiveRecord::Base
 
   scope :include_tags, ->() { includes(:tags) }
 
-
  scope :visible, -> { where(visible: true) }
 
   validates_presence_of :name

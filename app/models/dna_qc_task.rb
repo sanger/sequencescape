@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class DnaQcTask < Task
-
   class QcData < Task::RenderElement
     attr_reader :gel_value, :pico_value, :sequenom_value, :initial_concentration, :gender_value, :gender_markers_value, :genotyping_done, :sample_empty, :volume
     alias_attribute :well, :asset
@@ -67,6 +66,7 @@ class DnaQcTask < Task
       else ""
       end
     end
+
     def sequenom_status
       return "*" unless @sequenom_count
       count = @sequenom_count.to_i
@@ -75,6 +75,7 @@ class DnaQcTask < Task
       when count > 19 then "pass"
       end
     end
+
     def concentration_status
       case
       when initial_concentration.nil? then "fail"
@@ -102,8 +103,6 @@ class DnaQcTask < Task
       @genotyping_done && @genotyping_done != "0" ? "fail" : "pass"
     end
   end # class QcData
-
-
 
   def create_render_element(request)
     request.asset && QcData.new(request)
@@ -158,5 +157,4 @@ class DnaQcTask < Task
     request.save!
     event.save!
   end
-
 end

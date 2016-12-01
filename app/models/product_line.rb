@@ -5,8 +5,6 @@
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
 class ProductLine < ActiveRecord::Base
-
   has_many :request_types
   has_many :submission_templates
-
 end

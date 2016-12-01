@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module StudyReport::AssetDetails
-
   def qc_report
     qc_data = {
       supplier_volume: 0
@@ -38,5 +37,4 @@ module StudyReport::AssetDetails
 
     qc_data
   end
-
 end

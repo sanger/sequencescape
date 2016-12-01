@@ -29,6 +29,7 @@ class Well < Aliquot::Receptacle
         proxy_association.owner.save!
       end
     end
+
     def attach(wells)
       proxy_association.owner.stock_well_links.build(wells.map { |well| { type: 'stock', source_well: well } })
     end
@@ -41,7 +42,6 @@ class Well < Aliquot::Receptacle
     target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
 
     target_wells.group_by(&:stock_well_id)
-
   end
 
   scope :with_concentration, ->() {
@@ -258,7 +258,6 @@ class Well < Aliquot::Receptacle
       self.events.update_sequenom_count!(resource)
     end
     self.well_attribute.update_attributes!(sequenom_count: sequenom_count)
-
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.

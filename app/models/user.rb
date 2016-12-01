@@ -124,7 +124,6 @@ class User < ActiveRecord::Base
     projects.valid.alphabetical
   end
 
-
   def sorted_study_names_and_ids
     interesting_studies.alphabetical.pluck(:name, :id)
   end
@@ -250,6 +249,7 @@ class User < ActiveRecord::Base
   end
 
   protected
+
     # before filter
     def encrypt_password
       return if password.blank?
@@ -260,5 +260,4 @@ class User < ActiveRecord::Base
     def password_required?
       crypted_password.blank? || !password.blank?
     end
-
 end

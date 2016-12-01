@@ -83,7 +83,6 @@ class SequenomQcPlatesController < ApplicationController
         format.html { redirect_to new_sequenom_qc_plate_path }
       end
     end
-
   end
 
   def index
@@ -91,6 +90,7 @@ class SequenomQcPlatesController < ApplicationController
   end
 
   private
+
   # If the current user isn't allowed to bypass the geneder checks don't let them
   # even they're sneaky enough to try and send back the param value anyway!
   def gender_check_bypass
@@ -106,5 +106,4 @@ class SequenomQcPlatesController < ApplicationController
     (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[], i.to_s) || "" }
     input_plate_names
   end
-
 end

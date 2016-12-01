@@ -17,7 +17,6 @@ module Aliquot::Aliquotable
 
       has_many :requests, through: :assets
       has_many :submissions, through: :requests
-
     end
   end
 

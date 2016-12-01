@@ -7,7 +7,6 @@
 require "test_helper"
 
 class PreCapGroupsTest < ActiveSupport::TestCase
-
   def with_pools(*pools)
     pools.each_with_index do |well_locs, index|
       @plate.wells.located_at(well_locs).each do |well|
@@ -31,13 +30,11 @@ class PreCapGroupsTest < ActiveSupport::TestCase
     end
 
     context "with two distinct pools" do
-
       setup do
         with_pools(['A1', 'B1', 'C1'], ['D1', 'E1', 'F1'])
       end
 
       should "report two pools" do
-
         assert_equal([
           ['00000000-0000-0000-0000-000000000000', ['A1', 'B1', 'C1']],
           ['00000000-0000-0000-0000-000000000001', ['D1', 'E1', 'F1']]
@@ -46,15 +43,12 @@ class PreCapGroupsTest < ActiveSupport::TestCase
     end
 
     context "with overlapping distinct pools" do
-
       setup do
         with_pools(['A1', 'B1', 'C1'], ['D1', 'E1', 'F1'], ['A1', 'D1'])
       end
 
       context "when all are pending" do
-
         should "still report all the pools" do
-
           assert_equal([
             ['00000000-0000-0000-0000-000000000000', ['A1', 'B1', 'C1']],
             ['00000000-0000-0000-0000-000000000001', ['D1', 'E1', 'F1']],
@@ -64,7 +58,6 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       end
 
       context 'when transfers are created' do
-
         setup do
           @target_plate = FactoryGirl.create :initial_downstream_plate
           @transfer = Transfer::BetweenPlates.create!(
@@ -86,8 +79,6 @@ class PreCapGroupsTest < ActiveSupport::TestCase
             assert_equal transfer_sub[request.asset.map_description][request.target_asset.map_description], request.submission_id
           end
         end
-
-
       end
 
       context "when some are started" do
@@ -96,7 +87,6 @@ class PreCapGroupsTest < ActiveSupport::TestCase
         end
 
         should "report the unstarted pool" do
-
           assert_equal 6, @plate.wells.count
           assert_equal([
             ['00000000-0000-0000-0000-000000000002', ['A1', 'D1']]

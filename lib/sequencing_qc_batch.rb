@@ -17,7 +17,6 @@ qc_completed
 
   def self.included(base)
     base.instance_eval do
-
       # TODO[xxx]: Isn't qc_state supposed to be initialised to 'qc_pending' rather than blank?
       validates_inclusion_of :qc_state, in: VALID_QC_STATES, allow_blank: true
 
@@ -203,5 +202,4 @@ qc_completed
       end
       return results
     end
-
 end

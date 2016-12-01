@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
   class RequestObserver < ActiveRecord::Observer
-
     def after_create(request)
       request.request_events.create!(
         event_name: 'created',
@@ -38,5 +37,4 @@
         current_to: time
       )
     end
-
   end

@@ -14,6 +14,7 @@ module DelayedJobsHelper
       job.name
     end
   end
+
   def job_status(job)
       if job.locked_by
         "In progress"

@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-
 # Pre_PCR plates will remain 'started; until the run is complete.
 
 class Search::FindOutstandingIlluminaBPrePcrPlates < Search
@@ -16,5 +15,4 @@ class Search::FindOutstandingIlluminaBPrePcrPlates < Search
     PlatePurpose.find_by_name('ILB_STD_PREPCR')
   end
   delegate :pre_pcr_plate_purpose, to: 'self.class'
-
 end

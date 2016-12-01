@@ -13,7 +13,6 @@ class Accessionable::Base
     time_now = Time.now
     @date       = time_now.strftime("%Y-%m-%dT%H:%M:%SZ")
     @date_short = time_now.strftime("%Y-%m-%d")
-
   end
 
   def errors
@@ -75,6 +74,7 @@ class Accessionable::Base
           of_interest_to: "administrators"
         )
   end
+
   def label_scope
       @label_scope ||= "metadata.#{self.class.name.split("::").last.downcase}.metadata"
   end

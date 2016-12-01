@@ -17,5 +17,4 @@ class CustomMetadatumCollection < ActiveRecord::Base
       attributes.map { |k, v| custom_metadata.build(key: k, value: v) }
     end
   end
-
 end

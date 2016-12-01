@@ -2,7 +2,6 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class Sequenom96PlateTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedPlateTests
 
   attr_reader :plate_label, :label, :plate1, :purpose, :barcode1, :top, :bottom
@@ -32,6 +31,4 @@ class Sequenom96PlateTest < ActiveSupport::TestCase
     assert_equal "#{bottom}", plate_label.bottom_right(plate1)
     assert_equal "#{purpose}", plate_label.top_far_right(plate1)
   end
-
-
 end

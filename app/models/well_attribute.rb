@@ -17,8 +17,6 @@ class WellAttribute < ActiveRecord::Base
   end
 
   aasm column: :pico_pass, whiny_persistence: true do
-
-
     state :ungraded, initial: true
     # These states are originally used in SNP
     state :Pass
@@ -33,7 +31,6 @@ class WellAttribute < ActiveRecord::Base
       transitions to: :Fail, from: [:Repeat, :Fail, :Pass]
       transitions to: :Repeat, from: [:ungraded]
     end
-
   end
   # TODO Remvoe 'Too Low To Normalise' from the pico_pass column
   # The state of 'Too Low To Normalise' exists in the database (from SNP?)
@@ -76,5 +73,4 @@ class WellAttribute < ActiveRecord::Base
     return 0   if estimated_volume < 0 || concentration < 0
     (estimated_volume * concentration) / 1000
   end
-
 end

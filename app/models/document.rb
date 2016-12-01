@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-
 require 'carrierwave'
 
 class Document < ActiveRecord::Base
@@ -33,8 +32,6 @@ class Document < ActiveRecord::Base
         end
       }, __FILE__, line)
     end
-
-
   end
 
   # Polymorphic relationship

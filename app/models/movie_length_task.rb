@@ -44,5 +44,4 @@ class MovieLengthTask < Task
   def included_for_render_task
     [{ requests: :asset }, :pipeline]
   end
-
 end

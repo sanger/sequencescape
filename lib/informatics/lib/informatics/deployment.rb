@@ -1,6 +1,5 @@
 module Informatics
   class Deployment
-
     attr_accessor :cap, :app_name, :deploy_name, :repository_location, :log_location, :config_location, :nginx_location
     attr_accessor :service_uri, :service_port, :balanced_ports, :html_root, :nginx_binaries
 
@@ -90,6 +89,5 @@ module Informatics
       def parsed(filename)
         ERB.new(File.new(filename, "r").read).result(binding)
       end
-
   end
 end

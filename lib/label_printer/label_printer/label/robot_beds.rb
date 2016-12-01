@@ -1,9 +1,7 @@
 
 module LabelPrinter
   module Label
-
     class RobotBeds < BasePlate
-
       attr_reader :plates
 
       def initialize(beds)

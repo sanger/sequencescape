@@ -20,5 +20,4 @@ class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
     belongs_to(:lot,  json: 'lot')
     has_many(:qcables,  json: 'qcables', to: 'qcables')
   end
-
 end

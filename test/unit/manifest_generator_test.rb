@@ -7,7 +7,6 @@
 require "test_helper"
 
 class ManifestGeneratorTest < ActiveSupport::TestCase
-
   def remove_date(csv_string)
     csv_string.slice(0...(csv_string.index("Date:"))) + csv_string.slice(csv_string.index("Comments:")..csv_string.size)
   end
@@ -316,7 +315,6 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
               @well.set_concentration(concentration)
               @well.save
 
-
               @target_row = target_row
               @generated_row = ManifestGenerator.generate_manifest_row(@well, @plate_barcode, @plate_label)
             end
@@ -424,7 +422,5 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
-
 end

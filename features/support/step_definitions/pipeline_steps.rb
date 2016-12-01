@@ -68,8 +68,6 @@ Given /^I am viewing the pipeline page$/ do
 end
 
 Given /^I have data loaded from SNP$/ do
-
-
 end
 When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
   # TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
@@ -90,7 +88,6 @@ Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |nam
     end
   end
 end
-
 
 Given /^I have a freezer called "([^\"]*)"$/ do |location_name|
   FactoryGirl.create :location, name: location_name

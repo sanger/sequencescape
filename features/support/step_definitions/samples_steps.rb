@@ -12,7 +12,6 @@ def GivenSampleMetadata(attribute, regexp)
   end
 end
 
-
 When /^I attach a valid excel file$/ do
   attach_file(:file, File.join(Rails.root, 'public', 'data', 'sample_information.xls'))
 end
@@ -221,7 +220,6 @@ Given /^study "([^\"]+)" has the following samples in sample tubes:$/ do |study_
     step(%Q{sample "#{sample_name}" is in a sample tube named "#{sample_tube_name}"})
     step(%Q{the sample "#{sample_name}" belongs to the study "#{study_name}"})
     step(%Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"})
-
   end
 end
 

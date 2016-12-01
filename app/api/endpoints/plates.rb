@@ -40,5 +40,4 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
     has_many(:transfers_as_destination,      json: 'creation_transfers', to: 'creation_transfers')
   belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')
   end
-
 end

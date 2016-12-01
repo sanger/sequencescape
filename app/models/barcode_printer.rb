@@ -42,5 +42,4 @@ class BarcodePrinter < ActiveRecord::Base
   def self.verify(number)
     service.verify(number)
   end
-
 end

@@ -7,7 +7,6 @@
 require "test_helper"
 
 class LinearSubmissionTest < ActiveSupport::TestCase
-
   MX_ASSET_COUNT = 5
   SX_ASSET_COUNT = 4
 
@@ -17,7 +16,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
   end
 
   context "A LinearSubmission" do
-
     setup do
       @workflow = create :submission_workflow
 
@@ -34,10 +32,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       end
 
       context 'multiplexed submission' do
-
-
         context 'Customer decision propagation' do
-
           setup do
             @mpx_request_type = create :well_request_type, { target_purpose: @purpose, for_multiplexing: true }
             @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
@@ -71,7 +66,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               assert_equal true, request.request_metadata.customer_accepts_responsibility, "Customer doesn't accept responsibility"
             end
           end
-
         end
 
         context 'basic behaviour' do
@@ -153,7 +147,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
                 assert_equal MX_ASSET_COUNT, Item.count - @item_count
                 assert_equal @comment_count, Comment.count
               end
-
             end
           end
         end
@@ -244,7 +237,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
                 assert_equal '200', subject.fragment_size_required_to
                 assert_equal '150', subject.fragment_size_required_from
               end
-
             end
 
             context 'sequencing request type' do
@@ -306,7 +298,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       end
 
       context "when a multiplication factor of 5 is provided" do
-
         context "for non multiplexed libraries and sequencing" do
           setup do
             @request_count = Request.count
@@ -333,9 +324,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @mx_submission_with_multiplication_factor.process!
           end
         end
-
       end
     end
   end
-
 end

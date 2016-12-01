@@ -283,7 +283,6 @@ class WellTest < ActiveSupport::TestCase
   end
 
   context "to be cherrypicked" do
-
     context "with no source concentration" do
       should "raise an error" do
         assert_raises Cherrypick::ConcentrationError do
@@ -335,7 +334,6 @@ class WellTest < ActiveSupport::TestCase
         end
       end
     end
-
     end
     context 'proceed test' do
       setup do

@@ -8,7 +8,6 @@ require "test_helper"
 
 class LotTypeTest < ActiveSupport::TestCase
   context "A Lot Type" do
-
     context 'validating' do
       setup do
         create :lot
@@ -30,7 +29,6 @@ class LotTypeTest < ActiveSupport::TestCase
       end
 
       context "create" do
-
         setup do
           @lot_count = Lot.count
           @lot = @lot_type.create!(template: @template, user: @user, lot_number: '123456789', received_at: '2014-02-01')
@@ -44,10 +42,7 @@ class LotTypeTest < ActiveSupport::TestCase
           assert_equal @user, @lot.user
           assert_equal '123456789', @lot.lot_number
         end
-
       end
-
     end
   end
-
 end

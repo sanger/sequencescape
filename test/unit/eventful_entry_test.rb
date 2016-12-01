@@ -16,7 +16,6 @@ end
 
 class EventfulEntryTest < ActiveSupport::TestCase
   context "A model using events" do
-
     setup do
       @request_type = create :request_type
       @study = create :study
@@ -26,6 +25,5 @@ class EventfulEntryTest < ActiveSupport::TestCase
       @event.save
       assert @test_subject.valid?
     end
-
   end
 end

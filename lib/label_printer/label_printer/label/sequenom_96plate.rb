@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class Sequenom96Plate < BasePlate
-
       attr_reader :plates, :count
 
       def initialize(options)
@@ -21,7 +19,6 @@ module LabelPrinter
       def top_far_right(plate)
         "#{plate.plate_purpose.name}"
       end
-
     end
   end
 end

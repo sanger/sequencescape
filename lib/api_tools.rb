@@ -46,7 +46,6 @@ module ApiTools
   def url
     [configatron.api_url, API_VERSION, self.url_name.pluralize, self.uuid].join('/')
   end
-
 end
 
 class ActiveRecord::Base

@@ -29,7 +29,6 @@ module Batch::TecanBehaviour
     }
 
     requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: "passed").each do |request|
-
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
 

@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class AttachInfiniumBarcodeTask < Task
-
   class AttachInfiniumBarcodeData < Task::RenderElement
     def initialize(request)
       super(request)
@@ -28,5 +27,4 @@ class AttachInfiniumBarcodeTask < Task
   def do_task(workflow, params)
     workflow.do_attach_infinium_barcode_task(self, params)
   end
-
 end

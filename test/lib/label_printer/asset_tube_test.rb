@@ -2,7 +2,6 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class AssetTubeTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedTubeTests
 
   attr_reader :tube_label, :label, :tubes, :tube1, :tube2, :barcode1, :prefix, :asset_name
@@ -30,5 +29,4 @@ class AssetTubeTest < ActiveSupport::TestCase
   test 'should return correct top_line value' do
     assert_equal "#{asset_name}", tube_label.top_line(tube1)
   end
-
 end

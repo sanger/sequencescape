@@ -29,7 +29,9 @@ class LabwhereReception
   end
 
   def id; nil; end
+
   def persisted?; false; end
+
   def new_record?; true; end
 
   # save attempts to perform the actions, and returns true if it was successful
@@ -68,5 +70,4 @@ class LabwhereReception
   def assets
     @assets ||= Asset.with_machine_barcode(asset_barcodes)
   end
-
 end

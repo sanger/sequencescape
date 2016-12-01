@@ -30,6 +30,7 @@ class Studies::CommentsController < ApplicationController
   end
 
   private
+
   def discover_study
     @study = Study.find(params[:study_id])
   end

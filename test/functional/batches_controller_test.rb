@@ -8,7 +8,6 @@ require "test_helper"
 require 'batches_controller'
 
 class BatchesControllerTest < ActionController::TestCase
-
   context "BatchesController" do
     setup do
       @controller = BatchesController.new
@@ -18,11 +17,9 @@ class BatchesControllerTest < ActionController::TestCase
     should_require_login
 
     context "with a false user for npg" do
-
       setup do
         session[:current_user] = :false
       end
-
 
       context "NPG xml view" do
         setup do
@@ -74,7 +71,6 @@ class BatchesControllerTest < ActionController::TestCase
       end
 
       context "with a few batches" do
-
         setup do
           @batch_one = create :batch
           @batch_two = create :batch
@@ -150,7 +146,6 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         context "#edit" do
-
           context "with control" do
             setup do
               @cn = FactoryGirl.create :control, name: "Control 1", item_id: 2, pipeline: @pipeline
@@ -164,7 +159,6 @@ class BatchesControllerTest < ActionController::TestCase
             end
           end
         end
-
 
         should "#update" do
           @pipeline_user = create :pipeline_admin, login: 'ur1', first_name: 'Ursula', last_name: 'Robinson'
@@ -252,7 +246,6 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         context "#fail_items" do
-
           setup do
             # We need to ensure the batch is started before we fail it.
             @batch_one.start!(create(:user))
@@ -269,7 +262,6 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context "posting with a failure reason" do
-
             context "individual items" do
               setup do
                 EventSender.expects(:send_fail_event).returns(true).times(1)
@@ -291,7 +283,6 @@ class BatchesControllerTest < ActionController::TestCase
           end
         end
       end
-
     end
 
     context "Find by barcode (found)" do
@@ -328,7 +319,6 @@ class BatchesControllerTest < ActionController::TestCase
     end
 
     context "Send print requests" do
-
       attr_reader :barcode_printer
 
       setup do
@@ -339,7 +329,6 @@ class BatchesControllerTest < ActionController::TestCase
       end
 
       should "#print_plate_barcodes should send print request" do
-
         study = create :study
         project = create :project
         asset = create :empty_sample_tube
@@ -357,7 +346,6 @@ class BatchesControllerTest < ActionController::TestCase
       end
 
       should "#print_barcodes should send print request" do
-
         request = create :library_creation_request, target_asset: (create :library_tube, barcode: "111")
         @batch = create :batch
         @batch.requests << request
@@ -366,11 +354,9 @@ class BatchesControllerTest < ActionController::TestCase
         RestClient.expects(:post)
 
         post :print_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: "#{@batch.id}"
-
       end
 
       should "#print_multiplex_barcodes should send print request" do
-
         pipeline = create :pipeline,
           name: 'Test pipeline',
           workflow: LabInterface::Workflow.create!(item_limit: 8),
@@ -383,9 +369,6 @@ class BatchesControllerTest < ActionController::TestCase
 
         post :print_multiplex_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: "#{batch.id}"
       end
-
     end
-
   end
-
 end

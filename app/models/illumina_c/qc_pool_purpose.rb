@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class IlluminaC::QcPoolPurpose < Tube::Purpose
-
   def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
       tube.requests_as_target.where.not(state: terminated_states).each do |request|
@@ -18,5 +17,4 @@ class IlluminaC::QcPoolPurpose < Tube::Purpose
     ['cancelled', 'failed']
   end
   private :terminated_states
-
 end

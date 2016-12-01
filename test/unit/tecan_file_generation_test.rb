@@ -11,7 +11,6 @@ include Sanger::Robots::Tecan
 
 class GeneratorTest < ActiveSupport::TestCase
   context "Sanger::Robots::Tecan::Generator" do
-
     @testcases = []
     # original
     file = File.open(configatron.tecan_files_location + "/tecan/" + "original.gwl", "rb")
@@ -223,5 +222,4 @@ class GeneratorTest < ActiveSupport::TestCase
       assert_equal @expected_order, @source_index
     end
   end
-
 end

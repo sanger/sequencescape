@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 FactoryGirl.define do
-
   factory :lot_type do
     sequence(:name) { |n| "lot_type#{n}" }
     template_class 'PlateTemplate'
@@ -14,7 +13,6 @@ FactoryGirl.define do
     factory :tag2_lot_type do |lot_type|
       template_class 'Tag2LayoutTemplate'
     end
-
   end
 
   factory :pending_purpose, parent: :tube_purpose do |pp|

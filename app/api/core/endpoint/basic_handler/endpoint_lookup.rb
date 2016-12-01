@@ -8,7 +8,6 @@ module Core::Endpoint::BasicHandler::EndpointLookup
   EndpointError = Class.new(StandardError)
   MissingEndpoint = Class.new(EndpointError)
 
-
   def endpoint_for(model, root = model)
     raise EndpointError, "Incorrect hierarchy for #{root.inspect}"     if model.nil?
     raise MissingEndpoint, "No endpoint for the model #{root.inspect}" if model == ActiveRecord::Base

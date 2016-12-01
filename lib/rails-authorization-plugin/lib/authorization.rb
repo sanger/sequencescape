@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/publishare/parser'
 
 module Authorization
   module Base
-
     # Modify these constants in your environment.rb to tailor the plugin to
     # your authentication system
     if not Object.constants.include? "LOGIN_REQUIRED_REDIRECTION"
@@ -27,7 +26,6 @@ module Authorization
     end
 
     module ControllerClassMethods
-
       # Allow class-level authorization check.
       # permit is used in a before_action fashion and passes arguments to the before_action.
       def permit(authorization_expression, *args)
@@ -145,6 +143,5 @@ module Authorization
         end
       end
     end
-
   end
 end

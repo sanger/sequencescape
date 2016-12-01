@@ -56,7 +56,9 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
       end
     end
   end
+
   private
+
   def discover_bait_library_type
     @bait_library_type = BaitLibraryType.find(params[:id])
   end

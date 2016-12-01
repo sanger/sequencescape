@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class ManifestGenerator
-
   QUOTE_CHAR = "!"
   DEFAULT_VOLUME = 13
   DEFAULT_CONCENTRATION = 50
@@ -62,6 +61,7 @@ class ManifestGenerator
   end
 
   private
+
   def self.check_well_sample_exists(well)
     raise StandardError, "Sample not found for well #{well.id}" if well.primary_aliquot.nil?
   end
@@ -145,5 +145,4 @@ class ManifestGenerator
   def self.remove_empty_quotes(csv_string)
     csv_string.gsub!("#{QUOTE_CHAR}#{QUOTE_CHAR}", "")
   end
-
 end

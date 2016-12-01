@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class BasePlate
-
       include Label::MultipleLabels
 
       def create_label(plate)
@@ -46,8 +44,6 @@ module LabelPrinter
       def assets
         plates
       end
-
     end
-
   end
 end

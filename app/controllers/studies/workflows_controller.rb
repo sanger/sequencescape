@@ -48,7 +48,6 @@ class Studies::WorkflowsController < ApplicationController
       format.xml
       format.json { render json: Study.all.to_json }
     end
-
   end
 
   def show_summary
@@ -130,6 +129,7 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   private
+
   def discover_study
     @study = Study.find(params[:study_id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?

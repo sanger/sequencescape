@@ -5,9 +5,7 @@
 # Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 
 module IlluminaHtp::Requests
-
   class StdLibraryRequest < Request::LibraryCreation
-
     fragment_size_details(:no_default, :no_default)
 
     # Ensure that the bait library information is also included in the pool information.
@@ -20,7 +18,6 @@ module IlluminaHtp::Requests
     def role
       order.role
     end
-
   end
 
   class SharedLibraryPrep < StdLibraryRequest
@@ -42,7 +39,6 @@ module IlluminaHtp::Requests
     def failed_downstream!
       change_decision! unless failed?
     end
-
   end
 
   class LibraryCompletion < StdLibraryRequest
@@ -53,5 +49,4 @@ module IlluminaHtp::Requests
     end
     include FailUpstream
   end
-
 end

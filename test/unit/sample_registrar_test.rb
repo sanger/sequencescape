@@ -27,7 +27,6 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         )
       end
 
-
       should "change Sample.count by 1" do
         assert_equal 1,  Sample.count           - @sample_count, "Expected Sample.count to change by 1"
       end

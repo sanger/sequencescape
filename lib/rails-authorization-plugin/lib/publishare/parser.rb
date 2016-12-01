@@ -1,6 +1,5 @@
 module Authorization
   module Base
-
     VALID_PREPOSITIONS = %w(of for in on to at by)
     BOOLEAN_OPS = ['not', 'or', 'and']
     VALID_PREPOSITIONS_PATTERN = VALID_PREPOSITIONS.join('|')
@@ -83,7 +82,6 @@ module Authorization
         raise(UserDoesntImplementRoles, "User doesn't implement #has_role?") if not @current_user.respond_to? :has_role?
         @current_user.has_role?(role_name)
       end
-
     end
 
     # Parses and evaluates an authorization expression and returns <tt>true</tt> or <tt>false</tt>.
@@ -107,7 +105,6 @@ module Authorization
     # It also won't handle some types of expressions (A or B) and C, which has to be rewritten as
     # C and (A or B) so the parenthetical expressions are in the tail.
     module RecursiveDescentParser
-
       OPT_PARENTHESES_PATTERN = '(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()])*\))*\))*\))*\))*\))*)'
       PARENTHESES_PATTERN = '\(' + OPT_PARENTHESES_PATTERN + '\)'
       NOT_PATTERN = '^\s*not\s+' + OPT_PARENTHESES_PATTERN + '$'
@@ -204,7 +201,6 @@ module Authorization
           false
         end
       end
-
     end
   end
 end

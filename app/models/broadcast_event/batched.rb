@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::Batched < BroadcastEvent
-
   set_event_type 'batched'
 
   # Triggered whenever a batch is created

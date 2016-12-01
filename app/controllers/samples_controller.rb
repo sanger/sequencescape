@@ -78,7 +78,6 @@ class SamplesController < ApplicationController
     end
   end
 
-
   def edit
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
@@ -95,7 +94,6 @@ class SamplesController < ApplicationController
       end
     end
   end
-
 
   def update
     @sample = Sample.find(params[:id])

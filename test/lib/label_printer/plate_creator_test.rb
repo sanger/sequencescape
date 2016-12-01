@@ -2,7 +2,6 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class PlateCreatorTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedPlateTests
 
   attr_reader :plate_label, :plate1, :plates, :plate_purpose, :label, :user, :barcode1, :parent_barcode, :study_abbreviation, :purpose_name
@@ -37,6 +36,4 @@ class PlateCreatorTest < ActiveSupport::TestCase
     assert_equal "#{user} #{study_abbreviation}", plate_label.bottom_right(plate1)
     assert_equal "#{parent_barcode}", plate_label.top_far_right(plate1)
   end
-
-
 end

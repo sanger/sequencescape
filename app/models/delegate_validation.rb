@@ -41,7 +41,6 @@ module DelegateValidation
     protected :target
     delegate :include_unset_values?, to: :target
 
-
     def self.name
       'Nothing'
     end
@@ -105,6 +104,5 @@ module DelegateValidation
       end
       false
     end
-
   end
 end

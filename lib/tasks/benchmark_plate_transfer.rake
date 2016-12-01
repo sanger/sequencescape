@@ -1,6 +1,5 @@
 namespace :benchmark do
   task plate_transfer: :environment do
-
     $stdout.puts "Preparing"
     stock = Purpose.find_by_name('Shear').create!
     sample = Sample.find_or_create_by(name: 'test_sample')

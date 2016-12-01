@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module Submission::RequestOptionsBehaviour
-
   # Ensures the hash gets loaded with indifferent access.
   # Note: We can't just specify the class, as otherwise legacy
   # hashes throw an exception

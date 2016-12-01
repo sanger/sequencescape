@@ -101,7 +101,6 @@ When /^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont 
   step('I press "Next step"')
 end
 
-
 When /^I complete the cherrypicking batch with "([^"]*)" plate purpose$/ do |plate_purpose_name|
   step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
   step('I press "Release this batch"')
@@ -124,7 +123,6 @@ Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]
   well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
 end
 
-
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
   well = Uuid.find_by_external_id(uuid).resource
 
@@ -135,7 +133,6 @@ Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotypi
   well.aliquots.clear
   well.aliquots.create!(sample: sample)
 end
-
 
 Given /^I have a DNA QC submission for plate "([^"]*)"$/ do |plate_barcode|
   step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
@@ -163,7 +160,6 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
     )
   step("1 pending delayed jobs are processed")
 end
-
 
 Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_group_name|
   project = Project.find_by_name("Test project")

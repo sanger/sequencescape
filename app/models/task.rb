@@ -13,7 +13,6 @@ class Task < ActiveRecord::Base
 
   self.inheritance_column = "sti_type"
 
-
   # BEGIN descriptor_to_attribute, could be move into a mixin
 
   # TODO move into SetDescriptorsTask
@@ -89,7 +88,6 @@ class Task < ActiveRecord::Base
     self.class.get_subclass_attributes
   end
 
-
   def self.set_subclass_attribute(name, options = {})
     init_class
     raise ArgumentError, "subclass attribute #{name} already in use" if @subclass_attributes.include? name
@@ -118,7 +116,6 @@ class Task < ActiveRecord::Base
 
   # END of subclass_to_attiribuet
 
-
   class RenderElement
     attr_reader :request, :asset
     def initialize(request)
@@ -137,7 +134,6 @@ class Task < ActiveRecord::Base
   def included_for_render_task
     [:requests, :pipeline, :lab_events]
   end
-
 
   def render_task(controller, params)
     controller.render_task(self, params)

@@ -75,7 +75,6 @@ FactoryGirl.define do
     "Request Type #{n}"
   end
 
-
   sequence :sample_name do |n|
     "Sample#{n}"
   end

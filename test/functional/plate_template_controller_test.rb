@@ -8,7 +8,6 @@ require "test_helper"
 require 'assets_controller'
 
 class PlateTemplatesControllerTest < ActionController::TestCase
-
   context "#PlateTemplates controller" do
     setup do
       @user = FactoryGirl.create(:slf_manager)

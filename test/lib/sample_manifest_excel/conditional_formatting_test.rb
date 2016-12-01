@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ConditionalFormattingTest < ActiveSupport::TestCase
-
   attr_reader :rule, :worksheet, :conditional_formatting
 
   def setup
@@ -15,7 +14,6 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
   end
 
   context "without formula" do
-
     setup do
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule)
     end
@@ -46,11 +44,9 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
       conditional_formatting.update(worksheet: worksheet)
       refute dup.styled?
     end
-
   end
 
   context "with formula" do
-
     attr_reader :options, :formula, :references
 
     setup do
@@ -81,7 +77,5 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
       refute_equal conditional_formatting.options, dup.options
       refute_equal conditional_formatting.formula, dup.formula
     end
-
   end
-
 end

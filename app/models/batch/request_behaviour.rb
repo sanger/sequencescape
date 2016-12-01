@@ -14,8 +14,8 @@ module Batch::RequestBehaviour
 
       # For backwards compatibility
       def batch_requests; [batch_request].compact; end
-      def batches; [batch].compact; end
 
+      def batches; [batch].compact; end
 
       # Identifies all requests that are not part of a batch.
       # Note: we join, rather than includes due to custom select limitations.
@@ -52,5 +52,4 @@ module Batch::RequestBehaviour
     self.cancel! if self.started?
     self.detach! unless self.pending?
   end
-
 end

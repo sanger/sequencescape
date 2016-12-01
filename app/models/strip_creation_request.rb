@@ -5,5 +5,4 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class StripCreationRequest < CustomerRequest
-
 end

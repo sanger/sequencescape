@@ -78,6 +78,7 @@ class Admin::PlatePurposesController < ApplicationController
   end
 
   private
+
   def discover_plate_purpose
     @plate_purpose = PlatePurpose.find(params[:id])
   end

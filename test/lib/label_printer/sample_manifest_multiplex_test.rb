@@ -2,13 +2,11 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class SampleManifestMultiplexTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedTubeTests
 
   attr_reader :only_first_label, :manifest, :tube_label, :tube1, :prefix, :barcode1, :label, :study_abbreviation
 
   def setup
-
     @manifest = create :sample_manifest, asset_type: 'multiplexed_library', count: 3
 
     @manifest.generate
@@ -36,5 +34,4 @@ class SampleManifestMultiplexTest < ActiveSupport::TestCase
   test "should return correct top line" do
     assert_equal study_abbreviation, tube_label.top_line
   end
-
 end

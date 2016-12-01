@@ -65,11 +65,9 @@ module Submission::ProjectValidation
     @saving_without_validation = false
   end
 
-
   def confirm_validity!
     return if @saving_without_validation
     check_project_details!
   end
   private :confirm_validity!
-
 end

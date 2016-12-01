@@ -5,7 +5,6 @@
 require "test_helper"
 
 class OrderTest < ActiveSupport::TestCase
-
   attr_reader :study, :asset, :project
 
   def setup
@@ -55,7 +54,6 @@ class OrderTest < ActiveSupport::TestCase
         assert yielded, "duplicates_within failed to yield"
       end
     end
-
   end
 
   test "order should not be valid if study is not active" do

@@ -7,7 +7,6 @@
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
-
   redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
@@ -88,5 +87,4 @@ class TransferRequest < SystemRequest
   def remove_unused_assets
     # Don't remove assets for transfer requests as they are made on creation
   end
-
 end

@@ -9,7 +9,6 @@ require "tecan_file_generation"
 require 'aasm'
 
 class Batch < ActiveRecord::Base
-
   self.per_page = 500
 
   belongs_to :user, foreign_key: "user_id"
@@ -31,7 +30,6 @@ class Batch < ActiveRecord::Base
   def study
     self.studies.first
   end
-
 
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
@@ -255,7 +253,6 @@ class Batch < ActiveRecord::Base
     output_plates.any? { |plate| plate.barcode == barcode }
   end
 
-
   def plate_group_barcodes
     return nil unless pipeline.group_by_parent || requests.first.target_asset.is_a?(Well)
     latest_plate_group = output_plate_group
@@ -286,7 +283,6 @@ class Batch < ActiveRecord::Base
     self.multiplexed?
   end
 
-
   # Returns meaningful events excluding discriptors/descriptor_fields clutter
   def formatted_events
     ev = self.lab_events
@@ -302,7 +298,6 @@ class Batch < ActiveRecord::Base
     end
     d
   end
-
 
   def multiplexed_items_with_unique_library_ids
     requests.map { |r| r.target_asset.children }.flatten.uniq
@@ -425,7 +420,6 @@ class Batch < ActiveRecord::Base
 
     return true
   end
-
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(self.requests.for_studies(study))

@@ -56,7 +56,6 @@ SequencingPipeline.create!(name: "MiSeq sequencing QC") do |pipeline|
       Descriptor.create!({ kind: "Text", sorter: 2, name: "Cartridge barcode", task: t2 })
       Descriptor.create!({ kind: "Text", sorter: 3, name: "Operator", task: t2 })
       Descriptor.create!({ kind: "Text", sorter: 4, name: "Machine name", task: t2 })
-
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')

@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 module Tasks::SetDescriptorsHandler
-
   def do_set_descriptors_task(task, params)
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
@@ -98,7 +97,6 @@ module Tasks::SetDescriptorsHandler
         end
       end
 
-
       if updated == @batch.requests.count
         eventify_batch @batch, @task
         return true
@@ -126,8 +124,5 @@ module Tasks::SetDescriptorsHandler
     else
       @values = params[:values]
     end
-
-
   end
-
 end

@@ -9,9 +9,7 @@
 require 'test_helper'
 
 class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
-
   context "a configured criteria" do
-
     setup do
       @params = {
         'failed' => {
@@ -84,7 +82,5 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
         assert_equal ['Concentration too low'], @criteria.comment
       end
     end
-
-
   end
 end

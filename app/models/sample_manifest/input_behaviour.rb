@@ -7,7 +7,6 @@
 require 'linefeed_fix'
 
 module SampleManifest::InputBehaviour
-
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
       csv        = CSV.parse(LinefeedFix.scrub!(spreadsheet_file.read))
@@ -47,7 +46,6 @@ module SampleManifest::InputBehaviour
           validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, value|
             record.errors.add_on_blank(attr, message: "can't be blank for #{record.sample.sanger_sample_id}")
           end
-
         end
 
         def accession_number_from_manifest=(new_value)

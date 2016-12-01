@@ -52,7 +52,6 @@ Then /^the sample '(.*)' should not belong to study '(.*)'$/ do |sample_name, st
   assert_equal false, Sample.find_by_name(sample_name).studies.include?(Study.find_by_name(study_name))
 end
 
-
 When /^I upload a file with (.*) data for (\d+) submissions$/ do |type, number|
   upload_submission_spreadsheet("#{number}_#{type}_rows")
 end

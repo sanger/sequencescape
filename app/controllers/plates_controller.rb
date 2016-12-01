@@ -26,7 +26,6 @@ class PlatesController < ApplicationController
     @plate = Plate.find(params[:id])
   end
 
-
   def create
     ActiveRecord::Base.transaction do
       plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
@@ -95,5 +94,4 @@ class PlatesController < ApplicationController
       end
     end
   end
-
 end

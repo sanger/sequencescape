@@ -15,10 +15,8 @@ require File.dirname(__FILE__) + '/exceptions'
 #
 module Authorization
   module Identity
-
     module UserExtensions
       module InstanceMethods
-
         def method_missing(method_sym, *args)
           method_name = method_sym.to_s
           authorizable_object = args.empty? ? nil : args[0]
@@ -97,7 +95,6 @@ module Authorization
 
     module ModelExtensions
       module InstanceMethods
-
         def method_missing(method_sym, *args)
           method_name = method_sym.to_s
           if method_name =~ /^has_(\w+)\?$/
@@ -113,9 +110,7 @@ module Authorization
             super
           end
         end
-
       end
     end
-
   end
 end

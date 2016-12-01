@@ -7,8 +7,6 @@
 require "test_helper"
 require 'tag_groups_controller'
 
-
-
 class TagGroupsControllerTest < ActionController::TestCase
   context "tag groups" do
     setup do
@@ -28,7 +26,6 @@ class TagGroupsControllerTest < ActionController::TestCase
           @tag_count =  Tag.count
           post :create, tag_group: { name: "new tag group" }
         end
-
 
         should "change TagGroup count by 1" do
           assert_equal 1,  TagGroup.count - @taggroup_count, "Expected TagGroup count to change by 1"

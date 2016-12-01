@@ -53,5 +53,4 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
   end
 
   self.related_resources = [:lanes, :requests]
-
 end

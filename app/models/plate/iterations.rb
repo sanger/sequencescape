@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 module Plate::Iterations
-
   def iteration
     return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
 
@@ -30,6 +29,4 @@ module Plate::Iterations
 
     iteration_of_plate['iteration'].to_i
   end
-
-
 end

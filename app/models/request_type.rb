@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class RequestType < ActiveRecord::Base
-
   include RequestType::Validation
 
   class DeprecatedError < RuntimeError; end
@@ -134,7 +133,6 @@ class RequestType < ActiveRecord::Base
   def self.initial_transfer
     find_by_key("initial_transfer") or raise "Cannot find initial request type"
   end
-
 
   def extract_metadata_from_hash(request_options)
     # WARNING: we need a copy of the options (we delete stuff from attributes)

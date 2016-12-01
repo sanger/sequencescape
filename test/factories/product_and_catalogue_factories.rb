@@ -28,6 +28,5 @@ FactoryGirl.define do
   end
 
   factory :product_product_catalogue do |pc|
-
   end
 end

@@ -8,7 +8,6 @@
 # into MX library tubes.  Each well is effectively a pool of the stock wells, once they've been
 # through the pipeline, so the mapping needs to be based on the original submissions.
 class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
-
   after_create :build_asset_links
 
   def locate_mx_library_tube_for(well, stock_wells)
@@ -19,7 +18,4 @@ class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
     end.try(:target_asset)
   end
   private :locate_mx_library_tube_for
-
-
-
 end

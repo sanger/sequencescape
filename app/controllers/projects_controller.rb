@@ -177,6 +177,7 @@ class ProjectsController < ApplicationController
   end
 
   private
+
   def set_variables_for_project
     @project = Project.find(params[:id])
   end

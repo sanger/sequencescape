@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class GenerateManifestsTask < Task
-
   def self.generate_manifests(batch, study)
     ManifestGenerator.generate_manifests(batch, study)
   end
@@ -22,5 +21,4 @@ class GenerateManifestsTask < Task
   def do_task(workflow, params)
     true
   end
-
 end

@@ -2,13 +2,11 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class PlateToTubesTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedTubeTests
 
   attr_reader :tube_label, :sample_tubes, :prefix, :barcode1, :tube1, :label, :asset_name
 
   def setup
-
     @prefix = 'NT'
     @barcode1 = '1111'
     @asset_name = 'tube name'
@@ -32,5 +30,4 @@ class PlateToTubesTest < ActiveSupport::TestCase
   test "should return correct top line" do
     assert_equal asset_name, tube_label.top_line(sample_tubes.first)
   end
-
 end

@@ -6,10 +6,7 @@
 
 require "test_helper"
 
-
-
 class Studies::AssetGroupsControllerTest < ActionController::TestCase
-
   @assetgroup_count = AssetGroup.count
   @study_count = Study.count
 
@@ -26,7 +23,6 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       @study = FactoryGirl.create :study
       @asset_group = FactoryGirl.create :asset_group
     end
-
 
     ["index", "new"].each do |controller_method|
       context "##{controller_method}" do
@@ -115,7 +111,6 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
     end
 
     context "#update" do
-
       setup do
         @assetgroup_count = AssetGroup.count
         @study_count = Study.count
@@ -152,6 +147,5 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
         post :print_labels, printables: { "#{@asset.id}" => "true" }, printer: barcode_printer.name, id: @asset_group.id, study_id: @study.id
       end
     end
-
   end
 end

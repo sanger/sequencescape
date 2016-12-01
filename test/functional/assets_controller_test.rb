@@ -72,7 +72,6 @@ class AssetsControllerTest < ActionController::TestCase
   end
 
   context "print requests" do
-
     attr_reader :barcode_printer
 
     setup do
@@ -132,5 +131,4 @@ class AssetsControllerTest < ActionController::TestCase
       }
     }
   end
-
 end

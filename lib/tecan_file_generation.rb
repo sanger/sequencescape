@@ -48,6 +48,7 @@ module Sanger
         end
 
         private
+
         def self.header(data_object)
           "C;\nC; This file created by #{data_object["user"]} on #{data_object["time"]}\nC;"
         end

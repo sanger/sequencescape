@@ -58,7 +58,6 @@ class PlatesControllerTest < ActionController::TestCase
       end
 
       context "#create" do
-
        context "with no source plates" do
           setup do
             @plate_count = Plate.count
@@ -95,7 +94,6 @@ class PlatesControllerTest < ActionController::TestCase
                 should "set the dilution factor to default (1.0)" do
                   assert_equal 1.0, Plate.last.dilution_factor
                 end
-
               end
 
               context "when the parent doesn't have a dilution factor" do
@@ -316,7 +314,6 @@ class PlatesControllerTest < ActionController::TestCase
             should set_flash.to(/Created/)
           end
         end
-
       end
     end
   end

@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AddQcMetricTable < ActiveRecord::Migration
-
   require './lib/foreign_key_constraint'
   extend ForeignKeyConstraint
 
@@ -21,7 +20,6 @@ class AddQcMetricTable < ActiveRecord::Migration
 
     add_constraint('qc_metrics', 'qc_reports')
     add_constraint('qc_metrics', 'assets')
-
   end
 
   def self.down

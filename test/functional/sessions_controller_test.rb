@@ -39,5 +39,4 @@ class SessionsControllerTest < ActionController::TestCase
     assert_nil session[:user]
     assert_response :redirect
   end
-
 end

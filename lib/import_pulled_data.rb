@@ -33,5 +33,4 @@ module ImportPulledData
       end
     end
   end
-
 end

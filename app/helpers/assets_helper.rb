@@ -99,5 +99,4 @@ module AssetsHelper
   def asset_types_for_select
     asset_types.map { |at| [at.underscore.humanize, at] }
   end
-
 end

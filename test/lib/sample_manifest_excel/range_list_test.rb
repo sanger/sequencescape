@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class RangeListTest < ActiveSupport::TestCase
-
   include SampleManifestExcel::Helpers
 
   attr_reader :ranges, :range_list
@@ -30,5 +29,4 @@ class RangeListTest < ActiveSupport::TestCase
   test "should be comparable" do
     assert_equal range_list, SampleManifestExcel::RangeList.new(ranges)
   end
-
 end

@@ -7,9 +7,7 @@
 require 'test_helper'
 
 class BaitLibraryTypeTest < ActiveSupport::TestCase
-
   context 'When a bait library exists' do
-
     setup do
       @bait_library = create :bait_library
     end
@@ -21,11 +19,9 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
     should "bait libraries have library types" do
       assert @bait_library.bait_library_type
     end
-
   end
 
   context 'A request with a bait library' do
-
     setup do
       @sample = create :sample
 
@@ -53,7 +49,5 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
     should 'have a bait library type' do
       assert BaitLibrary.find(@request1.request_metadata.bait_library_id).bait_library_type
     end
-
   end
-
 end

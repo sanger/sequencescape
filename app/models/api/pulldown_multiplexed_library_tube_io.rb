@@ -43,5 +43,4 @@ class Api::PulldownMultiplexedLibraryTubeIO < Api::Base
   with_association(:scanned_into_lab_event) do
     map_attribute_to_json_attribute(:content, 'scanned_in_date')
   end
-
 end

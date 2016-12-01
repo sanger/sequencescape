@@ -100,6 +100,5 @@ class PipelinesControllerTest < ActionController::TestCase
 
       should respond_with :redirect
     end
-
   end
 end

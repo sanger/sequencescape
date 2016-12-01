@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class SetLocationTask < Task
-
   set_subclass_attribute :acts_on_input, kind: :bool, default: false, display_name: "Set location of input assets if ticked (output otherwise)"
   set_subclass_attribute :location_id, cast: :int, default: 4, kind: :selection, display_name: "Choose default location", choices: -> { Location.all.map { |l| [l.name, l.id] } }
 

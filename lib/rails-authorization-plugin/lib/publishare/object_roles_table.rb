@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/identity'
 
 module Authorization
   module ObjectRolesTable
-
     module UserExtensions
       def self.included(recipient)
         recipient.extend(ClassMethods)
@@ -121,7 +120,6 @@ module Authorization
             role.destroy if role.users.empty?
           end
         end
-
       end
     end
 
@@ -188,9 +186,7 @@ module Authorization
         def accepted_roles_by(user)
           user.roles_for self
         end
-
       end
     end
-
   end
 end

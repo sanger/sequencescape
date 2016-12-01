@@ -693,48 +693,6 @@ Style/EmptyElse:
     - 'app/models/cherrypick/task/pick_helpers.rb'
     - 'app/models/project.rb'
 
-# Offense count: 58
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAdjacentOneLineDefs.
-Style/EmptyLineBetweenDefs:
-  Enabled: false
-
-# Offense count: 502
-# Cop supports --auto-correct.
-Style/EmptyLines:
-  Enabled: false
-
-# Offense count: 37
-# Cop supports --auto-correct.
-Style/EmptyLinesAroundAccessModifier:
-  Enabled: false
-
-# Offense count: 672
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, no_empty_lines
-Style/EmptyLinesAroundBlockBody:
-  Enabled: false
-
-# Offense count: 776
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, no_empty_lines
-Style/EmptyLinesAroundClassBody:
-  Enabled: false
-
-# Offense count: 93
-# Cop supports --auto-correct.
-Style/EmptyLinesAroundMethodBody:
-  Enabled: false
-
-# Offense count: 270
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, no_empty_lines
-Style/EmptyLinesAroundModuleBody:
-  Enabled: false
-
 # Offense count: 25
 # Cop supports --auto-correct.
 Style/EmptyLiteral:

@@ -48,5 +48,4 @@ class RobotVerificationsController < ApplicationController
   def new_robot_verification
     @robot_verification = RobotVerification.new
   end
-
 end

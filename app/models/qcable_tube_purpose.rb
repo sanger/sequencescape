@@ -6,7 +6,5 @@
 require_dependency 'tube/purpose'
 
 class QcableTubePurpose < Tube::Purpose
-
   include QcablePlatePurpose::ClassBehaviour
-
 end

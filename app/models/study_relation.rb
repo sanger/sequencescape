@@ -17,7 +17,6 @@ class StudyRelation < ActiveRecord::Base
 
   delegate :name, :reversed_name, to: :study_relation_type
 
-
   module Associations
     def self.included(base)
       # Related studies
@@ -58,5 +57,4 @@ class StudyRelation < ActiveRecord::Base
       reversed_relations_for_study(study).map(&:study_relation_type)
     end
   end
-
 end

@@ -3,11 +3,9 @@ require 'rails_helper'
 require 'pry'
 
 feature 'Batches controller', js: true do
-
   let(:request_count) { 3 }
   let(:batch) { create :batch, request_count: request_count }
   let(:user)  { create :admin  }
-
 
   background do
     batch

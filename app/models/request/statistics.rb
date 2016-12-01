@@ -35,6 +35,7 @@ module Request::Statistics
       # distinct.count(:id) in rails_4
       self.requests.request_type(request_type).cancelled.distinct.count(:id)
     end
+
     def total_requests_report
       self.requests.group(:request_type_id).count
     end

@@ -25,8 +25,6 @@ class DbFile < ActiveRecord::Base
       class_eval do
         mount_uploader data, PolymorphicUploader, mount_on: serialization_column
       end
-
     end
-
   end
 end

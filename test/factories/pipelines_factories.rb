@@ -8,7 +8,6 @@ require 'control_request_type_creation'
 Pipeline.send(:include, ControlRequestTypeCreation)
 
 FactoryGirl.define do
-
   sequence :plate_creator_name do |n|
     "Plate Creator #{n}"
   end
@@ -35,10 +34,7 @@ FactoryGirl.define do
       plate_purpose { |pp| pp.association(:source_plate_purpose) }
     end
 
-
-
     factory :child_plate do
-
       transient do
         parent { create(:source_plate) }
       end
@@ -51,9 +47,7 @@ FactoryGirl.define do
       end
     end
 
-
     factory :plate_with_untagged_wells do
-
       transient do
         sample_count 8
       end
@@ -73,7 +67,6 @@ FactoryGirl.define do
   factory :plate_creator, class: Plate::Creator do
     name                { |t| FactoryGirl.generate :plate_creator_name }
   end
-
 
   factory :control_plate do
     plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
@@ -165,7 +158,6 @@ FactoryGirl.define do
     task                  { |task|     task.association(:task) }
     workflow              { |workflow| workflow.association(:lab_workflow) }
   end
-
 
   factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do |w|
     name                  { |a| FactoryGirl.generate :lab_workflow_name }
@@ -261,7 +253,6 @@ FactoryGirl.define do
     end
   end
 
-
   factory :pulldown_library_creation_pipeline do |p|
     name                  { |a| FactoryGirl.generate :pipeline_name }
     automated             false
@@ -276,8 +267,6 @@ FactoryGirl.define do
       pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
   end
-
-
 
   factory :task do |t|
     name                  "New task"
@@ -332,7 +321,6 @@ FactoryGirl.define do
   factory :location do |l|
     name                   "Some fridge"
   end
-
 
   factory :request_information do |ri|
     request_id { |request| activity.association(:request) }
@@ -485,7 +473,6 @@ FactoryGirl.define do
     name    { |a| FactoryGirl.generate :purpose_name }
 
     factory :source_plate_purpose do |source_plate_purpose|
-
       after(:build) do |source_plate_purpose, evaluator|
         source_plate_purpose.source_purpose = source_plate_purpose
       end

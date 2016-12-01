@@ -7,19 +7,15 @@
 require "test_helper"
 
 class QcMetricTest < ActiveSupport::TestCase
-
   context "QcMetric" do
-
     should belong_to :asset
     should belong_to :qc_report
 
     should validate_presence_of :asset
     should validate_presence_of :qc_report
-
   end
 
   context "A QcMetric #poor_quality_proceed" do
-
     [
       ['passed',          true,  false],
       ['passed',          false, false],
@@ -61,8 +57,6 @@ class QcMetricTest < ActiveSupport::TestCase
         qc.human_proceed = 'N'
         assert_equal false, qc.proceed
       end
-
     end
-
   end
 end

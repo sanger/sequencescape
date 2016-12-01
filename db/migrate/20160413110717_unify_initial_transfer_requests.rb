@@ -23,11 +23,9 @@ class UnifyInitialTransferRequests < ActiveRecord::Migration
       deprecate_class('IlluminaC::Requests::StockToAlLibsTagged', new_type: initial_transfer)
       deprecate_class('IlluminaHtp::Requests::CherrypickedToShear', new_type: initial_transfer)
       deprecate_class('Pulldown::Requests::StockToCovaris', new_type: initial_transfer)
-
     end
   end
 
   def down
-
   end
 end

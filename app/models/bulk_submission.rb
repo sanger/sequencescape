@@ -49,6 +49,7 @@ class BulkSubmission
   validate :process_file
 
   def persisted?; false; end
+
   def id; nil; end
 
   def initialize(attrs = {})
@@ -227,12 +228,10 @@ class BulkSubmission
           details['plate well']    = rows.field_list('plate well')
           details['barcode']       = rows.field_list('barcode')
         end.delete_if { |_, v| v.blank? }
-
       end
       Hash[submission_name, order]
     end
   end
-
 
   def shared_options!(rows)
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
@@ -283,7 +282,6 @@ class BulkSubmission
       attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
       attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
 
-
       ##
       # We go ahead and find our assets regardless of whether we have an asset group.
       # While this takes longer, it helps to detect cases where an asset group name has been
@@ -320,7 +318,6 @@ class BulkSubmission
       end
       add_study_to_assets(found_assets, study)
 
-
       # Create the order.  Ensure that the number of lanes is correctly set.
       sub_template      = find_template(details['template name'])
       number_of_lanes   = details.fetch('number of lanes', 1).to_i
@@ -347,5 +344,4 @@ class BulkSubmission
   def completed_submissions
     return @submission_ids, @completed_submissions
   end
-
 end

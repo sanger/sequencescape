@@ -9,7 +9,6 @@ module Batch::StateMachineBehaviour
     base.class_eval do
       include AASM
       aasm column: :state, whiny_persistence: true do
-
         state :pending, initial: true
         state :started, enter: :start_requests
         state :completed
@@ -88,5 +87,4 @@ module Batch::StateMachineBehaviour
     end
   end
   private :create_release_batch_event_for
-
 end

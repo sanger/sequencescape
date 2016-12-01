@@ -116,7 +116,6 @@ class Asset < ActiveRecord::Base
   end
   # Named scope for search by query string behaviour
  scope :for_search_query, ->(query, with_includes) {
-
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
     arguments = { name: "%#{query}%" }
 
@@ -141,7 +140,6 @@ class Asset < ActiveRecord::Base
     else
       where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
     end
-
   }
 
  scope :with_name, ->(*names) {  where(name: names.flatten) }
@@ -250,7 +248,6 @@ class Asset < ActiveRecord::Base
     end
 
     asset_group
-
   end
 
   after_create :generate_name_with_id, if: :name_needs_to_be_generated?
@@ -409,7 +406,6 @@ class Asset < ActiveRecord::Base
       joins(query_details[:joins].compact.uniq)
   }
 
-
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
@@ -436,7 +432,6 @@ class Asset < ActiveRecord::Base
       find_by_barcode(source_barcode)
     end
   end
-
 
   def self.find_from_machine_barcode(source_barcode)
     with_machine_barcode(source_barcode).first
@@ -469,7 +464,6 @@ class Asset < ActiveRecord::Base
   end
 
   def transfer(max_transfer_volume)
-
     transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
     raise VolumeError, "not enough volume left" if transfer_volume <= 0
 
@@ -489,7 +483,6 @@ class Asset < ActiveRecord::Base
   def has_stock_asset?
     return false
   end
-
 
   def has_many_requests?
     Request.find_all_target_asset(self.id).size > 1
@@ -534,5 +527,4 @@ class Asset < ActiveRecord::Base
   def printable_target
     nil
   end
-
 end

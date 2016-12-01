@@ -1,11 +1,8 @@
 module SampleManifestExcel
-
   module Worksheet
-
     # DataWorksheet creates a data worksheet to be filled in by a client.
 
     class DataWorksheet < Base
-
        STYLES = {  unlocked: { locked: false, border: { style: :thin, color: "00" } },
                   wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
                   border: { style: :thin, color: "00", edges: [:left, :right, :top, :bottom] } }
@@ -57,7 +54,6 @@ module SampleManifestExcel
         sample_manifest.details_array.each do |detail|
           create_row(detail)
         end
-
       end
 
       # Creates row filled in with required column values, also unlocks (adds unlock style)
@@ -126,9 +122,6 @@ module SampleManifestExcel
           @reference = workbook.styles.add_style options
         end
       end
-
     end
-
   end
-
 end

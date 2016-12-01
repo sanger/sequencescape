@@ -2,7 +2,6 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class BatchPlateTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedPlateTests
 
   attr_reader :plate_label, :label, :plate1, :batch, :printable, :pefix, :barcode1, :role, :study_abbreviation, :purpose
@@ -32,7 +31,6 @@ class BatchPlateTest < ActiveSupport::TestCase
             bottom_right: "#{role} #{purpose} #{barcode1}",
             top_far_right: nil,
             barcode: "#{plate1.ean13_barcode}" }
-
   end
 
   test 'should have count' do
@@ -47,5 +45,4 @@ class BatchPlateTest < ActiveSupport::TestCase
     assert_equal study_abbreviation, plate_label.top_right
     assert_equal "#{role} #{purpose} #{barcode1}", plate_label.bottom_right(plate1)
   end
-
 end

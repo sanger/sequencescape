@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class EraAccessionService < AccessionService
-
   def provider
     :ERA
   end
@@ -17,6 +16,7 @@ class EraAccessionService < AccessionService
   def accession_login
     configatron.era_accession_login or raise RuntimeError,  "Can't find ERA  accession login in configuration file"
   end
+
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
   def sample_visibility(sample)
     # sample_hold = sample.sample_sra_hold

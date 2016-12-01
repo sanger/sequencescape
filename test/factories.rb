@@ -5,7 +5,6 @@
 require 'factory_girl'
 
 FactoryGirl.define do
-
   factory :comment  do
     description 'It is okay I guess'
   end
@@ -193,8 +192,6 @@ FactoryGirl.define do
   factory(:request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
   factory(:request_metadata_for_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
 
-
-
   ('a'..'c').each do |p|
     factory(:"request_metadata_for_illumina_#{p}_single_ended_sequencing", parent: :request_metadata_for_standard_sequencing) {}
     factory(:"request_metadata_for_illumina_#{p}_paired_end_sequencing", parent: :request_metadata_for_standard_sequencing) {}
@@ -362,7 +359,6 @@ FactoryGirl.define do
       wells { [FactoryGirl.create(:well_with_sample_and_plate)] }
       assets { [wells.first.plate] }
     end
-
   end
 
   factory :sample_metadata, class: Sample::Metadata do
@@ -642,13 +638,11 @@ FactoryGirl.define do
     end
   end
 
-
   factory :db_file  do
     data "blahblahblah"
   end
 
   factory :study_report do
-
     study
 
     factory  :pending_study_report

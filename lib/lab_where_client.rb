@@ -5,11 +5,9 @@
 require 'rest-client'
 
 module LabWhereClient
-
   LabwhereException = Class.new(StandardError)
 
   class LabWhere
-
     def base_url
       configatron.fetch(:labwhere_api)
     end
@@ -45,11 +43,9 @@ module LabWhereClient
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end
-
   end
 
   class Endpoint
-
     def self.endpoint_name(name)
       @endpoint = name
     end
@@ -60,7 +56,6 @@ module LabWhereClient
 
     def initialize(params)
     end
-
   end
 
   module EndpointCreateActions
@@ -138,7 +133,6 @@ module LabWhereClient
     def error
       @errors.join(";")
     end
-
   end
 
   class Location < Endpoint

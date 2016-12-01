@@ -159,5 +159,4 @@ class Aliquot < ActiveRecord::Base
       self.send(attrib) == other.send(attrib)
     end
   end
-
 end

@@ -28,7 +28,6 @@ module Attributable
     end
   end
 
-
   class CustomValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       valid = record.validator_for(attribute).valid_options.include?(value)
@@ -72,7 +71,6 @@ module Attributable
   end
 
   module ClassMethods
-
     def attribute(name, options = {}, override_previous = false)
       attribute = Attribute.new(self, name, options)
       attribute.configure(self)

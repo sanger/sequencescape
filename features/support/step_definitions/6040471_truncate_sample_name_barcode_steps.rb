@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 When /^I print the following labels in the asset group$/ do |table|
-
   label_bitmaps = {}
   table.hashes.each do |h|
     field, value = ["Field", "Value"].map { |k| h[k] }

@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 class PacBioSamplePrepRequest < CustomerRequest
-
   has_metadata as: Request do
     attribute(:insert_size)
     attribute(:sequencing_type)
@@ -37,5 +36,4 @@ class PacBioSamplePrepRequest < CustomerRequest
   def final_transfer
     target_asset.requests_as_target.where_is_a?(TransferRequest).last
   end
-
 end

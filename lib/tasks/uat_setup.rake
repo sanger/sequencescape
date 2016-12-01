@@ -4,7 +4,6 @@ namespace :uat do
   # Built from this task as the seeds don't guarantee an accurate reflection of some key production tables
   # Plus there a whole load of useful things in the database that nonetheless don't belong in seeds
   task :setup, [:db_file, :expected_env] => :environment do |t, args|
-
     class PlateBarcode < ActiveResource::Base
      self.site = configatron.plate_barcode_service
      def self.create

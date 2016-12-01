@@ -6,9 +6,7 @@
 
 require "test_helper"
 
-
 class EventFactoryTest < ActiveSupport::TestCase
-
   attr_reader :emails
 
   context "An EventFactory" do
@@ -38,7 +36,6 @@ class EventFactoryTest < ActiveSupport::TestCase
      end
 
       context "send 1 email to 1 recipient" do
-
         should "send email" do
           assert_equal 1, emails.count
           assert_match "Project #{@project.id}: Project registered\n\nProject registered by south", emails.first.parts.first.body.to_s
@@ -70,7 +67,6 @@ class EventFactoryTest < ActiveSupport::TestCase
         assert_equal 1, emails.count
         assert_match "Project approved\n\nProject approved by south", emails.first.parts.first.body.to_s
       end
-
 
       should "change Event.count by 1" do
         assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
@@ -116,7 +112,6 @@ class EventFactoryTest < ActiveSupport::TestCase
           assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
-
     end
 
     context "#project_approved but not by administrator" do
@@ -133,7 +128,6 @@ class EventFactoryTest < ActiveSupport::TestCase
         role.users << @user
         EventFactory.project_approved(@project, @user2)
       end
-
 
        should "change Event.count by 1" do
          assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
@@ -189,7 +183,6 @@ class EventFactoryTest < ActiveSupport::TestCase
           assert last_mail.bcc.include?("south@example.com")
         end
       end
-
     end
 
     context "#request update failed" do
@@ -210,7 +203,6 @@ class EventFactoryTest < ActiveSupport::TestCase
         message = "An error has occurred"
         EventFactory.request_update_note_to_manager(@request, @user3, message)
       end
-
 
        should "change Event.count by 1" do
          assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
@@ -245,5 +237,4 @@ class EventFactoryTest < ActiveSupport::TestCase
       assert ::ActionMailer::Base.deliveries.empty?, msg
     end
   end
-
 end

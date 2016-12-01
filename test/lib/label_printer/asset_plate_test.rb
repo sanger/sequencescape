@@ -2,7 +2,6 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class AssetPlateTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedPlateTests
 
   attr_reader :plate_label, :label, :plates, :plate1, :plate2, :barcode1, :prefix, :plate_name
@@ -31,5 +30,4 @@ class AssetPlateTest < ActiveSupport::TestCase
     assert_equal "#{prefix} #{barcode1}", plate_label.top_right(plate1)
     assert_equal "#{plate_name} #{barcode1}", plate_label.bottom_right(plate1)
   end
-
 end

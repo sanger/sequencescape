@@ -5,10 +5,7 @@
 # Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 class UnrepeatableSequencingPipeline < SequencingPipeline
-
   def request_actions
     [:fail]
   end
-
-
 end

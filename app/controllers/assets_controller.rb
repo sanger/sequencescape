@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-
 class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -77,7 +76,6 @@ class AssetsController < ApplicationController
   end
 
   def create
-
     count = first_param(:count)
     count = count.present? ? count.to_i : 1
     saved = true
@@ -252,7 +250,6 @@ class AssetsController < ApplicationController
       flash[:error] = print_job.errors.full_messages.join('; ')
     end
     redirect_to asset_url(@asset)
-
   end
 
   def show_plate
@@ -397,7 +394,6 @@ class AssetsController < ApplicationController
       flash[:error] = "Unable to find anything with this barcode: #{barcode}"
       redirect_to action: "find_by_barcode"
     end
-
   end
 
   def create_stocks

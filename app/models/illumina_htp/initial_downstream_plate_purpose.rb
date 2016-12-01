@@ -32,5 +32,4 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
     return plate.parent.wells unless contents.present?
     plate.parent.wells.located_at(contents)
   end
-
 end

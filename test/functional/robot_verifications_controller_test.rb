@@ -72,7 +72,6 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           assert_response :success
           assert_equal @before_event_count + 1, Event.count
         end
-
       end
       context "with invalid inputs" do
         context "where nothing is scanned" do
@@ -258,7 +257,6 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           end
         end
       end
-
     end
 
     context "#submission" do
@@ -285,7 +283,6 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         should "be successful" do
           assert_response :success
         end
-
       end
       context "with invalid batch" do
         setup do
@@ -298,7 +295,6 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           assert_response :redirect
           assert_not_nil flash[:error].include?("Invalid")
         end
-
       end
       context "with invalid robot" do
         setup do
@@ -311,7 +307,6 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           assert_response :redirect
           assert_not_nil flash[:error].include?("Invalid")
         end
-
       end
       context "with invalid destination plate" do
         setup do
@@ -324,7 +319,6 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           assert_response :redirect
           assert_not_nil flash[:error].include?("Invalid")
         end
-
       end
       context "with invalid user" do
         setup do
@@ -337,11 +331,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           assert_response :redirect
           assert_not_nil flash[:error].include?("Invalid")
         end
-
       end
-
-
     end
   end
-
 end

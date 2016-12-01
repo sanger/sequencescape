@@ -6,8 +6,6 @@
 
 require "test_helper"
 
-
-
 class Studies::EventsControllerTest < ActionController::TestCase
   context "Studies controller" do
     setup do

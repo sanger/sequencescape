@@ -7,7 +7,6 @@
 require "test_helper"
 
 class AliquotIndexerTest < ActiveSupport::TestCase
-
   context "when given a sensible number of aliquots" do
     setup do
       @pre_count = AliquotIndex.count
@@ -33,11 +32,9 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         actual_index   = ai.aliquot_index
         assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
       end
-
     end
 
     context "when phix is added" do
-
       setup do
         @phix = create :spiked_buffer do |sb|
           sb.aliquots { |a| a.association(:aliquot, receptacle: sb, tag: @tags[2]) }
@@ -64,7 +61,5 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
-
 end

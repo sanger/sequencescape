@@ -145,7 +145,6 @@ class WorkflowsController < ApplicationController
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
 
-
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task
       # else actually execute the task.

@@ -4,7 +4,6 @@
 # Copyright (C) 2007-2011 Genome Research Ltd.
 module Commentable
   def self.included(base)
-
     base.class_eval do
       has_many :comments, as: :commentable
       scope :with_comments, -> {  joins(:comments).where("commentable_type = '#{base.name}'") } do
@@ -26,5 +25,4 @@ module Commentable
       end
     end
   end
-
 end

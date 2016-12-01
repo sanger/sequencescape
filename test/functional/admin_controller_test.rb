@@ -6,8 +6,6 @@
 
 require "test_helper"
 
-
-
 class AdminControllerTest < ActionController::TestCase
   context "Admin controller" do
     setup do
@@ -46,7 +44,6 @@ class AdminControllerTest < ActionController::TestCase
         should respond_with :success
         should render_template "admin/users/_users"
       end
-
     end
   end
 end

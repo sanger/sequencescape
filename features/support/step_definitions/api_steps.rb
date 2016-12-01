@@ -85,6 +85,7 @@ def api_request(action, path, body)
 
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end
+
 def json_api_request(*args, &block)
   api_request(*args, &block)
 end
@@ -250,7 +251,6 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
     step "show me the HTTP response body"
     raise e
   end
-
 end
 
 Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header, value|

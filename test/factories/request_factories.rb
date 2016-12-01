@@ -11,7 +11,6 @@
 # - Factories names after a class should avoid creating associations, except where they are required for the
 #   request to be valid.
 FactoryGirl.define do
-
   factory :multiplexed_library_creation_request, parent: :request  do
     sti_type      { RequestType.find_by(name: 'Multiplexed library creation').request_class_name }
     asset         { |asset| asset.association(:sample_tube)  }
@@ -99,7 +98,6 @@ FactoryGirl.define do
   end
 
   factory :request_without_assets, parent: :request_with_submission  do
-
     transient do
       user_login { 'abc123' }
     end
@@ -179,5 +177,4 @@ FactoryGirl.define do
     asset        { |asset| asset.association(:well)  }
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
-
 end

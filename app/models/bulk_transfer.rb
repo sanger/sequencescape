@@ -45,5 +45,4 @@ class BulkTransfer < ActiveRecord::Base
     end
   end
   private :each_transfer
-
 end

@@ -61,7 +61,6 @@
 #      pub.upload()
 #    end
 
-
 require 'rake'
 require 'rake/tasklib'
 
@@ -183,6 +182,7 @@ module Rake
     end
 
   private
+
     # Add a file to the folders hash
     def add_file(filename)
       dir = File.dirname(filename).gsub("#{@dest}", ".")

@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 module Tasks::PlateTransferHandler
-
   class InvalidBatch < StandardError; end
 
   def render_plate_transfer_task(task, params)
@@ -28,7 +27,6 @@ module Tasks::PlateTransferHandler
     transfer_request_to_plate = RequestType.find_by_target_purpose_id(task.purpose_id) || RequestType.transfer
     transfer_request_from_plate = RequestType.transfer
     task.purpose.create!.tap do |target|
-
       well_map = Hash[target.wells.map { |well| [well.map_id, well] }]
 
       batch_requests.each do |outer_request|
@@ -64,5 +62,4 @@ module Tasks::PlateTransferHandler
     target_plate.transition_to('passed', current_user) unless target_plate.state == 'passed'
     true
   end
-
 end

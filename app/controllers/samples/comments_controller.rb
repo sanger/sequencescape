@@ -30,6 +30,7 @@ class Samples::CommentsController < ApplicationController
   end
 
   private
+
   def discover_sample
     @sample = Sample.find(params[:sample_id])
   end

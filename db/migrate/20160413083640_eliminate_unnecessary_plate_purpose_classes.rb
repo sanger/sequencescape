@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
-
   class Purpose < ActiveRecord::Base
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil

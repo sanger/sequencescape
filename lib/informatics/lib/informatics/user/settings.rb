@@ -1,7 +1,6 @@
 module Informatics
   module User
     class Settings
-
       include Informatics::Globals
 
       attr_accessor :keys
@@ -27,7 +26,6 @@ module Informatics
         end
         raise NoMethodError, "#{m}"
       end
-
     end
   end
 end

@@ -7,7 +7,6 @@
 require "test_helper"
 
 class Api::SubmissionsControllerTest < ActionController::TestCase
-
   context "submission" do
     setup do
       @controller = Api::SubmissionsController.new
@@ -40,6 +39,5 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
         assert_equal "\"Submission created\"", @response.body
       end
     end
-
   end
 end

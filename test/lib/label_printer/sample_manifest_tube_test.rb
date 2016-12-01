@@ -2,13 +2,11 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class SampleManifestTubeTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedTubeTests
 
   attr_reader :manifest, :tube_label, :tube1, :tube2, :tube3, :tubes, :prefix, :barcode1, :label
 
   def setup
-
     @manifest = create :sample_manifest, asset_type: '1dtube', count: 3
     @manifest.generate
 
@@ -46,5 +44,4 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   test "should return correct top line" do
     assert_equal manifest.study.abbreviation, tube_label.top_line
   end
-
 end

@@ -5,7 +5,6 @@
 # Copyright (C) 2011,2014,2015 Genome Research Ltd.
 
 module Swipecardable
-
   def swipecard_code=(code)
     self.encrypted_swipecard_code = User.encrypt_swipecard_code(code)
   end
@@ -17,11 +16,9 @@ module Swipecardable
     encrypted_swipecard_code?
   end
 
-
   def compare_swipecard_code(code)
     User.encrypt_swipecard_code(code) == encrypted_swipecard_code
   end
-
 
   def self.included(base)
     base.class_eval do
@@ -32,5 +29,4 @@ module Swipecardable
      scope :with_swipecard_code, ->(*swipecard_codes) { where(encrypted_swipecard_code: swipecard_codes.flatten.map { |sw| encrypt_swipecard_code(sw)   }) }
     end
   end
-
 end

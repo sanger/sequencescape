@@ -11,6 +11,7 @@ module Presenters
     include ActionView::Helpers::TextHelper
 
     private
+
     def set_defaults(defaults)
       @defaults = defaults
     end
@@ -82,7 +83,6 @@ module Presenters
     end
 
     def load_pipeline_options
-
       add_submenu_option "Edit batch", edit_batch_path(@batch) if is_manager?
 
       # Printing of labels is enabled for anybody
@@ -140,6 +140,5 @@ module Presenters
         yield option
       end
     end
-
   end
 end

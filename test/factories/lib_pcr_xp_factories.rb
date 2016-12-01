@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :plate_with_wells, parent: :plate do
     size 96
     after(:create) do |plate|
@@ -15,7 +14,6 @@ FactoryGirl.define do
   end
 
   factory :lib_pcr_xp_plate, parent: :plate do
-
     size 96
     plate_purpose { |_| PlatePurpose.find_by_name('Lib PCR-XP') }
 

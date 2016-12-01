@@ -18,7 +18,6 @@ class AttachInfiniumBarcodeTest < TaskTestBase
 
     context "#render_task" do
       setup do
-
         params = {}
         @task.render_task(@workflow, params)
       end

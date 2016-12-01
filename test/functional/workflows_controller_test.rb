@@ -9,7 +9,6 @@ require "test_helper"
 ActionController::TestCase.send(:include, AuthenticatedTestHelper)
 
 class WorkflowsControllerTest < ActionController::TestCase
-
   context "WorkflowController" do
     setup do
       @controller = WorkflowsController.new
@@ -19,7 +18,6 @@ class WorkflowsControllerTest < ActionController::TestCase
       @user = FactoryGirl.create :user
       session[:user] = @user.id
       @pipeline_user = FactoryGirl.create :pipeline_admin
-
     end
     should_require_login
 
@@ -131,7 +129,6 @@ class WorkflowsControllerTest < ActionController::TestCase
        FactoryGirl.create :descriptor, task: @task2, name: "Comment", kind: "Text", selection: {}
        FactoryGirl.create :descriptor, task: @task2, name: "Passed?", kind: "Selection", selection: {}
 
-
         @user = FactoryGirl.create :admin
         session[:user] = @user.id
         @batch_events_size = @batch.lab_events.size
@@ -144,7 +141,6 @@ class WorkflowsControllerTest < ActionController::TestCase
           post :stage, { :controller => "workflows", :id => 0, :action => "stage", "next_stage" => "true", "fields" => { "1" => "Passed?", "2" => "Operator", "3" => "Chip Barcode", "4" => "Comment" }, "descriptors" => { "Comment" => "Some Comment", "Chip Barcode" => "3290000006714", "Operator" => "2470000002799", "Passed?" => "Yes" }, :batch_id => @batch.id,  :workflow_id => @ws1.id, :request => request_data }
         end
 
-
         should "change batch.lab_events by 1" do
           assert_equal 1,  Batch.find(@batch.id).lab_events.size - @batch_lab_events, "Expected batch.lab_events to change by 1"
         end
@@ -152,7 +148,6 @@ class WorkflowsControllerTest < ActionController::TestCase
         should "change number of events on batch" do
           assert_equal "Complete", Batch.find(@batch.id).lab_events.last.description
         end
-
       end
     end
 

@@ -34,7 +34,6 @@ Given /^I have a PacBio submission$/ do
   step("1 pending delayed jobs are processed")
 end
 
-
 Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
   assert_equal number_of_requests.to_i, PacBioSequencingRequest.count
 end

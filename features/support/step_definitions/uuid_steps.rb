@@ -195,7 +195,6 @@ Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (
   end
 end
 
-
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model, uuid_value|
   set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/, '_').camelize.constantize.create!(message: model), uuid_value)
@@ -208,7 +207,6 @@ end
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/ do |model, id|
   FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, id: id)
 end
-
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the following attributes:$/ do |model, id, table|
   attributes = table.hashes.inject({}) { |h, att|  h.update(att["name"] => att["value"]) }

@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class ProductCriteria::Basic
-
   SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :rin, :current_volume, :pico_pass, :gender_markers, :measured_volume, :initial_volume, :molarity, :sequenom_count]
   SUPPORTED_SAMPLE = [:sanger_sample_id]
   SUPPORTED_SAMPLE_METADATA = [:gender, :sample_ebi_accession_number, :supplier_name]
@@ -184,6 +183,4 @@ class ProductCriteria::Basic
   def comparison_for(comparison)
     METHOD_ALIAS.fetch(comparison) || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
   end
-
-
 end

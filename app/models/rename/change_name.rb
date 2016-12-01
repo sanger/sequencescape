@@ -29,7 +29,6 @@ class Rename::ChangeName
   attr_accessor :list_samples_to_rename
   attr_accessor :list_assets_to_rename
 
-
   def initialize(attributes)
     attributes.each { |k, v| self.send(:"#{k}=", v) }
   end
@@ -79,5 +78,4 @@ private
     end
     self.study.comments.create(description: "Renamed Asset names: " + replace + " to " + with, user_id: user.id)
   end
-
 end

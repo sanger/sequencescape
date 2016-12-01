@@ -6,7 +6,6 @@
 
 class ::Endpoints::Tubes < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
@@ -26,6 +25,5 @@ class ::Endpoints::Tubes < ::Core::Endpoint::Base
         end
       end
     end
-
   end
 end

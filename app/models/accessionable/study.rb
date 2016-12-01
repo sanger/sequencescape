@@ -105,9 +105,10 @@ module Accessionable
       @study.study_metadata.array_express_accession_number = number
       @study.save!
     end
-
   end
+
   private
+
   class  RelatedStudy
     def initialize(study, role, primary = false)
       @study = study

@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
-
 class IlluminaHtp::StockPlatePurpose < PlatePurpose
   include PlatePurpose::Stock
 end

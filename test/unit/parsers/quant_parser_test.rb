@@ -1,9 +1,7 @@
 require './test/test_helper'
 require 'csv'
 
-
 class QuantParserTest < ActiveSupport::TestCase
-
   def read_file(filename)
     content = nil
     File.open(filename, "r") do |fd|
@@ -13,10 +11,8 @@ class QuantParserTest < ActiveSupport::TestCase
   end
 
   context "Parser" do
-
     context "With a valid csv file" do
       setup do
-
         @filename = Rails.root.to_s + "/test/data/quant_test.csv"
         @content = read_file @filename
 
@@ -28,8 +24,6 @@ class QuantParserTest < ActiveSupport::TestCase
       should "return a QuantParser" do
         assert Parsers.parser_for(@filename, nil, @content).is_a?(Parsers::QuantParser)
       end
-
-
 
       context "processing the file" do
         setup do
@@ -61,7 +55,6 @@ class QuantParserTest < ActiveSupport::TestCase
 
     context "With an actual example csv file" do
       setup do
-
         @filename = Rails.root.to_s + "/test/data/quant_test_example.csv"
         @content = read_file @filename
 

@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class EventSender
-
   # format message expected output
   # <?xml version='1.0'?>
   # <event>
@@ -53,5 +52,4 @@ class EventSender
     hash.delete(:key)
     Event.create(hash)
   end
-
 end

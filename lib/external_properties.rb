@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012 Genome Research Ltd.
 module ExternalProperties
-
   def get_external_value(key)
     key = key.to_s
 
@@ -18,5 +17,4 @@ module ExternalProperties
   def self.included(base)
     base.send(:has_many, :external_properties, as: :propertied, dependent: :destroy)
   end
-
 end

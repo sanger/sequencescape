@@ -32,7 +32,6 @@ Given /^I have created a sequenom plate$/ do
   seq_plate.connect_input_plates(input_plate_names.values)
 
   step("1 pending delayed jobs are processed")
-
 end
 
 Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |number_of_wells, plate_purpose_name, plate_barcode|

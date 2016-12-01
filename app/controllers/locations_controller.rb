@@ -78,5 +78,4 @@ class LocationsController < ApplicationController
   def find_location_by_id
     @location = Location.find(params[:id])
   end
-
 end

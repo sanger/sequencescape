@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class Api::Messages::BarcodeIO < Api::Base
-
   renders_model(::Asset)
 
   map_attribute_to_json_attribute(:uuid, 'barcodable_uuid')
@@ -15,5 +14,4 @@ class Api::Messages::BarcodeIO < Api::Base
   map_attribute_to_json_attribute(:barcode_type, 'barcode_type')
   map_attribute_to_json_attribute(:updated_at)
   map_attribute_to_json_attribute(:created_at)
-
 end

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ConfigurationTest < ActiveSupport::TestCase
-
   attr_reader :configuration
 
   def setup
@@ -20,7 +19,6 @@ class ConfigurationTest < ActiveSupport::TestCase
   end
 
   context "without a folder" do
-
     setup do
       configuration.load!
     end
@@ -31,7 +29,6 @@ class ConfigurationTest < ActiveSupport::TestCase
   end
 
   context "with a valid folder" do
-
     attr_reader :folder
 
     setup do
@@ -76,7 +73,5 @@ class ConfigurationTest < ActiveSupport::TestCase
         assert configuration.columns.send(k).frozen?
       end
     end
-
   end
-
 end

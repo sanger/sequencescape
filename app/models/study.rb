@@ -4,11 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-
 require 'aasm'
 
 class Study < ActiveRecord::Base
-
   include StudyReport::StudyDetails
   include ModelExtensions::Study
 
@@ -34,7 +32,6 @@ class Study < ActiveRecord::Base
   acts_as_authorizable
 
   aasm column: :state, whiny_persistence: true do
-
     state :pending, initial: true
     state :active, enter: :mark_active
     state :inactive, enter: :mark_deactive
@@ -50,7 +47,6 @@ class Study < ActiveRecord::Base
     event :deactivate do
       transitions to: :inactive, from: [:pending, :active]
     end
-
   end
 
   attr_accessor :approval
@@ -263,7 +259,6 @@ class Study < ActiveRecord::Base
     # Behaviour can't go here, as :if also toggles the saving of the required information.
     attribute(:data_access_group, with: /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
 
-
     # SNP information
     attribute(:snp_study_id, integer: true)
     attribute(:snp_parent_study_id, integer: true)
@@ -293,11 +288,9 @@ class Study < ActiveRecord::Base
         record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
       end
     end
-
   end
 
   class Metadata
-
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES
     end
@@ -340,7 +333,6 @@ class Study < ActiveRecord::Base
       errors.add(:separate_y_chromosome_data, 'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
       !remove_x_and_autosomes?
     end
-
 
     before_validation do |record|
       if not record.non_standard_agreement? and not record.data_release_non_standard_agreement.nil?
@@ -503,7 +495,6 @@ class Study < ActiveRecord::Base
     )
   }
 
-
   scope :contaminated_with_human_dna, ->() {
     joins(:study_metadata).
     where(
@@ -521,7 +512,6 @@ class Study < ActiveRecord::Base
       }
     )
   }
-
 
   def ebi_accession_number
     self.study_metadata.study_ebi_accession_number
@@ -589,5 +579,4 @@ class Study < ActiveRecord::Base
   def subject_type
     'study'
   end
-
 end

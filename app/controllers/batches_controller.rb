@@ -61,7 +61,6 @@ class BatchesController < ApplicationController
   end
 
   def update
-
     if batch_parameters[:assignee_id]
       user = User.find(batch_parameters[:assignee_id])
       assigned_message = "Assigned to #{user.name} (#{user.login})."
@@ -397,7 +396,6 @@ class BatchesController < ApplicationController
     end
   end
 
-
   def print_multiplex_barcodes
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                         LabelPrinter::Label::BatchMultiplex,
@@ -423,7 +421,6 @@ class BatchesController < ApplicationController
 
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
-
 
   def print_barcodes
     unless @batch.requests.empty?
@@ -598,7 +595,6 @@ class BatchesController < ApplicationController
     send_data csv_string, type: "text/plain",
      filename: "batch_#{@batch.id}_report.csv",
      disposition: 'attachment'
-
   end
 
   def pacbio_sample_sheet
@@ -614,7 +610,6 @@ class BatchesController < ApplicationController
      filename: "batch_#{@batch.id}_worksheet.csv",
      disposition: 'attachment'
   end
-
 
   def find_batch_by_barcode
     # Caution! This isn't actually a rails finder.
@@ -687,5 +682,4 @@ class BatchesController < ApplicationController
       format.xml { head :created, location: batch_url(@batch) }
     end
   end
-
 end

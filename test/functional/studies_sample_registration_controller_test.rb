@@ -92,7 +92,6 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             post :create, study_id: @study, sample_registrars: {}
           end
 
-
           should set_flash.now.to('You do not appear to have specified any samples')
 
           should render_template :new
@@ -202,7 +201,6 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           end
 
           context 'sample 1' do
-
             setup do
               @sample = Sample.find_by_name("Sam1")
             end
@@ -210,7 +208,6 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             should 'have the 2D barcode on the asset' do
               assert_equal "SI0000012345", @sample.assets.first.two_dimensional_barcode
             end
-
           end
 
           context 'sample 2' do
@@ -237,5 +234,4 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
       end
     end
   end
-
 end

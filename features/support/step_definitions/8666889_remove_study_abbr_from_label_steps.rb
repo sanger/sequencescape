@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 When /^I print the following labels$/ do |table|
-
   label_bitmaps = {}
   table.hashes.each do |h|
     field, value = ["Field", "Value"].map { |k| h[k] }
@@ -43,9 +42,7 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
     request_options: { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "76", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => "Illumina cDNA protocol" }
     )
   step("1 pending delayed jobs are processed")
-
 end
-
 
 Given /^the child asset of "([^"]*)" has a sanger_sample_id of "([^"]*)"$/ do |sample_tube_name, sanger_sample_id|
  sample_tube = SampleTube.find_by_name(sample_tube_name)

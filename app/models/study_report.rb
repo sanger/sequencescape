@@ -48,5 +48,4 @@ class StudyReport < ActiveRecord::Base
   def priority
     configatron.delayed_job.fetch(:study_report_priority) || 100
   end
-
 end

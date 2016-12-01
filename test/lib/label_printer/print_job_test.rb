@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class PrintJobTest < ActiveSupport::TestCase
-
   attr_reader :print_job, :plates, :plate, :plate_purpose, :barcode_printer, :attributes
 
   def setup
@@ -72,5 +71,4 @@ class PrintJobTest < ActiveSupport::TestCase
     refute print_job.execute
     assert_equal 1, print_job.errors.count
   end
-
 end

@@ -6,7 +6,6 @@
 # encoding: utf-8
 
 class Parsers::BioanalysisCsvParser
-
   class InvalidFile < StandardError; end
 
   attr_reader :content
@@ -69,7 +68,6 @@ class Parsers::BioanalysisCsvParser
     group_contents = get_group_content(range)
 
     group_contents.each_with_index do |line, pos|
-
       if line[0].present? && line[0].match(regexp) && group.empty?
         group.push(pos)
       elsif (line.empty? && group.one?)
@@ -159,5 +157,4 @@ class Parsers::BioanalysisCsvParser
       /Version Created/ === line[0] && /^B.*/ === line[1]
     end.present?
   end
-
 end

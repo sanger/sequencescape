@@ -50,7 +50,6 @@ class Accessionable::Submission < Accessionable::Base
           }
         end
 
-
         modifications.each do |accessionable|
           xml.ACTION {
             xml.MODIFY(
@@ -69,7 +68,6 @@ class Accessionable::Submission < Accessionable::Base
     }
     return xml.target!
   end
-
 
   def state_action(accessionable)
     if accessionable.protect?(@service)

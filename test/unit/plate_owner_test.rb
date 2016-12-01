@@ -44,7 +44,5 @@ class OwnerTest < ActionController::TestCase
       assert_equal @child_plate.owner, @user2
       assert_equal @child_plate.plate_owner.eventable, @tf_event
     end
-
   end
-
 end

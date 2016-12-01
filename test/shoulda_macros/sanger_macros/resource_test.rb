@@ -8,7 +8,6 @@ module Sanger
   module Testing
     module Controller
       module Macros
-
         RESTFUL_ACTIONS = %w(index new create show update destroy edit).freeze
 
         def resource_test(resource_name, params = {})

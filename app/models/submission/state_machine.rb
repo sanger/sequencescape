@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-
 require 'aasm'
 
 module Submission::StateMachine
@@ -19,7 +18,6 @@ module Submission::StateMachine
       def editable?
         state == "building"
       end
-
     end
   end
 
@@ -79,9 +77,7 @@ module Submission::StateMachine
   end
 
   def configure_state_machine
-
     aasm column: :state, whiny_persistence: true do
-
       state :building,    initial: true,               exit: :valid_for_leaving_building_state
       state :pending,     enter: :complete_building
       state :processing,  enter: :process_submission!, exit: :process_callbacks!
@@ -109,7 +105,6 @@ module Submission::StateMachine
         transitions to: :failed, from: [:processing, :failed, :pending]
       end
     end
-
   end
   private :configure_state_machine
 

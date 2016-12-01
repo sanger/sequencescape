@@ -23,5 +23,4 @@ class PacBioSequencingPipeline < Pipeline
     batch.requests.each(&:transfer_aliquots)
     Messenger.create!(target: batch, template: 'PacBioRunIO', root: 'pac_bio_run')
   end
-
 end

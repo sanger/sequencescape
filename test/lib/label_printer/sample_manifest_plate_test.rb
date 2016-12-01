@@ -1,11 +1,9 @@
 require 'test_helper'
 
 class SampleManifestPlateTest < ActiveSupport::TestCase
-
   attr_reader :only_first_label, :manifest, :plate_label, :plate1, :plate2, :plates, :study_abbreviation, :purpose, :barcode1, :label
 
   context "labels for plate sample manifest rapid_core" do
-
     setup do
       barcode = mock("barcode")
       barcode.stubs(:barcode).returns(23)
@@ -57,11 +55,9 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
       assert_equal label, plate_label.create_label(plate1)
       assert_equal ({ main_label: label }), plate_label.label(plate1)
     end
-
   end
 
   context "labels for plate sample manifest core" do
-
     setup do
       barcode = mock("barcode")
       barcode.stubs(:barcode).returns(23)
@@ -79,7 +75,5 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
       assert_equal 2, plates.count
       assert_equal plates, plate_label.plates
     end
-
   end
-
 end

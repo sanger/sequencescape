@@ -25,7 +25,6 @@ FactoryGirl.define do
     factory :order_with_submission do
       after(:build) { |o| o.create_submission(user_id: o.user_id) }
     end
-
   end
 end
 

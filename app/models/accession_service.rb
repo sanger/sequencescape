@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class AccessionService
-
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
@@ -103,7 +102,6 @@ class AccessionService
 
     # TODO check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
-
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
@@ -287,5 +285,4 @@ private
       raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
     end
   end
-
 end

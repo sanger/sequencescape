@@ -58,8 +58,8 @@ class Admin::BaitLibrariesController < ApplicationController
   end
 
   private
+
   def discover_bait_library
     @bait_library = BaitLibrary.find(params[:id])
   end
-
 end

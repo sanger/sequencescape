@@ -6,7 +6,6 @@
 
 require "test_helper"
 class ReceptionsControllerTest < ActionController::TestCase
-
   context "Sample Reception" do
     setup do
       @controller = ReceptionsController.new
@@ -113,7 +112,5 @@ class ReceptionsControllerTest < ActionController::TestCase
         end
       end
     end
-
   end
-
 end

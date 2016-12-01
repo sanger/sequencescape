@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
-
 # Ideally we'd convert this into a scope/association, but its complicated by the need to associate across
 # two models, one of which we're trying to deprecate.
 require 'will_paginate/array'
@@ -67,6 +66,5 @@ module UiHelper
     def size
       @summary_items.size
     end
-
   end
 end

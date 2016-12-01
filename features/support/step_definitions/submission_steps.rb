@@ -26,7 +26,6 @@ When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, 
   submission.update_attributes!(state: state)
 end
 
-
 Then /^there should be no submissions to be processed$/ do
   step "there should be no delayed jobs to be processed"
 end
@@ -107,7 +106,6 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   "Illumina-B Single ended hi seq sequencing" => SENSIBLE_DEFAULTS_HISEQ,
   "Illumina-B HiSeq Paired end sequencing"    => SENSIBLE_DEFAULTS_HISEQ,
 
-
   # PacBio defaults
   "PacBio Library Prep" => {}
 }
@@ -162,7 +160,6 @@ Then /^I create the order and submit the submission/ do
   step 'I press "Create Order"'
   step 'I press "Submit"'
 end
-
 
 Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_name, table|
   submission_template = SubmissionTemplate.find_by_name(template_name)

@@ -99,8 +99,8 @@ module Accessionable
     def released?
       @sample.released?
     end
-
   end
+
   private
 
   class ArrayExpressTag < Base::Tag

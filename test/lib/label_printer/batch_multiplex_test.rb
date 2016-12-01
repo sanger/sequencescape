@@ -2,7 +2,6 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class BatchMultiplexTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedTubeTests
 
   attr_reader :tube_label, :prefix, :barcode1, :tube1, :label
@@ -37,5 +36,4 @@ class BatchMultiplexTest < ActiveSupport::TestCase
   test 'should return correct top_line value' do
     assert_equal "(p) #{@tube_name}", tube_label.top_line(tube1)
   end
-
 end

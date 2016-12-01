@@ -10,7 +10,6 @@ module Sanger
   module Testing
     module Controller
       module Macros
-
         def should_have_instance_methods(*methods)
           dt = described_type
           should "have instance methods #{methods.join(',')}" do
@@ -56,7 +55,6 @@ module Sanger
               end
               context "when not logged in" do
                 setup do
-
                   session[:user] = nil
 
                   begin

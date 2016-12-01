@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class AssetGroupRedirectTest < ActiveSupport::TestCase
-
   attr_reader :asset_redirect, :labels, :assets, :asset, :barcode1, :barcode2, :barcode3, :prefix, :asset_name
 
   context "print plates from asset group controller" do
@@ -142,5 +141,4 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       assert_equal ({ labels: { body: labels } }), asset_redirect.to_h
     end
   end
-
 end

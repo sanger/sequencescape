@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class CherrypickForFluidigmRequest < CherrypickRequest
-
   has_metadata as: Request do
     belongs_to :target_purpose, class_name: 'Purpose'
     association(:target_purpose, :name)
@@ -15,5 +14,4 @@ class CherrypickForFluidigmRequest < CherrypickRequest
   def target_purpose
     request_metadata.target_purpose
   end
-
 end

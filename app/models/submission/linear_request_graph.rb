@@ -48,9 +48,11 @@ module Submission::LinearRequestGraph
     def initialize(contents)
       @contents = contents
     end
+
     def [](_)
       @contents
     end
+
     def uniq
       [@contents]
     end
@@ -141,5 +143,4 @@ module Submission::LinearRequestGraph
     Item.create!(workflow: workflow, name: "#{asset.display_name} #{id}", submission: self.submission)
   end
   private :create_item_for!
-
 end

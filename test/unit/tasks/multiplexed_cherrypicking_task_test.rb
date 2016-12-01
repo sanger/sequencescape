@@ -7,7 +7,6 @@
 require "test_helper"
 
 class DummyWorkflowController < WorkflowsController
-
   attr_accessor :flash, :batch
 
   def initialize
@@ -16,7 +15,6 @@ class DummyWorkflowController < WorkflowsController
 end
 
 class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
-
   MockBc = Struct.new(:barcode)
 
   def self.shared
@@ -77,22 +75,18 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
     context "#do_assign_requests_to_multiplexed_wells_task with existing plate" do
       setup do
-
           @plate = create :plate
 
           @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
 
           @barcode = @plate.ean13_barcode
           @purpose_id = "33"
-
       end
 
       shared
 
       context "with no tag clashes" do
-
         setup do
-
           tag_hash = Hash.new { |h, i| h[i] = create :tag }
           @tags = [1, 2, 3, 4, 5, 6, 7, 8].map { |i| tag_hash[i] }
 
@@ -110,7 +104,6 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         should "set target assets appropriately" do
           assert @task.do_task(@workflows_controller, params)
         end
-
       end
     end
 
@@ -120,14 +113,12 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         @purpose = create :plate_purpose
         @purpose_id = @purpose.id.to_s
         @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
-
       end
 
       shared
 
       context "with no tag clashes" do
         setup do
-
           @tags = Array.new(8) { create :tag }
           @requests = (1..8).map do |i|
             r = create :pooled_cherrypick_request
@@ -160,7 +151,6 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
       context "with identical samples" do
         setup do
-
           @tag = create :tag
           @sample = create :sample
           @requests = (1..8).map do |i|
@@ -185,6 +175,5 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
 end

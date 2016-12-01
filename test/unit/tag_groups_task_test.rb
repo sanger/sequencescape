@@ -7,14 +7,12 @@
 require "test_helper"
 
 class TagGroupsTaskTest < TaskTestBase
-
   class DummyWorkflowController < WorkflowsController
     attr_accessor :batch, :pipeline
   end
 
   context '#render_tag_groups_task' do
     setup do
-
       @object = task_instance_for(::Tasks::TagGroupHandler) do
         attr_reader :tag_groups
       end
