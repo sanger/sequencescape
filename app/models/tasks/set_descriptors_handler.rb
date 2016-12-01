@@ -53,11 +53,11 @@ module Tasks::SetDescriptorsHandler
                 end
               end
 
-              if !params[:requests].nil? && !params[:requests]["#{request.id}"].nil? && !params[:requests]["#{request.id}"][:descriptors].nil?
+              if !params[:requests].nil? && !params[:requests][(request.id).to_s].nil? && !params[:requests][(request.id).to_s][:descriptors].nil?
                 # Descriptors: create description for event
 
-                event.descriptors = params[:requests]["#{request.id}"][:descriptors]
-                event.descriptor_fields = ordered_fields(params[:requests]["#{request.id}"][:fields])
+                event.descriptors = params[:requests][(request.id).to_s][:descriptors]
+                event.descriptor_fields = ordered_fields(params[:requests][(request.id).to_s][:fields])
 
               end
 

@@ -76,9 +76,9 @@ module Sanger
         def self.dyn_mappings(data_object)
           dyn_mappings = ""
           each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
-            source_barcode = "#{mapping["src_well"][0]}"
-            source_name = data_object["source"]["#{mapping["src_well"][0]}"]["name"]
-            source_position = Map::Coordinate.description_to_vertical_plate_position(mapping["src_well"][1], data_object["source"]["#{mapping["src_well"][0]}"]["plate_size"])
+            source_barcode = (mapping["src_well"][0]).to_s
+            source_name = data_object["source"][(mapping["src_well"][0]).to_s]["name"]
+            source_position = Map::Coordinate.description_to_vertical_plate_position(mapping["src_well"][1], data_object["source"][(mapping["src_well"][0]).to_s]["plate_size"])
             destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"], plate_details["plate_size"])
             temp = [
               "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",

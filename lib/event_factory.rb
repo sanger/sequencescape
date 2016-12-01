@@ -49,7 +49,7 @@ class EventFactory
     recipients_email = []
     project_manager_email = ""
     unless project.manager.blank?
-      project_manager_email = "#{project.manager.email}"
+      project_manager_email = (project.manager.email).to_s
       recipients_email << project_manager_email
     end
     if user.is_administrator?

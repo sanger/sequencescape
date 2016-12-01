@@ -13,11 +13,11 @@ module LabelPrinter
       end
 
       def top_right(plate)
-        "#{plate.label_text_top}"
+        (plate.label_text_top).to_s
       end
 
       def bottom_right(plate)
-        "#{plate.label_text_bottom}"
+        (plate.label_text_bottom).to_s
       end
     end
   end

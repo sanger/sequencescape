@@ -1363,11 +1363,6 @@ Style/UnlessElse:
     - 'lib/tasks/code_quality_tests.rake'
     - 'lib/tasks/request.rake'
 
-# Offense count: 183
-# Cop supports --auto-correct.
-Style/UnneededInterpolation:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/VariableInterpolation:

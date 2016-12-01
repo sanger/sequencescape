@@ -16,7 +16,7 @@ module AssetsHelper
     elsif plate_layout.good_well_at?(row, column)
       ["Request ID: #{well[:request].id}", "Asset: #{well[:asset].name}", "Barcode: #{well[:asset].barcode}"]
     elsif plate_layout.bad_well_at?(row, column)
-      ["Error", "#{well[:error]}", ""]
+      ["Error", (well[:error]).to_s, ""]
     else
       raise StandardError, "Unknown well status ((#{plate_layout.location_for_well_at(row, column)}) = #{plate_layout.well_at(row, column).inspect})"
     end

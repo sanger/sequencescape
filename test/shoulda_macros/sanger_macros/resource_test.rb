@@ -170,7 +170,7 @@ module Sanger
 
               context "should not have untested action" do
                 untested_actions.each do |action|
-                  should "#{action}" do
+                  should action.to_s do
                     assert_raise AbstractController::ActionNotFound do
                       get action
                     end
@@ -200,8 +200,8 @@ module Sanger
                       end
                       should respond_with :success
                       should "have api version attribute on root object" do
-                        assert_tag tag: "#{resource_name.to_s.pluralize}", attributes: { api_version: "0.6" }
-                        assert_tag tag: "#{resource_name.to_s.pluralize}"
+                        assert_tag tag: (resource_name.to_s.pluralize).to_s, attributes: { api_version: "0.6" }
+                        assert_tag tag: (resource_name.to_s.pluralize).to_s
                       end
                     end
                   end
@@ -215,8 +215,8 @@ module Sanger
                       end
                       should respond_with :success
                       should "show xml" do
-                        assert_tag tag: "#{resource_name}", attributes: { api_version: RELEASE.api_version }
-                        assert_tag tag: "#{resource_name}"
+                        assert_tag tag: resource_name.to_s, attributes: { api_version: RELEASE.api_version }
+                        assert_tag tag: resource_name.to_s
                       end
                     end
                   end

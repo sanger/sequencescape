@@ -152,7 +152,7 @@ module Rake
 
       desc 'Remove package files'
       task :clobber_package do
-        @dest = "#@package_dir"
+        @dest = @package_dir.to_s
         if File.exist?(@dest)
           FileUtils.remove_dir @dest
         end
@@ -185,7 +185,7 @@ module Rake
 
     # Add a file to the folders hash
     def add_file(filename)
-      dir = File.dirname(filename).gsub("#{@dest}", ".")
+      dir = File.dirname(filename).gsub(@dest.to_s, ".")
       fn = File.basename(filename)
       folder = @folders[dir] || @folders[dir] = []
       folder << fn
@@ -193,7 +193,7 @@ module Rake
 
     # Add a folder to the folders hash
     def add_folder(folder_name)
-      dir = File.dirname(folder_name).gsub("#{@dest}", ".").gsub("./", "")
+      dir = File.dirname(folder_name).gsub(@dest.to_s, ".").gsub("./", "")
       fn = File.basename(folder_name) + "/"
       folder = @folders[dir] || @folders[dir] = []
       folder << fn

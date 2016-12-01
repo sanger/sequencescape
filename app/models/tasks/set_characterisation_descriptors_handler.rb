@@ -19,11 +19,11 @@ module Tasks::SetCharacterisationDescriptorsHandler
     @batch.requests.each do |request|
       event = LabEvent.new(batch_id: @batch.id, description: @task.name)
 
-      if params[:requests].present? && params[:requests]["#{request.id}"].present? && params[:requests]["#{request.id}"][:descriptors].present?
+      if params[:requests].present? && params[:requests][(request.id).to_s].present? && params[:requests][(request.id).to_s][:descriptors].present?
         # Descriptors: create description for event
 
-        event.descriptors = params[:requests]["#{request.id}"][:descriptors]
-        event.descriptor_fields = ordered_fields(params[:requests]["#{request.id}"][:fields])
+        event.descriptors = params[:requests][(request.id).to_s][:descriptors]
+        event.descriptor_fields = ordered_fields(params[:requests][(request.id).to_s][:fields])
 
       end
 

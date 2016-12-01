@@ -84,12 +84,12 @@ class AssetsControllerTest < ActionController::TestCase
     should "#print_assets should send print request" do
       asset = create :child_plate
       RestClient.expects(:post)
-      post :print_assets, printables: asset, printer: barcode_printer.name, id: "#{asset.id}"
+      post :print_assets, printables: asset, printer: barcode_printer.name, id: (asset.id).to_s
     end
     should "#print_labels should send print request" do
       asset = create :sample_tube
       RestClient.expects(:post)
-      post :print_labels, printables: { "#{asset.id}" => "true" }, printer: barcode_printer.name, id: "#{asset.id}"
+      post :print_labels, printables: { (asset.id).to_s => "true" }, printer: barcode_printer.name, id: (asset.id).to_s
     end
   end
 

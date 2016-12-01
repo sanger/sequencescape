@@ -438,7 +438,7 @@ class Asset < ActiveRecord::Base
   end
 
   def generate_machine_barcode
-    "#{Barcode.calculate_barcode(barcode_prefix.prefix, barcode.to_i)}"
+    (Barcode.calculate_barcode(barcode_prefix.prefix, barcode.to_i)).to_s
   end
 
   def external_release_text

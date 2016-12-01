@@ -29,7 +29,7 @@ class SequencingRequest < CustomerRequest
   def create_assets_for_multiplexing
     barcode = AssetBarcode.new_barcode
     # Needs a sample?
-    puldown_mx_library = PulldownMultiplexedLibraryTube.create!(name: "#{barcode}", barcode: barcode)
+    puldown_mx_library = PulldownMultiplexedLibraryTube.create!(name: barcode.to_s, barcode: barcode)
     lane = Lane.create!(name: puldown_mx_library.name)
 
     self.update_attributes!(asset: puldown_mx_library, target_asset: lane)

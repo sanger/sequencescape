@@ -89,7 +89,7 @@ namespace :test do
       super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)' +
         ' -and \( -name "*.rb" -or -name "*.rake" \)' +
         ' -exec ruby -c {} \; ) 2>&1'
-      pipe = IO.popen("#{super_find_cmd}")
+      pipe = IO.popen(super_find_cmd.to_s)
       pipe.each do |line| # From the perspective of the new pseudo terminal
         unless line !~ /Syntax OK/
           putc '.'

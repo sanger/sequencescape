@@ -77,7 +77,7 @@ module SampleManifestExcel
       if worksheet_name.present?
         "#{worksheet_name}!#{fixed_reference}"
       else
-        "#{fixed_reference}"
+        (fixed_reference).to_s
       end
     end
 

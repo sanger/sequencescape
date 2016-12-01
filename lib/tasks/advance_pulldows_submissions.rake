@@ -27,7 +27,7 @@ namespace :benchmark do
     [
       'Pulldown WGS'
     ].each do |pipeline|
-      $stderr.puts "#{pipeline}"
+      $stderr.puts pipeline.to_s
 
       $stderr.puts "Building #{plate_count} Plates"
       plate_count.times do

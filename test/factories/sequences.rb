@@ -16,7 +16,7 @@ FactoryGirl.define do
   end
 
   sequence :barcode do |n|
-    "#{n}"
+    n.to_s
   end
 
   sequence :budget_division_name do |n|

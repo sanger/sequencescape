@@ -139,7 +139,7 @@ qc_completed
         h_doc["batch"] = self.id
         h_doc["keys"] = {}
         task.descriptors.each do |t|
-          h_doc["keys"]["#{t.key}"] = t.value
+          h_doc["keys"][(t.key).to_s] = t.value
         end
         doc = h_doc.to_xml(root: "criteria", skip_types: true)
         # A *Hacky* solution to get the XML readable for Chainlink
@@ -163,19 +163,19 @@ qc_completed
 
     if batch.requests
       batch.requests.each do |item|
-        temp_variable["#{item}"] = item
+        temp_variable[item.to_s] = item
         if batch.qc_pipeline.previous_pipeline
           batch.qc_pipeline.previous_pipeline.workflow.tasks.each do |task|
             item.lab_events.each do |event|
               if event.description == task.name
                 grouped_descriptors = {}
-                grouped_descriptors["#{task.name}"] = {}
+                grouped_descriptors[(task.name).to_s] = {}
                 event.descriptors.each do |descriptor|
                   unless excluding_descriptors.include? descriptor.name
-                    grouped_descriptors["#{task.name}"]["#{descriptor.name}"] = descriptor.value
+                    grouped_descriptors[(task.name).to_s][(descriptor.name).to_s] = descriptor.value
                   end
                 end
-                temp_variable["#{item}"]["qc_data"] = grouped_descriptors
+                temp_variable[item.to_s]["qc_data"] = grouped_descriptors
               end
             end
           end

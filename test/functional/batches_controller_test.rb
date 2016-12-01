@@ -267,7 +267,7 @@ class BatchesControllerTest < ActionController::TestCase
                 EventSender.expects(:send_fail_event).returns(true).times(1)
                 post :fail_items, id: @batch_one.id,
                                   failure: { reason: "PCR not completed", comment: "" },
-                                  requested_fail: { "#{@request_one.id}" => "on" }
+                                  requested_fail: { (@request_one.id).to_s => "on" }
               end
               should "create a failure on each item in this batch and have two items related" do
                 assert_equal 0, @batch_one.failures.size
@@ -342,7 +342,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, printer: barcode_printer.name, count: "3", printable: { "#{@batch.output_plates.first.barcode}" => "on" }, batch_id: "#{@batch.id}"
+        post :print_plate_barcodes, printer: barcode_printer.name, count: "3", printable: { (@batch.output_plates.first.barcode).to_s => "on" }, batch_id: (@batch.id).to_s
       end
 
       should "#print_barcodes should send print request" do
@@ -353,7 +353,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: "#{@batch.id}"
+        post :print_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: (@batch.id).to_s
       end
 
       should "#print_multiplex_barcodes should send print request" do
@@ -367,7 +367,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_multiplex_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: "#{batch.id}"
+        post :print_multiplex_barcodes, printer: barcode_printer.name, count: "3", printable: printable, batch_id: (batch.id).to_s
       end
     end
   end

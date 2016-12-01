@@ -310,7 +310,7 @@ class Batch < ActiveRecord::Base
 
   def verify_tube_layout(barcodes, user = nil)
     self.requests.each do |request|
-      barcode = barcodes["#{request.position}"]
+      barcode = barcodes[(request.position).to_s]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
           self.errors.add(:base, "The tube at position #{request.position} is incorrect.")

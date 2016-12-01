@@ -24,7 +24,7 @@ module Informatics
             return value
           end
         end
-        raise NoMethodError, "#{m}"
+        raise NoMethodError, m.to_s
       end
     end
   end

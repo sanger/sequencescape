@@ -172,8 +172,8 @@ class BatchesController < ApplicationController
     @batch.qc_complete
 
     @batch.batch_requests.each do |br|
-      if br && params["#{br.request_id}"]
-        qc_state = params["#{br.request_id}"]["qc_state"]
+      if br && params[(br.request_id).to_s]
+        qc_state = params[(br.request_id).to_s]["qc_state"]
         target = br.request.target_asset
         if qc_state == "fail"
           target.set_qc_state("failed")
@@ -471,7 +471,7 @@ class BatchesController < ApplicationController
     unless params.empty?
       8.times do |i|
         if params["barcode_#{i}"]
-          tube_barcodes["#{i + 1}"] = Barcode.split_barcode("#{params["barcode_#{i}"]}")[1]
+          tube_barcodes[(i + 1).to_s] = Barcode.split_barcode((params["barcode_#{i}"]).to_s)[1]
         end
       end
     end

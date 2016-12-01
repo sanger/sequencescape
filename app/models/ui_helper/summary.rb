@@ -36,7 +36,7 @@ module UiHelper
     def load_item(asset)
       asset.requests.map { |r| r.events }.flatten.each do |event|
         if event.message && event.message.match(/Run/)
-          self.add(SummaryItem.new({ message: "#{event.message}",
+          self.add(SummaryItem.new({ message: (event.message).to_s,
                                     object: event.eventful,
                                     timestamp: event.created_at,
                                     external_message: "Run #{event.identifier}",
@@ -47,7 +47,7 @@ module UiHelper
 
     def load_study_item(study)
       study.events.each do |event|
-        self.add(SummaryItem.new({ message: "#{event.message}",
+        self.add(SummaryItem.new({ message: (event.message).to_s,
                                   object: study,
                                   timestamp: event.created_at,
                                   external_message: "Study #{study.id}",

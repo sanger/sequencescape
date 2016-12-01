@@ -106,7 +106,7 @@ Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpre
   if interpreter_is?(interpreter.strip)
     actual_table = table(fetch_table('table.plate_layout'))
     expected_results_table.column_names.each do |column_name|
-      expected_results_table.map_column!("#{column_name}") { |text| text.squish }
+      expected_results_table.map_column!(column_name.to_s) { |text| text.squish }
     end
     expected_results_table.diff!(actual_table)
    end
@@ -193,7 +193,7 @@ end
 
 Given /^all library tube barcodes are set to know values$/ do
   PulldownMultiplexedLibraryTube.all.each_with_index do |tube, index|
-    tube.update_attributes!(barcode: "#{index + 1}")
+    tube.update_attributes!(barcode: (index + 1).to_s)
   end
 end
 

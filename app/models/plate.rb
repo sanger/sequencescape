@@ -424,7 +424,7 @@ class Plate < Asset
   end
 
   def plate_rows
-    ("A".."#{(?A.getbyte(0) + height - 1).chr}").to_a
+    ("A"..((?A.getbyte(0) + height - 1).chr).to_s).to_a
   end
 
   def plate_columns
@@ -542,7 +542,7 @@ class Plate < Asset
     begin
       params[:snp_plates].each do |index, plate_barcode_id|
         next if plate_barcode_id.blank?
-        plate = Plate.create(barcode: "#{plate_barcode_id}", name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
+        plate = Plate.create(barcode: plate_barcode_id.to_s, name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
         storage_location = Location.find(params[:asset][:location_id])
         plate.location = storage_location
         plate.save!

@@ -315,7 +315,7 @@ class Request < ActiveRecord::Base
    }
 
    scope :find_all_target_asset, ->(target_asset_id) {
-     where(['target_asset_id = ?', "#{target_asset_id}"])
+     where(['target_asset_id = ?', target_asset_id.to_s])
    }
    scope :for_studies, ->(*studies) {
      where(initial_study_id: studies)

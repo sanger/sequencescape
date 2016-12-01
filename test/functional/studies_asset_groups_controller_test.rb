@@ -144,7 +144,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_labels, printables: { "#{@asset.id}" => "true" }, printer: barcode_printer.name, id: @asset_group.id, study_id: @study.id
+        post :print_labels, printables: { (@asset.id).to_s => "true" }, printer: barcode_printer.name, id: @asset_group.id, study_id: @study.id
       end
     end
   end

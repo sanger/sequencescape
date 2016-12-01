@@ -64,7 +64,7 @@ end
 When /^I (POST|PUT) the following XML to "(\/[^\"]+)":$/ do |action, path, xml|
   page.driver.send(
     action.downcase,
-    "#{path}",
+    path.to_s,
     xml,
     { 'CONTENT_TYPE' => 'application/xml', 'HTTP_ACCEPT' => 'application/xml' }
   )

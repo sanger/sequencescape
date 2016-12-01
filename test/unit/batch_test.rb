@@ -393,7 +393,7 @@ end
       context "fail requests" do
         setup do
           EventSender.expects(:send_fail_event)
-          @requests = { "#{@request1.id}" => "on" }
+          @requests = { (@request1.id).to_s => "on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
 
@@ -415,7 +415,7 @@ end
           EventSender.expects(:send_fail_event).returns(true).times(1)
           @asset = create :sample_tube, resource: 1
           @request3 = create :request, batches: [@batch], id: 789, asset: @asset
-          @requests = { "#{@request1.id}" => "on", "control" => "on" }
+          @requests = { (@request1.id).to_s => "on", "control" => "on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
           assert_equal @request3, @batch.control
         end
@@ -424,7 +424,7 @@ end
       end
 
       should "not fail requests if value passed is not set to ON" do
-        @requests = { "#{@request1.id}" => "blue" }
+        @requests = { (@request1.id).to_s => "blue" }
         @batch.fail_batch_items(@requests, @reason, @comment)
         assert_equal 0, @batch.requests.first.failures.size
       end
@@ -432,7 +432,7 @@ end
       context "fail the batch" do
         setup do
           EventSender.expects(:send_fail_event).returns(true).times(2)
-          @requests = { "#{@request1.id}" => "on", "#{@request2.id}" => "on" }
+          @requests = { (@request1.id).to_s => "on", (@request2.id).to_s => "on" }
           @request1.expects(:terminated?).returns(true).times(1)
           @request2.expects(:terminated?).returns(true).times(1)
           @batch.fail_batch_items(@requests, @reason, @comment)
@@ -851,12 +851,12 @@ end
         # mocks to use factories instead, I'm keeping the duplicate tasks
         # until I can work out why they were added.
         @event1 = create :lab_event, description: "Complete", batch: @batch
-        @event1.add_new_descriptor "task_id", "#{@task1.id}"
-        @event1.add_new_descriptor "task_id", "#{@task1.id}"
+        @event1.add_new_descriptor "task_id", (@task1.id).to_s
+        @event1.add_new_descriptor "task_id", (@task1.id).to_s
 
         @event2 = create :lab_event, description: "Complete", batch: @batch
-        @event2.add_new_descriptor "task_id", "#{@task2.id}"
-        @event2.add_new_descriptor "task_id", "#{@task2.id}"
+        @event2.add_new_descriptor "task_id", (@task2.id).to_s
+        @event2.add_new_descriptor "task_id", (@task2.id).to_s
 
         @batch.lab_events = [@event1, @event2]
       end

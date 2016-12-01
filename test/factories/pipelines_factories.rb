@@ -302,7 +302,7 @@ FactoryGirl.define do
 
   factory :delayed_message do |dm|
     message            "1"
-    queue_attempt_at   "#{Time.now}"
+    queue_attempt_at   (Time.now).to_s
     queue_name         "3"
   end
 

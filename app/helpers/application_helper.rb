@@ -81,7 +81,7 @@ module ApplicationHelper
   def dynamic_link_to(summary_item)
     object = summary_item.object
     if object.instance_of?(Asset)
-        return link_to("#{object.name}", asset_path(object))
+        return link_to((object.name).to_s, asset_path(object))
     elsif object.instance_of?(Request)
         return link_to("Request #{object.id}", request_path(object))
     else
@@ -223,7 +223,7 @@ module ApplicationHelper
   end
 
   def horizontal_tab(name, key, related_div, tab_no, selected = false)
-    link_to raw("#{name}"), "javascript:void(0);", 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: "#{key}", class: "#{selected ? "selected " : ""}tab#{tab_no}"
+    link_to raw(name.to_s), "javascript:void(0);", 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "#{selected ? "selected " : ""}tab#{tab_no}"
     # link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
   end
 
@@ -303,6 +303,6 @@ module ApplicationHelper
   # The admin email address should be stored in config.yml for the current environment
   def help_email_link
     admin_address = configatron.admin_email || "admin@test.com"
-    link_to "#{admin_address}", "mailto:#{admin_address}"
+    link_to admin_address.to_s, "mailto:#{admin_address}"
   end
 end

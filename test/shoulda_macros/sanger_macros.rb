@@ -32,7 +32,7 @@ module Sanger
           params = actions.pop if actions.last.is_a?(Hash)
           actions << :index if actions.empty?
           actions.each do |action|
-            context "#{action}" do
+            context action.to_s do
               context "when logged in" do
                 setup do
                   session[:user] = create(:user)
