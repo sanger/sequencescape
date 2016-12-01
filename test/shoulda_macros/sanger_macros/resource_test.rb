@@ -116,9 +116,8 @@ module Sanger
               if actions.include?('create')
                 context "should create" do
                   setup do
-                    local_params = @input_params
-                    local_params[resource_name] = @create_options
-                    post :create, local_params
+                    @input_params[resource_name] = @create_options
+                    post :create, @input_params
                   end
                   # assert eval "@object".valid?
                   should redirect_to("show page") { eval(show_url) }
@@ -129,9 +128,8 @@ module Sanger
                 context "should show #{resource_name}" do
                   setup do
                     @object = create resource_name, @factory_options
-                    local_params = @input_params
-                    local_params[:id] = @object.id
-                    get :show, local_params
+                    @input_params[:id] = @object.id
+                    get :show, @input_params
                   end
                   should respond_with :success
                 end
@@ -141,9 +139,8 @@ module Sanger
                 context "should get edit" do
                   setup do
                     @object = create resource_name, @factory_options
-                    local_params = @input_params
-                    local_params[:id] = @object.id
-                    get :edit, local_params
+                    @input_params[:id] = @object.id
+                    get :edit, @input_params
                   end
                   should respond_with :success
                 end
@@ -153,10 +150,9 @@ module Sanger
                 context "should update" do
                   setup do
                     @object = create resource_name
-                    local_params = @input_params
-                    local_params[resource_name] = @create_options
-                    local_params[:id] = @object.id
-                    put :update, local_params
+                    @input_params[resource_name] = @create_options
+                    @input_params[:id] = @object.id
+                    put :update, @input_params
                   end
                   should redirect_to("show page") { eval(show_url) }
                 end
@@ -166,9 +162,8 @@ module Sanger
                 context "should destroy" do
                   setup do
                     @object = create resource_name
-                    local_params = @input_params
-                    local_params[:id] = @object.id
-                    delete :destroy, local_params
+                    @input_params[:id] = @object.id
+                    delete :destroy, @input_params
                   end
                   should redirect_to("index page") { eval(index_url) }
                 end
@@ -202,8 +197,7 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = "application/xml"
-                        local_params = @input_params
-                        get :index, local_params
+                        get :index, @input_params
                       end
                       should respond_with :success
                       should "have api version attribute on root object" do
@@ -217,9 +211,8 @@ module Sanger
                       setup do
                         @request.accept = "application/xml"
                         @object = create resource_name, @factory_options
-                        local_params = @input_params
-                        local_params[:id] = @object.id
-                        get :show, local_params
+                        @input_params[:id] = @object.id
+                        get :show, @input_params
                       end
                       should respond_with :success
                       should "show xml" do
@@ -235,8 +228,7 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = "text/x-json"
-                        local_params = @input_params
-                        get :index, local_params
+                        get :index, @input_params
                       end
                       should respond_with :success
                       should "be JSON" do
@@ -249,9 +241,8 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = "text/x-json"
-                        local_params = @input_params
-                        local_params[:id] = @object.id
-                        get :show, local_params
+                        @input_params[:id] = @object.id
+                        get :show, @input_params
                       end
                       should respond_with :success
                       should "be JSON" do
