@@ -143,7 +143,7 @@ module Tasks::AssignTubesToWellsHandler
   end
 
   def assets_from_requests_sorted_by_id
-    @asbi ||= assets_from_requests.sort { |a, b| a.id <=> b.id }
+    @asbi ||= assets_from_requests.sort_by(&:id)
   end
 
   def calculate_number_of_wells_library_needs_to_use(task, params)
