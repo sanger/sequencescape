@@ -21,7 +21,6 @@ class FakeAccessionService
   def self.install_hooks(target, tags)
     target.instance_eval do
       Before(tags) do |scenario|
-
         # Set up our evesdropper
         AccessionService.rest_client_class = EvesdropResource
 
@@ -99,7 +98,6 @@ class FakeAccessionService
   def add_payload(payload)
     sent.push(Hash[*payload.map { |k, v| [k, v.readlines] }.map { |k, v| [k, (v unless v.empty?)] }.flatten])
   end
-
 end
 
 require 'rest_client'

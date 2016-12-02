@@ -8,8 +8,6 @@ require "test_helper"
 
 class QcDecisionTest < ActiveSupport::TestCase
   context "QcDecision" do
-
-
     should belong_to :user
     should belong_to :lot
 
@@ -48,7 +46,6 @@ class QcDecisionTest < ActiveSupport::TestCase
           assert_equal 2, @qcd.qc_decision_qcables.count
           assert_equal ['fail', 'release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
         end
-
       end
 
       should "reject invalid state transitions" do
@@ -76,8 +73,6 @@ class QcDecisionTest < ActiveSupport::TestCase
           )
         end
       end
-
     end
   end
-
 end

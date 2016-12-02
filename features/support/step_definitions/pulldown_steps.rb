@@ -84,13 +84,10 @@ Given /^"([^\"]+)" of (the plate .+) and (the plate .+) both been (submitted to 
 end
 
 Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
-
-
   submission = FactoryGirl.create :submission
   plate.wells.select(&range.method(:include?)).each do |well|
     FactoryGirl.create :transfer_request, submission: submission, target_asset: well
   end
-
 end
 
 Given /^"([^\"]+)" of (the plate .+) have been failed$/ do |range, plate|
@@ -108,16 +105,13 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^\"]+") with the 
   )
 end
 
-
 Given /^the plate (.+) has been submitted to "([^"]+)"$/ do |info, template|
   step(%Q{"A1-H12" of the plate #{info} have been submitted to "#{template}"})
 end
 
-
 Given /^the plate (.+) and (.+) have been submitted to "([^"]+)"$/ do |info, info2, template|
   step(%Q{"A1-H12" of the plate #{info} and the plate #{info2} both been submitted to "#{template}"})
 end
-
 
 Given /^H12 on (the plate .+) is empty$/ do |plate|
   plate.wells.located_at('H12').first.aliquots.clear
@@ -134,7 +128,7 @@ def work_pipeline_for(submissions, name, template = nil)
   source_plate.wells.each do |w|
     next if w.aliquots.empty?
     FactoryGirl.create(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
-    w.requests_as_source.first.start!                           # Ensure request is considered started
+    w.requests_as_source.first.start! # Ensure request is considered started
   end
 
   source_plate.plate_purpose.child_relationships.create!(child: final_plate_type, transfer_request_type: RequestType.transfer)
@@ -154,7 +148,6 @@ def finalise_pipeline_for(plate)
     end
   end
 end
-
 
 # A bit of a fudge but it'll work for the moment.  We essentially link the last plate of the different
 # pipelines back to the stock plate directly.  Eventually these can grow into a proper work through of
@@ -219,7 +212,6 @@ end
 Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
   Plate.find(id).wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
 end
-
 
 Given /^all requests are in the last submission$/ do
   submission = Submission.last or raise StandardError, "There are no submissions!"

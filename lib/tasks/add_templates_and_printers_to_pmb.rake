@@ -3,13 +3,10 @@ require_relative '../../config/config'
 
 namespace :pmb do
   task add_label_templates: :environment do
-
     class LabelTemplateCreator
-
       attr_accessor :label_types
 
       class << self
-
         def label_template_url
           "#{LabelPrinter::PmbClient.base_url}/label_templates"
         end
@@ -176,11 +173,9 @@ namespace :pmb do
     end
 
     LabelTemplateCreator.execute
-
   end
 
   task add_printers: :environment do
-
     def register_printer(name)
       RestClient.post(printer_url, { "data" => { "attributes" => { "name" => name } } }, LabelPrinter::PmbClient.headers)
     end
@@ -204,6 +199,5 @@ namespace :pmb do
     end
 
     add_printers
-
   end
 end

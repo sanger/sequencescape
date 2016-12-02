@@ -14,7 +14,6 @@ module Core::Service::Authentication
       raise self, 'could not be authenticated'
     end
 
-
     def api_error(response)
       response.general_error(401)
     end

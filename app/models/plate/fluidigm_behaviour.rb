@@ -5,12 +5,10 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 module Plate::FluidigmBehaviour
-
   class FluidigmError < StandardError; end
 
   def self.included(base)
     base.class_eval do
-
       scope :requiring_fluidigm_data, -> {
         fluidigm_request_id = RequestType.find_by_key!('pick_to_fluidigm').id
 
@@ -25,7 +23,6 @@ module Plate::FluidigmBehaviour
         ]).
         where('events.id IS NULL')
       }
-
     end
   end
 
@@ -49,5 +46,4 @@ module Plate::FluidigmBehaviour
     end
     self.events.updated_fluidigm_plate!('FLUIDIGM_DATA')
   end
-
 end

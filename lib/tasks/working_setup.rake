@@ -14,7 +14,6 @@ namespace :working do
   end
 
   class WorkingSetupSeeder
-
     attr_reader :locations, :program
 
     def initialize
@@ -26,7 +25,6 @@ namespace :working do
     end
 
     def seed
-
        create_project('A project')
        study   = create_study('A study')
        study_b = create_study('B study')
@@ -55,7 +53,6 @@ namespace :working do
         end
 
         Sample.all.each { |s| study_b.samples << s }
-
 
         BarcodePrinter.create!(name: 'g312bc2', barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'))
         BarcodePrinter.create!(name: 'g311bc2', barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'))
@@ -186,7 +183,6 @@ namespace :working do
   end
 
   WorkingSetupSeeder.new.seed
-
   end
  end
 end

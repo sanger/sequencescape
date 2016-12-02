@@ -44,6 +44,6 @@ class Api::OrderIO < Api::Base
 
   extra_json_attributes do |object, json_attributes|
     json_attributes["asset_uuids"] = object.asset_uuids
-    json_attributes["request_options"] =  object.request_options_structured unless object.request_options_structured.blank?
+    json_attributes["request_options"] = object.request_options_structured unless object.request_options_structured.blank?
   end
 end

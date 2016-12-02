@@ -56,7 +56,6 @@ class RequestTypeTest < ActiveSupport::TestCase
         request = @nrequest_type.create!
         assert_equal @rp, request.request_purpose
       end
-
     end
 
     context 'when deprecated,' do

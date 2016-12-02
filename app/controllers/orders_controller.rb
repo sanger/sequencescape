@@ -22,5 +22,4 @@ class OrdersController < ApplicationController
 
     redirect_to @order.submission
   end
-
 end

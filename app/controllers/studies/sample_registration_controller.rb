@@ -26,7 +26,7 @@ class Studies::SampleRegistrationController < ApplicationController
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
       format.json { render(json: flash.to_json) }
-      format.xml  { render(xml: flash.to_xml)  }
+      format.xml  { render(xml: flash.to_xml) }
     end
   rescue SampleRegistrar::NoSamplesError => exception
     flash.now[:error] = 'You do not appear to have specified any samples'

@@ -1,5 +1,4 @@
 module SampleManifestExcel
-
   ##
   # provides a number of methods to manage attributes.
   # The set attributes class method allows the user to define attribute accessors.
@@ -15,15 +14,11 @@ module SampleManifestExcel
   # - update_attributes: update an instance variable for each of the passed hash attributes. Will not reset
   #   any default attributes. Any passed attributes that are not defined by set_attributes are ignored.
   module HashAttributes
-
     extend ActiveSupport::Concern
     include Comparable
 
     module ClassMethods
-
-
       def set_attributes(*attributes)
-
         options = attributes.extract_options!
 
         attr_accessor(*attributes)
@@ -47,7 +42,6 @@ module SampleManifestExcel
         define_method :create_attributes do |attrs = {}|
           add_attributes default_attributes.merge(attrs)
         end
-
       end
     end
 
@@ -64,6 +58,5 @@ module SampleManifestExcel
       return unless other.is_a?(self.class)
       to_a <=> other.to_a
     end
-
   end
 end

@@ -21,7 +21,6 @@ Given /^the plate barcode printing service will error$/ do
   FakeBarcodeService.instance.push_printing_error
 end
 
-
 Given /^the plate barcode service is available with barcodes "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
   (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
 end

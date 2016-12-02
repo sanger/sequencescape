@@ -15,14 +15,14 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @tasks.to_xml }
+      format.xml { render xml: @tasks.to_xml }
     end
   end
 
   def show
     respond_to do |format|
       format.html
-      format.xml  { render xml: @task.to_xml }
+      format.xml { render xml: @task.to_xml }
     end
   end
 

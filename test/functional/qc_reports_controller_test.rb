@@ -7,8 +7,6 @@
 require "test_helper"
 require 'qc_reports_controller'
 
-
-
 class QcReportsControllerTest < ActionController::TestCase
   context "QcReports controller" do
     setup do

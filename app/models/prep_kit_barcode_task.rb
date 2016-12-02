@@ -35,5 +35,4 @@ class PrepKitBarcodeTask < Task
   def do_task(workflow, params)
     workflow.do_prep_kit_barcode_task(self, params)
   end
-
 end

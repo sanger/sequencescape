@@ -54,7 +54,7 @@ When /^I change the tags of the library tubes:$/ do |table|
   # done
 end
 
-Then /^the last multiplexed library tube should have the following tags:$/  do |tag_table|
+Then /^the last multiplexed library tube should have the following tags:$/ do |tag_table|
   mx_tube = MultiplexedLibraryTube.last
 
   mx_tube_tag_ids = mx_tube.aliquots.map(&:tag_id)

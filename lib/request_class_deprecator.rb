@@ -13,7 +13,6 @@
 # state_change: Hash of from_state => to_state applied to affected requests
 # }
 module RequestClassDeprecator
-
   class Request < ActiveRecord::Base
     self.table_name = 'requests'
   end
@@ -23,7 +22,6 @@ module RequestClassDeprecator
   end
 
   def deprecate_class(request_class_name, options = {})
-
     state_changes = options.fetch(:state_change, {})
     new_request_type = options.fetch(:new_type, transfer_request)
     new_class_name = new_request_type.request_class_name
@@ -48,5 +46,4 @@ module RequestClassDeprecator
       end
     end
   end
-
 end

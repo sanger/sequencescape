@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
-
 require "#{Rails.root}/app/models/illumina_c/plate_purposes"
 
 class Search::FindIlluminaCTubes < Search
@@ -27,5 +26,4 @@ class Search::FindIlluminaCTubes < Search
     )
   end
   delegate :illumina_c_final_tube_purpose, to: 'self.class'
-
 end

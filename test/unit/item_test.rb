@@ -8,7 +8,6 @@ require "test_helper"
 
 class ItemTest < ActiveSupport::TestCase
   context "An Item" do
-
     should have_many :requests
     should validate_presence_of :name
 
@@ -29,5 +28,4 @@ class ItemTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

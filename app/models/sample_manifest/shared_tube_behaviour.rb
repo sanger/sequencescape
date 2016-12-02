@@ -32,7 +32,6 @@ module SampleManifest::SharedTubeBehaviour
   end
   handle_asynchronously :delayed_generate_asset_requests
 
-
   def tube_sample_creation(samples_data, study_id)
     study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
       create_sample(sanger_sample_id).tap do |sample|
@@ -42,5 +41,4 @@ module SampleManifest::SharedTubeBehaviour
     end
   end
   private :tube_sample_creation
-
 end

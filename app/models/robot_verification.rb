@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class RobotVerification
-
   attr_reader :errors
 
   def validate_barcode_params(barcode_hash)
@@ -32,7 +31,7 @@ class RobotVerification
   def valid_plates_on_robot?(beds, plates, bed_prefix, robot, batch, expected_plate_layout)
     return false if expected_plate_layout.blank?
     expected_plate_layout.each do |plate_barcode, bed_number|
-      scanned_bed_barcode = Barcode.number_to_human(beds["#{bed_number}"].strip)
+      scanned_bed_barcode = Barcode.number_to_human(beds[bed_number.to_s].strip)
       expected_bed_barcode = robot.robot_properties.find_by_key!("#{bed_prefix}#{bed_number}")
       return false if expected_bed_barcode.nil?
       return false if scanned_bed_barcode != expected_bed_barcode.value

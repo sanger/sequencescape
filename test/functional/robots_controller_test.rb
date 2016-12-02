@@ -84,6 +84,5 @@ class RobotsControllerTest < ActionController::TestCase
       end
       should set_flash.to("Robot removed successfully")
     end
-
   end
 end

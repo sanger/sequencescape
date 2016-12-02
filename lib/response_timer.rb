@@ -48,5 +48,4 @@ Environment: #{Rails.env}:R#{RUBY_VERSION}:#{File.split(Rails.root).last.capital
 ------------
     HEADER
   end
-
 end

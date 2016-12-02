@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Accessionable::Dac < Accessionable::Base
-
   attr_reader :contacts
   def initialize(study)
     @study = study

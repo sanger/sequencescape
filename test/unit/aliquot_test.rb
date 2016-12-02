@@ -71,7 +71,5 @@ class AliquotTest < ActiveSupport::TestCase
       @asset.aliquots << Aliquot.new(tag: @tag1, tag2: @tag1, sample: @sample1) << Aliquot.new(tag: @tag1, tag2: @tag2, sample: @sample2)
       @asset.save!
     end
-
   end
-
 end

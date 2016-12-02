@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class BatchMultiplex < BaseTube
-
       attr_reader :count, :printable, :batch
 
       def initialize(options)
@@ -21,8 +19,6 @@ module LabelPrinter
           Asset.find ids
         end
       end
-
     end
-
   end
 end

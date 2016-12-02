@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class PacBio::Worksheet
-
   def initialize
   end
 
@@ -47,5 +46,4 @@ class PacBio::Worksheet
       ''
     ]
   end
-
 end

@@ -31,7 +31,6 @@ Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, seriali
   )
 end
 
-
 Then /^the XML response should be:/ do |serialized_xml|
   assert_xml_strings_equal(serialized_xml, page.source)
 end
@@ -65,7 +64,7 @@ end
 When /^I (POST|PUT) the following XML to "(\/[^\"]+)":$/ do |action, path, xml|
   page.driver.send(
     action.downcase,
-    "#{path}",
+    path.to_s,
     xml,
     { 'CONTENT_TYPE' => 'application/xml', 'HTTP_ACCEPT' => 'application/xml' }
   )

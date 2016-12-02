@@ -65,7 +65,7 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "change BatchRequest.count by 2" do
-   assert_equal 2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by 2"
+   assert_equal 2, BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by 2"
 end
   end
 
@@ -107,7 +107,6 @@ end
         assert_equal(expected, actual, "Positions of requests do not match")
       end
     end
-
   end
 
   context "when batch is created" do
@@ -161,7 +160,6 @@ end
         assert_not_equal Asset.first.name, Asset.last.name
       end
     end
-
   end
 
   context "batch #has_event(event_name)" do
@@ -190,7 +188,6 @@ end
       end
     end
   end
-
 
   context "#requests_by_study" do
     setup do
@@ -240,7 +237,6 @@ end
     end
   end
 
-
   context "#plate_ids_in_study" do
     setup do
       @batch = @pipeline.batches.create!
@@ -284,7 +280,6 @@ end
     end
   end
 
-
   context "Batch" do
     should belong_to :user
     should belong_to :pipeline
@@ -310,9 +305,8 @@ end
         @batch = @pipeline.batches.create!(requests: @requests)
       end
 
-
       should "change Asset.count by 12" do
-        assert_equal 12,  Asset.count - @asset_count, "Expected Asset.count to change by 12"
+        assert_equal 12, Asset.count - @asset_count, "Expected Asset.count to change by 12"
       end
 
       should "not have same asset name" do
@@ -325,7 +319,7 @@ end
 
       should "have request position corresponding to the request creation order" do
         @batch.batch_requests.each do |br|
-          assert_equal @requests[br.position - 1].id,  br.request_id
+          assert_equal @requests[br.position - 1].id, br.request_id
         end
       end
     end
@@ -381,7 +375,6 @@ end
           assert_equal nil, @bps_initial
           assert_equal 'fail', @batch.production_state
         end
-
       end
     end
 
@@ -400,7 +393,7 @@ end
       context "fail requests" do
         setup do
           EventSender.expects(:send_fail_event)
-          @requests = { "#{@request1.id}" => "on" }
+          @requests = { (@request1.id).to_s => "on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
 
@@ -422,17 +415,16 @@ end
           EventSender.expects(:send_fail_event).returns(true).times(1)
           @asset = create :sample_tube, resource: 1
           @request3 = create :request, batches: [@batch], id: 789, asset: @asset
-          @requests = { "#{@request1.id}" => "on", "control" => "on" }
+          @requests = { (@request1.id).to_s => "on", "control" => "on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
           assert_equal @request3, @batch.control
         end
 
         should "fail control request"
-
       end
 
       should "not fail requests if value passed is not set to ON" do
-        @requests = { "#{@request1.id}" => "blue" }
+        @requests = { (@request1.id).to_s => "blue" }
         @batch.fail_batch_items(@requests, @reason, @comment)
         assert_equal 0, @batch.requests.first.failures.size
       end
@@ -440,7 +432,7 @@ end
       context "fail the batch" do
         setup do
           EventSender.expects(:send_fail_event).returns(true).times(2)
-          @requests = { "#{@request1.id}" => "on", "#{@request2.id}" => "on" }
+          @requests = { (@request1.id).to_s => "on", (@request2.id).to_s => "on" }
           @request1.expects(:terminated?).returns(true).times(1)
           @request2.expects(:terminated?).returns(true).times(1)
           @batch.fail_batch_items(@requests, @reason, @comment)
@@ -451,7 +443,6 @@ end
         end
 
         should "change @batch.failures.count, :from => 0, :to => 1"
-
       end
     end
 
@@ -703,20 +694,17 @@ end
           @batch.reset!(@user)
         end
 
-
  should "change BatchRequest.count by -2" do
- assert_equal(-2,  BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by -2")
+ assert_equal(-2, BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by -2")
  end
 
-
  should "change Asset.count by -2" do
- assert_equal(-2,  Asset.count - @asset_count, "Expected Asset.count to change by -2")
+ assert_equal(-2, Asset.count - @asset_count, "Expected Asset.count to change by -2")
  end
 
         should "change Request.count by 0" do
           assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
         end
-
 
         should "change Batch.count by 0" do
           assert_equal 0,  Batch.count - @batch_count, "Expected Batch.count to change by 0"
@@ -863,12 +851,12 @@ end
         # mocks to use factories instead, I'm keeping the duplicate tasks
         # until I can work out why they were added.
         @event1 = create :lab_event, description: "Complete", batch: @batch
-        @event1.add_new_descriptor "task_id", "#{@task1.id}"
-        @event1.add_new_descriptor "task_id", "#{@task1.id}"
+        @event1.add_new_descriptor "task_id", (@task1.id).to_s
+        @event1.add_new_descriptor "task_id", (@task1.id).to_s
 
         @event2 = create :lab_event, description: "Complete", batch: @batch
-        @event2.add_new_descriptor "task_id", "#{@task2.id}"
-        @event2.add_new_descriptor "task_id", "#{@task2.id}"
+        @event2.add_new_descriptor "task_id", (@task2.id).to_s
+        @event2.add_new_descriptor "task_id", (@task2.id).to_s
 
         @batch.lab_events = [@event1, @event2]
       end
@@ -878,7 +866,6 @@ end
         assert_equal @task2, @batch.last_completed_task
       end
     end
-
   end
 
   context "completing a batch" do
@@ -917,7 +904,6 @@ end
     end
 
     should "check that I cannot create a batch with invalid requests (ready?)" do
-
       assert_equal false, @batch.save
     end
 
@@ -930,8 +916,5 @@ end
       @library_creation_request_2.save!
       assert_equal true, @batch.save!
     end
-
   end
-
-
 end

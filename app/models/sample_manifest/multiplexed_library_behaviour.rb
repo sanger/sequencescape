@@ -14,7 +14,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   class Core
-
     # for #multiplexed_library_tube
     MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)
 
@@ -23,7 +22,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     delegate :generate_mx_library, to: :@manifest
-
 
     def generate
       @mx_tube = generate_mx_library
@@ -98,7 +96,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
     # There are a lot of things that can go wrong here
     def validate_specialized_fields(sample, row, &block)
-
       required_fields.each do |field|
         yield  "#{sample.sanger_sample_id} has no #{field.downcase} specified." if row[field].blank?
       end
@@ -125,11 +122,9 @@ module SampleManifest::MultiplexedLibraryBehaviour
       tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
       return yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}' for tag 2" if tag2_group.nil?
       yield "#{tag2_group.name} doesn't include a tag with index #{row[SampleManifest::Headers::TAG2_INDEX_FIELD]}" if tag2_group.tags.detect { |tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i }.nil?
-
     end
 
     def specialized_fields(row)
-
       tag_group = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
 
       {

@@ -1,11 +1,9 @@
 require 'test_helper'
 
 class HashAttributesTest < ActiveSupport::TestCase
-
   attr_reader :goose, :options
 
   class Goose
-
     include SampleManifestExcel::HashAttributes
 
     set_attributes :gosling_a, :gosling_b, :gosling_c, :gosling_d, defaults: { gosling_d: "Consuela" }
@@ -15,7 +13,6 @@ class HashAttributesTest < ActiveSupport::TestCase
     def initialize(attributes = {})
       create_attributes(attributes)
     end
-
   end
 
   def setup
@@ -73,5 +70,4 @@ class HashAttributesTest < ActiveSupport::TestCase
     refute_equal goose, Goose.new(options.merge(gosling_d: "Ernie"))
     refute_equal Array.new, Goose.new(options)
   end
-
 end

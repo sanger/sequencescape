@@ -7,7 +7,6 @@
 require "test_helper"
 
 class CreatorTest < ActiveSupport::TestCase
-
   attr_reader :creator
 
   def setup
@@ -15,7 +14,6 @@ class CreatorTest < ActiveSupport::TestCase
   end
 
   test "should send request to print labels" do
-
     barcode = mock("barcode")
     barcode.stubs(:barcode).returns(23)
     PlateBarcode.stubs(:create).returns(barcode)
@@ -28,5 +26,4 @@ class CreatorTest < ActiveSupport::TestCase
 
     creator.execute("", barcode_printer, scanned_user, Plate::CreatorParameters.new({ "user_barcode" => "2470000099652", "source_plates" => "", "creator_id" => "1", "dilution_factor" => "1", "barcode_printer" => "1" }))
   end
-
 end

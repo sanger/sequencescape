@@ -46,7 +46,6 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, nu
   end
 end
 
-
 Then /^plate with barcode "([^"]*)" should exist$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
   assert_not_nil plate
@@ -122,13 +121,13 @@ end
 
 Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type, machine_barcode|
   plate_type.constantize.create!(
-    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    barcode: Barcode.number_to_human(machine_barcode.to_s),
     plate_purpose: "#{plate_type}Purpose".constantize.first)
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   plate_type.constantize.create!(
-    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    barcode: Barcode.number_to_human(machine_barcode.to_s),
     plate_purpose: PlatePurpose.find_by_name(plate_purpose_name),
     name: machine_barcode)
 end
@@ -145,20 +144,18 @@ end
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   # Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
   FactoryGirl.create(:plate,
-    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    barcode: Barcode.number_to_human(machine_barcode.to_s),
     plate_purpose: Purpose.find_by_name(plate_purpose_name)
     )
 end
 
-
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryGirl.create(:plate,
     name: "A_TEST_STOCK_PLATE",
-    barcode: Barcode.number_to_human("#{machine_barcode}"),
+    barcode: Barcode.number_to_human(machine_barcode.to_s),
     plate_purpose: PlatePurpose.find_by_name("Stock Plate")
   )
 end
-
 
 Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barcode, child_plate_barcode|
   parent_plate = Asset.find_from_machine_barcode(parent_plate_barcode)
@@ -254,7 +251,6 @@ Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do
   user = User.find_by_login(user_name)
   StateChange.create!(user: user, target: plate, target_state: state)
 end
-
 
 Given /^(passed|started|pending|failed) transfer requests exist between (\d+) wells on "([^"]*)" and "([^"]*)"$/ do |state, count, source_name, dest_name|
   source = Plate.find_by_name(source_name)

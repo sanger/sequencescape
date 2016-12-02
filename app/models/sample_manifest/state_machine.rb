@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-
 require 'aasm'
 
 module SampleManifest::StateMachine
@@ -18,7 +17,6 @@ module SampleManifest::StateMachine
 
   def configure_state_machine
     aasm column: :state, whiny_persistence: true do
-
       state :pending, initial: true
       state :processing
       state :failed
@@ -37,8 +35,6 @@ module SampleManifest::StateMachine
         transitions to: :failed, from: [:processing]
       end
     end
-
   end
   private :configure_state_machine
-
 end

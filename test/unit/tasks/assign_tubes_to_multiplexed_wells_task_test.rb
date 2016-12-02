@@ -6,7 +6,6 @@
 
 require "test_helper"
 
-
 # TODO:
 # Batch will need to avoid creating wells upfron (Don't test in here, its just a pre-requisite for this taks behaviour)
 # Ensure request start still works without target asset
@@ -16,7 +15,6 @@ require "test_helper"
 # Finally need to check csv generation, make sure one cell per well works
 
 class DummyWorkflowController < WorkflowsController
-
   attr_accessor :flash, :batch
 
   def initialize
@@ -40,7 +38,6 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
 
     context "#do_assign_requests_to_multiplexed_wells_task" do
       setup do
-
           @params = {
             request_locations: {
               "1" => "A1", "2" => "B1", "3" => "C1", "4" => "D1", "5" => "E1", "6" => "F1", "7" => "G1", "8" => "G1"
@@ -140,6 +137,5 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
 end

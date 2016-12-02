@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class AdminController < ApplicationController
-
   before_action :admin_login_required
 
   def index
@@ -19,5 +18,4 @@ class AdminController < ApplicationController
     end
     render partial: 'admin/users/users', locals: { users: @users }
   end
-
 end

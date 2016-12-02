@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class LabwhereReceptionTest < ActiveSupport::TestCase
-
   MockResponse = Struct.new(:valid?, :error)
 
   attr_reader :user, :plate_1, :plate_2, :location, :labware_barcodes_in_ss, :labware_barcodes_not_in_ss, :labware_barcodes_both
@@ -73,5 +72,4 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
     assert_equal false, labwhere_reception.save
     assert_equal 1, labwhere_reception.errors.count
   end
-
 end

@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class PlateTransferTask < Task
-
   belongs_to :purpose
 
   def render_task(workflow, params)
@@ -23,5 +22,4 @@ class PlateTransferTask < Task
   def included_for_render_task
     [:pipeline]
   end
-
 end

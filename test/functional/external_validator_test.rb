@@ -7,9 +7,7 @@
 require "test_helper"
 
 class ExternalValidatorTest < ActiveSupport::TestCase
-
   context "A submission with a validated request type" do
-
     setup do
       @validated_request_type = FactoryGirl.create :validated_request_type
       @assets = [create(:sample_tube)]
@@ -19,7 +17,6 @@ class ExternalValidatorTest < ActiveSupport::TestCase
     end
 
     context "with invalid samples" do
-
       setup do
         @sample.sample_metadata.sample_taxon_id = '1502'
         @sample.save!
@@ -32,7 +29,6 @@ class ExternalValidatorTest < ActiveSupport::TestCase
     end
 
     context "with valid samples" do
-
       setup do
         @sample.sample_metadata.sample_taxon_id = '9606'
         @sample.save!

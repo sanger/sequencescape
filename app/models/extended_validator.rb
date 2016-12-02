@@ -13,17 +13,13 @@
 # options   => serialized hash for configuration
 
 class ExtendedValidator < ActiveRecord::Base
-
-
   class RequestTypeExtendedValidator < ActiveRecord::Base
-
     self.table_name = ('request_types_extended_validators')
 
     belongs_to :extended_validator
     belongs_to :request_type
     validates_presence_of :extended_validator
     validates_presence_of :request_type
-
   end
 
   after_initialize :import_behaviour

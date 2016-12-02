@@ -8,7 +8,6 @@ require 'control_request_type_creation'
 Pipeline.send(:include, ControlRequestTypeCreation)
 
 FactoryGirl.define do
-
   sequence :plate_creator_name do |n|
     "Plate Creator #{n}"
   end
@@ -19,7 +18,7 @@ FactoryGirl.define do
     qc_state            ""
     resource            nil
     barcode
-    barcode_prefix      { |b| b.association(:barcode_prefix) }
+    barcode_prefix { |b| b.association(:barcode_prefix) }
   end
 
   factory :plate do
@@ -35,10 +34,7 @@ FactoryGirl.define do
       plate_purpose { |pp| pp.association(:source_plate_purpose) }
     end
 
-
-
     factory :child_plate do
-
       transient do
         parent { create(:source_plate) }
       end
@@ -51,9 +47,7 @@ FactoryGirl.define do
       end
     end
 
-
     factory :plate_with_untagged_wells do
-
       transient do
         sample_count 8
       end
@@ -73,7 +67,6 @@ FactoryGirl.define do
   factory :plate_creator, class: Plate::Creator do
     name                { |t| FactoryGirl.generate :plate_creator_name }
   end
-
 
   factory :control_plate do
     plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
@@ -129,10 +122,18 @@ FactoryGirl.define do
     qc_state              "qc_pending"
     assignee_id           { |user| user.association(:user) }
     production_state      nil
+
+    transient do
+      request_count 0
+    end
+
+    after(:create) do |batch, evaluator|
+      create_list(:batch_request, evaluator.request_count, batch: batch)
+    end
   end
 
   factory :control do |c|
-    name                  "New control"
+    name "New control"
     pipeline
   end
 
@@ -158,7 +159,6 @@ FactoryGirl.define do
     workflow              { |workflow| workflow.association(:lab_workflow) }
   end
 
-
   factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do |w|
     name                  { |a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
@@ -172,7 +172,7 @@ FactoryGirl.define do
     next_pipeline_id      nil
     previous_pipeline_id  nil
     location              { |location| location.association(:location) }
-    after(:build)          do |pipeline|
+    after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
@@ -205,7 +205,7 @@ FactoryGirl.define do
     next_pipeline_id      nil
     previous_pipeline_id  nil
     location              { |location| location.association(:location) }
-    after(:build)          do |pipeline|
+    after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
@@ -253,7 +253,6 @@ FactoryGirl.define do
     end
   end
 
-
   factory :pulldown_library_creation_pipeline do |p|
     name                  { |a| FactoryGirl.generate :pipeline_name }
     automated             false
@@ -268,8 +267,6 @@ FactoryGirl.define do
       pipeline.build_workflow(name: pipeline.name, locale: 'Internal')
     end
   end
-
-
 
   factory :task do |t|
     name                  "New task"
@@ -300,11 +297,12 @@ FactoryGirl.define do
   factory :batch_request do |br|
     batch
     request
+    sequence(:position) { |i| i }
   end
 
   factory :delayed_message do |dm|
     message            "1"
-    queue_attempt_at   "#{Time.now}"
+    queue_attempt_at   Time.current.to_s
     queue_name         "3"
   end
 
@@ -323,7 +321,6 @@ FactoryGirl.define do
   factory :location do |l|
     name                   "Some fridge"
   end
-
 
   factory :request_information do |ri|
     request_id { |request| activity.association(:request) }
@@ -443,7 +440,7 @@ FactoryGirl.define do
     qc_state            ""
     resource            nil
     barcode
-    purpose             { Tube::Purpose.standard_sample_tube }
+    purpose { Tube::Purpose.standard_sample_tube }
   end
 
   factory :sample_tube, parent: :empty_sample_tube do |sample_tube|
@@ -460,7 +457,7 @@ FactoryGirl.define do
 
   factory :cherrypick_task do |t|
     name "New task"
-    pipeline_workflow_id      { |workflow| workflow.association(:lab_workflow) }
+    pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil
     location              ""
@@ -476,7 +473,6 @@ FactoryGirl.define do
     name    { |a| FactoryGirl.generate :purpose_name }
 
     factory :source_plate_purpose do |source_plate_purpose|
-
       after(:build) do |source_plate_purpose, evaluator|
         source_plate_purpose.source_purpose = source_plate_purpose
       end

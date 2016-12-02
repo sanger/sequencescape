@@ -7,7 +7,6 @@
 require "test_helper"
 
 class PicoDilutionsControllerTest < ActionController::TestCase
-
   context "Pico Dilution Plate" do
     setup do
       @controller = PicoDilutionsController.new
@@ -28,7 +27,6 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         setup do
           @request.accept = 'application/json'
         end
-
 
         context "no page passed in " do
           setup do
@@ -90,7 +88,6 @@ class PicoDilutionsControllerTest < ActionController::TestCase
           @request.accept = 'application/json'
         end
 
-
         context "no page passed in " do
           setup do
             get :index
@@ -109,9 +106,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
             assert !@response.body.include?(@assay_plate_d.ean13_barcode), "Found indirect pico child of working dilution"
           end
         end
-
       end
     end
   end
-
 end

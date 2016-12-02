@@ -54,7 +54,6 @@ class Api::RequestIO < Api::Base
   map_attribute_to_json_attribute(:state)
   map_attribute_to_json_attribute(:priority)
 
-
   extra_json_attributes do |object, json_attributes|
     json_attributes["read_length"]                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
     json_attributes["library_type"]                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)

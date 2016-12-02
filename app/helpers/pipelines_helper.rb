@@ -20,5 +20,4 @@ module PipelinesHelper
   def fluidigm_target?(batch)
     batch.requests.where_is_a?(CherrypickForFluidigmRequest).present?
   end
-
 end

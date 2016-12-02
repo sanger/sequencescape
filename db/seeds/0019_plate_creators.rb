@@ -5,7 +5,6 @@
 # Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 ActiveRecord::Base.transaction do
-
   excluded = ['Dilution Plates']
 
   PlatePurpose.where(qc_display: true).each do |plate_purpose|
@@ -24,14 +23,12 @@ ActiveRecord::Base.transaction do
   creator = Plate::Creator.create!(name: "Pre-Extracted Plate", plate_purpose: plate_purpose, plate_purposes: [plate_purpose])
   creator.parent_plate_purposes << Purpose.find_by_name!("Stock plate")
 
-
   purposes_config = [
       [Plate::Creator.find_by_name!("Working dilution"),  Purpose.find_by_name!("Stock plate")],
       [Plate::Creator.find_by_name!("Pico dilution"),     Purpose.find_by_name!("Working dilution")],
       [Plate::Creator.find_by_name!("Pico Assay Plates"), Purpose.find_by_name!("Pico dilution")],
       [Plate::Creator.find_by_name!("Pico Assay Plates"), Purpose.find_by_name!("Working dilution")],
     ]
-
 
   purposes_config.each do |creator, purpose|
     creator.parent_plate_purposes << purpose
@@ -55,6 +52,4 @@ ActiveRecord::Base.transaction do
       })
     end
   end
-
-
 end

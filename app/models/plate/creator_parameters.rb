@@ -46,5 +46,4 @@ class Plate::CreatorParameters
     # Remove any symbol not valid for plate creation (just dilution factor at now)
     params.delete_if { |k, v| k.to_sym != :dilution_factor }
   end
-
 end

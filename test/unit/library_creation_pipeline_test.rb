@@ -29,7 +29,6 @@ class LibraryCreationPipelineTest < ActiveSupport::TestCase
     end
 
     context "#create_batch_from_plate(assets)" do
-
     end
   end
 end

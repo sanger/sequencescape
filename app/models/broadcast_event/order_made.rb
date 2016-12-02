@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::OrderMade < BroadcastEvent
-
   set_event_type 'order_made'
 
   # Properties takes :order_id
@@ -31,10 +30,9 @@ class BroadcastEvent::OrderMade < BroadcastEvent
   def plates
     return @plates if @plates
     wells = seed.assets.select { |a| a.is_a?(Well) }
-    return []  if wells.empty?
+    return [] if wells.empty?
     @plates = Plate.with_wells(wells)
   end
-
 
   has_metadata(:library_type) { |order, e| order.request_options['library_type'] }
   has_metadata(:fragment_size_from) { |order, e| order.request_options['fragment_size_required_from'] }
@@ -44,5 +42,4 @@ class BroadcastEvent::OrderMade < BroadcastEvent
 
   has_metadata(:order_type) { |order, e| order.order_role.try(:role) || 'UNKNOWN' }
   has_metadata(:submission_template) { |order, e| order.template_name }
-
 end

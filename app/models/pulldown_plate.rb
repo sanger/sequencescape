@@ -18,5 +18,4 @@ class PulldownPlate < Plate
     PulldownPcrPlate
     PulldownQpcrPlate
   end
-
 end

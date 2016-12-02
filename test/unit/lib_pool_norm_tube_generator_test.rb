@@ -1,7 +1,6 @@
 require "test_helper"
 
 class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
-
   attr_reader :plate, :user, :study
 
   def valid_plate
@@ -52,7 +51,6 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   end
 
   context "with a valid plate" do
-
     attr_reader :plate, :transfer_template, :generator
 
     setup do
@@ -105,7 +103,5 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
       generator.create!
       assert generator.destination_tubes.all? { |dt| dt.location.name == "Cluster formation freezer" }
     end
-
   end
-
 end

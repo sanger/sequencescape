@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class AddGenericProductCatalogue < ActiveRecord::Migration
-
   class ProductProductCatalogue < ActiveRecord::Base
     self.table_name = ('product_product_catalogues')
   end

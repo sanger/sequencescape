@@ -1,5 +1,4 @@
 class AddChromiumSubmissionTemplates < ActiveRecord::Migration
-
   SEQUENCING_KEYS = %w(
 illumina_c_hiseq_paired_end_sequencing
 illumina_c_single_ended_hi_seq_sequencing
@@ -33,6 +32,4 @@ illumina_c_hiseq_4000_single_end_sequencing
   def product_catalogue
     @product_catalogue ||= ProductCatalogue.construct!(ProductHelpers.single_template('Chromium'))
   end
-
-
 end

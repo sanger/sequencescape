@@ -83,7 +83,6 @@ private
     end
   end
 
-
   class AccessionedTag
     attr_reader :tag, :name, :downcase
     def initialize(tag, as = nil, services = [], downcase = false)
@@ -153,7 +152,6 @@ private
     end
 
     class << self
-
       def metadata_attribute_path_store
         @md_a_p ||= Hash.new { |h, field| h[field] = metadata_attribute_path_generator(field) }
       end

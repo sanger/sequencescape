@@ -47,7 +47,6 @@ LibraryType.create!([
 ].map { |name| { name: name } })
 
 RequestType.find_each do |request_type|
-
   library_types = LibraryType.where(name: SetupLibraryTypes.existing_associations_for(request_type))
 
   if library_types.present?
@@ -92,7 +91,6 @@ end
 rt = RequestType.find_by_key("illumina_c_hiseq_v4_single_end_sequencing")
 RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [29, 50])
 
-
 ## New library types Illumina C
 library_types = LibraryType.create!([
   "TraDIS qPCR only", "Transcriptome counting qPCR only", "Nextera single index qPCR only",
@@ -132,8 +130,6 @@ rt_v = RequestType::Validator.create!(
   request_option: 'library_type',
   valid_options: RequestType::Validator::LibraryTypeValidator.new(rt_pf.id)
 )
-
-
 
 ['a', 'b'].each do |pipeline|
   rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_x_paired_end_sequencing")

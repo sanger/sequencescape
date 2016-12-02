@@ -1,7 +1,6 @@
 require "test_helper"
 
 class SampleManifestGeneratorTest < ActiveSupport::TestCase
-
   attr_reader :generator, :attributes, :study, :supplier, :user, :configuration, :barcode_printer
 
   def stub_barcode_service
@@ -11,7 +10,6 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
   end
 
   def setup
-
     SampleManifestExcel.configure do |config|
       config.folder = File.join("test", "data", "sample_manifest_excel")
       config.load!

@@ -9,12 +9,15 @@ module HasBehaviour
       @registered_behaviours ||= {}
       @registered_behaviours[behaviour_name || klass.name] = klass
     end
+
     def has_behaviour?(behaviour_name)
       @registered_behaviours.key?(behaviour_name)
     end
+
     def with_behaviour(behaviour_name)
       @registered_behaviours.fetch(behaviour_name)
     end
+
     def registered_behaviours
       @registered_behaviours.keys
     end

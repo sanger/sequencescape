@@ -213,9 +213,9 @@ class Api::Base
 
   self.attribute_to_json_attribute_mappings_for_list = {
     id: 'id',
-    uuid: 'uuid',    # TODO[xxx]: if respond_to?(:uuid)
-    url: 'url',     # TODO[xxx]: if respond_to?(:uuid)
-    name: 'name'     # TODO[xxx]: if respond_to?(:name)
+    uuid: 'uuid', # TODO[xxx]: if respond_to?(:uuid)
+    url: 'url', # TODO[xxx]: if respond_to?(:uuid)
+    name: 'name' # TODO[xxx]: if respond_to?(:name)
   }
 
   # Additional JSON attribute handling, that cannot be done with the simple stuff, should be passed

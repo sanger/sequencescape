@@ -8,7 +8,6 @@ require "test_helper"
 
 class StudyTest < ActiveSupport::TestCase
   context "Study" do
-
     should belong_to :user
 
     should have_many :samples # , :through => :study_samples
@@ -60,7 +59,6 @@ class StudyTest < ActiveSupport::TestCase
         assert_equal 1, @study.pending_requests(@request_type_3)
         assert_equal 8, @study.total_requests(@request_type)
       end
-
     end
 
     context "Role system" do
@@ -182,7 +180,6 @@ class StudyTest < ActiveSupport::TestCase
           assert @study.ethically_approved == nil
         end
       end
-
     end
 
     context "which needs x and autosomal DNA removed" do
@@ -275,11 +272,9 @@ class StudyTest < ActiveSupport::TestCase
       should 'not cancel any associated requests' do
         assert @study.requests.all? { |request| request.passed? }
       end
-
     end
 
     context 'policy text' do
-
       setup do
         @study = create(:managed_study)
       end
@@ -320,7 +315,6 @@ class StudyTest < ActiveSupport::TestCase
     end
 
     context 'policy text' do
-
       setup do
         @study = create :managed_study
       end
@@ -340,7 +334,6 @@ class StudyTest < ActiveSupport::TestCase
           end
         end
       end
-
     end
 
     context 'non-managed study' do
@@ -355,7 +348,6 @@ class StudyTest < ActiveSupport::TestCase
     end
 
     context 'study name' do
-
       setup do
         @study = create :study
       end
@@ -375,6 +367,5 @@ class StudyTest < ActiveSupport::TestCase
         assert_equal 'Squish double spaces and flanking whitespace but not double letters', @study.name
       end
     end
-
   end
 end

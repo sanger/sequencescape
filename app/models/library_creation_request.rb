@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class LibraryCreationRequest < CustomerRequest
-
   # NOTE: Do not alter the order here:
   #
   # 1. has_metadata :as => Request

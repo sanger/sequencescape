@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 class QcFile < ActiveRecord::Base
-
   extend DbFile::Uploader
   include Uuid::Uuidable
 
@@ -32,7 +31,6 @@ class QcFile < ActiveRecord::Base
 
   belongs_to :asset, polymorphic: true
   validates_presence_of :asset
-
 
   # Handle some of the metadata with this callback
   before_save :update_document_attributes

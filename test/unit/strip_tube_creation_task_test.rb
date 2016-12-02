@@ -7,7 +7,6 @@
 require "test_helper"
 
 class StripTubeCreationTest < TaskTestBase
-
   class DummyWorkflowController < WorkflowsController
   attr_accessor :batch, :pipeline
   attr_accessor :flash, :tubes_requested, :tubes_available, :options
@@ -72,7 +71,6 @@ end
         assert_equal 16, @batch.requests.count
         # assert @batch.requests.all?(&:started?)
       end
-
     end
 
     context "#do_task with incorrect barcode" do
@@ -91,7 +89,6 @@ end
         assert_equal false, @return
         assert_equal "'not a barcode' is not the correct plate for this batch.", @workflow_c.flash[:error]
       end
-
     end
 
     context "#do_task with remaining tubes" do
@@ -111,7 +108,6 @@ end
         @batch.reload
         assert_equal 8, @batch.requests.count
       end
-
     end
   end
 end

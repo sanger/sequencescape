@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class DilutionPlate < Plate
-
   has_many :pico_descendants, ->() { where(sti_type: [PicoAssayPlate, PicoAssayAPlate, PicoAssayBPlate].map(&:name)) },
     through: :links_as_ancestor, source: :descendant
 
@@ -33,5 +32,4 @@ class DilutionPlate < Plate
   def study_name
     study.try(:name) || ""
   end
-
 end

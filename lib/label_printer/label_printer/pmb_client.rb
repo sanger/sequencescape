@@ -5,11 +5,9 @@
 require 'rest-client'
 
 module LabelPrinter
-
   PmbException = Class.new(StandardError)
 
   class PmbClient
-
     def self.base_url
       configatron.pmb_api
     end
@@ -98,7 +96,5 @@ module LabelPrinter
       end
       .join("; ")
     end
-
   end
-
 end

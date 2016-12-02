@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class CustomMetadatumCollectionTest < ActiveSupport::TestCase
-
   test "should not be valid without an asset" do
     refute build(:custom_metadatum_collection, asset: nil).valid?
   end

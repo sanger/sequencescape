@@ -12,5 +12,4 @@ class ReRequestSubmission < Order
     true
   end
   private :is_asset_applicable_to_type?
-
 end

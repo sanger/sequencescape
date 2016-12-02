@@ -17,14 +17,14 @@ class Admin::PlatePurposesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @plate_purposes }
+      format.xml { render xml: @plate_purposes }
     end
   end
 
   def show
     respond_to do |format|
       format.html
-      format.xml  { render xml: @plate_purpose }
+      format.xml { render xml: @plate_purpose }
     end
   end
 
@@ -33,7 +33,7 @@ class Admin::PlatePurposesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @plate_purpose }
+      format.xml { render xml: @plate_purpose }
     end
   end
 
@@ -78,6 +78,7 @@ class Admin::PlatePurposesController < ApplicationController
   end
 
   private
+
   def discover_plate_purpose
     @plate_purpose = PlatePurpose.find(params[:id])
   end

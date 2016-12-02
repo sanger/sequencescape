@@ -4,11 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-
 require 'aasm'
 
 class Request < ActiveRecord::Base
-
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
 
@@ -35,11 +33,9 @@ class Request < ActiveRecord::Base
   end
 
   scope :for_pipeline, ->(pipeline) {
-
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
       where(['prt.pipeline_id=?', pipeline.id]).
       readonly(false)
-
   }
 
   def validator_for(request_option)
@@ -49,7 +45,6 @@ class Request < ActiveRecord::Base
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
    scope :for_pipeline, ->(pipeline) {
-
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
       where(['prt.pipeline_id=?', pipeline.id]).
       readonly(false)
@@ -67,7 +62,6 @@ class Request < ActiveRecord::Base
         ]
       end
 
-
     select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id').
     joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
@@ -80,7 +74,6 @@ class Request < ActiveRecord::Base
         'container_associations.container_id=? AND requests.submission_id IN (?)',
         plate.id, submission_ids
     ])
-
   }
 
   scope :for_pre_cap_grouping_of, ->(plate) {
@@ -109,7 +102,6 @@ class Request < ActiveRecord::Base
         'container_associations.container_id=?',
         plate.id
       ])
-
   }
 
   scope :in_order, ->(order) { where(order_id: order) }
@@ -118,7 +110,6 @@ class Request < ActiveRecord::Base
     customer_requests.in_order(order).where(state: 'passed')
   }
 
-
   scope :including_samples_from_target, ->() { includes({ target_asset: { aliquots: :sample } }) }
   scope :including_samples_from_source, ->() { includes({ asset: { aliquots: :sample } }) }
 
@@ -126,7 +117,6 @@ class Request < ActiveRecord::Base
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
     # as a common element for any order in the submission)
     where(['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id, order.submission.id])
-
   }
 
   belongs_to :pipeline
@@ -160,7 +150,6 @@ class Request < ActiveRecord::Base
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, class_name: "Project"
 
-
   def current_request_event
     request_events.current.last
   end
@@ -169,7 +158,6 @@ class Request < ActiveRecord::Base
     raise RuntimeError, "Initial project already set" if initial_project_id
     self.initial_project_id = project_id
   end
-
 
   def submission_plate_count
     submission.requests.
@@ -181,7 +169,6 @@ class Request < ActiveRecord::Base
   def update_responsibilities!
     # Do nothing
   end
-
 
   def project=(project)
     return unless project
@@ -207,7 +194,6 @@ class Request < ActiveRecord::Base
     return submission.studies if submission.present?
     []
   end
-
 
  scope :between, ->(source, target) { where(asset_id: source.id, target_asset_id: target.id) }
  scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
@@ -277,7 +263,7 @@ class Request < ActiveRecord::Base
     group(groupings)
   end
 
-  scope :for_submission_id, ->(id) { where(submission_id: id)  }
+  scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
        joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
@@ -321,7 +307,7 @@ class Request < ActiveRecord::Base
 
   delegate :study, :study_id, to: :asset, allow_nil: true
 
-  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow })  }
+  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query, with_includes) {
@@ -329,23 +315,20 @@ class Request < ActiveRecord::Base
    }
 
    scope :find_all_target_asset, ->(target_asset_id) {
-     where(['target_asset_id = ?', "#{target_asset_id}"])
+     where(['target_asset_id = ?', target_asset_id.to_s])
    }
    scope :for_studies, ->(*studies) {
      where(initial_study_id: studies)
    }
 
-
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
-
 
   # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
   def self.get_target_plate_ids(request_ids)
     ContainerAssociation.joins("INNER JOIN requests ON content_id = target_asset_id").
       where(["requests.id IN  (?)", request_ids]).uniq.pluck(:container_id)
   end
-
 
   # The options that are required for creation.  In other words, the truly required options that must
   # be filled in and cannot be changed if the asset we're creating is used downstream.  For example,
@@ -483,7 +466,6 @@ class Request < ActiveRecord::Base
 
   extend ::Metadata
   has_metadata do
-
   end
 
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata

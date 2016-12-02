@@ -8,7 +8,6 @@ require "test_helper"
 require 'tasks_controller'
 
 class TasksControllerTest < ActionController::TestCase
-
   context "TasksController" do
     setup do
       @controller = TasksController.new
@@ -97,5 +96,4 @@ class TasksControllerTest < ActionController::TestCase
       end
     end
   end
-
 end

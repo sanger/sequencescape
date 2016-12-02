@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class AssignTagsTask < Task
-
   def included_for_render_task
     [{ requests: [{ asset: [:asset_groups, { primary_aliquot: :sample }] }, :target_asset, :batch_request] }, :pipeline]
   end
@@ -33,5 +32,4 @@ class AssignTagsTask < Task
   def do_task(workflow, params)
     workflow.do_assign_tags_task(self, params)
   end
-
 end

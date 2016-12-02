@@ -10,5 +10,4 @@ class SubmittedAsset < ActiveRecord::Base
 
   validates_presence_of :order, inverse_of: :submitted_assets
   validates_presence_of :asset, inverse_of: :submitted_assets
-
 end

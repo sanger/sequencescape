@@ -28,7 +28,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
       # The selection criterion is the library type name
       link_product_with_pc(@product, @product_catalogue, @library_type.name)
       link_product_with_pc(@product2, @product_catalogue, @library_type2.name)
-
     end
 
     context "without a default product" do

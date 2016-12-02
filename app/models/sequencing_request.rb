@@ -6,11 +6,10 @@
 # Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.
 
 class SequencingRequest < CustomerRequest
-
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 
-  has_metadata as: Request  do
+  has_metadata as: Request do
     # redundant with library creation , but THEY are using it .
     attribute(:fragment_size_required_from, required: true, integer: true)
     attribute(:fragment_size_required_to, required: true, integer: true)
@@ -30,7 +29,7 @@ class SequencingRequest < CustomerRequest
   def create_assets_for_multiplexing
     barcode = AssetBarcode.new_barcode
     # Needs a sample?
-    puldown_mx_library = PulldownMultiplexedLibraryTube.create!(name: "#{barcode}", barcode: barcode)
+    puldown_mx_library = PulldownMultiplexedLibraryTube.create!(name: barcode.to_s, barcode: barcode)
     lane = Lane.create!(name: puldown_mx_library.name)
 
     self.update_attributes!(asset: puldown_mx_library, target_asset: lane)

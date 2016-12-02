@@ -7,8 +7,6 @@
 require "test_helper"
 require 'studies/workflows_controller'
 
-
-
 class Studies::WorkflowsControllerTest < ActionController::TestCase
   context "Studies::Workflows controller" do
     setup do
@@ -25,7 +23,6 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
     should_require_login(:show)
 
      context "#show" do
-
         setup do
           get :show, id: @workflow.id, study_id: @study.id
         end

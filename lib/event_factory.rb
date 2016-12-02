@@ -4,7 +4,6 @@
 # Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
 require 'eventful_mailer'
 class EventFactory
-
   #################################
   # project related notifications #
   #################################
@@ -50,7 +49,7 @@ class EventFactory
     recipients_email = []
     project_manager_email = ""
     unless project.manager.blank?
-      project_manager_email = "#{project.manager.email}"
+      project_manager_email = (project.manager.email).to_s
       recipients_email << project_manager_email
     end
     if user.is_administrator?
@@ -129,5 +128,4 @@ class EventFactory
 
     EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message, request_event.content, "No Milestone").deliver
   end
-
 end

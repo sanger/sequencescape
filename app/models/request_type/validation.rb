@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 module RequestType::Validation
-
   def delegate_validator
     DelegateValidation::CompositeValidator::CompositeValidator(request_class.delegate_validator, request_type_validator)
   end
@@ -23,7 +22,6 @@ module RequestType::Validation
     end.tap do |sub_class|
       sub_class.request_type = request_type
     end
-
   end
 
   class RequestTypeValidator < DelegateValidation::Validator
@@ -33,6 +31,5 @@ module RequestType::Validation
     def library_types_present?
       request_type.library_types.present?
     end
-
   end
 end

@@ -18,7 +18,6 @@ class PlateCreation < AssetCreation
   private :record_creation_of_children
 
   module Children
-
     def self.included(base)
       base.class_eval "
         include_plate_named_scope :child
@@ -42,7 +41,6 @@ class PlateCreation < AssetCreation
       self.child = child_purpose.create!(location: parent.location)
     end
     private :create_children!
-
   end
   include Children
 
@@ -53,5 +51,4 @@ class PlateCreation < AssetCreation
       end
     end
   end
-
 end

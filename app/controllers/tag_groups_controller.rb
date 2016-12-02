@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class TagGroupsController < ApplicationController
-
   before_action :admin_login_required, only: [:new, :edit, :create, :update]
 
   def index
@@ -76,5 +75,4 @@ class TagGroupsController < ApplicationController
       attributes.permit(:map_id, :oligo)
     end
   end
-
 end

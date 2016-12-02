@@ -95,5 +95,4 @@ private
     # self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
     self.request.target_asset.comments.create!(description: self.comment, user_id: self.user.id)
   end
-
 end

@@ -13,5 +13,4 @@ class ::Io::QcFile < ::Core::Io::Base
               filename  => filename
                   size  => size
   ")
-
 end

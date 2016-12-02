@@ -20,7 +20,6 @@ class Aliquot::Receptacle < Asset
   has_many :creation_batches, class_name: "Batch", through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: "Batch", through: :requests_as_source, source: :batch
 
-
   def default_state
     nil
   end
@@ -58,7 +57,6 @@ class Aliquot::Receptacle < Asset
   has_one :sample, through: :primary_aliquot
   deprecate :sample
 
-
   def sample=(sample)
     aliquots.clear
     aliquots << Aliquot.new(sample: sample)
@@ -94,7 +92,9 @@ class Aliquot::Receptacle < Asset
   end
 
   def specialized_from_manifest=(*args); end
+
   def library_information; end
+
   def library_information=(*args); end
 
   def assign_tag2(tag)

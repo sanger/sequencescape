@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AssetShape < ActiveRecord::Base
-
   include SharedBehaviour::Named
 
   validates_presence_of :name, :horizontal_ratio, :vertical_ratio, :description_strategy
@@ -76,7 +75,6 @@ class AssetShape < ActiveRecord::Base
     description_strategy.constantize.location_from_index(index, size)
   end
 
-
   def generate_map(size)
     raise StandardError, 'Map already exists' if Map.find_by_asset_size_and_asset_shape_id(size, id).present?
     ActiveRecord::Base.transaction do
@@ -92,5 +90,4 @@ class AssetShape < ActiveRecord::Base
       end
     end
   end
-
 end

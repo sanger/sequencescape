@@ -48,9 +48,11 @@ module Submission::LinearRequestGraph
     def initialize(contents)
       @contents = contents
     end
+
     def [](_)
       @contents
     end
+
     def uniq
       [@contents]
     end
@@ -102,7 +104,7 @@ module Submission::LinearRequestGraph
       # they don't get disrupted by the shift operation at the start of this method.
       next if request_type_and_multiplier_pairs.empty?
 
-      target_assets_items = if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
+      target_assets_items = if request_type.for_multiplexing? # May have many nil assets for non-multiplexing
         if multiplexing_assets.nil?
           criteria = source_asset_qc_metric_and_item.map { |sci| sci[1] }.flatten.uniq
           target_assets.uniq.map { |asset| [asset, criteria, nil] }
@@ -141,5 +143,4 @@ module Submission::LinearRequestGraph
     Item.create!(workflow: workflow, name: "#{asset.display_name} #{id}", submission: self.submission)
   end
   private :create_item_for!
-
 end

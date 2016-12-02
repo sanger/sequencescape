@@ -40,6 +40,7 @@ class Event::PlateCreationEvent < Event
       created_by: user ? user.login : nil
     )
   end
+
   def self.create_sequenom_plate_for_asset!(asset, user)
     self.create!(
       eventful: asset,
@@ -49,5 +50,4 @@ class Event::PlateCreationEvent < Event
       created_by: user ? user.login : nil
     )
   end
-
 end

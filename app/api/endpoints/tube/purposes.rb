@@ -6,7 +6,6 @@
 
 class ::Endpoints::Tube::Purposes < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do

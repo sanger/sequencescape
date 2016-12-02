@@ -7,7 +7,6 @@
 require "test_helper"
 
 class BroadcastEventTest < ActiveSupport::TestCase
-
   # This level of mocking is painful. It probably calls for splitting the test up, and testing templates
   # separately from the actual json generation.
   class TestSeed
@@ -48,12 +47,11 @@ class BroadcastEventTest < ActiveSupport::TestCase
     def _read_attribute(attribute)
       attributes[attribute]
     end
+
     def self.base_class
       self
     end
-
   end
-
 
   TestSubject = Struct.new(:uuid, :friendly_name, :subject_type)
   DynamicSubject = Struct.new(:target, :data_method_b)
@@ -76,7 +74,6 @@ class BroadcastEventTest < ActiveSupport::TestCase
   # As BroadcastEvents is primarily about making events easy to configure
   # lets generate a test instance
   class ExampleEvent < BroadcastEvent
-
     set_event_type 'example_event'
 
     seed_class TestSeed
@@ -100,7 +97,6 @@ class BroadcastEventTest < ActiveSupport::TestCase
     end
   end
 
-
   context 'BroadcastEvent' do
     should 'not be directly instantiated' do
       assert_raise(StandardError) { BroadcastEvent.new }
@@ -113,7 +109,6 @@ class BroadcastEventTest < ActiveSupport::TestCase
     end
 
     context 'with a seed' do
-
       setup do
         @single         = TestSubject.new('000', 'single_subject', 'single_type')
         @many_one       = TestSubject.new('001', 'many_subject_1', 'many_type')
@@ -177,7 +172,6 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
       # Put it all together
       should 'generate the expected json' do
-
         @event.save!
 
         expected_json = {
@@ -228,7 +222,6 @@ class BroadcastEventTest < ActiveSupport::TestCase
         }
 
         assert_equal expected_json, JSON.parse(@event.to_json)
-
       end
     end
   end

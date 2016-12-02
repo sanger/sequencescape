@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 module Sdb::SampleManifestsHelper
-
   def count_labels
     {
       '1dtube'              => 'Tubes required',
@@ -17,5 +16,4 @@ module Sdb::SampleManifestsHelper
   def count_label_for(asset_type)
     count_labels.fetch(params[:type], 'Count')
   end
-
 end

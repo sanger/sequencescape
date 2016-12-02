@@ -5,13 +5,11 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class NpgActions::AssetsController < ApplicationController
-
   before_action :login_required, except: [:pass, :fail]
   before_action :find_asset, only: [:pass, :fail]
   before_action :find_request, only: [:pass, :fail]
   before_action :npg_action_invalid?, only: [:pass, :fail]
   before_action :xml_valid?, only: [:pass, :fail]
-
 
   rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
 

@@ -5,7 +5,6 @@ require File.dirname(__FILE__) + '/view/tabs/item'
 require File.dirname(__FILE__) + '/view/tabs/list'
 
 module ApplicationHelper
-
   include Informatics::Globals
 
   def add(type, link, options = nil)
@@ -61,5 +60,4 @@ module ApplicationHelper
     end
     menu
   end
-
 end

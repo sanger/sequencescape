@@ -47,6 +47,5 @@ class FluidigmPlateTest < ActiveSupport::TestCase
     should 'be 12*16' do
       assert_equal 'S013', @plate.wells.in_column_major_order[1].map_description
     end
-
   end
 end

@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class PicoDilutionsController < ApplicationController
-
   before_action :login_required, except: [:index]
 
   def index

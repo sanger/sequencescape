@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     module MultipleLabels
-
       attr_accessor :count
 
       def to_h
@@ -30,8 +28,6 @@ module LabelPrinter
       def count
         @count || 1
       end
-
     end
-
   end
 end

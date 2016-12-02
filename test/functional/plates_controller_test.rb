@@ -13,7 +13,7 @@ class PlatesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @pico_assay_plate_creator = FactoryGirl.create :plate_creator,  {
+      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, {
         plate_purpose: PlatePurpose.find_by_name!('Pico Assay Plates')
       }
       ['Pico Assay A', 'Pico Assay B'].map do |s|
@@ -21,14 +21,14 @@ class PlatesControllerTest < ActionController::TestCase
       end.map do |p|
         create :plate_creator_purpose, { plate_purpose: p, plate_creator: @pico_assay_plate_creator }
       end
-      @dilution_plates_creator = FactoryGirl.create :plate_creator,  plate_purpose: PlatePurpose.find_by_name!('Working dilution')
+      @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Working dilution')
 
       create :plate_creator_purpose, {
         plate_purpose: PlatePurpose.find_by_name!('Working dilution'),
         plate_creator: @dilution_plates_creator
       }
 
-      @gel_dilution_plates_creator = FactoryGirl.create :plate_creator,  plate_purpose: PlatePurpose.find_by_name!('Gel Dilution Plates')
+      @gel_dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Gel Dilution Plates')
 
       @barcode_printer = create :barcode_printer
       @plate_barcode = mock("plate barcode")
@@ -58,7 +58,6 @@ class PlatesControllerTest < ActionController::TestCase
       end
 
       context "#create" do
-
        context "with no source plates" do
           setup do
             @plate_count = Plate.count
@@ -66,7 +65,7 @@ class PlatesControllerTest < ActionController::TestCase
           end
 
           should "change Plate.count by 1" do
-            assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+            assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
           end
           should respond_with :redirect
           should set_flash.to(/Created/)
@@ -89,24 +88,23 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should "change Plate.count by 1" do
-                  assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+                  assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
                 end
 
                 should "set the dilution factor to default (1.0)" do
                   assert_equal 1.0, Plate.last.dilution_factor
                 end
-
               end
 
               context "when the parent doesn't have a dilution factor" do
                 setup do
                   @plate_count = Plate.count
                   post :create, plates: { creator_id: @dilution_plates_creator.id, barcode_printer: @barcode_printer.id,
-                    source_plates: "#{@parent_raw_barcode}", user_barcode: '2470000100730' }
+                    source_plates: @parent_raw_barcode.to_s, user_barcode: '2470000100730' }
                 end
 
                 should "change Plate.count by 1" do
-                  assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+                  assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
                 end
 
                 should "set the dilution factor to default (1.0)" do
@@ -120,11 +118,11 @@ class PlatesControllerTest < ActionController::TestCase
                   @parent_plate.save!
                   @plate_count = Plate.count
                   post :create, plates: { creator_id: @dilution_plates_creator.id, barcode_printer: @barcode_printer.id,
-                    source_plates: "#{@parent_raw_barcode}", user_barcode: '2470000100730' }
+                    source_plates: @parent_raw_barcode.to_s, user_barcode: '2470000100730' }
                 end
 
                 should "change Plate.count by 1" do
-                  assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+                  assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
                 end
 
                 should "set the dilution factor to 3.53" do
@@ -156,7 +154,7 @@ class PlatesControllerTest < ActionController::TestCase
                     end
 
                     should "change Plate.count by 2" do
-                      assert_equal 2,  Plate.count - @plate_count, "Expected Plate.count to change by 2"
+                      assert_equal 2, Plate.count - @plate_count, "Expected Plate.count to change by 2"
                     end
 
                     should "set the dilution factor of each children to 3.53 and 4.56" do
@@ -175,7 +173,7 @@ class PlatesControllerTest < ActionController::TestCase
                     end
 
                     should "change Plate.count by 2" do
-                      assert_equal 2,  Plate.count - @plate_count, "Expected Plate.count to change by 2"
+                      assert_equal 2, Plate.count - @plate_count, "Expected Plate.count to change by 2"
                     end
 
                     should "set the dilution factor of each children to 7.06 and 9.12" do
@@ -202,7 +200,7 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should "change Plate.count by 1" do
-                  assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+                  assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
                 end
 
                 should "set the dilution factor to 12.0" do
@@ -213,12 +211,12 @@ class PlatesControllerTest < ActionController::TestCase
                 setup do
                   @plate_count = Plate.count
                   post :create, plates: { creator_id: @dilution_plates_creator.id, barcode_printer: @barcode_printer.id,
-                    source_plates: "#{@parent_raw_barcode}", user_barcode: '2470000100730',
+                    source_plates: @parent_raw_barcode.to_s, user_barcode: '2470000100730',
                     dilution_factor: 12.0 }
                 end
 
                 should "change Plate.count by 1" do
-                  assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+                  assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
                 end
 
                 should "set the dilution factor to 12.0" do
@@ -232,12 +230,12 @@ class PlatesControllerTest < ActionController::TestCase
                   @parent_plate.dilution_factor = 4
                   @parent_plate.save!
                   post :create, plates: { creator_id: @dilution_plates_creator.id, barcode_printer: @barcode_printer.id,
-                    source_plates: "#{@parent_raw_barcode}", user_barcode: '2470000100730',
+                    source_plates: @parent_raw_barcode.to_s, user_barcode: '2470000100730',
                     dilution_factor: 12.0 }
                 end
 
                 should "change Plate.count by 1" do
-                  assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+                  assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
                 end
 
                 should "sets the dilution factor to 48.0 (parent=4*child=12)" do
@@ -258,11 +256,11 @@ class PlatesControllerTest < ActionController::TestCase
               setup do
                 @picoassayplate_count = PicoAssayPlate.count
                 post :create, plates: { creator_id: @pico_assay_plate_creator.id, barcode_printer: @barcode_printer.id,
-                  source_plates: "#{@parent_raw_barcode}", user_barcode: '2470000100730' }
+                  source_plates: @parent_raw_barcode.to_s, user_barcode: '2470000100730' }
               end
 
               should "change PicoAssayPlate.count by 2" do
-                assert_equal 2,  PicoAssayPlate.count - @picoassayplate_count, "Expected PicoAssayPlate.count to change by 2"
+                assert_equal 2, PicoAssayPlate.count - @picoassayplate_count, "Expected PicoAssayPlate.count to change by 2"
               end
 
               should "add a child to the parent plate" do
@@ -280,7 +278,7 @@ class PlatesControllerTest < ActionController::TestCase
                 @parent_plate.dilution_factor = 4
                 @parent_plate.save!
                 post :create, plates: { creator_id: @pico_assay_plate_creator.id,
-                  barcode_printer: @barcode_printer.id, source_plates: "#{@parent_raw_barcode}",
+                  barcode_printer: @barcode_printer.id, source_plates: @parent_raw_barcode.to_s,
                   dilution_factor: 12.0,
                   user_barcode: '2470000100730' }
               end
@@ -303,11 +301,11 @@ class PlatesControllerTest < ActionController::TestCase
             end
 
             should "change PicoAssayPlate.count by 6" do
-              assert_equal 6,  PicoAssayPlate.count - @picoassayplate_count, "Expected PicoAssayPlate.count to change by 6"
+              assert_equal 6, PicoAssayPlate.count - @picoassayplate_count, "Expected PicoAssayPlate.count to change by 6"
             end
 
             should "have child plates" do
-              [@parent_plate, @parent_plate2, @parent_plate3].each do  |plate|
+              [@parent_plate, @parent_plate2, @parent_plate3].each do |plate|
                 assert Plate.find(plate.id).children.first.is_a?(Plate)
                 assert_equal PlatePurpose.find_by_name("Pico Assay A"), Plate.find(plate.id).children.first.plate_purpose
               end
@@ -316,7 +314,6 @@ class PlatesControllerTest < ActionController::TestCase
             should set_flash.to(/Created/)
           end
         end
-
       end
     end
   end

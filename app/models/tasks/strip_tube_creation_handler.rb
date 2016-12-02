@@ -5,9 +5,7 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 module Tasks::StripTubeCreationHandler
-
   def render_strip_tube_creation_task(task, params)
-
     @tubes_requested = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).count
     @tubes_available = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).pending.count
 
@@ -46,7 +44,6 @@ module Tasks::StripTubeCreationHandler
     strip_purpose = Purpose.find_by_name(task.descriptors.find_by_key!('strip_tube_purpose').value)
 
     (0...tubes_to_create).each do |tube_number|
-
       tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}", location: @batch.pipeline.location)
       AssetLink::Job.create(source_plate, [tube])
 
@@ -67,6 +64,4 @@ module Tasks::StripTubeCreationHandler
 
     true
   end
-
-
 end

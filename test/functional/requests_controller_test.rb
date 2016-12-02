@@ -7,8 +7,6 @@
 require "test_helper"
 require 'requests_controller'
 
-
-
 class RequestsControllerTest < ActionController::TestCase
   context "Request controller" do
     setup do
@@ -41,9 +39,7 @@ class RequestsControllerTest < ActionController::TestCase
          assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
          assert_response :redirect
       end
-
     end
-
 
     context "#copy" do
       setup do
@@ -120,7 +116,6 @@ class RequestsControllerTest < ActionController::TestCase
         end
         should redirect_to("request path") { request_path(@reqwest) }
       end
-
 
       context "update to state 'failed'" do
         setup do

@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2013 Genome Research Ltd.
 module FluidigmHelper
-
   def self.map_configuration_for(width, height, plate_layout)
     wells = []
     size = width * height
@@ -22,5 +21,4 @@ module FluidigmHelper
     end
     wells
   end
-
 end

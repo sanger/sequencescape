@@ -42,7 +42,7 @@ xml.batch {
             "request_id" => request.id,
             "qc_state"   => request.target_asset.compatible_qc_state
           ) {
-            non_spiked_phiX, spiked_in_phiX = target_asset_aliquots, request.target_asset.spiked_in_buffer
+            non_spiked_phiX, spiked_in_phiX = target_asset_aliquots.to_a, request.target_asset.spiked_in_buffer
             non_spiked_phiX.reject!(&spiked_in_phiX.primary_aliquot.method(:=~)) if spiked_in_phiX.present?
             non_spiked_phiX.each { |aliquot| output_aliquot(xml, aliquot) }
           }

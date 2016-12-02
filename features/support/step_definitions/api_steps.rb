@@ -85,6 +85,7 @@ def api_request(action, path, body)
 
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end
+
 def json_api_request(*args, &block)
   api_request(*args, &block)
 end
@@ -250,7 +251,6 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
     step "show me the HTTP response body"
     raise e
   end
-
 end
 
 Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header, value|
@@ -338,7 +338,7 @@ end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
   project = Project.find_by_name(project_name)
-  user = FactoryGirl.create :user, login: login_name,  first_name: "John", last_name: "Doe", email: "#{login_name}@example.com"
+  user = FactoryGirl.create :user, login: login_name, first_name: "John", last_name: "Doe", email: "#{login_name}@example.com"
   user.is_owner_of(project)
 end
 
@@ -369,12 +369,12 @@ end
 
 Given /^the "([^\"]+)" action on samples requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
-  Core::Abilities::Application.full   { can(action.to_sym,    TestSampleEndpoint::Model) }
+  Core::Abilities::Application.full { can(action.to_sym, TestSampleEndpoint::Model) }
 end
 
 Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Instance) }
-  Core::Abilities::Application.full   { can(action.to_sym,    TestSampleEndpoint::Instance) }
+  Core::Abilities::Application.full { can(action.to_sym, TestSampleEndpoint::Instance) }
 end
 
 Given /^the "(.*?)" action on samples requires tag_plates authorisation$/ do |action|

@@ -13,7 +13,6 @@ class Pulldown::RequestsTest < ActiveSupport::TestCase
         @request = create(:"pulldown_#{request_type}_request")
         @request.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
       end
-
     end
   end
 end

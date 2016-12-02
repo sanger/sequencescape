@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module StudyReport::StudyDetails
-
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study
@@ -66,7 +65,6 @@ module StudyReport::StudyDetails
   def progress_report_on_all_assets(&block)
     yield(progress_report_header)
     each_stock_well_id_in_study_in_batches do |asset_ids|
-
       # eager loading of well_attribute , can only be done on  wells ...
       Well.for_study_report.where(id: asset_ids).each do |asset|
         asset_progress_data = asset.qc_report
@@ -113,5 +111,4 @@ module StudyReport::StudyDetails
       end
     end
   end
-
 end

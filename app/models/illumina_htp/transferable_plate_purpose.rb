@@ -16,5 +16,4 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
   def source_wells_for(wells)
     Well.in_column_major_order.stock_wells_for(wells)
   end
-
 end

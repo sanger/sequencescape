@@ -71,7 +71,7 @@ class AmqpObserver < ActiveRecord::Observer
 
     def <<(record)
       buffer << record
-      self  # Ensure we can chain these if necessary!
+      self # Ensure we can chain these if necessary!
     end
 
     # Converts metadata entries to their owner records, if necessary
@@ -84,7 +84,7 @@ class AmqpObserver < ActiveRecord::Observer
       when record.is_a?(Metadata::Base) then yield(record.owner, nil)
       when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)
       when record.is_a?(Role::UserRole) then determine_record_to_broadcast(record.role, &block)
-      else                                   yield(record,       record)
+      else                                   yield(record, record)
       end
     end
 
@@ -102,7 +102,7 @@ class AmqpObserver < ActiveRecord::Observer
         @updated.group_by(&:first).each do |model, pairs|
           # Regardless of what the scoping says, we're going by ID so we always want to do what
           # the standard model does.  If we need eager loading we'll add it.
-          model.send(:with_exclusive_scope) do
+          model.unscoped do
             model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
             pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
           end
@@ -183,7 +183,7 @@ class AmqpObserver < ActiveRecord::Observer
       ensure
         client.stop
       end
-    rescue Qrack::ConnectionTimeout, StandardError => exception
+    rescue Bunny::ConnectionTimeout, StandardError => exception
       Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
     end
     private :activate_exchange
@@ -193,8 +193,8 @@ end
 
 class ActiveRecord::Base
   class << self
-    def transaction_with_amqp(&block)
-      transaction_without_amqp { AmqpObserver.instance.transaction(&block) }
+    def transaction_with_amqp(opts = {}, &block)
+      transaction_without_amqp(opts) { AmqpObserver.instance.transaction(&block) }
     end
     alias_method_chain(:transaction, :amqp)
   end
