@@ -22,23 +22,13 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
         @generator = LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study)
         generator.stubs(:valid?).returns(true)
         generator.stubs(:create!).returns(true)
-        generator.stubs(:asset_group).returns(AssetGroup.create(assets: create_list(:lib_pcr_xp_tube, 5), study: create(:study), name: "Asset Group 1"))
+        generator.stubs(:asset_group).returns(AssetGroup.create(assets: create_list(:lib_pcr_xp_tube, 3), study: create(:study), name: "Asset Group 1"))
       end
 
-      should "return an error if the plate does not exist" do
-        post :create, barcode: "No plate here, move on!"
-        assert_match "Barcode does not relate to any existing plate", flash[:error]
-      end
-
-      should "create some assets" do
+      should "create some assets, redirect to the asset group" do
         LibPoolNormTubeGenerator.stubs(:new).returns(generator)
         post :create, barcode: plate.ean13_barcode, study: study.id
-        assert_equal 5, assigns(:generator).asset_group.assets.length
-      end
-
-      should "redirect to the asset group" do
-        LibPoolNormTubeGenerator.stubs(:new).returns(generator)
-        post :create, barcode: plate.ean13_barcode, study: study.id
+        assert_equal 3, assigns(:generator).asset_group.assets.length
         assert_redirected_to study_asset_groups_path(assigns(:generator).study.id)
         assert_match "QC Completed tubes successfully created for #{plate.sanger_human_barcode}. Go celebrate!", flash[:notice]
       end
@@ -50,5 +40,13 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
         assert_match "Oh dear, your tubes weren't created. It's not you its me so please contact PSD.", flash[:error]
       end
     end
+
+    context "no plate" do
+      should "return an error if the plate does not exist" do
+        post :create, barcode: "No plate here, move on!"
+        assert_match "Barcode does not relate to any existing plate", flash[:error]
+      end
+    end
+
   end
 end
