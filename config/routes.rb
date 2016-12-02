@@ -322,6 +322,10 @@ Sequencescape::Application.routes.draw do
           get :print_labels
         end
       end
+
+      member do
+        get :print_labels
+      end
     end
     resources :bait_libraries
 

@@ -19,6 +19,16 @@ class Admin::RobotsController < ApplicationController
     end
   end
 
+  def print_labels
+    @robot = Robot.find(params[:id])
+    if LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::Robot, [
+        @robot
+      ]).execute
+      flash[:now] = "The barcode for the robot was correctly printed"
+    end
+    redirect_to [:admin, @robot]
+  end  
+
   def show
     respond_to do |format|
       format.html
