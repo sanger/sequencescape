@@ -28,6 +28,5 @@ Given /^study "([^\"]+)" has the following registered samples in sample tubes( w
     )
 
     step %Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"} if with_a_request
-
   end
 end

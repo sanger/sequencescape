@@ -61,5 +61,4 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     end
   end
   private :generate_events_for
-
 end

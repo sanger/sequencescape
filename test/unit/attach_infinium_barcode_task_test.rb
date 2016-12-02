@@ -18,7 +18,6 @@ class AttachInfiniumBarcodeTest < TaskTestBase
 
     context "#render_task" do
       setup do
-
         params = {}
         @task.render_task(@workflow, params)
       end
@@ -33,7 +32,7 @@ class AttachInfiniumBarcodeTest < TaskTestBase
       end
       context "with valid parameters" do
         setup do
-          params = { barcodes: { "#{@plate1.id}" => "111", "#{@plate2.id}" => "222" } }
+          params = { barcodes: { (@plate1.id).to_s => "111", (@plate2.id).to_s => "222" } }
           @task.do_task(@workflow, params)
         end
 

@@ -38,7 +38,6 @@ class Submission < ActiveRecord::Base
     end
   end
 
-
   self.per_page = 500
   scope :including_associations_for_json, -> { includes([
       :uuid_object,
@@ -71,7 +70,7 @@ class Submission < ActiveRecord::Base
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
-        request.submission_cancelled!  # Cancel first to prevent event doing something stupid
+        request.submission_cancelled! # Cancel first to prevent event doing something stupid
         request.events.create!(message: "Submission #{self.id} as destroyed")
       end
     end
@@ -144,14 +143,12 @@ class Submission < ActiveRecord::Base
       errors.add(:requests, "No requests have been created for this submission") if requests.empty?
       raise ActiveRecord::RecordInvalid, self if errors.present?
     end
-
   end
   alias_method(:create_requests, :process_submission!)
 
   def multiplexed?
     orders.any? { |o| RequestType.find(o.request_types).any?(&:for_multiplexing?) }
   end
-
 
   def multiplex_started_passed
     multiplex_started_passed_result = false
@@ -214,7 +211,6 @@ class Submission < ActiveRecord::Base
     return [] unless orders.size >= 1
     orders.first.request_types.map(&:to_i)
   end
-
 
   def next_request_type_id(request_type_id)
     request_type_ids[request_type_ids.index(request_type_id) + 1]  if request_type_ids.present?
@@ -285,11 +281,10 @@ class Submission < ActiveRecord::Base
  def cross_study?
   multiplexed? && orders.map(&:study_id).uniq.size > 1
  end
-
 end
 
 class Array
   def intersperse(separator)
-    (inject([]) { |a, v|  a + [v, separator] })[0...-1]
+    (inject([]) { |a, v| a + [v, separator] })[0...-1]
   end
 end

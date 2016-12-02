@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ConditionalFormattingListTest < ActiveSupport::TestCase
-
   include SampleManifestExcel::Helpers
 
   attr_reader :conditional_formatting_list, :rules, :worksheet, :options
@@ -61,5 +60,4 @@ class ConditionalFormattingListTest < ActiveSupport::TestCase
     conditional_formatting_list.update(options)
     refute dup.each_item.any? { |conditional_formatting| conditional_formatting.styled? }
   end
-
 end

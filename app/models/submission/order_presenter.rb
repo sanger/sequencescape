@@ -29,5 +29,4 @@ class OrderPresenter
   def method_missing(method, *args, &block)
     @target_order.send(method, *args, &block)
   end
-
 end

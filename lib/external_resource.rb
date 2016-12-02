@@ -22,5 +22,4 @@ module ExternalResource
   def identifiable_id
     identifier and identifier.identifiable.id
   end
-
 end

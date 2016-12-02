@@ -32,7 +32,6 @@ module Tasks::AssignTubesToWellsHandler
           well = find_target_asset_from_requests(requests_for_library)
           well.update_attributes!(map: Map.find_by_description_and_asset_size(well_position, 96), plate: plate)
           assign_requests_to_well(requests_for_library, well)
-
         end
       end
     end
@@ -43,7 +42,6 @@ module Tasks::AssignTubesToWellsHandler
   # Plate is an option parameter for a target plate. Used in multiplexed
   # cherrypicking. In its absence a plate is created
   def do_assign_requests_to_multiplexed_wells_task(task, params, plate = nil)
-
     plate ||= find_or_create_plate(task.purpose)
 
     well_hash = Hash[plate.wells.located_at(params[:request_locations].values.uniq).map { |w| [w.map_description, w] }]
@@ -61,7 +59,6 @@ module Tasks::AssignTubesToWellsHandler
       flash[:error] = "Incompatible requests in #{incompatible_wells.join(',')}"
       return false
     end
-
 
     @batch.requests.each do |request|
       target_well = params[:request_locations][request.id.to_s]
@@ -146,7 +143,7 @@ module Tasks::AssignTubesToWellsHandler
   end
 
   def assets_from_requests_sorted_by_id
-    @asbi ||= assets_from_requests.sort { |a, b| a.id <=> b.id }
+    @asbi ||= assets_from_requests.sort_by(&:id)
   end
 
   def calculate_number_of_wells_library_needs_to_use(task, params)

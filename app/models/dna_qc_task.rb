@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class DnaQcTask < Task
-
   class QcData < Task::RenderElement
     attr_reader :gel_value, :pico_value, :sequenom_value, :initial_concentration, :gender_value, :gender_markers_value, :genotyping_done, :sample_empty, :volume
     alias_attribute :well, :asset
@@ -61,12 +60,13 @@ class DnaQcTask < Task
 
     def gel_status
       case
-      when ["Fail", "Weak", "Band Not Visible", "Degraded"].include?(gel_value) then  "fail"
+      when ["Fail", "Weak", "Band Not Visible", "Degraded"].include?(gel_value) then "fail"
       when gel_value == "OK" then "*"
       when gel_value.blank? then "fail"
       else ""
       end
     end
+
     def sequenom_status
       return "*" unless @sequenom_count
       count = @sequenom_count.to_i
@@ -75,6 +75,7 @@ class DnaQcTask < Task
       when count > 19 then "pass"
       end
     end
+
     def concentration_status
       case
       when initial_concentration.nil? then "fail"
@@ -85,9 +86,9 @@ class DnaQcTask < Task
 
     def gender_status
       return "*" if @gender_value == "Unknown" || @gender_value.nil?
-      if @gender_value.match(/^f/i)
+      if @gender_value =~ /^f/i
         @gender_value = 'F'
-      elsif @gender_value.match(/^m/i)
+      elsif @gender_value =~ /^m/i
         @gender_value = 'M'
       end
 
@@ -102,8 +103,6 @@ class DnaQcTask < Task
       @genotyping_done && @genotyping_done != "0" ? "fail" : "pass"
     end
   end # class QcData
-
-
 
   def create_render_element(request)
     request.asset && QcData.new(request)
@@ -158,5 +157,4 @@ class DnaQcTask < Task
     request.save!
     event.save!
   end
-
 end

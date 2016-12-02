@@ -42,6 +42,7 @@ class SampleManifest < ActiveRecord::Base
 
   # Needed for the UI to work!
   def barcode_printer; end
+
   def template; end
 
   belongs_to :supplier
@@ -133,6 +134,5 @@ class SampleManifest < ActiveRecord::Base
     study_samples_data.each do |study_sample|
       StudySample.create!(study_id: study_sample.first, sample_id: study_sample.last)
     end
-
   end
 end

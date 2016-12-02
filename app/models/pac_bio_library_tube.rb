@@ -15,7 +15,6 @@ class PacBioLibraryTube < Tube
     attribute(:movie_length)
   end
 
-
   def protocols_for_select
     ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id] }.tap do |protocols|
       reference_genome = primary_aliquot.sample.sample_reference_genome

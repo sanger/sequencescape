@@ -35,9 +35,11 @@ Style/NumericLiterals:
 
 # Blocks are used to structure tests and are part of the shoulda dsl.
 # The standard BlockLength limits are too stringent for this purpose.
+# Block DSL is also used in routes
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*'
+    - 'config/routes.rb'
 
 # Enforces the new rails 5 style. Re-enable on Rails 5 upgrade.
 Rails/HttpPositionalArguments:

@@ -6,9 +6,7 @@
 
 module Presenters
   class GroupedPipelineInboxPresenter
-
     class << self
-
       def fields
         @fields ||= []
       end
@@ -16,7 +14,6 @@ module Presenters
       def add_field(name, method, options = {})
         fields << [name, method, options[:if]]
       end
-
     end
 
     # Register our fields and their respective conditions
@@ -32,7 +29,6 @@ module Presenters
     add_field 'Stock Barcode',  :stock_barcode,  if: :show_stock?
     add_field 'Still Required', :still_required, if: :select_partial_requests?
     add_field 'Submitted at',   :submitted_at
-
 
     attr_reader :pipeline, :user
 
@@ -95,11 +91,9 @@ module Presenters
     def group_by_submission?
       pipeline.group_by_submission?
     end
-
   end
 
   class GroupLinePresenter
-
     include PipelinesHelper
 
     attr_reader :group, :request, :index, :pipeline, :inbox
@@ -194,7 +188,5 @@ module Presenters
     def parentless?
       yield if parent.nil?
     end
-
-
   end
 end

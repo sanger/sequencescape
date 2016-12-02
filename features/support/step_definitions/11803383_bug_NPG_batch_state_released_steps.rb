@@ -14,7 +14,6 @@ Given /^sequencescape is setup for 11803383$/ do
  FactoryGirl.create :batch_request, request: request, batch: batch, position: 1
 end
 
-
 Then /^batch state should be "([^"]*)"$/ do |state|
   batch = Batch.last
   assert_equal batch.state, state

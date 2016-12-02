@@ -13,5 +13,4 @@ class Api::AliquotsController < Api::BaseController
   def prepare_list_context
     @context, @context_order = ::Aliquot.including_associations_for_json, { updated_at: :desc }
   end
-
 end

@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 class QcMetricRequest < ActiveRecord::Base
   belongs_to :qc_metric
   belongs_to :request

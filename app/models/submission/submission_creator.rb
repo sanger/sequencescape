@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
-
 require 'aasm'
 
 class Submission::SubmissionCreator < Submission::PresenterSkeleton
@@ -30,7 +29,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     :gigabases_expected,
     :priority
   ]
-
 
   def build_submission!
     begin
@@ -194,7 +192,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
-
     names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
     samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
@@ -293,5 +290,4 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   def template_name
     submission.orders.first.template_name
   end
-
 end

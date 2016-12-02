@@ -1,6 +1,5 @@
 module Informatics
   module Globals
-
     @@application = nil
     @@defaults = nil
 
@@ -27,6 +26,5 @@ module Informatics
     def search_options
       global_searchable_classes.map { |klass| [klass.name] * 2 } << ['All', nil]
     end
-
   end
 end

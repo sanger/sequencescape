@@ -16,5 +16,4 @@ class ::Endpoints::Stamps < ::Core::Endpoint::Base
     has_many(:qcables,         json: 'qcables', to: 'qcables')
     has_many(:stamp_qcables,   json: 'stamp_qcables', to: 'stamp_qcables')
   end
-
 end

@@ -7,8 +7,6 @@
 require "test_helper"
 require 'users_controller'
 
-
-
 class UsersControllerTest < ActionController::TestCase
   context "Users controller" do
     setup do
@@ -21,5 +19,4 @@ class UsersControllerTest < ActionController::TestCase
 
     # should only be able to see your own page
   end
-
 end

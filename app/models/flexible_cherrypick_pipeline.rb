@@ -5,9 +5,7 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class FlexibleCherrypickPipeline < CherrypickForPulldownPipeline
-
   def post_finish_batch(batch, user)
     batch.requests.with_target.each(&:pass!)
   end
-
 end

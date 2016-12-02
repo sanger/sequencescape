@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class WorksheetTest < ActiveSupport::TestCase
-
   attr_reader :xls, :worksheet, :sample_manifest, :workbook, :spreadsheet
 
   def setup
@@ -22,7 +21,6 @@ class WorksheetTest < ActiveSupport::TestCase
   end
 
   context "type" do
-
     attr_reader :options
 
     setup do
@@ -50,11 +48,9 @@ class WorksheetTest < ActiveSupport::TestCase
       worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
       assert_equal "Tubes", worksheet.type
     end
-
   end
 
   context "data worksheet" do
-
     setup do
       @worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook,
         columns: SampleManifestExcel.configuration.columns.plate_full.dup,
@@ -121,11 +117,9 @@ class WorksheetTest < ActiveSupport::TestCase
       refute worksheet.axlsx_worksheet.sheet_protection.format_columns
       refute worksheet.axlsx_worksheet.sheet_protection.format_rows
     end
-
   end
 
   context "validations ranges worksheet" do
-
     attr_reader :range_list
 
     setup do
@@ -151,7 +145,6 @@ class WorksheetTest < ActiveSupport::TestCase
       assert_equal "Ranges!#{range.fixed_reference}", range.absolute_reference
       assert range_list.all? { |k, range| range.absolute_reference.present? }
     end
-
   end
 
   def teardown
@@ -163,5 +156,4 @@ class WorksheetTest < ActiveSupport::TestCase
     @xls.serialize('test.xlsx')
     @spreadsheet = Roo::Spreadsheet.open('test.xlsx')
   end
-
 end

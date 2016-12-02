@@ -4,9 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 class QcReportsController < ApplicationController
-
   before_action :login_required
   before_action :check_required, only: :create
 
@@ -23,7 +21,6 @@ class QcReportsController < ApplicationController
   end
 
   def create
-
     study = Study.find_by_id(params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == "1"
 
@@ -37,8 +34,6 @@ class QcReportsController < ApplicationController
       flash[:error] = "Failed to create report: #{error_messages}"
       redirect_to :back
     end
-
-
   end
 
   # On form submit of a qc_file. Strictly speaking this should be an update action
@@ -64,7 +59,7 @@ class QcReportsController < ApplicationController
     respond_to do |format|
       format.html
 
-      format.csv  do
+      format.csv do
         file = nil
         begin
           file = Tempfile.new(@report_presenter.filename)
@@ -102,6 +97,4 @@ class QcReportsController < ApplicationController
     conds[:state] = params[:state] if params[:state].present?
     conds
   end
-
-
 end

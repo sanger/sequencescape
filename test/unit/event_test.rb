@@ -99,7 +99,6 @@ class EventTest < ActiveSupport::TestCase
           assert @request.passed?
         end
 
-
         context "when passed twice" do
           should "should raise an exception" do
             # This behaviour has changed.
@@ -109,7 +108,6 @@ class EventTest < ActiveSupport::TestCase
             end
           end
         end
-
       end
 
       context "when fail" do
@@ -123,7 +121,6 @@ class EventTest < ActiveSupport::TestCase
             @event = Event.create(@settings)
             @request.reload
           end
-
         end
 
         context "when Library Prep" do
@@ -133,15 +130,12 @@ class EventTest < ActiveSupport::TestCase
             @request.reload
           end
 
-
           should "update request state" do
             assert @request.failed?
           end
-
         end
       end
     end
-
 
     context "when created with a" do
       setup do
@@ -237,7 +231,6 @@ class EventTest < ActiveSupport::TestCase
           assert @dna_qc_request.failed?
           assert @request_for_control.failed?
         end
-
       end
 
       context "cancel message" do
@@ -269,9 +262,7 @@ class EventTest < ActiveSupport::TestCase
           assert @multiplexed_library_creation_request.started?
           assert @pe_sequencing_request.started?
           assert @dna_qc_request.started?
-
         end
-
       end
     end
   end

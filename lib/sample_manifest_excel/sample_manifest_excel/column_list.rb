@@ -1,8 +1,6 @@
 module SampleManifestExcel
-
   # A collection of columns
   class ColumnList
-
     include Enumerable
     include Comparable
 
@@ -116,6 +114,5 @@ module SampleManifestExcel
         end
       end
     end
-
   end
 end

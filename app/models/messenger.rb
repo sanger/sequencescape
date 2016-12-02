@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class Messenger < ActiveRecord::Base
-
   belongs_to :target, polymorphic: true
   validates_presence_of :target, :root, :template
 
@@ -29,5 +28,4 @@ class Messenger < ActiveRecord::Base
   def resend
     AmqpObserver.instance << self
   end
-
 end

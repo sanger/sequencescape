@@ -5,12 +5,10 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class Map < ActiveRecord::Base
-
   validates_presence_of :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape
   validates_numericality_of :asset_size, :row_order, :column_order
 
   module Coordinate
-
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
@@ -112,11 +110,9 @@ class Map < ActiveRecord::Base
     end
     private :alternate_position
   end
-
   end
 
   module Sequential
-
     def self.location_from_row_and_column(row, column, width, size)
       digit_count = Math.log10(size + 1).ceil
       "S%0#{digit_count}d" % [(row) * width + column]
@@ -126,7 +122,6 @@ class Map < ActiveRecord::Base
       digit_count = Math.log10(size + 1).ceil
       "S%0#{digit_count}d" % [index + 1]
     end
-
   end
 
  scope :for_position_on_plate, ->(position, plate_size, asset_shape) {

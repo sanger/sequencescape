@@ -9,11 +9,11 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:comments,                  json: 'comments', to: 'comments') do
+    has_many(:comments, json: 'comments', to: 'comments') do
       action(:create, to: :standard_create!)
     end
 
-    has_many(:volume_updates,            json: 'volume_updates', to: 'volume_updates') do
+    has_many(:volume_updates, json: 'volume_updates', to: 'volume_updates') do
       action(:create, to: :standard_create!)
     end
 
@@ -22,7 +22,7 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
     has_many(:requests,                  json: 'requests', to: 'requests')
     belongs_to(:plate_purpose,           json: 'plate_purpose')
 
-    has_many(:qc_files,  json: 'qc_files', to: 'qc_files', include: []) do
+    has_many(:qc_files, json: 'qc_files', to: 'qc_files', include: []) do
       action(:create, as: 'create') do |request, _|
         ActiveRecord::Base.transaction do
           QcFile.create!(request.attributes.merge({ asset: request.target }))
@@ -40,5 +40,4 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
     has_many(:transfers_as_destination,      json: 'creation_transfers', to: 'creation_transfers')
   belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')
   end
-
 end

@@ -16,7 +16,6 @@ Given /^an accessioning service exists which returns an array express accession 
   FakeAccessionService.instance.success("Study", "EGAS00001000241", <<-XML)
   <EXT_ID accession="#{ae_an}" type="ArrayExpress"/>
   XML
-
 end
 
 Given /^an accessioning webservice is unavailable$/ do

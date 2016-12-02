@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2013,2015,2016 Genome Research Ltd.
 
-
 module IlluminaC::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [
@@ -90,7 +89,6 @@ module IlluminaC::PlatePurposes
       end
     end
   end
-
 end
 
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table

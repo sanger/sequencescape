@@ -6,7 +6,6 @@
 
 class Endpoints::Projects < Core::Endpoint::Base
   model do
-
   end
 
   instance do

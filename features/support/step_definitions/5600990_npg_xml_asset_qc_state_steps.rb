@@ -20,7 +20,6 @@ Given /^a second request$/ do
  request = FactoryGirl.create :request_with_sequencing_request_type, asset: library_tube, target_asset: lane
 end
 
-
 Given /^an event to the request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")
  request = lane.source_request

@@ -8,7 +8,7 @@ class MetadataMigration < ActiveRecord::Migration
       self.table_name = ('property_definitions')
       has_many :properties, class_name: 'MetadataMigration::Property', foreign_key: :property_definition_id, dependent: :destroy
 
-     scope :for_class, ->(c) { where(relates_to: c)  }
+     scope :for_class, ->(c) { where(relates_to: c) }
      scope :for_keys, ->(keys) { where(key: keys) }
 
       # It's more efficient to delete all of the properties and then delete the definition.

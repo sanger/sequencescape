@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class FormulaTest < ActiveSupport::TestCase
-
   attr_reader :formula, :options, :references
 
   def setup
@@ -35,5 +34,4 @@ class FormulaTest < ActiveSupport::TestCase
     assert_equal formula, SampleManifestExcel::Formula.new(options)
     refute_equal formula, SampleManifestExcel::Formula.new(options.except(:operand).merge(references.slice(:first_cell_reference)))
   end
-
 end

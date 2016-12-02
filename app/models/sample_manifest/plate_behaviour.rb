@@ -14,7 +14,6 @@ module SampleManifest::PlateBehaviour
   end
 
   class Base
-
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
     attr_reader :plates

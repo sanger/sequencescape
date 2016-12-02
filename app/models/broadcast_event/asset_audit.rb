@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::AssetAudit < BroadcastEvent
-
   seed_class AssetAudit
 
   def event_type
@@ -16,7 +15,6 @@ class BroadcastEvent::AssetAudit < BroadcastEvent
     return seed.created_by if user.nil?
     user.email.blank? ? user.login : user.email
   end
-
 
   has_subject(:labware, :asset)
   has_subjects(:sample) { |audit, e| audit.asset.contained_samples }

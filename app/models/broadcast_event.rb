@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent < ActiveRecord::Base
-
   EVENT_JSON_ROOT = 'event'
   UNKNOWN_USER_IDENTIFIER = 'UNKNOWN'
 
@@ -64,6 +63,4 @@ class BroadcastEvent < ActiveRecord::Base
   def self.event_type
     @event_type
   end
-
-
 end

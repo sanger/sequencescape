@@ -113,7 +113,6 @@ module IlluminaHtp::PlatePurposes
     'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
     'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
 
-
     'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
     'Shear'               => PlatePurpose::InitialPurpose,
     'Post Shear'          => PlatePurpose,
@@ -150,8 +149,6 @@ module IlluminaHtp::PlatePurposes
   end
 
   module PurposeHelpers
-
-
     def create_tube_purposes
       self::TUBE_PURPOSE_FLOWS.each do |flow|
         create_tube_flow(flow)
@@ -222,7 +219,6 @@ module IlluminaHtp::PlatePurposes
     end
 
     def destroy_branches
-
     end
 
     def purpose_for(name)

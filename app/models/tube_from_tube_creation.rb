@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class TubeFromTubeCreation < AssetCreation
-
   belongs_to :child, class_name: 'Tube'
   belongs_to :parent, class_name: 'Tube'
 

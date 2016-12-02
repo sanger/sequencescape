@@ -8,7 +8,6 @@ require "test_helper"
 
 class ProjectTest < ActiveSupport::TestCase
   context "Project" do
-
     should validate_presence_of :name
 
     context "#metadata" do
@@ -22,7 +21,6 @@ class ProjectTest < ActiveSupport::TestCase
         assert_equal false, @project.save, "Save behaving badly"
         assert @project.errors.full_messages.include?("Project metadata project cost code can't be blank")
       end
-
     end
 
     context "#billable_events" do
@@ -108,8 +106,6 @@ class ProjectTest < ActiveSupport::TestCase
         assert_equal 1, @submission.pending_requests(@request_type_3)
         assert_equal 8, @submission.total_requests(@request_type)
       end
-
     end
-
   end
 end

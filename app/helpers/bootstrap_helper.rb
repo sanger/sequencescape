@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 module BootstrapHelper
-
   def panel(type = :default, options = {}, &block)
     bs_custom_panel(type, :div, { class: "panel-body" }, options, &block)
   end
@@ -164,7 +163,6 @@ module BootstrapHelper
     select(*args)
   end
 
-
   def bootstrapify(level)
     {
       'notice' => 'success', 'error' => 'danger',
@@ -173,7 +171,6 @@ module BootstrapHelper
       'cancelled' => 'warning'
     }[level] || level
   end
-
 
   def bootstrapify_request_state(state)
     {
@@ -198,7 +195,6 @@ module BootstrapHelper
     }[state] || 'default'
   end
 
-
   def bootstrapify_study_state(state)
     {
       'pending' => 'warning',
@@ -217,6 +213,4 @@ module BootstrapHelper
       'ready' => 'success'
     }[state] || 'default'
   end
-
-
 end

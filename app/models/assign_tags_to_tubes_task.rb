@@ -12,5 +12,4 @@ class AssignTagsToTubesTask < AssignTagsTask
   def included_for_render_task
     [{ requests: [{ asset: [:map, :asset_groups, { primary_aliquot: :sample }] }, :target_asset, :batch_request] }, :pipeline]
   end
-
 end

@@ -8,9 +8,7 @@ require 'test_helper'
 require 'unit/illumina_b/request_statemachine_checks'
 
 class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
-
   context "An HTP library creation request" do
-
     should "accept the right purpose" do
       plate = Purpose.find_by_name('Cherrypicked').create!(barcode: 12345)
       r = RequestType.find_by_name('Shared Library Creation').create!(
@@ -38,7 +36,5 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
       assert r
       end
     end
-
   end
-
 end

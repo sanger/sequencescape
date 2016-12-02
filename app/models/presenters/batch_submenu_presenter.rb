@@ -11,6 +11,7 @@ module Presenters
     include ActionView::Helpers::TextHelper
 
     private
+
     def set_defaults(defaults)
       @defaults = defaults
     end
@@ -82,13 +83,12 @@ module Presenters
     end
 
     def load_pipeline_options
-
       add_submenu_option "Edit batch", edit_batch_path(@batch) if is_manager?
 
       # Printing of labels is enabled for anybody
       add_submenu_option "Print labels", :print_labels if is_pulldown_pipeline?
       add_submenu_option "Print pool label", :print_multiplex_labels if is_multiplexed?
-      add_submenu_option "Print labels",  :print_labels if is_multiplexed?
+      add_submenu_option "Print labels", :print_labels if is_multiplexed?
       add_submenu_option "Print stock pool label", :print_stock_multiplex_labels if is_multiplexed?
       add_submenu_option "Print plate labels", :print_plate_labels if has_plate_labels?
       add_submenu_option "Print stock labels", :print_stock_labels if has_stock_labels?
@@ -140,6 +140,5 @@ module Presenters
         yield option
       end
     end
-
   end
 end

@@ -5,16 +5,16 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class FluidigmFile
-
   module Finder
-
     class Directory
       def initialize(barcode)
         @barcode = barcode
       end
+
       def empty?
         !File.exists?("#{configatron.fluidigm_data.directory}/#{@barcode}/#{@barcode}.csv")
       end
+
       def content
         file_content = nil
         File.open("#{configatron.fluidigm_data.directory}/#{@barcode}/#{@barcode}.csv") do |file|
@@ -49,13 +49,11 @@ class FluidigmFile
     def self.find(barcode)
       default.new(barcode)
     end
-
   end
 
   class InvalidFile < StandardError; end
 
   class Assay
-
     attr_reader :name, :result
 
     @@valid_markers = ['XX', 'XY', 'YY']
@@ -80,7 +78,6 @@ class FluidigmFile
   end
 
   class FluidigmWell
-
     attr_reader :description
 
     def initialize(description)
@@ -104,7 +101,6 @@ class FluidigmFile
     def marker_array
       @gender_markers ||= []
     end
-
   end
 
   def initialize(file_contents)
@@ -135,6 +131,7 @@ class FluidigmFile
   end
 
   private
+
   def header_start_index
     @header_start_index ||= (0..@csv.size).detect { |i| @csv[i][0] == 'Experiment Information' } || raise(InvalidFile, 'Could not find header')
   end
@@ -159,5 +156,4 @@ class FluidigmFile
       well.add_assay(row[column('Experiment Information SNP Assay and Allele Names Assay')], row[column('Results Call Information Final')])
     end
   end
-
 end

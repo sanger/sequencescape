@@ -2,7 +2,6 @@ require 'test/unit'
 require 'informatics/support/options'
 
 class TestInformatics < Test::Unit::TestCase
-
   def setup
     @hash = { "KEY" => "VALUE" }
     @o = Informatics::Support::Options.collect(@hash)
@@ -23,5 +22,4 @@ class TestInformatics < Test::Unit::TestCase
   def test_first_value
     assert_equal "VALUE", @o.first_value
   end
-
 end

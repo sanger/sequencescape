@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 module SearchBehaviour
-
   MINIMUM_QUERY_LENGTH = 3
 
   def self.included(base)

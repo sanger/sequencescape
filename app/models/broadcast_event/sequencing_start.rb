@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::SequencingStart < BroadcastEvent
-
   set_event_type 'sequencing_start'
 
   seed_class Batch
@@ -22,5 +21,4 @@ class BroadcastEvent::SequencingStart < BroadcastEvent
   has_metadata(:read_length) { |batch, e| batch.requests.first.request_metadata.read_length }
   has_metadata(:pipeline) { |batch, e| batch.pipeline.name }
   has_metadata(:team) { |batch, e| batch.requests.first.product_line }
-
 end

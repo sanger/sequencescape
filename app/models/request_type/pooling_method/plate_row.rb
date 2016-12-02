@@ -11,7 +11,6 @@
 # WARNING: Will pool based on source asset location, not target. So may show odd behaviour
 # with re-arrays.
 module RequestType::PoolingMethod::PlateRow
-
   def pool_count
     pooling_options[:pool_count]
   end

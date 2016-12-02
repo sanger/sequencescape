@@ -22,7 +22,6 @@ require 'net/http'
 
 module Net
   class HTTP
-
     def self.set_proxy_header(name, value)
       additional_proxy_headers[name] = value
     end
@@ -34,6 +33,7 @@ module Net
     def additional_proxy_headers
       Net::HTTP.additional_proxy_headers
     end
+
     # Adapted from https://raw.githubusercontent.com/jruby/jruby/9.0.5.0/lib/ruby/stdlib/net/http.rb
     def connect
       if proxy? then

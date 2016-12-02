@@ -5,11 +5,9 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class QcDecision < ActiveRecord::Base
-
   include Uuid::Uuidable
 
   class QcDecisionQcable < ActiveRecord::Base
-
     self.table_name = ('qc_decision_qcables')
 
     belongs_to :qcable

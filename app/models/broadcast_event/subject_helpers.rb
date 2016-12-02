@@ -5,9 +5,7 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 module BroadcastEvent::SubjectHelpers
-
   class Subject
-
     attr_reader :target, :role_type
 
     def initialize(name, target)
@@ -69,12 +67,12 @@ module BroadcastEvent::SubjectHelpers
   end
 
   class SeedSubjectAssociation
-
     attr_reader :name
 
     def initialize(name)
       @name = name
     end
+
     def for(seed, event)
       Subject.new(name, seed)
     end
@@ -132,7 +130,6 @@ module BroadcastEvent::SubjectHelpers
   end
 
   module Subjectable
-
     def self.included(base)
       base.class.extend SubjectableClassMethods
     end

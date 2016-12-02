@@ -53,7 +53,7 @@ class WorkflowsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.xml  { render xml: @workflow.to_xml }
+      format.xml { render xml: @workflow.to_xml }
     end
   end
 
@@ -144,7 +144,6 @@ class WorkflowsController < ApplicationController
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
-
 
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task

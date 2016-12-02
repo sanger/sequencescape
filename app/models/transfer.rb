@@ -105,7 +105,6 @@ class Transfer < ActiveRecord::Base
                 "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
 
-
               joins(join_options).where(transfer_requests_as_target: { state: states })
             else
               all

@@ -1,5 +1,4 @@
 class AddChromiumPlatePurpose < ActiveRecord::Migration
-
   def up
     ActiveRecord::Base.transaction do
       stock_plate = Purpose.find_by_name!('ILC Stock')

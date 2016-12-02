@@ -47,6 +47,4 @@ class Transfer::FromPlateToTube < Transfer
     destination.update_attributes!(name: "#{source_barcode} #{range}")
   end
   private :update_tube_name
-
-
 end

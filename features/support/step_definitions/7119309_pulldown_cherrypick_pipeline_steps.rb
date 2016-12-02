@@ -37,7 +37,6 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   step("1 pending delayed jobs are processed")
 end
 
-
 Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission for cherrypicking$/ do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
@@ -60,13 +59,11 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   step("1 pending delayed jobs are processed")
 end
 
-
 Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/ do |plate_barcode, number_of_samples, study_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
   step(%Q{plate "#{plate_barcode}" has measured volume results})
 end
-
 
 Given /^plate "([^"]*)" has concentration results$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
@@ -109,7 +106,7 @@ Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpre
   if interpreter_is?(interpreter.strip)
     actual_table = table(fetch_table('table.plate_layout'))
     expected_results_table.column_names.each do |column_name|
-      expected_results_table.map_column!("#{column_name}") { |text| text.squish }
+      expected_results_table.map_column!(column_name.to_s) { |text| text.squish }
     end
     expected_results_table.diff!(actual_table)
    end
@@ -192,14 +189,11 @@ Given /^I have 2 pulldown plates$/ do
   step('I press "Next step"')
   step('I press "Release this batch"')
   step('I set Plate "1220088888782" to be in freezer "Pulldown freezer"')
-
 end
-
-
 
 Given /^all library tube barcodes are set to know values$/ do
   PulldownMultiplexedLibraryTube.all.each_with_index do |tube, index|
-    tube.update_attributes!(barcode: "#{index + 1}")
+    tube.update_attributes!(barcode: (index + 1).to_s)
   end
 end
 

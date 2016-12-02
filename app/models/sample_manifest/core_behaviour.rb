@@ -5,10 +5,10 @@
 # Copyright (C) 2011,2015 Genome Research Ltd.
 
 module SampleManifest::CoreBehaviour
-
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
     def validate_specialized_fields(*args); end
+
     def specialized_fields(*args); {}; end
   end
 
@@ -24,7 +24,6 @@ module SampleManifest::CoreBehaviour
       end
     end
   end
-
 
   def core_behaviour
     return @core_behaviour if @core_behaviour.present?

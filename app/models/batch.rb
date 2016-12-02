@@ -9,7 +9,6 @@ require "tecan_file_generation"
 require 'aasm'
 
 class Batch < ActiveRecord::Base
-
   self.per_page = 500
 
   belongs_to :user, foreign_key: "user_id"
@@ -20,18 +19,17 @@ class Batch < ActiveRecord::Base
   has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, inverse_of: :batch
   has_many :requests, ->() { distinct }, through: :batch_requests, inverse_of: :batch
   has_many :assets, through: :requests, source: :target_asset
-  has_many :source_assets,  ->() { distinct }, through: :requests, source: :asset
-  has_many :submissions,  ->() { distinct }, through: :requests
-  has_many :orders,  ->() { distinct }, through: :submissions
-  has_many :studies,  ->() { distinct }, through: :orders
+  has_many :source_assets, ->() { distinct }, through: :requests, source: :asset
+  has_many :submissions, ->() { distinct }, through: :requests
+  has_many :orders, ->() { distinct }, through: :submissions
+  has_many :studies, ->() { distinct }, through: :orders
   has_many :projects,  ->() { distinct }, through: :orders
   has_many :aliquots,  ->() { distinct }, through: :source_assets
-  has_many :samples,  ->() { distinct }, through: :assets
+  has_many :samples, ->() { distinct }, through: :assets
 
   def study
     self.studies.first
   end
-
 
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
@@ -87,10 +85,10 @@ class Batch < ActiveRecord::Base
   scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
   scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
   scope :failed_for_ui,      -> { where(production_state: 'fail').latest_first }
-  scope :in_progress_for_ui, -> { where(state: 'started',   production_state: nil).latest_first }
+  scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
 
   scope :latest_first,       -> { order('created_at DESC') }
-  scope :most_recent,     ->(number) { latest_first.limit(number) }
+  scope :most_recent, ->(number) { latest_first.limit(number) }
 
   delegate :size, to: :requests
 
@@ -255,7 +253,6 @@ class Batch < ActiveRecord::Base
     output_plates.any? { |plate| plate.barcode == barcode }
   end
 
-
   def plate_group_barcodes
     return nil unless pipeline.group_by_parent || requests.first.target_asset.is_a?(Well)
     latest_plate_group = output_plate_group
@@ -286,7 +283,6 @@ class Batch < ActiveRecord::Base
     self.multiplexed?
   end
 
-
   # Returns meaningful events excluding discriptors/descriptor_fields clutter
   def formatted_events
     ev = self.lab_events
@@ -303,7 +299,6 @@ class Batch < ActiveRecord::Base
     d
   end
 
-
   def multiplexed_items_with_unique_library_ids
     requests.map { |r| r.target_asset.children }.flatten.uniq
   end
@@ -315,7 +310,7 @@ class Batch < ActiveRecord::Base
 
   def verify_tube_layout(barcodes, user = nil)
     self.requests.each do |request|
-      barcode = barcodes["#{request.position}"]
+      barcode = barcodes[(request.position).to_s]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
           self.errors.add(:base, "The tube at position #{request.position} is incorrect.")
@@ -426,7 +421,6 @@ class Batch < ActiveRecord::Base
     return true
   end
 
-
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(self.requests.for_studies(study))
   end
@@ -502,7 +496,7 @@ class Batch < ActiveRecord::Base
       csv << pulldown_report_headers
 
       self.requests.each do |request|
-        raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
+        raise 'Invalid request data' unless request.valid_request_for_pulldown_report?
         well = request.asset
         # TODO[mb14] DRY it
         tagged_well = well

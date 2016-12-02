@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-
 Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
   purpose = Tube::Purpose.find_by!(name: tube_purpose)
   test = purpose.target_type.constantize.create!(
@@ -26,7 +25,6 @@ Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)"
     }.merge(request_defaults(request_type))
   )
 end
-
 
 Given /^a (started|passed|pending) transfer from the stock tube "([^"]*)" to the MX tube$/ do |state, source_name|
   source = Tube.find_by_name(source_name) or raise "Cannot find source tube #{source_name.inspect}"

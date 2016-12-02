@@ -5,9 +5,7 @@
 # Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 module IlluminaB::Requests
-
   class StdLibraryRequest < Request::LibraryCreation
     fragment_size_details(:no_default, :no_default)
   end
-
 end

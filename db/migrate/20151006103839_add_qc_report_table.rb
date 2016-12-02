@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AddQcReportTable < ActiveRecord::Migration
-
   require './lib/foreign_key_constraint'
   extend ForeignKeyConstraint
 

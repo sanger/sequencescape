@@ -13,7 +13,6 @@ class DeprecateIlluminaCQcCompletableRequestType < ActiveRecord::Migration
     end
   end
 
-
   def down
   end
 end

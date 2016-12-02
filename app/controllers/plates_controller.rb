@@ -26,7 +26,6 @@ class PlatesController < ApplicationController
     @plate = Plate.find(params[:id])
   end
 
-
   def create
     ActiveRecord::Base.transaction do
       plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
@@ -80,7 +79,7 @@ class PlatesController < ApplicationController
       else
         flash[:error] = 'Failed to create sample tubes'
         format.html { redirect_to(to_sample_tubes_plates_path) }
-        format.xml  { render xml: flash.to_xml,  status: :unprocessable_entity }
+        format.xml  { render xml: flash.to_xml, status: :unprocessable_entity }
         format.json { render json: flash.to_json, status: :unprocessable_entity }
       end
     end
@@ -95,5 +94,4 @@ class PlatesController < ApplicationController
       end
     end
   end
-
 end

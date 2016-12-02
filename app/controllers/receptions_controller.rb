@@ -30,7 +30,6 @@ class ReceptionsController < ApplicationController
     all_barcodes_blank = true
 
     barcodes.each do |index, barcode_ws|
-
       # We don't perform strip! as this results in modification of the parameters themselves, which affects logging and
       # exception notification. This can hinder investigation of any issues, as it changes apparent user input.
       barcode = barcode_ws.strip
@@ -163,5 +162,4 @@ class ReceptionsController < ApplicationController
   def find_asset_by_id
     @asset = Asset.find(params[:id])
   end
-
 end

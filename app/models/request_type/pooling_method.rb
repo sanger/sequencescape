@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class RequestType::PoolingMethod < ActiveRecord::Base
-
   has_many :request_types
   validates_presence_of :pooling_behaviour
   serialize :pooling_options
@@ -26,5 +25,4 @@ class RequestType::PoolingMethod < ActiveRecord::Base
     super
     import_behaviour
   end
-
 end

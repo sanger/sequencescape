@@ -15,7 +15,6 @@ class Event::ScannedIntoLabEvent < Event
       content: Date.today.to_s,
       family: "scanned_into_lab"
     )
-
   end
 
   def set_qc_state_pending

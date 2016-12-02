@@ -8,7 +8,6 @@ require "test_helper"
 
 class StampTest < ActiveSupport::TestCase
   context "A Stamp" do
-
     should belong_to :user
     should belong_to :robot
     should belong_to :lot
@@ -20,7 +19,6 @@ class StampTest < ActiveSupport::TestCase
     should validate_presence_of :user
     should validate_presence_of :robot
     should validate_presence_of :lot
-
 
     context "#stamp" do
       should 'transition qcables to pending' do
@@ -57,5 +55,4 @@ class StampTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

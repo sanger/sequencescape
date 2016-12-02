@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class PlateTemplate < Plate
-
   include Lot::Template
 
   def update_params!(details = {})
@@ -31,7 +30,6 @@ class PlateTemplate < Plate
     end
   end
 
-
   def set_control_well(result)
     self.add_descriptor(Descriptor.new({ name: "control_well", value: result }))
     self.save
@@ -50,5 +48,4 @@ class PlateTemplate < Plate
   scope :with_sizes, ->(sizes) {
     where(["size IN (?)", sizes])
   }
-
 end

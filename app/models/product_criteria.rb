@@ -4,11 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 class ProductCriteria < ActiveRecord::Base
-
   STAGE_STOCK = 'stock'
-
 
   # By default rails will try and name the table 'product_criterias'
   # We don't use the singular 'ProductCriterion' as the class name

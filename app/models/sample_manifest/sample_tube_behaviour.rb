@@ -14,7 +14,6 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   class Core
-
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
     def initialize(manifest)
@@ -70,7 +69,6 @@ module SampleManifest::SampleTubeBehaviour
     def printables
       samples.map { |sample| sample.assets.first }
     end
-
   end
 
   # There is no reason for this to need a rapid version as it should be reasonably
@@ -86,5 +84,4 @@ module SampleManifest::SampleTubeBehaviour
   def generate_1dtubes
     generate_tubes(Tube::Purpose.standard_sample_tube)
   end
-
 end

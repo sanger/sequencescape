@@ -1,6 +1,4 @@
 FactoryGirl.define do
-
-
   factory :custom_metadatum_collection do
     asset
     user

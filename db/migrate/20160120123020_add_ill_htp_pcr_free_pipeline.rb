@@ -5,12 +5,10 @@
 # Copyright (C) 2016 Genome Research Ltd.
 class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
   def up
-
   # IlluminaHtp::PlatePurposes.create_plate_purposes
   # IlluminaHtp::PlatePurposes.create_branches
 
     ActiveRecord::Base.transaction do |t|
-
       stock_name = 'PF Cherrypicked'
 
       branches = [[stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],

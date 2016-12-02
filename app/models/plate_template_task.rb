@@ -18,8 +18,6 @@ class PlateTemplateTask < Task
       # populate plates from Template
       # display plates
     end
-
-
   end # class PlateTemplateData
 
   def create_render_element(request)
@@ -38,6 +36,4 @@ class PlateTemplateTask < Task
   def do_task(workflow, params)
     workflow.do_plate_template_task(self, params)
   end
-
-
 end

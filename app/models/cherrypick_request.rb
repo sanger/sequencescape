@@ -6,15 +6,14 @@
 
 # This class is due to replace CherrypickForPulldownRequest
 class CherrypickRequest < TransferRequest
-
   redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has less states.
     state :pending, initial: true
     state :started
-    state :failed,     enter: :on_failed
+    state :failed, enter: :on_failed
     state :passed
-    state :cancelled,  enter: :on_cancelled
+    state :cancelled, enter: :on_cancelled
     state :hold
 
     event :hold do
@@ -76,5 +75,4 @@ class CherrypickRequest < TransferRequest
     new_volume = asset.get_current_volume - subtracted_volume
     asset.set_current_volume(new_volume)
   end
-
 end

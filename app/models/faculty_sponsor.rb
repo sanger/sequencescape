@@ -20,7 +20,6 @@ class FacultySponsor < ActiveRecord::Base
     studies.count
   end
 
-
   module Associations
     def self.included(base)
       base.validates_presence_of :faculty_sponsor

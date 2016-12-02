@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AssignTubesToMultiplexedWellsTask < Task
-
   belongs_to :purpose
 
   class AssignTubesToWellsData < Task::RenderElement
@@ -37,6 +36,4 @@ class AssignTubesToMultiplexedWellsTask < Task
   def do_task(workflow, params)
     workflow.do_assign_requests_to_multiplexed_wells_task(self, params)
   end
-
-
 end

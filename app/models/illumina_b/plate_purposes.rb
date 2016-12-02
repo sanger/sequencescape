@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
-
 module IlluminaB::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     %w(
@@ -65,9 +64,7 @@ ILB_STD_PCRRXP
   end
 
   extend IlluminaHtp::PlatePurposes::PurposeHelpers
-
 end
-
 
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance

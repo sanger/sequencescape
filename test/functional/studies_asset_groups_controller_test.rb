@@ -6,10 +6,7 @@
 
 require "test_helper"
 
-
-
 class Studies::AssetGroupsControllerTest < ActionController::TestCase
-
   @assetgroup_count = AssetGroup.count
   @study_count = Study.count
 
@@ -26,7 +23,6 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       @study = FactoryGirl.create :study
       @asset_group = FactoryGirl.create :asset_group
     end
-
 
     ["index", "new"].each do |controller_method|
       context "##{controller_method}" do
@@ -104,7 +100,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       end
 
       should "change AssetGroup.count by -1" do
-       assert_equal(-1,  AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by -1")
+       assert_equal(-1, AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by -1")
      end
 
       should "change Study.count by 0" do
@@ -115,7 +111,6 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
     end
 
     context "#update" do
-
       setup do
         @assetgroup_count = AssetGroup.count
         @study_count = Study.count
@@ -149,9 +144,8 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_labels, printables: { "#{@asset.id}" => "true" }, printer: barcode_printer.name, id: @asset_group.id, study_id: @study.id
+        post :print_labels, printables: { (@asset.id).to_s => "true" }, printer: barcode_printer.name, id: @asset_group.id, study_id: @study.id
       end
     end
-
   end
 end

@@ -1,9 +1,7 @@
 require "test_helper"
 
 class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
-
   context "Get Your Qc Completed Tubes Here Controller" do
-
     attr_reader :user
 
     setup do
@@ -16,7 +14,6 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
     end
 
     context "#create" do
-
       attr_reader :plate, :study, :generator
 
       setup do
@@ -53,6 +50,5 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
         assert_match "Oh dear, your tubes weren't created. It's not you its me so please contact PSD.", flash[:error]
       end
     end
-
   end
 end

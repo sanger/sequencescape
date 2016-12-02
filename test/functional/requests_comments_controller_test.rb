@@ -6,8 +6,6 @@
 
 require "test_helper"
 
-
-
 class Requests::CommentsControllerTest < ActionController::TestCase
   context "Requests controller" do
     setup do
@@ -35,7 +33,6 @@ class Requests::CommentsControllerTest < ActionController::TestCase
         xhr :get, :index, request_id: @rq.id
         assert_template partial: '_simple_list'
       end
-
     end
   end
 end

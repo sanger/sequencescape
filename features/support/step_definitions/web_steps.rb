@@ -10,7 +10,6 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-
 require 'uri'
 require 'cgi'
 require_relative "../paths"
@@ -167,7 +166,6 @@ Then /^(?:|I )should see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, selec
   end
 end
 
-
 Then /^I should see "(.*?)" once$/ do |text|
   if page.respond_to? :should
     page.should have_content(text, count: 1)
@@ -306,7 +304,6 @@ Then /^Pmb is down$/ do
 end
 
 Then /^Pmb has the required label templates$/ do
-
   body = "{\"data\":[{\"id\":\"1\"}]}"
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template")

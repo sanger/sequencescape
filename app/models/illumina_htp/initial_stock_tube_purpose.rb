@@ -5,9 +5,7 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
-
   module InitialTube
-
     def valid_transition?(outer_request, target_state)
       target_state != 'started' || outer_request.pending?
     end
@@ -40,16 +38,14 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
           'RIGHT OUTER JOIN requests AS outr ON outr.asset_id = tfr.asset_id AND outr.asset_id IS NOT NULL'
         ]).
         where(
-          outr: { submission_id: submission_id, request_type_id: outr_request_type,  state: Request::Statemachine::OPENED_STATE },
+          outr: { submission_id: submission_id, request_type_id: outr_request_type, state: Request::Statemachine::OPENED_STATE },
           tfr:  { request_type_id: tfr_request_type, submission_id: submission_id }
         ).
         includes([:uuid_object, :barcode_prefix])
 
       siblings.map { |s| s.id.nil? ? :no_tube : { name: s.name, uuid: s.uuid, ean13_barcode: s.ean13_barcode, state: s.quick_state } }
     end
-
   end
 
   include InitialTube
-
 end

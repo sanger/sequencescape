@@ -13,7 +13,6 @@ module PlatePurpose::Stock
   UNREADY_STATE      = 'pending'
   READY_STATE        = 'passed'
 
-
   def state_of(plate)
     # If there are no wells with aliquots we're pending
     ids_of_wells_with_aliquots = plate.wells.with_aliquots.pluck(:id)

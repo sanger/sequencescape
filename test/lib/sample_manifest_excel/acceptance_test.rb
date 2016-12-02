@@ -1,11 +1,9 @@
 require 'test_helper'
 
 class AcceptanceTest < ActiveSupport::TestCase
-
   attr_reader :download, :sample_manifest
 
   def setup
-
     SampleManifestExcel.configure do |config|
       config.folder = File.join("test", "data", "sample_manifest_excel", "extract")
       config.load!
@@ -32,5 +30,4 @@ class AcceptanceTest < ActiveSupport::TestCase
   def teardown
     SampleManifestExcel.reset!
   end
-
 end

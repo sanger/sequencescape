@@ -27,7 +27,6 @@ module Core::Io::Base::JsonFormattingBehaviour
   # Very root level does absolutely nothing useful!
   #++
   def object_json(*args)
-
   end
 
   def json_field_for(attribute)

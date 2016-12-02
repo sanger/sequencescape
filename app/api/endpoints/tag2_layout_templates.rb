@@ -6,7 +6,6 @@
 
 class ::Endpoints::Tag2LayoutTemplates < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
@@ -15,6 +14,5 @@ class ::Endpoints::Tag2LayoutTemplates < ::Core::Endpoint::Base
         request.create!(::Io::Tag2Layout.map_parameters_to_attributes(request.json).reverse_merge(user: request.user))
       end
     end
-
   end
 end

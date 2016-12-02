@@ -24,5 +24,4 @@ class CreateAssetRequest < SystemRequest
     false
   end
   private :on_valid_asset?
-
 end

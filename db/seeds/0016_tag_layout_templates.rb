@@ -5,7 +5,6 @@
 # Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 ActiveRecord::Base.transaction do
-
   # Pulldown
   TagGroup.find_each do |tag_group|
     TagLayoutTemplate.create!(
@@ -34,8 +33,6 @@ ActiveRecord::Base.transaction do
     )
   end
 
-
-
   # Pulldown (Illumina A)
   TagLayoutTemplate.create!(
     name: "Illumina set - 6 mer tags in column major order (first oligo: ATCACG)",
@@ -43,7 +40,6 @@ ActiveRecord::Base.transaction do
     walking_algorithm: 'TagLayout::WalkWellsByPools',
     tag_group: TagGroup.find_by_name('Illumina set - 6 mer tags')
   )
-
 
   sanger_168_tag_group = TagGroup.find_by_name('Sanger_168tags - 10 mer tags')
 
@@ -53,7 +49,6 @@ ActiveRecord::Base.transaction do
     walking_algorithm: 'TagLayout::WalkWellsOfPlate',
     tag_group: sanger_168_tag_group
   )
-
 
   # Illumina B
   TagLayoutTemplate.create!(
@@ -84,5 +79,4 @@ ActiveRecord::Base.transaction do
       direction_algorithm: 'TagLayout::InColumns'
     )
   end
-
 end

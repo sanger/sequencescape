@@ -88,7 +88,7 @@ class SubmissionTemplate < ActiveRecord::Base
   def submission_attributes
     return {} if self.submission_parameters.nil?
 
-    submission_attributes = Marshal.load(Marshal.dump(self.submission_parameters))  # Deep clone
+    submission_attributes = Marshal.load(Marshal.dump(self.submission_parameters)) # Deep clone
     submission_attributes[:request_types] = submission_attributes[:request_type_ids_list].flatten
     submission_attributes
   end

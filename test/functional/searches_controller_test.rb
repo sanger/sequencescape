@@ -6,8 +6,6 @@
 
 require "test_helper"
 
-
-
 class SearchesControllerTest < ActionController::TestCase
   context "Searches controller" do
     setup do
@@ -36,10 +34,8 @@ class SearchesControllerTest < ActionController::TestCase
 
         @sample_with_supplier_name = FactoryGirl.create :sample, sample_metadata_attributes: { supplier_name: "FindMe" }
         @sample_with_accession_number = FactoryGirl.create :sample, sample_metadata_attributes: { sample_ebi_accession_number: "FindMe" }
-
       end
       context "#index" do
-
         context "with the valid search" do
           setup do
             get :index, q: "FindMe"
@@ -63,7 +59,6 @@ class SearchesControllerTest < ActionController::TestCase
             should "not contain a link to the study that was not found" do
               deny_link_to study_path(@study2)
             end
-
 
             should "contain a link to the submission that was found" do
               assert_link_to submission_path(@submission)

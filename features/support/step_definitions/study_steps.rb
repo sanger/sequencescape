@@ -22,7 +22,7 @@ Given /^I have a study called "([^\"]*)" that requires ethical approval and has 
   study.save
 end
 
-Given /^a study "(.*?)" is pending$/  do |study|
+Given /^a study "(.*?)" is pending$/ do |study|
   Study.find_by_name(study).reset!
 end
 
@@ -129,7 +129,6 @@ GivenFixedStudyMetadata(:contains_human_dna,      Study::YES, /^the study "([^\"
 GivenFixedStudyMetadata(:contains_human_dna,      Study::NO,  /^the study "([^\"]+)" does not contain human DNA$/)
 GivenFixedStudyMetadata(:commercially_available,  Study::YES, /^the study "([^\"]+)" contains samples commercially available$/)
 GivenFixedStudyMetadata(:commercially_available,  Study::NO,  /^the study "([^\"]+)" does not contain samples commercially available$/)
-
 
 def GivenStudyMetadata(attribute, regexp)
   Given(regexp) do |name, value|
@@ -259,12 +258,11 @@ Given /^study "([^\"]*)" has plate and assetgroup$/ do |study_name|
   study.samples << sample
   map   = FactoryGirl.create :map
   plate = FactoryGirl.create :plate, name: 'Cucumberirbattle', barcode: '123', closed: '0'
-  well = FactoryGirl.create :well, name: 'Well 1', closed: '0',  sample: sample, map: map
+  well = FactoryGirl.create :well, name: 'Well 1', closed: '0', sample: sample, map: map
   well.plate = plate
   well.save
   id_aga = FactoryGirl.create :asset_group_asset, asset_id: well.id, asset_group_id: id_asset_group.id
 end
-
 
 Given /^study "([^\"]*)" has an accession number$/ do |name|
   study = Study.find_by_name(name) or raise StandardError, "Cannot find study with name '#{name}'"
@@ -336,7 +334,6 @@ When /^I get the XML accession for the study *"([^\"]+)"$/ do |name|
   visit(url_for(controller: 'studies', action: 'show_accession', id: study.id, format: :xml))
 end
 
-
 Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_name, asset_model, asset_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = FactoryGirl.create(asset_model.gsub(/\s+/, '_').to_sym, name: asset_name)
@@ -398,7 +395,6 @@ Given /^a study named "([^\"]+)" exists for array express/ do |study_name|
   step %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
 end
 
-
 Given /^study "([^"]*)" has a study title of "([^"]*)"$/ do |study_name, study_title|
   study = Study.find_by_name(study_name)
   study.study_metadata.update_attributes!(study_study_title: study_title)
@@ -419,7 +415,6 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step(%Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"})
   step('I press "Create"')
 end
-
 
 Then /^the list of studies should be:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#study_list')))

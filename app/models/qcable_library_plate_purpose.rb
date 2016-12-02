@@ -5,9 +5,7 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class QcableLibraryPlatePurpose < PlatePurpose
-
   module ClassBehaviour
-
     def state_of(plate)
       qcable_for(plate).state
     end
@@ -35,9 +33,7 @@ class QcableLibraryPlatePurpose < PlatePurpose
         end
       end
     end
-
   end
 
   include ClassBehaviour
-
 end

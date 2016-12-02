@@ -5,8 +5,6 @@
 # Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
 ActiveRecord::Base.transaction do
-
-
   workflow   = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
   cherrypick = RequestType.find_by_name('Cherrypicking for Pulldown')    or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
 
@@ -73,7 +71,6 @@ ActiveRecord::Base.transaction do
   tube_purpose = Tube::Purpose.find_by_name('Cap Lib Pool Norm') or raise "Cannot find standard MX tube purpose"
   Purpose.find_by_name(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last.last).child_relationships.create!(child: tube_purpose, transfer_request_type: RequestType.transfer)
 
-
   [
     {
       key: "illumina_a_shared",
@@ -103,7 +100,6 @@ ActiveRecord::Base.transaction do
   ].each do |request_type_options|
     RequestType.create!(shared_options_a.merge(request_type_options))
   end
-
 
   sequencing_request_type_names = [
     "Single ended sequencing",
@@ -163,7 +159,6 @@ ActiveRecord::Base.transaction do
       submission.request_options   = defaults
 
       submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
-
     end
   end
   IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose, request|
@@ -297,5 +292,4 @@ StripTubeCreationPipeline.create!(
       key: 'strip_tube_purpose'
     )
   end
-
 end

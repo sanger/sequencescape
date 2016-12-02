@@ -33,7 +33,6 @@ Given /^I have a cherrypicking submission for plate "([^"]*)"$/ do |plate_barcod
   study = FactoryGirl.create :study
   plate = Plate.find_by_barcode(plate_barcode)
 
-
   submission_template = SubmissionTemplate.find_by_name('Cherrypick')
   submission = submission_template.create_and_build_submission!(
     study: study,
@@ -43,5 +42,4 @@ Given /^I have a cherrypicking submission for plate "([^"]*)"$/ do |plate_barcod
     assets: plate.wells
   )
   step("1 pending delayed jobs are processed")
-
 end

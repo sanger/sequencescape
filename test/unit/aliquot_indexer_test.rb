@@ -7,7 +7,6 @@
 require "test_helper"
 
 class AliquotIndexerTest < ActiveSupport::TestCase
-
   context "when given a sensible number of aliquots" do
     setup do
       @pre_count = AliquotIndex.count
@@ -25,7 +24,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"
 
       new_indexes = AliquotIndex.where(lane_id: @lane.id)
-      assert_equal 4, new_indexes.count,  "#{new_indexes.count} indexes belonged to the lane, 4 expected"
+      assert_equal 4, new_indexes.count, "#{new_indexes.count} indexes belonged to the lane, 4 expected"
 
       new_indexes.each do |ai|
         aliquot_number = @aliquots.index(ai.aliquot)
@@ -33,11 +32,9 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         actual_index   = ai.aliquot_index
         assert_equal expected_index, ai.aliquot_index, "Aliquot #{aliquot_number} given index #{actual_index}, expected #{expected_index}"
       end
-
     end
 
     context "when phix is added" do
-
       setup do
         @phix = create :spiked_buffer do |sb|
           sb.aliquots { |a| a.association(:aliquot, receptacle: sb, tag: @tags[2]) }
@@ -54,7 +51,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"
 
         new_indexes = AliquotIndex.where(lane_id: @lane.id)
-        assert_equal 4, new_indexes.count,  "#{new_indexes.count} indexes belonged to the lane, 4 expected"
+        assert_equal 4, new_indexes.count, "#{new_indexes.count} indexes belonged to the lane, 4 expected"
 
         new_indexes.each do |ai|
           aliquot_number = @aliquots.index(ai.aliquot)
@@ -64,7 +61,5 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
-
 end
