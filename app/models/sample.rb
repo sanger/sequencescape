@@ -79,7 +79,7 @@ class Sample < ActiveRecord::Base
   end
   private :safe_to_destroy
 
-  after_save :create_accession_number, if: :accessionable?
+  # after_save :create_accession_number, if: :accessionable?
 
   scope :with_name, ->(*names) { where(:name => names.flatten) }
 

@@ -163,94 +163,6 @@ class AccessionService
 
 private
 
-  def accession_study_set_xml_quarantine(study, studydata)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.STUDY(:alias => studydata[:alias], :accession => study.study_metadata.study_ebi_accession_number) {
-        xml.DESCRIPTOR {
-          xml.STUDY_TITLE         studydata[:study_title]
-          xml.STUDY_DESCRIPTION   studydata[:description]
-          xml.CENTER_PROJECT_NAME studydata[:center_study_name]
-          xml.CENTER_NAME         studydata[:center_name]
-          xml.STUDY_ABSTRACT      studydata[:study_abstract]
-
-          xml.PROJECT_ID(studydata[:study_id] || "0")
-          study_type = studydata[:existing_study_type]
-          if StudyType.include?(study_type)
-            xml.STUDY_TYPE(:existing_study_type => study_type)
-          else
-            xml.STUDY_TYPE(:existing_study_type => Study::Other_type , :new_study_type => study_type)
-          end
-        }
-            }
-      }
-    return xml.target!
-  end
-
-  def accession_sample_set_xml_quarantine(sample, sampledata)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.SAMPLE(:alias => sampledata[:alias], :accession => sample.sample_metadata.sample_ebi_accession_number) {
-        xml.SAMPLE_NAME {
-          xml.COMMON_NAME  sampledata[:sample_common_name]
-          xml.TAXON_ID     sampledata[:taxon_id]
-        }
-        xml.SAMPLE_ATTRIBUTES {
-          sampledata[:tags].each do |tagpair|
-            xml.SAMPLE_ATTRIBUTE {
-              xml.TAG   tagpair[:tag]
-              xml.VALUE tagpair[:value]
-            }
-          end
-        } unless sampledata[:tags].blank?
-
-        xml.SAMPLE_LINKS {
-
-        } unless sampledata[:links].blank?
-      }
-    }
-    return xml.target!
-  end
-
-  def accession_submission_xml(submission, accession_number)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.SUBMISSION(
-      'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
-      :center_name     => submission[:center_name],
-      :broker_name     => submission[:broker],
-      :alias           => submission[:submission_id],
-      :submission_date => submission[:submission_date]
-    ) {
-      xml.CONTACTS {
-        xml.CONTACT(
-          :inform_on_error  => submission[:contact_inform_on_error],
-          :inform_on_status => submission[:contact_inform_on_status],
-          :name             => submission[:name]
-        )
-      }
-      xml.ACTIONS {
-        xml.ACTION {
-          if accession_number.blank?
-            xml.ADD(:source => submission[:source], :schema => submission[:schema])
-          else
-            xml.MODIFY(:source => submission[:source], :target=>"")
-          end
-        }
-        xml.ACTION {
-          if submission[:hold] == AccessionService::Protect
-            xml.PROTECT
-          else
-            xml.HOLD
-          end
-        }
-      }
-    }
-    return xml.target!
-  end
-
   require 'rexml/document'
   #require 'curb'
   include REXML
@@ -267,7 +179,6 @@ private
     raise StandardError, "Cannot connect to EBI to get accession number. Please configure accession_url in config.yml" if configatron.accession_url.blank?
 
     begin
-      # rc = RestClient::Resource.new(URI.parse(configatron.accession_url+accession_login).to_s)
       rc = rest_client_resource
       if configatron.disable_web_proxy == true
         RestClient.proxy = ''
@@ -283,7 +194,6 @@ private
       file_params.map { |p|
         payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap{|f| f.original_filename = p[:remote_name] }
         }
-      #rc.multipart_form_post = true # RC handles automatically
       response = rc.post(payload)
       case response.code
       when (200...300) #success

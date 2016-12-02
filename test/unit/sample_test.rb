@@ -345,12 +345,13 @@ class SampleTest < ActiveSupport::TestCase
 
         should 'succeed if the sample is acccessionable' do
           sample = create(:sample, studies: [create(:open_study, accession_number: 'ENA123')], sample_metadata: Sample::Metadata.new(metadata_wo_an))
-          sample.save
+          Delayed::Job.enqueue SampleAccessioningJob.new(sample)
           assert(sample.sample_metadata.sample_ebi_accession_number.present?)
         end
 
         should 'fail if the sample is not accessionable' do
           sample = create(:sample, studies: [create(:open_study)], sample_metadata: Sample::Metadata.new(metadata_wo_an.except(:sample_taxon_id)))
+          Delayed::Job.enqueue SampleAccessioningJob.new(sample)
           refute(sample.sample_metadata.sample_ebi_accession_number.present?)
         end
 

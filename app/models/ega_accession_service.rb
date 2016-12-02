@@ -7,10 +7,6 @@ class  EgaAccessionService < AccessionService
   self.priority = 2
   self.operational = true
 
-  def accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type)
-    generate_accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type, configatron.ega_accession_login)
-  end
-
   def provider
     :EGA
   end
@@ -44,9 +40,4 @@ class  EgaAccessionService < AccessionService
     true
   end
 
-  #def submit(user, *accessionables)
-    #accessionables.each(&:protect)
-
-    #super(user, *accessionables)
-  #end
 end
