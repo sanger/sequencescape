@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class CherrypickForPulldownPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
@@ -25,23 +27,16 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
     # 2. The assets are not removed because they are not considered unused
   end
 
-  def all_requests_from_submissions_selected?(request_ids)
-    requests = Request.where(:id=>request_ids).includes(:submission).all
-    expected_requests = all_request_from_submissions_filtered_by_request_type(submissions_from_requests(requests),requests.first.request_type)
-    return true if requests.size == expected_requests.size
-
-    false
+  def all_requests_from_submissions_selected?(requests)
+    request_types, submissions = request_types_and_submissions_for(requests)
+    matching_requests = Request.where(request_type_id: request_types, submission_id: submissions).order(:id).pluck(:id)
+    requests.map(&:id).sort == matching_requests
   end
 
-  def all_request_from_submissions_filtered_by_request_type(submissions, request_type)
-    Request.find_all_by_submission_id(submissions.map(&:id), :conditions => ["request_type_id = #{request_type.id}"])
+  def request_types_and_submissions_for(requests)
+    return requests.map(&:request_type_id).uniq, requests.map(&:submission_id).uniq
   end
-  private :all_request_from_submissions_filtered_by_request_type
-
-  def submissions_from_requests(requests)
-    requests.map{ |request| request.submission }.uniq
-  end
-  private :submissions_from_requests
+  private :request_types_and_submissions_for
 
   # Validates that the requests in the batch lead into the same pipeline.
   def validation_of_requests(requests, &block)

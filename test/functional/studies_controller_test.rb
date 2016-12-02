@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 require 'studies_controller'
 
-# Re-raise errors caught by the controller.
-class StudiesController; def rescue_action(e) raise e end; end
+
 
 class StudiesControllerTest < ActionController::TestCase
   context "StudiesController" do
@@ -20,11 +21,11 @@ class StudiesControllerTest < ActionController::TestCase
 
     resource_test(
       'study', {
-        :defaults => {:name => "study name"},
-        :user => :admin,
-        :other_actions => ['properties', 'study_status'],
-        :ignore_actions => ['show', 'create', 'update', 'destroy'],
-        :formats => ['xml']
+        defaults: { name: "study name" },
+        user: :admin,
+        other_actions: ['properties', 'study_status'],
+        ignore_actions: %w(show create update destroy),
+        formats: ['xml']
       }
     )
   end
@@ -37,7 +38,7 @@ class StudiesControllerTest < ActionController::TestCase
       @user = FactoryGirl.create(:user)
       @user.has_role('owner')
       @controller.stubs(:logged_in?).returns(@user)
-      @controller.stubs(:current_user).returns(@user)
+      session[:user] = @user.id
     end
 
     context "#new" do
@@ -55,7 +56,7 @@ class StudiesControllerTest < ActionController::TestCase
         @project = FactoryGirl.create(:project)
         @user.is_administrator
         @user.save
-        get :new_plate_submission, :id => @study.id
+        get :new_plate_submission, id: @study.id
       end
 
       should respond_with :success
@@ -64,7 +65,7 @@ class StudiesControllerTest < ActionController::TestCase
 
     context "#create" do
       setup do
-        @request_type_1 =FactoryGirl.create :request_type
+        @request_type_1 = FactoryGirl.create :request_type
         @program = FactoryGirl.create :program
       end
 
@@ -75,7 +76,7 @@ class StudiesControllerTest < ActionController::TestCase
             "name" => "hello",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
-              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me'),
+              'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
               'study_description' => 'some new study',
               'program_id' => @program.name,
               'contains_human_dna' => 'No',
@@ -88,7 +89,7 @@ class StudiesControllerTest < ActionController::TestCase
           }
         end
 
-        should set_the_flash.to( "Your study has been created")
+        should set_flash.to("Your study has been created")
         should redirect_to("study path") { study_path(Study.last) }
         should "change Study.count by 1" do
           assert_equal 1, Study.count - @study_count
@@ -107,17 +108,17 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal @initial_study_count, Study.count
         end
 
-        should set_the_flash.now.to('Problems creating your new study')
+        should set_flash.now.to('Problems creating your new study')
       end
 
       context "create a new study with a program specified" do
         setup do
-          #Program.new(:name => 'testing program').save
+          # Program.new(:name => 'testing program').save
           post :create, "study" => {
             "name" => "hello 4",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
-              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
+              'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
               'program_id' => @program.id,
@@ -140,7 +141,7 @@ class StudiesControllerTest < ActionController::TestCase
             "name" => "hello 4",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
-              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
+              'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
@@ -165,7 +166,7 @@ class StudiesControllerTest < ActionController::TestCase
             "name" => "hello 3",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
-              'faculty_sponsor_id' => FacultySponsor.create!(:name => 'Me').id,
+              'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
               'program_id' => @program.id,
@@ -182,7 +183,7 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal 1, Study.count - @study_count
         end
         should redirect_to("study path") { study_path(Study.last) }
-        should set_the_flash.to( "Your study has been created")
+        should set_flash.to("Your study has been created")
       end
 
     end

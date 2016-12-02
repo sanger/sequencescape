@@ -1,4 +1,4 @@
-@api @json @asset @search @single-sign-on @new-api @barcode_search @barcode-service
+@api @json @asset @search @single-sign-on @new-api @barcode_search
 Feature: Searching for assets by barcode
   Background:
     Given all of this is happening at exactly "12-Jun-2012 23:00:00+01:00"
@@ -12,23 +12,17 @@ And I have a "full" authorised user with the key "cucumber"
     Given the UUID for the search "Find pulldown stock plates" is "00000000-1111-2222-3333-444444444445"
     Given the UUID for the search "Find pulldown plates for user" is "00000000-1111-2222-3333-444444444446"
 
-    Given the plate barcode webservice returns "1000001"
-      And the plate barcode webservice returns "1000002"
-      And the plate barcode webservice returns "1000003"
-      And the plate barcode webservice returns "1000004"
-      And the plate barcode webservice returns "1000005"
-
-      Given a "Stock Plate" plate called "stock plate" exists
-      And a "ISC stock DNA" plate called "Testing the API A" exists
+      Given a "Stock Plate" plate called "stock plate" exists with barcode "1000001"
+      And a "ISC stock DNA" plate called "Testing the API A" exists with barcode "1000002"
       And the UUID for the plate "Testing the API A" is "00000000-1111-2222-3333-000000000001"
       And all wells on the plate "Testing the API A" have unique samples
       And passed transfer requests exist between 1 wells on "stock plate" and "Testing the API A"
       And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
-      And a "ISC Covaris" plate called "Testing the API B" exists
+      And a "ISC Covaris" plate called "Testing the API B" exists with barcode "1000003"
       And the UUID for the plate "Testing the API B" is "00000000-1111-2222-3333-000000000002"
-      And a "ISC lib PCR" plate called "Testing the API C" exists
+      And a "ISC lib PCR" plate called "Testing the API C" exists with barcode "1000004"
       And the UUID for the plate "Testing the API C" is "00000000-1111-2222-3333-000000000003"
-      And a "ISC lib PCR-XP" plate called "Testing the API D" exists
+      And a "ISC lib PCR-XP" plate called "Testing the API D" exists with barcode "1000005"
       And the UUID for the plate "Testing the API D" is "00000000-1111-2222-3333-000000000004"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API B"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API C"

@@ -182,6 +182,7 @@ en:
         <<: *sample_metadata
       study_metadata:
         faculty_sponsor_id: "Faculty sponsor"
+        faculty_sponsor: "Faculty sponsor"
         study_description: "Study description"
   qc_reports:
     state_descriptions:

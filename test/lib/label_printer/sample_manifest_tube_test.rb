@@ -20,14 +20,14 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
     @prefix = 'NT'
     @barcode1 = tube1.barcode
 
-    options = {sample_manifest: @manifest, only_first_label: false}
+    options = { sample_manifest: @manifest, only_first_label: false }
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
-    @label = {top_line: "#{manifest.study.abbreviation}",
+    @label = { top_line: "#{manifest.study.abbreviation}",
               middle_line: barcode1,
               bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
               round_label_top_line: prefix,
               round_label_bottom_line: barcode1,
-              barcode: tube1.ean13_barcode}
+              barcode: tube1.ean13_barcode }
   end
 
   test "should return the right list of tubes" do
@@ -36,7 +36,7 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   end
 
   test "returns only one tube if required to do so" do
-    options = {sample_manifest: manifest, only_first_label: true}
+    options = { sample_manifest: manifest, only_first_label: true }
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
 
     assert_equal 1, tube_label.tubes.count

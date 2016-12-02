@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module ChangeTagException
   class MissingTag < Exception
@@ -29,7 +31,7 @@ class ChangeTag
         tube = LibraryTube.find(library_tube_id)
         new_tag = Tag.find(tag_id)
         tube.aliquots.first.descendants(true).map do |aliquot|
-          aliquot.update_attributes!(:tag => new_tag)
+          aliquot.update_attributes!(tag: new_tag)
         end
       end
     end

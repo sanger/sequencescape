@@ -1,7 +1,7 @@
 module LabelPrinter
   module Label
 
-    class PlateToTubes <BaseTube
+    class PlateToTubes < BaseTube
 
       attr_reader :tubes
 

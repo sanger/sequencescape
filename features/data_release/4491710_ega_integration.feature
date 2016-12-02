@@ -41,7 +41,7 @@ Feature: Generate accession nubmers for a sample
 
   Scenario: Study doesn't have any of the required properties filled in
     Given a study named "Study 4491710" exists
-
+    And the abstract of study "Study 4491710" is ""
     Given study "Study 4491710" has a registered sample "Sample4491710"
     And an accession number is required for study "Study 4491710"
 

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Sanger
   module Testing
@@ -10,14 +12,14 @@ module Sanger
           params.symbolize_keys!
           resource_name = resource_name.to_sym
 
-          restful_actions = ['index','new','create','show','update','destroy','edit']
+          restful_actions = %w(index new create show update destroy edit)
           ignore_actions  = params[:ignore_actions] || []
           actions         = params[:actions] || (restful_actions - ignore_actions)
-          path_prefix     = params[:with_prefix]||""
+          path_prefix     = params[:with_prefix] || ""
           raise Exception.new, ":actions need to be an Array" unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
-          formats         = params[:formats] || ['html','xml', 'json']
+          formats         = params[:formats] || ['html', 'xml', 'json']
 
           context 'should be a resource' do
             setup do
@@ -54,7 +56,7 @@ module Sanger
               index_url = "#{parent_resource}_#{resource_name.to_s.pluralize}_path(@#{parent_resource})"
 
               setup do
-                parent       = create parent_resource
+                parent = create parent_resource
 
                 @factory_options.merge!(
                   parent_resource.to_sym => parent
@@ -78,11 +80,11 @@ module Sanger
                 @user = case
                   when user_details.is_a?(Symbol) then create(user_details)
                   when user_details.is_a?(Proc) then user_details.call
-                  else raise StandardError, "You are potentially creating objects outside of a transaction: #{ user_details.inspect }"
+                  else raise StandardError, "You are potentially creating objects outside of a transaction: #{user_details.inspect}"
                 end
 
                 # All our things need a user to be logged in
-                @controller.stubs(:current_user).returns(@user)
+                session[:user] = @user.id
                 @controller.stubs(:logged_in?).returns(@user)
               end
               if actions.include?('index')
@@ -111,8 +113,8 @@ module Sanger
                     local_params[resource_name] = @create_options
                     post :create, local_params
                   end
-                  #assert eval "@object".valid?
-                  should redirect_to("show page"){ eval(show_url) }
+                  # assert eval "@object".valid?
+                  should redirect_to("show page") { eval(show_url) }
                 end
               end
 
@@ -149,7 +151,7 @@ module Sanger
                     local_params[:id] = @object.id
                     put :update, local_params
                   end
-                  should redirect_to("show page"){ eval(show_url) }
+                  should redirect_to("show page") { eval(show_url) }
                 end
               end
 
@@ -161,7 +163,7 @@ module Sanger
                     local_params[:id] = @object.id
                     delete :destroy, local_params
                   end
-                  should redirect_to("index page"){ eval(index_url) }
+                  should redirect_to("index page") { eval(index_url) }
                 end
 
                 # context "destroy without object in database" do
@@ -171,7 +173,7 @@ module Sanger
                 #       delete :destroy, :id => -1
                 #     end
                 #   end
-                #   should_not set_the_flash
+                #   should_not set_flash
                 # end
               end
 
@@ -191,7 +193,7 @@ module Sanger
                   context "should show status" do
                     setup do
                       @object = create resource_name
-                      get :status, :id => @object.id
+                      get :status, id: @object.id
                     end
                     should respond_with :success
                   end
@@ -209,8 +211,8 @@ module Sanger
                       end
                       should respond_with :success
                       should "have api version attribute on root object" do
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}", :attributes => {:api_version => "0.6"}
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}"
+                        assert_tag tag: "#{resource_name.to_s.pluralize}", attributes: { api_version: "0.6" }
+                        assert_tag tag: "#{resource_name.to_s.pluralize}"
                       end
                     end
                   end
@@ -225,8 +227,8 @@ module Sanger
                       end
                       should respond_with :success
                       should "show xml" do
-                        assert_tag :tag => "#{resource_name}", :attributes => {:api_version => RELEASE.api_version}
-                        assert_tag :tag => "#{resource_name}"
+                        assert_tag tag: "#{resource_name}", attributes: { api_version: RELEASE.api_version }
+                        assert_tag tag: "#{resource_name}"
                       end
                     end
                   end

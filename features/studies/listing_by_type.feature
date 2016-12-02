@@ -22,31 +22,4 @@ Feature: Listing studies by the various possible types
       | Active |
       | Inactive |
       | Collaborations |
-  #
-  # Scenario: Listing all studies
-  #   Given studies will appear in the following study lists:
-  #     | Interesting |
-  #     | Followed |
-  #     | Managed & active |
-  #     | Managed & inactive |
-  #     | Pending |
-  #     | Pending ethical approval |
-  #     | Contaminated with human dna |
-  #     | Active |
-  #     | Inactive |
-  #     | Collaborations |
-  #
-  #   When I follow "All"
-  #   And the Ajax updates the view
-  #
-  #   Then I should see the studies for the following study lists:
-  #     | Interesting |
-  #     | Followed |
-  #     | Managed & active |
-  #     | Managed & inactive |
-  #     | Pending |
-  #     | Pending ethical approval |
-  #     | Contaminated with human dna |
-  #     | Active |
-  #     | Inactive |
-  #     | Collaborations |
+

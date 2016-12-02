@@ -1,15 +1,17 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Order < ActiveRecord::Base
   class OrderRole < ActiveRecord::Base
-    self.table_name =('order_roles')
+    self.table_name = ('order_roles')
   end
 
   module InstanceMethods
     def complete_building
-      #nothing just so mixin can use super
+      # nothing just so mixin can use super
     end
   end
   include InstanceMethods
@@ -26,33 +28,33 @@ class Order < ActiveRecord::Base
 
   # Required at initial construction time ...
   belongs_to :study
-  validates :study, :presence => true, :unless => :cross_study_allowed
+  validates :study, presence: true, unless: :cross_study_allowed
   validate :study_is_active, on: :create
 
   belongs_to :project
-  validates :project, :presence => true, :unless => :cross_project_allowed
+  validates :project, presence: true, unless: :cross_project_allowed
 
-  belongs_to :order_role, :class_name => 'Order::OrderRole'
-  delegate :role, :to => :order_role, :allow_nil => true
+  belongs_to :order_role, class_name: 'Order::OrderRole'
+  delegate :role, to: :order_role, allow_nil: true
 
   belongs_to :product
 
   belongs_to :user
   validates_presence_of :user
 
-  belongs_to :workflow, :class_name => 'Submission::Workflow'
+  belongs_to :workflow, class_name: 'Submission::Workflow'
   validates_presence_of :workflow
 
-  has_many :requests, :inverse_of => :order
+  has_many :requests, inverse_of: :order
 
-  belongs_to :submission, :inverse_of => :orders
+  belongs_to :submission, inverse_of: :orders
   scope :include_for_study_view, -> { includes(:submission) }
-  #validates_presence_of :submission
+  # validates_presence_of :submission
 
   before_destroy :is_building_submission?
   after_destroy :on_delete_destroy_submission
 
-  scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples:{id: samples } ) }
+  scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples: { id: samples }) }
 
   def is_building_submission?
     self.submission.building?
@@ -87,7 +89,7 @@ class Order < ActiveRecord::Base
   def no_consent_withdrawl
     return true unless all_samples.any?(&:consent_withdrawn?)
     withdrawn_samples = all_samples.select(&:consent_withdrawn?).map(&:friendly_name)
-    errors.add(:samples,"in this submission have had patient consent withdrawn: #{withdrawn_samples.to_sentence}")
+    errors.add(:samples, "in this submission have had patient consent withdrawn: #{withdrawn_samples.to_sentence}")
     false
   end
   private :no_consent_withdrawl
@@ -104,7 +106,7 @@ class Order < ActiveRecord::Base
   # TODO: Figure out why eager loading aliquots/samples returns [] even when
   # we limit order_assets to receptacles.
   def samples
-    #naive way
+    # naive way
     assets.map(&:samples).flatten.uniq
   end
 
@@ -114,19 +116,21 @@ class Order < ActiveRecord::Base
   end
 
   def all_assets
-    pull_assets_from_asset_group if assets.empty? && asset_group.present?
+    if assets.empty? && asset_group.present?
+      pull_assets_from_asset_group
+    end
     assets
   end
 
-  scope :for_studies, ->(*args) { {:conditions => { :study_id => args[0]} } }
+  scope :for_studies, ->(*args) { where(study_id: args) }
 
   self.per_page = 500
   scope :including_associations_for_json, -> {
     includes([
       :uuid_object,
-      {:assets => [:uuid_object] },
-      { :project => :uuid_object },
-      { :study => :uuid_object },
+      { assets: [:uuid_object] },
+      { project: :uuid_object },
+      { study: :uuid_object },
       :user
     ])
   }
@@ -142,13 +146,13 @@ class Order < ActiveRecord::Base
   alias_method(:json_root, :url_name)
 
   def asset_uuids
-    assets.select{ |asset| asset.present? }.map(&:uuid) if assets
+    assets.select { |asset| asset.present? }.map(&:uuid) if assets
   end
 
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)
     constructor = options.delete(:template) || self
-    constructor.create_order!(options.merge(:assets => options.fetch(:assets, [])))
+    constructor.create_order!(options.merge(assets: options.fetch(:assets, [])))
   end
 
   class << self
@@ -157,8 +161,8 @@ class Order < ActiveRecord::Base
 
   # only needed to note
   def self.build!(options)
-    #call submission with appropriate Order subclass
-    Submission.build!({:template => self}.merge(options))
+    # call submission with appropriate Order subclass
+    Submission.build!({ template: self }.merge(options))
   end
 
   def self.extended(base)
@@ -180,7 +184,7 @@ class Order < ActiveRecord::Base
   private :is_asset_applicable_to_type?
 
 
-  delegate :left_building_state?, :to => :submission, :allow_nil => true
+  delegate :left_building_state?, to: :submission, allow_nil: true
 
   def create_request_of_type!(request_type, attributes = {}, &block)
     em = request_type.extract_metadata_from_hash(request_options)
@@ -202,18 +206,18 @@ class Order < ActiveRecord::Base
 
   def duplicate(&block)
     create_parameters = template_parameters
-    new_order = Order.create(create_parameters.merge( :study => self.study,:workflow => self.workflow,
-          :user => self.user, :assets => self.assets, :state => self.state,
-          :request_types => self.request_types,
-          :request_options => self.request_options,
-          :comments => self.comments,
-          :project_id => self.project_id), &block)
+    new_order = Order.create(create_parameters.merge(study: self.study, workflow: self.workflow,
+          user: self.user, assets: self.assets, state: self.state,
+          request_types: self.request_types,
+          request_options: self.request_options,
+          comments: self.comments,
+          project_id: self.project_id), &block)
     new_order.save
     return new_order
   end
 
   def duplicates_within(timespan)
-    matching_orders = Order.containing_samples(all_samples).where(template_name:template_name).includes(:submission,{assets: :samples}).where('orders.id != ?',self.id).where('orders.created_at > ?',DateTime.current - timespan)
+    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, { assets: :samples }).where('orders.id != ?', self.id).where('orders.created_at > ?', DateTime.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq
@@ -230,7 +234,7 @@ class Order < ActiveRecord::Base
   attr_accessor :info_differential # aggrement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
   DefaultAssetInputMethods = ["select an asset group"]
-  #DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
+  # DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
   attr_writer :asset_input_methods
   def asset_input_methods; @asset_input_methods ||= DefaultAssetInputMethods; end
 
@@ -240,15 +244,15 @@ class Order < ActiveRecord::Base
   # So don't forget to filter again if you override this method.
   def template_parameters
     {
-      :request_options => request_options,
-      :request_types => request_types,
-      :comments => comments,
-      :request_type_ids_list => request_type_ids_list,
-      :workflow_id => workflow.id,
-      :info_differential => info_differential,
-      :customize_partial => customize_partial,
-      :asset_input_methods => asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
-    }.reject { |k,v| v.nil?}
+      request_options: request_options,
+      request_types: request_types,
+      comments: comments,
+      request_type_ids_list: request_type_ids_list,
+      workflow_id: workflow.id,
+      info_differential: info_differential,
+      customize_partial: customize_partial,
+      asset_input_methods: asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
+    }.reject { |k, v| v.nil? }
   end
 
   def request_types_list
@@ -268,11 +272,11 @@ class Order < ActiveRecord::Base
     def initialize(key)
       @key = key
     end
-    def add(attribute,metadata)
+    def add(attribute, metadata)
       @display_name ||= attribute.display_name
       @key            = attribute.assignable_attribute_name
-      @default      ||= attribute.find_default(nil,metadata)
-      @kind           = attribute.kind if @kind.nil?||attribute.required?
+      @default      ||= attribute.find_default(nil, metadata)
+      @kind           = attribute.kind if @kind.nil? || attribute.required?
       if attribute.selection?
         new_options   = attribute.selection_options(metadata)
         @options    ||= new_options if selection?
@@ -280,32 +284,32 @@ class Order < ActiveRecord::Base
       end
     end
     def kind
-      @kind||FieldInfo::TEXT
+      @kind || FieldInfo::TEXT
     end
     def selection?
-      kind==FieldInfo::SELECTION
+      kind == FieldInfo::SELECTION
     end
     def to_field_infos
       values = {
-        :display_name  => display_name,
-        :key           => key,
-        :default_value => default,
-        :kind          => kind
+        display_name: display_name,
+        key: key,
+        default_value: default,
+        kind: kind
       }
-      values.update(:selection => options) if self.selection?
+      values.update(selection: options) if self.selection?
       FieldInfo.new(values)
     end
   end
 
   def request_attributes
-    attributes = ActiveSupport::OrderedHash.new {|hash,value| hash[value] = CompositeAttribute.new(value) }
+    attributes = ActiveSupport::OrderedHash.new { |hash, value| hash[value] = CompositeAttribute.new(value) }
     request_types_list.flatten.each do |request_type|
       mocked = mock_metadata_for(request_type)
       request_type.request_class::Metadata.attribute_details.each do |att|
-        attributes[att.name].add(att,mocked)
+        attributes[att.name].add(att, mocked)
       end
       request_type.request_class::Metadata.association_details.each do |att|
-        attributes[att.name].add(att,nil)
+        attributes[att.name].add(att, nil)
       end
     end
 
@@ -318,8 +322,8 @@ class Order < ActiveRecord::Base
     # deep. In hindsight it would probably have been easier to either:
     # a) Start from scratch
     # b) Not bother
-    mock_request = request_type.request_class.new(:request_type=>request_type)
-    request_type.request_class::Metadata.new(:request=>mock_request,:owner=>mock_request)
+    mock_request = request_type.request_class.new(request_type: request_type)
+    request_type.request_class::Metadata.new(request: mock_request, owner: mock_request)
   end
 
   # Return the list of input fields to edit when creating a new submission
@@ -344,7 +348,7 @@ class Order < ActiveRecord::Base
 
   def next_request_type_id(request_type_id)
     request_type_ids = request_types.map(&:to_i)
-    request_type_ids[request_type_ids.index(request_type_id)+1]
+    request_type_ids[request_type_ids.index(request_type_id) + 1]
   end
 
 
@@ -371,11 +375,11 @@ class Order < ActiveRecord::Base
   end
 
   def collect_gigabases_expected?
-    input_field_infos.any? {|k| k.key==:gigabases_expected}
+    input_field_infos.any? { |k| k.key == :gigabases_expected }
   end
 
   def add_comment(comment_str, user)
-    update_attribute(:comments, [comments, comment_str ].compact.join('; '))
+    update_attribute(:comments, [comments, comment_str].compact.join('; '))
     save!
 
     submission.requests.where_is_not_a?(TransferRequest).for_order_including_submission_based_requests(self).map do |request|
@@ -384,7 +388,7 @@ class Order < ActiveRecord::Base
   end
 
   def friendly_name
-    asset_group.try(:name)||asset_group_name||id
+    asset_group.try(:name) || asset_group_name || id
   end
 
   def subject_type
@@ -392,7 +396,7 @@ class Order < ActiveRecord::Base
   end
 
   def generate_broadcast_event
-    BroadcastEvent::OrderMade.create!(:seed=>self,:user=>user)
+    BroadcastEvent::OrderMade.create!(seed: self, user: user)
   end
 
   def study_is_active
@@ -401,5 +405,3 @@ class Order < ActiveRecord::Base
     end
   end
 end
-
-

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2013,2015 Genome Research Ltd.
 
 module Tasks::SetCharacterisationDescriptorsHandler
   def do_set_characterisation_descriptors_task(task, params)
@@ -17,7 +19,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
 
     @batch.requests.each do |request|
 
-      event = LabEvent.new(:batch_id => @batch.id, :description => @task.name)
+      event = LabEvent.new(batch_id: @batch.id, description: @task.name)
 
       if params[:requests].present? && params[:requests]["#{request.id}"].present? && params[:requests]["#{request.id}"][:descriptors].present?
         # Descriptors: create description for event
@@ -49,7 +51,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
     else
       # Some requests have yet to pass this task
       # Construct a URL that contains a nested hash of values to display as defaults for the next request
-      @params = { :batch_id => @batch.id, :workflow_id => @workflow.id, :values => @values }
+      @params = { batch_id: @batch.id, workflow_id: @workflow.id, values: @values }
       redirect_to url_for(flatten_hash(@params))
     end
 
@@ -57,11 +59,11 @@ module Tasks::SetCharacterisationDescriptorsHandler
   end
 
   def render_set_characterisation_descriptors_task(task, params)
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+    @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
 
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
@@ -75,4 +77,3 @@ module Tasks::SetCharacterisationDescriptorsHandler
   end
 
 end
-

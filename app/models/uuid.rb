@@ -1,23 +1,29 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Uuid < ActiveRecord::Base
+
+  # Allows tests to dictate the next UUID generted for a given class
+  class_attribute :store_for_tests
+
   module Uuidable
     def self.included(base)
       base.class_eval do
         # We need to add some class level changes to this model because the ar-extensions gem might be
         # used.
-        #extend ArExtensionsFix
+        # extend ArExtensionsFix
 
         # Ensure that the resource has a UUID and that it's always created when the instance is created.
         # It seems better not to do this but the performance of the API is directly affected by having to
         # create these instances when they do not exist.
-        has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy, :inverse_of => :resource
+        has_one :uuid_object, class_name: 'Uuid', as: :resource, dependent: :destroy, inverse_of: :resource
         after_create :ensure_uuid_created
 
         # Some named scopes ...
-        scope :include_uuid, -> { includes(:uuid_object ) }
+        scope :include_uuid, -> { includes(:uuid_object) }
       end
     end
 
@@ -26,11 +32,12 @@ class Uuid < ActiveRecord::Base
     # UUIDs.
     if ['test', 'cucumber'].include?(Rails.env)
       def ensure_uuid_created
-        self.create_uuid_object!(:resource => self) unless self.uuid_object(true).present?
+        new_uuid = Uuid.store_for_tests && Uuid.store_for_tests.next_uuid_for(self.class.base_class)
+        create_uuid_object!(resource: self, external_id: new_uuid)
       end
     else
       def ensure_uuid_created
-        self.create_uuid_object!(:resource => self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
+        create_uuid_object!(resource: self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
       end
     end
     private :ensure_uuid_created
@@ -42,7 +49,7 @@ class Uuid < ActiveRecord::Base
     # It also means that marking a record by calling this method, and then attempting to save it,
     # will result in another validation exception.  Again, exactly what we want.
     def unsaved_uuid!
-      self.uuid_object = Uuid.new(:external_id => nil)
+      self.uuid_object = Uuid.new(external_id: nil)
     end
 
     #--
@@ -68,7 +75,7 @@ class Uuid < ActiveRecord::Base
       end
 
       def generate_missing_uuids
-        records_for_missing_uuids { |id| Uuid.create!(:resouce_type=>self.name, :resource_id=>id, :external_id=>Uuid.generate_uuid ) }
+        records_for_missing_uuids { |id| Uuid.create!(resouce_type: self.name, resource_id: id, external_id: Uuid.generate_uuid) }
       end
       private :generate_missing_uuids
 
@@ -77,31 +84,31 @@ class Uuid < ActiveRecord::Base
           SELECT r.id AS id
           FROM #{self.quoted_table_name} r
           LEFT OUTER JOIN #{Uuid.quoted_table_name} u
-          ON r.id=u.resource_id AND u.resource_type="#{self.to_s}"
+          ON r.id=u.resource_id AND u.resource_type="#{self}"
           WHERE u.id IS NULL
-        }).map { |r| block.call(r['id']) }
+        }).map { |r| yield(r['id']) }
       end
       private :records_for_missing_uuids
     end
   end
 
-  ValidRegexp = /^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/
-  validates_format_of :external_id, :with => ValidRegexp
+  ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/
+  validates_format_of :external_id, with: ValidRegexp
 
   # It is more efficient to check the individual parts of the resource association than it is to check the
   # association itself as the latter causes the record to be reloaded
-  belongs_to :resource, :polymorphic => true, :inverse_of => :uuid_object
+  belongs_to :resource, polymorphic: true, inverse_of: :uuid_object
 
   # TODO[xxx]: remove this and use resource everywhere!
   def object
     self.resource
   end
 
-  scope :with_resource_type, ->(type) { where(:resource_type => type.to_s ) }
+  scope :with_resource_type, ->(type) { where(resource_type: type.to_s) }
 
   scope :include_resource, -> { includes(:resource) }
-  scope :with_external_id, ->(external_id) { where(:external_id => external_id) }
-  scope :with_resource_by_type_and_id, ->(t,id) { where(:resource_type => t, :resource_id => id ) }
+  scope :with_external_id, ->(external_id) { where(external_id: external_id) }
+  scope :with_resource_by_type_and_id, ->(t, id) { where(resource_type: t, resource_id: id) }
 
   before_validation do |record|
     record.external_id = Uuid.generate_uuid if record.new_record? and record.external_id.blank?
@@ -147,7 +154,7 @@ class Uuid < ActiveRecord::Base
   def self.find_uuid!(resource_type, resource_id)
     return unless id # return nil for nil
     find_uuid(resource_type, resource_id) ||
-      create!(:resource_type => resource_type, :resource_id => resource_id).external_id
+      create!(resource_type: resource_type, resource_id: resource_id).external_id
   end
 
 
@@ -159,20 +166,20 @@ class Uuid < ActiveRecord::Base
   def self.generate_uuids!(resource_type, resource_ids)
     return if resource_ids.empty?
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
-    uuids_to_create = ids_missing_uuids.map {|id| create!(:resource_type => resource_type, :resource_id => id, :external_id => self.generate_uuid) }
-    #Uuid.import uuids_to_create unless uuids_to_create.empty?
+    uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: self.generate_uuid) }
+    # Uuid.import uuids_to_create unless uuids_to_create.empty?
 
     nil
   end
 
   # ids is a string of internal_ids
   def self.filter_uncreated_uuids(resource_type, resource_ids)
-    existing_uuids = all(:conditions => { :resource_type => resource_type, :resource_id => resource_ids })
-    resource_ids - existing_uuids.map(&:resource_id)
+    existing_uuids = where(resource_type: resource_type, resource_id: resource_ids)
+    resource_ids - existing_uuids.pluck(:resource_id)
   end
 
   def self.generate_all_uuids_for_class(base_class_name)
-    eval(base_class_name).find_in_batches(:batch_size => 5000) do |group|
+    eval(base_class_name).find_in_batches(batch_size: 5000) do |group|
       generate_uuids!(base_class_name.to_s, group.map(&:id))
     end
   end
@@ -182,7 +189,7 @@ class Uuid < ActiveRecord::Base
   # @param resource_name [String] the name of the external project
   # @return [String, nil]
   # @raise Response::Exception if system doesn't macth.
-  def self.find_id(uuid, resource_type=nil)
+  def self.find_id(uuid, resource_type = nil)
     begin
       uuid_object = with_external_id(uuid).first or raise ActiveRecord::RecordNotFound, "Could not find UUID #{uuid.inspect}"
 

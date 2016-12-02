@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 class Api::MultiplexedLibraryTubeIO < Api::Base
   module Extensions
     module ClassMethods
@@ -13,13 +15,13 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix, :scanned_into_lab_event ]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix, :scanned_into_lab_event]) }
         alias_method(:json_root, :url_name)
       end
     end
 
     def related_resources
-      ['parents','children','requests']
+      ['parents', 'children', 'requests']
     end
 
     def url_name
@@ -50,6 +52,6 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
     map_attribute_to_json_attribute(:content, 'scanned_in_date')
   end
 
-  self.related_resources = [ :lanes, :requests ]
+  self.related_resources = [:lanes, :requests]
 
 end

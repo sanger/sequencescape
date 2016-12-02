@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
 <% add :title, "This page details the current status of a workflow." -%>
 <% if @study.approved? && @study.active? -%>
@@ -18,7 +20,7 @@
 <% add :menu, "Asset groups" => study_asset_groups_path(@study) -%>
 <% add :menu, "Projects" => projects_study_path(@study) -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) || current_user.owner?(@study) || current_user.lab? %>
-  <% add :menu, "Print Labels" => printing_study_asset_group_path(@study) -%>
+  <% add :menu, "Print Labels" => printing_study_asset_groups_path(@study) -%>
 <% end %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Contacts" => collaborators_study_path(@study) -%>

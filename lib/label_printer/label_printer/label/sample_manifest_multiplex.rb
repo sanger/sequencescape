@@ -1,7 +1,7 @@
 module LabelPrinter
   module Label
 
-    class SampleManifestMultiplex< BaseTube
+    class SampleManifestMultiplex < BaseTube
 
       attr_reader :sample_manifest
 
@@ -10,7 +10,7 @@ module LabelPrinter
         @only_first_label = options[:only_first_label]
       end
 
-      def top_line(tube=nil)
+      def top_line(tube = nil)
         sample_manifest.study.abbreviation
       end
 

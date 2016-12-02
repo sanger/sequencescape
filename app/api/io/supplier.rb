@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 class ::Io::Supplier < ::Core::Io::Base
   # This module adds the behaviour we require from the Supplier module.
@@ -18,7 +20,7 @@ class ::Io::Supplier < ::Core::Io::Base
   set_json_root(:supplier)
   # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
             name  => name
            email  => email
          address  => address
@@ -27,5 +29,5 @@ class ::Io::Supplier < ::Core::Io::Base
              fax  => fax
     supplier_url  => url
     abbreviation  => abbreviation
-  })
+  ")
 end

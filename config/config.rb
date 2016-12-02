@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 require 'configatron'
 
 configatron.amqp.url = "amqp://guest:guest@localhost:5672"
@@ -50,10 +52,10 @@ configatron.tecan_files_location = "#{Rails.root}/data"
 configatron.tecan_minimum_volume = 1.0
 
 configatron.external_applications = [
-  ['High Throughput Pipeline','http://www.example.com'],
-  ['Generic Lims','http://www.example.com'],
-  ['Gatekeeper','http://www.example.com'],
-  ['Crier','http://www.example.com']
+  ['High Throughput Pipeline', 'http://www.example.com'],
+  ['Generic Lims', 'http://www.example.com'],
+  ['Gatekeeper', 'http://www.example.com'],
+  ['Crier', 'http://www.example.com']
 ]
 
 if Rails.env == 'development'
@@ -104,7 +106,7 @@ if Rails.env == 'development'
 
   configatron.register_printers_automatically = false
 end
-if (Rails.env == 'test')||(Rails.env == 'cucumber')
+if (Rails.env == 'test') || (Rails.env == 'cucumber')
 
   # configatron.asset_audits_url = NOT DEFINED
 

@@ -12,8 +12,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given the "96 Well Plate" barcode printer "abc" exists
     And the plate barcode webservice returns "99998"
     And the plate barcode webservice returns "99999"
-    Given the sample validation webservice returns "true"
-      And the reference genome "Mouse" exists
+    And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
 
   Scenario: Enough SMRTcells requested to cover multiple wells

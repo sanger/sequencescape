@@ -28,17 +28,17 @@ module Informatics
       def first_value
         incoming_options.values.first
       end
-      
+
       def key_is_present?(key)
         incoming_options.key? key
       end
-      
+
       def value_for(key)
         incoming_options[key]
       end
-      
-      private 
-      
+
+      private
+
       def incoming_options
         o = nil
         if @options.is_a? Hash
@@ -48,7 +48,7 @@ module Informatics
         end
         o
       end
-      
+
       def logger
         Rails.logger
       end

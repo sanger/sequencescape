@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2013,2014,2015 Genome Research Ltd.
 
 # The classes within this namespace are responsible for defining the abilities of the user and the application
 # that are accessing the API.
@@ -68,11 +70,11 @@ module Core::Abilities
     module ClassMethods
       def recorder_helper(name)
         line = __LINE__ + 1
-        singleton_class.class_eval(%Q{
+        singleton_class.class_eval("
           def #{name}(&block)
             record(@#{name} ||= Recorder.new, &block)
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
 
       def record(recorder, &block)
@@ -153,8 +155,8 @@ module Core::Abilities
       can(:read, :all)
 
       # Every application is entitled to be able to lookup UUIDs and make searches
-      can(:create, [ Endpoints::Uuids::Model::Lookup, Endpoints::Uuids::Model::Bulk ])
-      can(:create, [ Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All, Endpoints::Searches::Instance::Last ])
+      can(:create, [Endpoints::Uuids::Model::Lookup, Endpoints::Uuids::Model::Bulk])
+      can(:create, [Endpoints::Searches::Instance::First, Endpoints::Searches::Instance::All, Endpoints::Searches::Instance::Last])
     end
 
     # Registered applications can manage all objects that allow it and can have unauthenicated users.
@@ -165,7 +167,7 @@ module Core::Abilities
 
     # State changes only
     tag_plates do
-       can(:create, [ Endpoints::StateChanges::Model ])
+       can(:create, [Endpoints::StateChanges::Model])
        can(:authenticate, :all)
     end
 

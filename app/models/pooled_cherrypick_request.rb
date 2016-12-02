@@ -1,8 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
-class PooledCherrypickRequest < Request
+class PooledCherrypickRequest < CustomerRequest
 
   # Returns a list of attributes that must match for any given pool.
   # We don't want to place any restrictions on Cherrypicking (Yet).
@@ -23,7 +25,7 @@ class PooledCherrypickRequest < Request
         clone.project_id = initial_project_id || aliquot.project_id
       end
     end.reject do |candidate_aliquot|
-      target_asset.aliquots.any? {|existing_aliquot| existing_aliquot.equivalent?(candidate_aliquot) }
+      target_asset.aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate_aliquot) }
     end
   end
 

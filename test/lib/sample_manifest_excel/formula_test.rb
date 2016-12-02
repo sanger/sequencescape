@@ -6,7 +6,7 @@ class FormulaTest < ActiveSupport::TestCase
 
   def setup
     @references = build(:range).references
-    @options = {type: :smooth, operator: ">", operand: 30}
+    @options = { type: :smooth, operator: ">", operand: 30 }
     @formula = SampleManifestExcel::Formula.new(options)
   end
 

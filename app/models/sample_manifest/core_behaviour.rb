@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2015 Genome Research Ltd.
 
 module SampleManifest::CoreBehaviour
 
@@ -12,13 +14,13 @@ module SampleManifest::CoreBehaviour
 
   def self.included(base)
     base.class_eval do
-      delegate :details, :details_array, :validate_sample_container, :validate_specialized_fields, :specialized_fields, :to => :core_behaviour
+      delegate :details, :details_array, :validate_sample_container, :validate_specialized_fields, :specialized_fields, to: :core_behaviour
 
       attr_accessor :rapid_generation
       alias_method(:rapid_generation?, :rapid_generation)
 
       def self.supported_asset_type?(asset_type)
-        asset_type.nil?||['1dtube','plate','multiplexed_library'].include?(asset_type)
+        asset_type.nil? || ['1dtube', 'plate', 'multiplexed_library'].include?(asset_type)
       end
     end
   end

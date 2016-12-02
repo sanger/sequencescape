@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -29,8 +31,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
 
   def object_to_encode(attributes)
     OpenStruct.new(attributes.reverse_merge(
-      :created_at => 'created_at_now',
-      :updated_at => 'updated_at_now'
+      created_at: 'created_at_now',
+      updated_at: 'updated_at_now'
     ))
   end
   private :object_to_encode
@@ -53,7 +55,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
   context Core::Io::Base::JsonFormattingBehaviour do
     setup do
       @stream = StringIO.new
-      @options = { :stream => Core::Io::Json::Stream.new(@stream) }
+      @options = { stream: Core::Io::Json::Stream.new(@stream) }
     end
 
     context 'resource' do
@@ -67,7 +69,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             encoder_for(
               'attribute' => 'json'
             ).object_json(
-              object_to_encode(:attribute => @value),
+              object_to_encode(attribute: @value),
               @options
             )
 
@@ -90,7 +92,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           end
 
           should 'handle arrays' do
-            @value = [ '1', '2', '3' ]
+            @value = ['1', '2', '3']
           end
 
           should 'handle numbers' do
@@ -108,8 +110,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'attribute2' => 'json2'
           ).object_json(
             object_to_encode(
-              :attribute1 => 'value1',
-              :attribute2 => 'value2'
+              attribute1: 'value1',
+              attribute2: 'value2'
             ),
             @options
           )
@@ -130,7 +132,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             encoder_for(
               'attribute' => 'nested.json'
             ).object_json(
-              object_to_encode(:attribute => @value),
+              object_to_encode(attribute: @value),
               @options
             )
 
@@ -155,8 +157,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'attribute2' => 'nested.json2'
           ).object_json(
             object_to_encode(
-              :attribute1 => 'value1',
-              :attribute2 => 'value2'
+              attribute1: 'value1',
+              attribute2: 'value2'
             ),
             @options
           )
@@ -180,7 +182,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           encoder_for(
             'level1.attribute' => 'json'
           ).object_json(
-            object_to_encode({ :level1 => nil }),
+            object_to_encode({ level1: nil }),
             @options
           )
 
@@ -194,12 +196,12 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           encoder_for(
             'level1.attribute' => 'nested.json'
           ).object_json(
-            object_to_encode({ :level1 => nil }),
+            object_to_encode({ level1: nil }),
             @options
           )
 
           assert_equal(
-            json_results({'nested'=>{}}),
+            json_results({ 'nested' => {} }),
             decode(@stream)
           )
         end
@@ -211,7 +213,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             encoder_for(
               'level1.attribute' => 'json'
             ).object_json(
-              object_to_encode(:level1 => OpenStruct.new(:attribute => @value)),
+              object_to_encode(level1: OpenStruct.new(attribute: @value)),
               @options
             )
 
@@ -240,8 +242,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'level2.attribute2' => 'nested.json2'
           ).object_json(
             object_to_encode(
-              :level1 => OpenStruct.new(:attribute1 => 'value1'),
-              :level2 => OpenStruct.new(:attribute2 => 'value2')
+              level1: OpenStruct.new(attribute1: 'value1'),
+              level2: OpenStruct.new(attribute2: 'value2')
             ),
             @options
           )
@@ -263,8 +265,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             'level2.attribute2' => 'nested2.json2'
           ).object_json(
             object_to_encode(
-              :level1 => OpenStruct.new(:attribute1 => 'value1'),
-              :level2 => OpenStruct.new(:attribute2 => 'value2')
+              level1: OpenStruct.new(attribute1: 'value1'),
+              level2: OpenStruct.new(attribute2: 'value2')
             ),
             @options
           )

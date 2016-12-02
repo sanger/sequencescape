@@ -8,32 +8,32 @@ module SampleManifestExcel
 
       set_attributes :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :name, :password, :type
 
-    	def initialize(attributes = {})
+      def initialize(attributes = {})
         create_attributes(attributes)
         create_worksheet
         protect if password.present?
-    	end
+      end
 
-      #Adds row to a worksheet with particular value, style and type for each cell
+      # Adds row to a worksheet with particular value, style and type for each cell
 
-    	def add_row(values = [], style = nil, types = nil)
-  			axlsx_worksheet.add_row values, types: types || [:string]*values.length, style: style
-    	end
+      def add_row(values = [], style = nil, types = nil)
+        axlsx_worksheet.add_row values, types: types || [:string] * values.length, style: style
+      end
 
-      #Adds n empty rows
+      # Adds n empty rows
 
-    	def add_rows(n)
+      def add_rows(n)
         n.times { |i| add_row }
       end
 
-      #Assigns name to a worksheet depending on axlsx worksheet name. Used to assign
-      #absolute references to ranges.
+      # Assigns name to a worksheet depending on axlsx worksheet name. Used to assign
+      # absolute references to ranges.
 
       def name
         @name ||= axlsx_worksheet.name
       end
 
-      #Protects worksheet, but sizes of rows and columns can be changed
+      # Protects worksheet, but sizes of rows and columns can be changed
 
       def protect
         axlsx_worksheet.sheet_protection do |sheet_protection|
@@ -43,13 +43,13 @@ module SampleManifestExcel
         end
       end
 
-      #Adds axlsx worksheet to a workbook, to a particular place.
+      # Adds axlsx worksheet to a workbook, to a particular place.
 
-      def insert_axlsx_worksheet(index=0, name)
+      def insert_axlsx_worksheet(index = 0, name)
         @axlsx_worksheet ||= workbook.insert_worksheet(index, name: name)
       end
 
-      #Creates a worksheet, empty one in this case
+      # Creates a worksheet, empty one in this case
 
       def create_worksheet
         insert_axlsx_worksheet("Base")

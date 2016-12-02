@@ -1,6 +1,6 @@
 class SampleManifestGenerator
 
-  REQUIRED_ATTRIBUTES = [ "template", "count"]
+  REQUIRED_ATTRIBUTES = ["template", "count"]
 
   include ActiveModel::Validations
 
@@ -94,7 +94,7 @@ private
   end
 
   def only_first_label
-    ActiveRecord::ConnectionAdapters::Column.value_to_boolean(params[:only_first_label])
+    ActiveRecord::Type::Boolean.new.type_cast_from_database(params[:only_first_label])
   end
 
 end

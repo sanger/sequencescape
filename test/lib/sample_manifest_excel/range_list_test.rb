@@ -7,7 +7,7 @@ class RangeListTest < ActiveSupport::TestCase
   attr_reader :ranges, :range_list
 
   def setup
-    folder = File.join("test","data", "sample_manifest_excel")
+    folder = File.join("test", "data", "sample_manifest_excel")
     @ranges = load_file(folder, "ranges")
     @range_list = SampleManifestExcel::RangeList.new(ranges)
   end

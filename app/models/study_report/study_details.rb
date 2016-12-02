@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module StudyReport::StudyDetails
 
@@ -12,7 +14,7 @@ module StudyReport::StudyDetails
     handle_wells(
       "INNER JOIN requests ON requests.asset_id=assets.id",
       "requests.initial_study_id",
-      PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES ).pluck(:id),
+      PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES).pluck(:id),
       &block
     )
 
@@ -20,18 +22,18 @@ module StudyReport::StudyDetails
     handle_wells(
       "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
       "aliquots.study_id",
-      PlatePurpose.where(name:['Aliquot 1','Aliquot 2','Aliquot 3','Aliquot 4','Aliquot 1', 'Pre-Extracted Plate']).pluck(:id),
+      PlatePurpose.where(name: ['Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 1', 'Pre-Extracted Plate']).pluck(:id),
       &block
     )
   end
 
   # Similar to find in batches, we pluck out the relevant asset ids in batches of 1000
   def handle_wells(join, study_condition, plate_purpose_id, &block)
-    asset_ids = well_batch_from(0,join, study_condition, plate_purpose_id)
+    asset_ids = well_batch_from(0, join, study_condition, plate_purpose_id)
     while asset_ids.any?
       yield asset_ids
       break if asset_ids.length < BATCH_SIZE
-      asset_ids = well_batch_from(asset_ids.last,join, study_condition, plate_purpose_id)
+      asset_ids = well_batch_from(asset_ids.last, join, study_condition, plate_purpose_id)
     end
   end
   private :handle_wells
@@ -53,24 +55,24 @@ module StudyReport::StudyDetails
 
   def progress_report_header
     [
-      "Status","Study","Supplier","Sanger Sample Name","Supplier Sample Name","Plate","Well","Supplier Volume",
-      "Supplier Gender", "Concentration","Initial Volume",#"Measured Volume",
-      "Current Volume","Total Micrograms","Sequenome Count", "Sequenome Gender",
-      "Pico","Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date","Seq stamp date","Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode","Genotyping Well", "Cohort", "Country of Origin",
-      "Geographical Region","Ethnicity","DNA Source","Is Resubmitted","Control","Is in Fluidigm"
+      "Status", "Study", "Supplier", "Sanger Sample Name", "Supplier Sample Name", "Plate", "Well", "Supplier Volume",
+      "Supplier Gender", "Concentration", "Initial Volume", "Current Volume", "Total Micrograms", "Sequenome Count",
+      "Sequenome Gender", "Pico", "Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date", "Seq stamp date",
+      "Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode", "Genotyping Well",
+      "Cohort", "Country of Origin", "Geographical Region", "Ethnicity", "DNA Source", "Is Resubmitted", "Control", "Is in Fluidigm"
       ]
   end
 
-  def progress_report_on_all_assets (&block)
-    block.call(progress_report_header)
+  def progress_report_on_all_assets(&block)
+    yield(progress_report_header)
     each_stock_well_id_in_study_in_batches do |asset_ids|
 
       # eager loading of well_attribute , can only be done on  wells ...
-      Well.for_study_report.where(:id => asset_ids).each do |asset|
+      Well.for_study_report.where(id: asset_ids).each do |asset|
         asset_progress_data = asset.qc_report
         next if asset_progress_data.nil?
 
-        block.call([
+        yield([
           asset_progress_data[:status],
           self.name,
           asset_progress_data[:supplier],
@@ -82,7 +84,7 @@ module StudyReport::StudyDetails
           asset_progress_data[:supplier_gender],
           asset_progress_data[:concentration],
           asset_progress_data[:initial_volume],
-          #asset_progress_data[:measured_volume],
+          # asset_progress_data[:measured_volume],
           asset_progress_data[:current_volume],
           asset_progress_data[:quantity],
           asset_progress_data[:sequenom_count],

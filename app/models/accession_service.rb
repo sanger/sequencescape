@@ -1,9 +1,12 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class AccessionService
 
+  # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
 
@@ -53,7 +56,7 @@ class AccessionService
 
             Rails::logger.debug { file.each_line.to_a.join("\n") }
 
-            {:name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
+            { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
           end
          )
 
@@ -67,9 +70,9 @@ class AccessionService
         # therefore, we should be ready to get one or not
         number_generated = true
         if success == 'true'
-          #extract and update accession numbers
+          # extract and update accession numbers
           accession_number = submission.all_accessionables.each do |acc|
-            accession_number       = acc.extract_accession_number(xmldoc)
+            accession_number = acc.extract_accession_number(xmldoc)
             if accession_number
               acc.update_accession_number!(user, accession_number)
               accession_numbers << accession_number
@@ -86,7 +89,7 @@ class AccessionService
 
         elsif success == 'false'
           errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
-          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{ errors.map { |e| "\n  - #{e}"} }"
+          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
         else
           raise AccessionServiceError,  "Could not get accession number. Error in submitted data: #{$!}"
         end
@@ -102,7 +105,7 @@ class AccessionService
     # raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
 
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
-    #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
+    # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
 
     submit(user,  Accessionable::Sample.new(sample))
   end
@@ -110,12 +113,12 @@ class AccessionService
   def submit_study_for_user(study, user)
     raise NumberNotRequired, 'An accession number is not required for this study' unless study.ena_accession_required?
 
-    #TODO check error
-    #raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
+    # TODO check error
+    # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
 
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
-    #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
+    # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
     return submit(user, Accessionable::Study.new(study))
   end
@@ -164,7 +167,7 @@ class AccessionService
 private
 
   require 'rexml/document'
-  #require 'curb'
+  # require 'curb'
   include REXML
 
   def accession_login
@@ -187,16 +190,16 @@ private
         # UA required to get through Sanger proxy
         # Although currently this UA is actually being set elsewhere in the
         # code as RestClient doesn't pass this header to the proxy.
-        rc.options[:headers]={:user_agent=>"Sequencescape Accession Client (#{Rails.env})"}
+        rc.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
       end
 
       payload = {}
       file_params.map { |p|
-        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap{|f| f.original_filename = p[:remote_name] }
+        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap { |f| f.original_filename = p[:remote_name] }
         }
       response = rc.post(payload)
       case response.code
-      when (200...300) #success
+      when (200...300) # success
         return response.body.to_s
       when (400...600)
         Rails.logger.warn($!)

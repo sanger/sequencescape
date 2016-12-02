@@ -3,15 +3,15 @@ class AddFurtherHistoricEvents < ActiveRecord::Migration
     say 'Adding MX Library complete for ISC'
     mx_library_purpose_id = Purpose.find_by_name!('Cap Lib Pool Norm').id
 
-    StateChange.joins(:target).where(:target_state=>'passed',:assets=>{:plate_purpose_id=>mx_library_purpose_id}).find_each do |sc|
+    StateChange.joins(:target).where(target_state: 'passed', assets: { plate_purpose_id: mx_library_purpose_id }).find_each do |sc|
       print ','
       print sc.id
       tube = sc.target
-      next if BroadcastEvent::LibraryComplete.find_by_seed_id_and_seed_type(tube.id,'Asset').present?
+      next if BroadcastEvent::LibraryComplete.find_by_seed_id_and_seed_type(tube.id, 'Asset').present?
       user = sc.user
       orders = sc.target.requests_as_target.pluck(:order_id).compact.uniq
       orders.each do |order_id|
-        BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>order_id},:created_at=>sc.created_at)
+        BroadcastEvent::LibraryComplete.create!(seed: tube, user: user, properties: { order_id: order_id }, created_at: sc.created_at)
       end
       print '.'
     end
@@ -19,15 +19,15 @@ class AddFurtherHistoricEvents < ActiveRecord::Migration
     say "Adding lib_pcr_xp_created"
     xp_purpose_id = Purpose.find_by_name!('Lib PCR-XP').id
 
-    StateChange.joins(:target).where(:target_state=>'passed',:assets=>{:plate_purpose_id=>xp_purpose_id}).find_each do |sc|
+    StateChange.joins(:target).where(target_state: 'passed', assets: { plate_purpose_id: xp_purpose_id }).find_each do |sc|
       print ','
       print sc.id
       plate = sc.target
-      next if LibraryEvent.find_by_seed_id_and_seed_type(plate.id,'Asset').present?
+      next if LibraryEvent.find_by_seed_id_and_seed_type(plate.id, 'Asset').present?
       user = sc.user
       orders = sc.target.requests_as_target.pluck(:order_id).compact.uniq
       orders.each do |order_id|
-        LibraryEvent.create!(:seed=>plate,:user=>user,:properties=>{:event_type=>'lib_pcr_xp_created'},:created_at=>sc.created_at)
+        LibraryEvent.create!(seed: plate, user: user, properties: { event_type: 'lib_pcr_xp_created' }, created_at: sc.created_at)
       end
       print '.'
     end
