@@ -286,7 +286,7 @@ class Request < ActiveRecord::Base
     # SELECT and GROUP BY do NOT scrub their input. While there shouldn't be any user provided input
     # comming in here, lets be cautious!
     scrubbed_atts = attributes.map { |k, v| "#{k.to_s.gsub(/[^\w\.]/, '')}.#{v.to_s.gsub(/[^\w\.]/, '')}" }
-    scrubbed_atts << 'requests.request_id'
+    scrubbed_atts << 'requests.request_type_id'
 
     group(scrubbed_atts).
     select([
