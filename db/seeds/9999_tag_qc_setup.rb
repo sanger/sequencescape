@@ -9,7 +9,7 @@ tube = BarcodePrinterType.find_by_name('1D Tube')
 plate = BarcodePrinterType.find_by_name('96 Well PLate')
 
 purpose_order = [
-      { class: QcableLibraryPlatePurpose,    name: 'Tag PCR', barcode_printer_type: plate, size: 96, asset_shape: AssetShape.find_by_name('Standard') },
+      { class: QcableLibraryPlatePurpose, name: 'Tag PCR', barcode_printer_type: plate, size: 96, asset_shape: AssetShape.find_by_name('Standard') },
       { class: PlatePurpose,    name: 'Tag PCR-XP', barcode_printer_type: plate, size: 96, asset_shape: AssetShape.find_by_name('Standard') },
       { class: Tube::StockMx,   name: 'Tag Stock-MX', target_type: 'StockMultiplexedLibraryTube', barcode_printer_type: tube },
       { class: Tube::StandardMx, name: 'Tag MX', target_type: 'MultiplexedLibraryTube', barcode_printer_type: tube },
@@ -56,7 +56,6 @@ SequencingPipeline.create!(name: "MiSeq sequencing QC") do |pipeline|
       Descriptor.create!({ kind: "Text", sorter: 2, name: "Cartridge barcode", task: t2 })
       Descriptor.create!({ kind: "Text", sorter: 3, name: "Operator", task: t2 })
       Descriptor.create!({ kind: "Text", sorter: 4, name: "Machine name", task: t2 })
-
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')

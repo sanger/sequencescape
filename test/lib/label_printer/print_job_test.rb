@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class PrintJobTest < ActiveSupport::TestCase
-
   attr_reader :print_job, :plates, :plate, :plate_purpose, :barcode_printer, :attributes
 
   def setup
@@ -13,12 +12,12 @@ class PrintJobTest < ActiveSupport::TestCase
     @attributes = { printer_name: barcode_printer.name,
                 labels: { body:
                   [{ main_label:
-                    { top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-                    bottom_left: "#{plate.sanger_human_barcode}",
-                    top_right: "#{plate_purpose.name}",
+                    { top_left: (Date.today.strftime("%e-%^b-%Y")).to_s,
+                    bottom_left: (plate.sanger_human_barcode).to_s,
+                    top_right: (plate_purpose.name).to_s,
                     bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
-                    top_far_right: "#{plate.parent.try(:barcode)}",
-                    barcode: "#{plate.ean13_barcode}" } }]
+                    top_far_right: (plate.parent.try(:barcode)).to_s,
+                    barcode: (plate.ean13_barcode).to_s } }]
                   },
                 label_template_id: 15,
                 }
@@ -72,5 +71,4 @@ class PrintJobTest < ActiveSupport::TestCase
     refute print_job.execute
     assert_equal 1, print_job.errors.count
   end
-
 end

@@ -17,6 +17,7 @@ class UuidStore
       @store[resource_type].shift
     end
   end
+
   def clear!
     @store = Hash.new { |h, i| h[i] = [] }
   end

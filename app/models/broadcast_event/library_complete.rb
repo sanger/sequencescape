@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::LibraryComplete < BroadcastEvent
-
   set_event_type 'library_complete'
 
   # Properties takes :order_id
@@ -16,7 +15,6 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
   has_subject(:study) { |_, e| e.order.study }
   has_subject(:project) { |_, e| e.order.project }
   has_subject(:submission) { |_, e| e.order.submission }
-
 
   has_subjects(:library_source_labware, :library_source_plates)
 

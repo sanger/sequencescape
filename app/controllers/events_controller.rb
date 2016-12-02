@@ -32,5 +32,4 @@ class EventsController < ApplicationController
       format.json { render json: @event.to_json }
     end
   end
-
 end

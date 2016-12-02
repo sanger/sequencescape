@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 module Submission::FlexibleRequestGraph
-
   # A doublet couples a source asset to a particular qc metric.
   # This allows us to pass the qc_metric downstream, without relying
   # on maintaining assets at each step. This is important as not only
@@ -17,7 +16,6 @@ module Submission::FlexibleRequestGraph
   class RequestChainError < RuntimeError; end
 
   class RequestChain
-
     attr_reader :order, :source_assets_qc_metrics, :preplexed, :built, :multiplexed
     alias_method :built?, :built
     alias_method :multiplexed?, :multiplexed
@@ -72,14 +70,12 @@ module Submission::FlexibleRequestGraph
         requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
       end
     end
-
   end
 
   ##
   # Builds all requests of a given request type and any target_assets
   # The build! method automatically creates a link of the appropriate class
   module ChainLink
-
     def self.included(base)
       base.class_eval do
         attr_reader :request_type, :multiplier, :source_assets_qc_metrics, :target_assets_qc_metrics, :chain
@@ -108,7 +104,6 @@ module Submission::FlexibleRequestGraph
         # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
         # are transferred into the destination if the request does not do this in some manner itself.
         source_asset_metrics_target_assets do |source_asset, qc_metrics, target_asset|
-
           chain.order.create_request_of_type!(
             request_type,
             asset: source_asset, target_asset: target_asset
@@ -202,7 +197,6 @@ module Submission::FlexibleRequestGraph
     def downstream_requests
       target_assets.uniq.compact.map(&:requests).flatten
     end
-
   end
 
   class UnplexedLink
@@ -230,7 +224,6 @@ module Submission::FlexibleRequestGraph
   end
 
   module OrderMethods
-
     def build_request_graph!(multiplexing_assets = nil, &block)
       ActiveRecord::Base.transaction do
         RequestChain.new(self, assets, multiplexing_assets).tap do |chain|
@@ -239,7 +232,5 @@ module Submission::FlexibleRequestGraph
         end
       end
     end
-
   end
-
 end

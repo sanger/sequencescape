@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class PooledCherrypickRequest < CustomerRequest
-
   # Returns a list of attributes that must match for any given pool.
   # We don't want to place any restrictions on Cherrypicking (Yet).
   def shared_attributes
@@ -28,5 +27,4 @@ class PooledCherrypickRequest < CustomerRequest
       target_asset.aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate_aliquot) }
     end
   end
-
 end

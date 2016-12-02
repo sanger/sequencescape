@@ -4,9 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 module SharedBehaviour::Indestructable
-
   def self.included(base)
     base.class_eval do
       before_destroy :prevent_destruction

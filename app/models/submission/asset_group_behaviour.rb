@@ -13,7 +13,6 @@ module Submission::AssetGroupBehaviour
 
       # Required once out of the building state ...
       validates_presence_of :assets, if: :assets_need_validating?
-
     end
   end
 

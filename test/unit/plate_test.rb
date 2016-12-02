@@ -7,7 +7,6 @@
 require "test_helper"
 
 class PlateTest < ActiveSupport::TestCase
-
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = "12345678"
     purpose = create :plate_purpose
@@ -27,7 +26,6 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     context "#fluidigm_barcode" do
-
       should "check that I cannot create a plate with a fluidigm barcode different from 10 characters" do
         assert_raises(ActiveRecord::RecordInvalid) { create_plate_with_fluidigm("12345678") }
       end
@@ -153,7 +151,6 @@ class PlateTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
 
   context "Plate priority" do
@@ -334,7 +331,6 @@ end
 end
         end
       end
-
     end
 
     context "A Plate" do
@@ -375,11 +371,9 @@ end
           assert @plate.qc_files.count == 2
         end
       end
-
     end
 
     context "with existing well data" do
-
       class MockParser
         def each_well_and_parameters
           yield('B1', { set_concentration: '2', set_molarity: '3' })
@@ -450,5 +444,4 @@ end
       plate.create_sample_tubes_and_print_barcodes(barcode_printer)
     end
   end
-
 end

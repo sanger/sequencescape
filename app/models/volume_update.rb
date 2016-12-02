@@ -24,5 +24,4 @@ class VolumeUpdate < ActiveRecord::Base
     target.update_volume(volume_change)
   end
   private :update_volume_change_of_target
-
 end

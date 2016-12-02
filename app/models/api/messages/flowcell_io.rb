@@ -5,14 +5,11 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class Api::Messages::FlowcellIO < Api::Base
-
   MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
 
   module LaneExtensions # Included in SequencingRequest
-
     def self.included(base)
       base.class_eval do
-
         def position
           batch_request.position
         end
@@ -59,7 +56,6 @@ class Api::Messages::FlowcellIO < Api::Base
         def request_purpose_key
           request_purpose.try(:key)
         end
-
       end
     end
   end
@@ -67,7 +63,6 @@ class Api::Messages::FlowcellIO < Api::Base
   module ControlLaneExtensions
     def self.included(base)
       base.class_eval do
-
         def position
           batch_request.position
         end
@@ -91,6 +86,7 @@ class Api::Messages::FlowcellIO < Api::Base
         def spiked_in_buffer
           false
         end
+
         def external_release
          false
         end
@@ -106,7 +102,6 @@ class Api::Messages::FlowcellIO < Api::Base
         def request_purpose_key
           request_purpose.try(:key)
         end
-
       end
     end
   end
@@ -130,7 +125,6 @@ class Api::Messages::FlowcellIO < Api::Base
         def external_library_id
           library.external_identifier
         end
-
       end
     end
   end
@@ -171,7 +165,6 @@ class Api::Messages::FlowcellIO < Api::Base
         alias :reverse_read_length :read_length
 
         def lanes; requests; end
-
       end
     end
   end
@@ -186,7 +179,6 @@ class Api::Messages::FlowcellIO < Api::Base
   map_attribute_to_json_attribute(:updated_at)
 
   with_nested_has_many_association(:lanes) do # actually requests
-
     map_attribute_to_json_attribute(:manual_qc)
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
@@ -197,7 +189,6 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:request_purpose_key, 'purpose')
 
     with_nested_has_many_association(:samples) do # actually aliquots
-
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')
 
       with_association(:tag) do
@@ -258,6 +249,4 @@ class Api::Messages::FlowcellIO < Api::Base
       map_attribute_to_json_attribute(:control_aliquot_type, 'entity_type')
     end
   end
-
-
 end

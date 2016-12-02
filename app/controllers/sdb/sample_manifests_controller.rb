@@ -6,7 +6,7 @@
 
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_action :set_sample_manifest_id, only: [:show, :generated]
-  before_action :validate_type,    only: [:new, :create]
+  before_action :validate_type, only: [:new, :create]
 
   LIMIT_ERROR_LENGTH = 10000
 
@@ -57,7 +57,6 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def create
-
     @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest],
                                   current_user, SampleManifestExcel.configuration)
 
@@ -71,7 +70,6 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       redirect_to new_sample_manifest_path
 
     end
-
   end
 
   # Show the manifest
@@ -88,6 +86,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   private
+
   def set_sample_manifest_id
     @sample_manifest = SampleManifest.find(params[:id])
   end
@@ -101,5 +100,4 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       redirect_to sample_manifests_path
     end
   end
-
 end

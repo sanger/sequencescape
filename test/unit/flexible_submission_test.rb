@@ -50,7 +50,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         end
 
         context "#process!" do
-
           context 'multiple requests' do
             setup do
               @request_count = Request.count
@@ -61,7 +60,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               assert_equal (16 + 8), Request.count - @request_count
             end
           end
-
         end
       end
 
@@ -137,7 +135,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
 
           context "#process!" do
-
             context 'multiple requests' do
               setup do
                 @xs_mpx_submission.process!
@@ -167,7 +164,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 request_types: @request_type_ids,
                 request_options: @request_options
               )
-
             end
           end
 
@@ -195,12 +191,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               assert @sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? }
              end
           end
-
         end
-
       end
-
-
     end
 
     context "with target asset creation" do
@@ -219,7 +211,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
       context 'multiplexed submission' do
         setup do
-
           @mpx_submission = FlexibleSubmission.build!(
             study: @study,
             project: @project,
@@ -236,7 +227,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         end
 
         context "#process!" do
-
           context 'multiple requests' do
             setup do
               @request_count = Request.count
@@ -264,12 +254,10 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
         end
       end
-
     end
 
     context "process with a multiplier for request type" do
       setup do
-
         @study = create :study
         @project = create :project
         @user = create :user
@@ -293,7 +281,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       end
 
       context "when a multiplication factor of 2 is provided" do
-
         context "for multiplexed libraries and sequencing" do
           setup do
             @mx_submission_with_multiplication_factor.process!
@@ -305,15 +292,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             seq_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor, request_type_id: @pe_request_type.id)
             assert_equal 16, seq_requests.count
           end
-
         end
-
       end
     end
 
     context "correctly calculate multipliers" do
       setup do
-
         @study = create :study
         @project = create :project
         @user = create :user
@@ -324,11 +308,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
         @mx_request_type_ids = [@mx_request_type.id, @pe_request_type.id]
         @ux_request_type_ids = [@ux_request_type.id, @pe_request_type.id]
-
       end
 
       context "with multiplexed requests" do
-
         context "for multiplexed libraries and sequencing" do
           setup do
             @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
@@ -349,13 +331,10 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             end
             assert_equal [:"#{@pe_request_type.id}"], ids
           end
-
         end
-
       end
 
       context "with unplexed requests" do
-
         context "for unplexed libraries and sequencing" do
           setup do
             @ux_submission_with_multiplication_factor = FlexibleSubmission.build!(
@@ -376,9 +355,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             end
             assert_equal [:"#{@ux_request_type.id}"], ids
           end
-
         end
-
       end
     end
   end

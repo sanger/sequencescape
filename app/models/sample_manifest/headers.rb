@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 module SampleManifest::Headers
-
   def self.valid?(name)
     METADATA_ATTRIBUTES_TO_CSV_COLUMNS.has_value?(name) || CORE_FIELDS.include?(name)
   end
@@ -25,7 +24,6 @@ module SampleManifest::Headers
   TAG_GROUP_FIELD = 'TAG GROUP'
   TAG2_GROUP_FIELD = 'TAG2 GROUP (Fill in for dual Index Only)'
   TAG2_INDEX_FIELD = 'TAG2 INDEX (Fill in for dual Index Only)'
-
 
   CORE_FIELDS = [
     'SANGER PLATE ID',
@@ -91,5 +89,4 @@ module SampleManifest::Headers
     disease: 'Disease',
     reference_genome_name: 'REFERENCE GENOME'
   }
-
 end

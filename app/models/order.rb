@@ -83,7 +83,9 @@ class Order < ActiveRecord::Base
   end
 
   def cross_study_allowed; false; end
+
   def cross_project_allowed; false; end
+
   def cross_compatible?; false; end
 
   def no_consent_withdrawl
@@ -135,7 +137,6 @@ class Order < ActiveRecord::Base
     ])
   }
 
-
   def self.render_class
     Api::OrderIO
   end
@@ -173,7 +174,6 @@ class Order < ActiveRecord::Base
     end
   end
 
-
   def multiplexed?
     RequestType.find(self.request_types).any?(&:for_multiplexing?)
   end
@@ -182,7 +182,6 @@ class Order < ActiveRecord::Base
     request_type.asset_type == asset.asset_type_for_request_types.name
   end
   private :is_asset_applicable_to_type?
-
 
   delegate :left_building_state?, to: :submission, allow_nil: true
 
@@ -272,6 +271,7 @@ class Order < ActiveRecord::Base
     def initialize(key)
       @key = key
     end
+
     def add(attribute, metadata)
       @display_name ||= attribute.display_name
       @key            = attribute.assignable_attribute_name
@@ -283,12 +283,15 @@ class Order < ActiveRecord::Base
         @options     &= new_options
       end
     end
+
     def kind
       @kind || FieldInfo::TEXT
     end
+
     def selection?
       kind == FieldInfo::SELECTION
     end
+
     def to_field_infos
       values = {
         display_name: display_name,
@@ -340,7 +343,6 @@ class Order < ActiveRecord::Base
     @input_field_infos = infos
   end
 
-
   def initial_request_state(request_type)
     (request_options || {}).fetch(:initial_state, {}).fetch(request_type.id, request_type.initial_state).to_s
   end
@@ -350,7 +352,6 @@ class Order < ActiveRecord::Base
     request_type_ids = request_types.map(&:to_i)
     request_type_ids[request_type_ids.index(request_type_id) + 1]
   end
-
 
   def compute_input_field_infos
     request_attributes.uniq.map do |combined|
@@ -363,7 +364,6 @@ class Order < ActiveRecord::Base
   def building?
     self.submission.nil?
   end
-
 
   # Returns true if this is an order for sequencing
   def is_a_sequencing_order?

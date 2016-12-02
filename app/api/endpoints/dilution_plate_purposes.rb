@@ -5,5 +5,4 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class ::Endpoints::DilutionPlatePurposes < ::Endpoints::PlatePurposes
-
 end

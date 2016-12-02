@@ -57,7 +57,6 @@ class Pipeline < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, on: :create, message: "name already in use"
 
-
   scope :externally_managed, -> { where(externally_managed: true) }
   scope :internally_managed, -> { where(externally_managed: false) }
   scope :active,             -> { where(active: true) }
@@ -75,7 +74,6 @@ class Pipeline < ActiveRecord::Base
   def custom_inbox_actions
     []
   end
-
 
   def inbox_partial
     INBOX_PARTIAL
@@ -256,5 +254,4 @@ class Pipeline < ActiveRecord::Base
   def robot_verified!(batch)
     # Do nothing!
   end
-
 end

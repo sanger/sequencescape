@@ -7,9 +7,7 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class ProductCriteriaBasicTest < ActiveSupport::TestCase
-
   context "a configured criteria" do
-
     setup do
       @params = {
         concentration: { greater_than: 5 },

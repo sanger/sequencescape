@@ -35,6 +35,7 @@ module Request::Statistics
       # distinct.count(:id) in rails_4
       self.requests.request_type(request_type).cancelled.distinct.count(:id)
     end
+
     def total_requests_report
       self.requests.group(:request_type_id).count
     end
@@ -64,7 +65,7 @@ module Request::Statistics
     end
 
     def progress
-      return 0 if self.passed.zero?  # If there are no passed then the progress is 0% by definition
+      return 0 if self.passed.zero? # If there are no passed then the progress is 0% by definition
       (self.passed * 100) / (self.total - self.failed)
     end
   end

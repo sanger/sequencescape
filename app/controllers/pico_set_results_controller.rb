@@ -5,13 +5,11 @@
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
 class PicoSetResultsController < ApplicationController
-
   before_action :login_required, except: :create
 
   # TODO This should be an update method not create
   # TODO Refactor. Create an object for pico_set_result
   def create
-
     pico_set_result = params[:pico_set_result]
 
     if pico_set_result

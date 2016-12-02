@@ -1,6 +1,5 @@
 module SampleManifestExcel
   class ManifestTypeList
-
     include Enumerable
     include Comparable
 
@@ -42,7 +41,6 @@ module SampleManifestExcel
     end
 
     class ManifestType
-
       include HashAttributes
 
       set_attributes :name, :columns, :heading, :asset_type

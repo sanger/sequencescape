@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class QcMetric < ActiveRecord::Base
-
   extend QcMetric::QcState
 
   InvalidValue = Class.new(StandardError)
@@ -121,5 +120,4 @@ class QcMetric < ActiveRecord::Base
     accepted = accepted_list.keys.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
     "#{decision} is not an acceptable decision. Should be #{accepted}."
   end
-
 end

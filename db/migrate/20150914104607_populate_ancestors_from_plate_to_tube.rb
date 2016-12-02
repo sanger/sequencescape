@@ -49,6 +49,5 @@ class PopulateAncestorsFromPlateToTube < ActiveRecord::Migration
   end
 
   def self.down
-
   end
 end

@@ -16,12 +16,10 @@ class SampleTest < ActiveSupport::TestCase
     end
 
   context "A Sample" do
-
     should have_many :study_samples
     should have_many :studies # , :through => :study_samples
 
     context "when used in older assets" do
-
       setup do
         @sample = create :sample
         @tube_a = create :empty_library_tube
@@ -34,7 +32,6 @@ class SampleTest < ActiveSupport::TestCase
       should "have the first tube it was added to as a primary asset" do
         assert_equal @sample.reload.primary_receptacle, @tube_b
       end
-
     end
 
     context "#accession_number?" do

@@ -4,9 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 module SharedBehaviour::Deprecatable
-
   def self.included(base)
     base.class_eval do
       scope :active, ->() { where(deprecated_at: nil) }
@@ -22,5 +20,4 @@ module SharedBehaviour::Deprecatable
   def deprecated?
     deprecated_at?
   end
-
 end

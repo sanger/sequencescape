@@ -59,6 +59,7 @@ class Admin::FacultySponsorsController < ApplicationController
   end
 
   private
+
   def discover_faculty_sponsor
     @faculty_sponsor = FacultySponsor.find(params[:id])
   end

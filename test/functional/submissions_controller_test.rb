@@ -70,7 +70,6 @@ C1 C2 C3
             project_name: "A project"
           }
         )
-
       end
 
       should "create the appropriate orders" do
@@ -137,7 +136,6 @@ C1 C2 C3
           sample_names_text: samples[1..4].join("\n"),
           plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
           project_name: "A project" })
-
       end
 
       should "used the working dilution plate" do
@@ -225,7 +223,7 @@ C1 C2 C3
       setup do
         @shared_template = 'shared_template'
         @sample  = create :sample
-        @asset_a = create :sample_tube, sample:  @sample
+        @asset_a = create :sample_tube, sample: @sample
         @submission = create :submission
         @order = create :order, assets: [@asset_a], template_name: @shared_template, submission: @submission
       end
@@ -235,7 +233,6 @@ C1 C2 C3
         assert_select 'div.alert-danger', 0
       end
     end
-
   end
 
   def plate_submission(text)

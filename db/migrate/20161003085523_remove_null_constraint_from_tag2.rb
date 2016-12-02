@@ -1,5 +1,4 @@
 class RemoveNullConstraintFromTag2 < ActiveRecord::Migration
-
   def up
     change_column :aliquots, :tag2_id, :integer, default: -1, null: true
   end

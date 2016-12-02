@@ -1,7 +1,6 @@
 require "test_helper"
 
 class TagSubstitutionTest < ActiveSupport::TestCase
-
   # We have a large number of scenarios here, because unfortunately
   # things can get quite complicated.
 
@@ -102,7 +101,6 @@ class TagSubstitutionTest < ActiveSupport::TestCase
         @sample_b_orig_tag_b  = create :tag
         @other_tag            = create :tag
 
-
         @library_tube_a = create :library_tube
         @library_aliquot_a_a = create :aliquot, sample: @sample_a, tag: @sample_a_orig_tag_a, library: @library_tube_a, receptacle: @library_tube_a
         @library_aliquot_a_b = create :aliquot, sample: @sample_a, tag: @sample_a_orig_tag_b, library: @library_tube_a, receptacle: @library_tube_a
@@ -138,5 +136,4 @@ class TagSubstitutionTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

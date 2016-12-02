@@ -61,7 +61,6 @@ class AssetGroupTest < ActiveSupport::TestCase
       @asset_group.stubs(:assets).returns([@asset1, @asset2])
     end
 
-
     should "report its asset types" do
       assert_equal ['Tube', 'Well'], @asset_group.asset_types
     end
@@ -69,7 +68,6 @@ class AssetGroupTest < ActiveSupport::TestCase
     should "not support automatic_move?" do
       assert !@asset_group.automatic_move?
     end
-
   end
 
   context "With immovable assets" do
@@ -91,7 +89,6 @@ class AssetGroupTest < ActiveSupport::TestCase
     should "not support automatic_move?" do
       assert !@asset_group.automatic_move?
     end
-
   end
 
   context "Validation" do
@@ -166,8 +163,6 @@ class AssetGroupTest < ActiveSupport::TestCase
           assert_equal false, @asset_group.all_samples_have_accession_numbers?
         end
       end
-
     end
-
   end
 end

@@ -15,7 +15,7 @@ module Submission::ProjectValidation
       end
 
       validates_each(:project, if: :validating?) do |record, attr, project|
-        record.errors.add(:base, "Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}")  unless project.submittable?
+        record.errors.add(:base, "Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}") unless project.submittable?
       end
 
       after_create :confirm_validity!
@@ -65,11 +65,9 @@ module Submission::ProjectValidation
     @saving_without_validation = false
   end
 
-
   def confirm_validity!
     return if @saving_without_validation
     check_project_details!
   end
   private :confirm_validity!
-
 end

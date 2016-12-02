@@ -1,7 +1,6 @@
 require "test_helper"
 
 class ManifestTypeListTest < ActiveSupport::TestCase
-
   include SampleManifestExcel::Helpers
 
   attr_reader :yaml, :manifest_type_list
@@ -46,5 +45,4 @@ class ManifestTypeListTest < ActiveSupport::TestCase
     yaml.shift
     refute_equal SampleManifestExcel::ManifestTypeList.new(yaml), manifest_type_list
   end
-
 end

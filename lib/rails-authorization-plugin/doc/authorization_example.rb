@@ -37,5 +37,4 @@ class MeetingController < ApplicationController
       end
     end
   end
-
 end

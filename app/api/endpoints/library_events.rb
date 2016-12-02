@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class ::Endpoints::LibraryEvents < ::Core::Endpoint::Base
-
   model do
     action(:create, to: :standard_create!)
   end

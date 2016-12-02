@@ -1,9 +1,7 @@
 module SampleManifestExcel
-
   ##
   # Holds the reference of a cell in an Excel spreadsheet based on its x (row) and y (column) position.
   class Cell
-
     attr_reader :row, :column
 
     ##
@@ -42,6 +40,5 @@ module SampleManifestExcel
     def to_alpha(n)
       (n - 1) < 26 ? ((n - 1) % 26 + 65).chr : ((n - 1) / 26 + 64).chr + ((n - 1) % 26 + 65).chr
     end
-
   end
 end

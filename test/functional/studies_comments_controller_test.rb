@@ -6,8 +6,6 @@
 
 require "test_helper"
 
-
-
 class Studies::CommentsControllerTest < ActionController::TestCase
   context "Studies controller" do
     setup do
@@ -19,6 +17,5 @@ class Studies::CommentsControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test('comment', { actions: ['index'], ignore_actions: %w(new edit update show destroy create), formats: ['html'], parent: "study", other_actions: ['add'] })
-
   end
 end

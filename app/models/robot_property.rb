@@ -35,6 +35,4 @@ class RobotProperty < ActiveRecord::Base
   def sti_type
     self.class
   end
-
-
 end

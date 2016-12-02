@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::Reception < BroadcastEvent
-
   set_event_type 'reception'
 
   # Triggered whenever a plate is scanned into a new location

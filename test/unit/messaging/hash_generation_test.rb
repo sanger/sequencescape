@@ -7,7 +7,6 @@
 require 'test_helper'
 
 class HashGenerationTest < ActiveSupport::TestCase
-
   class ExampleModel
     attr_reader :association, :has_many_association, :name
 
@@ -42,13 +41,10 @@ class HashGenerationTest < ActiveSupport::TestCase
     end
 
     map_attribute_to_json_attribute(:updated_at)
-
   end
 
   context "#Api::Base" do
-
     setup do
-
       @test_assn = mock('assn')
       @test_has_many_more = mock('hasm_more_assn')
       @test_ham_assn = mock('hasm_assn')
@@ -70,7 +66,6 @@ class HashGenerationTest < ActiveSupport::TestCase
     end
 
     context 'A simple model' do
-
       should 'generate the expected hash' do
         hash = ExampleApi.to_hash(@example_model)
         assert_equal({
@@ -83,7 +78,6 @@ class HashGenerationTest < ActiveSupport::TestCase
     end
 
     context 'With newer sub_nested models' do
-
       setup do
         @test_has_many_more.stubs(:updated_at).returns(Date.new(2013, 1, 6))
       end
@@ -98,7 +92,5 @@ class HashGenerationTest < ActiveSupport::TestCase
         }, hash)
       end
     end
-
   end
-
 end

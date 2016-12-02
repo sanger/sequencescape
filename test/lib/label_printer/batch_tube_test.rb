@@ -1,13 +1,10 @@
 require 'test_helper'
 
 class BatchTubeTest < ActiveSupport::TestCase
-
   attr_reader :tube_label, :batch
 
   context "stock" do
-
     should "when multiplexed should return the right tubes and top line" do
-
       pipeline = create :pipeline,
         name: 'Test pipeline',
         workflow: LabInterface::Workflow.create!(item_limit: 8),
@@ -32,7 +29,6 @@ class BatchTubeTest < ActiveSupport::TestCase
     end
 
     should "when not multiplexed should return the right tubes and top line" do
-
       library_tube_with_stock_tube = create :library_tube
       stock_library_tube = create :stock_library_tube
       stock_library_tube.children << library_tube_with_stock_tube
@@ -48,14 +44,11 @@ class BatchTubeTest < ActiveSupport::TestCase
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
       assert_equal request.target_asset.stock_asset.name, tube_label.top_line(tube)
-
     end
   end
 
   context "no stock" do
-
     should "when multiplexed should return the right tubes and top line" do
-
       @pipeline = create :pipeline,
         name: 'Test pipeline',
         workflow: LabInterface::Workflow.create!(item_limit: 8),
@@ -72,11 +65,9 @@ class BatchTubeTest < ActiveSupport::TestCase
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
       assert_equal "(#{request.target_asset.tag}) #{request.target_asset.id}", tube_label.top_line(tube)
-
     end
 
     should "when not multiplexed should return the right tubes and top line" do
-
       request = create :library_creation_request, target_asset: (create :library_tube, barcode: "111")
       @batch = create :batch
       @batch.requests << request
@@ -88,8 +79,6 @@ class BatchTubeTest < ActiveSupport::TestCase
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
       assert_equal request.target_asset.tube_name, tube_label.top_line(tube)
-
     end
-
   end
 end

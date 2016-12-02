@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class AssetRedirect
-
       attr_reader :printables
 
       def initialize(options)
@@ -29,8 +27,6 @@ module LabelPrinter
           Asset.find(ids)
         end
       end
-
     end
-
   end
 end

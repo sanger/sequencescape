@@ -10,7 +10,6 @@ require 'csv'
 
 class QcReport::FileTest < ActiveSupport::TestCase
   context "QcReport File" do
-
     context 'given a non-csv file' do
       setup do
         @file = ::File.open("#{Rails.root}/test/data/190_tube_sample_info.xls")

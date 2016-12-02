@@ -7,8 +7,6 @@
 require "test_helper"
 require 'projects_controller'
 
-
-
 class ProjectsControllerTest < ActionController::TestCase
   context "ProjectsController" do
     setup do
@@ -38,8 +36,6 @@ class ProjectsControllerTest < ActionController::TestCase
 
       should respond_with :success
       should render_template :new
-
-
     end
 
     context "#create" do
@@ -84,7 +80,6 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should set_flash.now.to('Problems creating your new project')
-
       end
 
       context "create a new project using permission allowed (not required)" do
@@ -105,7 +100,6 @@ class ProjectsControllerTest < ActionController::TestCase
          assert_equal 1, Project.count - @project_counter
         end
       end
-
     end
   end
 

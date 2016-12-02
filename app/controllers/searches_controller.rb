@@ -19,7 +19,6 @@ private
     params[:type].blank? ? global_searchable_classes : [global_searchable_classes.detect { |klass| klass.name == params[:type] }]
   end
 
-
   def extended
     false
   end

@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class SequenomPlateRedirect
-
       attr_reader :plate_with_384_wells, :options
 
       def initialize(options)
@@ -17,8 +15,6 @@ module LabelPrinter
           return Sequenom96Plate.new(options).to_h
         end
       end
-
     end
-
   end
 end

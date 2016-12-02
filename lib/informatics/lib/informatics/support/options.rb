@@ -1,7 +1,6 @@
 module Informatics
   module Support
     class Options
-
       attr_accessor :options
 
       def self.collect(*options)
@@ -52,7 +51,6 @@ module Informatics
       def logger
         Rails.logger
       end
-
     end
   end
 end

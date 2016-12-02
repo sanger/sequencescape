@@ -8,16 +8,13 @@ require "test_helper"
 require 'csv'
 
 class FluidigmFileTest < ActiveSupport::TestCase
-
   XY = 'M'
   XX = 'F'
   YY = 'F'
   NC = 'Unknown'
 
   context "A fluidigm file" do
-
     setup do
-
       File.open("#{Rails.root}/test/data/fluidigm.csv") do |file|
         @fluidigm = FluidigmFile.new(file.read)
       end
@@ -77,7 +74,5 @@ class FluidigmFileTest < ActiveSupport::TestCase
         assert_equal @well_maps[loc][:count], well.count
       end
     end
-
   end
-
 end

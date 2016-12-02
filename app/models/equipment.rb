@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 class Equipment < ActiveRecord::Base
-
   validates_presence_of :name, :equipment_type
   before_validation :set_defaults
   after_create :update_barcode
@@ -25,5 +24,4 @@ class Equipment < ActiveRecord::Base
   def suffix
     Barcode.calculate_checksum(prefix, barcode_number)
   end
-
 end

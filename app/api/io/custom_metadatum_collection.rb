@@ -11,5 +11,4 @@ class ::Io::CustomMetadatumCollection < ::Core::Io::Base
              user <= user
              asset <= asset
   ")
-
 end

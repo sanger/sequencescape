@@ -105,6 +105,16 @@ group :development do
   gem 'rubocop', require: false
 end
 
+group :test do
+  gem 'rspec-rails', require: false
+  # Simplifies shared transactions between server and test threads
+  # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
+  # Essentially does two things:
+  # - Patches rails to share a database connection between threads while Testing
+  # - Pathes rspec to ensure capybara has done its stuff before killing the connection
+  gem 'transactional_capybara'
+end
+
 group :test,:cucumber do
   gem 'factory_girl', require: false
   gem 'launchy', require: false

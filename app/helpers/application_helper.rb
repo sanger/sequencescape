@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 module ApplicationHelper
-
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
     Rails.cache.fetch("#{identifier}-#{differential}") do
@@ -19,7 +18,6 @@ module ApplicationHelper
 
       custom_text.try(:content) || ""
     end
-
   end
 
   def loading_bar(identifier = "loading")
@@ -83,7 +81,7 @@ module ApplicationHelper
   def dynamic_link_to(summary_item)
     object = summary_item.object
     if object.instance_of?(Asset)
-        return link_to("#{object.name}", asset_path(object))
+        return link_to((object.name).to_s, asset_path(object))
     elsif object.instance_of?(Request)
         return link_to("Request #{object.id}", request_path(object))
     else
@@ -105,7 +103,6 @@ module ApplicationHelper
        url_path = study_requests_path(study, state: state, request_type_id: request_type.id, asset_id: asset.id)
        link_to count, url_path, html_options
     end
-
   end
 
   def request_link(object, count, request_type, status = nil, options = {}, link_options = {})
@@ -149,7 +146,6 @@ module ApplicationHelper
   end
 
   def completed(object, request_type = nil, cache = {})
-
     total  = 0
     passed = 0
     failed = 0
@@ -199,7 +195,6 @@ module ApplicationHelper
    end
   end
 
-
   ## From Pipelines
 
   def render_title(title = "")
@@ -227,9 +222,8 @@ module ApplicationHelper
     end
   end
 
-
   def horizontal_tab(name, key, related_div, tab_no, selected = false)
-    link_to raw("#{name}"), "javascript:void(0);", 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: "#{key}", class: "#{selected ? "selected " : ""}tab#{tab_no}"
+    link_to raw(name.to_s), "javascript:void(0);", 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "#{selected ? "selected " : ""}tab#{tab_no}"
     # link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
   end
 
@@ -309,8 +303,6 @@ module ApplicationHelper
   # The admin email address should be stored in config.yml for the current environment
   def help_email_link
     admin_address = configatron.admin_email || "admin@test.com"
-    link_to "#{admin_address}", "mailto:#{admin_address}"
+    link_to admin_address.to_s, "mailto:#{admin_address}"
   end
-
-
 end

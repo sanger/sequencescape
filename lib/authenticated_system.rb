@@ -4,6 +4,7 @@
 # Copyright (C) 2007-2011,2013 Genome Research Ltd.
 module AuthenticatedSystem
   protected
+
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
     def logged_in?
@@ -71,8 +72,8 @@ module AuthenticatedSystem
       end
 
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? ? true : access_denied }
-        accepts.csv   { logged_in? && authorized? ? true : access_denied }
+        accepts.html { logged_in? && authorized? ? true : access_denied }
+        accepts.csv { logged_in? && authorized? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -86,7 +87,7 @@ module AuthenticatedSystem
     def admin_login_required
       setup_current_user
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? && current_user.administrator? ? true : access_denied }
+        accepts.html { logged_in? && authorized? && current_user.administrator? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -100,7 +101,7 @@ module AuthenticatedSystem
     def manager_login_required
       setup_current_user
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
+        accepts.html { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -114,7 +115,7 @@ module AuthenticatedSystem
     def lab_manager_login_required
       setup_current_user
       respond_to do |accepts|
-        accepts.html   { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
+        accepts.html { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
         if configatron.disable_api_authentication == true
           accepts.xml  { true }
           accepts.json { true }
@@ -202,6 +203,7 @@ module AuthenticatedSystem
     end
 
   private
+
     @@http_auth_headers = %w(X-HTTP_AUTHORIZATION HTTP_AUTHORIZATION Authorization)
     # gets BASIC auth info
     def get_auth_data

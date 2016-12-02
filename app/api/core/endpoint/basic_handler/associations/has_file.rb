@@ -21,5 +21,4 @@ module Core::Endpoint::BasicHandler::Associations::HasFile
       content_type(ct)
     end)
   end
-
 end

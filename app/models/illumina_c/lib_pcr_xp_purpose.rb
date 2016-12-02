@@ -5,11 +5,9 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 class IlluminaC::LibPcrXpPurpose < PlatePurpose
-
   include PlatePurpose::RequestAttachment
 
   self.connect_on = 'qc_complete'
   self.connected_class = IlluminaC::Requests::LibraryRequest
   self.connect_downstream = false
-
 end

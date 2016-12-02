@@ -5,7 +5,6 @@
 # Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 class BaitLibrary < ActiveRecord::Base
-
   include SharedBehaviour::Named
 
   module Associations
@@ -64,5 +63,4 @@ class BaitLibrary < ActiveRecord::Base
     self.visible = false
     save!
   end
-
 end

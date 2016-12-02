@@ -38,6 +38,7 @@ class ChangeTag
   end
 
   protected
+
   def parse_library_tube_ids(library_tube_ids_string)
     @library_tube_ids = []
     library_tube_ids_string.scan(/\d+/).each do |library_tube_id|
@@ -61,5 +62,4 @@ class ChangeTag
       raise ChangeTagException::MissingTag if library_tube.get_tag.nil?
     end
   end
-
 end

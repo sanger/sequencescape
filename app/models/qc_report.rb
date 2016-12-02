@@ -4,9 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 class QcReport < ActiveRecord::Base
-
   # :id => The primary key for internal use only
   # :report_identifier => A unique identifier exposed to customers
   # :state => Tracks report processing and return
@@ -14,7 +12,6 @@ class QcReport < ActiveRecord::Base
   include AASM
 
   module StateMachine
-
     module ClassMethods
       def available_states
         QcReport.aasm.states.map { |state| state.name.to_s }
@@ -23,12 +20,10 @@ class QcReport < ActiveRecord::Base
 
     def self.included(base)
       base.class_eval do
-
         # When adding new states, please make sure you update the config/locals/en.yml file
         # with decriptions.
 
         aasm column: :state, whiny_persistence: true do
-
         # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
         state :queued, initial: true
 
@@ -67,7 +62,6 @@ class QcReport < ActiveRecord::Base
           event :proceed_decision do
             transitions from: [:complete, :awaiting_proceed], to: :complete
           end
-
         end
 
         def available?
@@ -75,9 +69,7 @@ class QcReport < ActiveRecord::Base
         end
 
         extend ClassMethods
-
       end
-
     end
   end
 
@@ -175,7 +167,6 @@ class QcReport < ActiveRecord::Base
     ].compact.join('_').downcase.gsub(/[^\w]/, '_')
     self.report_identifier = rid
   end
-
 end
 
 require_dependency 'qc_report/file'

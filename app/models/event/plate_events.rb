@@ -43,5 +43,4 @@ module Event::PlateEvents
     events.reverse.detect { |e| e.family == key }.try(:content)
   end
   private :event_from_object
-
 end

@@ -33,6 +33,4 @@ class SpecificTubeCreation < TubeCreation
   def multiple_purposes
    true
   end
-
-
 end

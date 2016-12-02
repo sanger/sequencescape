@@ -60,5 +60,4 @@ class AssetsController < ApplicationController
       raise StandardError, "Location out of bounds" unless (1..self.size).cover?(location_id)
     end
   end
-
 end

@@ -18,5 +18,4 @@ class StockMultiplexedLibraryTube < Tube
   def sibling_tubes
     purpose.sibling_tubes(self)
   end
-
 end

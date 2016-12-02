@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Uuid < ActiveRecord::Base
-
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests
 
@@ -157,7 +156,6 @@ class Uuid < ActiveRecord::Base
       create!(resource_type: resource_type, resource_id: resource_id).external_id
   end
 
-
   # Given a list of internal ids, create uuids in bulk
   # @param resource_name [String] the name of the external project
   # @param base_class_name [String] the basic type in the external project.
@@ -200,7 +198,6 @@ class Uuid < ActiveRecord::Base
       return nil
     end
   end
-
 
   class << self
     def lookup_single_uuid(uuid)

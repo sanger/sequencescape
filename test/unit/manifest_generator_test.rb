@@ -7,7 +7,6 @@
 require "test_helper"
 
 class ManifestGeneratorTest < ActiveSupport::TestCase
-
   def remove_date(csv_string)
     csv_string.slice(0...(csv_string.index("Date:"))) + csv_string.slice(csv_string.index("Comments:")..csv_string.size)
   end
@@ -33,7 +32,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         @study = create :study
         @expected_header = [["Institute Name:", "WTSI", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
          ["Date:", "2010-5-7"],
-         ["Comments:", "#{@study.abbreviation}"],
+         ["Comments:", (@study.abbreviation).to_s],
          ["Row", "Institute Plate Label", "Well", "Is Control", "Institute Sample Label", "Species",
           "Sex", "Comments", "Volume (ul)", "Conc (ng/ul)", "Extraction Method", "WGA Method (if Applicable)",
           "Mass of DNA used in WGA", "Parent 1", "Parent 2", "Replicate(s)", "Tissue Source"]]
@@ -316,7 +315,6 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
               @well.set_concentration(concentration)
               @well.save
 
-
               @target_row = target_row
               @generated_row = ManifestGenerator.generate_manifest_row(@well, @plate_barcode, @plate_label)
             end
@@ -424,7 +422,5 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
-
 end

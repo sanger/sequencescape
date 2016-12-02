@@ -7,7 +7,6 @@
 require 'test_helper'
 
 class RequestEventTest < ActiveSupport::TestCase
-
   RequestType.where(key: %w(
 Transfer
 illumina_b_std
@@ -17,9 +16,7 @@ illumina_c_multiplexed_library_creation
 
     context "#{request_type.name} Requests" do
       setup do
-
         well_with_sample_and_without_plate = create(:well_with_sample_and_without_plate)
-
 
         @request = request_type.new(
             asset: well_with_sample_and_without_plate,
@@ -29,7 +26,6 @@ illumina_c_multiplexed_library_creation
           r.stubs(:valid?).returns(true)
           r.save!
         end
-
       end
 
       context 'creating requests' do
@@ -44,7 +40,6 @@ illumina_c_multiplexed_library_creation
           assert_equal 'created', @request.current_request_event.event_name
           assert_equal nil, @request.current_request_event.current_to
         end
-
       end
 
       context 'changing request state to start' do
@@ -84,7 +79,6 @@ illumina_c_multiplexed_library_creation
           assert_equal [@old_request_id], @destroyed_ids
         end
       end
-
     end
   end
 end

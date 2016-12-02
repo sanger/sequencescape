@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ColumnListTest < ActiveSupport::TestCase
-
   include SampleManifestExcel::Helpers
 
   attr_reader :column_list, :yaml, :ranges, :conditional_formattings
@@ -85,5 +84,4 @@ class ColumnListTest < ActiveSupport::TestCase
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
     refute dupped.any? { |k, column| column.updated? }
   end
-
 end

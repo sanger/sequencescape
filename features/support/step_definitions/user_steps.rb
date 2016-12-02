@@ -38,7 +38,6 @@ Given /^the user with login "([^\"]+)" exists$/ do |login|
   User.find_by(login: login) || FactoryGirl.create(:user, login: login)
 end
 
-
 Then /^the user (\d+) should validate the swipecard code "([^\"]+)"/ do |user_id, code|
   user = User.find(user_id)
   assert user.compare_swipecard_code(code)

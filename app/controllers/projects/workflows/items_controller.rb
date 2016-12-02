@@ -21,5 +21,4 @@ class Projects::Workflows::ItemsController < ApplicationController
       format.xml { render xml: @items.to_xml }
     end
   end
-
 end

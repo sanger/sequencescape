@@ -1,9 +1,7 @@
 
 module LabelPrinter
   module Label
-
     class AssetPlate < BasePlate
-
       attr_reader :plates
 
       def initialize(plates)
@@ -17,7 +15,6 @@ module LabelPrinter
       def bottom_right(plate)
         "#{plate.name_for_label} #{plate.barcode}"
       end
-
     end
   end
 end

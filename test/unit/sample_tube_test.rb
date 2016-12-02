@@ -4,13 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-
 require "test_helper"
 
 class SampleTubeTest < ActiveSupport::TestCase
-
   context 'A Sample tube' do
-
     setup do
       AssetBarcode.expects :new_barcode
     end

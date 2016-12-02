@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::PlateLibraryComplete < BroadcastEvent
-
   set_event_type 'library_complete'
 
   # Properties takes :order_id

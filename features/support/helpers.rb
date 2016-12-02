@@ -9,6 +9,6 @@ end
 
 begin
   require 'pry'
-rescue  LoadError => exception
+rescue LoadError => exception
 
 end

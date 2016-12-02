@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class Accessionable::Policy < Accessionable::Base
-
   attr_reader :policy_url, :dac_accession_number, :title
 
   def initialize(study)
@@ -17,7 +16,6 @@ class Accessionable::Policy < Accessionable::Base
     # @dac_refname = study.dac_refname
     @dac_accession_number = study.dac_accession_number
     super(study.policy_accession_number)
-
   end
 
   def errors

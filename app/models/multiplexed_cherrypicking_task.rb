@@ -46,6 +46,4 @@ class MultiplexedCherrypickingTask < Task
     return Plate.with_machine_barcode(barcode).first unless barcode.blank?
     PlatePurpose.find(plate_purpose_id).create!
   end
-
-
 end

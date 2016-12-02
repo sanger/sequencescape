@@ -14,7 +14,7 @@ class Endpoints::Submissions < Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:user,    json: 'user')
+    belongs_to(:user, json: 'user')
     has_many(
       :requests, json: 'requests', to: 'requests',
       include: [:source_asset, :target_asset]
@@ -26,7 +26,7 @@ class Endpoints::Submissions < Core::Endpoint::Base
       ActiveRecord::Base.transaction do
         request.target.tap do |submission|
           submission.built!
-          response.status(200)    # OK
+          response.status(200) # OK
         end
       end
     end

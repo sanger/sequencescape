@@ -163,7 +163,6 @@ module Tasks::CherrypickHandler
             plate_and_requests[plate] << request
             used_requests << request
           end
-
         end
 
         # At this point we can consider ourselves finished with the partial plate

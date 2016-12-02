@@ -4,14 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-
 require 'aasm'
 
 class Project < ActiveRecord::Base
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
   include Api::Messages::FlowcellIO::ProjectExtensions
-
 
   self.per_page = 500
   include EventfulRecord
@@ -30,7 +28,6 @@ class Project < ActiveRecord::Base
   has_many_lab_events
 
   aasm column: :state, whiny_persistence: true do
-
     state :pending, initial: true
     state :active
     state :inactive
@@ -46,7 +43,6 @@ class Project < ActiveRecord::Base
     event :deactivate do
       transitions to: :inactive, from: [:pending, :active]
     end
-
   end
 
   scope :in_assets, ->(assets) {

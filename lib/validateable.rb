@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
 module Validateable
-
   [:save, :save!, :update_attribute].each { |attr| define_method(attr) {} }
 
   def method_missing(symbol, *params)
@@ -26,6 +25,7 @@ module Validateable
     def self_and_descendants_from_active_record
       [self]
     end
+
     def human_attribute_name(attribute_key_name, options = {})
       defaults = self_and_descendants_from_active_record.map do |klass|
         "#{klass.name.underscore}.#{attribute_key_name}""#{klass.name.underscore}.#{attribute_key_name}"
@@ -36,6 +36,7 @@ module Validateable
       options[:count] ||= 1
       I18n.translate(defaults.shift, options.merge(default: defaults, scope: [:activerecord, :attributes]))
     end
+
     def human_name(options = {})
       defaults = self_and_descendants_from_active_record.map do |klass|
         "#{klass.name.underscore}""#{klass.name.underscore}"
@@ -44,5 +45,4 @@ module Validateable
       I18n.translate(defaults.shift, { scope: [:activerecord, :models], count: 1, default: defaults }.merge(options))
     end
   end
-
 end

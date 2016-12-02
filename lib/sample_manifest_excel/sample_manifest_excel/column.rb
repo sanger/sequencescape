@@ -1,12 +1,10 @@
 module SampleManifestExcel
-
   ##
   # Column creates a particular column with all the information about this column (name, heading,
   # value, type, attribute, should it be locked or unlocked, position of the column,
   # validation, conditional formatting rules)
   # A column is only valid if it has a name and heading.
   class Column
-
     include HashAttributes
     include ActiveModel::Validations
 
@@ -122,7 +120,6 @@ module SampleManifestExcel
     end
 
     class ArgumentBuilder
-
       attr_reader :arguments
 
       def initialize(args, key, default_conditional_formattings)
@@ -148,7 +145,5 @@ module SampleManifestExcel
   private
 
     attr_reader :attribute
-
   end
-
 end

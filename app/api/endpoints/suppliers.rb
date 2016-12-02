@@ -6,7 +6,6 @@
 
 class ::Endpoints::Suppliers < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do

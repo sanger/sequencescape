@@ -4,12 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 require "test_helper"
 
 class ProductCatalogueTest < ActiveSupport::TestCase
   context 'A product catalogue' do
-
     should validate_presence_of :name
     should validate_presence_of :selection_behaviour
 
@@ -42,11 +40,9 @@ class ProductCatalogueTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
 
   context 'ProductCatalogue::construct!' do
-
     setup do
       @catalogue_count = ProductCatalogue.count
 
@@ -54,7 +50,6 @@ class ProductCatalogueTest < ActiveSupport::TestCase
 
       @product_count = Product.count
       @product_product_catalogue_count = ProductProductCatalogue.count
-
 
       catalogue_parameters = {
         name: 'test',
@@ -82,5 +77,4 @@ class ProductCatalogueTest < ActiveSupport::TestCase
       assert_equal 'novel', @constructed.product_with_criteria('ambiguator_b').name
     end
   end
-
 end

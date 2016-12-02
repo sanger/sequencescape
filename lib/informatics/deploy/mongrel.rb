@@ -1,6 +1,5 @@
 namespace :deploy do
   namespace :mongrel do
-
     task :start, roles: :app do
       run "mongrel_rails mongrel::start -C #{shared_path}/config/server.yml -c #{current_path}"
     end
@@ -12,11 +11,9 @@ namespace :deploy do
     task :stop, roles: :app do
       run "mongrel_rails mongrel::stop -c #{current_path}"
     end
-
   end
 
   namespace :cluster do
-
     task :start, roles: :app do
       run "mongrel_rails cluster::start -C #{shared_path}/config/server.yml"
     end
@@ -28,7 +25,6 @@ namespace :deploy do
     task :stop, roles: :app do
       run "mongrel_rails cluster::stop -C #{shared_path}/config/server.yml"
     end
-
   end
 
   # TODO - staging hardcoded in path for LogRotate, intended?
@@ -67,5 +63,4 @@ namespace :deploy do
   task :logrotate, roles: :app do
     deploy.logrotate_tasks.force
   end
-
 end

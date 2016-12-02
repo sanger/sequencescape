@@ -119,7 +119,7 @@ class RequestsController < ApplicationController
   def cancel
     @request = Request.find(params[:id])
     if @request.cancelable?
-      if  @request.cancel_before_started && @request.save
+      if @request.cancel_before_started && @request.save
         flash[:notice] = "Request #{@request.id} has been cancelled"
         redirect_to request_path(@request)
       else

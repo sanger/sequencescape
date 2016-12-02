@@ -6,8 +6,6 @@
 
 class NoAccessionService < AccessionService
 
-  self.no_study_accession_needed = true
-
   def initialize(study)
     @study_id = study.id
   end
@@ -29,5 +27,4 @@ class NoAccessionService < AccessionService
   def submit_dac_for_user(study, user)
     raise AccessionService::NumberNotRequired, I18n.t(:not_applicable_study_for_dac, scope: 'accession_service.not_required')
   end
-
 end

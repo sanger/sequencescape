@@ -32,7 +32,6 @@ FactoryGirl.define do
     end
   end
 
-
   factory(:source_transfer_plate, parent: :transfer_plate) do |plate|
     after(:build) do |plate|
       plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || create(:parent_plate_purpose)
@@ -116,7 +115,7 @@ FactoryGirl.define do
   factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do |transfer|
     user        { |target| target.association(:user) }
     source      { |target| target.association(:source_transfer_plate) }
-    destination { |target| target.association(:library_tube)   }
+    destination { |target| target.association(:library_tube) }
     transfers(['A1', 'B1'])
 
     after(:build) do |transfer|
@@ -227,7 +226,6 @@ FactoryGirl.define do
     parent { |target| target.association(:full_plate) }
 
     after(:build) do |tube_creation|
-
       user = create(:user)
 
       tube_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || create(:parent_plate_purpose)

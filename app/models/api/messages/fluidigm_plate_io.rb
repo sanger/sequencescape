@@ -5,9 +5,7 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class Api::Messages::FluidigmPlateIO < Api::Base
-
   module WellExtensions
-
     def cost_code
       return nil if primary_aliquot.nil?
       primary_aliquot.project.project_cost_code
@@ -26,7 +24,6 @@ class Api::Messages::FluidigmPlateIO < Api::Base
     def qc_state # Untracked for the moment
       nil
     end
-
   end
 
   renders_model(::Plate)
@@ -47,6 +44,4 @@ class Api::Messages::FluidigmPlateIO < Api::Base
      map_attribute_to_json_attribute(:primary_study_uuid,  'study_uuid')
      map_attribute_to_json_attribute(:qc_state,            'qc_state')
   end
-
-
 end

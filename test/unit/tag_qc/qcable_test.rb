@@ -9,7 +9,6 @@ require 'unit/tag_qc/qcable_statemachine_checks'
 
 class QcableTest < ActiveSupport::TestCase
   context "A Qcable" do
-
     setup do
       PlateBarcode.stubs(:create).returns(OpenStruct.new(barcode: (FactoryGirl.generate :sanger_barcode)))
     end
@@ -42,7 +41,6 @@ class QcableTest < ActiveSupport::TestCase
         @qcable = Qcable.create!(factory_attributes)
         assert_equal 'created', @qcable.state
       end
-
     end
 
     context "#qcable pre-pending" do
@@ -61,8 +59,6 @@ class QcableTest < ActiveSupport::TestCase
         assert_equal @mock_purpose, @qcable.asset.purpose
         assert_equal 'pending', @qcable.state
       end
-
     end
   end
-
 end

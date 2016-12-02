@@ -6,7 +6,6 @@
 
 require "test_helper"
 class ReceptionsControllerTest < ActionController::TestCase
-
   context "Sample Reception" do
     setup do
       @controller = ReceptionsController.new
@@ -29,7 +28,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         end
 
         should "change Plate.count by 1" do
-          assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+          assert_equal 1, Plate.count - @plate_count, "Expected Plate.count to change by 1"
         end
         should respond_with :redirect
         should set_flash.to(/queued to be imported/)
@@ -42,7 +41,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         end
 
         should "change Plate.count by 3" do
-          assert_equal 3,  Plate.count - @plate_count, "Expected Plate.count to change by 3"
+          assert_equal 3, Plate.count - @plate_count, "Expected Plate.count to change by 3"
         end
         should respond_with :redirect
         should set_flash.to(/queued to be imported/)
@@ -55,7 +54,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         end
 
         should "change Plate.count by 3" do
-          assert_equal 3,  Plate.count - @plate_count, "Expected Plate.count to change by 3"
+          assert_equal 3, Plate.count - @plate_count, "Expected Plate.count to change by 3"
         end
         should respond_with :redirect
         should set_flash.to(/queued to be imported/)
@@ -70,7 +69,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         end
 
         should "change Asset.count by 0" do
-          assert_equal 0,  Asset.count - @asset_count, "Expected Asset.count to change by 0"
+          assert_equal 0, Asset.count - @asset_count, "Expected Asset.count to change by 0"
         end
         should respond_with :success
       end
@@ -81,7 +80,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         end
 
         should "change Asset.count by 0" do
-          assert_equal 0,  Asset.count - @asset_count, "Expected Asset.count to change by 0"
+          assert_equal 0, Asset.count - @asset_count, "Expected Asset.count to change by 0"
         end
         should set_flash.to(/not found/)
       end
@@ -93,7 +92,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         end
 
         should "change Event.count by 1" do
-          assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
+          assert_equal 1, Event.count - @event_count, "Expected Event.count to change by 1"
         end
         should respond_with :success
       end
@@ -109,11 +108,9 @@ class ReceptionsControllerTest < ActionController::TestCase
         should respond_with :success
 
         should "change Asset.count by 0" do
-          assert_equal 0,  Asset.count - @asset_count, "Expected Asset.count to change by 0"
+          assert_equal 0, Asset.count - @asset_count, "Expected Asset.count to change by 0"
         end
       end
     end
-
   end
-
 end

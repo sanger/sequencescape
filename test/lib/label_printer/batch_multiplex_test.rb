@@ -2,7 +2,6 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class BatchMultiplexTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedTubeTests
 
   attr_reader :tube_label, :prefix, :barcode1, :tube1, :label
@@ -24,7 +23,7 @@ class BatchMultiplexTest < ActiveSupport::TestCase
     @tube_label = LabelPrinter::Label::BatchMultiplex.new(options)
     @label = { top_line: "(p) #{@tube_name}",
               middle_line: barcode1,
-              bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
+              bottom_line: (Date.today.strftime("%e-%^b-%Y")).to_s,
               round_label_top_line: prefix,
               round_label_bottom_line: barcode1,
               barcode: tube1.ean13_barcode }
@@ -37,5 +36,4 @@ class BatchMultiplexTest < ActiveSupport::TestCase
   test 'should return correct top_line value' do
     assert_equal "(p) #{@tube_name}", tube_label.top_line(tube1)
   end
-
 end

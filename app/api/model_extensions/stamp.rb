@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 module ModelExtensions::Stamp
-
   def stamp_details=(details)
     self.stamp_qcables.build(details.map { |d| locate_qcable(d) })
   end

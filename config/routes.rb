@@ -11,7 +11,6 @@ Sequencescape::Application.routes.draw do
   mount Api::RootService.new => '/api/1'
 
   resources :samples do
-
     resources :assets
     resources :comments
     resources :studies
@@ -87,7 +86,6 @@ Sequencescape::Application.routes.draw do
       post :print_barcodes
       post :print_plate_barcodes
     end
-
   end
   resources :uuids, only: [:show]
 
@@ -115,7 +113,6 @@ Sequencescape::Application.routes.draw do
   match 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession, :via => :get
 
   resources :studies do
-
     collection do
       get :study_list
     end
@@ -178,7 +175,6 @@ Sequencescape::Application.routes.draw do
     end
 
     resources :plates, controller: "studies/plates", except: :destroy do
-
       collection do
         post :view_wells
         post :asset_group
@@ -193,7 +189,6 @@ Sequencescape::Application.routes.draw do
     end
 
     resources :workflows, controller: "studies/workflows" do
-
       member do
         get :summary
         get :show_summary
@@ -207,7 +202,6 @@ Sequencescape::Application.routes.draw do
     end
 
     resources :documents, controller: "studies/documents", only: [:show, :destroy]
-
   end
 
   resources :bulk_submissions, only: [:index, :new, :create]
@@ -245,7 +239,6 @@ Sequencescape::Application.routes.draw do
       get :get_children_requests
       get :mpx_requests_details
     end
-
   end
 
   resources :items do
@@ -266,7 +259,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :studies, except: [:destroy]  do
+    resources :studies, except: [:destroy] do
       collection do
         get :index
         post :filter
@@ -295,7 +288,6 @@ Sequencescape::Application.routes.draw do
     resources :delayed_jobs
 
     resources :users do
-
       collection do
         post :filter
       end
@@ -305,7 +297,6 @@ Sequencescape::Application.routes.draw do
         post :grant_user_role
         post :remove_user_role
       end
-
     end
 
     resources :roles, only: [:index, :show, :new, :create] do
@@ -324,7 +315,6 @@ Sequencescape::Application.routes.draw do
       end
     end
     resources :bait_libraries
-
 
     scope module: :bait_libraries do
       resources :bait_library_types
@@ -504,7 +494,6 @@ Sequencescape::Application.routes.draw do
   end
 
   scope '0_5', module: 'api' do
-
     resources 'asset_audits', only: [:index, :show]
     resources 'asset_links', only: [:index, :show]
     resources 'batch_requests', only: [:index, :show]
@@ -570,7 +559,6 @@ Sequencescape::Application.routes.draw do
     end
     resources 'aliquots', only: [:index, :show]
 
-
     resources 'projects', except: :destroy do
       resources 'studies', except: :destroy
     end
@@ -591,7 +579,6 @@ Sequencescape::Application.routes.draw do
       resources 'samples', except: :destroy
       resources 'projects', except: :destroy
     end
-
   end
 
   scope '/sdb', module: 'sdb' do
@@ -606,7 +593,6 @@ Sequencescape::Application.routes.draw do
     end
 
     resources :suppliers do
-
       member do
         get :sample_manifests
         get :studies
@@ -622,6 +608,7 @@ Sequencescape::Application.routes.draw do
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
 
+  # These endpoints should be defined explicitly
   get '/:controller(/:action(/:id))'
-
+  post '/:controller(/:action(/:id))'
 end

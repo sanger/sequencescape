@@ -14,7 +14,6 @@ class SetCharacterisationDescriptorsTask < Task
     workflows_controller.render_set_characterisation_descriptors_task(self, params)
   end
 
-
   def do_task(workflows_controller, params)
     workflows_controller.do_set_characterisation_descriptors_task(self, params)
   end

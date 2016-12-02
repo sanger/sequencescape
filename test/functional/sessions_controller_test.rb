@@ -7,8 +7,6 @@
 require "test_helper"
 require 'sessions_controller'
 
-
-
 class SessionsControllerTest < ActionController::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead
   # Then, you can remove it from this and the units test.
@@ -19,8 +17,7 @@ class SessionsControllerTest < ActionController::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     @user = FactoryGirl.create(:user, login: "john", email: "john@beatles.com",
-      salt: "7e3041ebc2fc05a40c60028e2c4901a81035d3cd",
-      crypted_password: "00742970dc9e6319f8019fd54864d3ea740f04b1", # test
+      password: 'test', password_confirmation: 'test',
       created_at: 5.days.ago.to_s)
   end
 
@@ -42,18 +39,4 @@ class SessionsControllerTest < ActionController::TestCase
     assert_nil session[:user]
     assert_response :redirect
   end
-
-  protected
-    def create_user(options = {})
-      post :signup, user: { login: 'ringo', email: 'ringo@example.com',
-        password: 'ringo', password_confirmation: 'ringo' }.merge(options)
-    end
-
-    def auth_token(token)
-      CGI::Cookie.new('name' => 'auth_token', 'value' => token)
-    end
-
-    def cookie_for(user)
-      auth_token user.remember_token
-    end
 end

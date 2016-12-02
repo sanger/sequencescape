@@ -95,6 +95,4 @@ ActiveRecord::Base.transaction do
     transfer_class_name: "Transfer::BetweenPlates",
     transfers: pooling_row_to_first_column_transfer_layout_96
   )
-
-
 end

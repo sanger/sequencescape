@@ -1,9 +1,7 @@
 module SampleManifestExcel
-
   ##
   # A null object for a Range.
   class NullRange
-
     ##
     # Always returns A1:A10.
     def reference
@@ -19,7 +17,5 @@ module SampleManifestExcel
     def ==(other)
       other.is_a?(self.class)
     end
-
   end
-
 end

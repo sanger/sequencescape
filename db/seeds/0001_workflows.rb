@@ -66,7 +66,6 @@ locations_data.each do |location|
 end
 # import [ :name ], locations_data, :validate => false
 
-
 #### RequestInformationTypes
 request_information_types_data = [
   ["Fragment size required (from)", "fragment_size_required_from", "Fragment size required (from)", 0],
@@ -91,7 +90,6 @@ REQUEST_INFORMATION_TYPES = Hash[RequestInformationType.all.map { |t| [t.key, t]
 def create_request_information_types(pipeline, *keys)
   PipelineRequestInformationType.create!(keys.map { |k| { pipeline: pipeline, request_information_type: REQUEST_INFORMATION_TYPES[k] } })
 end
-
 
 ##################################################################################################################
 # Next-gen sequencing
@@ -135,7 +133,6 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
     Descriptor.create!(name: "start", family_id: fragment_family.id)
 
     [
-
       { class: SetDescriptorsTask, name: 'Initial QC',       sorted: 1, lab_activity: true },
       { class: SetDescriptorsTask, name: 'Gel',              sorted: 2, interactive: false, per_item: false, families: [fragment_family], lab_activity: true },
       { class: SetDescriptorsTask, name: 'Characterisation', sorted: 3, batched: true, interactive: false, per_item: false, lab_activity: true }
@@ -190,7 +187,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparat
     workflow.locale = 'External'
   end.tap do |workflow|
     [
-
       { class: TagGroupsTask,      name: 'Tag Groups',       sorted: 1, lab_activity: true },
       { class: AssignTagsTask,     name: 'Assign Tags',      sorted: 2, lab_activity: true },
       { class: SetDescriptorsTask, name: 'Initial QC',       sorted: 3, batched: false, lab_activity: true },
@@ -229,7 +225,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
     request_type.request_class     = MultiplexedLibraryCreationRequest
     request_type.for_multiplexing  = true
   end
-
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Illumina-C MX Library Preparation workflow') do |workflow|
     workflow.locale = 'External'
@@ -280,7 +275,6 @@ PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do
     workflow.locale = 'External'
   end.tap do |workflow|
     [
-
       { class: SetDescriptorsTask, name: 'Shearing',               sorted: 1, batched: false, interactive: true, lab_activity: true },
       { class: SetDescriptorsTask, name: 'Library preparation',    sorted: 2, batched: false, interactive: true, lab_activity: true },
       { class: SetDescriptorsTask, name: 'Pre-hybridisation PCR',  sorted: 3, batched: false, interactive: true, lab_activity: true },
@@ -742,7 +736,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   ['a', 'b', 'c'].each do |pl|
-    pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
@@ -815,7 +809,6 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cherrypick').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
-
       { class: PlateTemplateTask,      name: "Select Plate Template",              sorted: 1, batched: true, lab_activity: true },
       { class: CherrypickTask,         name: "Approve Plate Layout",               sorted: 2, batched: true, lab_activity: true },
       { class: SetLocationTask,        name: "Set Location",                       sorted: 4, lab_activity: true }
@@ -850,11 +843,9 @@ CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pi
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_illumina_b', name: 'Cherrypick for Illumina-B', &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_illumina_c', name: 'Cherrypick for Illumina-C', &cherrypicking_attributes)
 
-
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cherrypicking for Pulldown').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
-
       { class: CherrypickGroupBySubmissionTask, name: 'Cherrypick Group By Submission', sorted: 1, batched: true },
       { class: SetLocationTask,                 name: 'Set location', sorted: 2 }
     ].each do |details|
@@ -881,7 +872,7 @@ DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'DNA QC').tap do |workflow|
     [
-      { class: DnaQcTask,                 name: 'QC result',               sorted: 1, batched: false, interactive: false }
+      { class: DnaQcTask, name: 'QC result', sorted: 1, batched: false, interactive: false }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -906,7 +897,6 @@ GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Genotyping').tap do |workflow|
     [
-
       { class: AttachInfiniumBarcodeTask, name: 'Attach Infinium Barcode', sorted: 1, batched: true },
       { class: GenerateManifestsTask,     name: 'Generate Manifests',      sorted: 2, batched: true }
     ].each do |details|
@@ -938,7 +928,6 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Pulldown Multiplex Library Preparation').tap do |workflow|
     [
-
       { class: TagGroupsTask,         name: 'Tag Groups',           sorted: 1 },
       { class: AssignTagsToWellsTask, name: 'Assign Tags to Wells', sorted: 2 }
     ].each do |details|
@@ -969,7 +958,6 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'PacBio Library Prep').tap do |workflow|
     [
-
       { class: PrepKitBarcodeTask, name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
       { class: PlateTransferTask,  name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by_name('PacBio Sheared') },
       { class: SamplePrepQcTask,   name: 'Sample Prep QC',                       sorted: 3, batched: true, lab_activity: true }
@@ -1009,7 +997,6 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'PacBio Sequencing').tap do |workflow|
     [
-
       { class: BindingKitBarcodeTask,              name: 'Binding Kit Box Barcode', sorted: 1, batched: true, lab_activity: true },
       { class: MovieLengthTask,                    name: 'Movie Lengths',           sorted: 2, batched: true, lab_activity: true },
       { class: AssignTubesToMultiplexedWellsTask,  name: 'Layout tubes on a plate', sorted: 4, batched: true, lab_activity: true },
@@ -1025,7 +1012,6 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
       selection: [30, 60, 90, 120, 180, 210, 240, 270, 300, 330, 360],
       value: 180
     )
-
 end.tap do |pipeline|
   create_request_information_types(pipeline, "sequencing_type", "insert_size")
 end
@@ -1113,7 +1099,6 @@ SequencingPipeline.create!(name: "MiSeq sequencing") do |pipeline|
       Descriptor.create!({ kind: "Text", sorter: 2, name: "Cartridge barcode", task: t2 })
       Descriptor.create!({ kind: "Text", sorter: 3, name: "Operator", task: t2 })
       Descriptor.create!({ kind: "Text", sorter: 4, name: "Machine name", task: t2 })
-
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
@@ -1155,7 +1140,6 @@ end
       ) do |pipeline|
         pipeline.add_control_request_type
       end
-
 
 ## Fluidigm Stuff
 
@@ -1232,7 +1216,6 @@ SetLocationTask.create!(
   task.location_id = Location.find_by_name('Sample logistics freezer').id
 end
 
-
 CherrypickPipeline.create!(
   name: 'Cherrypick for Fluidigm',
   active: true,
@@ -1254,7 +1237,6 @@ tosta = RequestType.find_by_key('pick_to_sta').id
 tosta2 = RequestType.find_by_key('pick_to_sta2').id
 ptst = RequestType.find_by_key('pick_to_snp_type').id
 tofluidigm = RequestType.find_by_key('pick_to_fluidigm').id
-
 
 v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
   RequestType.create!({
@@ -1282,7 +1264,6 @@ v4_requests_types_se = [
   billable: true,
   product_line: ProductLine.find_by_name("Illumina-C")
 })]
-
 
 x10_requests_types = ['a', 'b'].map do |pipeline|
   RequestType.create!({
@@ -1319,7 +1300,6 @@ st_x10 = [RequestType.create!({
     billable: true,
     product_line: ProductLine.find_by_name("Illumina-B")
   })]
-
 
 v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
@@ -1390,9 +1370,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
       end
       pipeline.request_types = v4_requests_types_se
     end
-
 end
-
 
 x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
@@ -1557,7 +1535,6 @@ end
         ])
       end
     end
-
   end
 
   def add_4000_information_types_to(pipeline)
