@@ -19,6 +19,7 @@ class Submission < ActiveRecord::Base
   # Created during the lifetime ...
   has_many :requests, inverse_of: :submission
   has_many :items, through: :requests
+  has_many :events, through: :requests
 
   has_many :orders, inverse_of: :submission
   has_many :studies, through: :orders
