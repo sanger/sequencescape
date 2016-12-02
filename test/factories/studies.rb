@@ -26,13 +26,31 @@ FactoryGirl.define do
   end
 
   factory(:managed_study, parent: :study) do
-    name 'Study: Managed'
+
+    transient do
+      accession_number nil
+    end
+
+    name 'Study: Manages'
     state 'active'
-    after(:build) do |study|
-      study.study_metadata.data_access_group = 'dag'
-      study.study_metadata.data_release_strategy = 'managed'
+    after(:create) do |study,evaluator|
+      study.study_metadata.update_attributes!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
     end
   end
+  factory(:open_study, parent: :study) do
+
+    transient do
+      accession_number nil
+    end
+
+    name 'Study: Open'
+    state 'active'
+
+    after(:create) do |study,evaluator|
+      study.study_metadata.update_attributes!(data_release_strategy: 'open', study_ebi_accession_number: evaluator.accession_number)
+    end
+  end
+
   # These require property definitions to be properly setup
   factory(:study_metadata_for_study_list_pending_ethical_approval, parent: :study_metadata) do |metadata|
     contains_human_dna     'Yes'
