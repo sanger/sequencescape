@@ -80,7 +80,7 @@ module Batch::TecanBehaviour
     begin
       year = Time.now.year
       base_directory = "#{configatron.tecan_files_location}/#{year}"
-      unless File.exists?(base_directory)
+      unless File.exist?(base_directory)
         FileUtils.mkdir base_directory
       end
       destinationbarcode = data_object["destination"].keys.join("_")

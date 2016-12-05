@@ -133,7 +133,7 @@ tasks transfer_templates users
 
       db_file = args[:db_file]
       raise StandardError, 'Must specify a production dump path e.g rake uat:setup[file_path,environment]' if db_file.nil?
-      raise StandardError, "Could not find #{db_file}" unless File.exists?(db_file)
+      raise StandardError, "Could not find #{db_file}" unless File.exist?(db_file)
 
       puts "Importing production information..."
       `pv -per #{db_file} | gunzip -c | ruby ./lib/tasks/sql_filter.rb | ./script/dbconsole -p`

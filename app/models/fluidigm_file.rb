@@ -12,7 +12,7 @@ class FluidigmFile
       end
 
       def empty?
-        !File.exists?("#{configatron.fluidigm_data.directory}/#{@barcode}/#{@barcode}.csv")
+        !File.exist?("#{configatron.fluidigm_data.directory}/#{@barcode}/#{@barcode}.csv")
       end
 
       def content

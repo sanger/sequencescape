@@ -12,7 +12,7 @@ namespace :db do
           schema.puts ')'
         end
       end
-      File.delete('./db/views_schema.old') if File.exists?('./db/views_schema.old')
+      File.delete('./db/views_schema.old') if File.exist?('./db/views_schema.old')
       File.rename('./db/views_schema.rb', './db/views_schema.old')
       File.rename('./db/views_schema.tmp', './db/views_schema.rb')
     end

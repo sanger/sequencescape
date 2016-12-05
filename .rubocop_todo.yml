@@ -29,19 +29,6 @@ Lint/AssignmentInCondition:
 Lint/BlockAlignment:
   Enabled: false
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Lint/DeprecatedClassMethods:
-  Exclude:
-    - 'app/models/batch/tecan_behaviour.rb'
-    - 'app/models/fluidigm_file.rb'
-    - 'config/boot.rb'
-    - 'lib/poller.rb'
-    - 'lib/tasks/uat_setup.rake'
-    - 'lib/tasks/views_schema.rake'
-    - 'test/lib/sample_manifest_excel/download_test.rb'
-    - 'test/lib/sample_manifest_excel/worksheet_test.rb'
-
 # Offense count: 2
 Lint/DuplicateCaseCondition:
   Exclude:
