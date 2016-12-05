@@ -35,8 +35,10 @@ Given /^the last sample has been updated by a manifest$/ do
 end
 
 Then /^study "([^\"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
-  study = Study.find_by_name(study_name)
-  assert_equal number_of_samples.to_i, study.samples.size
+  study = Study.find_by!(name: study_name)
+  actual = study.samples.count
+  expected = number_of_samples.to_i
+  assert_equal(actual, expected)
 end
 
 Then /^I should see the manifest table:$/ do |expected_results_table|
@@ -112,7 +114,7 @@ end
 Then /^the sample accession numbers should be:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+    sample = Sample.find_by!(sanger_sample_id: sanger_sample_id)
     assert_equal(expected_data[:accession_number], sample.sample_metadata.sample_ebi_accession_number)
   end
 end
@@ -145,18 +147,11 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
 end
 
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
-  step('I follow "Create manifest for plates"')
-  step(%Q{I select "#{study_name}" from "Study"})
-  step('I select "Default Plate" from "Template"')
-  step('I select "Test supplier name" from "Supplier"')
-  step('I select "xyz" from "Barcode printer"')
-  step('I fill in the field labeled "Plates required" with "1"')
-  step('I select "Default Plate" from "Template"')
-  step('I press "Create manifest and print labels"')
-  step 'I should see "Manifest_"'
-  step 'I should see "Download Blank Manifest"'
-  step("3 pending delayed jobs are processed")
-  step %Q{study "#{study_name}" should have 96 samples}
+  study = Study.find_by!(name: study_name)
+  supplier = Supplier.find_by!(name: "Test supplier name" )
+  sample_manifest = FactoryGirl.create :sample_manifest, study: study, supplier: supplier, user: User.find_by(first_name:'john')
+  sample_manifest.generate
+  visit(url_for(sample_manifest))
   step("I reset all of the sanger sample ids to a known number sequence")
 end
 
