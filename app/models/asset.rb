@@ -51,6 +51,7 @@ class Asset < ActiveRecord::Base
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
+  has_many :events_on_requests, through: :requests, source: :events
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
@@ -343,8 +344,8 @@ class Asset < ActiveRecord::Base
   def update_external_release(&block)
     external_release_nil_before = external_release.nil?
     yield
-    self.save!
-    self.events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
+    save!
+    events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
   end
   private :update_external_release
 
