@@ -16,13 +16,9 @@ class BatchesController < ApplicationController
   before_action :find_batch_by_batch_id, only: [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
-    if params[:request_id]
-
-      @batches = [Request.find(params[:request_id]).batch].compact
-    elsif logged_in?
+    if logged_in?
       @user = current_user
-      assigned_batches = Batch.where(assignee_id: @user.id)
-      @batches = (@user.batches + assigned_batches).sort_by(&:id).reverse
+      @batches = Batch.where('assignee_id = :user OR user_id = :user', user: @user).order(id: :desc).page(params[:page])
     else
       # Can end up here with XML. And it causes pain.
       @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
