@@ -5,6 +5,7 @@
 require "test_helper"
 
 class SampleTest < ActiveSupport::TestCase
+
     def assert_accession_service(type)
       service = {
         ega: EgaAccessionService,
@@ -17,7 +18,7 @@ class SampleTest < ActiveSupport::TestCase
 
   context "A Sample" do
     should have_many :study_samples
-    should have_many :studies # , :through => :study_samples
+    should have_many :studies
 
     context "when used in older assets" do
       setup do

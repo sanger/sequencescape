@@ -51,6 +51,14 @@ FactoryGirl.define do
     end
   end
 
+  factory(:not_app_study, parent: :study) do
+    name 'Study: Never'
+    state 'active'
+    after(:create) do |study|
+      study.study_metadata.update_attributes!(data_release_strategy: 'not applicable')
+    end
+  end
+
   # These require property definitions to be properly setup
   factory(:study_metadata_for_study_list_pending_ethical_approval, parent: :study_metadata) do |metadata|
     contains_human_dna     'Yes'

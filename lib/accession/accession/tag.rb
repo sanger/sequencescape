@@ -1,18 +1,24 @@
 module Accession
   class Tag
-    include ActiveModel::Validations
-    include SampleManifestExcel::HashAttributes
 
-    set_attributes :services, :array_express, :value, :name, :parent, defaults: {services: []}
+    include ActiveModel::Model
 
-    validates_presence_of :name, :parent
+    attr_accessor :services, :value, :name, :groups, :ebi_name
+
+    validates_presence_of :name, :groups
+
+    DEFAULT_ATTRIBUTES = {services: []}
 
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super(DEFAULT_ATTRIBUTES.merge(attributes))
     end
 
     def services=(services)
       @services = Array(services)
+    end
+
+    def value=(value)
+      @value = value.to_s
     end
 
     def required_for?(service)
@@ -23,9 +29,25 @@ module Accession
       array_express
     end
 
+    def sample_name?
+      sample_name
+    end
+
+    def sample_attributes?
+      sample_attributes
+    end
+
     def add_value(value)
-      @value = value
+      self.value = value
       self
+    end
+
+    def label
+      (ebi_name || name).to_s.upcase
+    end
+
+    def array_express_label
+      "ArrayExpress-#{label}"
     end
 
   end

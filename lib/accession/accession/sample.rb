@@ -13,37 +13,67 @@ module Accession
     # If the sample has an open study it will be sent to the ENA
     # If the sample has a managed study it will be sent to the EGA
 
-    include ActiveModel::Validations
+    include ActiveModel::Model
 
-    STUDY_TYPES = {
-      "open" => {service: :ENA, required_fields: [:sample_taxon_id, :sample_common_name]},
-      "managed" => {service: :EGA, required_fields: [:sample_taxon_id, :sample_common_name, :gender, :phenotype, :donor_id]}
-    }
+    STUDY_TYPES = {"open" => :ENA, "managed" => :EGA}
 
-    ARRAY_EXPRESS_FIELDS = [:genotype, :phenotype, :strain_or_line, :developmental_stage, 
-                            :sex, :cell_type, :disease_state, :compound, :dose, :immunoprecipitate,
-                            :growth_condition, :rnai, :organism_part, :species, :time_point, :age, :treatment]
+    validate :check_sample, :check_studies
+    validate :check_required_fields, if: Proc.new {|s| s.service.present? }
 
-    attr_reader :sample, :studies, :service, :required_fields
+    attr_reader :standard_tags, :sample, :studies, :service, :tags
 
-    validate :check_sample, :check_studies, :check_required_fields
-
-    def initialize(sample)
+    def initialize(standard_tags, sample)
+      @standard_tags = standard_tags
       @sample = sample
       @studies = set_studies
-      set_study_type
+      @tags = standard_tags.extract(sample.sample_metadata)
+      @service = STUDY_TYPES[studies.keys.first] if (studies.length == 1)
     end
 
     def name
       @name ||= (sample.sample_metadata.sample_public_name  || sample.name).downcase.gsub(/[^\w\d]/i,'_')
     end
 
-    def common_name
-      sample.sample_metadata.sample_common_name
+     def title
+      @title ||= (sample.sample_metadata.sample_public_name || sample.sanger_sample_id)
     end
 
-    def taxon_id
-      sample.sample_metadata.sample_taxon_id
+    def to_xml
+      tag_groups = tags.by_group
+      xml = Builder::XmlMarkup.new
+      xml.instruct!
+      xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
+        xml.SAMPLE(alias: self.alias) {
+          xml.TITLE self.title if self.title.present?
+        }
+        xml.SAMPLE_NAME {
+          tag_groups[:sample_name].each do |tag|
+            xml.TAG tag.label
+            xml.VALUE tag.value
+          end
+        }
+        xml.SAMPLE_ATTRIBUTES {
+          tag_groups[:sample_attributes].each do |tag|
+            xml.SAMPLE_ATTRIBUTE {
+              xml.TAG tag.label
+              xml.VALUE tag.value
+            }
+          end
+          if self.service == :ENA
+            tag_groups[:array_express].each do |tag|
+              xml.SAMPLE_ATTRIBUTE {
+                xml.TAG tag.array_express_label
+                xml.VALUE tag.value
+              }
+            end
+          end
+        }
+      }
+      xml.target!
+    end
+
+    def alias
+      sample.uuid
     end
 
   private
@@ -54,15 +84,6 @@ module Accession
             .group_by { |study| study.study_metadata.data_release_strategy }
     end
 
-    def set_study_type
-      if (studies.length == 1)
-        study_type = STUDY_TYPES.fetch(studies.keys.first)
-        if study_type.present?
-          @service, @required_fields = study_type[:service], study_type[:required_fields]
-        end
-      end
-    end
-
     def check_sample
       if sample.sample_metadata.sample_ebi_accession_number.present?
         errors.add(:sample, "has already been accessioned")
@@ -70,12 +91,8 @@ module Accession
     end
 
     def check_required_fields
-      if required_fields.present?
-        required_fields.each do |required_field|
-          unless sample.sample_metadata.send(required_field).present?
-            errors.add(:sample, "required field is missing")
-          end
-        end
+      unless tags.meets_service_requirements?(service, standard_tags)
+        errors.add(:sample, "does not have the required metadata")
       end
     end
 

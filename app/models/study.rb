@@ -562,7 +562,7 @@ class Study < ActiveRecord::Base
 
   def accession_service
     case data_release_strategy
-    when "open" then EraAccessionService.new
+    when "open" then EnaAccessionService.new
     when "managed" then EgaAccessionService.new
     else NoAccessionService.new(self)
     end
