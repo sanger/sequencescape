@@ -5,6 +5,13 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% unless batches.empty? %>
+<%= pagination batches if showing_all %>
+<%# We call to_a here as otherwise rails tries to 'optimise' the query with a nested scope. Not
+  # only would this be less eficient, it is also invalid SQL.
+  # We also need to build the cache manualy, at least until rails provides eager_count. You CAN do it with
+  # custom selects and joins, but that gets a little messy.
+%>
+<% request_count_cache = BatchRequest.where(batch_id:batches.to_a).group(:batch_id).count %>
 <table class="sortable table table-striped">
   <thead>
     <tr>
@@ -24,7 +31,7 @@
     <% batches.each_with_index do |batch, index| %>
     <tr class="batch">
       <td><%= link_to batch.id, batch_path(batch), {:title => "#{batch.state} batch #{batch.id}"} %></td>
-      <td><%= batch.request_count %></td>
+      <td><%= request_count_cache[batch.id]||0 %></td>
       <td><%= batch.user.blank? ? "Unknown" : batch.user.login %></td>
       <td><%= batch.assigned_user %></td>
       <td><%= batch.created_at.to_date.to_formatted_s(:rfc822) %></td>
@@ -72,9 +79,9 @@
       <tr>
         <td colspan="7">
           <% if @pipeline.qc? %>
-            <%= link_to "View all batches in this state", :controller => :batches, :action => "quality_control", :id => batches.first.qc_pipeline.id, :qc_state => batches.first.qc_state, :state => batches.first.state %>
+            <%= link_to "View all batches in this state", controller: :batches, action: "quality_control", id: batches.first.qc_pipeline.id, qc_state: batches.first.qc_state, state: batches.first.state %>
           <% else %>
-            <%= link_to "View all #{batches.first.state} batches", :controller => :batches, :action => batches.first.state, :id => @pipeline.id %>
+            <%= link_to "View all #{batches.first.state} batches", controller: :batches, action: batches.first.state, pipeline: @pipeline.id %>
           <% end %>
         </td>
       </tr>

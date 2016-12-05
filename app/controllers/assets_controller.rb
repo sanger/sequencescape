@@ -200,7 +200,7 @@ class AssetsController < ApplicationController
 
   def summary
     @summary = UiHelper::Summary.new({ per_page: 25, page: params[:page] })
-    @summary.load_item(@asset)
+    @summary.load_asset(@asset)
   end
 
   def close

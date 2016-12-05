@@ -1,9 +1,7 @@
 /* This is the canonical CSS file for Sequencescape. */
 /* Please use it instead of screen.css which is deprecated. */
-a {
-  color: #0046BF;
-  text-decoration:none;
-  cursor: pointer;
+a:visited {
+  color: #444488;
 }
 
 /* Formats the tubes in the layout_tubes_on_plate task */
@@ -1465,4 +1463,3 @@ table.sortable tbody tr td { padding-left: 0.5em;}
 .tablesorter-header-inner { overflow: hidden; text-overflow: ellipsis;}
 
 .file_drop { border: 2px dotted gray; width:80%; padding:1em; }
-
