@@ -282,7 +282,6 @@ class Request < ActiveRecord::Base
   # Yuck. We also need to select asset_id and target asset_id explicity in Rails 4.
   # Need to completely re-think this.
   scope :for_group_by, ->(attributes) {
-
     # SELECT and GROUP BY do NOT scrub their input. While there shouldn't be any user provided input
     # comming in here, lets be cautious!
     scrubbed_atts = attributes.map { |k, v| "#{k.to_s.gsub(/[^\w\.]/, '')}.#{v.to_s.gsub(/[^\w\.]/, '')}" }

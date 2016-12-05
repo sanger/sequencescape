@@ -380,15 +380,21 @@ Sequencescape::Application.routes.draw do
       get :activate
       get :show_comments
     end
+
+    resources :batches, only: [:index] do
+      collection do
+        get :pending
+        get :started
+        get :released
+        get :completed
+        get :failed
+      end
+    end
   end
 
   resources :lab_searches
   resources :errors
   resources :events
-
-  get 'batches/all' => 'batches#all'
-  get 'batches/released' => 'batches#released'
-  get 'batches/released/clusters' => 'batches#released'
 
   resources :items do
     collection do
