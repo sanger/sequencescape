@@ -47,6 +47,5 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
         assert_match "Barcode does not relate to any existing plate", flash[:error]
       end
     end
-
   end
 end
