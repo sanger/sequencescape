@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController
-
   before_action :admin_login_required
   before_action :discover_bait_library_supplier, only: [:edit, :update, :destroy]
 

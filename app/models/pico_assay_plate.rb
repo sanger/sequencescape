@@ -54,7 +54,6 @@ class PicoAssayPlate < Plate
     end
   end
 
-
   def upload_pico_results(state, failure_reason, well_details)
     return false if state.nil? || well_details.blank? || stock_plate().nil?
 
@@ -65,5 +64,4 @@ class PicoAssayPlate < Plate
       well_details.each { |details| WellDetail.new(details[:well], self).grade_as!(state) }
     end
   end
-
 end

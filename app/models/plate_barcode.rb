@@ -20,5 +20,4 @@ class PlateBarcode < ActiveResource::Base
      OpenStruct.new(barcode: (@barcode += 1))
    end
   end
-
 end

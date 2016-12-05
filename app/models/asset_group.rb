@@ -5,14 +5,13 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class AssetGroup < ActiveRecord::Base
-
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
   include SharedBehaviour::Named
 
   belongs_to :study
   belongs_to :user
-  belongs_to :submission      # Optional, present if created by a particular submission
+  belongs_to :submission # Optional, present if created by a particular submission
 
   has_many :asset_group_assets
   has_many :assets, through: :asset_group_assets
@@ -55,6 +54,4 @@ class AssetGroup < ActiveRecord::Base
   def move(assets)
     # TODO: Implement me
   end
-
-
 end

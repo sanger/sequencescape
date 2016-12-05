@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class ApiApplication < ActiveRecord::Base
-
   include SharedBehaviour::Named
 
   validates_presence_of :name, :key, :contact, :privilege
@@ -24,5 +23,4 @@ class ApiApplication < ActiveRecord::Base
     generate_new_api_key
     save!
   end
-
 end

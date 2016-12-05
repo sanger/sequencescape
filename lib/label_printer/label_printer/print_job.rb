@@ -6,9 +6,7 @@
 # require 'pmb_client'
 
 module LabelPrinter
-
   class PrintJob
-
   include ActiveModel::Validations
 
     attr_reader :printer_name, :label_class, :options, :labels
@@ -70,6 +68,5 @@ module LabelPrinter
     def number_of_labels
       labels[:labels][:body] ? labels[:labels][:body].count : 0
     end
-
   end
 end

@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 class SequencingPipeline < Pipeline
-
   self.batch_worksheet = "simplified_worksheet"
 
   def sequencing?
@@ -25,7 +24,6 @@ class SequencingPipeline < Pipeline
   end
 
   def is_read_length_consistent_for_batch?(batch)
-
     if (batch.requests.size == 0) || (batch.requests.first.request_metadata.nil?)
       # No requests selected or the pipeline doesn't contain metadata to check
       return true
@@ -73,5 +71,4 @@ class SequencingPipeline < Pipeline
     batch.assets.compact.uniq.each(&:index_aliquots)
     Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell')
   end
-
 end

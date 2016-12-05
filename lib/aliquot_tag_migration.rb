@@ -1,6 +1,5 @@
 
 module AliquotTagMigration
-
   class MigratableAliquots < ActiveRecord::Base
     self.table_name = ('aliquots')
 
@@ -13,5 +12,4 @@ module AliquotTagMigration
       where('lane.sti_type = "Lane"')
     }
   end
-
 end

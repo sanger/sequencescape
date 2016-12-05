@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class TagGroupsTask < Task
-
   class TagGroupsData < Task::RenderElement
     alias_attribute :well, :asset
     def initialize(request)
@@ -29,5 +28,4 @@ class TagGroupsTask < Task
   def do_task(workflow, params)
     true
   end
-
 end

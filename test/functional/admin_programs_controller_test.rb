@@ -61,6 +61,5 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
         assert_equal @program, assigns(:program)
       end
     end
-
   end
 end

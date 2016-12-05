@@ -8,7 +8,6 @@ require "test_helper"
 require 'locations_controller'
 
 class LocationsControllerTest < ActionController::TestCase
-
   context "LocationsController" do
     setup do
       @controller = LocationsController.new
@@ -92,5 +91,4 @@ class LocationsControllerTest < ActionController::TestCase
       end
     end
   end
-
 end

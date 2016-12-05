@@ -5,10 +5,8 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class SubmissionTemplatesBelongToProductCatalogues < ActiveRecord::Migration
-
   require './lib/foreign_key_constraint'
   extend ForeignKeyConstraint
-
 
   def self.up
     add_column :submission_templates, :product_catalogue_id, :integer

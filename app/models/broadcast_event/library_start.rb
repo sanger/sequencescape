@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 class BroadcastEvent::LibraryStart < BroadcastEvent
-
   set_event_type 'library_start'
 
   # Properties takes :order_id
@@ -15,7 +14,6 @@ class BroadcastEvent::LibraryStart < BroadcastEvent
   has_subject(:study) { |_, e| e.order.study }
   has_subject(:project) { |_, e| e.order.project }
   has_subject(:submission) { |_, e| e.order.submission }
-
 
   has_subject(:library_source_labware, :source_plate)
 

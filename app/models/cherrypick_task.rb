@@ -160,7 +160,7 @@ class CherrypickTask < Task
 
     perform_pick(requests, robot, batch) do |batch|
       target_type.new(batch, template, purpose.try(:asset_shape), partial_plate).tap do
-        partial_plate = nil  # Ensure that subsequent calls have no partial plate
+        partial_plate = nil # Ensure that subsequent calls have no partial plate
       end
     end
   end
@@ -252,7 +252,7 @@ class CherrypickTask < Task
   private :get_well_from_control_param
 
   def create_control_request_from_well(control_param)
-    return nil unless control_param.match(/control/)
+    return nil unless control_param =~ /control/
     well = get_well_from_control_param(control_param)
     return nil if well.nil?
     generate_control_request(well)

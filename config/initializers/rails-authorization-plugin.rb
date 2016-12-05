@@ -18,7 +18,6 @@ PERMISSION_DENIED_REDIRECTION = { controller: '/home', action: 'index' }
 # The method your auth scheme uses to store the location to redirect back to
 STORE_LOCATION_METHOD = :store_location
 
-
 # You can perform authorization at varying degrees of complexity.
 # Choose a style of authorization below (see README.txt) and the appropriate
 # mixin will be used for your app.

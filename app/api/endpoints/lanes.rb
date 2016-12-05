@@ -6,7 +6,6 @@
 
 class ::Endpoints::Lanes < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do

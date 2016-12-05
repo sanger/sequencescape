@@ -1,10 +1,8 @@
 module SampleManifestExcel
-
   ##
   # A list of ranges which can be added to a Worksheet
   # and used by the validations.
   class RangeList
-
     include Enumerable
     include Comparable
 

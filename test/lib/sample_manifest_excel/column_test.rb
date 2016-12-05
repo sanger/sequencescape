@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ColumnTest < ActiveSupport::TestCase
-
   attr_reader :column, :sample, :range_list, :worksheet
 
   def setup
@@ -65,7 +64,6 @@ class ColumnTest < ActiveSupport::TestCase
   end
 
   context "with no validation" do
-
     setup do
       @column = SampleManifestExcel::Column.new(options.except(:validation))
     end
@@ -81,11 +79,9 @@ class ColumnTest < ActiveSupport::TestCase
     should "update without any problems" do
       assert column.update(27, 150, range_list, worksheet).updated?
     end
-
   end
 
   context "with no conditional formattings" do
-
     setup do
       @column = SampleManifestExcel::Column.new(options.except(:conditional_formattings))
     end
@@ -100,7 +96,6 @@ class ColumnTest < ActiveSupport::TestCase
   end
 
   context "#update with validation and formattings" do
-
     attr_reader :worksheet, :dupped, :range
 
     setup do
@@ -135,13 +130,11 @@ class ColumnTest < ActiveSupport::TestCase
       refute dupped.validation.saved?
       refute dupped.conditional_formattings.saved?
     end
-
   end
 
   # TODO: Need to improve way keys are found to reduce brittleness of tests.
   # would break if column names changed.
   context "argument builder" do
-
     include SampleManifestExcel::Helpers
 
     attr_reader :columns, :defaults
@@ -175,5 +168,4 @@ class ColumnTest < ActiveSupport::TestCase
       assert_equal defaults.find_by(:len).combine(columns[:supplier_sample_name][:conditional_formattings][:len])[:formula], arguments[:conditional_formattings][:len][:formula]
     end
   end
-
 end

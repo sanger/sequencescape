@@ -74,5 +74,4 @@ module ModelExtensions::Plate
       end
     end
   end
-
 end

@@ -1,7 +1,5 @@
 module SampleManifestExcel
-
   class Configuration
-
     include SampleManifestExcel::Helpers
 
     FILES = [:conditional_formattings, :manifest_types, :ranges, :columns]
@@ -58,7 +56,6 @@ module SampleManifestExcel
     end
 
     class Columns
-
       attr_reader :all
 
       def initialize(columns, conditional_formattings, manifest_types)
@@ -80,12 +77,10 @@ module SampleManifestExcel
         manifest_types[key] || manifest_types[key.to_s]
       end
 
-
       def ==(other)
         return false unless other.is_a?(self.class)
         all == other.all
       end
     end
-
   end
 end

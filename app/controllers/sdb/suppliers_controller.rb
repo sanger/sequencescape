@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Sdb::SuppliersController < Sdb::BaseController
-
   # Show all suppliers
   def index
     @suppliers = Supplier.all
@@ -62,5 +61,4 @@ class Sdb::SuppliersController < Sdb::BaseController
     @supplier = Supplier.find(params[:id])
     @studies = @supplier.studies.paginate(page: params[:page])
   end
-
 end

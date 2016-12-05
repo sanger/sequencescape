@@ -12,5 +12,4 @@ Given /^Pipeline "([^"]*)" and a setup for 6218053$/ do |name|
   request  = FactoryGirl.create :request, request_type: request_type, asset: FactoryGirl.create(asset_type), request_metadata: metadata
   request.asset.location = pipeline.location
   request.asset.save!
-
 end

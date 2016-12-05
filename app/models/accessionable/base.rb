@@ -13,7 +13,6 @@ class Accessionable::Base
     time_now = Time.now
     @date       = time_now.strftime("%Y-%m-%dT%H:%M:%SZ")
     @date_short = time_now.strftime("%Y-%m-%d")
-
   end
 
   def errors
@@ -67,7 +66,7 @@ class Accessionable::Base
     false
   end
 
-  def add_updated_event(user, classname,  eventable)
+  def add_updated_event(user, classname, eventable)
         eventable.events.create(
           created_by: user.login,
           message: "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
@@ -75,6 +74,7 @@ class Accessionable::Base
           of_interest_to: "administrators"
         )
   end
+
   def label_scope
       @label_scope ||= "metadata.#{self.class.name.split("::").last.downcase}.metadata"
   end

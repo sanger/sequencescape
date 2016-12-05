@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class LibPcrPlatesNoLongerNeedSpecialBehaviour < ActiveRecord::Migration
-
   class PlatePurpose < ActiveRecord::Base
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil

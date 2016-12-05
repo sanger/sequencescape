@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class AddProductToExistingOrdersByRole < ActiveRecord::Migration
-
   class Order < ActiveRecord::Base
     self.table_name = ('orders')
     belongs_to :order_role

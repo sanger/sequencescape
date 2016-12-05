@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2013,2014 Genome Research Ltd.
 module Hiseq2500Helper
-
   def self.create_request_type(pl, ended = 'paired')
     RequestType.create!(
         key: "illumina_#{pl}_hiseq_2500_#{ended}_end_sequencing",
@@ -76,5 +75,4 @@ module Hiseq2500Helper
       raise "Invalid submission parameters"
     end
   end
-
 end

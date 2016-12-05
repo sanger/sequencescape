@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 module QcMetric::QcState
-
   State = Struct.new(:name, :automatic, :passed, :proceedable)
 
   def new_state(name, options = {})
@@ -20,5 +19,4 @@ module QcMetric::QcState
   def qc_state_object_called(name)
     @states[name]
   end
-
 end

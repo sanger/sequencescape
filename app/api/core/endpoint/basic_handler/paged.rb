@@ -51,7 +51,7 @@ module Core::Endpoint::BasicHandler::Paged
       per_page: Core::Endpoint::BasicHandler::Paged.results_per_page,
       total_entries: model.count(:all)
     ).tap do |results|
-      raise ActiveRecord::RecordNotFound, 'past the end of the results' if  (page > 1) && (page > results.total_pages)
+      raise ActiveRecord::RecordNotFound, 'past the end of the results' if (page > 1) && (page > results.total_pages)
     end
   end
   private :page_of_results

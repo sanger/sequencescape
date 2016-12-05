@@ -47,7 +47,6 @@ class Role < ActiveRecord::Base
     end
 
     module ClassMethods
-
       def role_relation(name, role_name)
         scope name.to_sym, ->(user) {
           joins(:roles, :users).

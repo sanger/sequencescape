@@ -8,7 +8,6 @@ require 'csv'
 require 'linefeed_fix'
 
 module Parsers
-
   ENCODINGS = ['iso-8859-1', 'utf-8', 'utf-16'].freeze
 
   def self.parser_for(filename, content_type, content)
@@ -39,5 +38,4 @@ module Parsers
       retry unless encoding.nil?
     end
   end
-
 end

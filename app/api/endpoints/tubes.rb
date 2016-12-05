@@ -6,7 +6,6 @@
 
 class ::Endpoints::Tubes < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
@@ -14,7 +13,7 @@ class ::Endpoints::Tubes < ::Core::Endpoint::Base
     belongs_to(:purpose, json: 'purpose')
     belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')
 
-    has_many(:qc_files,  json: 'qc_files', to: 'qc_files', include: []) do
+    has_many(:qc_files, json: 'qc_files', to: 'qc_files', include: []) do
       action(:create, as: 'create') do |request, _|
         ActiveRecord::Base.transaction do
           QcFile.create!(request.attributes.merge({ asset: request.target }))
@@ -26,6 +25,5 @@ class ::Endpoints::Tubes < ::Core::Endpoint::Base
         end
       end
     end
-
   end
 end

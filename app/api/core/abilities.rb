@@ -138,7 +138,6 @@ module Core::Abilities
   end
 
   class Application < Base
-
     recorder_helper(:tag_plates)
 
     def initialize(request)

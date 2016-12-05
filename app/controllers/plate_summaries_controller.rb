@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class PlateSummariesController < ApplicationController
-
   before_action :login_required
 
   def index

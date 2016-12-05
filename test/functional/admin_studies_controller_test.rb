@@ -48,10 +48,7 @@ class Admin::StudiesControllerTest < ActionController::TestCase
         put :managed_update, id: @study.id, study: { name: @study.name, ethically_approved: "1" }
         @study.reload
         assert @study.ethically_approved
-
       end
-
     end
-
   end
 end

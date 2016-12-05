@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
-
 # Ideally we'd convert this into a scope/association, but its complicated by the need to associate across
 # two models, one of which we're trying to deprecate.
 require 'will_paginate/array'
@@ -37,7 +36,7 @@ module UiHelper
     def load_item(asset)
       asset.requests.map { |r| r.events }.flatten.each do |event|
         if event.message && event.message.match(/Run/)
-          self.add(SummaryItem.new({ message: "#{event.message}",
+          self.add(SummaryItem.new({ message: (event.message).to_s,
                                     object: event.eventful,
                                     timestamp: event.created_at,
                                     external_message: "Run #{event.identifier}",
@@ -48,7 +47,7 @@ module UiHelper
 
     def load_study_item(study)
       study.events.each do |event|
-        self.add(SummaryItem.new({ message: "#{event.message}",
+        self.add(SummaryItem.new({ message: (event.message).to_s,
                                   object: study,
                                   timestamp: event.created_at,
                                   external_message: "Study #{study.id}",
@@ -67,6 +66,5 @@ module UiHelper
     def size
       @summary_items.size
     end
-
   end
 end

@@ -5,7 +5,6 @@
 # Copyright (C) 2015, 2016 Genome Research Ltd.
 
 class ProductCatalogue::LibraryDriven
-
   attr_reader :product
 
   def initialize(catalogue, submission_attributes)
@@ -15,5 +14,4 @@ class ProductCatalogue::LibraryDriven
     library_type_name = (submission_attributes[:request_options] || {})[:library_type]
     @product = catalogue.product_with_default(library_type_name)
   end
-
 end

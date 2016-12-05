@@ -6,7 +6,6 @@
 
 module Tasks::SetCharacterisationDescriptorsHandler
   def do_set_characterisation_descriptors_task(task, params)
-
     @count = 0
     if params[:values].nil?
       @values = {}
@@ -18,21 +17,19 @@ module Tasks::SetCharacterisationDescriptorsHandler
     updated = 0
 
     @batch.requests.each do |request|
-
       event = LabEvent.new(batch_id: @batch.id, description: @task.name)
 
-      if params[:requests].present? && params[:requests]["#{request.id}"].present? && params[:requests]["#{request.id}"][:descriptors].present?
+      if params[:requests].present? && params[:requests][(request.id).to_s].present? && params[:requests][(request.id).to_s][:descriptors].present?
         # Descriptors: create description for event
 
-        event.descriptors = params[:requests]["#{request.id}"][:descriptors]
-        event.descriptor_fields = ordered_fields(params[:requests]["#{request.id}"][:fields])
+        event.descriptors = params[:requests][(request.id).to_s][:descriptors]
+        event.descriptor_fields = ordered_fields(params[:requests][(request.id).to_s][:fields])
 
       end
 
       event.save!
       current_user.lab_events << event
       request.lab_events << event
-
 
       unless request.asset.try(:resource)
         EventSender.send_request_update(request.id, "update", "Passed: #{@task.name}")
@@ -42,7 +39,6 @@ module Tasks::SetCharacterisationDescriptorsHandler
         updated += 1
       end
     end
-
 
     # Did all the requests get updated?
     if updated == @batch.requests.count
@@ -72,8 +68,5 @@ module Tasks::SetCharacterisationDescriptorsHandler
     else
       @values = params[:values]
     end
-
-
   end
-
 end

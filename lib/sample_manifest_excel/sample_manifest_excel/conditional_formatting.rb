@@ -1,5 +1,4 @@
 module SampleManifestExcel
-
   ##
   # A single conditional formatting rule.
   # This will consist of:
@@ -7,7 +6,6 @@ module SampleManifestExcel
   # - style: The style which will be added when conditional formatting applies.
   # - formula: See Formula class.
   class ConditionalFormatting
-
     include HashAttributes
 
     set_attributes :options, :style, :formula
@@ -22,7 +20,6 @@ module SampleManifestExcel
     # If conditional formatting has a formula then update the formula option
     # with the passed attributes.
     def update(attributes = {})
-
       if attributes[:worksheet].present?
         options['dxfId'] = attributes[:worksheet].workbook.styles.add_style(style)
       end
@@ -65,6 +62,5 @@ module SampleManifestExcel
       end
       super
     end
-
   end
 end

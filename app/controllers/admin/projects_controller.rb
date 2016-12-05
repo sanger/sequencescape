@@ -12,7 +12,6 @@ class Admin::ProjectsController < ApplicationController
 # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 before_action :evil_parameter_hack!
 
-
   before_action :admin_login_required
 
   BY_SCOPES = {
@@ -48,7 +47,6 @@ before_action :evil_parameter_hack!
   end
 
   def filter
-
     filters = params[:filter] || {}
 
     by_scope = BY_SCOPES[filters[:by]]
@@ -65,7 +63,6 @@ before_action :evil_parameter_hack!
   end
 
   def managed_update
-
     @project = Project.find(params[:id])
     redirect_if_not_owner_or_admin(@project)
 

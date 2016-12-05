@@ -7,7 +7,6 @@
 require "test_helper"
 
 class AssetLinkTest < ActiveSupport::TestCase
-
   context 'AssetLink::Job' do
     setup do
       @source_well      = create :well
@@ -21,7 +20,6 @@ class AssetLinkTest < ActiveSupport::TestCase
     end
 
     context 'When processed' do
-
       setup do
         Delayed::Worker.new.work_off
       end
@@ -34,6 +32,5 @@ class AssetLinkTest < ActiveSupport::TestCase
         assert_equal 0, Delayed::Job.count - @job_count
       end
     end
-
   end
 end

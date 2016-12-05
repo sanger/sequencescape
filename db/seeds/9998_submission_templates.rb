@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 # This is a serialized dump of submission templates. It is STRONGLY recommended that you don't try and change this file directly
 # but instead re-dump the submission templates.
 [{ name: "Illumina-C - Cherrypick Internally",

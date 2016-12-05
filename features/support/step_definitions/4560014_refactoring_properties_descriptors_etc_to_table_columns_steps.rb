@@ -20,7 +20,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
       }
     )
   )
-  request.id = additional_options[:id] if additional_options.key?(:id)    # Force ID hack!
+  request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
 
   # should be on target asset when we'll use target_asset
   asset.aliquots.each do |a|

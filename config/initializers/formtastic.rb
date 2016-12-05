@@ -1,7 +1,6 @@
 # encoding: utf-8
 require 'formtastic'
 
-
 module Formtastic
   module Inputs
     module Base

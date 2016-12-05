@@ -23,6 +23,4 @@ module ModelExtensions::Sample
   def sample_reference_genome_name=(name)
     sample_metadata.reference_genome = ReferenceGenome.find_by_name(name)
   end
-
-
 end

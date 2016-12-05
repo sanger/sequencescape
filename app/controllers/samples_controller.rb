@@ -49,7 +49,7 @@ class SamplesController < ApplicationController
         flash[:error] = "Problems creating your new sample"
         format.html { render action: :new }
         format.xml  { render xml: @sample.errors, status: :unprocessable_entity }
-        format.json  { render json: @sample.errors, status: :unprocessable_entity }
+        format.json { render json: @sample.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -78,7 +78,6 @@ class SamplesController < ApplicationController
     end
   end
 
-
   def edit
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
@@ -96,16 +95,14 @@ class SamplesController < ApplicationController
     end
   end
 
-
   def update
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
-      begin
-        cleaned_params = clean_params_from_check(params[:sample])
-        @sample.update_attributes!(cleaned_params)
+      cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
+      if @sample.update_attributes(cleaned_params)
         flash[:notice] = "Sample details have been updated"
         redirect_to sample_path(@sample)
-      rescue ActiveRecord::RecordInvalid => exception
+      else
         @workflows = Submission::Workflow.all
         flash[:error] = "Failed to update attributes for sample"
         render action: "edit", id: @sample.id
@@ -142,7 +139,7 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     respond_to do |format|
       xml_text = @sample.accession_service.accession_sample_xml(@sample)
-      format.xml  { render(text: xml_text) }
+      format.xml { render(text: xml_text) }
     end
   end
 
@@ -193,6 +190,19 @@ class SamplesController < ApplicationController
    end
 
 private
+
+  def default_permitted_metadata_fields
+    { sample_metadata_attributes: [
+      :organism, :gc_content, :cohort, :gender, :country_of_origin, :geographical_region, :ethnicity, :dna_source,
+      :volume, :supplier_plate_id, :mother, :father, :replicate, :sample_public_name, :sample_common_name,
+      :sample_strain_att, :sample_taxon_id, :sample_ebi_accession_number, :sample_sra_hold,
+      :sample_description, :sibling, :is_resubmitted, :date_of_sample_collection, :date_of_sample_extraction,
+      :sample_extraction_method, :sample_purified, :purification_method, :concentration, :concentration_determined_by,
+      :sample_type, :sample_storage_conditions, :supplier_name, :reference_genome_id, :genotype, :phenotype, :age,
+      :developmental_stage, :cell_type, :disease_state, :compound, :dose, :immunoprecipitate, :growth_condition,
+      :rnai, :organism_part, :time_point, :disease, :subject, :treatment, :donor_id
+    ] }
+  end
 
   def redirect_if_not_owner_or_admin_otherwise(&block)
     return yield if current_user.owner?(@sample) or current_user.is_administrator? or current_user.is_manager?

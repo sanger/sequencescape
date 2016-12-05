@@ -5,9 +5,7 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 module Request::AccessioningRequired
-
   def accessioning_required?
     true
   end
-
 end

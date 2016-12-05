@@ -15,14 +15,14 @@ class LocationsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @locations }
+      format.xml { render xml: @locations }
     end
   end
 
   def show
     respond_to do |format|
       format.html
-      format.xml  { render xml: @location }
+      format.xml { render xml: @location }
     end
   end
 
@@ -31,7 +31,7 @@ class LocationsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @location }
+      format.xml { render xml: @location }
     end
   end
 
@@ -78,5 +78,4 @@ class LocationsController < ApplicationController
   def find_location_by_id
     @location = Location.find(params[:id])
   end
-
 end

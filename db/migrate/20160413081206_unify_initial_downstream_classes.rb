@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class UnifyInitialDownstreamClasses < ActiveRecord::Migration
-
   class Request < ActiveRecord::Base
     self.table_name = 'requests'
   end

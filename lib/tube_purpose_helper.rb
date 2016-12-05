@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 module TubePurposeHelper
-
   class PurposeMigrator
     attr_reader :purposes, :migration
     delegate :say, to: :migration

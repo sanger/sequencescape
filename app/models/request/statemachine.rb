@@ -52,7 +52,6 @@ module Request::Statemachine
 
       ## State machine
       aasm column: :state, whiny_persistence: true do
-
         state :pending,   initial: true
         state :started,   after_enter: :on_started
         state :failed,    after_enter: :on_failed
@@ -60,7 +59,6 @@ module Request::Statemachine
         state :cancelled, after_enter: :on_cancelled
         state :blocked,   after_enter: :on_blocked
         state :hold,      after_enter: :on_hold
-
 
         event :hold do
           transitions to: :hold, from: [:pending]
@@ -132,7 +130,6 @@ module Request::Statemachine
           transitions to: :failed,    from: [:started]
           transitions to: :failed,    from: [:passed]
         end
-
       end
 
      scope :for_state, ->(state) { where(state: state) }
@@ -147,7 +144,6 @@ module Request::Statemachine
 
      scope :opened,           -> { where(state: OPENED_STATE) }
      scope :closed,           -> { where(state: ["passed", "failed", "cancelled"]) }
-
     end
   end
 
@@ -181,23 +177,18 @@ module Request::Statemachine
   deprecate :change_decision!
 
   def on_failed
-
   end
 
   def on_passed
-
   end
 
   def on_cancelled
-
   end
 
   def on_blocked
-
   end
 
   def on_hold
-
   end
 
   def failed_upstream!

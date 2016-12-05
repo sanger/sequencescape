@@ -58,7 +58,6 @@ module Core::Service::ContentFiltering
     def request_accepted
       request.acceptable_media_types.prioritize(*acceptable_types).map(&:to_s)
     end
-
   end
 
   def self.registered(app)

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class CellTest < ActiveSupport::TestCase
-
   test "should create a row" do
     assert_equal 1, SampleManifestExcel::Cell.new(1, 4).row
   end

@@ -4,10 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 # A class for requests that have some business meaning outside of Sequencescape
 class CustomerRequest < Request
-
   def update_responsibilities!
     return if qc_metrics.stock_metric.empty?
     self.customer_accepts_responsibility! if qc_metrics.stock_metric.all?(&:poor_quality_proceed)
@@ -16,5 +14,4 @@ class CustomerRequest < Request
   def customer_accepts_responsibility!
     self.request_metadata.update_attributes!(customer_accepts_responsibility: true)
   end
-
 end

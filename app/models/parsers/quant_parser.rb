@@ -64,5 +64,4 @@ class Parsers::QuantParser
     def qc_values_for_row(row)
       Hash[method_set_list.zip(row).reject { |header, value| header.nil? }]
     end
-
 end

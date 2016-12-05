@@ -8,7 +8,6 @@
 module Api
   class EndpointHandler < ::Core::Service
     class << self
-
       def registered_mimetypes
         @registered_mimetypes || []
       end
@@ -100,7 +99,6 @@ module Api
               request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
             end
             uuid.resource.__send__(file_through) { |file| send_file file.path, filename: file.filename }
-
           end
         end
       end
@@ -131,18 +129,15 @@ module Api
         end
       end
 
-
       def register_mimetype(mimetype)
         @registered_mimetypes ||= []
         @registered_mimetypes.push(mimetype).uniq!
       end
-
     end
 
     def registered_mimetypes
       self.class.registered_mimetypes
     end
-
 
     def lookup_for_class(model, &block)
       ::Core::Io::Registry.instance.lookup_for_class(model)
@@ -201,7 +196,6 @@ module Api
     end
 
     def return_file(http_request, action, parts)
-
       request =
         ::Core::Service::Request.new(requested_url = http_request.fullpath) do |request|
           request.service = self
@@ -238,6 +232,5 @@ module Api
       file_addition(action, verb)
       file_model_addition(action, verb)
     end
-
   end
 end

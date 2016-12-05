@@ -71,7 +71,7 @@ class AmqpObserver < ActiveRecord::Observer
 
     def <<(record)
       buffer << record
-      self  # Ensure we can chain these if necessary!
+      self # Ensure we can chain these if necessary!
     end
 
     # Converts metadata entries to their owner records, if necessary
@@ -84,7 +84,7 @@ class AmqpObserver < ActiveRecord::Observer
       when record.is_a?(Metadata::Base) then yield(record.owner, nil)
       when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)
       when record.is_a?(Role::UserRole) then determine_record_to_broadcast(record.role, &block)
-      else                                   yield(record,       record)
+      else                                   yield(record, record)
       end
     end
 
@@ -193,7 +193,7 @@ end
 
 class ActiveRecord::Base
   class << self
-    def transaction_with_amqp(opts={},&block)
+    def transaction_with_amqp(opts = {}, &block)
       transaction_without_amqp(opts) { AmqpObserver.instance.transaction(&block) }
     end
     alias_method_chain(:transaction, :amqp)

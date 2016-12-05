@@ -7,8 +7,6 @@
 require "test_helper"
 require 'events_controller'
 
-
-
 class EventsControllerTest < ActionController::TestCase
   context "EventsController" do
     setup do

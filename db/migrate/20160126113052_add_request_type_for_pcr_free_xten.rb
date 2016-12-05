@@ -54,7 +54,6 @@ illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencin
           workflow: "short_read_sequencing"
         }
       })
-
     end
   end
 

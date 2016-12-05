@@ -8,7 +8,6 @@ require "test_helper"
 
 # Re-raise errors caught by the controller.
 class AuthenticationController < ApplicationController
-
   before_action :login_required, except: :open
 
   def restricted
@@ -31,7 +30,6 @@ class AuthenticationController < ApplicationController
 end
 
 class AuthenticationControllerTest < ActionController::TestCase
-
   # def skip_routing
   #   Rails.application.routes.draw do
   #     get 'authentication/open'
@@ -40,7 +38,6 @@ class AuthenticationControllerTest < ActionController::TestCase
   #     match '/logout' => 'sessions#logout', :as => :logout, :via => [:get,:post]
   #   end
   # end
-
 
   context "Authenticated pages" do
     setup do

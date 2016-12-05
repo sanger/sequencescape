@@ -130,7 +130,6 @@ class RequestTest < ActiveSupport::TestCase
           assert_equal @request1.target_asset, @request2.asset
         end
       end
-
     end
 
     context "#copy" do
@@ -180,7 +179,6 @@ class RequestTest < ActiveSupport::TestCase
       should "return a valid value if workflow exists" do
         assert_equal @workflow.id, @request.workflow_id
       end
-
     end
 
     context "#after_create" do
@@ -224,10 +222,8 @@ class RequestTest < ActiveSupport::TestCase
             assert_equal @requests, Request.all
           end
         end
-
       end
     end
-
 
     context "#state" do
       setup do
@@ -279,7 +275,6 @@ class RequestTest < ActiveSupport::TestCase
             @request.state = 'started'
             @request.fail!
           end
-
         end
       end
 
@@ -356,12 +351,10 @@ class RequestTest < ActiveSupport::TestCase
           end
         end
       end
-
     end
 
     context "#open and #closed" do
       setup do
-
         @open_states = ["pending", "started"]
         @closed_states = ["passed", "failed", "cancelled"]
 
@@ -393,7 +386,6 @@ class RequestTest < ActiveSupport::TestCase
 
         @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
         @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
-
 
         # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
         # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
@@ -441,11 +433,9 @@ class RequestTest < ActiveSupport::TestCase
 
         assert_equal false, @sequencing_request.ready?
       end
-
     end
 
     context "#customer_responsible" do
-
       setup do
         @request = create :library_creation_request
         @request.state = 'started'
@@ -462,8 +452,6 @@ class RequestTest < ActiveSupport::TestCase
           @request.request_metadata.update_attributes!(customer_accepts_responsibility: true)
         end
       end
-
     end
-
   end
 end

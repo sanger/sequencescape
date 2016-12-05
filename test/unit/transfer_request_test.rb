@@ -8,7 +8,6 @@ require 'test_helper'
 require 'unit/illumina_b/request_statemachine_checks'
 
 class TransferRequestTest < ActiveSupport::TestCase
-
   def shared_setup
     @source = LibraryTube.create!.tap { |tube| tube.aliquots.create!(sample: create(:sample)) }
     create(:tag).tag!(@source)
@@ -32,7 +31,6 @@ class TransferRequestTest < ActiveSupport::TestCase
   end
 
   context 'TransferRequest' do
-
     context 'when using the constuctor' do
       setup do
         shared_setup
@@ -40,7 +38,6 @@ class TransferRequestTest < ActiveSupport::TestCase
       end
 
       shared_tests
-
     end
 
     should 'not permit transfers to the same asset' do
@@ -65,7 +62,6 @@ class TransferRequestTest < ActiveSupport::TestCase
         end
       end
     end
-
   end
 
   extend IlluminaB::RequestStatemachineChecks
@@ -78,5 +74,4 @@ class TransferRequestTest < ActiveSupport::TestCase
     check_event(:cancel!, :started, :passed, :qc_complete)
     check_event(:cancel_before_started!, :pending)
   end
-
 end

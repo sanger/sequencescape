@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class BarcodePrinterTest < ActiveSupport::TestCase
-
   attr_reader :barcode_printer, :printer_for_384_wells_plate
 
   def setup
@@ -13,7 +12,6 @@ class BarcodePrinterTest < ActiveSupport::TestCase
     refute barcode_printer.plate384_printer?
     assert printer_for_384_wells_plate.plate384_printer?
   end
-
 
   test "should register printer in PMB after create" do
     configatron.register_printers_automatically = true
@@ -29,5 +27,4 @@ class BarcodePrinterTest < ActiveSupport::TestCase
     create :barcode_printer, name: 'test_printer'
     configatron.register_printers_automatically = false
   end
-
 end

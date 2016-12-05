@@ -13,6 +13,4 @@ class PicoDilutionPlate < DilutionPlate
   def self.index_to_hash(pico_dilutions)
     pico_dilutions.map { |pico_dilution| pico_dilution.to_pico_hash }
   end
-
-
 end

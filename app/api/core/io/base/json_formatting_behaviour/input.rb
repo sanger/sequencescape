@@ -112,7 +112,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
   # leaf is yielded, otherwise this method simply returns.
   def process_if_present(json, path)
     value = path.inject(json) do |current, step|
-      return unless current.respond_to?(:key?)    # Could be nested attribute but not present!
+      return unless current.respond_to?(:key?) # Could be nested attribute but not present!
       return unless current.key?(step)
       current[step]
     end

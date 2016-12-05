@@ -141,7 +141,6 @@ class SequenomQcPlate < Plate
     end
   end
 
-
   def copy_source_wells!(plate, quadrant)
     (0..8).each do |row|
       (0..12).each do |col|
@@ -180,7 +179,6 @@ def user_barcode_exist?(user_barcode)
     true
   end
 end
-
 
   def do_gender_checks?
     true unless gender_check_bypass
@@ -247,6 +245,4 @@ end
       return_value << human_plate_name << "_"
     end
   end
-
-
 end

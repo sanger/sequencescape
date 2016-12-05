@@ -96,7 +96,6 @@ class Cherrypick::Strategy
       end
     end
 
-
     class InColumnOrder
       def call(plexes, current_plate)
         plexes.map do |plex|

@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/../lib/acts_as_descriptable'
 require File.join(File.dirname(__FILE__), 'test_helper')
 
 class ActsAsDescriptableTest < Test::Unit::TestCase
-
   def teardown
     Post.all.each do |post|
       post.destroy
@@ -127,7 +126,6 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
               }
     post.update_descriptors(params)
     assert_equal 3, post.descriptors.size
-
   end
 
   def test_active_descriptors_remove
@@ -143,7 +141,6 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
     assert_equal 0, Descriptor.count
   end
 
-
   def test_descriptor_xml
     post = Post.new
     hash = { controller: 'test_controller', action: 'test_action' }
@@ -153,5 +150,4 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
     xml = post.descriptor_xml
     assert_equal "<?xml version=\"1.0\" encoding=\"UTF-8\"?><descriptors><descriptor><name>controller</name><value>test_controller</value></descriptor><descriptor><name>action</name><value>test_action</value></descriptor></descriptors>", xml
   end
-
 end

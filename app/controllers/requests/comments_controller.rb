@@ -35,6 +35,7 @@ class Requests::CommentsController < ApplicationController
   end
 
   private
+
   def discover_request
     @request = Request.find(params[:request_id])
   end

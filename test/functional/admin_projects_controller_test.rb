@@ -7,10 +7,7 @@
 require "test_helper"
 require 'admin/projects_controller'
 
-
-
 class Admin::ProjectsControllerTest < ActionController::TestCase
-
   attr_reader :emails
 
   context "Projects controller" do
@@ -47,7 +44,6 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         should redirect_to("admin projects") { "/admin/projects/#{@project.id}" }
       end
 
-
       context "#managed_update (with getting approved)" do
         setup do
           @event_count = Event.count
@@ -57,9 +53,8 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         should redirect_to("admin project") { "/admin/projects/#{@project.id}" }
         should set_flash.to("Your project has been updated")
 
-
         should "change Event.count by 1" do
-          assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
+          assert_equal 1, Event.count - @event_count, "Expected Event.count to change by 1"
         end
 
         should "send an email" do
@@ -75,7 +70,5 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         end
       end
     end
-
-
   end
 end

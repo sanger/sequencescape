@@ -8,7 +8,6 @@ require "test_helper"
 require 'unit/tag_qc/qcable_statemachine_checks'
 
 class QcableStatemachineTest < ActiveSupport::TestCase
-
   extend QcableStatemachineChecks
 
   state_machine(Qcable) do
@@ -18,7 +17,6 @@ class QcableStatemachineTest < ActiveSupport::TestCase
     check_event(:release,         from: [:pending],                 to: :available)
     check_event(:pass,            from: [:qc_in_progress],          to: :passed)
     check_event(:fail,            from: [:qc_in_progress, :pending], to: :failed)
-    check_event(:use,             from: [:available],               to: :exhausted)
+    check_event(:use,             from: [:available], to: :exhausted)
   end
-
 end

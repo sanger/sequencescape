@@ -15,5 +15,4 @@ class HomesController < ApplicationController
     @submissions = current_user.submissions.latest_first.limit(10)
     @studies = current_user.interesting_studies.newest_first.limit(10)
   end
-
 end

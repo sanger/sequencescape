@@ -7,7 +7,6 @@
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class PooledPlateCreation < AssetCreation
-
   class ParentAssociation < ActiveRecord::Base
     self.table_name = ('asset_creation_parents')
     belongs_to :asset_creation
@@ -36,5 +35,4 @@ class PooledPlateCreation < AssetCreation
   private :connect_parent_and_children
 
   include PlateCreation::Children
-
 end

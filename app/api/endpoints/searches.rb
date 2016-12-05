@@ -31,7 +31,6 @@ class ::Endpoints::Searches < ::Core::Endpoint::Base
   end
 
   model do
-
   end
 
   instance do

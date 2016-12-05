@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015, 2016 Genome Research Ltd.
 
-
 # Product catalogues provide a means of associating products with a submission
 # template. selection_behaviour can allow a submission template to
 # select an appropriate product.
@@ -12,7 +11,6 @@
 # products.
 
 class ProductCatalogue < ActiveRecord::Base
-
   # Specify the behaviour classes that may be used to select a product
   # The behaviours take the catalogue and submission parameters and
   # return a product
@@ -49,8 +47,6 @@ class ProductCatalogue < ActiveRecord::Base
         end
       end
     end
-
-
   end
 
   def product_for(submission_attributes)
@@ -76,5 +72,4 @@ class ProductCatalogue < ActiveRecord::Base
     self.class.with_behaviour(selection_behaviour) ||
      raise(UndefinedBehaviour, "No selection behaviour names #{selection_behaviour}")
   end
-
 end

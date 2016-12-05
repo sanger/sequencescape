@@ -34,7 +34,6 @@ class LocationAssociation < ActiveRecord::Base
           location = l_id && Location.find(l_id)
           self.location = location
         end
-
       end
       base.extend(ClassMethods)
     end

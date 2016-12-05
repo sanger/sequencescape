@@ -8,8 +8,6 @@ require "test_helper"
 
 class LotTest < ActiveSupport::TestCase
   context "A Lot" do
-
-
     should validate_presence_of :lot_number
 
     should have_many :qcables
@@ -26,7 +24,6 @@ class LotTest < ActiveSupport::TestCase
 
       should validate_uniqueness_of :lot_number
     end
-
 
     context "#lot" do
       setup do
@@ -51,7 +48,5 @@ class LotTest < ActiveSupport::TestCase
         @lot.delete
       end
     end
-
   end
-
 end

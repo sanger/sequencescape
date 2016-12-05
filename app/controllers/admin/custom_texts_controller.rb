@@ -15,7 +15,7 @@ class Admin::CustomTextsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @custom_texts.to_xml }
+      format.xml { render xml: @custom_texts.to_xml }
     end
   end
 
@@ -23,7 +23,7 @@ class Admin::CustomTextsController < ApplicationController
     @custom_text = CustomText.find(params[:id])
     respond_to do |format|
       format.html
-      format.xml  { render xml: @custom_text.to_xml }
+      format.xml { render xml: @custom_text.to_xml }
     end
   end
 
@@ -71,5 +71,4 @@ class Admin::CustomTextsController < ApplicationController
     end
     redirect_to admin_custom_texts_url
   end
-
 end

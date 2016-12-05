@@ -7,9 +7,7 @@
 require "test_helper"
 
 class AssetTest < ActiveSupport::TestCase
-
   context "An asset" do
-
     context "with a barcode" do
       setup do
         @asset = create :asset
@@ -97,6 +95,5 @@ class AssetTest < ActiveSupport::TestCase
         assert @asset.child.nil?
       end
     end
-
   end
 end

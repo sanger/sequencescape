@@ -39,7 +39,6 @@ module Pulldown::Requests
   end
 
   class LibraryCreation < Request::LibraryCreation
-
   end
 
   class WgsLibraryRequest < LibraryCreation
@@ -62,11 +61,9 @@ module Pulldown::Requests
       super
       pool_information[:request_type] = request_type.key
     end
-
   end
 
   class IscLibraryRequestPart < IscLibraryRequest
     include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
   end
-
 end

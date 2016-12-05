@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class SampleManifestRedirect
-
       attr_reader :options, :sample_manifest
 
       def initialize(options)
@@ -20,8 +18,6 @@ module LabelPrinter
           return SampleManifestMultiplex.new(options).to_h
         end
       end
-
     end
-
   end
 end

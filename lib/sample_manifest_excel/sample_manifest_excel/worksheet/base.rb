@@ -1,9 +1,6 @@
 module SampleManifestExcel
-
   module Worksheet
-
     class Base
-
       include HashAttributes
 
       set_attributes :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :name, :password, :type
@@ -54,7 +51,6 @@ module SampleManifestExcel
       def create_worksheet
         insert_axlsx_worksheet("Base")
       end
-
     end
   end
 end

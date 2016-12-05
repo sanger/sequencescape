@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 module IlluminaC::Helper
-
   require 'hiseq_2500_helper'
 
   ACCEPTABLE_REQUEST_TYPES = %w(illumina_c_pcr illumina_c_nopcr illumina_c_multiplexing illumina_c_chromium_library)
@@ -25,7 +24,6 @@ illumina_c_hiseq_4000_single_end_sequencing
 
   PIPELINE = 'Illumina-C'
   class TemplateConstructor
-
     # Construct submission templates for the generic pipeline
     # opts is a hash
     # {
@@ -133,8 +131,5 @@ illumina_c_hiseq_4000_single_end_sequencing
         end
       end.flatten
     end
-
   end
-
-
 end

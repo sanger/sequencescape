@@ -71,5 +71,4 @@ module Batch::PipelineBehaviour
   def task_for_event(event)
     tasks.detect { |task| task.name == event.description }
   end
-
 end

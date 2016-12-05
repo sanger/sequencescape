@@ -8,7 +8,6 @@ require './test/test_helper'
 require 'csv'
 
 class BioanalysisCsvParserTest < ActiveSupport::TestCase
-
   def read_file(filename)
     content = nil
     File.open(filename, "r") do |fd|
@@ -71,8 +70,6 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
         [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157, 158]]
         assert_equal test_data, @parser.get_groups(/Overall.*/m)
       end
-
-
 
       should "parses a CSV example file" do
         assert_equal "25.65", @parser.concentration("A1")

@@ -106,7 +106,6 @@ Then /^the samples table should look like:$/ do |table|
       next if [:sanger_sample_id, :empty_supplier_sample_name, :supplier_name, :sample_taxon_id].include?(:"#{k}")
       assert_equal(v, sample.sample_metadata.send(k), "Sample #{k} invalid for #{sanger_sample_id}")
     end
-
   end
 end
 

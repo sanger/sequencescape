@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 module PlatePurpose::BroadcastLibraryComplete
-
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super
     prepare_library_complete(plate, user) if state == connect_on

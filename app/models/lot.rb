@@ -9,7 +9,6 @@
 # that can be assumed to share some level of QC.
 
 class Lot < ActiveRecord::Base
-
   module Template
     def self.included(base)
       base.class_eval do
@@ -58,5 +57,4 @@ class Lot < ActiveRecord::Base
     errors.add(:template, "is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
     false
   end
-
 end
