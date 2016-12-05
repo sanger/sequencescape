@@ -111,7 +111,7 @@ class BatchesController < ApplicationController
 
   def pipeline
     # All pipline batches routes should just direct to batches#index with pipeline and state as filter parameters
-    @batches = Batch.where(pipeline_id: params[:pipeline_id]||params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
+    @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
   # Used by Quality Control Pipeline view or remote sources to add a Batch ID to QC queue
@@ -195,21 +195,21 @@ class BatchesController < ApplicationController
   def pending
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
-    @pipeline = Pipeline.find(params[:pipeline_id]||params[:id])
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.pending.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
   def started
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
-    @pipeline = Pipeline.find(params[:pipeline_id]||params[:id])
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.started.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
   def released
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
-    @pipeline = Pipeline.find(params[:pipeline_id]||params[:id])
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
 
     @batches = @pipeline.batches.released.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
     respond_to do |format|
@@ -221,14 +221,14 @@ class BatchesController < ApplicationController
   def completed
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
-    @pipeline = Pipeline.find(params[:pipeline_id]||params[:id])
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.completed.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
   def failed
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
-    @pipeline = Pipeline.find(params[:pipeline_id]||params[:id])
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
     @batches = @pipeline.batches.failed.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
