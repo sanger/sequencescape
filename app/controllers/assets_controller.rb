@@ -189,15 +189,6 @@ class AssetsController < ApplicationController
     end
   end
 
-  def destroy
-    @asset.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(assets_url) }
-      format.xml  { head :ok }
-    end
-  end
-
   def summary
     @summary = UiHelper::Summary.new({ per_page: 25, page: params[:page] })
     @summary.load_asset(@asset)
