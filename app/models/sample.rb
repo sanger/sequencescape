@@ -128,15 +128,9 @@ class Sample < ActiveRecord::Base
     short_sanger_id
   end
 
-  # TODO: move to sample_metadata and delegate
-  def released?
-    self.sample_metadata.sample_sra_hold == 'Public'
-  end
-
-  def release
-    self.sample_metadata.sample_sra_hold = 'Public'
-    self.sample_metadata.save!
-  end
+  # Note: Samples don't tend to get released through Sequencescape
+  # so in reality these methods are usually misleading.
+  delegate :released?, :release, to: :sample_metadata
 
   def ebi_accession_number
     self.sample_metadata.sample_ebi_accession_number
@@ -356,6 +350,20 @@ class Sample < ActiveRecord::Base
       errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
       false
     end
+
+    # This is misleading, as samples are rarely released through
+    # Sequencescape, so our flag gets out of sync with the ENA/EGA
+    def released?
+      sample_sra_hold == 'Public'
+    end
+
+    # Rarely actually used
+    def release
+      self.sample_sra_hold = 'Public'
+      save!
+    end
+
+
   end
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
