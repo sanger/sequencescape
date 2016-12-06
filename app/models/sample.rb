@@ -73,9 +73,7 @@ class Sample < ActiveRecord::Base
   before_destroy :safe_to_destroy
 
   def safe_to_destroy
-    return true unless receptacles.present? || has_submission?
-    errors.add(:base, "Remove '#{name}' from assets before destroying") if receptacles.present?
-    errors.add(:base, "You can't delete '#{name}' because is linked to a submission.") if has_submission?
+    errors.add(:base, "samples cannot be destroyed.")
     return false
   end
   private :safe_to_destroy
@@ -118,11 +116,6 @@ class Sample < ActiveRecord::Base
     where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
-  def select_study(sample_id)
-    sample = self.find(sample_id)
-    sample.studies
-  end
-
   def shorten_sanger_sample_id
     short_sanger_id = case sanger_sample_id
       when blank? then name
@@ -133,36 +126,6 @@ class Sample < ActiveRecord::Base
     end
 
     short_sanger_id
-  end
-
-  def has_request
-    requests.present?
-  end
-
-  def has_request_all_cancelled?
-    self.requests.all?(&:cancelled?)
-  end
-
-  def has_submission?
-    has_submission = false
-    if self.has_request
-      if has_request_all_cancelled?
-        sra_hold_value = self.sample_metadata.sample_sra_hold
-        if sra_hold_value.nil?
-          has_submission = false
-        elsif 'hold' != sra_hold_value
-          has_submission = true
-        else
-          has_submission = false
-        end
-      else
-        has_submission = true
-      end
-    else # We have no requests, we're probably S2 (Or very old Sequencescape)
-         # This is a hack, but I'll get this tidied up.
-      has_submission = true
-    end
-    return has_submission
   end
 
   def has_ebi_accession_number
