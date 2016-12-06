@@ -128,12 +128,6 @@ class Sample < ActiveRecord::Base
     short_sanger_id
   end
 
-  # TODO: remove as this is no longer needed (validation of name change will fail)
-  # On update, checks if updating the name is possible
-  def name_change?(new_name)
-    self.name == new_name ? false : true
-  end
-
   # TODO: move to sample_metadata and delegate
   def released?
     self.sample_metadata.sample_sra_hold == 'Public'
