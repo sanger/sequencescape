@@ -128,18 +128,6 @@ class Sample < ActiveRecord::Base
     short_sanger_id
   end
 
-  def has_ebi_accession_number
-    has_ebi_accession_number = false
-
-    self.studies.each do |study|
-      if !study.ebi_accession_number.blank?
-        has_ebi_accession_number = true
-      end
-    end
-
-    return has_ebi_accession_number
-  end
-
   # TODO: remove as this is no longer needed (validation of name change will fail)
   # On update, checks if updating the name is possible
   def name_change?(new_name)
