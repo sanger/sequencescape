@@ -7,7 +7,7 @@
 class Transfer::BetweenSpecificTubes < Transfer
   include TransfersToKnownDestination
 
-  belongs_to :source, polymorphic: true
+  belongs_to :source
 
   after_create :update_destination_tube_name
   def update_destination_tube_name
