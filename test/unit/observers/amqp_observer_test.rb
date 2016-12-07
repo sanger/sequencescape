@@ -132,10 +132,10 @@ class AmqpObserverTest < ActiveSupport::TestCase
           begin
             @target.transaction do
               @target << object
-              raise 'Do not send thanks!'
+              raise StandardError, 'Do not send thanks!'
             end
-          rescue => exception
-            # Good!
+          rescue StandardError => exception
+            nil
           end
         end
 

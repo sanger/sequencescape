@@ -204,6 +204,7 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    march_hare (2.18.0-java)
     metaclass (0.0.4)
     method_source (0.8.2)
     mime-types (2.99.3)
@@ -404,7 +405,7 @@ DEPENDENCIES
   bootstrap-sass
   builder
   bullet
-  bunny (~> 0.7)
+  bunny
   cancan
   capybara
   carrierwave
@@ -429,6 +430,7 @@ DEPENDENCIES
   json
   knapsack
   launchy
+  march_hare (~> 2.18.0)
   mime-types
   mocha
   multi_json

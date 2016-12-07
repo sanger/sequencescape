@@ -37,6 +37,9 @@ Sequencescape::Application.configure do
 
   config.active_record.observers = [:request_observer]
 
+  # Set TEST_RABBIT_MQ to enable the amqp_observer for debugging.
+  # You'll need a local rabbit MQ server running
+  config.active_record.observers << :amqp_observer if ENV['TEST_RABBIT_MQ']
   config.log_level = :debug
 
   config.active_support.deprecation = :log
