@@ -51,11 +51,17 @@ group :default do
   gem 'sinatra', require: false
   gem 'rack-acceptable', require: 'rack/acceptable'
   gem 'json'
-  gem 'jrjackson', :platforms => :jruby
+  gem 'jrjackson', platforms: :jruby
   gem 'multi_json'
   gem 'cancan'
 
-  gem 'bunny', '~>0.7'
+  # MarchHare and Bunny are both RabbitMQ clients.
+  # While bunny does work with Jruby, it is not recommended
+  # and we ran into a few issues following the Rails 4 upgrade.
+  # Both have very similar API's and so we switch between then
+  # depending on environment.
+  gem 'march_hare', "~> 2.18.0", platforms: :jruby
+  gem 'bunny', platforms: :mri
 
   gem 'spoon'
   # Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
