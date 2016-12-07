@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2014,2015,2016 Genome Research Ltd.
 
-
 ApiApplication.new(
   name: 'Default Application',
   key: configatron.api.authorisation_code,

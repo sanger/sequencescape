@@ -7,7 +7,6 @@
 require "test_helper"
 
 class SubmissionTest < ActiveSupport::TestCase
-
   def orders_compatible?(a, b, key = nil)
     begin
       submission = Submission.new(user: create(:user), orders: [a, b])
@@ -23,7 +22,6 @@ class SubmissionTest < ActiveSupport::TestCase
   end
 
   context "#priority" do
-
     setup do
       @submission = Submission.new(user: create(:user))
     end
@@ -42,7 +40,6 @@ class SubmissionTest < ActiveSupport::TestCase
       @submission.priority = 4
       assert_equal false, @submission.valid?
     end
-
   end
 
   context "#orders compatible" do
@@ -110,7 +107,6 @@ class SubmissionTest < ActiveSupport::TestCase
           assert_equal false, orders_compatible?(@order1, @order2)
         end
       end
-
     end
   end
 end

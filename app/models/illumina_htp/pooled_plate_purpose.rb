@@ -20,5 +20,4 @@ class IlluminaHtp::PooledPlatePurpose < PlatePurpose
       end
     end
   end
-
 end

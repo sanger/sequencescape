@@ -7,7 +7,6 @@
 require './test/test_helper'
 
 class ReportContractTest < ActiveSupport::TestCase
-
   # Contracted views are those we've agreed to maintain
   # We'll track all views in these tests, but this'll
   # pick up any that get 'dropped' by accident

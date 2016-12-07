@@ -10,7 +10,6 @@ module Sanger
   module Testing
     module Controller
       module Macros
-
         def should_have_instance_methods(*methods)
           dt = described_type
           should "have instance methods #{methods.join(',')}" do
@@ -33,7 +32,7 @@ module Sanger
           params = actions.pop if actions.last.is_a?(Hash)
           actions << :index if actions.empty?
           actions.each do |action|
-            context "#{action}" do
+            context action.to_s do
               context "when logged in" do
                 setup do
                   session[:user] = create(:user)
@@ -56,7 +55,6 @@ module Sanger
               end
               context "when not logged in" do
                 setup do
-
                   session[:user] = nil
 
                   begin

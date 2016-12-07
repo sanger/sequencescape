@@ -14,5 +14,4 @@ class Pulldown::InitialDownstreamPlatePurpose < IlluminaHtp::InitialDownstreamPl
   end
 
   def supports_multiple_submissions?; true; end
-
 end

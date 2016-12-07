@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015,2016 Genome Research Ltd.
 
-
 std = RequestPurpose.create!(key: 'standard')
 qc = RequestPurpose.create!(key: 'qc')
 int = RequestPurpose.create!(key: 'internal')
@@ -18,8 +17,8 @@ RequestType.create!(
 )
 RequestType.create!(
   name: 'Transfer', key: 'transfer', order: 1,
-  asset_type: 'Asset',  multiples_allowed: false,
-  request_class_name: 'TransferRequest',  morphology: RequestType::CONVERGENT,
+  asset_type: 'Asset', multiples_allowed: false,
+  request_class_name: 'TransferRequest', morphology: RequestType::CONVERGENT,
   for_multiplexing: 0, billable: 0,
   request_purpose: int
 )
@@ -33,8 +32,8 @@ RequestType.create!(
 )
 RequestType.create!(
   name: 'Initial Transfer', key: 'initial_transfer', order: 1,
-  asset_type: 'Asset',  multiples_allowed: false,
-  request_class_name: 'TransferRequest::InitialTransfer',  morphology: RequestType::CONVERGENT,
+  asset_type: 'Asset', multiples_allowed: false,
+  request_class_name: 'TransferRequest::InitialTransfer', morphology: RequestType::CONVERGENT,
   for_multiplexing: 0, billable: 0,
   request_purpose: int
 )

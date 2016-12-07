@@ -7,9 +7,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class QcFileTest < ActiveSupport::TestCase
-
   context QcFile do
-
     context "with an asset" do
       setup do
         @plate = create :plate
@@ -23,5 +21,4 @@ class QcFileTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::SequencingQc < BroadcastEvent
-
   # Perform some magic to generate these dynamically using def self.event_type
   set_event_type 'sequencing_qc_pass'
   set_event_type 'sequencing_qc_fail'
@@ -22,5 +21,4 @@ class BroadcastEvent::SequencingQc < BroadcastEvent
   # Read length
   # Pipeline
   # Team (Via request type)
-
 end

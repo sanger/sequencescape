@@ -5,12 +5,10 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 module Qcable::Statemachine
-
   module ClassMethods
     # A little more sensitive than the request state machine
     def suggested_transition_between(current, target)
       aasm.state_machine.events.select do |name, event|
-
         event.transitions_from_state(current.to_sym).any? do |transition|
           transition.options[:allow_automated?] && transition.to == target.to_sym
         end
@@ -27,7 +25,6 @@ module Qcable::Statemachine
       ## State machine
       ## namespace: true as destroyed clashes with rails, but we can't easily rename the state
       aasm column: :state, whiny_persistence: true, namespace: true, name: 'qc_state' do
-
         state :created
         state :pending,        enter: :on_stamp
         state :failed,         enter: :on_failed
@@ -74,7 +71,6 @@ module Qcable::Statemachine
 
      scope :available,   -> { where(state: :available) }
      scope :unavailable, -> { where(state: [:created, :pending, :failed, :passed, :destroyed, :qc_in_progress, :exhausted]) }
-
     end
   end
 
@@ -94,14 +90,18 @@ module Qcable::Statemachine
   end
 
   def on_failed; end
+
   def on_passed; end
+
   def on_released; end
+
   def on_destroyed; end
+
   def on_qc; end
+
   def on_used; end
 
   def transition_to(target_state)
     send("#{self.class.suggested_transition_between(self.state, target_state)}!")
   end
-
 end

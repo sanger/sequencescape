@@ -5,13 +5,13 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 module BroadcastEvent::MetadataHelpers
-
   class SimpleMetadataFinder
     attr_reader :name, :method
     def initialize(name, method)
       @name = name.to_s
       @method = method
     end
+
     def for(seed, event)
       [name, seed.send(method)]
     end
@@ -23,6 +23,7 @@ module BroadcastEvent::MetadataHelpers
       @name = name.to_s
       @block = block
     end
+
     def for(seed, event)
       [name, block.call(seed, event)]
     end
@@ -38,6 +39,5 @@ module BroadcastEvent::MetadataHelpers
     def metadata_finders
       @metadata_finders ||= []
     end
-
   end
 end

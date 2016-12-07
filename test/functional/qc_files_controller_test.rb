@@ -6,9 +6,7 @@ require "test_helper"
 require 'qc_files_controller'
 
 class QcFilesControllerTest < ActionController::TestCase
-
   context '#show' do
-
     setup do
       File.open("#{Rails.root}/test/data/190_tube_sample_info.xls") do |file|
         @asset = create(:sample_tube)

@@ -103,7 +103,6 @@ class PlatePurpose < Purpose
     fail_stock_well_requests(wells, customer_accepts_responsibility) if state == 'failed'
   end
 
-
   module Overrideable
     def transition_state_requests(wells, state)
       wells = wells.includes(requests_as_target: { asset: :aliquots, target_asset: :aliquots })
@@ -222,7 +221,6 @@ class PlatePurpose < Purpose
   end
 
   def supports_multiple_submissions?; false; end
-
 end
 
 # Ensure rails eager loading behaves as intended

@@ -4,9 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
-
 class Plate::Creator < ActiveRecord::Base
-
   PlateCreationError = Class.new(StandardError)
 
   class PurposeRelationship < ActiveRecord::Base
@@ -14,7 +12,6 @@ class Plate::Creator < ActiveRecord::Base
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, class_name: 'Plate::Creator'
-
   end
 
   class ParentPurposeRelationship < ActiveRecord::Base

@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2014 Genome Research Ltd.
 module DbTableArchiver
-
   def self.create_archive!
     puts "Creating archive database: #{archive_name}"
     ActiveRecord::Base.connection.create_database archive_name
@@ -31,9 +30,7 @@ module DbTableArchiver
     "#{ActiveRecord::Base.connection.current_database}_archive"
   end
 
-
   def self.destroy_archive!
     raise StandardError, "#{archive_name} contains tables. Can't be destroyed!" if ActiveRecord::Base.connection.execute("SHOW tables IN #{archive_name}").present?
   end
-
 end

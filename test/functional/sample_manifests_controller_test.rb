@@ -8,9 +8,7 @@ require "test_helper"
 require 'sdb/sample_manifests_controller'
 
 class SampleManifestsControllerTest < ActionController::TestCase
-
   context "SampleManifestsController" do
-
     setup do
       @controller = Sdb::SampleManifestsController.new
       @request    = ActionController::TestRequest.new
@@ -35,7 +33,6 @@ class SampleManifestsControllerTest < ActionController::TestCase
         assert_equal @sample_manifest, assigns(:sample_manifest)
         assert_equal @sample_manifest.samples, assigns(:samples)
       end
-
     end
 
     context '#new' do

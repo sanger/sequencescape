@@ -51,10 +51,11 @@ class Asset < ActiveRecord::Base
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
+  has_many :events_on_requests, through: :requests, source: :events
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
-  has_one  :source_request,     ->() { includes(:request_metadata) },      class_name: "Request", foreign_key: :target_asset_id
+  has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: "Request", foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
   has_many :state_changes, foreign_key: :target_id
@@ -90,7 +91,7 @@ class Asset < ActiveRecord::Base
   }
   scope :for_summary, -> { includes([:map, :barcode_prefix]) }
 
-  scope :of_type, ->(*args) {  where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
+  scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
   scope :recent_first, -> { order('id DESC') }
 
@@ -118,7 +119,6 @@ class Asset < ActiveRecord::Base
   end
   # Named scope for search by query string behaviour
  scope :for_search_query, ->(query, with_includes) {
-
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
     arguments = { name: "%#{query}%" }
 
@@ -143,10 +143,9 @@ class Asset < ActiveRecord::Base
     else
       where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
     end
-
   }
 
- scope :with_name, ->(*names) {  where(name: names.flatten) }
+ scope :with_name, ->(*names) { where(name: names.flatten) }
 
   extend EventfulRecord
   has_many_events do
@@ -162,7 +161,7 @@ class Asset < ActiveRecord::Base
     event_constructor(:create_pico!,                   Event::SampleLogisticsQcEvent, :create_pico_result_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
-    event_constructor(:updated_fluidigm_plate!,         Event::SequenomLoading,        :updated_fluidigm_plate!)
+    event_constructor(:updated_fluidigm_plate!, Event::SequenomLoading, :updated_fluidigm_plate!)
     event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
   end
@@ -252,7 +251,6 @@ class Asset < ActiveRecord::Base
     end
 
     asset_group
-
   end
 
   after_create :generate_name_with_id, if: :name_needs_to_be_generated?
@@ -348,8 +346,8 @@ class Asset < ActiveRecord::Base
   def update_external_release(&block)
     external_release_nil_before = external_release.nil?
     yield
-    self.save!
-    self.events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
+    save!
+    events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
   end
   private :update_external_release
 
@@ -411,7 +409,6 @@ class Asset < ActiveRecord::Base
       joins(query_details[:joins].compact.uniq)
   }
 
-
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
@@ -434,18 +431,17 @@ class Asset < ActiveRecord::Base
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
       find_by_barcode_and_barcode_prefix_id(match[2], prefix.id)
-    elsif /\A[0-9]{1,7}\z/.match(source_barcode) # Just a number
+    elsif /\A[0-9]{1,7}\z/ =~ source_barcode # Just a number
       find_by_barcode(source_barcode)
     end
   end
-
 
   def self.find_from_machine_barcode(source_barcode)
     with_machine_barcode(source_barcode).first
   end
 
   def generate_machine_barcode
-    "#{Barcode.calculate_barcode(barcode_prefix.prefix, barcode.to_i)}"
+    (Barcode.calculate_barcode(barcode_prefix.prefix, barcode.to_i)).to_s
   end
 
   def external_release_text
@@ -471,14 +467,13 @@ class Asset < ActiveRecord::Base
   end
 
   def transfer(max_transfer_volume)
-
     transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
     raise VolumeError, "not enough volume left" if transfer_volume <= 0
 
     self.class.create!(name: self.name) do |new_asset|
       new_asset.aliquots = self.aliquots.map(&:dup)
       new_asset.volume   = transfer_volume
-      update_attributes!(volume: self.volume - transfer_volume)  #  Update ourselves
+      update_attributes!(volume: self.volume - transfer_volume) #  Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end
@@ -491,7 +486,6 @@ class Asset < ActiveRecord::Base
   def has_stock_asset?
     return false
   end
-
 
   def has_many_requests?
     Request.find_all_target_asset(self.id).size > 1
@@ -536,5 +530,4 @@ class Asset < ActiveRecord::Base
   def printable_target
     nil
   end
-
 end

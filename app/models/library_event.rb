@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class LibraryEvent < BroadcastEvent
-
   def event_type
     properties[:event_type]
   end
@@ -13,7 +12,6 @@ class LibraryEvent < BroadcastEvent
     properties[:event_type] = event_type
   end
 
-
   # Properties takes :order_id
 
   seed_class Plate
@@ -21,7 +19,6 @@ class LibraryEvent < BroadcastEvent
   has_subjects(:study, :studies)
   has_subjects(:project, :projects)
   has_subjects(:submission, :submissions)
-
 
   has_subject(:library_source_labware, :source_plate)
 
@@ -33,5 +30,4 @@ class LibraryEvent < BroadcastEvent
   has_metadata(:order_type, :role)
 
   has_metadata(:team) { |plate, e| plate.team }
-
 end

@@ -42,5 +42,4 @@ module Identifiable
     ident = identifier(resource_name)
     ident ? ident.external : nil
   end
-
 end

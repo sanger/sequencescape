@@ -8,7 +8,6 @@ require "test_helper"
 
 class SubmissionTemplateTest < ActiveSupport::TestCase
   context "A Order Template" do
-
     should validate_presence_of :product_catalogue
 
     setup do
@@ -61,7 +60,6 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
     context "without input_field_infos" do
       setup do
-
         @test_request_typ_b = create :library_creation_request_type
         @test_request_typ_b
         @test_request_type = create :sequencing_request_type
@@ -77,7 +75,6 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         assert_equal 'Standard', field('Library type').default_value
       end
     end
-
   end
 
   def field(field_name)

@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 FactoryGirl.define do
-
   factory :lot_type do
     sequence(:name) { |n| "lot_type#{n}" }
     template_class 'PlateTemplate'
@@ -14,7 +13,6 @@ FactoryGirl.define do
     factory :tag2_lot_type do |lot_type|
       template_class 'Tag2LayoutTemplate'
     end
-
   end
 
   factory :pending_purpose, parent: :tube_purpose do |pp|
@@ -34,9 +32,9 @@ FactoryGirl.define do
   end
 
   factory :lot do |lot|
-    sequence(:lot_number)  { |n| "lot#{n}" }
+    sequence(:lot_number) { |n| "lot#{n}" }
     lot_type
-    template    { create :plate_template_with_well }
+    template { create :plate_template_with_well }
     user
     received_at '2014-02-01'
 
@@ -72,6 +70,6 @@ FactoryGirl.define do
     name      "testtemplate2"
     value     96
     size      96
-    wells    { [create(:well_with_sample_and_without_plate, map: create(:map))] }
+    wells { [create(:well_with_sample_and_without_plate, map: create(:map))] }
   end
 end

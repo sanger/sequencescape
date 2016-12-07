@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class CustomMetadatumTest < ActiveSupport::TestCase
-
   test "should not be valid if value is blank" do
     refute build(:custom_metadatum, value: nil).valid?
   end

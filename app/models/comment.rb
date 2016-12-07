@@ -11,7 +11,6 @@ class Comment < ActiveRecord::Base
   belongs_to :user
 
   scope :for_plate, ->(plate) {
-
     submissions = plate.all_submission_ids
 
     # Warning: The code below is utterly horrible, and has already be the source of several bugs
@@ -35,7 +34,6 @@ class Comment < ActiveRecord::Base
     else
       where(['comments.commentable_type = "Asset" and commentable_id = ?', plate.id])
     end
-
   }
 
   scope :include_uuid, -> { all }
@@ -45,5 +43,4 @@ class Comment < ActiveRecord::Base
     type = commentables.first.class.base_class.name
     where(commentable_type: type, commentable_id: commentables).group(:commentable_id).count
   end
-
 end

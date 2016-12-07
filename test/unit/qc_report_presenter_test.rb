@@ -8,7 +8,6 @@ require "test_helper"
 require "timecop"
 
 class QcReportPresenterTest < ActiveSupport::TestCase
-
   EXPECTED_CSV = %Q{Sequencescape QC Report,1.0.0
 This section is for information only and cannot be changed
 Please place a Y in the proceed column for any samples you wish to proceed; use a N for samples you don't want to proceed.
@@ -25,7 +24,6 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
 }
 
   context "A QcReportPresenter" do
-
     STATE_ARRAY = ['passed', 'failed']
 
     setup do
@@ -47,7 +45,5 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
       Presenters::QcReportPresenter.new(@report).to_csv(csv)
       assert_equal EXPECTED_CSV % @asset_ids, csv
     end
-
   end
-
 end

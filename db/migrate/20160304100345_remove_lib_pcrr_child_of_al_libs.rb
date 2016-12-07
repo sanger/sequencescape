@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class RemoveLibPcrrChildOfAlLibs < ActiveRecord::Migration
-
   def child_to_remove
     Purpose.find_by_name('Lib PCRR').id
   end

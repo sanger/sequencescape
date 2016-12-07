@@ -16,21 +16,17 @@ class BatchesController < ApplicationController
   before_action :find_batch_by_batch_id, only: [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
-    if params[:request_id]
-
-      @batches = [Request.find(params[:request_id]).batch].compact
-    elsif logged_in?
+    if logged_in?
       @user = current_user
-      assigned_batches = Batch.where(assignee_id: @user.id)
-      @batches = (@user.batches + assigned_batches).sort_by { |batch| batch.id }.reverse
+      @batches = Batch.where('assignee_id = :user OR user_id = :user', user: @user).order(id: :desc).page(params[:page])
     else
       # Can end up here with XML. And it causes pain.
       @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
     end
     respond_to do |format|
       format.html
-      format.xml  { render xml: @batches.to_xml }
-      format.json  { render json: @batches.to_json.gsub(/null/, "\"\"") }
+      format.xml { render xml: @batches.to_xml }
+      format.json { render json: @batches.to_json.gsub(/null/, "\"\"") }
     end
   end
 
@@ -61,7 +57,6 @@ class BatchesController < ApplicationController
   end
 
   def update
-
     if batch_parameters[:assignee_id]
       user = User.find(batch_parameters[:assignee_id])
       assigned_message = "Assigned to #{user.name} (#{user.login})."
@@ -106,12 +101,13 @@ class BatchesController < ApplicationController
         flash[:error] = exception.record.errors.full_messages
         redirect_to(pipeline_path(@pipeline))
       }
-      format.xml  { render xml: @batch.errors.to_xml }
+      format.xml { render xml: @batch.errors.to_xml }
     end
   end
 
   def pipeline
-    @batches = Batch.where(pipeline_id: params[:id]).order("id DESC").includes([:requests, :user, :pipeline])
+    # All pipline batches routes should just direct to batches#index with pipeline and state as filter parameters
+    @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
   # Used by Quality Control Pipeline view or remote sources to add a Batch ID to QC queue
@@ -129,7 +125,7 @@ class BatchesController < ApplicationController
             flash[:info] = message
             redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
           end
-          format.xml  { render text: nil, status: :success }
+          format.xml { render text: nil, status: :success }
         end
       else
         respond_to do |format|
@@ -173,8 +169,8 @@ class BatchesController < ApplicationController
     @batch.qc_complete
 
     @batch.batch_requests.each do |br|
-      if br && params["#{br.request_id}"]
-        qc_state = params["#{br.request_id}"]["qc_state"]
+      if br && params[(br.request_id).to_s]
+        qc_state = params[(br.request_id).to_s]["qc_state"]
         target = br.request.target_asset
         if qc_state == "fail"
           target.set_qc_state("failed")
@@ -193,19 +189,25 @@ class BatchesController < ApplicationController
   end
 
   def pending
-    @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.pending.order(id: :desc).includes([:requests, :user, :pipeline])
+    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # in the near future.
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
+    @batches = @pipeline.batches.pending.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
   def started
-    @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.started.order(id: :desc).includes([:requests, :user, :pipeline])
+    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # in the near future.
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
+    @batches = @pipeline.batches.started.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
   def released
-    @pipeline = Pipeline.find(params[:id])
+    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # in the near future.
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
 
-    @batches = @pipeline.batches.released.order(id: :desc).includes([:requests, :user, :pipeline])
+    @batches = @pipeline.batches.released.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
     respond_to do |format|
       format.html
       format.xml { render layout: false }
@@ -213,13 +215,17 @@ class BatchesController < ApplicationController
   end
 
   def completed
-    @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.completed.order(id: :desc).includes([:requests, :user, :pipeline])
+    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # in the near future.
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
+    @batches = @pipeline.batches.completed.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
   def failed
-    @pipeline = Pipeline.find(params[:id])
-    @batches = @pipeline.batches.failed.order(id: :desc).includes([:requests, :user, :pipeline])
+    # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
+    # in the near future.
+    @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
+    @batches = @pipeline.batches.failed.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
   end
 
   def fail
@@ -397,7 +403,6 @@ class BatchesController < ApplicationController
     end
   end
 
-
   def print_multiplex_barcodes
     print_job = LabelPrinter::PrintJob.new(params[:printer],
                                         LabelPrinter::Label::BatchMultiplex,
@@ -423,7 +428,6 @@ class BatchesController < ApplicationController
 
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
-
 
   def print_barcodes
     unless @batch.requests.empty?
@@ -474,7 +478,7 @@ class BatchesController < ApplicationController
     unless params.empty?
       8.times do |i|
         if params["barcode_#{i}"]
-          tube_barcodes["#{i + 1}"] = Barcode.split_barcode("#{params["barcode_#{i}"]}")[1]
+          tube_barcodes[(i + 1).to_s] = Barcode.split_barcode((params["barcode_#{i}"]).to_s)[1]
         end
       end
     end
@@ -558,7 +562,7 @@ class BatchesController < ApplicationController
         unless @batch.requests.first.target_asset.children.empty?
           multiplexed_library = @batch.requests.first.target_asset.children.first
 
-          if  !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
+          if !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
             @batch_assets = [multiplexed_library]
           else
             flash[:error] = "Already has a Stock tube."
@@ -598,7 +602,6 @@ class BatchesController < ApplicationController
     send_data csv_string, type: "text/plain",
      filename: "batch_#{@batch.id}_report.csv",
      disposition: 'attachment'
-
   end
 
   def pacbio_sample_sheet
@@ -614,7 +617,6 @@ class BatchesController < ApplicationController
      filename: "batch_#{@batch.id}_worksheet.csv",
      disposition: 'attachment'
   end
-
 
   def find_batch_by_barcode
     # Caution! This isn't actually a rails finder.
@@ -687,5 +689,4 @@ class BatchesController < ApplicationController
       format.xml { head :created, location: batch_url(@batch) }
     end
   end
-
 end

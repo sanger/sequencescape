@@ -204,6 +204,7 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    march_hare (2.18.0-java)
     metaclass (0.0.4)
     method_source (0.8.2)
     mime-types (2.99.3)
@@ -358,6 +359,8 @@ GEM
     thread_safe (0.3.5-java)
     tilt (2.0.5)
     timecop (0.8.0)
+    transactional_capybara (0.1.0)
+      capybara
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.7.2)
@@ -402,7 +405,7 @@ DEPENDENCIES
   bootstrap-sass
   builder
   bullet
-  bunny (~> 0.7)
+  bunny
   cancan
   capybara
   carrierwave
@@ -427,6 +430,7 @@ DEPENDENCIES
   json
   knapsack
   launchy
+  march_hare (~> 2.18.0)
   mime-types
   mocha
   multi_json
@@ -456,6 +460,7 @@ DEPENDENCIES
   spreadsheet
   therubyrhino
   timecop
+  transactional_capybara
   uglifier (>= 1.0.3)
   uuidtools
   webmock

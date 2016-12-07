@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class PmbClientTest < ActiveSupport::TestCase
-
   attr_reader :labels
 
   def setup
@@ -27,12 +26,11 @@ class PmbClientTest < ActiveSupport::TestCase
     }
   end
 
-  test "should have base url"  do
+  test "should have base url" do
     assert LabelPrinter::PmbClient.base_url
   end
 
   test "sends a print job to the API" do
-
     attributes = { "printer_name" => "d304bc",
                   "label_template_id" => 1,
                   "labels" => labels }
@@ -43,7 +41,6 @@ class PmbClientTest < ActiveSupport::TestCase
     .returns(201)
 
     assert_equal 201, LabelPrinter::PmbClient.print(attributes)
-
   end
 
   test "should inform if attributes are missing" do
@@ -106,6 +103,4 @@ class PmbClientTest < ActiveSupport::TestCase
     pretty_errors = 'Printer: Something is wrong, Something else is wrong; Labels: Something is wrong'
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end
-
-
 end

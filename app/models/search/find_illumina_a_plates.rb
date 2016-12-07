@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-
 require_dependency "illumina_htp/plate_purposes"
 
 class Search::FindIlluminaAPlates < Search

@@ -50,5 +50,4 @@ class Admin::RolesController < ApplicationController
       end
     end
   end
-
 end

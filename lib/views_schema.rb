@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2014 Genome Research Ltd.
 module ViewsSchema
-
   def self.each_view
     all_views.each do |name|
       query = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}")

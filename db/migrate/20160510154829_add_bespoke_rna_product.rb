@@ -1,5 +1,4 @@
 class AddBespokeRnaProduct < ActiveRecord::Migration
-
   DNA_LIBRARIES = [
     # No DNA libraries
   ]

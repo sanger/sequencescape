@@ -1,9 +1,7 @@
 
 module LabelPrinter
   module Label
-
     class PlateCreator < BasePlate
-
       attr_reader :plates, :plate_purpose, :user_login
 
       def initialize(options)
@@ -21,9 +19,8 @@ module LabelPrinter
       end
 
       def top_far_right(plate)
-        "#{plate.parent.try(:barcode)}"
+        (plate.parent.try(:barcode)).to_s
       end
-
     end
   end
 end

@@ -7,8 +7,6 @@
 require "test_helper"
 require 'studies_controller'
 
-
-
 class StudiesControllerTest < ActionController::TestCase
   context "StudiesController" do
     setup do
@@ -155,12 +153,10 @@ class StudiesControllerTest < ActionController::TestCase
         should "fail on trying to create the study" do
           assert_equal  Study.count, @study_count
         end
-
       end
 
       context "create a new study using permission allowed (not required)" do
         setup do
-
           @study_count = Study.count
           post :create, "study" => {
             "name" => "hello 3",
@@ -185,8 +181,6 @@ class StudiesControllerTest < ActionController::TestCase
         should redirect_to("study path") { study_path(Study.last) }
         should set_flash.to("Your study has been created")
       end
-
     end
-
   end
 end

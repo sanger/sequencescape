@@ -5,7 +5,6 @@
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module SubmissionsHelper
-
   # Returns an array (or anything else) as an escaped string for
   # embedding in javascript
   def stringify_array(projects_array)
@@ -65,7 +64,6 @@ module SubmissionsHelper
     )
   end
   private :order_text_tag
-
 
   def studies_select(form, studies)
     prompt = case studies.count

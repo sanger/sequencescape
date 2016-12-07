@@ -25,7 +25,7 @@
         </tr>
     </thead>
     <tbody>
-    <% @summary.get_items.each do |summary_item| -%>
+    <% @summary.summaries.each do |summary_item| -%>
     <tr class="<%= cycle("rowodd", "roweven") %>">
       <td><%= summary_item.timestamp.to_formatted_s(:sortable) %></td>
       <td><%= summary_item.message %></td>

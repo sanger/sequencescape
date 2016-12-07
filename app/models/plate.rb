@@ -7,7 +7,6 @@
 require 'lab_where_client'
 
 class Plate < Asset
-
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
@@ -32,13 +31,12 @@ class Plate < Asset
   has_many :studies, ->() { uniq }, through: :wells
   has_many :projects, ->() { uniq }, through: :wells
 
-
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :orders_as_target, ->() { uniq }, through: :well_requests_as_target, source: :order
 
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
-  has_many :stock_requests,  ->() { uniq }, through: :stock_well_associations, source: :requests
-  has_many :stock_well_associations,  ->() { uniq }, through: :wells, source: :stock_wells
+  has_many :stock_requests, ->() { uniq }, through: :stock_well_associations, source: :requests
+  has_many :stock_well_associations, ->() { uniq }, through: :wells, source: :stock_wells
   has_many :stock_orders,  ->() { uniq }, through: :stock_requests, source: :order
 
   # The default state for a plate comes from the plate purpose
@@ -99,7 +97,6 @@ class Plate < Asset
     )
   }
 
-
   # About 10x faster than going through the wells
   def submission_ids
     @siat ||= container_associations.
@@ -154,9 +151,7 @@ class Plate < Asset
     }
   end
 
-
   class CommentsProxy
-
     attr_reader :plate
 
     def initialize(plate)
@@ -197,12 +192,12 @@ class Plate < Asset
       return s.length if s.respond_to?(:length)
       s
     end
+
     def count(*args)
       s = super(:all)
       return s.length if s.respond_to?(:length)
       s
     end
-
   end
 
   def comments
@@ -229,7 +224,6 @@ class Plate < Asset
   end
 
   contains :wells do # , :order => '`assets`.map_id ASC' do
-
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
     def post_import(links_data)
       time_now = Time.now
@@ -316,8 +310,7 @@ class Plate < Asset
   }
 
   # TODO: Make these more railsy
-  scope :with_sample,    ->(sample) {
-
+  scope :with_sample, ->(sample) {
       select("assets.*").uniq.
       joins([
         "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id",
@@ -325,11 +318,9 @@ class Plate < Asset
         "LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id"
       ]).
       where(["wsaliquots.sample_id IN(?)", Array(sample)])
-
   }
 
  scope :with_requests, ->(requests) {
-
    select("assets.*").uniq.
    joins([
         "INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id",
@@ -341,7 +332,6 @@ class Plate < Asset
   }
 
   scope :output_by_batch, ->(batch) {
-
       joins({
         container_associations: {
           content: {
@@ -350,7 +340,6 @@ class Plate < Asset
         }
       }).
       where(['batches.id = ?', batch.id])
-
   }
 
   scope :with_wells, ->(wells) {
@@ -445,7 +434,7 @@ class Plate < Asset
   end
 
   def plate_rows
-    ("A".."#{(?A.getbyte(0) + height - 1).chr}").to_a
+    ("A"..((?A.getbyte(0) + height - 1).chr).to_s).to_a
   end
 
   def plate_columns
@@ -563,7 +552,7 @@ class Plate < Asset
     begin
       params[:snp_plates].each do |index, plate_barcode_id|
         next if plate_barcode_id.blank?
-        plate = Plate.create(barcode: "#{plate_barcode_id}", name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
+        plate = Plate.create(barcode: plate_barcode_id.to_s, name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
         storage_location = Location.find(params[:asset][:location_id])
         plate.location = storage_location
         plate.save!

@@ -4,15 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 # SubmissionPools are designed to view submissions in the context of a particular asset
 class SubmissionPool < ActiveRecord::Base
-
   module Association
     module Plate
       def self.included(base)
         base.class_eval do
-
           # Rails 4 takes scopes as second argument, we can probably also tidy up and remove the counter_sql
           # as it is the :group by seems to throw rails, and distinct will throw off out count.
           has_many :submission_pools, ->() { select('submissions.*, requests.id AS outer_request_id').group('submissions.id').uniq },
@@ -40,10 +37,8 @@ class SubmissionPool < ActiveRecord::Base
           def submission_pools
             SubmissionPool.for_plate(self)
           end
-
         end
       end
-
     end
   end
 
@@ -57,7 +52,6 @@ class SubmissionPool < ActiveRecord::Base
   scope :include_outer_request, ->() { includes(:outer_request) }
 
   scope :for_plate, ->(plate) {
-
     stock_plate = plate.stock_plate
 
     return where('false') if stock_plate.nil?
@@ -93,7 +87,6 @@ class SubmissionPool < ActiveRecord::Base
         return s if s.is_a?(Numeric)
         s.length
       end
-
   end
 
   def plates_in_submission
@@ -103,5 +96,4 @@ class SubmissionPool < ActiveRecord::Base
   def used_tag2_layout_templates
     tag2_layout_templates.map { |template| { "uuid" => template.uuid, "name" => template.name } }
   end
-
 end

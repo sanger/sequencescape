@@ -19,5 +19,4 @@ class BaitLibraryType < ActiveRecord::Base
     self.visible = false
     save!
   end
-
 end

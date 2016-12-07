@@ -8,9 +8,7 @@ require "test_helper"
 require 'submissions_controller'
 
 class SplitSubmissionBatchesTest < ActionController::TestCase
-
   context "when I have a submission" do
-
     setup do
       @user = FactoryGirl.create :user
       @controller = SubmissionsController.new
@@ -62,7 +60,6 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       end
 
       context "and I batch up the library creation requests seperately" do
-
         setup do
           @requests_group_a = LibraryCreationRequest.all[0..1]
           @requests_group_b = LibraryCreationRequest.all[2..3]
@@ -71,7 +68,6 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
           @batch_a.start!(user: @user)
           @batch_a.complete!(@user)
           @batch_a.release!(@user)
-
         end
 
         should "before failing any sequencing requests" do
@@ -81,7 +77,6 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
 
         context "afer failing sequencing requests" do
           setup do
-
             @sequencing_group = SequencingRequest.all[0..1]
             @seq_batch = Batch.create!(requests: @sequencing_group, pipeline: @sequencing_pipeline)
 
@@ -94,13 +89,9 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
             assert_equal LibraryCreationRequest.first.id + 4, LibraryCreationRequest.first.next_requests(@pipeline) { |r| true }.first.id
             assert_equal LibraryCreationRequest.all[2].id + 12, LibraryCreationRequest.all[2].next_requests(@pipeline) { |r| true }.first.id
           end
-
         end
-
       end
-
     end
-
 
     context "which is multiplexed" do
          setup do
@@ -137,7 +128,6 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
            assert_equal 5, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |r| true }.size
            assert_equal MultiplexedLibraryCreationRequest.first.id + 8, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |r| true }.last.id
          end
-
     end
   end
 end

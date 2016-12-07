@@ -75,5 +75,4 @@ class BarcodePrintersController < ApplicationController
       format.html { redirect_to(barcode_printers_url) }
     end
   end
-
 end

@@ -25,10 +25,10 @@ class RequestsController < ApplicationController
     # are limited by the Asset / Item.
     request_source = Request.order(created_at: :desc).includes(:asset, :request_type).where(search_params).paginate(per_page: 200, page: params[:page])
 
-    @item = Item.find(params[:item_id]) if params[:item_id]
+    @item               = Item.find(params[:item_id]) if params[:item_id]
     @item ||= @asset_id = Asset.find(params[:asset_id]) if params[:asset_id]
-    @request_type           = RequestType.find(params[:request_type_id]) if params[:request_type_id]
-    @study                  = Study.find(params[:study_id]) if params[:study_id]
+    @request_type       = RequestType.find(params[:request_type_id]) if params[:request_type_id]
+    @study              = Study.find(params[:study_id]) if params[:study_id]
 
     # Deprecated?: It would be great if we could remove this
     if params[:request_type] and params[:workflow]
@@ -119,7 +119,7 @@ class RequestsController < ApplicationController
   def cancel
     @request = Request.find(params[:id])
     if @request.cancelable?
-      if  @request.cancel_before_started && @request.save
+      if @request.cancel_before_started && @request.save
         flash[:notice] = "Request #{@request.id} has been cancelled"
         redirect_to request_path(@request)
       else
@@ -217,5 +217,6 @@ class RequestsController < ApplicationController
   def search_params
     permitted = params.permit(:asset_id, :item_id, :state, :request_type_id, :workflow_id)
     permitted[:initial_study_id] = params[:study_id] if params[:study_id]
+    permitted
   end
 end

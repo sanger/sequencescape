@@ -36,7 +36,7 @@ module ::Core::Io::Json
 
     def encode(object, options = {})
       case
-      when object.nil?              then unencoded('null')
+      when object.nil? then unencoded('null')
       when Symbol                        === object    then string_encode(object)
       when TrueClass                     === object    then unencoded('true')
       when FalseClass                    === object    then unencoded('false')

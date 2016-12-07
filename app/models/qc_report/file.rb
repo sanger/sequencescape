@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class QcReport::File
-
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'
   FILE_VERSION_KEY = 'Sequencescape QC Report'
@@ -141,5 +140,4 @@ class QcReport::File
     invalid('Please make sure there is an empty line before the column headers.') if lines_read >= MAXIMUM_HEADER_SIZE
     @headers = headers
   end
-
 end

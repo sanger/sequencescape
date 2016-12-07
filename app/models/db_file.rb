@@ -20,13 +20,11 @@ class DbFile < ActiveRecord::Base
     # Mount an uploader on the specified 'data' column
     #  - you can use the serialisation option for saving the filename in another column - see Carrierwave
     def has_uploaded(data, options)
-      serialization_column = options.fetch(:serialization_column, "#{data}")
+      serialization_column = options.fetch(:serialization_column, data.to_s)
 
       class_eval do
         mount_uploader data, PolymorphicUploader, mount_on: serialization_column
       end
-
     end
-
   end
 end

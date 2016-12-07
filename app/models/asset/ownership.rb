@@ -4,11 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
-
 module Asset::Ownership
-
   module ChangesOwner
-
     # Included in events which change ownership of plates
     def self.included(base)
       base.class_eval do
@@ -41,7 +38,6 @@ module Asset::Ownership
 
     def self.included(base)
       base.class_eval do
-
         has_one :plate_owner
         has_one :owner, source: :user, through: :plate_owner
 
@@ -49,7 +45,6 @@ module Asset::Ownership
             joins(:plate_owner).
             where(plate_owners: { user_id: user })
           }
-
       end
     end
 

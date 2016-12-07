@@ -10,5 +10,4 @@
 # StiType of all exititing CherrypickForPulldownRequests to CherrypickRequest
 # As well as updating request_class on request_types.
 class CherrypickForPulldownRequest < CherrypickRequest
-
 end

@@ -3,7 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 module ForeignKeyConstraint
-
   def add_constraint(table, modl, options = {})
     parse_options(table, modl, options) do |table, modl, as, fk|
       say "Creating foreign key constraint between #{table}.#{as} and #{modl}.#{fk}"
@@ -27,5 +26,4 @@ module ForeignKeyConstraint
     raise 'Invalid association' unless /\A[a-z0-9_]+\Z/ === as
     yield(table, modl, as, fk)
   end
-
 end

@@ -1,6 +1,5 @@
 module SampleManifestExcel
   class ConditionalFormattingDefaultList
-
     include Enumerable
     include Comparable
 
@@ -36,6 +35,5 @@ module SampleManifestExcel
         end
       end
     end
-
   end
 end

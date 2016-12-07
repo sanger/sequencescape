@@ -46,5 +46,4 @@ class AssetCreation < ActiveRecord::Base
   def multiple_purposes
     false
   end
-
 end

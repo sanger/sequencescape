@@ -147,7 +147,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         should 'represent partial plate correctly when there are no picks made' do
           expected = []
           expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 1
-          expected.concat([CherrypickTask::EMPTY_WELL] * 6)         # Columns 2-11
+          expected.concat([CherrypickTask::EMPTY_WELL] * 6) # Columns 2-11
           expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 12
 
           plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @batch, @partial)

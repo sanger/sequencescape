@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class RangeTest < ActiveSupport::TestCase
-
   attr_reader :range, :options
 
   def setup
@@ -15,7 +14,6 @@ class RangeTest < ActiveSupport::TestCase
   end
 
   context "with options" do
-
     setup do
       @range = SampleManifestExcel::Range.new(options: options, first_row: 4)
     end
@@ -63,7 +61,6 @@ class RangeTest < ActiveSupport::TestCase
         reference: range.reference, fixed_reference: range.fixed_reference,
         absolute_reference: range.absolute_reference }, range.references)
     end
-
   end
 
   context "without first row" do
@@ -85,7 +82,6 @@ class RangeTest < ActiveSupport::TestCase
   end
 
   context "without options" do
-
     setup do
       @range = SampleManifestExcel::Range.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60)
     end
@@ -133,7 +129,6 @@ class RangeTest < ActiveSupport::TestCase
     end
 
     context "without last row" do
-
       setup do
         @range = SampleManifestExcel::Range.new(first_row: 15, first_column: 5, last_column: 15)
       end
@@ -141,11 +136,9 @@ class RangeTest < ActiveSupport::TestCase
       should "set last row to first row" do
         assert_equal 15, range.last_row
       end
-
     end
 
     context "without last column" do
-
       setup do
         @range = SampleManifestExcel::Range.new(first_row: 14, last_row: 25, first_column: 33)
       end
@@ -156,7 +149,6 @@ class RangeTest < ActiveSupport::TestCase
     end
 
     context "with worksheet name" do
-
       setup do
         @range = SampleManifestExcel::Range.new(first_row: 10, last_row: 15, first_column: 3, last_column: 60, worksheet_name: "Sheet1")
       end
@@ -169,7 +161,5 @@ class RangeTest < ActiveSupport::TestCase
         assert_equal "Sheet1!#{range.fixed_reference}", range.absolute_reference
       end
     end
-
   end
-
 end

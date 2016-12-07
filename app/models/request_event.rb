@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class RequestEvent < ActiveRecord::Base
-
   belongs_to :request
 
   validates :request, :to_state, :current_from, :event_name, presence: true
@@ -18,5 +17,4 @@ class RequestEvent < ActiveRecord::Base
     raise StandardError, 'This event has already expired!' unless current_to.nil?
     self.update_attributes!(current_to: date_time)
   end
-
 end

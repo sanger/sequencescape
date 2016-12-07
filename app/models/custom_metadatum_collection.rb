@@ -3,7 +3,7 @@ class CustomMetadatumCollection < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :asset
-  has_many :custom_metadata,  dependent: :destroy
+  has_many :custom_metadata, dependent: :destroy
 
   validates_presence_of :asset_id, :user_id
 
@@ -17,5 +17,4 @@ class CustomMetadatumCollection < ActiveRecord::Base
       attributes.map { |k, v| custom_metadata.build(key: k, value: v) }
     end
   end
-
 end

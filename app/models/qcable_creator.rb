@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class QcableCreator < ActiveRecord::Base
-
   include Uuid::Uuidable
 
   belongs_to :user
@@ -24,5 +23,4 @@ class QcableCreator < ActiveRecord::Base
       lot.save!
     end
   end
-
 end

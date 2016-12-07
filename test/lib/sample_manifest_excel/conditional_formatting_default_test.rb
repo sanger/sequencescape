@@ -1,11 +1,9 @@
 require 'test_helper'
 
 class ConditionalFormattingDefaultTest < ActiveSupport::TestCase
-
   attr_reader :conditional_formatting_default, :options
 
   context "basic" do
-
     setup do
       @options = { style: { bg_color: '82CAFA', type: :dxf },
                   options: { type: :cellIs, formula: 'FALSE', operator: :equal, priority: 1 },
@@ -36,11 +34,9 @@ class ConditionalFormattingDefaultTest < ActiveSupport::TestCase
     should "be comparable" do
       assert_equal SampleManifestExcel::ConditionalFormattingDefault.new(options), conditional_formatting_default
     end
-
   end
 
   context "expression" do
-
     setup do
         @options = { style: { bg_color: 'FF0000', type: :dxf },
                   options: { type: :expression, priority: 2 },
@@ -78,5 +74,4 @@ class ConditionalFormattingDefaultTest < ActiveSupport::TestCase
       assert_equal to_combine[:formula].merge(type: :len), combination[:formula]
     end
   end
-
 end

@@ -75,6 +75,7 @@ module CarrierWave
         end
 
         private
+
           # Gets the current data from the database
           def current_data
             @uploader.model.db_files.map(&:data).join
@@ -104,7 +105,6 @@ module CarrierWave
   end # Storage
 end # CarrierWave
 class PolymorphicUploader < CarrierWave::Uploader::Base
-
   def initialize(*args, &block)
     super
   end
@@ -124,7 +124,6 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
     self.class.cache_dir
   end
 
-
   before :store, :remember_cache_id
   after :store, :delete_tmp_dir
 
@@ -139,6 +138,4 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
       FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
     end
   end
-
-
 end

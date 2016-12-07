@@ -21,5 +21,4 @@ module Tasks::AttachInfiniumBarcodeHandler
     end
     true
   end
-
 end

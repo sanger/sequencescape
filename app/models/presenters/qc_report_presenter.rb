@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class Presenters::QcReportPresenter
-
   REPORT_IDENTITY = 'Sequencescape QC Report'
   VERSION = '1.0.0'
   HEADER_FIELDS = {
@@ -43,7 +42,6 @@ class Presenters::QcReportPresenter
   def study_abbreviation
     qc_report.study.abbreviation
   end
-
 
   def state
     qc_report.state.humanize
@@ -104,5 +102,4 @@ class Presenters::QcReportPresenter
       @csv << [m.asset_id] + criteria_headers.map { |h| m.metrics[h] } + [m.qc_decision, m.human_proceed]
     end
   end
-
 end

@@ -8,6 +8,7 @@ class PulldownMultiplexedLibraryCreationRequest < CustomerRequest
   # override default behavior to not copy the aliquots
   def on_started
   end
+
   def valid_request_for_pulldown_report?
     well = self.asset
     return false if well.nil? || !well.is_a?(Well)

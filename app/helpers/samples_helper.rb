@@ -11,5 +11,4 @@ module SamplesHelper
   def organism_validation_javascript
     javascript_include_tag('organism_validation')
   end
-
 end

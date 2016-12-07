@@ -1,9 +1,7 @@
 module SampleManifestExcel
-
   ##
   # A list of conditional formattings for a single entity e.g. Column.
   class ConditionalFormattingList
-
     include Enumerable
     include Comparable
 
@@ -47,8 +45,6 @@ module SampleManifestExcel
 
       self
     end
-
-
 
     ##
     # Collect all of the options for each item in the list.

@@ -1,5 +1,4 @@
 module Authorization #:nodoc:
-
   # Base error class for Authorization module
   class AuthorizationError < StandardError
   end

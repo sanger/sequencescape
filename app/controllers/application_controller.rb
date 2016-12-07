@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
     object.each do |k, v|
       if k == "check" and v.is_a?(Hash)
         v.each do |k, v|
-        to_nil << k unless v == "true"
+          to_nil << k unless v == "true"
         end
       else # normal
         new_hash[k] = clean_params_from_check(v)
@@ -45,8 +45,8 @@ class ApplicationController < ActionController::Base
     to_nil.each do |k|
       new_hash[k] = nil
     end
-    new_hash
 
+    new_hash
   end
 
   public

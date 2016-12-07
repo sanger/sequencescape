@@ -28,5 +28,4 @@ class Pipeline::GrouperForPipeline
     grouping << 'requests.submission_id' if group_by_submission?
     grouping.join(',')
   end
-
 end

@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-
 require "#{Rails.root}/app/models/illumina_b/plate_purposes"
 
 class Search::FindIlluminaBTubes < Search
@@ -28,5 +27,4 @@ class Search::FindIlluminaBTubes < Search
     Tube::Purpose.where(name: IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.map(&:last))
   end
   delegate :illumina_b_final_tube_purpose, to: 'self.class'
-
 end

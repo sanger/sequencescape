@@ -25,6 +25,5 @@ module Pipeline::BatchValidation
   # Overridden by pipeline implementations to ensure that the batch is valid for completion.  By
   # default this does nothing.
   def validation_of_batch_for_completion(batch)
-
   end
 end

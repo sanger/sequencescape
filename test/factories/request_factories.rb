@@ -11,7 +11,6 @@
 # - Factories names after a class should avoid creating associations, except where they are required for the
 #   request to be valid.
 FactoryGirl.define do
-
   factory :multiplexed_library_creation_request, parent: :request  do
     sti_type      { RequestType.find_by(name: 'Multiplexed library creation').request_class_name }
     asset         { |asset| asset.association(:sample_tube)  }
@@ -27,12 +26,12 @@ FactoryGirl.define do
   end
 
   %w(failed passed pending cancelled).each do |request_state|
-    factory :"#{request_state}_request", parent: :request  do
+    factory :"#{request_state}_request", parent: :request do
       state request_state
     end
   end
 
-  factory :request_with_submission, class: Request  do
+  factory :request_with_submission, class: Request do
     request_type { |rt| rt.association(:request_type) }
 
     # Ensure that the request metadata is correctly setup based on the request type
@@ -57,8 +56,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :sequencing_request, class: SequencingRequest  do
-    request_type     { |rt| rt.association(:request_type) }
+  factory :sequencing_request, class: SequencingRequest do
+    request_type { |rt| rt.association(:request_type) }
     request_purpose { |rt| rt.association(:request_purpose) }
 
     # Ensure that the request metadata is correctly setup based on the request type
@@ -98,8 +97,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :request_without_assets, parent: :request_with_submission  do
-
+  factory :request_without_assets, parent: :request_with_submission do
     transient do
       user_login { 'abc123' }
     end
@@ -111,36 +109,36 @@ FactoryGirl.define do
     state 'pending'
     study
     user              { |user| User.find_by(login: user_login) || create(:user, login: user_login) }
-    workflow          { |workflow|   workflow.association(:submission_workflow) }
+    workflow          { |workflow| workflow.association(:submission_workflow) }
   end
 
-  factory :request, parent: :request_without_assets  do
+  factory :request, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
     asset           { |asset| asset.association(:sample_tube)  }
     target_asset    { |asset| asset.association(:library_tube) }
     request_purpose { |rp|    rp.association(:request_purpose) }
   end
 
-  factory :request_with_sequencing_request_type, parent: :request_without_assets  do
+  factory :request_with_sequencing_request_type, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
-    asset            { |asset|    asset.association(:library_tube)  }
+    asset            { |asset|    asset.association(:library_tube) }
     request_metadata { |metadata| metadata.association(:request_metadata_for_standard_sequencing) }
     request_type     { |rt|       rt.association(:sequencing_request_type) }
   end
 
-  factory :well_request, parent: :request_without_assets  do
+  factory :well_request, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
     request_type { |rt|    rt.association(:well_request_type) }
-    asset        { |asset| asset.association(:well)  }
+    asset        { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:well) }
   end
 
-  factory :request_suitable_for_starting, parent: :request_without_assets  do
+  factory :request_suitable_for_starting, parent: :request_without_assets do
     asset        { |asset| asset.association(:sample_tube)        }
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :request_without_item, class: "Request"  do
+  factory :request_without_item, class: "Request" do
     study
     project
     user
@@ -159,7 +157,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :request_without_project, class: Request  do
+  factory :request_without_project, class: Request do
     study
     item
     user
@@ -170,14 +168,13 @@ FactoryGirl.define do
   end
 
   factory :pooled_cherrypick_request do
-    asset      { |asset| asset.association(:well_with_sample_and_without_plate) }
+    asset { |asset| asset.association(:well_with_sample_and_without_plate) }
     request_purpose
   end
 
   factory :lib_pcr_xp_request, parent: :request_without_assets do
     request_type { |rt|    rt.association(:lib_pcr_xp_request_type) }
-    asset        { |asset| asset.association(:well)  }
+    asset        { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
-
 end

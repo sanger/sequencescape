@@ -72,7 +72,6 @@ class TagLayout < ActiveRecord::Base
     extend(walking_algorithm.constantize)
   end
 
-
   def wells_in_walking_order
     plate.wells.send(:"in_#{direction.tr(' ', '_')}_major_order")
   end
@@ -106,5 +105,4 @@ class TagLayout < ActiveRecord::Base
     tag.tag!(well) unless well.aliquots.empty?
   end
   private :apply_tag
-
 end

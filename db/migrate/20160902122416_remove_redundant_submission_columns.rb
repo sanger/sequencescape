@@ -22,5 +22,4 @@ class RemoveRedundantSubmissionColumns < ActiveRecord::Migration
     add_column :submissions, "asset_group_id_to_delete",   :integer
     add_column :submissions, "asset_group_name_to_delete", :string
   end
-
 end

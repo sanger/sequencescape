@@ -44,5 +44,4 @@ module Tasks::AssignTagsToWellsHandler
 
     true
   end
-
 end

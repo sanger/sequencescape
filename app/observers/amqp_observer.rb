@@ -5,6 +5,7 @@
 # Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class AmqpObserver < ActiveRecord::Observer
+  class_attribute :exchange_interface, instance_accessor: true
   # Observe not only the records but their metadata too, otherwise we may miss changes.
   observe(
     :order, :submission, :request, :plate_purpose,
@@ -18,6 +19,42 @@ class AmqpObserver < ActiveRecord::Observer
     :messenger,
     :broadcast_event
   )
+
+  module BunnyExchange
+    # The combination of Bunny & Mongrel means that, unless you start & stop the Bunny connection,
+    # the Mongrel process will start killing threads because of too many open files.  Run handles
+    # all this for us.
+    def self.exchange
+      Bunny.run(configatron.amqp.url, spec: '09', frame_max: configatron.amqp.fetch(:maximum_frame, 0)) do |client|
+        yield client.exchange('psd.sequencescape', passive: true)
+      end
+    rescue Bunny::ConnectionTimeout, StandardError => exception
+      Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
+    end
+  end
+
+  module HareExchange
+    def self.exchange
+      client = MarchHare.connect(uri: configatron.amqp.url)
+      begin
+        ch = client.create_channel
+        exchange = ch.topic('psd.sequencescape', passive: true, durable: true)
+        yield exchange
+      ensure
+        client.close
+      end
+    rescue MarchHare::ConnectionRefused, StandardError => exception
+      Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
+    end
+  end
+
+  # Switch our AMQP client depending on which is included
+  # MarchHare in case of Jruby, Bunny of MRI
+  self.exchange_interface = if defined?(JRuby)
+                              HareExchange
+                            else
+                              BunnyExchange
+                            end
 
   # Ensure we capture records being saved as well as deleted.
   #
@@ -71,7 +108,7 @@ class AmqpObserver < ActiveRecord::Observer
 
     def <<(record)
       buffer << record
-      self  # Ensure we can chain these if necessary!
+      self # Ensure we can chain these if necessary!
     end
 
     # Converts metadata entries to their owner records, if necessary
@@ -84,7 +121,7 @@ class AmqpObserver < ActiveRecord::Observer
       when record.is_a?(Metadata::Base) then yield(record.owner, nil)
       when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)
       when record.is_a?(Role::UserRole) then determine_record_to_broadcast(record.role, &block)
-      else                                   yield(record,       record)
+      else                                   yield(record, record)
       end
     end
 
@@ -102,7 +139,7 @@ class AmqpObserver < ActiveRecord::Observer
         @updated.group_by(&:first).each do |model, pairs|
           # Regardless of what the scoping says, we're going by ID so we always want to do what
           # the standard model does.  If we need eager loading we'll add it.
-          model.send(:with_exclusive_scope) do
+          model.unscoped do
             model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
             pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
           end
@@ -171,20 +208,10 @@ class AmqpObserver < ActiveRecord::Observer
     end
     private :buffer
 
-    # The combination of Bunny & Mongrel means that, unless you start & stop the Bunny connection,
-    # the Mongrel process will start killing threads because of too many open files.  This method,
-    # therefore, enables transactional support for connecting to an exchange.
+    # We may have either Bunny of MArchHare depending on Ruby version.
+    # Unfortunately their interfaces are slightly different
     def activate_exchange(&block)
-      client = Bunny.new(configatron.amqp.url, spec: '09', frame_max: configatron.amqp.fetch(:maximum_frame, 0))
-      begin
-        client.start
-        exchange = client.exchange('psd.sequencescape', passive: true)
-        yield exchange
-      ensure
-        client.stop
-      end
-    rescue Qrack::ConnectionTimeout, StandardError => exception
-      Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
+      exchange_interface.exchange(&block)
     end
     private :activate_exchange
   end
@@ -193,10 +220,12 @@ end
 
 class ActiveRecord::Base
   class << self
-    def transaction_with_amqp(&block)
-      transaction_without_amqp { AmqpObserver.instance.transaction(&block) }
+    def transaction_with_amqp(opts = {}, &block)
+      transaction_without_amqp(opts) { AmqpObserver.instance.transaction(&block) }
     end
     alias_method_chain(:transaction, :amqp)
   end
-  def routing_key; nil; end
+  def routing_key;
+    nil;
+  end
 end if ActiveRecord::Base.observers.include?(:amqp_observer)

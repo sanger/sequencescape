@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Admin::Roles::UsersController < ApplicationController
-
   def index
     @role_name = params[:role_id]
     @users = User.joins(:roles).where(roles: { name: params[:role_id] }).order(:login).uniq

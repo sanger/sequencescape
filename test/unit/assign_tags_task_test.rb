@@ -29,7 +29,6 @@ class AssignTagsTaskTest < TaskTestBase
       @task      = create :assign_tags_task
       @tag_group = create :tag_group
       @tag       = create :tag, tag_group: @tag_group
-
     end
 
     expected_partial('assign_tags_batches')
@@ -81,9 +80,8 @@ class AssignTagsTaskTest < TaskTestBase
         assert_equal 2, @controller.batch.request_count
       end
 
-
       should "change MultiplexedLibraryTube.count by 1" do
-        assert_equal 1,  MultiplexedLibraryTube.count - @multiplexedlibrarytube_count, "Expected MultiplexedLibraryTube.count to change by 1"
+        assert_equal 1, MultiplexedLibraryTube.count - @multiplexedlibrarytube_count, "Expected MultiplexedLibraryTube.count to change by 1"
       end
 
       should "should update library" do
@@ -97,10 +95,8 @@ class AssignTagsTaskTest < TaskTestBase
         assert_equal @tag_group.tags.first, @library.aliquots.first.tag
 
         assert_equal 1, MultiplexedLibraryTube.last.parents.size
-        assert_equal LibraryTube.find(@library.id),  MultiplexedLibraryTube.last.parent
-
+        assert_equal LibraryTube.find(@library.id), MultiplexedLibraryTube.last.parent
       end
-
     end
   end
 end

@@ -32,5 +32,4 @@ module Tasks::SamplePrepQcHandler
 
     true
   end
-
 end

@@ -12,7 +12,6 @@ Given /^the barcode for plate (\d+) is "([^"]*)"$/ do |plate_id, barcode|
   Plate.find(plate_id).update_attributes!(barcode: barcode)
 end
 
-
 Then /^the activity logging table should be:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#asset_audits')))
 end

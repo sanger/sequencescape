@@ -15,5 +15,4 @@ class Samples::StudiesController < ApplicationController
       format.xml { render xml: studies.to_xml }
     end
   end
-
 end

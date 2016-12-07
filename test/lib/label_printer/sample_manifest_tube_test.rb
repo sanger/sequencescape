@@ -2,13 +2,11 @@ require 'test_helper'
 require_relative 'shared_tests'
 
 class SampleManifestTubeTest < ActiveSupport::TestCase
-
   include LabelPrinterTests::SharedTubeTests
 
   attr_reader :manifest, :tube_label, :tube1, :tube2, :tube3, :tubes, :prefix, :barcode1, :label
 
   def setup
-
     @manifest = create :sample_manifest, asset_type: '1dtube', count: 3
     @manifest.generate
 
@@ -22,9 +20,9 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
 
     options = { sample_manifest: @manifest, only_first_label: false }
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
-    @label = { top_line: "#{manifest.study.abbreviation}",
+    @label = { top_line: (manifest.study.abbreviation).to_s,
               middle_line: barcode1,
-              bottom_line: "#{Date.today.strftime("%e-%^b-%Y")}",
+              bottom_line: (Date.today.strftime("%e-%^b-%Y")).to_s,
               round_label_top_line: prefix,
               round_label_bottom_line: barcode1,
               barcode: tube1.ean13_barcode }
@@ -46,5 +44,4 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   test "should return correct top line" do
     assert_equal manifest.study.abbreviation, tube_label.top_line
   end
-
 end

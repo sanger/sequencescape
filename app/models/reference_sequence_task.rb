@@ -27,5 +27,4 @@ class ReferenceSequenceTask < Task
   def do_task(workflow, params)
     workflow.do_reference_sequence_task(self, params)
   end
-
 end

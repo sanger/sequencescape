@@ -12,5 +12,5 @@ class IlluminaC::AlLibsTaggedPurpose < PlatePurpose
 
   self.connect_on = 'qc_complete'
   self.connected_class = IlluminaC::Requests::LibraryRequest
-  self.connect_downstream = true
+  self.connect_downstream = false
 end

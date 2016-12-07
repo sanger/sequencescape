@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 # A class used for internal requests that drive sequencescape operation.
 class SystemRequest < Request
 end

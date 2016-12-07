@@ -5,13 +5,10 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AddProductProductCatlogueTable < ActiveRecord::Migration
-
   require './lib/foreign_key_constraint'
   extend ForeignKeyConstraint
 
   def self.up
-
-
     create_table :product_product_catalogues do |t|
       t.integer :product_id, null: false
       t.integer :product_catalogue_id, null: false

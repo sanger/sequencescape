@@ -78,7 +78,6 @@ class TagSubstitution
       attributes[:tag2_id] = original_tag2_id if original_tag2_id
       Aliquot.where(attributes).pluck(:id)
     end
-
   end
   # substitutions: Provide an array of hashes describing your desired substitutions
   # {

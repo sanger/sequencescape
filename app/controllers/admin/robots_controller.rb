@@ -15,14 +15,14 @@ class Admin::RobotsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @robots }
+      format.xml { render xml: @robots }
     end
   end
 
   def show
     respond_to do |format|
       format.html
-      format.xml  { render xml: @robot }
+      format.xml { render xml: @robot }
     end
   end
 
@@ -31,7 +31,7 @@ class Admin::RobotsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @robot }
+      format.xml { render xml: @robot }
     end
   end
 

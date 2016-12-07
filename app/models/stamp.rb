@@ -9,21 +9,18 @@
 # into a qcable.
 
 class Stamp < ActiveRecord::Base
-
   include Uuid::Uuidable
   include ModelExtensions::Stamp
 
   class StampQcable < ActiveRecord::Base
-
     self.table_name = ('stamp_qcables')
 
     belongs_to :stamp, inverse_of: :stamp_qcables
     belongs_to :qcable, inverse_of: :stamp_qcable
     validates :stamp, presence: true
-    validates :qcable,  presence: true
-    validates :bed,  presence: true
+    validates :qcable, presence: true
+    validates :bed, presence: true
     validates :order, presence: true
-
   end
 
   belongs_to :lot
@@ -41,6 +38,7 @@ class Stamp < ActiveRecord::Base
   after_create :stamp!
 
   private
+
   def stamp!
     ActiveRecord::Base.transaction do
       qcables.each(&:do_stamp!)

@@ -53,5 +53,4 @@ public
     content_tag(:span, study.state, class: "study-state label label-#{bootstrapify_study_state(study.state)}")
     link_to(link_text, study_path(study), options)
   end
-
 end

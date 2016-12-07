@@ -80,7 +80,6 @@ class XML::Node
     find_first_base(xpath_expr, namespace || default_namespaces)
   end
 
-
   alias_method :find_base, :find unless method_defined?(:find_base)
   alias_method :find, :find_with_default_ns
 

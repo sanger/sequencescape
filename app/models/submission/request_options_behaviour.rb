@@ -5,9 +5,23 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module Submission::RequestOptionsBehaviour
+  # Ensures the hash gets loaded with indifferent access.
+  # Note: We can't just specify the class, as otherwise legacy
+  # hashes throw an exception
+  class HashWrapper
+    def self.load(hash_yaml)
+      return hash_yaml if hash_yaml.nil?
+      YAML.load(hash_yaml)
+    end
+
+    def self.dump(hash)
+      YAML.dump(hash)
+    end
+  end
+
   def self.included(base)
     base.class_eval do
-      serialize :request_options, ActiveSupport::HashWithIndifferentAccess
+      serialize :request_options, HashWrapper
       validate :check_request_options, if: :request_options_changed?
     end
   end
@@ -24,7 +38,7 @@ module Submission::RequestOptionsBehaviour
 
   def check_multipliers_are_valid
     multipliers = request_options.try(:[], :multiplier)
-    return if multipliers.blank?      # We're ok with nothing being specified!
+    return if multipliers.blank? # We're ok with nothing being specified!
 
     # TODO[xxx]: should probably error if they've specified a request type that isn't being used
     errors.add(:request_options, 'negative multiplier supplied')  if multipliers.values.map(&:to_i).any?(&:negative?)

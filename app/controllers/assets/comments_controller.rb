@@ -35,6 +35,7 @@ class Assets::CommentsController < ApplicationController
   end
 
   private
+
   def discover_asset
     @asset = Asset.find(params[:asset_id])
   end

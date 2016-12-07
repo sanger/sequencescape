@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
 
   def logout_path
     if configatron.authentication == "sanger-sso"
-      return "#{configatron.sso_logout_url}"
+      return (configatron.sso_logout_url).to_s
     else
       return "/logout"
     end
@@ -123,7 +123,6 @@ class User < ActiveRecord::Base
   def valid_projects
     projects.valid.alphabetical
   end
-
 
   def sorted_study_names_and_ids
     interesting_studies.alphabetical.pluck(:name, :id)
@@ -250,6 +249,7 @@ class User < ActiveRecord::Base
   end
 
   protected
+
     # before filter
     def encrypt_password
       return if password.blank?
@@ -260,5 +260,4 @@ class User < ActiveRecord::Base
     def password_required?
       crypted_password.blank? || !password.blank?
     end
-
 end

@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 require "test_helper"
 
 class ProductCriteriaTest < ActiveSupport::TestCase
@@ -18,7 +17,6 @@ class ProductCriteriaTest < ActiveSupport::TestCase
       @product_a = create :product
       @criteria_a = create :product_criteria, product: @product_a, configuration: { total_micrograms: { greater_than: 50 } }
     end
-
 
     should 'only allow one active criteria per product per stage' do
       assert_raise(ActiveRecord::RecordInvalid) { create :product_criteria, product: @product_a }
@@ -86,5 +84,4 @@ class ProductCriteriaTest < ActiveSupport::TestCase
       assert assesment.passed?
     end
   end
-
 end

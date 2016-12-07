@@ -116,8 +116,8 @@ class Admin::UsersController < ApplicationController
   end
 
   private
+
   def setup_user
     @user = User.includes(:roles).find(params[:id])
   end
-
 end

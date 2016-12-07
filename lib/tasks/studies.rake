@@ -12,6 +12,5 @@ namespace :studies do
       puts "#{annotation.annotated.id}: Annotated to Q20: #{annotation.q20_yield}: run #{annotation.identifier}, lane #{annotation.location}"
       annotation.event_notification
     end
-
   end
 end

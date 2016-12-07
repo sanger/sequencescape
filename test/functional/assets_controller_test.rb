@@ -32,7 +32,18 @@ class AssetsControllerTest < ActionController::TestCase
     should set_flash.to(/Asset was successfully created/)
 
      should "change Asset.count by 1" do
-       assert_equal 1,  Asset.count - @asset_count, "Expected Asset.count to change by 1"
+       assert_equal 1, Asset.count - @asset_count, "Expected Asset.count to change by 1"
+    end
+  end
+
+  context "an asset_id" do
+    setup do
+      @asset = create :sample_tube
+      @location = create :location
+      put :update, id: @asset.id, asset: { location_id: @location.id }
+    end
+    should "be updateable" do
+      assert_equal @location, @asset.location
     end
   end
 
@@ -53,7 +64,7 @@ class AssetsControllerTest < ActionController::TestCase
     end
 
     should "change Submission.count by 1" do
-      assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
+      assert_equal 1, Submission.count - @submission_count, "Expected Submission.count to change by 1"
     end
     should "set a priority" do
       assert_equal(3, Submission.last.priority)
@@ -61,7 +72,6 @@ class AssetsControllerTest < ActionController::TestCase
   end
 
   context "print requests" do
-
     attr_reader :barcode_printer
 
     setup do
@@ -74,12 +84,12 @@ class AssetsControllerTest < ActionController::TestCase
     should "#print_assets should send print request" do
       asset = create :child_plate
       RestClient.expects(:post)
-      post :print_assets, printables: asset, printer: barcode_printer.name, id: "#{asset.id}"
+      post :print_assets, printables: asset, printer: barcode_printer.name, id: (asset.id).to_s
     end
     should "#print_labels should send print request" do
       asset = create :sample_tube
       RestClient.expects(:post)
-      post :print_labels, printables: { "#{asset.id}" => "true" }, printer: barcode_printer.name, id: "#{asset.id}"
+      post :print_labels, printables: { (asset.id).to_s => "true" }, printer: barcode_printer.name, id: (asset.id).to_s
     end
   end
 
@@ -121,5 +131,4 @@ class AssetsControllerTest < ActionController::TestCase
       }
     }
   end
-
 end

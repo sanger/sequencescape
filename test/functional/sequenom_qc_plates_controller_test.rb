@@ -9,9 +9,7 @@ require "test_helper"
 require 'sdb/sample_manifests_controller'
 
 class SequenomQcPlatesControllerTest < ActionController::TestCase
-
   context "#create" do
-
     setup do
       @controller = SequenomQcPlatesController.new
       @request    = ActionController::TestRequest.new
@@ -21,7 +19,6 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
     end
 
     should "send print request" do
-
       barcode = mock("barcode")
       barcode.stubs(:barcode).returns(23)
       PlateBarcode.stubs(:create).returns(barcode)
@@ -34,11 +31,11 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
 
       RestClient.expects(:post)
 
-      post :create, "user_barcode" => "#{Barcode.human_to_machine_barcode(@user.barcode)}",
-        "input_plate_names" => { "1" => "#{plate1.ean13_barcode}", "2" => "#{plate2.ean13_barcode}", "3" => "", "4" => "" },
+      post :create, "user_barcode" => (Barcode.human_to_machine_barcode(@user.barcode)).to_s,
+        "input_plate_names" => { "1" => (plate1.ean13_barcode).to_s, "2" => (plate2.ean13_barcode).to_s, "3" => "", "4" => "" },
         "plate_prefix" => "QC",
         "gender_check_bypass" => "1",
-        "barcode_printer" => { "id" => "#{barcode_printer.id}" },
+        "barcode_printer" => { "id" => (barcode_printer.id).to_s },
         "number_of_barcodes" => "1"
     end
   end

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ExampleLabel
-
   include LabelPrinter::Label::MultipleLabels
 
   attr_accessor :assets
@@ -11,11 +10,9 @@ class ExampleLabel
     right: asset.prefix,
     barcode: asset.barcode }
   end
-
 end
 
 class ExampleLabelTest < ActiveSupport::TestCase
-
   attr_reader :example_label, :label, :labels, :plate1, :plate2, :plate3, :plate4
 
   def setup

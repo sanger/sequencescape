@@ -72,7 +72,7 @@ class ContainerAssociation < ActiveRecord::Base
         end
       end
 
-      scope :"include_#{content_name}",  -> { includes(:contents) }  do
+      scope :"include_#{content_name}", -> { includes(:contents) } do
         def to_include
           [:contents]
         end

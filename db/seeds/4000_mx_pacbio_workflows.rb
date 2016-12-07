@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-
 next_gen_sequencing = Submission::Workflow.find_by_key!('short_read_sequencing')
 PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipeline|
   pipeline.sorter               = 14
@@ -25,7 +24,6 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipelin
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'PacBio Tagged Library Prep').tap do |workflow|
     [
-
       { class: PrepKitBarcodeTask,    name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
       { class: PlateTransferTask,     name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by_name('PacBio Sheared') },
       { class: TagGroupsTask,         name: "Tag Groups",                           sorted: 3, lab_activity: true },
@@ -38,8 +36,6 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipelin
 end.tap do |pipeline|
   create_request_information_types(pipeline, "sequencing_type", "insert_size")
 end
-
-
 
 PacBioSequencingPipeline.find_by_name('PacBio Sequencing').request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pacbio_multiplexed_sequencing', name: 'PacBio Multiplexed Sequencing') do |request_type|
   request_type.initial_state     = 'pending'

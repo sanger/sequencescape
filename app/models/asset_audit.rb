@@ -11,7 +11,6 @@ class AssetAudit < ActiveRecord::Base
 
   belongs_to :asset
 
-
   self.per_page = 500
 
   validates_presence_of :asset, :key
@@ -26,6 +25,4 @@ class AssetAudit < ActiveRecord::Base
   def broadcast_event
     BroadcastEvent::AssetAudit.create!(seed: self, user: User.find_by_login(created_by), created_at: created_at)
   end
-
-
 end

@@ -8,7 +8,6 @@ require './test/test_helper'
 require 'csv'
 
 class IscXtenParserTest < ActiveSupport::TestCase
-
   def read_file(filename)
     content = nil
     File.open(filename, "r") do |fd|
@@ -26,7 +25,6 @@ class IscXtenParserTest < ActiveSupport::TestCase
       end
 
       should "return a Parsers::IscXtenParser" do
-
         assert_equal true, (!Parsers.parser_for(@filename, nil, @content).nil?)
       end
     end
