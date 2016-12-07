@@ -422,8 +422,9 @@ class AssetsController < ApplicationController
   end
 
   private
+
   def discover_asset
-    @asset = Asset.includes(requests: :request_metadata).find(params[:id])
+    @asset = Asset.include_for_show.find(params[:id])
   end
 
   def check_valid_values(params = nil)
