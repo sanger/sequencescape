@@ -84,7 +84,6 @@ Lint/HandleExceptions:
     - 'lib/cron_scripts/generate_sample_accessions.rb'
     - 'lib/update_sample_accession_numbers.rb'
     - 'test/test_helper.rb'
-    - 'test/unit/observers/amqp_observer_test.rb'
 
 # Offense count: 40
 Lint/IneffectiveAccessModifier:
@@ -1251,7 +1250,6 @@ Style/SingleLineMethods:
     - 'app/models/pulldown/initial_downstream_plate_purpose.rb'
     - 'app/models/sample_manifest/core_behaviour.rb'
     - 'app/models/submission/flexible_request_graph.rb'
-    - 'app/observers/amqp_observer.rb'
     - 'test/unit/broadcast_event_test.rb'
     - 'test/unit/tag_qc/qcable_library_plate_purpose_test.rb'
 
