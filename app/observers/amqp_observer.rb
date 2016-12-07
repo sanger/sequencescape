@@ -199,7 +199,6 @@ class AmqpObserver < ActiveRecord::Observer
         persistent: configatron.amqp.persistent
       )
     end
-    private :publish_to
 
     # The buffer that should be written to is either the one created within the transaction, or it is a
     # wrapper around ourselves.
@@ -213,7 +212,6 @@ class AmqpObserver < ActiveRecord::Observer
     def activate_exchange(&block)
       exchange_interface.exchange(&block)
     end
-    private :activate_exchange
   end
   include Implementation
 end
