@@ -10,6 +10,8 @@ class Io::Tube::Purpose < Core::Io::Base
   set_json_root(:tube_purpose)
 
   define_attribute_and_json_mapping("
-                     name  => name
+    name  <=> name
+    parent_uuids <= parent_uuids
+    child_uuids <= child_uuids
   ")
 end

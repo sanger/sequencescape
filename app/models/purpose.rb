@@ -44,7 +44,6 @@ class Purpose < ActiveRecord::Base
     def set_default_transfer_request
       self.transfer_request_type ||= RequestType.transfer
     end
-
   end
 
   include Relationship::Associations

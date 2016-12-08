@@ -5,6 +5,12 @@
 require 'factory_girl'
 
 FactoryGirl.define do
+  factory :api_application do
+    sequence(:name) { |i| "App #{i}" }
+    contact 'test@example.com'
+    privilege 'full'
+  end
+
   factory :comment  do
     description 'It is okay I guess'
   end
@@ -246,109 +252,13 @@ FactoryGirl.define do
     end
   end
 
-  factory :request_type do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    deprecated     false
-    asset_type     'SampleTube'
-    request_class  Request
-    order          1
-    workflow { |workflow| workflow.association(:submission_workflow) }
-    initial_state   "pending"
-    request_purpose { |rt| rt.association(:request_purpose) }
-  end
-
   factory :extended_validator do
     behaviour 'SpeciesValidator'
     options({ taxon_id: 9606 })
   end
 
-  factory :validated_request_type, parent: :request_type do
-    after(:create) do |request_type|
-      request_type.extended_validators << create(:extended_validator)
-    end
-  end
-
   factory :library_type do
     name "Standard"
-  end
-
-  factory :library_types_request_type do
-    library_type
-    is_default true
-  end
-
-  factory :well_request_type, parent: :request_type do
-    asset_type 'Well'
-    request_class CustomerRequest
-  end
-
-  factory :library_creation_request_type, class: RequestType do
-    request_purpose { |rt| rt.association(:request_purpose) }
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    asset_type     "SampleTube"
-    target_asset_type "LibraryTube"
-    request_class  LibraryCreationRequest
-    order          1
-    workflow { |workflow| workflow.association(:submission_workflow) }
-    after(:build) { |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-    }
-  end
-
-  factory :sequencing_request_type, class: RequestType do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    request_purpose { |rt| rt.association(:request_purpose) }
-    asset_type     "LibraryTube"
-    request_class  SequencingRequest
-    order          1
-    workflow { |workflow| workflow.association(:submission_workflow) }
-    after(:build) { |request_type|
-      request_type.request_type_validators << create(:sequencing_request_type_validator, request_type: request_type)
-    }
-  end
-
-  factory :sequencing_request_type_validator, class: RequestType::Validator do
-    request_option 'read_length'
-    valid_options { RequestType::Validator::ArrayWithDefault.new([37, 54, 76, 108], 54) }
-  end
-
-  factory :library_request_type_validator, class: RequestType::Validator do
-    request_option 'library_type'
-    valid_options { |rtva| RequestType::Validator::LibraryTypeValidator.new(rtva.request_type.id) }
-  end
-
-  factory :multiplexed_library_creation_request_type, class: RequestType do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    request_purpose { |rt| rt.association(:request_purpose) }
-    request_class      MultiplexedLibraryCreationRequest
-    asset_type         "SampleTube"
-    order              1
-    for_multiplexing   true
-    workflow           { |workflow| workflow.association(:submission_workflow) }
-      after(:build) { |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-    }
-  end
-
-  factory :plate_based_multiplexed_library_creation_request_type, class: RequestType do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    request_purpose
-    request_class      MultiplexedLibraryCreationRequest
-    asset_type         "Well"
-    order              1
-    for_multiplexing   true
-    workflow           { |workflow| workflow.association(:submission_workflow) }
-      after(:build) { |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-    }
   end
 
   factory :sample do

@@ -18,6 +18,14 @@ module IlluminaHtp::Requests
     def role
       order.role
     end
+
+    validate :valid_purpose?
+    def valid_purpose?
+      return true if request_type.acceptable_plate_purposes.empty? ||
+        request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
+      errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
+      false
+    end
   end
 
   class SharedLibraryPrep < StdLibraryRequest
@@ -27,13 +35,6 @@ module IlluminaHtp::Requests
 
     def on_failed
       submission.next_requests(self).each(&:failed_upstream!)
-    end
-
-    validate :valid_purpose?
-    def valid_purpose?
-      return true if request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
-      errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
-      false
     end
 
     def failed_downstream!
