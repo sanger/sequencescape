@@ -31,8 +31,9 @@ FactoryGirl.define do
       accession_number nil
     end
 
-    name 'Study: Manages'
+    sequence(:name) {|n| "Study#{n}: Manages" }
     state 'active'
+    
     after(:create) do |study,evaluator|
       study.study_metadata.update_attributes!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
     end
@@ -43,7 +44,7 @@ FactoryGirl.define do
       accession_number nil
     end
 
-    name 'Study: Open'
+    sequence(:name) {|n| "Study#{n}: Open" }
     state 'active'
 
     after(:create) do |study,evaluator|

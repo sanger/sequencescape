@@ -7,102 +7,74 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
   let(:folder)          { File.join("spec", "data") }
   let(:yaml)            { load_file(folder, "accession_tags") }
   let(:tag_list)        { Accession::TagList.new(yaml) }
-  let(:metadata)        { { sample_taxon_id: 1, sample_common_name: "A common name", 
-                          gender: "Unknown", phenotype: "Indescribeable", donor_id: 1,
-                          sample_public_name: "Sample 666", disease_state: "Awful" } }
-  let!(:open_study)     { create(:open_study, accession_number: "ENA123") }
-  let!(:managed_study)  { create(:managed_study, accession_number: "ENA123") }
-
-  it "should be sent for accessioning if the sample is valid" do
-    sample = create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample)).to be_valid
-  end
 
   it "should not be sent for accessioning if the sample has already been accessioned" do
-    sample = create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata.merge(sample_ebi_accession_number: "ENA123")))
+    sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_ebi_accession_number: "ENA123"))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
   end
 
   it "should not be sent for accessioning if the sample doesn't have an appropriate study" do
+    expect(Accession::Sample.new(tag_list, create(:sample))).to_not be_valid
+    expect(Accession::Sample.new(tag_list, create(:sample, studies: [create(:open_study)]))).to_not be_valid
 
-    sample = create(:sample)
-    expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
-
-    sample = create(:sample, studies: [create(:open_study, name: "Study 1")])
-    expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
-
-    sample = create(:sample, studies: [open_study, managed_study])
+    sample = create(:sample, studies: [create(:open_study, accession_number: "ENA123"), create(:managed_study, accession_number: "ENA123")])
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
   end
 
   it "should not be sent for accessioning if the sample doesn't have the required fields" do
 
-    sample = create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample)).to be_valid
-
-    sample = create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata.except(:sample_taxon_id)))
+    sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
-    sample = create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata.except(:sample_common_name)))
+    sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_common_name: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample)).to be_valid
-
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata.except(:gender)))
+    sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, gender: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata.except(:phenotype)))
+    sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, phenotype: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata.except(:donor_id)))
+    sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, donor_id: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata.except(:sample_taxon_id)))
+    sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata.except(:sample_common_name)))
+    sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_common_name: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
   end
 
   it "an appropriate service should be chosen based on the associated study" do
-    sample = create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample).service).to eq(:ENA)
+    sample = create(:sample_for_accessioning_with_open_study)
+    expect(Accession::Sample.new(tag_list, sample).service).to be_ena
 
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample).service).to eq(:EGA)
+    sample = create(:sample_for_accessioning_with_managed_study)
+    expect(Accession::Sample.new(tag_list, sample).service).to be_ega
 
-    sample = create(:sample, studies: [create(:open_study, name: "Study 1")], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample).service).to be_nil
-
-  end
-
-  it "should have a name" do
-    sample = create(:sample, name: "Sample_1-", studies: [open_study], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample).name).to eq("sample_666")
-
-    sample = create(:sample, name: "Sample_1_", studies: [open_study], sample_metadata: Sample::Metadata.new(metadata.except(:sample_public_name)))
-    expect(Accession::Sample.new(tag_list, sample).name).to eq("sample_1_")
+    sample = create(:sample, studies: [create(:open_study)])
+    expect(Accession::Sample.new(tag_list, sample).service).to_not be_valid
 
   end
 
-  it "should have a title" do
-    sample = create(:sample, name: "Sample1", studies: [open_study], sample_metadata: Sample::Metadata.new(metadata))
-    expect(Accession::Sample.new(tag_list, sample).title).to eq("Sample 666")
+  it "should have a name and a title" do
+    sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_public_name: "Sample 666"))
+    accession_sample = Accession::Sample.new(tag_list, sample)
+    expect(accession_sample.name).to eq("sample_666")
+    expect(accession_sample.title).to eq("Sample 666")
 
-    sample = create(:sample, name: "Sample2", studies: [open_study], sample_metadata: Sample::Metadata.new(metadata.except(:sample_public_name)))
-    expect(Accession::Sample.new(tag_list, sample).title).to eq(sample.sanger_sample_id)
-
+    sample = create(:sample_for_accessioning_with_open_study, name: "Sample_1-", sample_metadata: create(:sample_metadata_for_accessioning, sample_public_name: nil))
+    accession_sample = Accession::Sample.new(tag_list, sample)
+    expect(accession_sample.name).to eq("sample_1_")
+    expect(accession_sample.title).to eq(sample.sanger_sample_id)
   end
 
   it "should create some xml" do
-    sample = create(:sample, studies: [open_study], sample_metadata: Sample::Metadata.new(metadata))
-    accession_sample = Accession::Sample.new(tag_list, sample)
-
+    accession_sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_open_study))
     xml = accession_sample.to_xml
-    expect(xml).to include(accession_sample.alias)
+    expect(xml).to include(accession_sample.ebi_alias)
     expect(xml).to include(accession_sample.title)
 
     accession_sample.tags.by_group.each do |k, group|
@@ -112,8 +84,7 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
       end
     end
 
-    sample = create(:sample, studies: [managed_study], sample_metadata: Sample::Metadata.new(metadata))
-    accession_sample = Accession::Sample.new(tag_list, sample)
+    accession_sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_managed_study))
     xml = accession_sample.to_xml
     accession_sample.tags.by_group[:array_express].each do |tag|
       expect(xml).to_not include(tag.array_express_label)

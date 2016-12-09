@@ -14,11 +14,10 @@ module Accession
     # If the sample has a managed study it will be sent to the EGA
 
     include ActiveModel::Model
-
-    STUDY_TYPES = {"open" => :ENA, "managed" => :EGA}
+    include Accessionable
 
     validate :check_sample, :check_studies
-    validate :check_required_fields, if: Proc.new {|s| s.service.present? }
+    validate :check_required_fields, if: Proc.new {|s| s.service.valid? }
 
     attr_reader :standard_tags, :sample, :studies, :service, :tags
 
@@ -27,14 +26,14 @@ module Accession
       @sample = sample
       @studies = set_studies
       @tags = standard_tags.extract(sample.sample_metadata)
-      @service = STUDY_TYPES[studies.keys.first] if (studies.length == 1)
+      @service = Service.new(studies_valid? ? studies.keys.first : nil)
     end
 
     def name
-      @name ||= (sample.sample_metadata.sample_public_name  || sample.name).downcase.gsub(/[^\w\d]/i,'_')
+      @name ||= (sample.sample_metadata.sample_public_name  || sample.name).sanitize
     end
 
-     def title
+    def title
       @title ||= (sample.sample_metadata.sample_public_name || sample.sanger_sample_id)
     end
 
@@ -43,8 +42,8 @@ module Accession
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-        xml.SAMPLE(alias: self.alias) {
-          xml.TITLE self.title if self.title.present?
+        xml.SAMPLE(alias: ebi_alias) {
+          xml.TITLE title if title.present?
         }
         xml.SAMPLE_NAME {
           tag_groups[:sample_name].each do |tag|
@@ -59,7 +58,7 @@ module Accession
               xml.VALUE tag.value
             }
           end
-          if self.service == :ENA
+          if service.ena?
             tag_groups[:array_express].each do |tag|
               xml.SAMPLE_ATTRIBUTE {
                 xml.TAG tag.array_express_label
@@ -72,7 +71,7 @@ module Accession
       xml.target!
     end
 
-    def alias
+    def ebi_alias
       sample.uuid
     end
 
@@ -92,15 +91,18 @@ module Accession
 
     def check_required_fields
       unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata")
+        errors.add(:sample, "does not have the required metadata: #{tags.missing}")
       end
     end
 
     def check_studies
-      if service.nil?
+      unless studies_valid?
         errors.add(:sample, "no appropriate studies")
       end
+    end
 
+    def studies_valid?
+      studies.length == 1
     end
 
   end

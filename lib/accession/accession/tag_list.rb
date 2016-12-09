@@ -3,12 +3,13 @@ module Accession
 
     include Enumerable
 
-    attr_reader :tags
+    attr_reader :tags, :missing
 
     delegate :keys, :values, to: :tags
 
     def initialize(tags = {})
-      create_tags(tags)
+      @tags = {}
+      add_tags(tags.with_indifferent_access)
       yield self if block_given?
     end
 
@@ -17,7 +18,7 @@ module Accession
     end
 
     def required_for(service)
-      tags.values.select { |tag| tag.required_for?(service)}
+      tags.select { |k, tag| tag.required_for?(service) }
     end
 
     def find(key)
@@ -50,16 +51,19 @@ module Accession
     end
 
     def meets_service_requirements?(service, standard_tags)
-      self.required_for(service).count == standard_tags.required_for(service).count
+      @missing = standard_tags.required_for(service).keys - self.required_for(service).keys
+      missing.empty?
     end
 
   private
 
-    def create_tags(tags)
-      @tags = {}.tap do |_tags|
-        tags.each do |k, tag|
-          _tags[k] = Accession::Tag.new(tag.merge(name: k))
-        end
+    def add_tags(tags)
+      tags.each do |k, tag|  
+        add(if tag.instance_of?(Accession::Tag)
+          add(tag)
+        else
+          Accession::Tag.new(tag.merge(name: k))
+        end)
       end
     end
   end

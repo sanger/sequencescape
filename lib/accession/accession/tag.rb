@@ -22,7 +22,7 @@ module Accession
     end
 
     def required_for?(service)
-      services.include? service
+      services.include? service.provider
     end
 
     def array_express?

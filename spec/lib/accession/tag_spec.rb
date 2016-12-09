@@ -10,16 +10,16 @@ RSpec.describe Accession::Tag, type: :model, accession: true do
 
   it "should indicate which services it is required for" do
     tag = Accession::Tag.new(services: :ENA)
-    expect(tag.required_for?(:ENA)).to be_truthy
-    expect(tag.required_for?(:EGA)).to be_falsey
+    expect(tag.required_for?(build(:ena_service))).to be_truthy
+    expect(tag.required_for?(build(:ega_service))).to be_falsey
 
     tag = Accession::Tag.new(services: [:ENA, :EGA])
-    expect(tag.required_for?(:ENA)).to be_truthy
-    expect(tag.required_for?(:EGA)).to be_truthy
+    expect(tag.required_for?(build(:ena_service))).to be_truthy
+    expect(tag.required_for?(build(:ega_service))).to be_truthy
 
     tag = Accession::Tag.new
-    expect(tag.required_for?(:ENA)).to be_falsey
-    expect(tag.required_for?(:EGA)).to be_falsey
+    expect(tag.required_for?(build(:ena_service))).to be_falsey
+    expect(tag.required_for?(build(:ega_service))).to be_falsey
   end
 
   it "should be able to add a value" do
