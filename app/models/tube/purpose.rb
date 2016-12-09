@@ -5,7 +5,7 @@ class Tube::Purpose < ::Purpose
 
   # We use a lambda here as most tube subclasses won't be loaded at the point of evaluation. We'll
   # be performing this check so rarely that the performance hit is negligable.
-  validates :target_type, presence: true, inclusion: { in: ->(_) { p Tube.subclasses.map(&:name) << 'Tube'; Tube.subclasses.map(&:name) << 'Tube' } }
+  validates :target_type, presence: true, inclusion: { in: ->(_) { Tube.subclasses.map(&:name) << 'Tube' } }
 
   # Tubes of the general types have no stock plate!
   def stock_plate(_)
