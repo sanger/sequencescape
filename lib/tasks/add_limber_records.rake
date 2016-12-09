@@ -19,6 +19,12 @@ namespace :limber do
       ) do |rt|
         rt.acceptable_plate_purposes << Purpose.find_by_name('LB Cherrypick')
         rt.library_types = LibraryType.where(name: ['Standard'])
+
+        RequestType::Validator.create!(
+          request_type: rt,
+          request_option: 'library_type',
+          valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
+        )
       end
 
       RequestType.create!(

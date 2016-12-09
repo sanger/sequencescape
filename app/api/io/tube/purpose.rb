@@ -13,5 +13,6 @@ class Io::Tube::Purpose < Core::Io::Base
     name  <=> name
     parent_uuids <= parent_uuids
     child_uuids <= child_uuids
+    target_type <= target_type
   ")
 end

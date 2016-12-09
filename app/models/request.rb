@@ -39,7 +39,7 @@ class Request < ActiveRecord::Base
   }
 
   def validator_for(request_option)
-    request_type.request_type_validators.find_by_request_option!(request_option.to_s)
+    request_type.request_type_validators.find_by!(request_option: request_option.to_s)
   end
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }

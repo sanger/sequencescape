@@ -13,6 +13,7 @@ describe '/api/1/tube/purposes' do
     %{{
       "tube_purpose":{
         "name":"Test Purpose",
+        "target_type":"MultiplexedLibraryTube",
         "parent_uuids": ["#{parent_purpose.uuid}"]
       }
     }}

@@ -51,6 +51,8 @@ class PlatePurpose < Purpose
     r[:cherrypick_filters] ||= ['Cherrypick::Strategy::Filter::ShortenPlexesToFit']
   end
 
+  before_save :set_default_target_type
+
   belongs_to :asset_shape, class_name: 'AssetShape'
 
   def source_plate(plate)
@@ -221,6 +223,12 @@ class PlatePurpose < Purpose
   end
 
   def supports_multiple_submissions?; false; end
+
+  private
+  
+  def set_default_target_type
+    self.target_type ||= 'Plate'
+  end
 end
 
 # Ensure rails eager loading behaves as intended
