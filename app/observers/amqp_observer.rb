@@ -38,7 +38,7 @@ class AmqpObserver < ActiveRecord::Observer
       client = MarchHare.connect(uri: configatron.amqp.url)
       begin
         ch = client.create_channel
-        exchange = ch.topic('psd.sequencescape', passive: true, durable: true)
+        exchange = ch.topic('psd.sequencescape', durable: true)
         yield exchange
       ensure
         client.close
@@ -195,11 +195,10 @@ class AmqpObserver < ActiveRecord::Observer
     def publish_to(exchange, record)
       exchange.publish(
         MultiJson.dump(record),
-        key: record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
+        routing_key: record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
         persistent: configatron.amqp.persistent
       )
     end
-    private :publish_to
 
     # The buffer that should be written to is either the one created within the transaction, or it is a
     # wrapper around ourselves.
@@ -213,7 +212,6 @@ class AmqpObserver < ActiveRecord::Observer
     def activate_exchange(&block)
       exchange_interface.exchange(&block)
     end
-    private :activate_exchange
   end
   include Implementation
 end
