@@ -71,24 +71,34 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
     expect(accession_sample.title).to eq(sample.sanger_sample_id)
   end
 
-  it "should create some xml" do
-    accession_sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_open_study))
-    xml = accession_sample.to_xml
-    expect(xml).to include(accession_sample.ebi_alias)
-    expect(xml).to include(accession_sample.title)
+  it "should create some xml with valid attributes" do
+    sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_open_study))
 
-    accession_sample.tags.by_group.each do |k, group|
-      group.each do |tag|
-        expect(xml).to include((k == :array_express) ? tag.array_express_label : tag.label)
-        expect(xml).to include(tag.value)
-      end
-    end
+    xml = Nokogiri::XML::Document.parse(sample.to_xml)
 
-    accession_sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_managed_study))
-    xml = accession_sample.to_xml
-    accession_sample.tags.by_group[:array_express].each do |tag|
-      expect(xml).to_not include(tag.array_express_label)
-    end
+    expect(xml.at("SAMPLE").attribute("alias").value).to eq(sample.ebi_alias)
+    expect(xml.at("TITLE").text).to eq(sample.title)
+
+    tags = sample.tags.by_group[:sample_name]
+    sample_name_tags = xml.at("SAMPLE_NAME")
+    expect(sample_name_tags.search("TAG").collect(&:text)).to eq(tags.collect(&:label))
+    expect(sample_name_tags.search("VALUE").collect(&:text)).to eq(tags.collect(&:value))
+
+    sample_attributes_tags = xml.at("SAMPLE_ATTRIBUTES")
+
+    tags = sample.tags.by_group[:sample_attributes]
+    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.collect(&:label)).to eq(tags.collect(&:label))
+    expect(sample_attributes_tags.search("VALUE").collect(&:text) & tags.collect(&:value)).to eq(tags.collect(&:value))
+
+    tags = sample.tags.by_group[:array_express]
+    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.collect(&:array_express_label)).to eq(tags.collect(&:array_express_label))
+    expect(sample_attributes_tags.search("VALUE").collect(&:text) & tags.collect(&:value)).to eq(tags.collect(&:value))
+
+    sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_managed_study))
+    xml = Nokogiri::XML::Document.parse(sample.to_xml)
+    sample_attributes_tags = xml.at("SAMPLE_ATTRIBUTES")
+    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.collect(&:array_express_label)).to be_empty
+
   end
 
 

@@ -25,6 +25,10 @@ module Accession
       ena? ? "HOLD" : "PROTECT"
     end
 
+    def broker
+      ega? ? provider.to_s : ""
+    end
+
     def url
       if valid?
         return set_url(configatron.ena_accession_login) if ena?

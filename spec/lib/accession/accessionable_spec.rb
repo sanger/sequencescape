@@ -5,7 +5,7 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
   class Accessionobubble
     include Accession::Accessionable
 
-    def xml_alias
+    def ebi_alias
       "ALIAS"
     end
   end

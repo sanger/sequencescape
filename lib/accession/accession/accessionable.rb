@@ -1,8 +1,7 @@
 module Accession
   module Accessionable
-    
-    def xml_alias
-    end
+
+    attr_reader :ebi_alias
 
     def schema_type
       @schema_type ||= self.class.to_s.demodulize.downcase
@@ -13,7 +12,7 @@ module Accession
     end
 
     def filename
-      @filename ||= "#{xml_alias}-#{date}.#{schema_type}.xml"
+      @filename ||= "#{ebi_alias}-#{date}.#{schema_type}.xml"
     end
   end
 end

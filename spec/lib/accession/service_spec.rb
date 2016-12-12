@@ -37,4 +37,12 @@ RSpec.describe Accession::Service, type: :model, accession: true do
     expect(service.visibility).to eq("PROTECT")
   end
 
+  it "can have a broker" do
+    service = Accession::Service.new("open")
+    expect(service.broker).to_not be_present
+
+    service = Accession::Service.new("managed")
+    expect(service.broker).to eq("EGA")
+  end
+
 end

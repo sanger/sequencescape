@@ -14,7 +14,7 @@ module Accession
     # If the sample has a managed study it will be sent to the EGA
 
     include ActiveModel::Model
-    include Accessionable
+    include Accession::Accessionable
 
     validate :check_sample, :check_studies
     validate :check_required_fields, if: Proc.new {|s| s.service.valid? }
@@ -41,7 +41,7 @@ module Accession
       tag_groups = tags.by_group
       xml = Builder::XmlMarkup.new
       xml.instruct!
-      xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
+      xml.SAMPLE_SET(XML_NAMESPACE) {
         xml.SAMPLE(alias: ebi_alias) {
           xml.TITLE title if title.present?
         }
@@ -73,6 +73,10 @@ module Accession
 
     def ebi_alias
       sample.uuid
+    end
+
+    def submission_alias
+      "#{ebi_alias} - #{date}"
     end
 
   private
