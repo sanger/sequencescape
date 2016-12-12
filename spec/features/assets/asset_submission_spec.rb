@@ -3,20 +3,16 @@ require 'rails_helper'
 require 'pry'
 
 feature 'Asset submission', js: true do
-  let(:user) { create :admin  }
+  let(:user) { create :admin }
   let(:project) { create :project }
   let(:study) { create :study }
-  let(:asset) { create :library_tube}
+  let(:asset) { create :library_tube }
   let(:target_asset) { create :library_tube, name: 'Target asset' }
 
   scenario 'request additional sequencing' do
-    RequestFactory.create_assets_requests([asset], study)
-    asset.aliquots.each do |aliquot|
-      aliquot.update_attributes!(study_id: study.id)
-    end
-    sequencing_types = {'Illumina-C Single ended sequencing' => 76,
+    sequencing_types = { 'Illumina-C Single ended sequencing' => 76,
                         'Illumina-C Paired end sequencing' => 76,
-                        'Illumina-C HiSeq Paired end sequencing' => 100}
+                        'Illumina-C HiSeq Paired end sequencing' => 100 }
     sequencing_types.each do |sequencing_type, read_length|
       request_type = RequestType.find_by_name(sequencing_type)
       request = create(:request,
