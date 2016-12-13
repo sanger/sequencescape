@@ -1,0 +1,37 @@
+module Accession
+  class Response
+
+    attr_reader :code, :body, :xml
+
+    def initialize(response)
+      @code = response.code
+      @body = response.body.to_s
+
+      if success?
+        @xml = Nokogiri::XML::Document.parse(body)
+      end
+    end
+
+    def success?
+      code.between?(200, 300)
+    end
+
+    def failure?
+      code.between?(400, 600)
+    end
+
+    def accessioned?
+      ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(
+        xml.at("RECEIPT").attribute("success").value)
+    end
+
+    def accession_number
+      xml.at("SAMPLE").try(:attribute, "accession").try(:value)
+    end
+
+    def errors
+      xml.search("ERROR").collect(&:text)
+    end
+
+  end
+end

@@ -19,6 +19,12 @@ module Accession
     end
 
     def to_xml
+      _to_xml << sample.to_xml
+    end
+
+  private
+
+    def _to_xml
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SUBMISSION(

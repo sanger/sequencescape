@@ -81,23 +81,23 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
 
     tags = sample.tags.by_group[:sample_name]
     sample_name_tags = xml.at("SAMPLE_NAME")
-    expect(sample_name_tags.search("TAG").collect(&:text)).to eq(tags.collect(&:label))
-    expect(sample_name_tags.search("VALUE").collect(&:text)).to eq(tags.collect(&:value))
+    expect(sample_name_tags.search("TAG").collect(&:text)).to eq(tags.labels)
+    expect(sample_name_tags.search("VALUE").collect(&:text)).to eq(tags.values)
 
     sample_attributes_tags = xml.at("SAMPLE_ATTRIBUTES")
 
     tags = sample.tags.by_group[:sample_attributes]
-    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.collect(&:label)).to eq(tags.collect(&:label))
-    expect(sample_attributes_tags.search("VALUE").collect(&:text) & tags.collect(&:value)).to eq(tags.collect(&:value))
+    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.labels).to eq(tags.labels)
+    expect(sample_attributes_tags.search("VALUE").collect(&:text) & tags.values).to eq(tags.values)
 
     tags = sample.tags.by_group[:array_express]
-    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.collect(&:array_express_label)).to eq(tags.collect(&:array_express_label))
-    expect(sample_attributes_tags.search("VALUE").collect(&:text) & tags.collect(&:value)).to eq(tags.collect(&:value))
+    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.array_express_labels).to eq(tags.array_express_labels)
+    expect(sample_attributes_tags.search("VALUE").collect(&:text) & tags.values).to eq(tags.values)
 
     sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_managed_study))
     xml = Nokogiri::XML::Document.parse(sample.to_xml)
     sample_attributes_tags = xml.at("SAMPLE_ATTRIBUTES")
-    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.collect(&:array_express_label)).to be_empty
+    expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.array_express_labels).to be_empty
 
   end
 

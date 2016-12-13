@@ -7,6 +7,8 @@ module Accession
   require_relative "accession/tag"
   require_relative "accession/tag_list"
   require_relative "accession/submission"
+  require_relative "accession/request"
+  require_relative "accession/response"
 
   String.send(:include, CoreExtensions::String)
 

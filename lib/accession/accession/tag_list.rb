@@ -28,16 +28,29 @@ module Accession
     def by_group
       tags.values.inject({}) do |result, tag|
         tag.groups.each do |group|
-          result[group] ||= []
+          result[group] ||= TagList.new
           result[group] << tag
         end
         result
       end
     end
 
+    def labels
+      tags.values.collect(&:label)
+    end
+
+    def values
+      tags.values.collect(&:value)
+    end
+
+    def array_express_labels
+      tags.values.collect(&:array_express_label)
+    end
+
     def add(tag)
       tags[tag.name] = tag
     end
+    alias_method :<<, :add
 
     def extract(record)
       TagList.new do |tag_list|
