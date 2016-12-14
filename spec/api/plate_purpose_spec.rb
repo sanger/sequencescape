@@ -18,6 +18,7 @@ describe '/api/1/plate_purposes' do
         "plate_purpose":{
           "name": "External Plate Purpose",
           "stock_plate": true,
+          "input_plate": true,
           "parent_uuids": ["#{parent_purpose.uuid}"]
         }
       }}
@@ -44,6 +45,7 @@ describe '/api/1/plate_purposes' do
       api_request :post, subject, payload
       expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
       expect(status).to eq(response_code)
+      expect(Purpose.last).to be_a(PlatePurpose::Input)
     end
   end
 end
