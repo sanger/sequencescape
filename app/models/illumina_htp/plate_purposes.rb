@@ -100,7 +100,7 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'PF Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'PF Cherrypicked'        => PlatePurpose::Input,
     'PF Shear'               => PlatePurpose::InitialPurpose,
     'PF Post Shear'          => PlatePurpose,
     'PF Post Shear XP'       => PlatePurpose,
@@ -113,7 +113,7 @@ module IlluminaHtp::PlatePurposes
     'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
     'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
 
-    'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'Cherrypicked'        => PlatePurpose::Input,
     'Shear'               => PlatePurpose::InitialPurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
