@@ -85,7 +85,7 @@ class Plate::Creator < ActiveRecord::Base
   def create_child_plates_from(plate, current_user, creator_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
-      target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
+      target_plate_purpose.target_class.create_with_barcode!(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
         child_plate.size          = plate.size
         child_plate.location      = plate.location

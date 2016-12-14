@@ -312,7 +312,11 @@ AssetShape.create!(
 )
 
 YAML::load(plate_purposes).each do |plate_purpose|
-  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id' => AssetShape.find_by_name('Standard').id)
+  attributes = plate_purpose.reverse_merge(
+    'type' => 'PlatePurpose',
+    'cherrypickable_target' => false,
+    'asset_shape_id' => AssetShape.find_by_name('Standard').id
+  )
   attributes.delete('type').constantize.new(attributes) do |purpose|
     purpose.id = attributes['id']
   end.save!

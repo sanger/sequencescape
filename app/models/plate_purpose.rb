@@ -30,19 +30,21 @@ class PlatePurpose < Purpose
 
   include Relationship::Associations
 
- # We declare the scopes as lambdas as Rails 3.2 seems to fail to include the various subclasses otherwise
   scope :compatible_with_purpose, ->(purpose) {
-    purpose.nil? ?
-      where('FALSE') :
-      where(["(target_type is null and 'Plate'=?)  or target_type=?", purpose.target_plate_type, purpose.target_plate_type]).
-        order("name ASC")
+    if purpose.nil?
+      none
+    else
+      where(target_type: purpose.target_type ).order(name: :asc)
+    end
   }
 
   scope :cherrypickable_as_target, -> { where(cherrypickable_target: true) }
   scope :cherrypickable_as_source, -> { where(cherrypickable_source: true) }
   scope :cherrypickable_default_type, -> { where(cherrypickable_target: true, cherrypickable_source: true) }
-  scope :for_submissions, -> { where('can_be_considered_a_stock_plate = true OR name = "Working Dilution"').
-    order('can_be_considered_a_stock_plate DESC') }
+  scope :for_submissions, ->() do
+    where('can_be_considered_a_stock_plate = true OR name = "Working Dilution"').
+    order(can_be_considered_a_stock_plate: :desc)
+  end
   scope :considered_stock_plate, -> { where(can_be_considered_a_stock_plate: true) }
 
   serialize :cherrypick_filters
@@ -51,9 +53,9 @@ class PlatePurpose < Purpose
     r[:cherrypick_filters] ||= ['Cherrypick::Strategy::Filter::ShortenPlexesToFit']
   end
 
-  before_save :set_default_target_type
+  before_validation :set_default_target_type
 
-  belongs_to :asset_shape, class_name: 'AssetShape'
+  belongs_to :asset_shape
 
   def source_plate(plate)
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
@@ -172,10 +174,6 @@ class PlatePurpose < Purpose
   # TODO: change to purpose_id
   has_many :plates, foreign_key: :plate_purpose_id
 
-  def target_plate_type
-    self.target_type || 'Plate'
-  end
-
   def self.stock_plate_purpose
     # IDs copied from SNP
     PlatePurpose.find(2)
@@ -195,13 +193,11 @@ class PlatePurpose < Purpose
 
   def create!(*args, &block)
     attributes          = args.extract_options!
-    do_not_create_wells = !!args.first
-
+    do_not_create_wells = args.first.present?
     attributes[:size]     ||= size
     attributes[:location] ||= default_location
     attributes[:purpose] = self
-
-    target_plate_type.constantize.create_with_barcode!(attributes, &block).tap do |plate|
+    pla = target_class.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
     end
   end
@@ -222,10 +218,12 @@ class PlatePurpose < Purpose
     stock_wells
   end
 
-  def supports_multiple_submissions?; false; end
+  def supports_multiple_submissions?
+    false
+  end
 
   private
-  
+
   def set_default_target_type
     self.target_type ||= 'Plate'
   end

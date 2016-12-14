@@ -75,15 +75,16 @@ class Purpose < ActiveRecord::Base
 
   validates :name, format: { with: /\A\w[\s\w\.\-]+\w\z/i }, presence: true, uniqueness: true
   validates :barcode_for_tecan, inclusion: { in: ['ean13_barcode', 'fluidigm_barcode'] }
-  # Note: This prevents you from creating a generic 'Asset' purpose.
-  validates :target_type, presence: true, inclusion: { in: ->(_) { Asset.subclasses.map(&:name) } }
+
+  # Note: We should validate against valid asset subclasses, but running into some issues with
+  # subclass loading while seeding.
+  validates :target_type, presence: true
 
  scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
 
   def target_class
     target_type.constantize
   end
-  private :target_class
 end
 
 require_dependency 'tube/purpose'

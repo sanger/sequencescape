@@ -18,7 +18,7 @@ class Tube < Aliquot::Receptacle
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
-    requests_as_target.where_is_a?(TransferRequest).all
+    requests_as_target.where_is_a?(TransferRequest)
   end
 
   def automatic_move?
@@ -92,3 +92,12 @@ class Tube < Aliquot::Receptacle
     create!(attributes.merge(barcode: barcode), &block)
   end
 end
+
+require_dependency 'sample_tube'
+require_dependency 'library_tube'
+require_dependency 'qc_tube'
+require_dependency 'pulldown_multiplexed_library_tube'
+require_dependency 'pac_bio_library_tube'
+require_dependency 'stock_library_tube'
+require_dependency 'stock_multiplexed_library_tube'
+require_dependency 'stock_sample_tube'

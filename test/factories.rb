@@ -612,4 +612,36 @@ FactoryGirl.define do
     # plate: barcode_printer_type_id 2, tube: barcode_printer_type_id 1
     barcode_printer_type_id 2
   end
+
+  factory :uuid do
+    external_id { SecureRandom.uuid }
+  end
+
+  trait :uuidable do
+    transient do
+      uuid { SecureRandom.uuid }
+    end
+
+    # Using an after build as I need access to both the transient and the resource.
+    after(:build) do |resource, context|
+      resource.uuid_object = build :uuid, external_id: context.uuid, resource: resource
+    end
+
+    after(:create) do |resource, context|
+      resource.uuid_object.save!
+    end
+  end
+
+  factory :plate_barcode do
+    sequence(:barcode) { |i| i }
+  end
+
+  factory :barcode_printer_type do
+  end
+
+  factory :plate_barcode_printer_type, class: BarcodePrinterType96Plate do
+    sequence(:name) { |i| "96 Well Plate #{i}" }
+    printer_type_id 1
+    label_template_name 'sqsc_96plate_label_template'
+  end
 end

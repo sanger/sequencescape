@@ -483,7 +483,6 @@ Style/BlockEndNewline:
     - 'app/models/api/project_io.rb'
     - 'app/models/api/request_io.rb'
     - 'app/models/api/study_io.rb'
-    - 'app/models/plate_purpose.rb'
     - 'app/models/study_report/well_details.rb'
     - 'app/models/submission.rb'
     - 'lib/tasks/uat_setup.rake'
@@ -626,7 +625,6 @@ Style/DoubleNegation:
     - 'app/models/api/base.rb'
     - 'app/models/attributable.rb'
     - 'app/models/metadata.rb'
-    - 'app/models/plate_purpose.rb'
     - 'app/models/sample_manifest/input_behaviour.rb'
     - 'app/models/sample_registrar.rb'
     - 'app/models/submission/state_machine.rb'
@@ -904,7 +902,6 @@ Style/MultilineBlockLayout:
     - 'app/models/api/project_io.rb'
     - 'app/models/api/request_io.rb'
     - 'app/models/api/study_io.rb'
-    - 'app/models/plate_purpose.rb'
     - 'app/models/study_report/well_details.rb'
     - 'app/models/submission.rb'
     - 'lib/tasks/uat_setup.rake'
@@ -952,7 +949,6 @@ Style/MultilineOperationIndentation:
 Style/MultilineTernaryOperator:
   Exclude:
     - 'app/models/plate.rb'
-    - 'app/models/plate_purpose.rb'
     - 'lib/rails-authorization-plugin/lib/publishare/identity.rb'
 
 # Offense count: 214
@@ -1246,7 +1242,6 @@ Style/SingleLineMethods:
     - 'app/models/labwhere_reception.rb'
     - 'app/models/no_accession_service.rb'
     - 'app/models/order.rb'
-    - 'app/models/plate_purpose.rb'
     - 'app/models/pulldown/initial_downstream_plate_purpose.rb'
     - 'app/models/sample_manifest/core_behaviour.rb'
     - 'app/models/submission/flexible_request_graph.rb'
