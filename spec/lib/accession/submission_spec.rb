@@ -34,4 +34,28 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     expect(action_xml.attribute("source").value).to eq(submission.sample.filename)
     expect(action_xml.attribute("schema").value).to eq(submission.sample.schema_type)
   end
+
+  it "should post the submission and return an appropriate response" do
+    submission = Accession::Submission.new(user, sample)
+
+    allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
+    submission.post
+    expect(submission).to be_accessioned
+
+    allow(Accession::Request).to receive(:post).with(submission).and_return(build(:failed_accession_response))
+    submission.post
+    expect(submission).to_not be_accessioned
+
+  end
+
+  it "should update the accession number if the submission is successfully posted" do
+    submission = Accession::Submission.new(user, sample)
+    submission.update_accession_number
+    expect(submission.sample).to_not be_accessioned
+
+    allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
+    submission.post
+    submission.update_accession_number
+    expect(submission.sample).to be_accessioned
+  end
 end

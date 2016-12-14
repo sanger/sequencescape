@@ -78,6 +78,19 @@ module Accession
       "#{ebi_alias} - #{date}"
     end
 
+    def update_accession_number(accession_number)
+      sample.sample_metadata.sample_ebi_accession_number = accession_number
+      sample.save!
+    end
+
+    def ebi_accession_number
+      sample.sample_metadata.sample_ebi_accession_number
+    end
+
+    def accessioned?
+      ebi_accession_number.present?
+    end
+
   private
 
     def set_studies

@@ -101,5 +101,11 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
 
   end
 
+  it "can update accession number for sample" do
+    sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_open_study))
+    expect(sample.update_accession_number("ENA1234")).to be_truthy
+    expect(sample.ebi_accession_number).to eq("ENA1234")
+  end
+
 
 end

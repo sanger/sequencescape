@@ -9,6 +9,7 @@ module Accession
   require_relative "accession/submission"
   require_relative "accession/request"
   require_relative "accession/response"
+  require_relative "accession/null_response"
 
   String.send(:include, CoreExtensions::String)
 
