@@ -40,7 +40,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         object_class.stubs(:name).returns('ClassName')
 
         @exchange = mock('Exchange for sending')
-        @exchange.expects(:publish).with('JSON', key: 'test.saved.class_name.123456789', persistent: false)
+        @exchange.expects(:publish).with('JSON', routing_key: 'test.saved.class_name.123456789', persistent: false)
         @target.instance_variable_set(:@mock_exchange, @exchange)
 
         @target.send(:publish_to, @exchange, object)
@@ -132,10 +132,10 @@ class AmqpObserverTest < ActiveSupport::TestCase
           begin
             @target.transaction do
               @target << object
-              raise 'Do not send thanks!'
+              raise StandardError, 'Do not send thanks!'
             end
-          rescue => exception
-            # Good!
+          rescue StandardError => exception
+            nil
           end
         end
 

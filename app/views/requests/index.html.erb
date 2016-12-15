@@ -55,7 +55,7 @@
           </td>
 
           <% if request.asset %>
-            <% summary = UiHelper::Summary.new(); summary.load_item(request.asset); summary_item = summary.get_items.first %>
+            <% summary = UiHelper::Summary.new(); summary.load_asset(request.asset); summary_item = summary.summaries.first %>
             <% if summary_item %>
               <td>
                 <%= link_to(summary_item.message, summary_item.external_link.to_s) %>

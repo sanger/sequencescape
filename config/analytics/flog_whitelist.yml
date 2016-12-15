@@ -12,7 +12,7 @@ BatchesController#add_tags: 66
 SessionsController#authenticate: 67
 StudiesController#create: 68
 Request#none: 722
-Summary#load_item: 72
+Summary#load_asset: 72
 ApplicationHelper#completed: 72
 ApplicationHelper#tabulated_error_messages_for: 76
 Admin::UsersController#remove_user_role: 80

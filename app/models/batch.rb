@@ -28,7 +28,7 @@ class Batch < ActiveRecord::Base
   has_many :samples, ->() { distinct }, through: :assets
 
   def study
-    self.studies.first
+    studies.first
   end
 
   include Api::BatchIO::Extensions

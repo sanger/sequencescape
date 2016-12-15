@@ -7,6 +7,11 @@ require 'spec_helper'
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
+# Allows us to use transactions for the specs. Which is faster.
+# Worth keeping an eye on this one, as its the kind of thing that might
+# get patched into the Rails main-line
+require 'transactional_capybara/rspec'
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -51,9 +56,6 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-end
 
-# Allows us to use transactions for the specs. Which is faster.
-# Worth keeping an eye on this one, as its the kind of thing that might
-# get patched into the Rails main-line
-require 'transactional_capybara/rspec'
+  config.include TransactionalCapybara::AjaxHelpers
+end
