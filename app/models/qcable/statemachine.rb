@@ -66,7 +66,7 @@ module Qcable::Statemachine
         end
       end
 
-      # new version of combinable named_scope
+     # new version of combinable named_scope
      scope :for_state, ->(state) { where(state: state) }
 
      scope :available,   -> { where(state: :available) }

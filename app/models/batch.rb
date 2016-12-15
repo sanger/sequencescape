@@ -71,7 +71,7 @@ class Batch < ActiveRecord::Base
   include ::Batch::StateMachineBehaviour
   include ::Batch::TecanBehaviour
 
-  # Named scope for search by query string behavior
+ # Named scope for search by query string behavior
  scope :for_search_query, ->(query, with_includes) {
     conditions = ['id=?', query]
     if user = User.find_by_login(query)

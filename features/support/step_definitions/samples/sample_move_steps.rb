@@ -18,7 +18,7 @@ When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset gr
     begin
   step(%Q{I select "#{asset_group}" from "asset_group_id"})
     rescue Capybara::OptionNotFound => ex
-      # asset group doesn't exist, create a new one then.
+  # asset group doesn't exist, create a new one then.
   step(%Q{I fill in "new_assets_name" with "#{asset_group}"})
     end
   end

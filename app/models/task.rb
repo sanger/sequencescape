@@ -35,7 +35,7 @@ class Task < ActiveRecord::Base
       end
     end
     self.descriptors << Descriptor.new(name: name_s, value: value)
-#    self.descriptors.save
+    #    self.descriptors.save
   end
   # END descriptors
 
@@ -60,7 +60,7 @@ class Task < ActiveRecord::Base
       end
     end
     self.subclass_attributes << SubclassAttribute.new(name: name_s, value: value)
-#    self.subclass.save
+    #    self.subclass.save
   end
 
   def self.init_class

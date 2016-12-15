@@ -95,7 +95,7 @@ end
 
 When /^I fill in the plate barcode$/ do
   step(%Q{I fill in "barcode_0" with "#{Plate.last.ean13_barcode}"})
-#  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
+  #  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
 end
 
 Then /^I have added some output plates$/ do
@@ -131,7 +131,7 @@ Given /^Microarray genotyping is set up$/ do
   FactoryGirl.create :task, name: "Assign a Purpose for Output Plates", sti_type: "AssignPlatePurposeTask", sorted: 3, workflow: cherrypick_workflow
   FactoryGirl.create :plate_purpose, name: "Frag"
   FactoryGirl.create :task, name: "Set Location", sti_type: "SetLocationTask", sorted: 4, workflow: cherrypick_workflow
-#  FactoryGirl.create :task, :name => "Export Plate to SNP", :sti_type => "ExportPlateTask", :sorted => 4, :workflow => cherrypick_workflow
+  #  FactoryGirl.create :task, :name => "Export Plate to SNP", :sti_type => "ExportPlateTask", :sorted => 4, :workflow => cherrypick_workflow
 
   # Registering submissin template
   submission = LinearSubmission.new

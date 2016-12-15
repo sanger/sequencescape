@@ -241,6 +241,7 @@ end
 # Ensure rails eager loading behaves as intended
 # We should consider renaming our classes to make this easier to maintain
 require_dependency 'dilution_plate_purpose'
+require_dependency 'plate_purpose/input'
 require_dependency 'qcable_library_plate_purpose'
 require_dependency 'qcable_plate_purpose'
 require_dependency 'illumina_c/al_libs_tagged_purpose'
@@ -253,8 +254,6 @@ require_dependency 'illumina_htp/library_complete_on_qc_purpose'
 require_dependency 'illumina_htp/normalized_plate_purpose'
 require_dependency 'illumina_htp/pooled_plate_purpose'
 require_dependency 'illumina_htp/post_shear_qc_plate_purpose'
-require_dependency 'illumina_htp/stock_plate_purpose'
 require_dependency 'plate_purpose/initial_purpose'
 require_dependency 'pulldown/initial_plate_purpose'
 require_dependency 'pulldown/library_plate_purpose'
-require_dependency 'pulldown/stock_plate_purpose'

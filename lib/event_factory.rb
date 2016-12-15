@@ -78,9 +78,9 @@ class EventFactory
     # EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
   end
 
- ###############################
- # Study related notifications #
- ###############################
+  ###############################
+  # Study related notifications #
+  ###############################
 
   # creates an event and sends an email when samples are register to a study
   def self.study_has_samples_registered(study, samples, user)

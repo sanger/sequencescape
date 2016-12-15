@@ -1104,7 +1104,7 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
 end
 
-# ADD ILC Cherrypick
+    # ADD ILC Cherrypick
     cprt = RequestType.create!(
         key: 'illumina_c_cherrypick',
         name: 'Illumina-C Cherrypick',

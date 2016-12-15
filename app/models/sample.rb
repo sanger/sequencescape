@@ -159,7 +159,7 @@ class Sample < ActiveRecord::Base
         has_submission = true
       end
     else # We have no requests, we're probably S2 (Or very old Sequencescape)
-         # This is a hack, but I'll get this tidied up.
+      # This is a hack, but I'll get this tidied up.
       has_submission = true
     end
     return has_submission
@@ -340,7 +340,7 @@ class Sample < ActiveRecord::Base
       gender: GENDERS,
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
-#      :reference_genome        => ??
+      #      :reference_genome        => ??
     }.inject({}) do |h, (k, v)|
       h[k] = v.inject({}) { |a, b| a[b.downcase] = b; a }
       h

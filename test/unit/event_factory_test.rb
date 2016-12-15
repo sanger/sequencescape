@@ -220,7 +220,7 @@ class EventFactoryTest < ActiveSupport::TestCase
   end
 
   def assert_did_not_send_email
-# invocation with block tests absence of a specific email
+    # invocation with block tests absence of a specific email
     if block_given?
       emails = ::ActionMailer::Base.deliveries
       matching_emails = emails.select do |email|
@@ -228,8 +228,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
       assert matching_emails.empty?
     else
-# invocation without block lists any mails in the queue for test
-# e.g. use as: 'should "list" do  assert_did_not_send_mail; end'
+      # invocation without block lists any mails in the queue for test
+      # e.g. use as: 'should "list" do  assert_did_not_send_mail; end'
       msg = "Sent #{::ActionMailer::Base.deliveries.size} emails.\n"
       ::ActionMailer::Base.deliveries.each do |email|
         msg << "  '#{email.subject}' sent to #{email.bcc}:\n#{email.body}\n\n"

@@ -72,7 +72,7 @@ RequestType.find_each do |request_type|
       'illumina_b_hiseq_x_paired_end_sequencing' => [150],
       'bespoke_hiseq_x_paired_end_sequencing' => [150]
       }[request_type.key] || {
-    # By request class
+      # By request class
       'HiSeqSequencingRequest' => [50, 75, 100],
       'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
       'SequencingRequest'      => [37, 54, 76, 108]

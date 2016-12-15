@@ -149,7 +149,7 @@ class Api::Base
   class_attribute :associations, instance_writer: false
   self.associations = {}
 
-    # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
+  # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
   class_attribute :nested_has_many_associations
   self.nested_has_many_associations = {}
 

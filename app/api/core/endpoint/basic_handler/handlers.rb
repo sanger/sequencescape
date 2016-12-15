@@ -28,7 +28,7 @@ module Core::Endpoint::BasicHandler::Handlers
   def actions(object, options)
     @handlers.select do |name, handler|
       handler.is_a?(Core::Endpoint::BasicHandler::Actions::InnerAction)
-#      accessible_action?(self, handler, options[:response].request, object)
+      #      accessible_action?(self, handler, options[:response].request, object)
     end.map do |name, handler|
       handler.send(:actions, object, options)
     end.inject(super) do |actions, subactions|

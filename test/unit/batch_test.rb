@@ -327,7 +327,7 @@ end
     context "when a batch is failed" do
       setup do
         # send_fail_event will be used once since only one request is not a resource /@request1
-#        EventSender.expects(:send_fail_event).returns(true).times(1)
+        #        EventSender.expects(:send_fail_event).returns(true).times(1)
         EventSender.stubs(:send_fail_event).returns(true)
         @control = create :sample_tube, resource: true
 

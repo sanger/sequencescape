@@ -15,11 +15,11 @@ class ContainerAssociation < ActiveRecord::Base
   # it were not for inserts/updates being performed.  I'm disabling this as it should be caught
   # in tests and we've not seen it in production.
   #
-#  # We check if the parent has already been saved. if not the saving will not work.
-#  before_save do |content|
-#    container = content.container
-#    raise RuntimeError, "Container should be saved before saving #{self.inspect}" if container && container.new_record?
-#  end
+  #  # We check if the parent has already been saved. if not the saving will not work.
+  #  before_save do |content|
+  #    container = content.container
+  #    raise RuntimeError, "Container should be saved before saving #{self.inspect}" if container && container.new_record?
+  #  end
 
   module Extension
     def contains(content_name, options = {}, &block)

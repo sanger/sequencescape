@@ -84,10 +84,10 @@ module SubmissionsHelper
              when 0 then "There are no valid projects available"
              else "Please select a Project for this Submission..."
              end
-# form.text_field :project_name,
-#       :class       => 'submission_project_name form-control form-control',
-#       :placeholder => "enter the first few characters of the financial project name",
-#       :disabled    => true
+    # form.text_field :project_name,
+    #       :class       => 'submission_project_name form-control form-control',
+    #       :placeholder => "enter the first few characters of the financial project name",
+    #       :disabled    => true
 
     form.collection_select(
       :project_name,

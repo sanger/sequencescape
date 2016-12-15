@@ -15,9 +15,9 @@ class Api::OrderIO < Api::Base
   map_attribute_to_json_attribute(:comments)
 
   # with_association(:submission) do
-    # map_attribute_to_json_attribute(:uuid  , 'submission_uuid')
-    # map_attribute_to_json_attribute(:id  , 'submission_internal_id')
-    # map_attribute_to_json_attribute(:name  , 'submission_name')
+  # map_attribute_to_json_attribute(:uuid  , 'submission_uuid')
+  # map_attribute_to_json_attribute(:id  , 'submission_internal_id')
+  # map_attribute_to_json_attribute(:name  , 'submission_name')
   # end
 
   with_association(:project) do

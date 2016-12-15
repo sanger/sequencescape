@@ -161,7 +161,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         should "return false" do
           assert_equal 5, @asset_group.assets.size
           # TODO: Fix sample
-#          assert_equal 1, @asset_group.assets.last.sample.properties.size
+          #          assert_equal 1, @asset_group.assets.last.sample.properties.size
           assert_equal false, @asset_group.all_samples_have_accession_numbers?
         end
       end

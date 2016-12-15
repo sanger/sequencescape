@@ -117,7 +117,7 @@ class Asset < ActiveRecord::Base
   def related_studies
     (orders.map(&:study) + studies).compact.uniq
   end
-  # Named scope for search by query string behaviour
+ # Named scope for search by query string behaviour
  scope :for_search_query, ->(query, with_includes) {
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
     arguments = { name: "%#{query}%" }
@@ -375,10 +375,10 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  # We accept not only an individual barcode but also an array of them.  This builds an appropriate
-  # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
-  # to their appropriate query conditions (as though they operated on their own) and then we join
-  # them together with 'OR' to get the overall conditions.
+ # We accept not only an individual barcode but also an array of them.  This builds an appropriate
+ # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
+ # to their appropriate query conditions (as though they operated on their own) and then we join
+ # them together with 'OR' to get the overall conditions.
  scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       case source_barcode.to_s

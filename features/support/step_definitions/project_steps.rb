@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^I have a project called "([^\"]*)"$/ do |project|
-#  proj = FactoryGirl.create :project_with_order, :name => project
+  #  proj = FactoryGirl.create :project_with_order, :name => project
   FactoryGirl.create(:project, name: project)
 end
 

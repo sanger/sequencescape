@@ -235,7 +235,7 @@ Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   user = User.find_by_login 'user'
 
   id_asset_group = FactoryGirl.create :asset_group, name: "new_asset_group", user: user, study: proj
-#  id_asset = FactoryGirl.create :asset, :name => 'Cucumberirbattle', :sti_type => 'SampleTube', :barcode => 'barcode', :sample_id => '1', :closed => '0'
+  #  id_asset = FactoryGirl.create :asset, :name => 'Cucumberirbattle', :sti_type => 'SampleTube', :barcode => 'barcode', :sample_id => '1', :closed => '0'
   id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
   id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
 end

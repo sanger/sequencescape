@@ -244,7 +244,7 @@ class Plate < Asset
     private :post_import
 
     def post_connect(well)
-#      AssetLink.create!(:ancestor => proxy_association.owner, :descendant => well)
+      #      AssetLink.create!(:ancestor => proxy_association.owner, :descendant => well)
     end
     private :post_connect
 
