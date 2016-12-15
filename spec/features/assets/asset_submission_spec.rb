@@ -10,11 +10,10 @@ feature 'Asset submission', js: true do
   let(:target_asset) { create :library_tube, name: 'Target asset' }
 
   scenario 'request additional sequencing' do
-    sequencing_types = { 'Illumina-C Single ended sequencing' => 76,
-                        'Illumina-C Paired end sequencing' => 76,
-                        'Illumina-C HiSeq Paired end sequencing' => 100 }
-    sequencing_types.each do |sequencing_type, read_length|
-      request_type = RequestType.find_by_name(sequencing_type)
+    request_types = create_list(:sequencing_request_type, 2)
+    read_lengths = [76, 108]
+    request_types.each_with_index do |request_type, index|
+      read_length = read_lengths[index]
       request = create(:request,
                           study: study,
                           project: project,
@@ -31,7 +30,7 @@ feature 'Asset submission', js: true do
       login_user user
       visit asset_path(asset)
       click_link 'Request additional sequencing'
-      select(sequencing_type, from: "Request type")
+      select(request_type.name, from: "Request type")
       select(study.name, from: "Study")
       select(project.name, from: "Project")
       fill_in "Fragment size required (from)", with: "100"
