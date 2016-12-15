@@ -1,5 +1,4 @@
 class UnifyInputPurposes < ActiveRecord::Migration
-
   class PlatePurpose < ActiveRecord::Base
     self.inheritance_column = nil
     self.table_name = 'plate_purposes'
@@ -17,7 +16,7 @@ class UnifyInputPurposes < ActiveRecord::Migration
 
   def up
     ActiveRecord::Base.transaction do
-      NAME_OLD_PURPOSE.each do |name,old_purpose|
+      NAME_OLD_PURPOSE.each do |name, old_purpose|
         purp = Purpose.find_by(name: name)
         purp.type = UNIFIED_PURPOSE
         purp.save!
@@ -27,7 +26,7 @@ class UnifyInputPurposes < ActiveRecord::Migration
 
   def down
     ActiveRecord::Base.transaction do
-      NAME_OLD_PURPOSE.each do |name,old_purpose|
+      NAME_OLD_PURPOSE.each do |name, old_purpose|
         purp = Purpose.find_by(name: name)
         purp.type = old_purpose
         purp.save!

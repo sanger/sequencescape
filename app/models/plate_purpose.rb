@@ -34,7 +34,7 @@ class PlatePurpose < Purpose
     if purpose.nil?
       none
     else
-      where(target_type: purpose.target_type ).order(name: :asc)
+      where(target_type: purpose.target_type).order(name: :asc)
     end
   }
 

@@ -470,7 +470,7 @@ FactoryGirl.define do
   end
 
   factory :plate_purpose do |plate_purpose|
-    name    { generate :purpose_name }
+    name { generate :purpose_name }
     size 96
     association(:barcode_printer_type, factory: :plate_barcode_printer_type)
 

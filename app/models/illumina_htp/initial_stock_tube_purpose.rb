@@ -12,7 +12,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
 
     def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
       ActiveRecord::Base.transaction do
-        tube.requests_as_target.where.not(state: terminated_states).each do |request|
+        tube.requests_as_target.where.not(state: terminated_states).find_each do |request|
           request.transition_to(state)
           new_outer_state = ['started', 'passed', 'qc_complete'].include?(state) ? 'started' : state
           request.outer_request.customer_accepts_responsibility! if customer_accepts_responsibility

@@ -9,7 +9,7 @@ module Batch::TecanBehaviour
     return false if user_id.nil?
     return false if requests.nil? || requests.size == 0
 
-    requests.where(state: "passed").each do |request|
+    requests.where(state: "passed").find_each do |request|
       next unless request.target_asset.plate.barcode == target_barcode
       return false unless Well.find(request.asset).valid_well_on_plate
       return false unless Well.find(request.target_asset).valid_well_on_plate
@@ -28,7 +28,7 @@ module Batch::TecanBehaviour
        "destination" => {}
     }
 
-    requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: "passed").each do |request|
+    requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: "passed").find_each do |request|
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
 

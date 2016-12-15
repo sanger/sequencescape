@@ -323,20 +323,6 @@ Rails/FindBy:
     - 'app/models/request_type.rb'
     - 'app/models/tube.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/FindEach:
-  Exclude:
-    - 'app/models/batch/tecan_behaviour.rb'
-    - 'app/models/flexible_submission.rb'
-    - 'app/models/illumina_c/qc_pool_purpose.rb'
-    - 'app/models/illumina_htp/initial_stock_tube_purpose.rb'
-    - 'app/models/illumina_htp/stock_tube_purpose.rb'
-    - 'app/models/study_report/study_details.rb'
-    - 'app/models/submission.rb'
-
 # Offense count: 1
 # Configuration parameters: Include.
 # Include: db/migrate/*.rb
