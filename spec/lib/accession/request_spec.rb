@@ -14,6 +14,25 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     expect(Accession::Request.new(submission).resource).to_not be_nil
   end
 
+  it "should set the header and proxy" do
+    proxy = configatron.disable_web_proxy
+    configatron.proxy = "mockproxy"
+
+    configatron.disable_web_proxy = false 
+    request = Accession::Request.new(submission)
+    expect(RestClient.proxy).to eq(configatron.proxy)
+    expect(request.resource.options[:headers]).to have_key(:user_agent)
+
+    configatron.disable_web_proxy = true
+    request = Accession::Request.new(submission)
+    expect(RestClient.proxy).to_not be_present
+    expect(request.resource.options).to be_empty
+
+    configatron.disable_web_proxy = proxy
+    configatron.proxy = nil
+
+  end
+
   context "#post" do
 
     it "should return nothing if the submission is not valid" do
@@ -23,7 +42,7 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     it "should return nothing if an error is raised" do
       request = Accession::Request.new(submission)
       allow(request.resource).to receive(:post)
-        .with(submission.to_xml)
+        .with(submission.payload.open)
         .and_raise(StandardError)
 
       expect(request.post).to_not be_accessioned
@@ -32,7 +51,7 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     it "should return a successful response if accessioning is successful" do
       request = Accession::Request.new(submission)
       allow(request.resource).to receive(:post)
-        .with(submission.to_xml)
+        .with(submission.payload.open)
         .and_return(successful_accession_response)
 
       expect(request.post).to be_accessioned
@@ -41,7 +60,7 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     it "should return a failure response if accessioning fails" do
       request = Accession::Request.new(submission)
       allow(request.resource).to receive(:post)
-        .with(submission.to_xml)
+        .with(submission.payload.open)
         .and_return(failed_accession_response)
 
       expect(request.post).to_not be_accessioned

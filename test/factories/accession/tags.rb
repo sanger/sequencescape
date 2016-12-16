@@ -20,7 +20,7 @@ FactoryGirl.define do
       name      :sample_common_name
       services  [:ENA, :EGA]
       groups    [:sample_name]
-      ebi_name  [:common_name]
+      ebi_name  :common_name
     end
 
     factory :gender_accession_tag do
@@ -28,6 +28,7 @@ FactoryGirl.define do
       name      :gender
       services  [:EGA]
       groups    [:sample_attributes, :array_express]
+      ebi_name  nil
     end
 
     factory :phenotype_accession_tag do
@@ -35,6 +36,8 @@ FactoryGirl.define do
       name      :phenotype
       services  [:EGA]
       groups    [:sample_attributes, :array_express]
+      ebi_name  nil
+
     end
 
     factory :donor_id_accession_tag do
@@ -49,18 +52,27 @@ FactoryGirl.define do
 
       name      :sample_public_name
       groups    [:array_express]
+      services  []
+      ebi_name  nil
+
     end
 
     factory :disease_state_accession_tag do
 
       name      :disease_state
       groups    [:array_express]
+      services  []
+      ebi_name  nil
+
     end
 
     factory :rnai_accession_tag do
 
       name      :rnai
       groups    [:array_express]
+      services  []
+      ebi_name  nil
+
     end
 
   end

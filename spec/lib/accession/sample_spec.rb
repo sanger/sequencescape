@@ -2,11 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Accession::Sample, type: :model, accession: true do
 
-  include SampleManifestExcel::Helpers
-
-  let(:folder)          { File.join("spec", "data") }
-  let(:yaml)            { load_file(folder, "accession_tags") }
-  let(:tag_list)        { Accession::TagList.new(yaml) }
+  let(:tag_list)        { build(:standard_accession_tag_list) }
 
   it "should not be sent for accessioning if the sample has already been accessioned" do
     sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_ebi_accession_number: "ENA123"))

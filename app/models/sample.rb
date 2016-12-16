@@ -475,14 +475,6 @@ class Sample < ActiveRecord::Base
     sanger_sample_id || name
   end
 
-  def accessionable?
-    SampleAccessioningValidator.new(self).valid?
-  end
-
-  def create_accession_number
-    Delayed::Job.enqueue SampleAccessioningJob.new(self)
-  end
-
   # These don't really belong here, but exist due to the close coupling between sample
   # and its initial aliquot in the sample manifest.
   delegate :specialized_from_manifest=, to: :primary_receptacle

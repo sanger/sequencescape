@@ -35,6 +35,12 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     expect(action_xml.attribute("schema").value).to eq(submission.sample.schema_type)
   end
 
+  it "should create a payload" do
+    payload = Accession::Submission.new(user, sample).payload
+    expect(payload.count).to eq(2)
+    expect(payload.all? { |_, file| File.file?(file)}).to be_truthy
+  end
+
   it "should post the submission and return an appropriate response" do
     submission = Accession::Submission.new(user, sample)
 

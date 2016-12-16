@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Accession::TagList, type: :model, accession: true do
-  include SampleManifestExcel::Helpers
+  include Accession::Helpers
 
-  let(:folder)      { File.join("spec", "data") }
-  let(:yaml)        { load_file(folder, "accession_tags") }
+  let(:folder)      { File.join("spec", "data", "accession") }
+  let(:yaml)        { load_file(folder, "tags") }
   let(:tag_list)    { Accession::TagList.new(yaml) }
  
   it "should have the correct number of tags" do

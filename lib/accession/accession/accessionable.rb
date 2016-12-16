@@ -1,6 +1,10 @@
 module Accession
   module Accessionable
 
+    class AccessionableFile < Tempfile
+      attr_accessor :original_filename
+    end
+
     attr_reader :ebi_alias
 
     def schema_type
@@ -13,6 +17,19 @@ module Accession
 
     def filename
       @filename ||= "#{ebi_alias}-#{date}.#{schema_type}.xml"
+    end
+
+    def to_xml
+      xml = Builder::XmlMarkup.new
+      xml.instruct!
+      xml.target!
+    end
+
+    def to_file
+      AccessionableFile.open("#{schema_type}_file").tap do |f|
+        f.write(to_xml)
+        f.original_filename = filename
+      end
     end
   end
 end

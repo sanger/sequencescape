@@ -40,6 +40,7 @@ module Accession
     def to_xml
       tag_groups = tags.by_group
       xml = Builder::XmlMarkup.new
+      xml.instruct!
       xml.SAMPLE_SET(XML_NAMESPACE) {
         xml.SAMPLE(alias: ebi_alias) {
           xml.TITLE title if title.present?

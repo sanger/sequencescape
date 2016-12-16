@@ -17,17 +17,33 @@ module Accession
     def initialize(submission)
       @submission = submission
 
-      @resource = if valid?
-        rest_client.new(submission.service.url)
+      if valid?
+        @resource = rest_client.new(submission.service.url)
+        set_proxy
       end
     end
 
     def post
       if valid?
         begin
-          Accession::Response.new(resource.post(submission.to_xml))
+          Accession::Response.new(resource.post(submission.payload.open))
         rescue StandardError => exception
           Accession::NullResponse.new
+        ensure
+          submission.payload.destroy
+        end
+      end
+    end
+
+  private
+
+    def set_proxy
+      if configatron.disable_web_proxy
+        RestClient.proxy = ''
+      else
+        if configatron.proxy 
+          RestClient.proxy = configatron.proxy
+          resource.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
         end
       end
     end

@@ -2,6 +2,7 @@ module Accession
   class TagList
 
     include Enumerable
+    include Comparable
 
     attr_reader :tags, :missing
 
@@ -66,6 +67,11 @@ module Accession
     def meets_service_requirements?(service, standard_tags)
       @missing = standard_tags.required_for(service).keys - self.required_for(service).keys
       missing.empty?
+    end
+
+    def <=>(other)
+      return unless other.is_a?(self.class)
+      tags <=> other.tags
     end
 
   private

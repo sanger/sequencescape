@@ -22,22 +22,6 @@ module Accession
     end
 
     def to_xml
-      _to_xml << sample.to_xml
-    end
-
-    def post
-      @response = Accession::Request.post(self) if valid?
-    end
-
-    def update_accession_number
-      if accessioned?
-        sample.update_accession_number(response.accession_number)
-      end
-    end
-
-  private
-
-    def _to_xml
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SUBMISSION(
@@ -60,5 +44,49 @@ module Accession
       }
       xml.target!
     end
+
+    def post
+      @response = Accession::Request.post(self) if valid?
+    end
+
+    def update_accession_number
+      if accessioned?
+        sample.update_accession_number(response.accession_number)
+      end
+    end
+
+    def payload
+      @payload ||= Payload.new([self, sample])
+    end
+
+    class Payload
+
+      include Enumerable
+
+      attr_reader :files
+
+      def initialize(accessionables)
+        @files = {}.tap do |f|
+          accessionables.each do |accessionable|
+            f[accessionable.schema_type] = accessionable.to_file
+          end
+        end
+      end
+
+      def each(&block)
+        files.each(&block)
+      end
+
+      def open
+        Hash[files.collect {|k,v| [k, v.open] }]
+      end
+
+      def destroy
+        files.values.each do |file|
+          file.close!
+        end
+      end
+    end
+
   end
 end

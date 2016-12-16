@@ -2,6 +2,7 @@ module Accession
   class Tag
 
     include ActiveModel::Model
+    include Accession::Equality
 
     attr_accessor :services, :value, :name, :groups, :ebi_name
 
@@ -48,6 +49,10 @@ module Accession
 
     def array_express_label
       "ArrayExpress-#{label}"
+    end
+
+    def attributes
+      [:services, :value, :name, :groups, :ebi_name]
     end
 
   end
