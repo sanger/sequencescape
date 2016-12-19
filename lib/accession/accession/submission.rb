@@ -1,6 +1,5 @@
 module Accession
   class Submission
-    
     include ActiveModel::Model
     include Accession::Accessionable
 
@@ -31,13 +30,13 @@ module Accession
         alias: sample.submission_alias,
         submission_date: date
         ) {
-          xml.CONTACTS { 
+          xml.CONTACTS {
             xml.CONTACT(contact.to_h)
         }
 
-        xml.ACTIONS { 
+        xml.ACTIONS {
           xml.ACTION {
-            xml.ADD(source: sample.filename,  schema: sample.schema_type)
+            xml.ADD(source: sample.filename, schema: sample.schema_type)
             xml.tag!(service.visibility)
           }
         }
@@ -60,7 +59,6 @@ module Accession
     end
 
     class Payload
-
       include Enumerable
 
       attr_reader :files
@@ -78,15 +76,14 @@ module Accession
       end
 
       def open
-        Hash[files.collect {|k,v| [k, v.open] }]
+        Hash[files.collect { |k, v| [k, v.open] }]
       end
 
-      def destroy
+      def close!
         files.values.each do |file|
           file.close!
         end
       end
     end
-
   end
 end

@@ -1,6 +1,5 @@
 module Accession
   class Configuration
-
     include Accession::Helpers
     include Accession::Equality
 
@@ -39,6 +38,5 @@ module Accession
     def attributes
       [:folder, :tags]
     end
-
   end
 end

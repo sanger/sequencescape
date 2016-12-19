@@ -1,6 +1,5 @@
 module Accession
   class Sample
-
     # Validate the sample to ensure that it can be accessioned
     # The sample must:
     # - not be accessioned
@@ -17,7 +16,7 @@ module Accession
     include Accession::Accessionable
 
     validate :check_sample, :check_studies
-    validate :check_required_fields, if: Proc.new {|s| s.service.valid? }
+    validate :check_required_fields, if: proc { |s| s.service.valid? }
 
     attr_reader :standard_tags, :sample, :studies, :service, :tags
 
@@ -121,6 +120,5 @@ module Accession
     def studies_valid?
       studies.length == 1
     end
-
   end
 end

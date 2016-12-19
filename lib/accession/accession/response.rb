@@ -1,7 +1,10 @@
 module Accession
   class Response
+    include ActiveModel::Validations
 
     attr_reader :code, :body, :xml
+
+    validates_presence_of :code, :body
 
     def initialize(response)
       @code = response.code
@@ -35,6 +38,5 @@ module Accession
       return unless success?
       xml.search("ERROR").collect(&:text)
     end
-
   end
 end

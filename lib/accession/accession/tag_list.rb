@@ -1,6 +1,5 @@
 module Accession
   class TagList
-
     include Enumerable
     include Comparable
 
@@ -27,12 +26,11 @@ module Accession
     end
 
     def by_group
-      tags.values.inject({}) do |result, tag|
+      tags.values.each_with_object({}) do |tag, result|
         tag.groups.each do |group|
           result[group] ||= TagList.new
           result[group] << tag
         end
-        result
       end
     end
 
@@ -77,12 +75,13 @@ module Accession
   private
 
     def add_tags(tags)
-      tags.each do |k, tag|  
+      tags.each do |k, tag|
         add(if tag.instance_of?(Accession::Tag)
-          add(tag)
-        else
-          Accession::Tag.new(tag.merge(name: k))
-        end)
+              add(tag)
+            else
+              Accession::Tag.new(tag.merge(name: k))
+            end
+        )
       end
     end
   end

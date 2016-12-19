@@ -1,6 +1,5 @@
 module Accession
   class Request
-
     include ActiveModel::Validations
 
     attr_reader :submission, :resource
@@ -30,7 +29,7 @@ module Accession
         rescue StandardError => exception
           Accession::NullResponse.new
         ensure
-          submission.payload.destroy
+          submission.payload.close!
         end
       end
     end
@@ -40,13 +39,10 @@ module Accession
     def set_proxy
       if configatron.disable_web_proxy
         RestClient.proxy = ''
-      else
-        if configatron.proxy 
-          RestClient.proxy = configatron.proxy
-          resource.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
-        end
+      elsif configatron.proxy
+        RestClient.proxy = configatron.proxy
+        resource.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
       end
     end
-
   end
 end

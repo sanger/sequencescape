@@ -1,6 +1,5 @@
 module Accession
   module Accessionable
-
     class AccessionableFile < Tempfile
       attr_accessor :original_filename
     end

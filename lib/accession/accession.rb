@@ -1,5 +1,4 @@
 module Accession
-
   module Helpers
     def load_file(folder, filename)
       YAML::load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
@@ -7,7 +6,6 @@ module Accession
   end
 
   module Equality
-
     include Comparable
 
     def to_a
@@ -21,7 +19,6 @@ module Accession
       return unless other.is_a?(self.class)
       to_a <=> other.to_a
     end
-
   end
 
   require_relative "accession/core_extensions"
@@ -38,8 +35,8 @@ module Accession
 
   String.send(:include, CoreExtensions::String)
 
-  CENTER_NAME = "SC".freeze
-  XML_NAMESPACE = {'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance'}.freeze
+  CENTER_NAME = "SC"
+  XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }
 
   class << self
     attr_writer :configuration
@@ -56,5 +53,4 @@ module Accession
   def self.reset!
     @configuration = Configuration.new
   end
-
 end

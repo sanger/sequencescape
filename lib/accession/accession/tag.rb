@@ -1,6 +1,5 @@
 module Accession
   class Tag
-
     include ActiveModel::Model
     include Accession::Equality
 
@@ -8,7 +7,7 @@ module Accession
 
     validates_presence_of :name, :groups
 
-    DEFAULT_ATTRIBUTES = {services: []}
+    DEFAULT_ATTRIBUTES = { services: [] }
 
     def initialize(attributes = {})
       super(DEFAULT_ATTRIBUTES.merge(attributes))
@@ -54,6 +53,5 @@ module Accession
     def attributes
       [:services, :value, :name, :groups, :ebi_name]
     end
-
   end
 end
