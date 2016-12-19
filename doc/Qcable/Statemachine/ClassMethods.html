@@ -117,7 +117,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>A little more sensitive than the request state machine.</p>
+</div></span>
   
 </li>
 
@@ -140,12 +142,24 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>A little more sensitive than the request state machine</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+10
 11
 12
 13
@@ -153,16 +167,13 @@
 15
 16
 17
-18
-19
-20</pre>
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/qcable/statemachine.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'app/models/qcable/statemachine.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_suggested_transition_between'>suggested_transition_between</span><span class='lparen'>(</span><span class='id identifier rubyid_current'>current</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_aasm'>aasm</span><span class='period'>.</span><span class='id identifier rubyid_state_machine'>state_machine</span><span class='period'>.</span><span class='id identifier rubyid_events'>events</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_event'>event</span><span class='op'>|</span>
-
     <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_transitions_from_state'>transitions_from_state</span><span class='lparen'>(</span><span class='id identifier rubyid_current'>current</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_transition'>transition</span><span class='op'>|</span>
       <span class='id identifier rubyid_transition'>transition</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:allow_automated?</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_transition'>transition</span><span class='period'>.</span><span class='id identifier rubyid_to'>to</span> <span class='op'>==</span> <span class='id identifier rubyid_target'>target</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
     <span class='kw'>end</span>
@@ -180,9 +191,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:36 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -90,7 +90,20 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>To prevent ActiveRecord::Observer doing something unwanted when we test
+this, we pull out the implementation in a module (which can be tested) and
+leave the rest behind.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -154,29 +167,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#buffer-instance_method" title="#buffer (instance method)">#<strong>buffer</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>We may have either Bunny of MArchHare depending on Ruby version.</p>
+</div></span>
   
 </li>
 
@@ -198,7 +191,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Converts metadata entries to their owner records, if necessary.</p>
+</div></span>
   
 </li>
 
@@ -242,7 +237,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>A transaction is (potentially) a bulk send of messages and hence we can
+create a buffer that will be written to during changes.</p>
+</div></span>
   
 </li>
 
@@ -271,17 +269,17 @@
       <pre class="lines">
 
 
-72
-73
-74
-75</pre>
+109
+110
+111
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_buffer'>buffer</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_record'>record</span>
-  <span class='kw'>self</span>  <span class='comment'># Ensure we can chain these if necessary!
+  <span class='kw'>self</span> <span class='comment'># Ensure we can chain these if necessary!
 </span><span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -297,69 +295,33 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>We may have either Bunny of MArchHare depending on Ruby version.
+Unfortunately their interfaces are slightly different</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-177
-178
-179
-180
-181
-182
-183
-184
-185
-186
-187
-188</pre>
+212
+213
+214</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 212</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_activate_exchange'>activate_exchange</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_client'>client</span> <span class='op'>=</span> <span class='const'>Bunny</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_amqp'>amqp</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='label'>spec:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>09</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>frame_max:</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_amqp'>amqp</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:maximum_frame</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='kw'>begin</span>
-    <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-    <span class='id identifier rubyid_exchange'>exchange</span> <span class='op'>=</span> <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_exchange'>exchange</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>psd.sequencescape</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>passive:</span> <span class='kw'>true</span><span class='rparen'>)</span>
-    <span class='kw'>yield</span> <span class='id identifier rubyid_exchange'>exchange</span>
-  <span class='kw'>ensure</span>
-    <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span>
-  <span class='kw'>end</span>
-<span class='kw'>rescue</span> <span class='const'>Qrack</span><span class='op'>::</span><span class='const'>ConnectionTimeout</span><span class='comma'>,</span> <span class='const'>StandardError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_exception'>exception</span>
-  <span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_error'>error</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unable to broadcast: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_backtrace'>backtrace</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="buffer-instance_method">
-  
-    #<strong>buffer</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-169
-170
-171</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 169</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_buffer'>buffer</span>
-  <span class='const'>Thread</span><span class='period'>.</span><span class='id identifier rubyid_current'>current</span><span class='lbracket'>[</span><span class='symbol'>:buffer</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>Proxy</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_exchange_interface'>exchange_interface</span><span class='period'>.</span><span class='id identifier rubyid_exchange'>exchange</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -375,27 +337,38 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Converts metadata entries to their owner records, if necessary</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89</pre>
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_determine_record_to_broadcast'>determine_record_to_broadcast</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>case</span>
@@ -406,7 +379,7 @@
   <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Metadata</span><span class='op'>::</span><span class='const'>Base</span><span class='rparen'>)</span> <span class='kw'>then</span> <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_owner'>owner</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Role</span><span class='rparen'>)</span>           <span class='kw'>then</span> <span class='id identifier rubyid_determine_record_to_broadcast'>determine_record_to_broadcast</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_authorizable'>authorizable</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Role</span><span class='op'>::</span><span class='const'>UserRole</span><span class='rparen'>)</span> <span class='kw'>then</span> <span class='id identifier rubyid_determine_record_to_broadcast'>determine_record_to_broadcast</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_role'>role</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>else</span>                                   <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='comma'>,</span>       <span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>                                   <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -429,21 +402,21 @@
       <pre class="lines">
 
 
-158
-159
-160
-161
-162
-163
-164</pre>
+195
+196
+197
+198
+199
+200
+201</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 195</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_publish_to'>publish_to</span><span class='lparen'>(</span><span class='id identifier rubyid_exchange'>exchange</span><span class='comma'>,</span> <span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_exchange'>exchange</span><span class='period'>.</span><span class='id identifier rubyid_publish'>publish</span><span class='lparen'>(</span>
     <span class='const'>MultiJson</span><span class='period'>.</span><span class='id identifier rubyid_dump'>dump</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span><span class='comma'>,</span>
-    <span class='label'>key:</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_routing_key'>routing_key</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='embexpr_end'>}</span><span class='tstring_content'>.saved.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_underscore'>underscore</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='label'>routing_key:</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_routing_key'>routing_key</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='embexpr_end'>}</span><span class='tstring_content'>.saved.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_underscore'>underscore</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
     <span class='label'>persistent:</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_amqp'>amqp</span><span class='period'>.</span><span class='id identifier rubyid_persistent'>persistent</span>
   <span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -461,42 +434,66 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>A transaction is (potentially) a bulk send of messages and hence we can
+create a buffer that will be written to during changes.  But transactions
+can be nested, which means that only the very outer one should do any
+publishing.</p>
+
+<p>– What follows looks complicated but is specialised to deal with a
+&#39;return&#39; being called from within the block.  In that case the
+&#39;return&#39; causes the method to return and <strong>not</strong> to
+execute any code after &#39;yield&#39; in the code below.  Therefore you
+have the situation where the database transaction has been committed but
+the AMQP broadcast has not happened.  But the &#39;ensure&#39; block is
+always called, so we assume the transaction to be good (i.e. commit) unless
+an exception is raised (when it is marked as bad), and broadcast our buffer
+iff the transaction is good and there&#39;s stuff to broadcast. ++</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70</pre>
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transaction'>transaction</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='comment'># JG: This code took me a while to get my head around.
@@ -535,9 +532,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:33 2016 by
+  Generated on Mon Dec 19 11:16:26 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

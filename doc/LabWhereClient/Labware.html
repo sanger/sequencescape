@@ -113,7 +113,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Abarcode-instance_method" title="#:barcode (instance method)">#<strong>:barcode</strong>  &#x21d2; Object </a>
+      <a href="#barcode-instance_method" title="#barcode (instance method)">#<strong>barcode</strong>  &#x21d2; Object </a>
     
 
     
@@ -133,7 +133,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :barcode.</p>
+<p>Returns the value of attribute barcode.</p>
 </div></span>
   
 </li>
@@ -142,7 +142,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Alocation-instance_method" title="#:location (instance method)">#<strong>:location</strong>  &#x21d2; Object </a>
+      <a href="#location-instance_method" title="#location (instance method)">#<strong>location</strong>  &#x21d2; Object </a>
     
 
     
@@ -162,7 +162,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :location.</p>
+<p>Returns the value of attribute location.</p>
 </div></span>
   
 </li>
@@ -281,13 +281,13 @@
       <pre class="lines">
 
 
-106
-107
-108
-109</pre>
+101
+102
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='ivar'>@barcode</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>barcode</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
@@ -306,9 +306,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":barcode-instance_method">
+  <h3 class="signature first" id="barcode-instance_method">
   
-    #<strong>:barcode</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>barcode</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -317,7 +317,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :barcode</p>
+<p>Returns the value of attribute barcode</p>
 
 
   </div>
@@ -331,16 +331,16 @@
       <pre class="lines">
 
 
-97
-98
-99</pre>
+92
+93
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 92</span>
 
-def :barcode
-  @:barcode
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_barcode'>barcode</span>
+  <span class='ivar'>@barcode</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -349,9 +349,9 @@ end</pre>
       
       <span id=""></span>
       <div class="method_details ">
-  <h3 class="signature " id=":location-instance_method">
+  <h3 class="signature " id="location-instance_method">
   
-    #<strong>:location</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>location</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -360,7 +360,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :location</p>
+<p>Returns the value of attribute location</p>
 
 
   </div>
@@ -374,16 +374,16 @@ end</pre>
       <pre class="lines">
 
 
-98
-99
-100</pre>
+93
+94
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 93</span>
 
-def :location
-  @:location
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
+  <span class='ivar'>@location</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -411,14 +411,14 @@ end</pre>
       <pre class="lines">
 
 
-100
-101
-102
-103
-104</pre>
+95
+96
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_find_by_barcode'>find_by_barcode</span><span class='lparen'>(</span><span class='id identifier rubyid_barcode'>barcode</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_barcode'>barcode</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
@@ -435,9 +435,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:01 2016 by
+  Generated on Mon Dec 19 11:16:47 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -85,7 +85,32 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Provides a means of serializing and serializing submission templates.
+Example serialization: {</p>
 
+<pre class="code ruby"><code class="ruby">:name=&gt;&quot;Template Name&quot;,
+:submission_class_name=&gt;&quot;LinearSubmission&quot;,
+:superceded_at=&gt;nil,
+:product_line=&gt;&quot;Product Line Name&quot;,
+:product_catalogue=&gt;&quot;Product Catalogue Name&quot;,
+:submission_parameters=&gt;{
+  :request_types=&gt;[&quot;library_creation&quot;, &quot;sequencing&quot;],
+  :workflow=&gt;&quot;short_read_sequencing&quot;,
+  :order_role=&gt;&quot;ILC&quot;
+}</code></pre>
+
+<p>}</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
@@ -183,6 +208,7 @@
       <pre class="lines">
 
 
+58
 59
 60
 61
@@ -211,15 +237,12 @@
 84
 85
 86
-87
-88
-89</pre>
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/submission_serializer.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'lib/submission_serializer.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_construct!'>construct!</span><span class='lparen'>(</span><span class='id identifier rubyid_hash'>hash</span><span class='rparen'>)</span>
-
   <span class='id identifier rubyid_st'>st</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
   <span class='const'>STRAIGHT_CLONE</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span>
@@ -269,6 +292,7 @@
       <pre class="lines">
 
 
+25
 26
 27
 28
@@ -299,11 +323,10 @@
 53
 54
 55
-56
-57</pre>
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/submission_serializer.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'lib/submission_serializer.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_serialize'>serialize</span><span class='lparen'>(</span><span class='id identifier rubyid_st'>st</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='id identifier rubyid_st'>st</span><span class='period'>.</span><span class='id identifier rubyid_attributes'>attributes</span>
@@ -347,9 +370,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:31 2016 by
+  Generated on Mon Dec 19 11:16:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -108,7 +108,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -128,7 +142,7 @@
         
       </dt>
       <dd><pre class="code"><span class='lbracket'>[</span>
-  <span class='const'>LINEAR</span> <span class='op'>=</span> <span class='int'>0</span><span class='comma'>,</span>   <span class='comment'># one-to-one
+  <span class='const'>LINEAR</span> <span class='op'>=</span> <span class='int'>0</span><span class='comma'>,</span> <span class='comment'># one-to-one
 </span>  <span class='const'>CONVERGENT</span> <span class='op'>=</span> <span class='int'>1</span><span class='comma'>,</span> <span class='comment'># many-to-one
 </span>  <span class='const'>DIVERGENT</span> <span class='op'>=</span> <span class='int'>2</span> <span class='comment'># one-to-many
 </span>  <span class='comment'># we don&#39;t do many-to-many so far
@@ -233,7 +247,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Helper method for generating a request constructor, like &#39;create!&#39;.</p>
+</div></span>
   
 </li>
 
@@ -437,7 +453,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -503,12 +519,12 @@
       <pre class="lines">
 
 
+121
 122
-123
-124</pre>
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dna_qc'>dna_qc</span>
   <span class='id identifier rubyid_find_by_key'>find_by_key</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>dna_qc</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot find dna_qc request type</span><span class='tstring_end'>&quot;</span></span>
@@ -533,12 +549,12 @@
       <pre class="lines">
 
 
+125
 126
-127
-128</pre>
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_genotyping'>genotyping</span>
   <span class='id identifier rubyid_find_by_key'>find_by_key</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>genotyping</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot find genotyping request type</span><span class='tstring_end'>&quot;</span></span>
@@ -563,12 +579,12 @@
       <pre class="lines">
 
 
+133
 134
-135
-136</pre>
+135</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 133</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_initial_transfer'>initial_transfer</span>
   <span class='id identifier rubyid_find_by_key'>find_by_key</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>initial_transfer</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot find initial request type</span><span class='tstring_end'>&quot;</span></span>
@@ -587,12 +603,24 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Helper method for generating a request constructor, like &#39;create!&#39;</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+87
 88
 89
 90
@@ -610,11 +638,10 @@
 102
 103
 104
-105
-106</pre>
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_request_constructor'>request_constructor</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_target'>target</span>        <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:target</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='symbol'>:request_class</span>
@@ -655,12 +682,12 @@
       <pre class="lines">
 
 
+129
 130
-131
-132</pre>
+131</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span>
   <span class='id identifier rubyid_find_by_key'>find_by_key</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>transfer</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot find transfer request type</span><span class='tstring_end'>&quot;</span></span>
@@ -691,16 +718,16 @@
       <pre class="lines">
 
 
+157
+158
 159
 160
 161
 162
-163
-164
-165</pre>
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 157</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_target_asset!'>create_target_asset!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>case</span>
@@ -729,12 +756,12 @@
       <pre class="lines">
 
 
+37
 38
-39
-40</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_library_type'>default_library_type</span>
   <span class='id identifier rubyid_library_types'>library_types</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>library_types_request_types:</span> <span class='lbrace'>{</span> <span class='label'>is_default:</span> <span class='kw'>true</span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
@@ -759,17 +786,17 @@
       <pre class="lines">
 
 
+137
+138
 139
 140
 141
 142
 143
-144
-145
-146</pre>
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 137</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_extract_metadata_from_hash'>extract_metadata_from_hash</span><span class='lparen'>(</span><span class='id identifier rubyid_request_options'>request_options</span><span class='rparen'>)</span>
   <span class='comment'># WARNING: we need a copy of the options (we delete stuff from attributes)
@@ -821,12 +848,12 @@
       <pre class="lines">
 
 
-155
-156
-157</pre>
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 153</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_needs_target_asset?'>needs_target_asset?</span>
   <span class='id identifier rubyid_target_purpose'>target_purpose</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='kw'>and</span> <span class='id identifier rubyid_target_asset_type'>target_asset_type</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
@@ -851,12 +878,12 @@
       <pre class="lines">
 
 
+113
 114
-115
-116</pre>
+115</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_class'>request_class</span>
   <span class='id identifier rubyid_request_class_name'>request_class_name</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span>
@@ -881,12 +908,12 @@
       <pre class="lines">
 
 
+117
 118
-119
-120</pre>
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 118</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_class='>request_class=</span><span class='lparen'>(</span><span class='id identifier rubyid_request_class'>request_class</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_request_class_name'>request_class_name</span> <span class='op'>=</span> <span class='id identifier rubyid_request_class'>request_class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
@@ -933,12 +960,12 @@
       <pre class="lines">
 
 
-148
-149
-150</pre>
+146
+147
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type.rb', line 146</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_targets_lanes?'>targets_lanes?</span>
   <span class='lparen'>(</span><span class='id identifier rubyid_target_asset_type'>target_asset_type</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Lane</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\ssequencing$</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span>
@@ -953,9 +980,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:06 2016 by
+  Generated on Mon Dec 19 11:16:52 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

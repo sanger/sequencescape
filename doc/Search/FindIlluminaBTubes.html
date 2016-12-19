@@ -214,7 +214,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -258,12 +258,12 @@
       <pre class="lines">
 
 
+26
 27
-28
-29</pre>
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/search/find_illumina_b_tubes.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'app/models/search/find_illumina_b_tubes.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_illumina_b_final_tube_purpose'>illumina_b_final_tube_purpose</span>
   <span class='const'>Tube</span><span class='op'>::</span><span class='const'>Purpose</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='const'>IlluminaB</span><span class='op'>::</span><span class='const'>PlatePurposes</span><span class='op'>::</span><span class='const'>TUBE_PURPOSE_FLOWS</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:last</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -288,12 +288,12 @@
       <pre class="lines">
 
 
+21
 22
-23
-24</pre>
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/search/find_illumina_b_tubes.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'app/models/search/find_illumina_b_tubes.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_illumina_b_tube_purposes'>illumina_b_tube_purposes</span>
   <span class='const'>Tube</span><span class='op'>::</span><span class='const'>Purpose</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='const'>IlluminaB</span><span class='op'>::</span><span class='const'>PlatePurposes</span><span class='op'>::</span><span class='const'>TUBE_PURPOSE_FLOWS</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='rparen'>)</span>
@@ -324,6 +324,7 @@
       <pre class="lines">
 
 
+10
 11
 12
 13
@@ -332,11 +333,10 @@
 16
 17
 18
-19
-20</pre>
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/search/find_illumina_b_tubes.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'app/models/search/find_illumina_b_tubes.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scope'>scope</span><span class='lparen'>(</span><span class='id identifier rubyid_criteria'>criteria</span><span class='rparen'>)</span>
   <span class='comment'># We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
@@ -358,9 +358,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:39 2016 by
+  Generated on Mon Dec 19 11:17:22 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

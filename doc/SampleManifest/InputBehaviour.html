@@ -159,138 +159,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#clean_up_sheet-instance_method" title="#clean_up_sheet (instance method)">#<strong>clean_up_sheet</strong>(csv)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#clean_up_value-instance_method" title="#clean_up_value (instance method)">#<strong>clean_up_value</strong>(value)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#convert_yes_no_to_boolean-instance_method" title="#convert_yes_no_to_boolean (instance method)">#<strong>convert_yes_no_to_boolean</strong>(value)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#each_csv_row-instance_method" title="#each_csv_row (instance method)">#<strong>each_csv_row</strong>(&amp;block)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#ensure_samples_are_being_updated_by_manifest-instance_method" title="#ensure_samples_are_being_updated_by_manifest (instance method)">#<strong>ensure_samples_are_being_updated_by_manifest</strong>(attributes, user)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#fail_with_errors%21-instance_method" title="#fail_with_errors! (instance method)">#<strong>fail_with_errors!</strong>(errors)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#get_headers-instance_method" title="#get_headers (instance method)">#<strong>get_headers</strong>(csv)  &#x21d2; Object </a>
     
 
@@ -327,29 +195,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#strip_non_word_characters-instance_method" title="#strip_non_word_characters (instance method)">#<strong>strip_non_word_characters</strong>(value)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Always allow &#39;empty&#39; samples to be updated, but non-empty samples
+need to have the override checkbox set for an update to occur.</p>
+</div></span>
   
 </li>
 
@@ -448,255 +297,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="clean_up_sheet-instance_method">
-  
-    #<strong>clean_up_sheet</strong>(csv)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-154
-155
-156
-157
-158
-159
-160
-161
-162</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 154</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_clean_up_sheet'>clean_up_sheet</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span>
-  <span class='comment'># Clean up CSV
-</span>  <span class='int'>0</span><span class='period'>.</span><span class='id identifier rubyid_upto'>upto</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_row'>row</span><span class='op'>|</span>
-    <span class='int'>0</span><span class='period'>.</span><span class='id identifier rubyid_upto'>upto</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='lbracket'>[</span><span class='id identifier rubyid_row'>row</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_col'>col</span><span class='op'>|</span>
-      <span class='id identifier rubyid_csv'>csv</span><span class='lbracket'>[</span><span class='id identifier rubyid_row'>row</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_col'>col</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_clean_up_value'>clean_up_value</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='lbracket'>[</span><span class='id identifier rubyid_row'>row</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_col'>col</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_csv'>csv</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="clean_up_value-instance_method">
-  
-    #<strong>clean_up_value</strong>(value)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-148
-149
-150
-151</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 148</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_clean_up_value'>clean_up_value</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="convert_yes_no_to_boolean-instance_method">
-  
-    #<strong>convert_yes_no_to_boolean</strong>(value)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-143
-144
-145</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 143</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_convert_yes_no_to_boolean'>convert_yes_no_to_boolean</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='op'>!</span><span class='op'>!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_match'>match</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>Y</span><span class='regexp_end'>/i</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="each_csv_row-instance_method">
-  
-    #<strong>each_csv_row</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-180
-181
-182
-183
-184
-185
-186
-187
-188
-189
-190
-191
-192
-193
-194
-195
-196
-197
-198</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 180</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_each_csv_row'>each_csv_row</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_csv'>csv</span> <span class='op'>=</span> <span class='const'>CSV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_uploaded'>uploaded</span><span class='period'>.</span><span class='id identifier rubyid_current_data'>current_data</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_clean_up_sheet'>clean_up_sheet</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span>
-
-  <span class='id identifier rubyid_headers'>headers</span> <span class='op'>=</span> <span class='id identifier rubyid_get_headers'>get_headers</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span>
-
-  <span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_each_with_index'>each_with_index</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_index'>index</span><span class='op'>|</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Header &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; not recognised!</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='op'>||</span> <span class='const'>SampleManifest</span><span class='op'>::</span><span class='const'>Headers</span><span class='period'>.</span><span class='id identifier rubyid_valid?'>valid?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_headers_with_errors'>headers_with_errors</span><span class='op'>|</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>InvalidManifest</span><span class='comma'>,</span> <span class='id identifier rubyid_headers_with_errors'>headers_with_errors</span> <span class='kw'>unless</span> <span class='id identifier rubyid_headers_with_errors'>headers_with_errors</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_column_map'>column_map</span> <span class='op'>=</span> <span class='const'>SampleManifest</span><span class='period'>.</span><span class='id identifier rubyid_compute_column_map'>compute_column_map</span><span class='lparen'>(</span><span class='id identifier rubyid_headers'>headers</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_spreadsheet_offset'>spreadsheet_offset</span><span class='period'>.</span><span class='id identifier rubyid_upto'>upto</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_row'>row</span><span class='op'>|</span>
-    <span class='kw'>yield</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_each_with_index'>each_with_index</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_header'>header</span><span class='comma'>,</span> <span class='id identifier rubyid_column'>column</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_header'>header</span><span class='comma'>,</span> <span class='id identifier rubyid_csv'>csv</span><span class='lbracket'>[</span><span class='id identifier rubyid_row'>row</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_column'>column</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>rescue</span> <span class='const'>CSV</span><span class='op'>::</span><span class='const'>MalformedCSVError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_exception'>exception</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>InvalidManifest</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid CSV file, did you upload an Excel file by accident? - </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_exception'>exception</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="ensure_samples_are_being_updated_by_manifest-instance_method">
-  
-    #<strong>ensure_samples_are_being_updated_by_manifest</strong>(attributes, user)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-280
-281
-282
-283
-284
-285
-286
-287
-288
-289
-290
-291</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 280</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_ensure_samples_are_being_updated_by_manifest'>ensure_samples_are_being_updated_by_manifest</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:samples_attributes</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sample_attributes'>sample_attributes</span><span class='op'>|</span>
-    <span class='id identifier rubyid_sample_attributes'>sample_attributes</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span>
-      <span class='label'>updating_from_manifest:</span> <span class='kw'>true</span><span class='comma'>,</span>
-      <span class='label'>can_rename_sample:</span> <span class='kw'>true</span><span class='comma'>,</span>
-      <span class='label'>user_performing_manifest_update:</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span>
-      <span class='label'>override_previous_manifest:</span> <span class='lparen'>(</span><span class='id identifier rubyid_override_previous_manifest?'>override_previous_manifest?</span> <span class='op'>||</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:override_previous_manifest</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-    <span class='rparen'>)</span>
-    <span class='id identifier rubyid_sample_attributes'>sample_attributes</span><span class='lbracket'>[</span><span class='symbol'>:sample_metadata_attributes</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span>
-    <span class='id identifier rubyid_sample_attributes'>sample_attributes</span><span class='lbracket'>[</span><span class='symbol'>:sample_metadata_attributes</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:updating_from_manifest</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>true</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="fail_with_errors!-instance_method">
-  
-    #<strong>fail_with_errors!</strong>(errors)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-273
-274
-275
-276
-277</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 273</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_fail_with_errors!'>fail_with_errors!</span><span class='lparen'>(</span><span class='id identifier rubyid_errors'>errors</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_reload'>reload</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_last_errors'>last_errors</span> <span class='op'>=</span> <span class='id identifier rubyid_errors'>errors</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fail!'>fail!</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="get_headers-instance_method">
+  <h3 class="signature first" id="get_headers-instance_method">
   
     #<strong>get_headers</strong>(csv)  &#x21d2; <tt>Object</tt> 
   
@@ -740,7 +341,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Always allow &#39;empty&#39; samples to be updated, but non-empty samples
+need to have the override checkbox set for an update to occur</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -896,38 +509,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="strip_non_word_characters-instance_method">
-  
-    #<strong>strip_non_word_characters</strong>(value)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-165
-166
-167
-168</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 165</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_strip_non_word_characters'>strip_non_word_characters</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^:alnum:]+</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="update_attributes_with_sample_manifest!-instance_method">
   
     #<strong>update_attributes_with_sample_manifest!</strong>(attributes, user = nil)  &#x21d2; <tt>Object</tt> 
@@ -968,9 +549,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:42 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

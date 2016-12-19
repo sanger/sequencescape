@@ -85,7 +85,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -139,7 +153,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>&lt;label
+for=“submission_order_params_field_info_key”&gt;field_info.display_name/label&gt;.</p>
+</div></span>
   
 </li>
 
@@ -161,7 +178,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns a either a text input or a selection tag based on the
+&#39;kind&#39; of the order parameter passed in.</p>
+</div></span>
   
 </li>
 
@@ -192,50 +212,6 @@
   <span class="summary_signature">
     
       <a href="#order_sample_names-instance_method" title="#order_sample_names (instance method)">#<strong>order_sample_names</strong>(order)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#order_selection_tag-instance_method" title="#order_selection_tag (instance method)">#<strong>order_selection_tag</strong>(order, field_info)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#order_text_tag-instance_method" title="#order_text_tag (instance method)">#<strong>order_text_tag</strong>(order, field_info)  &#x21d2; Object </a>
     
 
     
@@ -315,7 +291,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns an array (or anything else) as an escaped string for embedding in
+javascript.</p>
+</div></span>
   
 </li>
 
@@ -410,6 +389,8 @@
       <pre class="lines">
 
 
+100
+101
 102
 103
 104
@@ -424,12 +405,10 @@
 113
 114
 115
-116
-117
-118</pre>
+116</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_asset_group_select'>asset_group_select</span><span class='lparen'>(</span><span class='id identifier rubyid_asset_groups'>asset_groups</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_prompt'>prompt</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_asset_groups'>asset_groups</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
@@ -462,18 +441,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>&lt;label
+for=“submission_order_params_field_info_key”&gt;field_info.display_name/label&gt;</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+15
 16
-17
-18</pre>
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_order_input_label'>order_input_label</span><span class='lparen'>(</span><span class='id identifier rubyid_field_info'>field_info</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_label'>label</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>submission[order_params]</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_display_name'>display_name</span><span class='comma'>,</span> <span class='label'>class:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>control-label col-sm-6</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -492,12 +483,26 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a either a text input or a selection tag based on the
+&#39;kind&#39; of the order parameter passed in. field_info is expected to
+be FieldInfo [sic]</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+22
 23
 24
 25
@@ -507,11 +512,10 @@
 29
 30
 31
-32
-33</pre>
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_order_input_tag'>order_input_tag</span><span class='lparen'>(</span><span class='id identifier rubyid_order'>order</span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_content_tag'>content_tag</span><span class='lparen'>(</span><span class='symbol'>:div</span><span class='comma'>,</span> <span class='label'>class:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>col-sm-6</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -544,17 +548,17 @@
       <pre class="lines">
 
 
+58
 59
 60
 61
 62
 63
 64
-65
-66</pre>
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_order_number_tag'>order_number_tag</span><span class='lparen'>(</span><span class='id identifier rubyid_order'>order</span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_number_field_tag'>number_field_tag</span><span class='lparen'>(</span>
@@ -584,103 +588,15 @@
       <pre class="lines">
 
 
-143
-144
-145</pre>
+141
+142
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_order_sample_names'>order_sample_names</span><span class='lparen'>(</span><span class='id identifier rubyid_order'>order</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_order'>order</span><span class='period'>.</span><span class='id identifier rubyid_assets'>assets</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:aliquots</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:sample</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="order_selection_tag-instance_method">
-  
-    #<strong>order_selection_tag</strong>(order, field_info)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 35</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_order_selection_tag'>order_selection_tag</span><span class='lparen'>(</span><span class='id identifier rubyid_order'>order</span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_select_tag'>select_tag</span><span class='lparen'>(</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>submission[order_params][</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-    <span class='id identifier rubyid_options_for_select'>options_for_select</span><span class='lparen'>(</span>
-      <span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_selection'>selection</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_s</span><span class='rparen'>)</span><span class='comma'>,</span>
-      <span class='id identifier rubyid_order'>order</span><span class='period'>.</span><span class='id identifier rubyid_request_options'>request_options</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:[]</span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
-    <span class='rparen'>)</span><span class='comma'>,</span>
-    <span class='label'>class:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>required form-control</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-    <span class='label'>required:</span> <span class='kw'>true</span><span class='comma'>,</span>
-    <span class='label'>disabled:</span> <span class='lparen'>(</span><span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_selection'>selection</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>==</span> <span class='int'>1</span><span class='rparen'>)</span>
-  <span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="order_text_tag-instance_method">
-  
-    #<strong>order_text_tag</strong>(order, field_info)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-49
-50
-51
-52
-53
-54
-55
-56</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 49</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_order_text_tag'>order_text_tag</span><span class='lparen'>(</span><span class='id identifier rubyid_order'>order</span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_text_field_tag'>text_field_tag</span><span class='lparen'>(</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>submission[order_params][</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-    <span class='id identifier rubyid_order'>order</span><span class='period'>.</span><span class='id identifier rubyid_request_options'>request_options</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:[]</span><span class='comma'>,</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_field_info'>field_info</span><span class='period'>.</span><span class='id identifier rubyid_default_value'>default_value</span><span class='comma'>,</span>
-    <span class='label'>class:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>required form-control</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-    <span class='label'>required:</span> <span class='kw'>true</span>
-  <span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -702,6 +618,8 @@
       <pre class="lines">
 
 
+82
+83
 84
 85
 86
@@ -716,12 +634,10 @@
 95
 96
 97
-98
-99
-100</pre>
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_projects_select'>projects_select</span><span class='lparen'>(</span><span class='id identifier rubyid_form'>form</span><span class='comma'>,</span> <span class='id identifier rubyid_projects'>projects</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_prompt'>prompt</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_projects'>projects</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span>
@@ -760,16 +676,16 @@
       <pre class="lines">
 
 
+145
+146
 147
 148
 149
 150
-151
-152
-153</pre>
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 145</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_description'>request_description</span><span class='lparen'>(</span><span class='id identifier rubyid_presenter'>presenter</span><span class='comma'>,</span> <span class='id identifier rubyid_request_type'>request_type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_request_type_name'>request_type_name</span> <span class='op'>=</span> <span class='id identifier rubyid_request_type'>request_type</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_titleize'>titleize</span>
@@ -792,18 +708,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns an array (or anything else) as an escaped string for embedding in
+javascript</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+10
 11
-12
-13</pre>
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stringify_array'>stringify_array</span><span class='lparen'>(</span><span class='id identifier rubyid_projects_array'>projects_array</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_projects_array'>projects_array</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span>
@@ -828,6 +756,8 @@
       <pre class="lines">
 
 
+68
+69
 70
 71
 72
@@ -838,12 +768,10 @@
 77
 78
 79
-80
-81
-82</pre>
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_studies_select'>studies_select</span><span class='lparen'>(</span><span class='id identifier rubyid_form'>form</span><span class='comma'>,</span> <span class='id identifier rubyid_studies'>studies</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_prompt'>prompt</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_studies'>studies</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span>
@@ -878,14 +806,14 @@
       <pre class="lines">
 
 
+153
+154
 155
 156
-157
-158
-159</pre>
+157</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 153</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submission_link'>submission_link</span><span class='lparen'>(</span><span class='id identifier rubyid_submission'>submission</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_link_text'>link_text</span> <span class='op'>=</span> <span class='id identifier rubyid_content_tag'>content_tag</span><span class='lparen'>(</span><span class='symbol'>:strong</span><span class='comma'>,</span> <span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span> <span class='op'>&lt;&lt;</span>
@@ -912,6 +840,8 @@
       <pre class="lines">
 
 
+118
+119
 120
 121
 122
@@ -931,12 +861,10 @@
 136
 137
 138
-139
-140
-141</pre>
+139</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/submissions_helper.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submission_status_message'>submission_status_message</span><span class='lparen'>(</span><span class='id identifier rubyid_submission'>submission</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_state'>state</span>
@@ -970,9 +898,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:35 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -90,7 +90,25 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p># We check if the parent has already been saved. if not the saving will not
+work.</p>
 
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_before_save'>before_save</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_content'>content</span><span class='op'>|</span>
+  <span class='id identifier rubyid_container'>container</span> <span class='op'>=</span> <span class='id identifier rubyid_content'>content</span><span class='period'>.</span><span class='id identifier rubyid_container'>container</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RuntimeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Container should be saved before saving </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_container'>container</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_container'>container</span><span class='period'>.</span><span class='id identifier rubyid_new_record?'>new_record?</span>
+<span class='kw'>end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -327,7 +345,7 @@
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_scope'>scope</span> <span class='symbol'>:include_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_content_name'>content_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>  <span class='tlambda'>-&gt;</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='symbol'>:contents</span><span class='rparen'>)</span> <span class='rbrace'>}</span>  <span class='kw'>do</span>
+  <span class='id identifier rubyid_scope'>scope</span> <span class='symbol'>:include_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_content_name'>content_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='symbol'>:contents</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='kw'>do</span>
     <span class='kw'>def</span> <span class='id identifier rubyid_to_include'>to_include</span>
       <span class='lbracket'>[</span><span class='symbol'>:contents</span><span class='rbracket'>]</span>
     <span class='kw'>end</span>
@@ -347,9 +365,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:37 2016 by
+  Generated on Mon Dec 19 11:16:28 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

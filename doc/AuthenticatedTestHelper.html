@@ -141,7 +141,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p><a
+href="http://project.ioni.st/post/217#post-217">project.ioni.st/post/217#post-217</a>.</p>
+</div></span>
   
 </li>
 
@@ -207,7 +210,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Assert the block redirects to the login.</p>
+</div></span>
   
 </li>
 
@@ -273,7 +278,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Sets the current user in the session from the user fixtures.</p>
+</div></span>
   
 </li>
 
@@ -348,7 +355,26 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p><a
+href="http://project.ioni.st/post/217#post-217">project.ioni.st/post/217#post-217</a></p>
+
+<pre class="code ruby"><code class="ruby">def test_new_publication
+  assert_difference(Publication, :count) do
+    post :create, :publication =&gt; {...}
+    # ...
+  end
+end</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -467,6 +493,11 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Assert the block redirects to the login</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_assert_requires_login'>assert_requires_login</span><span class='lparen'>(</span><span class='symbol'>:bob</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_c'>c</span><span class='op'>|</span> <span class='id identifier rubyid_c'>c</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='symbol'>:edit</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='int'>1</span> <span class='rbrace'>}</span>
+</code></pre>
+
 
   </div>
 </div>
@@ -592,7 +623,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Sets the current user in the session from the user fixtures.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -656,9 +698,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:34 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

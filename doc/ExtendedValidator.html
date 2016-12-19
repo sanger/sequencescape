@@ -103,7 +103,24 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Extended validators are used to provide extra validation of submission.
+They are associated with request types and will import validation behaviour
+into submission.</p>
+
+<p>behaviour =&gt; the module that will be included in the validator, must
+respond to validate(submission) options   =&gt; serialized hash for
+configuration</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -198,16 +215,16 @@
       <pre class="lines">
 
 
+27
+28
+29
+30
 31
 32
-33
-34
-35
-36
-37</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/extended_validator.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'app/models/extended_validator.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import_behaviour'>import_behaviour</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_behaviour'>behaviour</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -226,9 +243,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:16 2016 by
+  Generated on Mon Dec 19 11:17:04 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

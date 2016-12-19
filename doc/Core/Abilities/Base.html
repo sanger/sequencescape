@@ -145,28 +145,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#abilitise-instance_method" title="#abilitise (instance method)">#<strong>abilitise</strong>(name)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(request)  &#x21d2; Base </a>
     
 
@@ -203,7 +181,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Base/ClassMethods.html" title="Core::Abilities::Base::ClassMethods (module)">ClassMethods</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Base/ClassMethods.html#record-instance_method" title="Core::Abilities::Base::ClassMethods#record (method)">record</a></span>, <span class='object_link'><a href="Base/ClassMethods.html#recorder_helper-instance_method" title="Core::Abilities::Base::ClassMethods#recorder_helper (method)">recorder_helper</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Base/ClassMethods.html#recorder_helper-instance_method" title="Core::Abilities::Base::ClassMethods#recorder_helper (method)">recorder_helper</a></span></p>
 
   <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
@@ -256,48 +234,12 @@
 </div>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="abilitise-instance_method">
-  
-    #<strong>abilitise</strong>(name)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-99
-100
-101</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 99</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_abilitise'>abilitise</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_play_back'>play_back</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:04 2016 by
+  Generated on Mon Dec 19 11:16:52 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

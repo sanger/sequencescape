@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
   <h2>Constant Summary</h2>
@@ -273,7 +287,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Most uses of this feature have been human error, so its better to hold off
+on releasing data than accidentally releasing data.</p>
+</div></span>
   
 </li>
 
@@ -357,7 +374,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="AccessionService.html" title="AccessionService (class)">AccessionService</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="AccessionService.html#accession_dac_xml-instance_method" title="AccessionService#accession_dac_xml (method)">#accession_dac_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_policy_xml-instance_method" title="AccessionService#accession_policy_xml (method)">#accession_policy_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_sample_set_xml_quarantine-instance_method" title="AccessionService#accession_sample_set_xml_quarantine (method)">#accession_sample_set_xml_quarantine</a></span>, <span class='object_link'><a href="AccessionService.html#accession_sample_xml-instance_method" title="AccessionService#accession_sample_xml (method)">#accession_sample_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_study_set_xml_quarantine-instance_method" title="AccessionService#accession_study_set_xml_quarantine (method)">#accession_study_set_xml_quarantine</a></span>, <span class='object_link'><a href="AccessionService.html#accession_study_xml-instance_method" title="AccessionService#accession_study_xml (method)">#accession_study_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_submission_xml-instance_method" title="AccessionService#accession_submission_xml (method)">#accession_submission_xml</a></span>, <span class='object_link'><a href="AccessionService.html#post_files-instance_method" title="AccessionService#post_files (method)">#post_files</a></span>, <span class='object_link'><a href="AccessionService.html#private%3F-instance_method" title="AccessionService#private? (method)">#private?</a></span>, <span class='object_link'><a href="AccessionService.html#rest_client_resource-instance_method" title="AccessionService#rest_client_resource (method)">#rest_client_resource</a></span>, <span class='object_link'><a href="AccessionService.html#submit-instance_method" title="AccessionService#submit (method)">#submit</a></span>, <span class='object_link'><a href="AccessionService.html#submit_sample_for_user-instance_method" title="AccessionService#submit_sample_for_user (method)">#submit_sample_for_user</a></span>, <span class='object_link'><a href="AccessionService.html#submit_study_for_user-instance_method" title="AccessionService#submit_study_for_user (method)">#submit_study_for_user</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="AccessionService.html#accession_dac_xml-instance_method" title="AccessionService#accession_dac_xml (method)">#accession_dac_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_policy_xml-instance_method" title="AccessionService#accession_policy_xml (method)">#accession_policy_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_sample_xml-instance_method" title="AccessionService#accession_sample_xml (method)">#accession_sample_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_study_xml-instance_method" title="AccessionService#accession_study_xml (method)">#accession_study_xml</a></span>, <span class='object_link'><a href="AccessionService.html#private%3F-instance_method" title="AccessionService#private? (method)">#private?</a></span>, <span class='object_link'><a href="AccessionService.html#submit-instance_method" title="AccessionService#submit (method)">#submit</a></span>, <span class='object_link'><a href="AccessionService.html#submit_sample_for_user-instance_method" title="AccessionService#submit_sample_for_user (method)">#submit_sample_for_user</a></span>, <span class='object_link'><a href="AccessionService.html#submit_study_for_user-instance_method" title="AccessionService#submit_study_for_user (method)">#submit_study_for_user</a></span></p>
 
   
 
@@ -380,12 +397,12 @@
       <pre class="lines">
 
 
+12
 13
-14
-15</pre>
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/era_accession_service.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'app/models/era_accession_service.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accession_from_ebi'>accession_from_ebi</span><span class='lparen'>(</span><span class='id identifier rubyid_submission_filename'>submission_filename</span><span class='comma'>,</span> <span class='id identifier rubyid_submission_file_handle'>submission_file_handle</span><span class='comma'>,</span> <span class='id identifier rubyid_type_filename'>type_filename</span><span class='comma'>,</span> <span class='id identifier rubyid_type_file_handle'>type_file_handle</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_generate_accession_from_ebi'>generate_accession_from_ebi</span><span class='lparen'>(</span><span class='id identifier rubyid_submission_filename'>submission_filename</span><span class='comma'>,</span> <span class='id identifier rubyid_submission_file_handle'>submission_file_handle</span><span class='comma'>,</span> <span class='id identifier rubyid_type_filename'>type_filename</span><span class='comma'>,</span> <span class='id identifier rubyid_type_file_handle'>type_file_handle</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_era_accession_login'>era_accession_login</span><span class='rparen'>)</span>
@@ -410,15 +427,15 @@
       <pre class="lines">
 
 
+16
 17
-18
-19</pre>
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/era_accession_service.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'app/models/era_accession_service.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accession_login'>accession_login</span>
-  <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_era_accession_login'>era_accession_login</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RuntimeError</span><span class='comma'>,</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Can&#39;t find ERA  accession login in configuration file</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_era_accession_login'>era_accession_login</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RuntimeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Can&#39;t find ERA  accession login in configuration file</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -530,12 +547,12 @@
       <pre class="lines">
 
 
+8
 9
-10
-11</pre>
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/era_accession_service.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/era_accession_service.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_provider'>provider</span>
   <span class='symbol'>:ERA</span>
@@ -554,7 +571,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Most uses of this feature have been human error, so its better to hold off
+on releasing data than accidentally releasing data</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -722,9 +751,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:24 2016 by
+  Generated on Mon Dec 19 11:17:10 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

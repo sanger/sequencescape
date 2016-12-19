@@ -105,7 +105,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -318,11 +332,6 @@
   
   
   
-  
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="AuthenticatedSystem.html" title="AuthenticatedSystem (module)">AuthenticatedSystem</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="AuthenticatedSystem.html#access_denied-instance_method" title="AuthenticatedSystem#access_denied (method)">#access_denied</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#admin_login_required-instance_method" title="AuthenticatedSystem#admin_login_required (method)">#admin_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#authorized%3F-instance_method" title="AuthenticatedSystem#authorized? (method)">#authorized?</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#current_user-instance_method" title="AuthenticatedSystem#current_user (method)">#current_user</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#current_user%3D-instance_method" title="AuthenticatedSystem#current_user= (method)">#current_user=</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#get_auth_data-instance_method" title="AuthenticatedSystem#get_auth_data (method)">#get_auth_data</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#included-class_method" title="AuthenticatedSystem.included (method)">included</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#lab_manager_login_required-instance_method" title="AuthenticatedSystem#lab_manager_login_required (method)">#lab_manager_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#logged_in%3F-instance_method" title="AuthenticatedSystem#logged_in? (method)">#logged_in?</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#login_from_cookie-instance_method" title="AuthenticatedSystem#login_from_cookie (method)">#login_from_cookie</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#login_required-instance_method" title="AuthenticatedSystem#login_required (method)">#login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#manager_login_required-instance_method" title="AuthenticatedSystem#manager_login_required (method)">#manager_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#redirect_back_or_default-instance_method" title="AuthenticatedSystem#redirect_back_or_default (method)">#redirect_back_or_default</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#setup_current_user-instance_method" title="AuthenticatedSystem#setup_current_user (method)">#setup_current_user</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#slf_gel_login_required-instance_method" title="AuthenticatedSystem#slf_gel_login_required (method)">#slf_gel_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#slf_manager_login_required-instance_method" title="AuthenticatedSystem#slf_manager_login_required (method)">#slf_manager_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#store_location-instance_method" title="AuthenticatedSystem#store_location (method)">#store_location</a></span></p>
-
-  
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -343,6 +352,7 @@
       <pre class="lines">
 
 
+79
 80
 81
 82
@@ -376,11 +386,10 @@
 110
 111
 112
-113
-114</pre>
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_confirm_reception'>confirm_reception</span>
   <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
@@ -437,12 +446,12 @@
       <pre class="lines">
 
 
+162
 163
-164
-165</pre>
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 162</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_asset_by_id'>find_asset_by_id</span>
   <span class='ivar'>@asset</span> <span class='op'>=</span> <span class='const'>Asset</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -467,6 +476,7 @@
       <pre class="lines">
 
 
+144
 145
 146
 147
@@ -482,11 +492,10 @@
 157
 158
 159
-160
-161</pre>
+160</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import_from_snp'>import_from_snp</span>
   <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
@@ -638,8 +647,7 @@
 74
 75
 76
-77
-78</pre>
+77</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 24</span>
@@ -653,7 +661,6 @@
   <span class='id identifier rubyid_all_barcodes_blank'>all_barcodes_blank</span> <span class='op'>=</span> <span class='kw'>true</span>
 
   <span class='id identifier rubyid_barcodes'>barcodes</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_index'>index</span><span class='comma'>,</span> <span class='id identifier rubyid_barcode_ws'>barcode_ws</span><span class='op'>|</span>
-
     <span class='comment'># We don&#39;t perform strip! as this results in modification of the parameters themselves, which affects logging and
 </span>    <span class='comment'># exception notification. This can hinder investigation of any issues, as it changes apparent user input.
 </span>    <span class='id identifier rubyid_barcode'>barcode</span> <span class='op'>=</span> <span class='id identifier rubyid_barcode_ws'>barcode_ws</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
@@ -719,6 +726,7 @@
       <pre class="lines">
 
 
+115
 116
 117
 118
@@ -745,11 +753,10 @@
 139
 140
 141
-142
-143</pre>
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/receptions_controller.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_receive_snp_barcode'>receive_snp_barcode</span>
   <span class='id identifier rubyid_barcodes'>barcodes</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:barcodes</span><span class='rbracket'>]</span>
@@ -817,9 +824,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:35 2016 by
+  Generated on Mon Dec 19 11:17:19 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

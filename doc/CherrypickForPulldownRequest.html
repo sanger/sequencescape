@@ -71,7 +71,7 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="TransferRequest.html" title="TransferRequest (class)">TransferRequest</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="CherrypickRequest.html" title="CherrypickRequest (class)">CherrypickRequest</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
@@ -83,6 +83,8 @@
             <li class="next"><span class='object_link'><a href="SystemRequest.html" title="SystemRequest (class)">SystemRequest</a></span></li>
           
             <li class="next"><span class='object_link'><a href="TransferRequest.html" title="TransferRequest (class)">TransferRequest</a></span></li>
+          
+            <li class="next"><span class='object_link'><a href="CherrypickRequest.html" title="CherrypickRequest (class)">CherrypickRequest</a></span></li>
           
             <li class="next">CherrypickForPulldownRequest</li>
           
@@ -109,11 +111,21 @@
   
 </div>
 
-<div id="subclasses">
-  <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="CherrypickForFluidigmRequest.html" title="CherrypickForFluidigmRequest (class)">CherrypickForFluidigmRequest</a></span></p>
-</div>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This class is due to be removed shortly. All references to it in the code
+have been removed. At a later date a migration will be written to update
+the StiType of all exititing CherrypickForPulldownRequests to
+CherrypickRequest As well as updating request_class on request_types.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
   <h2>Constant Summary</h2>
@@ -138,83 +150,17 @@
 
 
 
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#build_stock_well_links-instance_method" title="#build_stock_well_links (instance method)">#<strong>build_stock_well_links</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#on_failed-instance_method" title="#on_failed (instance method)">#<strong>on_failed</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
   
   
   
   
   
+  <h2>Method Summary</h2>
   
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#perform_transfer_of_contents-instance_method" title="#perform_transfer_of_contents (instance method)">#<strong>perform_transfer_of_contents</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
-
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="CherrypickRequest.html" title="CherrypickRequest (class)">CherrypickRequest</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="CherrypickRequest.html#on_failed-instance_method" title="CherrypickRequest#on_failed (method)">#on_failed</a></span>, <span class='object_link'><a href="CherrypickRequest.html#reduce_source_volume-instance_method" title="CherrypickRequest#reduce_source_volume (method)">#reduce_source_volume</a></span></p>
 
   
   
@@ -225,7 +171,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TransferRequest.html" title="TransferRequest (class)">TransferRequest</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="TransferRequest.html#add_request_type-instance_method" title="TransferRequest#add_request_type (method)">#add_request_type</a></span>, <span class='object_link'><a href="TransferRequest.html#remove_unused_assets-instance_method" title="TransferRequest#remove_unused_assets (method)">#remove_unused_assets</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="TransferRequest.html#remove_unused_assets-instance_method" title="TransferRequest#remove_unused_assets (method)">#remove_unused_assets</a></span></p>
 
   
   
@@ -253,7 +199,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Metadata.html" title="Metadata (module)">Metadata</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Metadata.html#build_association-instance_method" title="Metadata#build_association (method)">#build_association</a></span>, <span class='object_link'><a href="Metadata.html#construct_metadata_class-instance_method" title="Metadata#construct_metadata_class (method)">#construct_metadata_class</a></span>, <span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">#has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#include_tag-instance_method" title="Metadata#include_tag (method)">#include_tag</a></span>, <span class='object_link'><a href="Metadata.html#require_tag-instance_method" title="Metadata#require_tag (method)">#require_tag</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">#has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
 
   
   
@@ -297,7 +243,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Request/Statemachine.html" title="Request::Statemachine (module)">Request::Statemachine</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Request/Statemachine.html#cancellable%3F-instance_method" title="Request::Statemachine#cancellable? (method)">#cancellable?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#change_decision%21-instance_method" title="Request::Statemachine#change_decision! (method)">#change_decision!</a></span>, <span class='object_link'><a href="Request/Statemachine.html#closed%3F-instance_method" title="Request::Statemachine#closed? (method)">#closed?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#failed_downstream%21-instance_method" title="Request::Statemachine#failed_downstream! (method)">#failed_downstream!</a></span>, <span class='object_link'><a href="Request/Statemachine.html#failed_upstream%21-instance_method" title="Request::Statemachine#failed_upstream! (method)">#failed_upstream!</a></span>, <span class='object_link'><a href="Request/Statemachine.html#finished%3F-instance_method" title="Request::Statemachine#finished? (method)">#finished?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#included-class_method" title="Request::Statemachine.included (method)">included</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_blocked-instance_method" title="Request::Statemachine#on_blocked (method)">#on_blocked</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_cancelled-instance_method" title="Request::Statemachine#on_cancelled (method)">#on_cancelled</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_hold-instance_method" title="Request::Statemachine#on_hold (method)">#on_hold</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_passed-instance_method" title="Request::Statemachine#on_passed (method)">#on_passed</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_started-instance_method" title="Request::Statemachine#on_started (method)">#on_started</a></span>, <span class='object_link'><a href="Request/Statemachine.html#open%3F-instance_method" title="Request::Statemachine#open? (method)">#open?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#terminated%3F-instance_method" title="Request::Statemachine#terminated? (method)">#terminated?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#transfer_aliquots-instance_method" title="Request::Statemachine#transfer_aliquots (method)">#transfer_aliquots</a></span>, <span class='object_link'><a href="Request/Statemachine.html#transition_to-instance_method" title="Request::Statemachine#transition_to (method)">#transition_to</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Request/Statemachine.html#cancellable%3F-instance_method" title="Request::Statemachine#cancellable? (method)">#cancellable?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#change_decision%21-instance_method" title="Request::Statemachine#change_decision! (method)">#change_decision!</a></span>, <span class='object_link'><a href="Request/Statemachine.html#closed%3F-instance_method" title="Request::Statemachine#closed? (method)">#closed?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#failed_downstream%21-instance_method" title="Request::Statemachine#failed_downstream! (method)">#failed_downstream!</a></span>, <span class='object_link'><a href="Request/Statemachine.html#failed_upstream%21-instance_method" title="Request::Statemachine#failed_upstream! (method)">#failed_upstream!</a></span>, <span class='object_link'><a href="Request/Statemachine.html#finished%3F-instance_method" title="Request::Statemachine#finished? (method)">#finished?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#included-class_method" title="Request::Statemachine.included (method)">included</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_blocked-instance_method" title="Request::Statemachine#on_blocked (method)">#on_blocked</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_cancelled-instance_method" title="Request::Statemachine#on_cancelled (method)">#on_cancelled</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_failed-instance_method" title="Request::Statemachine#on_failed (method)">#on_failed</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_hold-instance_method" title="Request::Statemachine#on_hold (method)">#on_hold</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_passed-instance_method" title="Request::Statemachine#on_passed (method)">#on_passed</a></span>, <span class='object_link'><a href="Request/Statemachine.html#on_started-instance_method" title="Request::Statemachine#on_started (method)">#on_started</a></span>, <span class='object_link'><a href="Request/Statemachine.html#open%3F-instance_method" title="Request::Statemachine#open? (method)">#open?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#terminated%3F-instance_method" title="Request::Statemachine#terminated? (method)">#terminated?</a></span>, <span class='object_link'><a href="Request/Statemachine.html#transfer_aliquots-instance_method" title="Request::Statemachine#transfer_aliquots (method)">#transfer_aliquots</a></span>, <span class='object_link'><a href="Request/Statemachine.html#transition_to-instance_method" title="Request::Statemachine#transition_to (method)">#transition_to</a></span></p>
 
   
   
@@ -331,7 +277,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -379,110 +325,12 @@
   <p class="inherited"><span class='object_link'><a href="ApiTools.html#as_json-instance_method" title="ApiTools#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="ApiTools.html#for_api-instance_method" title="ApiTools#for_api (method)">#for_api</a></span>, <span class='object_link'><a href="ApiTools.html#included-class_method" title="ApiTools.included (method)">included</a></span>, <span class='object_link'><a href="ApiTools.html#list_json-instance_method" title="ApiTools#list_json (method)">#list_json</a></span>, <span class='object_link'><a href="ApiTools.html#to_xml-instance_method" title="ApiTools#to_xml (method)">#to_xml</a></span>, <span class='object_link'><a href="ApiTools.html#to_yaml-instance_method" title="ApiTools#to_yaml (method)">#to_yaml</a></span>, <span class='object_link'><a href="ApiTools.html#url-instance_method" title="ApiTools#url (method)">#url</a></span>, <span class='object_link'><a href="ApiTools.html#url_name-instance_method" title="ApiTools#url_name (method)">#url_name</a></span></p>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="build_stock_well_links-instance_method">
-  
-    #<strong>build_stock_well_links</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-66
-67
-68
-69</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_for_pulldown_request.rb', line 66</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_build_stock_well_links'>build_stock_well_links</span>
-  <span class='id identifier rubyid_stock_wells'>stock_wells</span> <span class='op'>=</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:plate_purpose</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:can_be_considered_a_stock_plate?</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='lbracket'>[</span><span class='id identifier rubyid_asset'>asset</span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_stock_wells'>stock_wells</span>
-  <span class='id identifier rubyid_target_asset'>target_asset</span><span class='period'>.</span><span class='id identifier rubyid_stock_wells'>stock_wells</span><span class='period'>.</span><span class='id identifier rubyid_attach!'>attach!</span><span class='lparen'>(</span><span class='id identifier rubyid_stock_wells'>stock_wells</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="on_failed-instance_method">
-  
-    #<strong>on_failed</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-53
-54
-55</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_for_pulldown_request.rb', line 53</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_on_failed'>on_failed</span>
-  <span class='comment'># Do nothing
-</span><span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="perform_transfer_of_contents-instance_method">
-  
-    #<strong>perform_transfer_of_contents</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-59
-60
-61</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_for_pulldown_request.rb', line 59</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_perform_transfer_of_contents'>perform_transfer_of_contents</span>
-  <span class='id identifier rubyid_on_started'>on_started</span> <span class='comment'># Ensures we set the study/project
-</span><span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:43 2016 by
+  Generated on Mon Dec 19 11:17:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

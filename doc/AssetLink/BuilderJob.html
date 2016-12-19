@@ -103,7 +103,19 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Enables the bulk creation of the asset links defined by the pairs passed as
+edges.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="Job.html" title="AssetLink::Job (class)">Job</a></span></p>
 </div>
@@ -112,7 +124,18 @@
   <dl class="constants">
     
       <dt id="TRANSACTION_COUNT-constant" class="">TRANSACTION_COUNT =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>For memory resons we need to limit transaction size to 10 links at a time</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
       <dd><pre class="code"><span class='int'>10</span></pre></dd>
     
@@ -271,12 +294,12 @@
       <pre class="lines">
 
 
+13
 14
-15
-16</pre>
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_links'>links</span>
   <span class='ivar'>@links</span>
@@ -308,12 +331,12 @@
       <pre class="lines">
 
 
-34
-35
-36</pre>
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='const'>Delayed</span><span class='op'>::</span><span class='const'>Job</span><span class='period'>.</span><span class='id identifier rubyid_enqueue'>enqueue</span><span class='lparen'>(</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -344,6 +367,8 @@
       <pre class="lines">
 
 
+16
+17
 18
 19
 20
@@ -356,12 +381,10 @@
 27
 28
 29
-30
-31
-32</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_perform'>perform</span>
   <span class='id identifier rubyid_links'>links</span><span class='period'>.</span><span class='id identifier rubyid_each_slice'>each_slice</span><span class='lparen'>(</span><span class='const'>TRANSACTION_COUNT</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_link_group'>link_group</span><span class='op'>|</span>
@@ -388,9 +411,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:02 2016 by
+  Generated on Mon Dec 19 11:16:49 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

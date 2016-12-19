@@ -321,12 +321,12 @@
       <pre class="lines">
 
 
+27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_params_has_dilution_factor?'>params_has_dilution_factor?</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='lparen'>(</span><span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:dilution_factor</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:dilution_factor</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span><span class='rparen'>)</span>
@@ -351,15 +351,15 @@
       <pre class="lines">
 
 
+20
 21
 22
 23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_plate_dilution_factor'>plate_dilution_factor</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_dilution_factor'>dilution_factor</span> <span class='kw'>unless</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -387,6 +387,7 @@
       <pre class="lines">
 
 
+31
 32
 33
 34
@@ -403,11 +404,10 @@
 45
 46
 47
-48
-49</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_plate_parameters'>plate_parameters</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_parent_plate'>parent_plate</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='ivar'>@params</span><span class='period'>.</span><span class='id identifier rubyid_clone'>clone</span>
@@ -447,14 +447,14 @@
       <pre class="lines">
 
 
+14
 15
 16
 17
-18
-19</pre>
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate/creator_parameters.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_plate_parameters'>set_plate_parameters</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_parent_plate'>parent_plate</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='comment'># All the creation parameters are applied as String values into the ActiveRecord. Maybe in
@@ -471,9 +471,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:32 2016 by
+  Generated on Mon Dec 19 11:17:15 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

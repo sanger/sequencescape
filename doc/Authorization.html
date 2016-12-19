@@ -80,14 +80,38 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/rails-authorization-plugin/lib/authorization.rb<span class="defines">,<br />
-  lib/rails-authorization-plugin/lib/publishare/parser.rb,<br /> lib/rails-authorization-plugin/lib/publishare/identity.rb,<br /> lib/rails-authorization-plugin/lib/publishare/exceptions.rb,<br /> lib/rails-authorization-plugin/lib/publishare/hardwired_roles.rb,<br /> lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb</span>
+    <dd>lib/rails-authorization-plugin/lib/publishare/identity.rb<span class="defines">,<br />
+  lib/rails-authorization-plugin/lib/authorization.rb,<br /> lib/rails-authorization-plugin/lib/publishare/parser.rb,<br /> lib/rails-authorization-plugin/lib/publishare/exceptions.rb,<br /> lib/rails-authorization-plugin/lib/publishare/hardwired_roles.rb,<br /> lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb</span>
 </dd>
   </dl>
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>In order to use this mixin, you&#39;ll need to define roles by overriding
+the following functions:</p>
+
+<p>User#has_role?(role)</p>
+
+<pre class="code ruby"><code class="ruby">Return true or false depending on the roles (strings) passed in.</code></pre>
+
+<p>Model#accepts_role?(role, user)</p>
+
+<pre class="code ruby"><code class="ruby">Return true or false depending on the roles (strings) this particular user has for
+this particular model object.</code></pre>
+
+<p>See <a
+href="http://www.writertopia.com/developers/authorization">www.writertopia.com/developers/authorization</a></p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -111,9 +135,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:44 2016 by
+  Generated on Mon Dec 19 11:16:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

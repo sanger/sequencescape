@@ -108,7 +108,19 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A lot represents a received batch of consumables (eg. tag plates) that can
+be assumed to share some level of QC.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -125,39 +137,6 @@
 
 
 
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#valid_template%3F-instance_method" title="#valid_template? (instance method)">#<strong>valid_template?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
-
 
   
   
@@ -165,10 +144,10 @@
   
   
   
-  
+  <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -193,76 +172,12 @@
   <p class="inherited"><span class='object_link'><a href="ApiTools.html#as_json-instance_method" title="ApiTools#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="ApiTools.html#for_api-instance_method" title="ApiTools#for_api (method)">#for_api</a></span>, <span class='object_link'><a href="ApiTools.html#included-class_method" title="ApiTools.included (method)">included</a></span>, <span class='object_link'><a href="ApiTools.html#list_json-instance_method" title="ApiTools#list_json (method)">#list_json</a></span>, <span class='object_link'><a href="ApiTools.html#to_xml-instance_method" title="ApiTools#to_xml (method)">#to_xml</a></span>, <span class='object_link'><a href="ApiTools.html#to_yaml-instance_method" title="ApiTools#to_yaml (method)">#to_yaml</a></span>, <span class='object_link'><a href="ApiTools.html#url-instance_method" title="ApiTools#url (method)">#url</a></span>, <span class='object_link'><a href="ApiTools.html#url_name-instance_method" title="ApiTools#url_name (method)">#url_name</a></span></p>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="valid_template?-instance_method">
-  
-    #<strong>valid_template?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-55
-56
-57
-58
-59
-60</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/lot.rb', line 55</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_valid_template?'>valid_template?</span>
-  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_lot_type'>lot_type</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-  <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_template'>template</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='id identifier rubyid_valid_template_class'>valid_template_class</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:template</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>is not an appropriate type for this lot. Received </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_template'>template</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_content'> expected </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_valid_template_class'>valid_template_class</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='kw'>false</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:49 2016 by
+  Generated on Mon Dec 19 11:16:36 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

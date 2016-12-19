@@ -77,11 +77,16 @@ labware and is used in a organisation of 900 people.</p>
 
 <h3 id="label-Getting+started+-3D-3D-3D">Getting started ===</h3>
 
+<p>It is strongly recommended that you use a ruby version manager such as RVM
+to manage the Ruby version you are using. Sequencescape is developed using
+jruby-9.0.5.0</p>
+
 <p>$ cp config/config.yml.example config/config.yml $ $EDITOR
 config/config.yml $ gem install bundler $ bundle install $ bundle exec rake
-db:schema:load $ bundle exec rake db:seed $ bundle exec
-./script/delayed_job start $ bundle exec ./script/server # Login as
-admin/admin</p>
+db:create db:setup # The task below is optional, but creates an admin user
+account and a # few example studies and plates $ bundle exec rake
+working:setup $ bundle exec ./script/delayed_job start $ bundle exec rails
+s # Login as admin/admin</p>
 
 <h3 id="label-Data+model+-3D-3D-3D">Data model ===</h3>
 
@@ -115,7 +120,7 @@ generator. Which we use for barcode printing.</p>
 <h2 id="label-Plate+barcode+service+-3D-3D">Plate barcode service ==</h2>
 
 <p>Due to DNA plate barcode series being stored in a legacy system in Sanger
-your required to use a webservice for supplying numbers  for plates with a
+your required to use a webservice for supplying numbers for plates with a
 simple service.</p>
 
 <h2 id="label-Barcode+rendering+-28danio-29+-3D-3D">Barcode rendering (danio) ==</h2>
@@ -132,6 +137,15 @@ image from a barcode.</p>
 <p>There is a client application for building a data warehouse based on the
 information in Sequencescape.</p>
 
+<h2 id="label-Ruby+warnings+and+rake+11+-3D-3D">Ruby warnings and rake 11 ==</h2>
+
+<p>Rake 11 enables ruby warnings by default when running the test suite. These
+can be disabled with RUBYOPT=&#39;-W0&#39;, (eg. RUBYOPT=&#39;-W0&#39;
+bundle exec rake test). Currently these warnings are excessive, covering
+both our own code and external dependencies. As it stands it makes the
+output of the test suite unusable in travis, as it fills the buffer. These
+warning WILL need to be fixed, especially in our own code.</p>
+
 <h2 id="label-NPG+-+Illumina+tracking+software+-3D-3D">NPG - Illumina tracking software ==</h2>
 
 <p>For tracking illumina instruments you need the NPG systems. NPG is linked
@@ -142,9 +156,9 @@ href="http://www.sanger.ac.uk/resources/software/npg">www.sanger.ac.uk/resources
 </div></div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:26 2016 by
+  Generated on Mon Dec 19 11:16:22 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>
