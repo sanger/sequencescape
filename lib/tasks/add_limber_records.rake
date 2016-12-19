@@ -4,7 +4,7 @@ namespace :limber do
   desc 'Create the limber request types'
   task create_request_types: :environment do
     ActiveRecord::Base.transaction do
-      RequestType.create!(
+      rt = RequestType.create!(
         name: 'Limber PWGS',
         key: 'limber_pwgs',
         request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
@@ -19,13 +19,13 @@ namespace :limber do
       ) do |rt|
         rt.acceptable_plate_purposes << Purpose.find_by_name('LB Cherrypick')
         rt.library_types = LibraryType.where(name: ['Standard'])
-
-        RequestType::Validator.create!(
-          request_type: rt,
-          request_option: 'library_type',
-          valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
-        )
       end
+
+      RequestType::Validator.create!(
+        request_type: rt,
+        request_option: 'library_type',
+        valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
+      )
 
       RequestType.create!(
         name: 'Limber Multiplexing',

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214165052) do
+ActiveRecord::Schema.define(version: 20161219112914) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1184,6 +1184,26 @@ ActiveRecord::Schema.define(version: 20161214165052) do
   add_index "request_quotas_bkp", ["quota_id", "request_id"], name: "index_request_quotas_on_quota_id_and_request_id", using: :btree
   add_index "request_quotas_bkp", ["request_id"], name: "fk_request_quotas_to_requests", using: :btree
 
+  create_table "request_state_change_submissions", force: :cascade do |t|
+    t.integer  "request_state_change_id", limit: 4, null: false
+    t.integer  "submission_id",           limit: 4, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "request_state_change_submissions", ["request_state_change_id"], name: "fk_rails_309ab1f289", using: :btree
+  add_index "request_state_change_submissions", ["submission_id"], name: "fk_rails_8ed2df0012", using: :btree
+
+  create_table "request_state_changes", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4, null: false
+    t.integer  "target_id",  limit: 4, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "request_state_changes", ["target_id"], name: "fk_rails_2080f661d1", using: :btree
+  add_index "request_state_changes", ["user_id"], name: "fk_rails_498abc0e8c", using: :btree
+
   create_table "request_type_plate_purposes", force: :cascade do |t|
     t.integer "request_type_id",  limit: 4, null: false
     t.integer "plate_purpose_id", limit: 4, null: false
@@ -1890,4 +1910,8 @@ ActiveRecord::Schema.define(version: 20161214165052) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "request_state_change_submissions", "request_state_changes"
+  add_foreign_key "request_state_change_submissions", "submissions"
+  add_foreign_key "request_state_changes", "assets", column: "target_id"
+  add_foreign_key "request_state_changes", "users"
 end
