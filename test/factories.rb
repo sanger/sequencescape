@@ -437,6 +437,7 @@ FactoryGirl.define do
 
   factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |p|
     name { generate :purpose_name }
+    target_type 'StockMultiplexedLibraryTube'
   end
 
   factory(:request_purpose) do
@@ -448,6 +449,7 @@ FactoryGirl.define do
     name     { |_| generate :asset_name }
     purpose  { Tube::Purpose.standard_library_tube }
   end
+  
   factory(:library_tube, parent: :empty_library_tube) do
     after(:create) do |library_tube|
       library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')

@@ -48,11 +48,12 @@ FactoryGirl.define do
 
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do
     sequence(:name) { |n| "Illumina HTP Mx Tube Purpose #{n}" }
+    target_type 'MultiplexedLibraryTube'
   end
 
-  factory :lib_pcr_xp_tube, class: LibraryTube do
+  factory :lib_pcr_xp_tube, class: MultiplexedLibraryTube do
     name    { |a| FactoryGirl.generate :asset_name }
-    purpose { create(:illumina_htp_mx_tube_purpose) }
+    association(:purpose, factory: :illumina_htp_mx_tube_purpose)
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end
 

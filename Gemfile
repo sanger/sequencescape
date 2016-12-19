@@ -121,7 +121,7 @@ group :test do
   gem 'transactional_capybara'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
-  gem 'rspec-json_expectations'
+  gem 'rspec-json_expectations', require: false
 end
 
 group :test,:cucumber do

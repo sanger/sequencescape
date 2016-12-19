@@ -21,10 +21,14 @@ class FlexibleSubmission < Order
 
   def request_type_multiplier(&block)
     return nil if request_types.blank?
-    mxr = RequestType.where(id: request_types, for_multiplexing: true).find_each do |mx_request|
+    found_some = false
+    # Unfortunately we don't seem to be able to use the return value
+    # of find_each to discover if it found something
+    RequestType.where(id: request_types, for_multiplexing: true).find_each do |mx_request|
+      found_some = true
       yield(request_types[request_types.index(mx_request.id) + 1].to_s.to_sym)
     end
-    yield(request_types.first.to_s.to_sym) if mxr.empty?
+    yield(request_types.first.to_s.to_sym) unless found_some
     nil
   end
 end

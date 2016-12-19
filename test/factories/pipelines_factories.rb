@@ -433,6 +433,7 @@ FactoryGirl.define do
     name { generate :purpose_name }
     size 96
     association(:barcode_printer_type, factory: :plate_barcode_printer_type)
+    target_type 'Plate'
 
     factory :source_plate_purpose do |source_plate_purpose|
       after(:build) do |source_plate_purpose, evaluator|
@@ -443,6 +444,7 @@ FactoryGirl.define do
 
   factory :purpose do |purpose|
     name { generate :purpose_name }
+    target_type 'Asset'
   end
 
   factory(:tube_purpose, class: Tube::Purpose) do |purpose|
