@@ -9,6 +9,10 @@ FactoryGirl.define do
     growth_condition "No"
     sample_public_name "Sample 666"
     disease_state "Awful"
+
+    factory :sample_metadata_with_accession_number do
+      sample_ebi_accession_number "EBI1234"
+    end
   end
 
   factory :sample_for_accessioning_with_open_study, parent: :sample do
@@ -26,5 +30,10 @@ FactoryGirl.define do
     sample        { create(:sample_for_accessioning_with_open_study) }
 
     initialize_with { new(standard_tags, sample) }
+
+    factory :invalid_accession_sample do
+      sample { create(:sample_for_accessioning_with_open_study, 
+        sample_metadata: create(:sample_metadata_with_accession_number))}
+    end
   end
 end

@@ -27,6 +27,7 @@ module Accession
         begin
           Accession::Response.new(resource.post(submission.payload.open))
         rescue StandardError => exception
+          puts exception.message
           Accession::NullResponse.new
         ensure
           submission.payload.close!
@@ -37,12 +38,13 @@ module Accession
   private
 
     def set_proxy
-      if configatron.disable_web_proxy
+      if configatron.disable_web_proxy == true
         RestClient.proxy = ''
-      elsif configatron.proxy
+      elsif configatron.proxy.present?
         RestClient.proxy = configatron.proxy
         resource.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
       end
     end
+
   end
 end

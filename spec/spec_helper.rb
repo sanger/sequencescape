@@ -20,7 +20,6 @@
 require 'factory_girl'
 require 'capybara/rspec'
 require 'capybara/poltergeist'
-require 'webmock/rspec'
 
 Capybara.javascript_driver = :poltergeist
 

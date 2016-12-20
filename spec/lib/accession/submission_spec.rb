@@ -13,6 +13,10 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     expect(Accession::Submission.new(nil, sample)).to_not be_valid
   end
 
+  it "should not be valid unless sample is valid" do
+    expect(Accession::Submission.new(user, build(:invalid_accession_sample))).to_not be_valid
+  end
+
   it "should create some xml with valid attributes" do
     submission = Accession::Submission.new(user, sample)
     xml = Nokogiri::XML::Document.parse(submission.to_xml)

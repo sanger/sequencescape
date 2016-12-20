@@ -8,6 +8,7 @@ module Accession
     delegate :accessioned?, to: :response
 
     validates_presence_of :user, :sample
+    validate :check_sample, if: proc { |s| s.sample.present? }
 
     def initialize(user, sample)
       @user = user
@@ -82,6 +83,16 @@ module Accession
       def close!
         files.values.each do |file|
           file.close!
+        end
+      end
+    end
+
+  private
+
+    def check_sample
+      unless sample.valid?
+        sample.errors.each do |key, value|
+          errors.add key, value
         end
       end
     end

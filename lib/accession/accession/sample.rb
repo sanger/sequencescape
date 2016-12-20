@@ -20,6 +20,8 @@ module Accession
 
     attr_reader :standard_tags, :sample, :studies, :service, :tags
 
+    delegate :ebi_accession_number, to: :sample
+
     def initialize(standard_tags, sample)
       @standard_tags = standard_tags
       @sample = sample
@@ -83,10 +85,6 @@ module Accession
       sample.save!
     end
 
-    def ebi_accession_number
-      sample.sample_metadata.sample_ebi_accession_number
-    end
-
     def accessioned?
       ebi_accession_number.present?
     end
@@ -101,19 +99,19 @@ module Accession
 
     def check_sample
       if sample.sample_metadata.sample_ebi_accession_number.present?
-        errors.add(:sample, "has already been accessioned")
+        errors.add(:sample, "has already been accessioned.")
       end
     end
 
     def check_required_fields
       unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata: #{tags.missing}")
+        errors.add(:sample, "does not have the required metadata: #{tags.missing}.")
       end
     end
 
     def check_studies
       unless studies_valid?
-        errors.add(:sample, "no appropriate studies")
+        errors.add(:sample, "has no appropriate studies.")
       end
     end
 
