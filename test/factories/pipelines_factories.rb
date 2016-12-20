@@ -434,10 +434,15 @@ FactoryGirl.define do
     size 96
     association(:barcode_printer_type, factory: :plate_barcode_printer_type)
     target_type 'Plate'
+    asset_shape { AssetShape.default }
 
     factory :source_plate_purpose do |source_plate_purpose|
       after(:build) do |source_plate_purpose, evaluator|
         source_plate_purpose.source_purpose = source_plate_purpose
+      end
+
+      factory :input_plate_purpose, class: PlatePurpose::Input do |plate_purpose|
+        can_be_considered_a_stock_plate true
       end
     end
   end

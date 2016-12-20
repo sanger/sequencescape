@@ -21,6 +21,7 @@ class Well < Aliquot::Receptacle
     belongs_to :target_well, class_name: 'Well'
     belongs_to :source_well, class_name: 'Well'
   end
+
   has_many :stock_well_links, ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :target_well_id
 
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
@@ -106,7 +107,8 @@ class Well < Aliquot::Receptacle
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
-  contained_by :plate
+  has_one :container_association, foreign_key: :content_id, inverse_of: :well
+  has_one :plate, through: :container_association, inverse_of: :wells
 
   # We don't handle this in contained by as identifiable pieces of labware
   # may still be contained. (Such as if we implement tube racks)
@@ -155,9 +157,7 @@ class Well < Aliquot::Receptacle
     where(samples: { empty_supplier_sample_name: false })
   }
 
-  scope :with_contents, -> {
-    joins('INNER JOIN aliquots ON aliquots.receptacle_id=assets.id')
-  }
+  scope :with_contents, -> { joins(:aliquots) }
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})

@@ -4,14 +4,11 @@
 # Copyright (C) 2011,2012 Genome Research Ltd.
 FactoryGirl.define do
   factory :submission__ do |submission|
-    # raise "call FactoryHelp::submission instead "
     factory :submission_without_order do
       user
     end
   end
 
-  # TODO move in a separate file
-  # easier to keep it here at the moment because we are moving stuff between both
   factory :order do |order|
     study
     workflow { |workflow| workflow.association(:submission_workflow) }
@@ -26,6 +23,18 @@ FactoryGirl.define do
       after(:build) { |o| o.create_submission(user_id: o.user_id) }
     end
   end
+
+  # Builds a submission on the provided assets suitable for processing through
+  # an external library pipeline such as Limber
+  # Note: Not yet complete. (Just in case something crops up before I finish this!)
+  factory :library_submission, class: Submission do
+    transient do
+      assets { [create(:well)] }
+      request_types { [create(:library_request_type), create(:multiplex_request_type)] }
+    end
+
+    user
+  end
 end
 
 class FactoryHelp
@@ -35,8 +44,6 @@ class FactoryHelp
       value = options.delete(option)
       submission_options[option] = value if value
     end
-    state = options.delete(:state)
-    message = options.delete(:message)
     submission = FactoryGirl.create(:order_with_submission, options).submission
     # trying to skip StateMachine
     if submission_options.present?

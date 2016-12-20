@@ -219,18 +219,40 @@ class Plate < Asset
       where(['caplp.container_id = ?', self.id]).first.try(:priority) || 0
   end
 
+  # Plates can easily belong to multiple studies, so this method is just misleading.
   def study
     wells.first.try(:study)
   end
+  deprecate :study
 
-  contains :wells do # , :order => '`assets`.map_id ASC' do
+  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
+  has_many :wells, through: :container_associations, inverse_of: :plate  do
+    def import(records)
+      ActiveRecord::Base.transaction do
+        records.map(&:save!)
+        attach(records)
+        post_import(records.map { |r| [proxy_association.owner.id, r['id']] })
+      end
+    end
+
+    def attach(records)
+      ActiveRecord::Base.transaction do
+        records.each { |r| ContainerAssociation.create!(container_id: proxy_association.owner.id, content_id: r.id) }
+      end
+    end
+
+    def connect(content)
+      ContainerAssociation.create!(container: proxy_association.owner, content: content)
+      post_connect(content)
+    end
+    private :connect
+
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
     def post_import(links_data)
       time_now = Time.now
       links_data.each do |c|
         AssetLink.create!(
           direct: true,
-          #:count => 1, Huh?
           ancestor_id: c.first,
           descendant_id: c.last
           )
@@ -342,10 +364,21 @@ class Plate < Asset
       where(['batches.id = ?', batch.id])
   }
 
+  scope :include_wells, -> { includes(:wells) } do
+    def to_include
+      [:wells]
+    end
+
+    def with(subinclude)
+      scoped(include: { wells: subinclude })
+    end
+  end
+
   scope :with_wells, ->(wells) {
-      select('DISTINCT assets.*').
+      select('assets.*').
       joins(:container_associations).
-      where(container_associations: { content_id: wells.map(&:id) })
+      where(container_associations: { content_id: wells }).
+      distinct
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, class_name: "Plate", through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
@@ -384,6 +417,10 @@ class Plate < Asset
 
   def children_and_holded
     (children | wells)
+  end
+
+  def maps
+    Map.where_plate_size(size).where_plate_shape(asset_shape)
   end
 
   def find_map_by_rowcol(row, col)

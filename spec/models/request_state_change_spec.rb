@@ -2,19 +2,35 @@ require 'rails_helper'
 describe RequestStateChange do
   # The input plate represents the plate going into the pipeline
   # from which the requests will be made.
-  let(:input_plate) { create :input_plate }
+  let(:tested_wells) { 96 }
+  let(:input_plate) { create :input_plate, well_count: tested_wells }
   let(:library_request_type) { create :library_request_type }
   let(:multiplex_request_type) { create :multiplex_request_type }
 
   # The target submission represents the submission we're about to pass requests for
-  let(:target_submission) { create :library_submission, assets: input_plate.wells }
+  let(:target_submission) do
+    create :library_submission, assets: input_plate.wells, request_types: [library_request_type, multiplex_request_type]
+  end
   # The decoy submission represents a submission which we don't care about
-  let(:decoy_submission) { create :library_submission, assets: input_plate.wells }
+  let(:decoy_submission) do
+    create :library_submission, assets: input_plate.wells, request_types: [library_request_type, multiplex_request_type]
+  end
   # The target plate is the downstream plate we are going to be passing.
   let(:target_plate) { create :target_plate, parent: input_plate }
   # And now we have a few helpers to make the tests more readable
   let(:library_requests) { target_submission.requests.where(request_type_id: library_request_type.id) }
   let(:multiplex_requests) { target_submission.requests.where(request_type_id: multiplex_request_type.id) }
+
+  before(:each) do
+    input_plate.wells.each do |well|
+      create :library_request, request_type: library_request_type, asset: well, submission: target_submission
+      create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission
+    end
+    input_plate.wells.count.times do
+      create :multiplex_request, request_type: multiplex_request_type, asset: well, submission: target_submission
+      create :multiplex_request, request_type: multiplex_request_type, asset: well, submission: decoy_submission
+    end
+  end
 
   describe '::create' do
     subject do
@@ -29,19 +45,29 @@ describe RequestStateChange do
       )
     end
 
+    it 'has built correctly' do
+      # If the submission isn't correctly built, we'll get misleading passes/failures
+      subject
+      expect(library_requests.count).to eq(tested_wells)
+    end
+
     it 'passes the library requests' do
+      subject
       expect(library_requests).to all(be(:passed))
     end
 
     it 'does not pass the multiplex requests' do
+      subject
       expect(multiplex_requests).to all(be(:pending))
     end
 
     it 'does not pass the decoy submission' do
+      subject
       expect(decoy_submission.requests).to all(be(:pending))
     end
 
     it 'joins up the library requests' do
+      subject
       library_requests.each do |request|
         expect(request.target_asset).not_to be_nil
         expect(request.target_asset.plate).to eq(target_plate)
@@ -50,8 +76,7 @@ describe RequestStateChange do
     end
 
     it 'joins up the multiplex requests' do
-      expect(multiplex_requests.map(:asset).uniq).to eq(96)
+      expect(multiplex_requests.map(&:asset).uniq.size).to eq(tested_wells)
     end
   end
-
 end

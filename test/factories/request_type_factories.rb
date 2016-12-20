@@ -13,6 +13,18 @@ FactoryGirl.define do
     factory :well_request_type do
       asset_type 'Well'
       request_class CustomerRequest
+
+      factory :library_request_type do
+        request_class IlluminaHtp::Requests::StdLibraryRequest
+        billable true
+      end
+
+      factory :multiplex_request_type do
+        request_class Request::Multiplexing
+        billable false
+        for_multiplexing true
+        association(:target_purpose, factory: :tube_purpose)
+      end
     end
 
     factory :library_creation_request_type do

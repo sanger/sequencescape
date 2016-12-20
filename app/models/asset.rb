@@ -75,8 +75,6 @@ class Asset < ActiveRecord::Base
 
   scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
 
-  extend ContainerAssociation::Extension
-
   # to override in subclass
   def location
     nil

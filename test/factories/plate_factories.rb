@@ -3,22 +3,44 @@
 # files, such as pipelines and in the catch all factory folder.
 # Create all new plate factories here, and move others as you find them,
 # especially if you change them, otherwise merges could get messy.
-
+require 'pry'
 # The factories in here, at time of writing could do with a bit of TLC.
 FactoryGirl.define do
   factory :plate do
     plate_purpose
-    name                "Plate name"
+    name "Plate name"
     value               ""
     qc_state            ""
     resource            nil
     barcode
     size 96
 
-    factory :legacy_stock_plate do
-      # Note: This is an unfortunate side effect of the way the stock plate purpose
-      # is used throughout Sequencescape.
-      plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
+    transient do
+      well_count { 0 }
+      well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
+    end
+
+    after(:build) do |plate, evaluator|
+      plate.wells = evaluator.well_locations.map do |map|
+        build(:well, map: map)
+      end
+    end
+
+    factory :input_plate do
+      association(:plate_purpose, factory: :input_plate_purpose)
+    end
+
+    factory :target_plate do
+      transient do
+        parent { build :input_plate }
+      end
+
+      after(:build) do |plate, evaluator|
+        well_hash = Hash[evaluator.parent.wells.map { |w| [w.map_description, w] }]
+        plate.wells.each do |well|
+          build :stock_well_link, target_well: well, source_well: well_hash[well.map_description]
+        end
+      end
     end
 
     factory :source_plate do
@@ -41,15 +63,16 @@ FactoryGirl.define do
     factory :plate_with_untagged_wells do
       transient do
         sample_count 8
+        occupied_map_locations do
+          Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...sample_count))
+        end
       end
 
       after(:create) do |plate, evaluator|
-        (0...evaluator.sample_count).map do |vertical_index|
-          map = Map.where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).where(column_order: vertical_index).first or raise StandardError
+        evaluator.occupied_map_locations.each do |map|
           create(:untagged_well, map: map, plate: plate)
         end
       end
     end
   end
-
 end

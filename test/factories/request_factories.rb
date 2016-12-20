@@ -85,6 +85,12 @@ FactoryGirl.define do
     end
   end
 
+  # Well based library request as used in eg. Limber pipeline
+  factory :library_request, class: IlluminaHtp::Requests::StdLibraryRequest do
+    association(:asset, factory: :well)
+    association(:request_type, factory: :library_request_type)
+  end
+
   factory :cherrypick_request do
     association :asset, factory: :well
     association :target_asset, factory: :well
