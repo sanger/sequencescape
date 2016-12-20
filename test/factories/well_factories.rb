@@ -59,4 +59,12 @@ FactoryGirl.define do
       well.aliquots.build(als)
     end
   end
+
+  factory :well_link, class: Well::Link do
+    association(:source_well, factory: :well)
+    association(:target_well, factory: :well)
+    type 'stock'
+
+    factory :stock_well_link
+  end
 end

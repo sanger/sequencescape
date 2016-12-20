@@ -28,9 +28,7 @@ class Submission < ActiveRecord::Base
   has_many :comments_from_requests, through: :requests, source: :comments
 
   def comments
-    # has_many throug doesn't work. Comments is a column (string) of order
-    # not an ActiveRecord
-    orders.map(&:comments).flatten(1).compact
+    orders.pluck(:comments)
   end
 
   def add_comment(description, user)
@@ -180,7 +178,7 @@ class Submission < ActiveRecord::Base
   # Order needs to have the 'structure'
   def validate_orders_are_compatible
     return true if orders.size < 2
-    # check every order agains the first one
+    # check every order against the first one
     first_order = orders.first
     orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
     return false if errors.count > 0
@@ -192,8 +190,7 @@ class Submission < ActiveRecord::Base
   # which decide if orders are compatible or not
   def check_orders_compatible?(a, b)
     errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
-    errors.add(:request_options, "are incompatible") if !request_options_compatible?(a, b)
-    errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
+    errors.add(:request_options, "are incompatible") unless request_options_compatible?(a, b)
     check_studies_compatible?(a.study, b.study)
   end
 
@@ -209,11 +206,11 @@ class Submission < ActiveRecord::Base
   # for the moment we consider that request types should be the same for all order
   # so we can take the first one
   def request_type_ids
-    return [] unless orders.size >= 1
+    return [] unless orders.present?
     orders.first.request_types.map(&:to_i)
   end
 
-  def next_request_type_id(request_type_id)
+  def find_next_request_type_id(request_type_id)
     request_type_ids[request_type_ids.index(request_type_id) + 1]  if request_type_ids.present?
   end
 
@@ -221,9 +218,9 @@ class Submission < ActiveRecord::Base
     request_type_ids[request_type_ids.index(request_type_id) - 1]  if request_type_ids.present?
   end
 
-  def obtain_next_requests_to_connect(request, next_request_type_id = nil)
+  def next_requests_to_connect(request, next_request_type_id = nil)
     if next_request_type_id.nil?
-      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
     end
     all_requests = requests.with_request_type_id([request.request_type_id, next_request_type_id]).order(id: :asc)
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
@@ -254,20 +251,20 @@ class Submission < ActiveRecord::Base
 
   def next_requests(request)
     # We should never be receiving requests that are not part of our request graph.
-    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
+    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
 
       # Pick out the siblings of the request, so we can work out where it is in the list, and all of
       # the requests in the subsequent request type, so that we can tie them up.  We order by ID
       # here so that the earliest requests, those created by the submission build, are always first;
       # any additional requests will have come from a sequencing batch being reset.
-      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
       return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
-      obtain_next_requests_to_connect(request, next_request_type_id)
+      next_requests_to_connect(request, next_request_type_id)
   end
 
   def name
-    name = attributes['name'] || study_names
-    name.present? ? name : "##{id}"
+    given_name = super || study_names
+    given_name.present? ? given_name : "##{id}"
   end
 
   def study_names
@@ -275,17 +272,11 @@ class Submission < ActiveRecord::Base
     orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.aliquots.map { |al| al.study.try(:name) } } }.flatten.compact.sort.uniq.join("|")
   end
 
- def cross_project?
-  multiplexed? && orders.map(&:project_id).uniq.size > 1
- end
+  def cross_project?
+    multiplexed? && orders.map(&:project_id).uniq.size > 1
+  end
 
- def cross_study?
-  multiplexed? && orders.map(&:study_id).uniq.size > 1
- end
-end
-
-class Array
-  def intersperse(separator)
-    (inject([]) { |a, v| a + [v, separator] })[0...-1]
+  def cross_study?
+    multiplexed? && orders.map(&:study_id).uniq.size > 1
   end
 end

@@ -22,6 +22,10 @@ FactoryGirl.define do
     factory :order_with_submission do
       after(:build) { |o| o.create_submission(user_id: o.user_id) }
     end
+
+    factory :library_order do
+      request_options { { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' } }
+    end
   end
 
   # Builds a submission on the provided assets suitable for processing through
@@ -34,6 +38,9 @@ FactoryGirl.define do
     end
 
     user
+    after(:build) do |submission, evaluator|
+      submission.orders << build(:library_order, assets: evaluator.assets, request_types: evaluator.request_types.map(&:id))
+    end
   end
 end
 

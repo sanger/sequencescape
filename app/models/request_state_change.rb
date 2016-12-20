@@ -17,4 +17,43 @@ class RequestStateChange < ActiveRecord::Base
   # The submissions which were passed. Mainly kept for auditing
   # purposes
   has_and_belongs_to_many :submissions
+
+  after_create :pass_and_attach_requests
+
+  alias_method :plate, :target
+
+  private
+
+  def pass_and_attach_requests
+    connect_requests
+  end
+
+  def connect_requests
+    target_wells.each do |target_well|
+      target_well.stock_wells.each do |source_well|
+        # We may have multiple requests out of each well, however we're only concerned
+        # about those associated with the active submission.
+        upstream = source_well.requests.detect do |r|
+          r.is_a?(IlluminaHtp::Requests::StdLibraryRequest) && submission_ids.include?(r.submission_id)
+        end
+
+        # We need to find the downstream requests BEFORE connecting the upstream
+        # This is because submission.next_requests tries to take a shortcut through
+        # the target_asset if it is defined.
+        downstream = upstream.submission.next_requests(upstream)
+        downstream.each { |ds| ds.update_attributes!(asset: target_well) }
+
+        # In some cases, such as the Illumina-C pipelines, requests might be
+        # connected upfront. We don't want to touch these.
+        next unless upstream.target_asset.nil?
+
+        upstream.update_attributes!(target_asset: target_well)
+        upstream.pass!
+      end
+    end
+  end
+
+  def target_wells
+    target.wells.include_stock_wells.include_requests_as_target
+  end
 end

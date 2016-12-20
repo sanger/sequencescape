@@ -89,7 +89,20 @@ FactoryGirl.define do
   factory :library_request, class: IlluminaHtp::Requests::StdLibraryRequest do
     association(:asset, factory: :well)
     association(:request_type, factory: :library_request_type)
+    request_purpose
+
+    after(:build) do |request, evaluator|
+      request.request_metadata = build(:illumina_htp_requests_std_library_request_metadata, owner: request)
+    end
   end
+
+  factory(:multiplex_request, class: Request::Multiplexing) do
+    asset nil
+    association(:target_asset, factory: :multiplexed_library_tube)
+    request_purpose
+  end
+
+  factory :illumina_htp_requests_std_library_request_metadata, class: IlluminaHtp::Requests::StdLibraryRequest::Metadata, parent: :request_metadata_for_library_manufacture
 
   factory :cherrypick_request do
     association :asset, factory: :well

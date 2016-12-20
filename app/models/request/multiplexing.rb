@@ -18,8 +18,8 @@ class Request::Multiplexing < CustomerRequest
       Transfer::FromPlateToTubeByMultiplex.create!(
         source: self.asset.plate,
         user: self.order.user
-      ) if self.asset.present?
-    end
+      )
+    end if self.asset.present?
   end
 
   redefine_aasm column: :state, whiny_persistence: true do

@@ -1,4 +1,12 @@
 FactoryGirl.define do
+
+  trait :library_request_validators do
+    after(:build) { |request_type|
+      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
+      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+    }
+  end
+
   factory :request_type do
     name           { generate :request_type_name }
     key            { generate :request_type_key }
@@ -17,6 +25,7 @@ FactoryGirl.define do
       factory :library_request_type do
         request_class IlluminaHtp::Requests::StdLibraryRequest
         billable true
+        library_request_validators
       end
 
       factory :multiplex_request_type do

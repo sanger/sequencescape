@@ -167,6 +167,9 @@ FactoryGirl.define do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   76
+
+    factory :request_metadata_for_single_ended_sequencing
+    factory :request_metadata_for_paired_end_sequencing
   end
 
   factory :request_metadata_for_standard_sequencing_with_read_length, parent: :request_metadata, class: SequencingRequest::Metadata do
@@ -175,28 +178,25 @@ FactoryGirl.define do
     read_length                   76
   end
 
-  factory(:request_metadata_for_single_ended_sequencing, parent: :request_metadata_for_standard_sequencing) {}
-  factory(:request_metadata_for_paired_end_sequencing, parent: :request_metadata_for_standard_sequencing) {}
-
   # HiSeq sequencing
   factory :request_metadata_for_hiseq_sequencing, parent: :request_metadata do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   100
+
+    factory :request_metadata_for_hiseq_paired_end_sequencing
+    factory :request_metadata_for_single_ended_hi_seq_sequencing
   end
 
   factory :hiseq_x_request_metadata, parent: :request_metadata do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   100
+
+    factory :request_metadata_for_illumina_a_hiseq_x_paired_end_sequencing
+    factory :request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing
+    factory :request_metadata_for_hiseq_x_paired_end_sequencing
   end
-
-  factory(:request_metadata_for_hiseq_paired_end_sequencing, parent: :request_metadata_for_hiseq_sequencing) {}
-  factory(:request_metadata_for_single_ended_hi_seq_sequencing, parent: :request_metadata_for_hiseq_sequencing) {}
-
-  factory(:request_metadata_for_illumina_a_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
-  factory(:request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
-  factory(:request_metadata_for_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
 
   ('a'..'c').each do |p|
     factory(:"request_metadata_for_illumina_#{p}_single_ended_sequencing", parent: :request_metadata_for_standard_sequencing) {}
@@ -449,7 +449,7 @@ FactoryGirl.define do
     name     { |_| generate :asset_name }
     purpose  { Tube::Purpose.standard_library_tube }
   end
-  
+
   factory(:library_tube, parent: :empty_library_tube) do
     after(:create) do |library_tube|
       library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')

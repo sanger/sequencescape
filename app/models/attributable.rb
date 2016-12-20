@@ -41,20 +41,20 @@ module Attributable
   end
 
   def instance_defaults
-    self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute.name] = attribute.default_from(self) if attribute.validator? }
+    self.class.attribute_details.each_with_object({}) do |attribute, hash|
+      hash[attribute.name] = attribute.default_from(self) if attribute.validator?
     end
   end
 
   def attribute_value_pairs
-    self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute] = attribute.from(self) }
+    self.class.attribute_details.each_with_object({}) do |attribute, hash|
+      hash[attribute] = attribute.from(self)
     end
   end
 
   def association_value_pairs
-    self.class.association_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute] = attribute.from(self) }
+    self.class.association_details.each_with_object({}) do |attribute, hash|
+      hash[attribute] = attribute.from(self)
     end
   end
 
@@ -90,8 +90,8 @@ module Attributable
     end
 
     def defaults
-      attribute_details.inject({}) do |hash, attribute|
-        hash.tap { hash[attribute.name] = attribute.default }
+      @defaults ||= attribute_details.each_with_object({}) do |attribute, hash|
+        hash[attribute.name] = attribute.default
       end
     end
 
@@ -210,7 +210,8 @@ module Attributable
     def initialize(owner, name, options = {})
       @owner, @name, @options = owner, name.to_sym, options
       @default  = options.delete(:default)
-      @required = !!options.delete(:required) || false
+      @required = options.delete(:required).present?
+      @validator = options.delete(:validator).present?
     end
 
     def from(record)
@@ -223,7 +224,7 @@ module Attributable
     end
 
     def validator?
-      @options.key?(:validator)
+      @validator
     end
 
     def required?
@@ -231,7 +232,7 @@ module Attributable
     end
 
     def optional?
-      not self.required?
+      not required?
     end
 
     def numeric?
@@ -252,14 +253,6 @@ module Attributable
 
     def selection?
       fixed_selection? || @options.key?(:selection)
-    end
-
-    def method?
-      @options.key?(:with_method)
-    end
-
-    def validate_method
-      @options[:with_method]
     end
 
     def minimum
@@ -293,7 +286,6 @@ module Attributable
           required.validates_inclusion_of(name, in: self.selection_values, allow_false: true) if self.fixed_selection?
           required.validates_format_of(name, with: self.valid_format) if self.valid_format?
           required.validates name, custom: true if self.validator?
-          required.validate(self.validate_method) if self.method?
         end
       end
 
