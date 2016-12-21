@@ -1,4 +1,4 @@
-# A RequestStateChange can be used to pass library creation
+# A WorkCompletion can be used to pass library creation
 # requests. It will also link the requests onto the correct
 # wells of the target plate. It takes the following:
 # target: The plate on which the library has been completed.
@@ -9,18 +9,18 @@
 # well_links to the plate on which the orignal library_creation
 # requests were made. This provides a means of finding the library
 # creation requests.
-class RequestStateChange < ActiveRecord::Base
+class WorkCompletion < ActiveRecord::Base
+  include Uuid::Uuidable
   # The user who performed the state change
   belongs_to :user, required: true
   # The plate on which requests were completed
   belongs_to :target, class_name: Asset, required: true
   # The submissions which were passed. Mainly kept for auditing
   # purposes
-  has_and_belongs_to_many :submissions
+  has_many :work_completions_submissions, dependent: :destroy
+  has_many :submissions, through: :work_completions_submissions
 
   after_create :pass_and_attach_requests
-
-  alias_method :plate, :target
 
   private
 

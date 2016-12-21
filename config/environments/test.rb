@@ -21,7 +21,8 @@ Sequencescape::Application.configure do
   config.eager_load = true
 
   # we don't need :debug unless we're debugging tests
-  config.log_level = :error
+  config.logger = Logger.new(STDOUT) if ENV.fetch('LOG_TO_CONSOLE', false)
+  config.log_level = ENV.fetch('LOG_LEVEL', :error)
 
   # Show full error reports and disable caching
   # config.action_controller.consider_all_requests_local = true

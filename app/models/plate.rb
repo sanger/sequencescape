@@ -226,7 +226,7 @@ class Plate < Asset
   deprecate :study
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
-  has_many :wells, through: :container_associations, inverse_of: :plate  do
+  has_many :wells, through: :container_associations, inverse_of: :plate do
     def import(records)
       ActiveRecord::Base.transaction do
         records.map(&:save!)

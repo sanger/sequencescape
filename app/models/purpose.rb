@@ -61,14 +61,6 @@ class Purpose < ActiveRecord::Base
     barcode_printer_type.printer_type_id
   end
 
-  def parent_uuids=(uuids)
-    self.parent_purposes = Uuid.includes(:resource).where(external_id: uuids).map(&:resource)
-  end
-
-  def child_uuids=(uuids)
-    self.child_purposes = Uuid.includes(:resource).where(external_id: uuids).map(&:resource)
-  end
-
   # Things that are created are often in a default location!
   belongs_to :default_location, class_name: 'Location'
   has_many :messenger_creators, inverse_of: :purpose

@@ -19,7 +19,7 @@ describe '/api/1/plate_purposes' do
           "name": "External Plate Purpose",
           "stock_plate": true,
           "input_plate": true,
-          "parent_uuids": ["#{parent_purpose.uuid}"]
+          "parents": ["#{parent_purpose.uuid}"]
         }
       }}
     end

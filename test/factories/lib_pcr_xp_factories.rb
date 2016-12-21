@@ -52,7 +52,7 @@ FactoryGirl.define do
   end
 
   factory :lib_pcr_xp_tube, class: MultiplexedLibraryTube do
-    name    { |a| FactoryGirl.generate :asset_name }
+    name { |a| FactoryGirl.generate :asset_name }
     association(:purpose, factory: :illumina_htp_mx_tube_purpose)
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end

@@ -14,7 +14,7 @@ class Io::PlatePurpose < Core::Io::Base
     cherrypickable_target <=> cherrypickable_target
     can_be_considered_a_stock_plate <=> stock_plate
     input_plate <= input_plate
-    parent_uuids <= parent_uuids
-    child_uuids <= child_uuids
+    parent_purposes <= parents
+    child_purposes <= children
   ")
 end

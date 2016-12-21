@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   trait :library_request_validators do
     after(:build) { |request_type|
       request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)

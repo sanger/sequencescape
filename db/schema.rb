@@ -1184,24 +1184,6 @@ ActiveRecord::Schema.define(version: 20161219112914) do
   add_index "request_quotas_bkp", ["quota_id", "request_id"], name: "index_request_quotas_on_quota_id_and_request_id", using: :btree
   add_index "request_quotas_bkp", ["request_id"], name: "fk_request_quotas_to_requests", using: :btree
 
-  create_table "request_state_changes", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4, null: false
-    t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "request_state_changes", ["target_id"], name: "fk_rails_2080f661d1", using: :btree
-  add_index "request_state_changes", ["user_id"], name: "fk_rails_498abc0e8c", using: :btree
-
-  create_table "request_state_changes_submissions", id: false, force: :cascade do |t|
-    t.integer "request_state_change_id", limit: 4, null: false
-    t.integer "submission_id",           limit: 4, null: false
-  end
-
-  add_index "request_state_changes_submissions", ["request_state_change_id"], name: "fk_rails_91affe88f1", using: :btree
-  add_index "request_state_changes_submissions", ["submission_id"], name: "fk_rails_ddb4496b7a", using: :btree
-
   create_table "request_type_plate_purposes", force: :cascade do |t|
     t.integer "request_type_id",  limit: 4, null: false
     t.integer "plate_purpose_id", limit: 4, null: false
@@ -1895,6 +1877,24 @@ ActiveRecord::Schema.define(version: 20161219112914) do
     t.string  "source",         limit: 255
   end
 
+  create_table "work_completions", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4, null: false
+    t.integer  "target_id",  limit: 4, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
+  add_index "work_completions", ["user_id"], name: "fk_rails_204fc81a92", using: :btree
+
+  create_table "work_completions_submissions", force: :cascade do |t|
+    t.integer "work_completion_id", limit: 4, null: false
+    t.integer "submission_id",      limit: 4, null: false
+  end
+
+  add_index "work_completions_submissions", ["submission_id"], name: "fk_rails_1ac4e93988", using: :btree
+  add_index "work_completions_submissions", ["work_completion_id"], name: "fk_rails_5ea64f1af2", using: :btree
+
   create_table "workflow_samples", force: :cascade do |t|
     t.text     "name",          limit: 65535
     t.integer  "user_id",       limit: 4
@@ -1908,8 +1908,8 @@ ActiveRecord::Schema.define(version: 20161219112914) do
     t.integer  "version",       limit: 4
   end
 
-  add_foreign_key "request_state_changes", "assets", column: "target_id"
-  add_foreign_key "request_state_changes", "users"
-  add_foreign_key "request_state_changes_submissions", "request_state_changes"
-  add_foreign_key "request_state_changes_submissions", "submissions"
+  add_foreign_key "work_completions", "assets", column: "target_id"
+  add_foreign_key "work_completions", "users"
+  add_foreign_key "work_completions_submissions", "submissions"
+  add_foreign_key "work_completions_submissions", "work_completions"
 end
