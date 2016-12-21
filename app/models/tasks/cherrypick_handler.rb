@@ -86,7 +86,6 @@ module Tasks::CherrypickHandler
     @cherrypick_action = params[:cherrypick][:action]
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
-
   end
 
   def do_cherrypick_task(task, params)

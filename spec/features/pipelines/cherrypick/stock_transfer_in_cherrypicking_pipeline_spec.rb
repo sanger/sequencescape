@@ -3,7 +3,7 @@ require 'rails_helper'
 require 'pry'
 
 feature 'stock transfer in cherrypicking pipeline', js: true do
-  let(:user) { create :admin  }
+  let(:user) { create :admin }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
   let(:location) { Location.find_by_name("Sample logistics freezer") }
@@ -12,11 +12,11 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
   let(:plate1) { create :plate, barcode: "1", location: location }
   let(:plate2) { create :plate, barcode: "10", location: location }
   let(:plate3) { create :plate, barcode: "5", location: location }
-  let(:asset_group) { create :asset_group, study: study}
+  let(:asset_group) { create :asset_group, study: study }
   let(:plates) { [plate1, plate2, plate3] }
   let(:submission_template) { SubmissionTemplate.find_by_name(pipeline_name) }
   let(:workflow) { Submission::Workflow.find_by_key('microarray_genotyping') }
-  let(:barcode) {99999}
+  let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: "444" }
   let!(:plate_template) { create :plate_template }
 
@@ -74,7 +74,7 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
     select("Genotyping freezer", from: "Location")
     click_button "Next step"
     click_button "Release this batch"
-    expect(page).to have_content ("Batch released!")
+    expect(page).to have_content("Batch released!")
   end
 
   scenario 'by nano grams' do
@@ -95,7 +95,7 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
     select("Genotyping freezer", from: "Location")
     click_button "Next step"
     click_button "Release this batch"
-    expect(page).to have_content ("Batch released!")
+    expect(page).to have_content("Batch released!")
   end
 
   scenario 'by micro litre' do
@@ -116,7 +116,7 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
     select("Genotyping freezer", from: "Location")
     click_button "Next step"
     click_button "Release this batch"
-    expect(page).to have_content ("Batch released!")
+    expect(page).to have_content("Batch released!")
   end
 
   def login_user(user)
@@ -126,5 +126,4 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
     click_button 'Login'
     true
   end
-
 end
