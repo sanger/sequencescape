@@ -75,15 +75,18 @@ module Tasks::CherrypickHandler
     @robot_id = params[:robot_id]
     @robot = Robot.find(@robot_id)
     @plate_type = params[:plate_type]
-    @volume_required = params[:volume_required]
-    @micro_litre_volume_required = params[:micro_litre_volume_required]
-    @concentration_required = params[:concentration_required]
-    @minimum_volume = params[:minimum_volume]
-    @maximum_volume = params[:maximum_volume]
-    @total_nano_grams = params[:total_nano_grams]
+    @nano_grams_per_micro_litre_volume_required = params[:nano_grams_per_micro_litre][:volume_required]
+    @nano_grams_per_micro_litre_concentration_required = params[:nano_grams_per_micro_litre][:concentration_required]
+    @nano_grams_per_micro_litre_robot_minimum_picking_volume = params[:nano_grams_per_micro_litre][:robot_minimum_picking_volume]
+    @nano_grams_minimum_volume = params[:nano_grams][:minimum_volume]
+    @nano_grams_maximum_volume = params[:nano_grams][:maximum_volume]
+    @nano_grams_total_nano_grams = params[:nano_grams][:total_nano_grams]
+    @nano_grams_robot_minimum_picking_volume = params[:nano_grams][:robot_minimum_picking_volume]
+    @micro_litre_volume_required = params[:micro_litre][:volume_required]
     @cherrypick_action = params[:cherrypick][:action]
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
+
   end
 
   def do_cherrypick_task(task, params)
@@ -107,9 +110,9 @@ module Tasks::CherrypickHandler
 
       # Configure the cherrypicking action based on the parameters
       cherrypicker = case params[:cherrypick_action]
-        when 'nano_grams_per_micro_litre' then create_nano_grams_per_micro_litre_picker(params)
-        when 'nano_grams'                 then create_nano_grams_picker(params)
-        when 'micro_litre'                then create_micro_litre_picker(params)
+        when 'nano_grams_per_micro_litre' then create_nano_grams_per_micro_litre_picker(params[:nano_grams_per_micro_litre])
+        when 'nano_grams'                 then create_nano_grams_picker(params[:nano_grams])
+        when 'micro_litre'                then create_micro_litre_picker(params[:micro_litre])
         else raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_action]}"
       end
 

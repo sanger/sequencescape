@@ -25,7 +25,7 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
   	When I follow "Select Plate Template"
   	When I select "testtemplate" from "Plate Template"
   	When I select "Infinium 670k" from "Output plate purpose"
-    When I fill in "Volume Required" with "65"
+    When I fill in "nano_grams_per_micro_litre_volume_required" with "65"
     When I press "Next step"
   	And I press "Next step"
   	When I select "Genotyping freezer" from "Location"

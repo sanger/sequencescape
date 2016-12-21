@@ -5,10 +5,10 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have a released cherrypicking batch$/ do
-  step("I have a released cherrypicking batch with 96 samples")
+  step("I have a released cherrypicking batch with 96 samples and the minimum robot pick is '1.0'")
 end
 
-Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of_samples|
+Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
   step("a plate template exists")
@@ -17,8 +17,9 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
   step('I select "Infinium 670k" from "Output plate purpose"')
-  step('I fill in "Volume Required" with "13"')
-  step('I fill in "Concentration Required" with "50"')
+  step('I fill in "nano_grams_per_micro_litre_volume_required" with "13"')
+  step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
+  fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
   step('I select "Genotyping freezer" from "Location"')
@@ -27,7 +28,7 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
   step('the last batch has a barcode of "550000555760"')
 end
 
-Given /^I have a released low concentration cherrypicking batch with (\d+) samples$/ do |number_of_samples|
+Given(/^I have a released low concentration cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
   step("a plate template exists")
@@ -36,8 +37,9 @@ Given /^I have a released low concentration cherrypicking batch with (\d+) sampl
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
   step('I select "Infinium 670k" from "Output plate purpose"')
-  step('I fill in "Volume Required" with "13"')
-  step('I fill in "Concentration Required" with "50"')
+  step('I fill in "nano_grams_per_micro_litre_volume_required" with "13"')
+  step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
+  fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
   step('I select "Genotyping freezer" from "Location"')
@@ -46,7 +48,7 @@ Given /^I have a released low concentration cherrypicking batch with (\d+) sampl
   step('the last batch has a barcode of "550000555760"')
 end
 
-Given /^I have a released cherrypicking batch with 3 plates$/ do
+Given(/^I have a released cherrypicking batch with 3 plates and the minimum robot pick is "([^"]*)"$/) do |minimum_robot_pick|
   step('I am a "administrator" user logged in as "user"')
   step('I have a project called "Test project"')
   step('I have an active study called "Test study"')
@@ -74,8 +76,9 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
   step('I select "Infinium 670k" from "Output plate purpose"')
-  step('I fill in "Volume Required" with "13"')
-  step('I fill in "Concentration Required" with "50"')
+  step('I fill in "nano_grams_per_micro_litre_volume_required" with "13"')
+  step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
+  fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
   step('I select "Genotyping freezer" from "Location"')
@@ -85,7 +88,7 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
 end
 
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
-  step("I have a released cherrypicking batch with 1 samples")
+  step('I have a released cherrypicking batch with 1 samples and the minimum robot pick is "1"')
   plate = Plate.last
   plate.wells.each { |well| well.well_attribute.update_attributes!(buffer_volume: nil) }
 end

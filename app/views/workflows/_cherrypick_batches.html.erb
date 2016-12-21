@@ -37,17 +37,19 @@
   </script>
 <% end -%>
 
-  <%= hidden_field_tag 'minimum_volume', @minimum_volume    %>
-  <%= hidden_field_tag 'maximum_volume', @maximum_volume    %>
-  <%= hidden_field_tag 'robot_id', @robot_id    %>
-  <%= hidden_field_tag 'total_nano_grams', @total_nano_grams  %>
-  <%= hidden_field_tag 'cherrypick_action', @cherrypick_action %>
-  <%= hidden_field_tag 'plate_type', @plate_type %>
-  <%= hidden_field_tag 'volume_required', @volume_required %>
-  <%= hidden_field_tag 'concentration_required', @concentration_required %>
-  <%= hidden_field_tag 'micro_litre_volume_required', @micro_litre_volume_required %>
+  <%= hidden_field_tag 'nano_grams[total_nano_grams]', @nano_grams_total_nano_grams  %>
+  <%= hidden_field_tag 'nano_grams[minimum_volume]', @nano_grams_minimum_volume    %>
+  <%= hidden_field_tag 'nano_grams[maximum_volume]', @nano_grams_maximum_volume    %>
+  <%= hidden_field_tag 'nano_grams[robot_minimum_picking_volume]', @nano_grams_robot_minimum_picking_volume %>
+  <%= hidden_field_tag 'nano_grams_per_micro_litre[volume_required]', @nano_grams_per_micro_litre_volume_required %>
+  <%= hidden_field_tag 'nano_grams_per_micro_litre[concentration_required]', @nano_grams_per_micro_litre_concentration_required %>
+  <%= hidden_field_tag 'nano_grams_per_micro_litre[robot_minimum_picking_volume]', @nano_grams_per_micro_litre_robot_minimum_picking_volume %>
+  <%= hidden_field_tag 'micro_litre[volume_required]', @micro_litre_volume_required %>
   <%= hidden_field_tag 'plate_purpose_id', @plate_purpose_id %>
   <%= hidden_field_tag 'fluidigm_plate', @fluidigm_plate %>
+  <%= hidden_field_tag 'robot_id', @robot_id    %>
+  <%= hidden_field_tag 'cherrypick_action', @cherrypick_action %>
+  <%= hidden_field_tag 'plate_type', @plate_type %>
 
   <%= render(:partial => 'next_stage_submit', :locals => { :check_selection => true }) %>
 <% end %>

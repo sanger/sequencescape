@@ -29,38 +29,38 @@ class GeneratorTest < ActiveSupport::TestCase
             "name" => "ABgene 0800",
             "plate_size" => 96,
             "mapping" => [
-              { "src_well" =>  ["95020", "B7"], "dst_well" => "A1", "volume" => 13,   },
-              { "src_well" =>  ["95020", "C7"], "dst_well" => "B1", "volume" => 13,   },
-              { "src_well" =>  ["95020", "D7"], "dst_well" => "C1", "volume" => 13,   },
-              { "src_well" =>  ["95020", "E7"], "dst_well" => "D1", "volume" => 13,   },
-              { "src_well" =>  ["95020", "H7"], "dst_well" => "E1", "volume" => 13,   },
-              { "src_well" =>  ["95020", "D8"], "dst_well" => "F1", "volume" => 13,   },
-              { "src_well" =>  ["95020", "E8"], "dst_well" => "G1", "volume" => 6.77, },
-              { "src_well" =>  ["95020", "A8"], "dst_well" => "H1", "volume" => 13,   },
-              { "src_well" =>  ["95020", "G8"], "dst_well" => "A2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "H8"], "dst_well" => "B2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "A9"], "dst_well" => "C2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "B9"], "dst_well" => "D2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "C9"], "dst_well" => "E2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "D9"], "dst_well" => "F2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "E9"], "dst_well" => "G2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "F9"], "dst_well" => "H2", "volume" => 13,   },
-              { "src_well" =>  ["95020", "G9"], "dst_well" => "A3", "volume" => 13,   },
-              { "src_well" =>  ["95020", "H9"], "dst_well" => "B3", "volume" => 13,   },
-              { "src_well" => ["95020", "C10"], "dst_well" => "C3", "volume" => 9.48, },
-              { "src_well" => ["95020", "E10"], "dst_well" => "D3", "volume" => 13,   },
-              { "src_well" => ["95020", "F10"], "dst_well" => "E3", "volume" => 13,   },
-              { "src_well" => ["95020", "H10"], "dst_well" => "F3", "volume" => 13,   },
-              { "src_well" => ["95020", "D11"], "dst_well" => "G3", "volume" => 6.91, },
-              { "src_well" => ["95020", "A11"], "dst_well" => "H3", "volume" => 13,   },
-              { "src_well" => ["95020", "B11"], "dst_well" => "A4", "volume" => 13,   },
-              { "src_well" => ["95020", "E11"], "dst_well" => "B4", "volume" => 13,   },
-              { "src_well" => ["95020", "G11"], "dst_well" => "C4", "volume" => 13,   },
-              { "src_well" => ["95020", "B12"], "dst_well" => "D4", "volume" => 7.83, },
-              { "src_well" => ["95020", "A12"], "dst_well" => "E4", "volume" => 13,   },
-              { "src_well" => ["95020", "C12"], "dst_well" => "F4", "volume" => 13,   },
-              { "src_well" => ["95020", "D12"], "dst_well" => "G4", "volume" => 13,   },
-              { "src_well" => ["95020", "F12"], "dst_well" => "H4", "volume" => 13,   }
+              { "src_well" =>  ["95020", "B7"], "dst_well" => "A1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "C7"], "dst_well" => "B1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "D7"], "dst_well" => "C1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "E7"], "dst_well" => "D1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "H7"], "dst_well" => "E1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "D8"], "dst_well" => "F1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "E8"], "dst_well" => "G1", "volume" => 6.77, "robot_minimum_picking_volume" => 1.0 },
+              { "src_well" =>  ["95020", "A8"], "dst_well" => "H1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "G8"], "dst_well" => "A2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "H8"], "dst_well" => "B2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "A9"], "dst_well" => "C2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "B9"], "dst_well" => "D2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "C9"], "dst_well" => "E2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "D9"], "dst_well" => "F2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "E9"], "dst_well" => "G2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "F9"], "dst_well" => "H2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "G9"], "dst_well" => "A3", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" =>  ["95020", "H9"], "dst_well" => "B3", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "C10"], "dst_well" => "C3", "volume" => 9.48, "robot_minimum_picking_volume" => 1.0 },
+              { "src_well" => ["95020", "E10"], "dst_well" => "D3", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "F10"], "dst_well" => "E3", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "H10"], "dst_well" => "F3", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "D11"], "dst_well" => "G3", "volume" => 6.91, "robot_minimum_picking_volume" => 1.0 },
+              { "src_well" => ["95020", "A11"], "dst_well" => "H3", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "B11"], "dst_well" => "A4", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "E11"], "dst_well" => "B4", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "G11"], "dst_well" => "C4", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "B12"], "dst_well" => "D4", "volume" => 7.83, "robot_minimum_picking_volume" => 1.0 },
+              { "src_well" => ["95020", "A12"], "dst_well" => "E4", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "C12"], "dst_well" => "F4", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "D12"], "dst_well" => "G4", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+              { "src_well" => ["95020", "F12"], "dst_well" => "H4", "volume" => 13, "robot_minimum_picking_volume" => 1.0  }
             ]
           }
         }
@@ -92,11 +92,11 @@ class GeneratorTest < ActiveSupport::TestCase
             "name" => "ABgene 0800",
             "plate_size" => 96,
             "mapping" => [
-                { "src_well" =>  ["122289", "G7"], "dst_well" => "D4", "volume" => 3.33 },
-                { "src_well" =>  ["80785", "A1"],  "dst_well" => "E4", "volume" => 13 },
-                { "src_well" =>  ["122289", "H7"], "dst_well" => "F4", "volume" => 3.27   },
-                { "src_well" =>  ["122290", "A1"], "dst_well" => "E9", "volume" => 2.8    },
-                { "src_well" =>  ["122290", "B1"], "dst_well" => "F9", "volume" => 4.08   }
+                { "src_well" =>  ["122289", "G7"], "dst_well" => "D4", "volume" => 3.33, "robot_minimum_picking_volume" => 1.0 },
+                { "src_well" =>  ["80785", "A1"],  "dst_well" => "E4", "volume" => 13, "robot_minimum_picking_volume" => 1.0 },
+                { "src_well" =>  ["122289", "H7"], "dst_well" => "F4", "volume" => 3.27, "robot_minimum_picking_volume" => 1.0 },
+                { "src_well" =>  ["122290", "A1"], "dst_well" => "E9", "volume" => 2.8, "robot_minimum_picking_volume" => 1.0 },
+                { "src_well" =>  ["122290", "B1"], "dst_well" => "F9", "volume" => 4.08, "robot_minimum_picking_volume" => 1.0 }
                 ]
           }
         }
@@ -120,11 +120,11 @@ class GeneratorTest < ActiveSupport::TestCase
           "name" => "ABgene 0800",
           "plate_size" => 96,
           "mapping" => [
-            { "src_well" => ["1220415828863", "A1"], "dst_well" => "A1", "volume" => 13.0 },
-            { "src_well" => ["1220415828863", "A2"], "dst_well" => "A1", "volume" => 13.0 },
-            { "src_well" => ["1220415828863", "A3"], "dst_well" => "A1", "volume" => 13.0 },
-            { "src_well" => ["1220415828863", "A4"], "dst_well" => "A1", "volume" => 13.0 },
-            { "src_well" => ["1220415828863", "A5"], "dst_well" => "A1", "volume" => 13.0 }
+            { "src_well" => ["1220415828863", "A1"], "dst_well" => "A1", "volume" => 13.0, "robot_minimum_picking_volume" => 1.0 },
+            { "src_well" => ["1220415828863", "A2"], "dst_well" => "A1", "volume" => 13.0, "robot_minimum_picking_volume" => 1.0 },
+            { "src_well" => ["1220415828863", "A3"], "dst_well" => "A1", "volume" => 13.0, "robot_minimum_picking_volume" => 1.0 },
+            { "src_well" => ["1220415828863", "A4"], "dst_well" => "A1", "volume" => 13.0, "robot_minimum_picking_volume" => 1.0 },
+            { "src_well" => ["1220415828863", "A5"], "dst_well" => "A1", "volume" => 13.0, "robot_minimum_picking_volume" => 1.0 }
           ]
         }
       }
@@ -200,10 +200,10 @@ class GeneratorTest < ActiveSupport::TestCase
       @barcodes = {
         "5555" =>
           { "mapping" => [
-            { "src_well" =>  ["88888", "A7"], "dst_well" => "A1", "volume" => 13,   },
-            { "src_well" =>  ["66666", "H7"], "dst_well" => "B2", "volume" => 13,   },
-            { "src_well" =>  ["99999", "C7"], "dst_well" => "B3", "volume" => 13,   },
-            { "src_well" =>  ["88888", "A1"], "dst_well" => "H9", "volume" => 13,   }
+            { "src_well" =>  ["88888", "A7"], "dst_well" => "A1", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+            { "src_well" =>  ["66666", "H7"], "dst_well" => "B2", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+            { "src_well" =>  ["99999", "C7"], "dst_well" => "B3", "volume" => 13, "robot_minimum_picking_volume" => 1.0  },
+            { "src_well" =>  ["88888", "A1"], "dst_well" => "H9", "volume" => 13, "robot_minimum_picking_volume" => 1.0  }
             ]
           }
         }
