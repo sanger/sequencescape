@@ -204,7 +204,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="ChainLink.html" title="Submission::FlexibleRequestGraph::ChainLink (module)">ChainLink</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="ChainLink.html#associate_built_requests%21-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#associate_built_requests! (method)">#associate_built_requests!</a></span>, <span class='object_link'><a href="ChainLink.html#build%21-class_method" title="Submission::FlexibleRequestGraph::ChainLink.build! (method)">build!</a></span>, <span class='object_link'><a href="ChainLink.html#build%21-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#build! (method)">#build!</a></span>, <span class='object_link'><a href="ChainLink.html#comments-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#comments (method)">#comments</a></span>, <span class='object_link'><a href="ChainLink.html#create_target_asset-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#create_target_asset (method)">#create_target_asset</a></span>, <span class='object_link'><a href="ChainLink.html#included-class_method" title="Submission::FlexibleRequestGraph::ChainLink.included (method)">included</a></span>, <span class='object_link'><a href="ChainLink.html#multiplexed%3F-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#multiplexed? (method)">#multiplexed?</a></span>, <span class='object_link'><a href="ChainLink.html#source_asset_metrics_target_assets-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#source_asset_metrics_target_assets (method)">#source_asset_metrics_target_assets</a></span>, <span class='object_link'><a href="ChainLink.html#target_assets-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#target_assets (method)">#target_assets</a></span>, <span class='object_link'><a href="ChainLink.html#user-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#user (method)">#user</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="ChainLink.html#build%21-class_method" title="Submission::FlexibleRequestGraph::ChainLink.build! (method)">build!</a></span>, <span class='object_link'><a href="ChainLink.html#build%21-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#build! (method)">#build!</a></span>, <span class='object_link'><a href="ChainLink.html#included-class_method" title="Submission::FlexibleRequestGraph::ChainLink.included (method)">included</a></span>, <span class='object_link'><a href="ChainLink.html#multiplexed%3F-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#multiplexed? (method)">#multiplexed?</a></span>, <span class='object_link'><a href="ChainLink.html#target_assets-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#target_assets (method)">#target_assets</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -247,13 +247,13 @@
       <pre class="lines">
 
 
-211
-212
-213
-214</pre>
+205
+206
+207
+208</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 211</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 205</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_request_type'>request_type</span><span class='comma'>,</span> <span class='id identifier rubyid_multiplier'>multiplier</span><span class='comma'>,</span> <span class='id identifier rubyid_assets'>assets</span><span class='comma'>,</span> <span class='id identifier rubyid_chain'>chain</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RequestChainError</span> <span class='kw'>if</span> <span class='id identifier rubyid_request_type'>request_type</span><span class='period'>.</span><span class='id identifier rubyid_for_multiplexing?'>for_multiplexing?</span>
@@ -286,17 +286,17 @@
       <pre class="lines">
 
 
+210
+211
+212
+213
+214
+215
 216
-217
-218
-219
-220
-221
-222
-223</pre>
+217</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 216</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 210</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_generate_target_assets'>generate_target_assets</span>
   <span class='id identifier rubyid_source_assets_qc_metrics'>source_assets_qc_metrics</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_doublet'>doublet</span><span class='op'>|</span>
@@ -326,14 +326,14 @@
       <pre class="lines">
 
 
-225
-226
-227
-228
-229</pre>
+219
+220
+221
+222
+223</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 219</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_source_assets_doublet_with_index'>source_assets_doublet_with_index</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_source_assets_qc_metrics'>source_assets_qc_metrics</span><span class='period'>.</span><span class='id identifier rubyid_each_with_index'>each_with_index</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_doublet'>doublet</span><span class='comma'>,</span> <span class='id identifier rubyid_index'>index</span><span class='op'>|</span>
@@ -350,9 +350,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:47 2016 by
+  Generated on Mon Dec 19 11:17:29 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

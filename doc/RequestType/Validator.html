@@ -103,7 +103,23 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A request type validator belongs to a request type, and is responsible for
+validating a single request option request_option =&gt; The option that
+will be validated valid_options  =&gt; A serialized object that responds to
+include? Returning true if the option is present</p>
+
+<pre class="code ruby"><code class="ruby">It should also return an array of valid options in response to to_a</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -262,12 +278,12 @@
       <pre class="lines">
 
 
-75
-76
-77</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default'>default</span>
   <span class='id identifier rubyid_valid_options'>valid_options</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:default</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_valid_options'>valid_options</span><span class='period'>.</span><span class='id identifier rubyid_default'>default</span> <span class='op'>:</span> <span class='kw'>nil</span>
@@ -314,12 +330,12 @@
       <pre class="lines">
 
 
-67
-68
-69</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_option'>option</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_valid_options'>valid_options</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_option'>option</span><span class='rparen'>)</span>
@@ -344,12 +360,12 @@
       <pre class="lines">
 
 
-71
-72
-73</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='id identifier rubyid_valid_options'>valid_options</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span>
@@ -374,15 +390,15 @@
       <pre class="lines">
 
 
-79
-80
-81
 82
 83
-84</pre>
+84
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'app/models/request_type/validator.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type_cast'>type_cast</span>
   <span class='lbrace'>{</span>
@@ -400,9 +416,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:27 2016 by
+  Generated on Mon Dec 19 11:17:12 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

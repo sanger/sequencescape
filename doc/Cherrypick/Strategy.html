@@ -101,7 +101,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -177,72 +191,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#_pick-instance_method" title="#_pick (instance method)">#<strong>_pick</strong>(requests, robot, current_plate = create_empty_plate)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#choose_next_plex_from-instance_method" title="#choose_next_plex_from (instance method)">#<strong>choose_next_plex_from</strong>(requests, current_plate)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#create_empty_plate-instance_method" title="#create_empty_plate (instance method)">#<strong>create_empty_plate</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(purpose)  &#x21d2; Strategy </a>
     
 
@@ -270,28 +218,6 @@
   <span class="summary_signature">
     
       <a href="#pick-instance_method" title="#pick (instance method)">#<strong>pick</strong>(requests, robot, plate = nil)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#wrap_plate-instance_method" title="#wrap_plate (instance method)">#<strong>wrap_plate</strong>(plate)  &#x21d2; Object </a>
     
 
     
@@ -342,12 +268,12 @@
       <pre class="lines">
 
 
+218
 219
-220
-221</pre>
+220</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 219</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 218</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_purpose'>purpose</span><span class='rparen'>)</span>
   <span class='ivar'>@purpose</span> <span class='op'>=</span> <span class='id identifier rubyid_purpose'>purpose</span>
@@ -365,171 +291,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="_pick-instance_method">
-  
-    #<strong>_pick</strong>(requests, robot, current_plate = create_empty_plate)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-255
-256
-257
-258
-259
-260
-261
-262
-263
-264
-265
-266
-267
-268
-269
-270
-271
-272
-273
-274
-275
-276
-277
-278
-279
-280
-281
-282
-283
-284
-285
-286
-287
-288
-289</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 255</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid__pick'>_pick</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_robot'>robot</span><span class='comma'>,</span> <span class='id identifier rubyid_current_plate'>current_plate</span> <span class='op'>=</span> <span class='id identifier rubyid_create_empty_plate'>create_empty_plate</span><span class='rparen'>)</span>
-  <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_plate_picks'>plate_picks</span><span class='op'>|</span>
-    <span class='id identifier rubyid_previous_picked_plates'>previous_picked_plates</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-    <span class='kw'>until</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-      <span class='comment'># Here we keep selecting plexes according to our core strategy.  Should the selected plex violate
-</span>      <span class='comment'># the number of beds on the robot, then we simply discard it and try again.  If there are no plexes
-</span>      <span class='comment'># that fit, then we give up on this plate and move on to a new one.
-</span>      <span class='id identifier rubyid_next_plex'>next_plex</span><span class='comma'>,</span> <span class='id identifier rubyid_pick_list'>pick_list</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_requests'>requests</span>
-      <span class='kw'>until</span> <span class='id identifier rubyid_pick_list'>pick_list</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-        <span class='id identifier rubyid_next_plex'>next_plex</span><span class='comma'>,</span> <span class='id identifier rubyid_pick_list'>pick_list</span> <span class='op'>=</span> <span class='id identifier rubyid_choose_next_plex_from'>choose_next_plex_from</span><span class='lparen'>(</span><span class='id identifier rubyid_pick_list'>pick_list</span><span class='comma'>,</span> <span class='id identifier rubyid_current_plate'>current_plate</span><span class='rparen'>)</span>
-        <span class='id identifier rubyid_plates_in_this_plex'>plates_in_this_plex</span>  <span class='op'>=</span> <span class='id identifier rubyid_next_plex'>next_plex</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:barcode</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span>
-
-        <span class='kw'>break</span> <span class='kw'>if</span> <span class='id identifier rubyid_next_plex'>next_plex</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>                                                       <span class='comment'># No plex fits what we want
-</span>        <span class='kw'>break</span> <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_plates_in_this_plex'>plates_in_this_plex</span> <span class='op'>|</span> <span class='id identifier rubyid_previous_picked_plates'>previous_picked_plates</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>&lt;=</span> <span class='id identifier rubyid_robot'>robot</span><span class='period'>.</span><span class='id identifier rubyid_max_beds'>max_beds</span>  <span class='comment'># Good set of plates
-</span>
-        <span class='comment'># Try to find a better option!
-</span>        <span class='id identifier rubyid_next_plex'>next_plex</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-      <span class='kw'>end</span>
-
-      <span class='comment'># If we&#39;ve managed to pick stuff then add it to the current plate, remove it from the pick list,
-</span>      <span class='comment'># and move on.  If we&#39;ve not picked anything then the current plate can be considered complete,
-</span>      <span class='comment'># in whatever fashion that is, so push it and move on.
-</span>      <span class='kw'>if</span> <span class='kw'>not</span> <span class='id identifier rubyid_next_plex'>next_plex</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-        <span class='id identifier rubyid_current_plate'>current_plate</span><span class='period'>.</span><span class='id identifier rubyid_concat'>concat</span><span class='lparen'>(</span><span class='id identifier rubyid_next_plex'>next_plex</span><span class='rparen'>)</span>
-        <span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_previous_picked_plates'>previous_picked_plates</span> <span class='op'>=</span> <span class='id identifier rubyid_requests'>requests</span> <span class='op'>-</span> <span class='id identifier rubyid_next_plex'>next_plex</span><span class='comma'>,</span> <span class='id identifier rubyid_previous_picked_plates'>previous_picked_plates</span> <span class='op'>|</span> <span class='id identifier rubyid_next_plex'>next_plex</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:barcode</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span>
-      <span class='kw'>elsif</span> <span class='id identifier rubyid_current_plate'>current_plate</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-        <span class='id identifier rubyid_raise'>raise</span> <span class='const'>PickFailureError</span>
-      <span class='kw'>else</span>
-        <span class='id identifier rubyid_plate_picks'>plate_picks</span><span class='period'>.</span><span class='id identifier rubyid_push'>push</span><span class='lparen'>(</span><span class='id identifier rubyid_current_plate'>current_plate</span><span class='rparen'>)</span>
-        <span class='id identifier rubyid_current_plate'>current_plate</span><span class='comma'>,</span> <span class='id identifier rubyid_previous_picked_plates'>previous_picked_plates</span> <span class='op'>=</span> <span class='id identifier rubyid_create_empty_plate'>create_empty_plate</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
-    <span class='id identifier rubyid_plate_picks'>plate_picks</span><span class='period'>.</span><span class='id identifier rubyid_push'>push</span><span class='lparen'>(</span><span class='id identifier rubyid_current_plate'>current_plate</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_current_plate'>current_plate</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_a</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="choose_next_plex_from-instance_method">
-  
-    #<strong>choose_next_plex_from</strong>(requests, current_plate)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-295
-296
-297
-298
-299
-300
-301
-302</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 295</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_choose_next_plex_from'>choose_next_plex_from</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_current_plate'>current_plate</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_candidate_plexes'>candidate_plexes</span> <span class='op'>=</span> <span class='id identifier rubyid_cherrypick_filters'>cherrypick_filters</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:new</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_group_by'>group_by</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:submission_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:last</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_plexes'>plexes</span><span class='comma'>,</span> <span class='id identifier rubyid_filter'>filter</span><span class='op'>|</span>
-    <span class='id identifier rubyid_filter'>filter</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_plexes'>plexes</span><span class='comma'>,</span> <span class='id identifier rubyid_current_plate'>current_plate</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-
-  <span class='kw'>return</span> <span class='lbracket'>[</span><span class='lbracket'>[</span><span class='const'>Cherrypick</span><span class='op'>::</span><span class='const'>Strategy</span><span class='op'>::</span><span class='const'>Empty</span><span class='rbracket'>]</span> <span class='op'>*</span> <span class='id identifier rubyid_current_plate'>current_plate</span><span class='period'>.</span><span class='id identifier rubyid_remainder'>remainder</span><span class='comma'>,</span> <span class='id identifier rubyid_requests'>requests</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_candidate_plexes'>candidate_plexes</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='lbracket'>[</span><span class='id identifier rubyid_candidate_plexes'>candidate_plexes</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='comma'>,</span> <span class='id identifier rubyid_requests'>requests</span> <span class='op'>-</span> <span class='id identifier rubyid_candidate_plexes'>candidate_plexes</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="create_empty_plate-instance_method">
-  
-    #<strong>create_empty_plate</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-230
-231
-232</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 230</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_create_empty_plate'>create_empty_plate</span>
-  <span class='const'>PickPlate</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@purpose</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="pick-instance_method">
+  <h3 class="signature first" id="pick-instance_method">
   
     #<strong>pick</strong>(requests, robot, plate = nil)  &#x21d2; <tt>Object</tt> 
   
@@ -543,67 +305,15 @@
       <pre class="lines">
 
 
+225
 226
-227
-228</pre>
+227</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 226</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 225</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pick'>pick</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_robot'>robot</span><span class='comma'>,</span> <span class='id identifier rubyid_plate'>plate</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid__pick'>_pick</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='const'>Full</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:new</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_robot'>robot</span><span class='comma'>,</span> <span class='id identifier rubyid_wrap_plate'>wrap_plate</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="wrap_plate-instance_method">
-  
-    #<strong>wrap_plate</strong>(plate)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-239
-240
-241
-242
-243
-244
-245
-246
-247
-248
-249
-250
-251
-252</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 239</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_wrap_plate'>wrap_plate</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='id identifier rubyid_create_empty_plate'>create_empty_plate</span> <span class='kw'>if</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-
-  <span class='comment'># Identify the last well (empty or not) on the plate as the point at which we start the pick
-</span>  <span class='id identifier rubyid_boundary_location'>boundary_location</span> <span class='op'>=</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_in_preferred_order'>in_preferred_order</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_w'>w</span><span class='op'>|</span> <span class='id identifier rubyid_w'>w</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span> <span class='kw'>or</span> <span class='kw'>return</span> <span class='id identifier rubyid_create_empty_plate'>create_empty_plate</span>
-  <span class='id identifier rubyid_boundary_index'>boundary_index</span>    <span class='op'>=</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_plate_purpose'>plate_purpose</span><span class='period'>.</span><span class='id identifier rubyid_well_locations'>well_locations</span><span class='period'>.</span><span class='id identifier rubyid_index'>index</span><span class='lparen'>(</span><span class='id identifier rubyid_boundary_location'>boundary_location</span><span class='rparen'>)</span> <span class='kw'>or</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot find </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_boundary_location'>boundary_location</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> on </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-
-  <span class='comment'># Pick out the last full well of the plate as the species we&#39;re supposed to use
-</span>  <span class='id identifier rubyid_last_well'>last_well</span><span class='comma'>,</span> <span class='id identifier rubyid_species'>species</span> <span class='op'>=</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_in_preferred_order'>in_preferred_order</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_w'>w</span><span class='op'>|</span> <span class='id identifier rubyid_w'>w</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_species'>species</span> <span class='op'>=</span> <span class='id identifier rubyid_last_well'>last_well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_common_name'>sample_common_name</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span> <span class='kw'>if</span> <span class='id identifier rubyid_last_well'>last_well</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-
-  <span class='const'>PickPlate</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@purpose</span><span class='comma'>,</span> <span class='id identifier rubyid_boundary_index'>boundary_index</span> <span class='op'>+</span> <span class='int'>1</span><span class='comma'>,</span> <span class='id identifier rubyid_species'>species</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -615,9 +325,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:22 2016 by
+  Generated on Mon Dec 19 11:17:07 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

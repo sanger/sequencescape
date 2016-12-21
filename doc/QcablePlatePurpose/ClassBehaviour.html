@@ -108,28 +108,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#qcable_for-instance_method" title="#qcable_for (instance method)">#<strong>qcable_for</strong>(plate)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#state_of-instance_method" title="#state_of (instance method)">#<strong>state_of</strong>(plate)  &#x21d2; Object </a>
     
 
@@ -181,37 +159,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="qcable_for-instance_method">
-  
-    #<strong>qcable_for</strong>(plate)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-21
-22
-23</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/qcable_plate_purpose.rb', line 21</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_qcable_for'>qcable_for</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
-  <span class='const'>Qcable</span><span class='period'>.</span><span class='id identifier rubyid_find_by_asset_id'>find_by_asset_id</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="state_of-instance_method">
+  <h3 class="signature first" id="state_of-instance_method">
   
     #<strong>state_of</strong>(plate)  &#x21d2; <tt>Object</tt> 
   
@@ -225,12 +173,12 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+9
+10
+11</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/qcable_plate_purpose.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'app/models/qcable_plate_purpose.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_state_of'>state_of</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_qcable_for'>qcable_for</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_state'>state</span>
@@ -255,12 +203,12 @@
       <pre class="lines">
 
 
-15
-16
-17</pre>
+13
+14
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/qcable_plate_purpose.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/qcable_plate_purpose.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transition_to'>transition_to</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_state'>state</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_ignored'>ignored</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_qcable_for'>qcable_for</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_transition_to'>transition_to</span><span class='lparen'>(</span><span class='id identifier rubyid_state'>state</span><span class='rparen'>)</span>
@@ -275,9 +223,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:36 2016 by
+  Generated on Mon Dec 19 11:16:28 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

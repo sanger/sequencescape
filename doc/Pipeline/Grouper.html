@@ -90,7 +90,19 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Classes including this module are capable of grouping the requests for a
+pipeline in a specific manner.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -274,7 +286,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_all'>all</span><span class='lparen'>(</span><span class='id identifier rubyid_selected_groups'>selected_groups</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_selected_groups'>selected_groups</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_group'>group</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span><span class='comma'>,</span> <span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_inputs'>inputs</span><span class='lparen'>(</span><span class='kw'>true</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_conditions'>group_conditions</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='symbol'>:all</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_inputs'>inputs</span><span class='lparen'>(</span><span class='kw'>true</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_conditions'>group_conditions</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -308,7 +320,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_count'>count</span><span class='lparen'>(</span><span class='id identifier rubyid_selected_groups'>selected_groups</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_selected_groups'>selected_groups</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_group'>group</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span><span class='comma'>,</span> <span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_inputs'>inputs</span><span class='lparen'>(</span><span class='kw'>true</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_conditions'>group_conditions</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='symbol'>:count</span><span class='comma'>,</span> <span class='label'>group:</span> <span class='id identifier rubyid_grouping'>grouping</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_inputs'>inputs</span><span class='lparen'>(</span><span class='kw'>true</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_conditions'>group_conditions</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='label'>group:</span> <span class='id identifier rubyid_grouping'>grouping</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span><span class='lparen'>(</span><span class='symbol'>:all</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -350,9 +362,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:33 2016 by
+  Generated on Mon Dec 19 11:16:26 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

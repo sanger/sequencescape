@@ -113,7 +113,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2013,2014,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -155,29 +169,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#parser-instance_method" title="#parser (instance method)">#<strong>parser</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Method provided for backwards compatibility.</p>
+</div></span>
   
 </li>
 
@@ -186,50 +180,6 @@
   <span class="summary_signature">
     
       <a href="#retrieve_file-instance_method" title="#retrieve_file (instance method)">#<strong>retrieve_file</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#store_file_extracted_data-instance_method" title="#store_file_extracted_data (instance method)">#<strong>store_file_extracted_data</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#update_document_attributes-instance_method" title="#update_document_attributes (instance method)">#<strong>update_document_attributes</strong>  &#x21d2; Object </a>
     
 
     
@@ -272,7 +222,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -310,51 +260,32 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Method provided for backwards compatibility</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-45
-46
-47</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_data'>current_data</span>
   <span class='id identifier rubyid_uploaded_data'>uploaded_data</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="parser-instance_method">
-  
-    #<strong>parser</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-64
-65
-66</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 64</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_parser'>parser</span>
-  <span class='ivar'>@parser</span> <span class='op'>||=</span> <span class='const'>Parsers</span><span class='period'>.</span><span class='id identifier rubyid_parser_for'>parser_for</span><span class='lparen'>(</span><span class='id identifier rubyid_uploaded_data'>uploaded_data</span><span class='period'>.</span><span class='id identifier rubyid_filename'>filename</span><span class='comma'>,</span> <span class='id identifier rubyid_content_type'>content_type</span><span class='comma'>,</span> <span class='id identifier rubyid_current_data'>current_data</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -376,6 +307,8 @@
       <pre class="lines">
 
 
+47
+48
 49
 50
 51
@@ -385,12 +318,10 @@
 55
 56
 57
-58
-59
-60</pre>
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_retrieve_file'>retrieve_file</span>
   <span class='kw'>begin</span>
@@ -409,82 +340,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="store_file_extracted_data-instance_method">
-  
-    #<strong>store_file_extracted_data</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-68
-69
-70
-71</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 68</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_store_file_extracted_data'>store_file_extracted_data</span>
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_update_concentrations_from'>update_concentrations_from</span><span class='lparen'>(</span><span class='id identifier rubyid_parser'>parser</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="update_document_attributes-instance_method">
-  
-    #<strong>update_document_attributes</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-74
-75
-76
-77
-78
-79</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 74</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_update_document_attributes'>update_document_attributes</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_uploaded_data'>uploaded_data</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_content_type'>content_type</span> <span class='op'>=</span> <span class='id identifier rubyid_uploaded_data'>uploaded_data</span><span class='period'>.</span><span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_content_type'>content_type</span>
-    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>=</span> <span class='id identifier rubyid_uploaded_data'>uploaded_data</span><span class='period'>.</span><span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:59 2016 by
+  Generated on Mon Dec 19 11:16:44 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

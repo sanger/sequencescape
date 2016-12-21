@@ -108,7 +108,20 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>An aliquot can be considered to be an amount of a material in a liquid. 
+The material could be the DNA of a sample, or it might be a library (a
+combination of the DNA sample and a tag).</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -135,7 +148,22 @@
       <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>RecordInvalid</span><span class='rparen'>)</span></pre></dd>
     
       <dt id="UNASSIGNED_TAG-constant" class="">UNASSIGNED_TAG =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>It may have a tag but not necessarily.  If it does, however, that tag needs
+to be unique within the receptacle. To ensure that there can only be one
+untagged aliquot present in a receptacle we use a special value for tag_id,
+rather than NULL which does not work in MySQL.  It also works because the
+unassigned tag ID never gets matched for a Tag and so the result is nil!</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
       <dd><pre class="code"><span class='op'>-</span><span class='int'>1</span></pre></dd>
     
@@ -172,7 +200,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Aliquot are similar if they share the same sample AND the same tag (if they
+have one: nil acts as a wildcard)).</p>
+</div></span>
   
 </li>
 
@@ -238,7 +269,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>return all aliquots originated from the current one ie aliquots sharing the
+sample, tag information, descending the requess graph.</p>
+</div></span>
   
 </li>
 
@@ -282,7 +316,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Cloning an aliquot should unset the receptacle ID because otherwise it
+won&#39;t get reassigned.</p>
+</div></span>
   
 </li>
 
@@ -304,7 +341,11 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Unlike the above methods, which allow untagged to match with tagged, this
+looks for exact matches only only id, timestamps and receptacles are
+excluded.</p>
+</div></span>
   
 </li>
 
@@ -458,7 +499,11 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Validating the uniqueness of tags in rails was causing issues, as it was
+resulting the in the preform_transfer_of_contents in transfer request to
+fail, without any visible sign that something had gone wrong.</p>
+</div></span>
   
 </li>
 
@@ -499,7 +544,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -537,7 +582,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Aliquot are similar if they share the same sample AND the same tag (if they
+have one: nil acts as a wildcard))</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -553,7 +610,7 @@
 
 <span class='kw'>def</span> <span class='op'>=~</span><span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_object'>object</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_o'>o</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_o'>o</span><span class='period'>.</span><span class='id identifier rubyid_tag_id'>tag_id</span><span class='comma'>,</span> <span class='id identifier rubyid_o'>o</span><span class='period'>.</span><span class='id identifier rubyid_sample_id'>sample_id</span><span class='comma'>,</span> <span class='id identifier rubyid_o'>o</span><span class='period'>.</span><span class='id identifier rubyid_tag2_id'>tag2_id</span> <span class='op'>&lt;</span> <span class='int'>0</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='id identifier rubyid_o'>o</span><span class='period'>.</span><span class='id identifier rubyid_tag2_id'>tag2_id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span>  <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='op'>|</span>  <span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>||</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='lparen'>(</span><span class='id identifier rubyid_y'>y</span> <span class='op'>||</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span>  <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>||</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='lparen'>(</span><span class='id identifier rubyid_y'>y</span> <span class='op'>||</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -651,7 +708,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>return all aliquots originated from the current one ie aliquots sharing the
+sample, tag information, descending the requess graph</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -757,7 +826,20 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Cloning an aliquot should unset the receptacle ID because otherwise it
+won&#39;t get reassigned.  We should also reset the timestamp information
+as this is a new aliquot really.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -798,6 +880,10 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Unlike the above methods, which allow untagged to match with tagged, this
+looks for exact matches only only id, timestamps and receptacles are
+excluded</p>
+
 
   </div>
 </div>
@@ -903,8 +989,8 @@
 </span>  <span class='kw'>when</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_library_id'>library_id</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>      <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_library_id'>library_id</span>      <span class='op'>!=</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_library_id'>library_id</span><span class='rparen'>)</span>       <span class='kw'>then</span> <span class='kw'>return</span> <span class='kw'>false</span> <span class='comment'># Our librarys don&#39;t match.
 </span>  <span class='kw'>when</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_bait_library_id'>bait_library_id</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_bait_library_id'>bait_library_id</span> <span class='op'>!=</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_bait_library_id'>bait_library_id</span><span class='rparen'>)</span>  <span class='kw'>then</span> <span class='kw'>return</span> <span class='kw'>false</span> <span class='comment'># We have different bait libraries
 </span>  <span class='kw'>when</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_untagged?'>untagged?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_tagged?'>tagged?</span>                                                     <span class='kw'>then</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Tag missing from downstream aliquot</span><span class='tstring_end'>&quot;</span></span> <span class='comment'># The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
-</span>  <span class='kw'>when</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_untagged?'>untagged?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_no_tag2?'>no_tag2?</span>                                             <span class='kw'>then</span> <span class='kw'>return</span> <span class='kw'>true</span> <span class='comment'># The upstream aliquot was untagged, we don&#39;t need to check tags
-</span>  <span class='kw'>else</span> <span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_untagged?'>untagged?</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_tag_id'>tag_id</span> <span class='op'>==</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_tag_id'>tag_id</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_no_tag2?'>no_tag2?</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_tag2_id'>tag2_id</span> <span class='op'>==</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_tag2_id'>tag2_id</span><span class='rparen'>)</span><span class='rparen'>)</span>  <span class='comment'># Both aliquots are tagged, we need to check if they match
+</span>  <span class='kw'>when</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_untagged?'>untagged?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_no_tag2?'>no_tag2?</span> <span class='kw'>then</span> <span class='kw'>return</span> <span class='kw'>true</span> <span class='comment'># The upstream aliquot was untagged, we don&#39;t need to check tags
+</span>  <span class='kw'>else</span> <span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_untagged?'>untagged?</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_tag_id'>tag_id</span> <span class='op'>==</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_tag_id'>tag_id</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_no_tag2?'>no_tag2?</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_tag2_id'>tag2_id</span> <span class='op'>==</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_tag2_id'>tag2_id</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='comment'># Both aliquots are tagged, we need to check if they match
 </span>  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1124,6 +1210,12 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Validating the uniqueness of tags in rails was causing issues, as it was
+resulting the in the preform_transfer_of_contents in transfer request to
+fail, without any visible sign that something had gone wrong. This
+essentially meant that tag clashes would result in sample dropouts.
+(presumably because &lt;&lt; triggers save not save!)</p>
+
 
   </div>
 </div>
@@ -1169,9 +1261,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:58 2016 by
+  Generated on Mon Dec 19 11:16:46 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

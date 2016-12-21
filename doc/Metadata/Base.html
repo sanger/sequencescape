@@ -93,7 +93,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd>Attributable</dd>
+      <dd><span class='object_link'><a href="../Attributable.html" title="Attributable (module)">Attributable</a></span></dd>
   </dl>
   
   
@@ -284,7 +284,10 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>A new instance of Base.</p>
+<p>This ensures that the default values are stored within the DB, meaning that
+this information will be preserved for the future, unlike the original
+properties information which didn&#39;t store values when nil which lead to
+us having to guess.</p>
 </div></span>
   
 </li>
@@ -390,6 +393,16 @@
   
   
   
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../Attributable.html" title="Attributable (module)">Attributable</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Attributable.html#association_value_pairs-instance_method" title="Attributable#association_value_pairs (method)">#association_value_pairs</a></span>, <span class='object_link'><a href="../Attributable.html#attribute_details_for-instance_method" title="Attributable#attribute_details_for (method)">#attribute_details_for</a></span>, <span class='object_link'><a href="../Attributable.html#attribute_value_pairs-instance_method" title="Attributable#attribute_value_pairs (method)">#attribute_value_pairs</a></span>, <span class='object_link'><a href="../Attributable.html#field_infos-instance_method" title="Attributable#field_infos (method)">#field_infos</a></span>, <span class='object_link'><a href="../Attributable.html#included-class_method" title="Attributable.included (method)">included</a></span>, <span class='object_link'><a href="../Attributable.html#instance_defaults-instance_method" title="Attributable#instance_defaults (method)">#instance_defaults</a></span>, <span class='object_link'><a href="../Attributable.html#required%3F-instance_method" title="Attributable#required? (method)">#required?</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../ActiveRecord/Base.html" title="ActiveRecord::Base (class)">ActiveRecord::Base</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../ActiveRecord/Base.html#find_by_id_or_name-class_method" title="ActiveRecord::Base.find_by_id_or_name (method)">find_by_id_or_name</a></span>, <span class='object_link'><a href="../ActiveRecord/Base.html#find_by_id_or_name%21-class_method" title="ActiveRecord::Base.find_by_id_or_name! (method)">find_by_id_or_name!</a></span>, <span class='object_link'><a href="../ActiveRecord/Base.html#routing_key-instance_method" title="ActiveRecord::Base#routing_key (method)">#routing_key</a></span>, <span class='object_link'><a href="../ActiveRecord/Base.html#transaction_with_amqp-class_method" title="ActiveRecord::Base.transaction_with_amqp (method)">transaction_with_amqp</a></span></p>
@@ -419,7 +432,10 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns a new instance of Base</p>
+<p>This ensures that the default values are stored within the DB, meaning that
+this information will be preserved for the future, unlike the original
+properties information which didn&#39;t store values when nil which lead to
+us having to guess.</p>
 
 
   </div>
@@ -433,12 +449,12 @@
       <pre class="lines">
 
 
+125
 126
-127
-128</pre>
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_defaults'>defaults</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:symbolize_keys</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -470,12 +486,12 @@
       <pre class="lines">
 
 
-185
-186
-187</pre>
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 185</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 183</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_localised_sections'>localised_sections</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_localised_sections_store'>localised_sections_store</span><span class='lbracket'>[</span><span class='id identifier rubyid_field'>field</span><span class='rbracket'>]</span>
@@ -500,6 +516,8 @@
       <pre class="lines">
 
 
+171
+172
 173
 174
 175
@@ -508,12 +526,10 @@
 178
 179
 180
-181
-182
-183</pre>
+181</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 173</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 171</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_localised_sections_generator'>localised_sections_generator</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='rparen'>)</span>
   <span class='const'>Section</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
@@ -546,12 +562,12 @@
       <pre class="lines">
 
 
-169
-170
-171</pre>
+167
+168
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_localised_sections_store'>localised_sections_store</span>
   <span class='ivar'>@loc_sec</span> <span class='op'>||=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='comma'>,</span> <span class='id identifier rubyid_field'>field</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_field'>field</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_localised_sections_generator'>localised_sections_generator</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -576,12 +592,12 @@
       <pre class="lines">
 
 
-165
-166
-167</pre>
+163
+164
+165</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 165</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 163</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata_attribute_path'>metadata_attribute_path</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_metadata_attribute_path_store'>metadata_attribute_path_store</span><span class='lbracket'>[</span><span class='id identifier rubyid_field'>field</span><span class='rbracket'>]</span>
@@ -606,12 +622,12 @@
       <pre class="lines">
 
 
-161
-162
-163</pre>
+159
+160
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 161</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata_attribute_path_generator'>metadata_attribute_path_generator</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_underscore'>underscore</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_sym</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='lbracket'>[</span><span class='id identifier rubyid_field'>field</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
@@ -636,12 +652,12 @@
       <pre class="lines">
 
 
-157
-158
-159</pre>
+155
+156
+157</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata_attribute_path_store'>metadata_attribute_path_store</span>
   <span class='ivar'>@md_a_p</span> <span class='op'>||=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='comma'>,</span> <span class='id identifier rubyid_field'>field</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_field'>field</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_metadata_attribute_path_generator'>metadata_attribute_path_generator</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -672,13 +688,13 @@
       <pre class="lines">
 
 
+131
 132
 133
-134
-135</pre>
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_merge_instance_defaults'>merge_instance_defaults</span>
   <span class='comment'># Replace attributes with the default if the value is nil
@@ -704,14 +720,14 @@
       <pre class="lines">
 
 
+148
 149
 150
 151
-152
-153</pre>
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 148</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_service_specific_fields'>service_specific_fields</span>
   <span class='id identifier rubyid_owner'>owner</span><span class='period'>.</span><span class='id identifier rubyid_required_tags'>required_tags</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_tag'>tag</span><span class='op'>|</span>
@@ -738,12 +754,12 @@
       <pre class="lines">
 
 
+142
 143
-144
-145</pre>
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validating_ena_required_fields='>validating_ena_required_fields=</span><span class='lparen'>(</span><span class='id identifier rubyid_state'>state</span><span class='rparen'>)</span>
   <span class='ivar'>@validating_ena_required_fields</span> <span class='op'>=</span> <span class='op'>!</span><span class='op'>!</span><span class='id identifier rubyid_state'>state</span>
@@ -790,15 +806,15 @@
       <pre class="lines">
 
 
+138
 139
-140
-141</pre>
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'app/models/metadata.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validating_ena_required_fields?'>validating_ena_required_fields?</span>
-  <span class='ivar'>@validating_ena_required_fields</span>
+  <span class='ivar'>@validating_ena_required_fields</span> <span class='op'>||=</span> <span class='kw'>false</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -810,9 +826,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:00 2016 by
+  Generated on Mon Dec 19 11:16:46 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

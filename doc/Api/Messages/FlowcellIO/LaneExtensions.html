@@ -90,7 +90,18 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Included in SequencingRequest</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -151,6 +162,8 @@
       <pre class="lines">
 
 
+11
+12
 13
 14
 15
@@ -198,18 +211,13 @@
 57
 58
 59
-60
-61
-62
-63
-64</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/api/messages/flowcell_io.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'app/models/api/messages/flowcell_io.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
-
     <span class='kw'>def</span> <span class='id identifier rubyid_position'>position</span>
       <span class='id identifier rubyid_batch_request'>batch_request</span><span class='period'>.</span><span class='id identifier rubyid_position'>position</span>
     <span class='kw'>end</span>
@@ -256,7 +264,6 @@
     <span class='kw'>def</span> <span class='id identifier rubyid_request_purpose_key'>request_purpose_key</span>
       <span class='id identifier rubyid_request_purpose'>request_purpose</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:key</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
-
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -269,9 +276,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:47 2016 by
+  Generated on Mon Dec 19 11:16:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

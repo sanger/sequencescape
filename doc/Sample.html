@@ -108,14 +108,28 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>app/models/sample.rb<span class="defines">,<br />
-  lib/cron_scripts/generate_sample_accessions.rb</span>
+    <dd>lib/cron_scripts/generate_sample_accessions.rb<span class="defines">,<br />
+  app/models/sample.rb</span>
 </dd>
   </dl>
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE is distributed under the terms of GNU
+General Public License version 1 or later; Please refer to the LICENSE and
+README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2011,2013,2014 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -195,28 +209,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#by_name-class_method" title="by_name (class method)">.<strong>by_name</strong>(sample_id)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#submissions_by_assets-class_method" title="submissions_by_assets (class method)">.<strong>submissions_by_assets</strong>(study_id, asset_group_id)  &#x21d2; Object </a>
     
 
@@ -262,7 +254,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If there is no existing ebi_accession_number and we have a taxon id and we
+have a common name for the sample return true else false.</p>
+</div></span>
   
 </li>
 
@@ -416,7 +411,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>at the moment return a string which is a comma separated list of snp plate
+id.</p>
+</div></span>
   
 </li>
 
@@ -548,7 +546,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>TODO: remove as this is no longer needed (validation of name change will
+fail) On update, checks if updating the name is possible.</p>
+</div></span>
   
 </li>
 
@@ -614,7 +615,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>TODO: move to sample_metadata and delegate.</p>
+</div></span>
   
 </li>
 
@@ -623,28 +626,6 @@
   <span class="summary_signature">
     
       <a href="#rename_to%21-instance_method" title="#rename_to! (instance method)">#<strong>rename_to!</strong>(new_name)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#safe_to_destroy-instance_method" title="#safe_to_destroy (instance method)">#<strong>safe_to_destroy</strong>  &#x21d2; Object </a>
     
 
     
@@ -896,7 +877,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Metadata.html" title="Metadata (module)">Metadata</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Metadata.html#build_association-instance_method" title="Metadata#build_association (method)">build_association</a></span>, <span class='object_link'><a href="Metadata.html#construct_metadata_class-instance_method" title="Metadata#construct_metadata_class (method)">construct_metadata_class</a></span>, <span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#include_tag-instance_method" title="Metadata#include_tag (method)">include_tag</a></span>, <span class='object_link'><a href="Metadata.html#require_tag-instance_method" title="Metadata#require_tag (method)">require_tag</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
 
   
   
@@ -929,7 +910,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html" title="SampleManifest::InputBehaviour::SampleUpdating (module)">SampleManifest::InputBehaviour::SampleUpdating</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#can_override_previous_manifest%3F-instance_method" title="SampleManifest::InputBehaviour::SampleUpdating#can_override_previous_manifest? (method)">#can_override_previous_manifest?</a></span>, <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#generate_no_update_event-instance_method" title="SampleManifest::InputBehaviour::SampleUpdating#generate_no_update_event (method)">#generate_no_update_event</a></span>, <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#handle_update_event-instance_method" title="SampleManifest::InputBehaviour::SampleUpdating#handle_update_event (method)">#handle_update_event</a></span>, <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#included-class_method" title="SampleManifest::InputBehaviour::SampleUpdating.included (method)">included</a></span>, <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#reset_all_attributes_to_previous_values-instance_method" title="SampleManifest::InputBehaviour::SampleUpdating#reset_all_attributes_to_previous_values (method)">#reset_all_attributes_to_previous_values</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#can_override_previous_manifest%3F-instance_method" title="SampleManifest::InputBehaviour::SampleUpdating#can_override_previous_manifest? (method)">#can_override_previous_manifest?</a></span>, <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#generate_no_update_event-instance_method" title="SampleManifest::InputBehaviour::SampleUpdating#generate_no_update_event (method)">#generate_no_update_event</a></span>, <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#included-class_method" title="SampleManifest::InputBehaviour::SampleUpdating.included (method)">included</a></span>, <span class='object_link'><a href="SampleManifest/InputBehaviour/SampleUpdating.html#reset_all_attributes_to_previous_values-instance_method" title="SampleManifest::InputBehaviour::SampleUpdating#reset_all_attributes_to_previous_values (method)">#reset_all_attributes_to_previous_values</a></span></p>
 
   
   
@@ -963,7 +944,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -1027,37 +1008,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="by_name-class_method">
-  
-    .<strong>by_name</strong>(sample_id)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-124
-125
-126</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 124</span>
-
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_by_name'>by_name</span><span class='lparen'>(</span><span class='id identifier rubyid_sample_id'>sample_id</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_find_by_name'>find_by_name</span><span class='lparen'>(</span><span class='id identifier rubyid_sample_id'>sample_id</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="submissions_by_assets-class_method">
+  <h3 class="signature first" id="submissions_by_assets-class_method">
   
     .<strong>submissions_by_assets</strong>(study_id, asset_group_id)  &#x21d2; <tt>Object</tt> 
   
@@ -1071,16 +1022,16 @@
       <pre class="lines">
 
 
-222
-223
-224
-225
-226
-227
-228</pre>
+215
+216
+217
+218
+219
+220
+221</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 222</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 215</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_submissions_by_assets'>submissions_by_assets</span><span class='lparen'>(</span><span class='id identifier rubyid_study_id'>study_id</span><span class='comma'>,</span> <span class='id identifier rubyid_asset_group_id'>asset_group_id</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_asset_group_id'>asset_group_id</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0</span><span class='tstring_end'>&#39;</span></span>
@@ -1112,6 +1063,9 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>If there is no existing ebi_accession_number and we have a taxon id and we
+have a common name for the sample return true else false</p>
+
 
   </div>
 </div>
@@ -1137,17 +1091,17 @@
       <pre class="lines">
 
 
-213
-214
-215
-216
-217
-218
-219
-220</pre>
+206
+207
+208
+209
+210
+211
+212
+213</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 213</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 206</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accession_could_be_generated?'>accession_could_be_generated?</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_ebi_accession_number'>sample_ebi_accession_number</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
@@ -1199,12 +1153,12 @@
       <pre class="lines">
 
 
-207
-208
-209</pre>
+200
+201
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 207</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 200</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accession_number?'>accession_number?</span>
   <span class='kw'>not</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_ebi_accession_number'>ebi_accession_number</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
@@ -1229,13 +1183,13 @@
       <pre class="lines">
 
 
-247
-248
-249
-250</pre>
+240
+241
+242
+243</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 247</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 240</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accession_service'>accession_service</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_studies'>studies</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -1261,12 +1215,12 @@
       <pre class="lines">
 
 
-203
-204
-205</pre>
+196
+197
+198</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 203</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 196</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ebi_accession_number'>ebi_accession_number</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_ebi_accession_number'>sample_ebi_accession_number</span>
@@ -1291,12 +1245,12 @@
       <pre class="lines">
 
 
-431
-432
-433</pre>
+422
+423
+424</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 431</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 422</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ena_study'>ena_study</span>
   <span class='ivar'>@ena_study</span>
@@ -1321,12 +1275,12 @@
       <pre class="lines">
 
 
-230
-231
-232</pre>
+223
+224
+225</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 230</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 223</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_error'>error</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Default error message</span><span class='tstring_end'>&quot;</span></span>
@@ -1351,12 +1305,12 @@
       <pre class="lines">
 
 
-469
-470
-471</pre>
+460
+461
+462</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 469</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 460</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_friendly_name'>friendly_name</span>
   <span class='id identifier rubyid_sanger_sample_id'>sanger_sample_id</span> <span class='op'>||</span> <span class='id identifier rubyid_name'>name</span>
@@ -1375,18 +1329,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>at the moment return a string which is a comma separated list of snp plate
+id</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-253
-254
-255</pre>
+246
+247
+248</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 253</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 246</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_genotyping_done'>genotyping_done</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_external_value'>get_external_value</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>genotyping_done</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -1411,17 +1377,17 @@
       <pre class="lines">
 
 
-257
-258
-259
-260
-261
-262
-263
-264</pre>
+250
+251
+252
+253
+254
+255
+256
+257</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 257</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 250</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_genotyping_snp_plate_id'>genotyping_snp_plate_id</span>
   <span class='id identifier rubyid_s'>s</span> <span class='op'>=</span> <span class='id identifier rubyid_genotyping_done'>genotyping_done</span>
@@ -1451,20 +1417,20 @@
       <pre class="lines">
 
 
+168
+169
+170
+171
+172
+173
+174
 175
 176
 177
-178
-179
-180
-181
-182
-183
-184
-185</pre>
+178</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 175</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_ebi_accession_number'>has_ebi_accession_number</span>
   <span class='id identifier rubyid_has_ebi_accession_number'>has_ebi_accession_number</span> <span class='op'>=</span> <span class='kw'>false</span>
@@ -1497,12 +1463,12 @@
       <pre class="lines">
 
 
-145
-146
-147</pre>
+138
+139
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_request'>has_request</span>
   <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -1549,12 +1515,12 @@
       <pre class="lines">
 
 
-149
-150
-151</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_request_all_cancelled?'>has_request_all_cancelled?</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:cancelled?</span><span class='rparen'>)</span>
@@ -1601,6 +1567,13 @@
       <pre class="lines">
 
 
+146
+147
+148
+149
+150
+151
+152
 153
 154
 155
@@ -1614,17 +1587,10 @@
 163
 164
 165
-166
-167
-168
-169
-170
-171
-172
-173</pre>
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 153</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 146</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_submission?'>has_submission?</span>
   <span class='id identifier rubyid_has_submission'>has_submission</span> <span class='op'>=</span> <span class='kw'>false</span>
@@ -1664,6 +1630,9 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>TODO: remove as this is no longer needed (validation of name change will
+fail) On update, checks if updating the name is possible</p>
+
 
   </div>
 </div>
@@ -1689,12 +1658,12 @@
       <pre class="lines">
 
 
-189
-190
-191</pre>
+182
+183
+184</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 189</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 182</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_name_change?'>name_change?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_name'>new_name</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='op'>==</span> <span class='id identifier rubyid_new_name'>new_name</span> <span class='op'>?</span> <span class='kw'>false</span> <span class='op'>:</span> <span class='kw'>true</span>
@@ -1719,13 +1688,13 @@
       <pre class="lines">
 
 
+60
 61
 62
-63
-64</pre>
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_name_unchanged'>name_unchanged</span>
   <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot be changed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_can_rename_sample'>can_rename_sample</span>
@@ -1751,13 +1720,13 @@
       <pre class="lines">
 
 
-198
-199
-200
-201</pre>
+191
+192
+193
+194</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 198</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release'>release</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_sra_hold'>sample_sra_hold</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Public</span><span class='tstring_end'>&#39;</span></span>
@@ -1780,6 +1749,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>TODO: move to sample_metadata and delegate</p>
+
 
   </div>
 </div>
@@ -1805,12 +1776,12 @@
       <pre class="lines">
 
 
-194
-195
-196</pre>
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 187</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_released?'>released?</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_sra_hold'>sample_sra_hold</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Public</span><span class='tstring_end'>&#39;</span></span>
@@ -1835,51 +1806,15 @@
       <pre class="lines">
 
 
+68
 69
-70
-71</pre>
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 69</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rename_to!'>rename_to!</span><span class='lparen'>(</span><span class='id identifier rubyid_new_name'>new_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_new_name'>new_name</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="safe_to_destroy-instance_method">
-  
-    #<strong>safe_to_destroy</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-76
-77
-78
-79
-80
-81</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 76</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_safe_to_destroy'>safe_to_destroy</span>
-  <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>unless</span> <span class='id identifier rubyid_receptacles'>receptacles</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span> <span class='op'>||</span> <span class='id identifier rubyid_has_submission?'>has_submission?</span>
-  <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:base</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Remove &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; from assets before destroying</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_receptacles'>receptacles</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-  <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:base</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>You can&#39;t delete &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; because is linked to a submission.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_has_submission?'>has_submission?</span>
-  <span class='kw'>return</span> <span class='kw'>false</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1923,13 +1858,13 @@
       <pre class="lines">
 
 
-238
-239
-240
-241</pre>
+231
+232
+233
+234</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 238</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 231</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sample_empty?'>sample_empty?</span><span class='lparen'>(</span><span class='id identifier rubyid_supplier_sample_name'>supplier_sample_name</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_empty_supplier_sample_name'>empty_supplier_sample_name</span>
@@ -1955,12 +1890,12 @@
       <pre class="lines">
 
 
-234
-235
-236</pre>
+227
+228
+229</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 234</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 227</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sample_external_name'>sample_external_name</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
@@ -1985,14 +1920,14 @@
       <pre class="lines">
 
 
-455
-456
-457
-458
-459</pre>
+446
+447
+448
+449
+450</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 455</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 446</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sample_reference_genome'>sample_reference_genome</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_reference_genome'>reference_genome</span> <span class='kw'>unless</span> <span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_reference_genome'>reference_genome</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
@@ -2041,12 +1976,12 @@
       <pre class="lines">
 
 
-243
-244
-245</pre>
+236
+237
+238</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 243</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 236</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sample_supplier_name_empty?'>sample_supplier_name_empty?</span><span class='lparen'>(</span><span class='id identifier rubyid_supplier_sample_name'>supplier_sample_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_supplier_sample_name'>supplier_sample_name</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>empty</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>blank</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>water</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>no supplier name available</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_supplier_sample_name'>supplier_sample_name</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='rparen'>)</span>
@@ -2071,13 +2006,13 @@
       <pre class="lines">
 
 
-128
-129
-130
-131</pre>
+121
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_study'>select_study</span><span class='lparen'>(</span><span class='id identifier rubyid_sample_id'>sample_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_sample'>sample</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_sample_id'>sample_id</span><span class='rparen'>)</span>
@@ -2103,20 +2038,20 @@
       <pre class="lines">
 
 
+126
+127
+128
+129
+130
+131
+132
 133
 134
 135
-136
-137
-138
-139
-140
-141
-142
-143</pre>
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shorten_sanger_sample_id'>shorten_sanger_sample_id</span>
   <span class='id identifier rubyid_short_sanger_id'>short_sanger_id</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_sanger_sample_id'>sanger_sample_id</span>
@@ -2149,12 +2084,12 @@
       <pre class="lines">
 
 
-465
-466
-467</pre>
+456
+457
+458</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 465</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 456</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_subject_type'>subject_type</span>
   <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sample</span><span class='tstring_end'>&#39;</span></span>
@@ -2179,22 +2114,22 @@
       <pre class="lines">
 
 
+432
+433
+434
+435
+436
+437
+438
+439
+440
 441
 442
 443
-444
-445
-446
-447
-448
-449
-450
-451
-452
-453</pre>
+444</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 441</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 432</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validate_ena_required_fields!'>validate_ena_required_fields!</span>
   <span class='comment'># Do not alter the order of this line, otherwise @ena_study won&#39;t be set correctly!
@@ -2229,13 +2164,13 @@
       <pre class="lines">
 
 
-435
-436
-437
-438</pre>
+426
+427
+428
+429</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 435</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 426</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validating_ena_required_fields_with_first_study='>validating_ena_required_fields_with_first_study=</span><span class='lparen'>(</span><span class='id identifier rubyid_state'>state</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_validating_ena_required_fields_without_first_study'>validating_ena_required_fields_without_first_study</span> <span class='op'>=</span> <span class='id identifier rubyid_state'>state</span>
@@ -2261,12 +2196,12 @@
       <pre class="lines">
 
 
-461
-462
-463</pre>
+452
+453
+454</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 461</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample.rb', line 452</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_withdraw_consent'>withdraw_consent</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_update_attribute'>update_attribute</span><span class='lparen'>(</span><span class='symbol'>:consent_withdrawn</span><span class='comma'>,</span> <span class='kw'>true</span><span class='rparen'>)</span>
@@ -2281,9 +2216,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:58 2016 by
+  Generated on Mon Dec 19 11:16:44 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

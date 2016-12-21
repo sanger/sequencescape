@@ -108,45 +108,26 @@
   
 </div>
 
-
-
-
-
-
-
-
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
     
-      <a href="#query_details_for-instance_method" title="#query_details_for (instance method)">#<strong>query_details_for</strong>(record, &amp;block)  &#x21d2; Object </a>
-    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2015 Genome Research Ltd.</p>
 
-    
-  </span>
-  
-  
-  
-  
-  
-  
+
+  </div>
+</div>
+<div class="tags">
   
 
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
+</div>
 
-      
-    </ul>
-  
+
+
+
+
 
 
   
@@ -155,69 +136,19 @@
   
   
   
-  
+  <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="XmlCacheHelper.html" title="XmlCacheHelper (module)">XmlCacheHelper</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="XmlCacheHelper.html#after_save-instance_method" title="XmlCacheHelper#after_save (method)">#after_save</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#before_destroy-instance_method" title="XmlCacheHelper#before_destroy (method)">#before_destroy</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#clear_cache-instance_method" title="XmlCacheHelper#clear_cache (method)">#clear_cache</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#handle-instance_method" title="XmlCacheHelper#handle (method)">#handle</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#ids_for-instance_method" title="XmlCacheHelper#ids_for (method)">#ids_for</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#included-class_method" title="XmlCacheHelper.included (method)">included</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#metadata-instance_method" title="XmlCacheHelper#metadata (method)">#metadata</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#metadata_association-instance_method" title="XmlCacheHelper#metadata_association (method)">#metadata_association</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#query_conditions_for-instance_method" title="XmlCacheHelper#query_conditions_for (method)">#query_conditions_for</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="XmlCacheHelper.html#after_save-instance_method" title="XmlCacheHelper#after_save (method)">#after_save</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#before_destroy-instance_method" title="XmlCacheHelper#before_destroy (method)">#before_destroy</a></span>, <span class='object_link'><a href="XmlCacheHelper.html#included-class_method" title="XmlCacheHelper.included (method)">included</a></span></p>
 
   
-
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="query_details_for-instance_method">
-  
-    #<strong>query_details_for</strong>(record, &amp;block)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/observers/study_cache_sweeper.rb', line 16</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_query_details_for'>query_details_for</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>case</span>
-  <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Study</span><span class='rparen'>)</span>                <span class='kw'>then</span> <span class='kw'>yield</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_query_conditions_for'>query_conditions_for</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Study</span><span class='op'>::</span><span class='const'>Metadata</span><span class='rparen'>)</span>      <span class='kw'>then</span> <span class='id identifier rubyid_metadata'>metadata</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>StudyType</span><span class='rparen'>)</span>            <span class='kw'>then</span> <span class='id identifier rubyid_metadata_association'>metadata_association</span><span class='lparen'>(</span><span class='symbol'>:study_type</span><span class='comma'>,</span> <span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>DataReleaseStudyType</span><span class='rparen'>)</span> <span class='kw'>then</span> <span class='id identifier rubyid_metadata_association'>metadata_association</span><span class='lparen'>(</span><span class='symbol'>:data_release_study_type</span><span class='comma'>,</span> <span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>ReferenceGenome</span><span class='rparen'>)</span>      <span class='kw'>then</span> <span class='id identifier rubyid_metadata_association'>metadata_association</span><span class='lparen'>(</span><span class='symbol'>:reference_genome</span><span class='comma'>,</span> <span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>FacultySponsor</span><span class='rparen'>)</span>       <span class='kw'>then</span> <span class='id identifier rubyid_metadata_association'>metadata_association</span><span class='lparen'>(</span><span class='symbol'>:faculty_sponsor</span><span class='comma'>,</span> <span class='id identifier rubyid_record'>record</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:28 2016 by
+  Generated on Mon Dec 19 11:17:12 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -105,7 +105,19 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Convenient mechanism for queueing the creation of AssetLink instances where
+there is singular parent with lots of children.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
   <h2>Constant Summary</h2>
@@ -201,12 +213,12 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'app/models/asset_link.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_parent'>parent</span><span class='comma'>,</span> <span class='id identifier rubyid_children'>children</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_children'>children</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_child'>child</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_parent'>parent</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_child'>child</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -222,9 +234,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:03 2016 by
+  Generated on Mon Dec 19 11:16:49 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

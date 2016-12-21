@@ -151,18 +151,18 @@
       <pre class="lines">
 
 
+11
 12
 13
 14
-15
-16</pre>
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/aliquot_indexer.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'app/models/aliquot_indexer.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
-    <span class='id identifier rubyid_scope'>scope</span> <span class='symbol'>:sorted_for_indexing</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:tag</span><span class='comma'>,</span> <span class='symbol'>:tag2</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_reorder'>reorder</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>tag2s_aliquots.map_id ASC, tags.map_id ASC</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_scope'>scope</span> <span class='symbol'>:sorted_for_indexing</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:tag</span><span class='comma'>,</span> <span class='symbol'>:tag2</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_reorder'>reorder</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>tag2s_aliquots.map_id ASC, tags.map_id ASC</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -175,9 +175,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:32 2016 by
+  Generated on Mon Dec 19 11:16:26 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

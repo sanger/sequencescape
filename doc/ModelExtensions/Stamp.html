@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -104,28 +118,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#locate_qcable-instance_method" title="#locate_qcable (instance method)">#<strong>locate_qcable</strong>(d)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -159,39 +151,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="locate_qcable-instance_method">
-  
-    #<strong>locate_qcable</strong>(d)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-15
-16
-17
-18</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/model_extensions/stamp.rb', line 15</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_locate_qcable'>locate_qcable</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_d'>d</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qcable</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Uuid</span><span class='period'>.</span><span class='id identifier rubyid_find_by_external_id'>find_by_external_id</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qcable</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_resource'>resource</span>
-  <span class='id identifier rubyid_d'>d</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="stamp_details=-instance_method">
+  <h3 class="signature first" id="stamp_details=-instance_method">
   
     #<strong>stamp_details=</strong>(details)  &#x21d2; <tt>Object</tt> 
   
@@ -205,12 +165,12 @@
       <pre class="lines">
 
 
+8
 9
-10
-11</pre>
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/api/model_extensions/stamp.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/api/model_extensions/stamp.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stamp_details='>stamp_details=</span><span class='lparen'>(</span><span class='id identifier rubyid_details'>details</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_stamp_qcables'>stamp_qcables</span><span class='period'>.</span><span class='id identifier rubyid_build'>build</span><span class='lparen'>(</span><span class='id identifier rubyid_details'>details</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_d'>d</span><span class='op'>|</span> <span class='id identifier rubyid_locate_qcable'>locate_qcable</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -225,9 +185,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:35 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

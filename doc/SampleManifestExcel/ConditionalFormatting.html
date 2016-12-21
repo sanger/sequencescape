@@ -106,7 +106,25 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A single conditional formatting rule. This will consist of:</p>
+<ul><li>
+<p>options: which relate to Excel options e.g. type: :cellIs</p>
+</li><li>
+<p>style: The style which will be added when conditional formatting applies.</p>
+</li><li>
+<p>formula: See Formula class.</p>
+</li></ul>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -138,7 +156,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Create a new Formula object.</p>
+</div></span>
   
 </li>
 
@@ -208,7 +228,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>A conditional formatting is styled if the dxfId is present.</p>
+</div></span>
   
 </li>
 
@@ -230,7 +252,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Return the options as a hash.</p>
+</div></span>
   
 </li>
 
@@ -252,7 +276,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If a worksheet attribute is present then add the conditional formatting
+style to the workbook.</p>
+</div></span>
   
 </li>
 
@@ -274,7 +301,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>A conditional formatting is only valid if there are some options.</p>
+</div></span>
   
 </li>
 
@@ -324,12 +353,12 @@
       <pre class="lines">
 
 
-15
-16
-17</pre>
+13
+14
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_create_attributes'>create_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
@@ -355,18 +384,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Create a new Formula object.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-39
-40
-41</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_formula='>formula=</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='ivar'>@formula</span> <span class='op'>=</span> <span class='const'>Formula</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -391,16 +431,16 @@
       <pre class="lines">
 
 
+58
+59
+60
 61
 62
 63
-64
-65
-66
-67</pre>
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_dup'>initialize_dup</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_source'>source</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
@@ -426,6 +466,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>A conditional formatting is styled if the dxfId is present.</p>
+
 
   </div>
 </div>
@@ -451,12 +493,12 @@
       <pre class="lines">
 
 
-45
-46
-47</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_styled?'>styled?</span>
   <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>dxfId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -475,18 +517,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Return the options as a hash</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-57
-58
-59</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_h'>to_h</span>
   <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_to_hash'>to_hash</span>
@@ -505,12 +558,27 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>If a worksheet attribute is present then add the conditional formatting
+style to the workbook. If conditional formatting has a formula then update
+the formula option with the passed attributes.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+22
+23
 24
 25
 26
@@ -519,16 +587,12 @@
 29
 30
 31
-32
-33
-34
-35</pre>
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update'>update</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-
   <span class='kw'>if</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:worksheet</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
     <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>dxfId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:worksheet</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_workbook'>workbook</span><span class='period'>.</span><span class='id identifier rubyid_styles'>styles</span><span class='period'>.</span><span class='id identifier rubyid_add_style'>add_style</span><span class='lparen'>(</span><span class='id identifier rubyid_style'>style</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
@@ -556,6 +620,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>A conditional formatting is only valid if there are some options.</p>
+
 
   </div>
 </div>
@@ -581,12 +647,12 @@
       <pre class="lines">
 
 
-51
-52
-53</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid?'>valid?</span>
   <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -601,9 +667,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:57 2016 by
+  Generated on Mon Dec 19 11:17:38 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -108,7 +108,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2011,2012,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -134,28 +148,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#blank_as_nil-instance_method" title="#blank_as_nil (instance method)">#<strong>blank_as_nil</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -212,37 +204,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="blank_as_nil-instance_method">
-  
-    #<strong>blank_as_nil</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-46
-47
-48</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/bait_library.rb', line 46</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_blank_as_nil'>blank_as_nil</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_supplier_identifier'>supplier_identifier</span> <span class='op'>=</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_supplier_identifier'>supplier_identifier</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="hide-instance_method">
+  <h3 class="signature first" id="hide-instance_method">
   
     #<strong>hide</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -256,13 +218,13 @@
       <pre class="lines">
 
 
+62
 63
 64
-65
-66</pre>
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/bait_library.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'app/models/bait_library.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_hide'>hide</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_visible'>visible</span> <span class='op'>=</span> <span class='kw'>false</span>
@@ -278,9 +240,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:06 2016 by
+  Generated on Mon Dec 19 11:16:52 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -272,12 +272,12 @@
       <pre class="lines">
 
 
-13
-14
-15</pre>
+11
+12
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_base_url'>base_url</span>
   <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:labwhere_api</span><span class='rparen'>)</span>
@@ -302,14 +302,14 @@
       <pre class="lines">
 
 
+27
+28
 29
 30
-31
-32
-33</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_instance'>instance</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_parse_json'>parse_json</span><span class='lparen'>(</span><span class='const'>RestClient</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_path_to'>path_to</span><span class='lparen'>(</span><span class='id identifier rubyid_instance'>instance</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -336,15 +336,15 @@
       <pre class="lines">
 
 
+20
+21
 22
 23
 24
-25
-26
-27</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_json'>parse_json</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>null</span><span class='tstring_end'>&#39;</span></span>
@@ -394,13 +394,13 @@
       <pre class="lines">
 
 
+15
+16
 17
-18
-19
-20</pre>
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path_to'>path_to</span><span class='lparen'>(</span><span class='id identifier rubyid_instance'>instance</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>LabwhereException</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>LabWhere service URL not set</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_base_url'>base_url</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -426,16 +426,16 @@
       <pre class="lines">
 
 
+33
+34
 35
 36
 37
 38
-39
-40
-41</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_post'>post</span><span class='lparen'>(</span><span class='id identifier rubyid_instance'>instance</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_parse_json'>parse_json</span><span class='lparen'>(</span><span class='const'>RestClient</span><span class='period'>.</span><span class='id identifier rubyid_post'>post</span><span class='lparen'>(</span><span class='id identifier rubyid_path_to'>path_to</span><span class='lparen'>(</span><span class='id identifier rubyid_instance'>instance</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -464,14 +464,14 @@
       <pre class="lines">
 
 
+41
+42
 43
 44
-45
-46
-47</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'lib/lab_where_client.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_put'>put</span><span class='lparen'>(</span><span class='id identifier rubyid_instance'>instance</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_parse_json'>parse_json</span><span class='lparen'>(</span><span class='const'>RestClient</span><span class='period'>.</span><span class='id identifier rubyid_put'>put</span><span class='lparen'>(</span><span class='id identifier rubyid_path_to'>path_to</span><span class='lparen'>(</span><span class='id identifier rubyid_instance'>instance</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -488,9 +488,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:01 2016 by
+  Generated on Mon Dec 19 11:16:47 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

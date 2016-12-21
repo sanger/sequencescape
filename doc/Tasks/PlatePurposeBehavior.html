@@ -122,7 +122,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns a list of valid plate purpose types based on the requests in the
+current batch.</p>
+</div></span>
   
 </li>
 
@@ -145,7 +148,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a list of valid plate purpose types based on the requests in the
+current batch.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -164,7 +179,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_plate_purpose_options'>plate_purpose_options</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_requests'>requests</span>       <span class='op'>=</span> <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span> <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_submission'>submission</span> <span class='op'>?</span> <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_next_requests'>next_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_r'>r</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span>
   <span class='id identifier rubyid_plate_purposes'>plate_purposes</span> <span class='op'>=</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:request_type</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:acceptable_plate_purposes</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
-  <span class='id identifier rubyid_plate_purposes'>plate_purposes</span> <span class='op'>=</span> <span class='const'>PlatePurpose</span><span class='period'>.</span><span class='id identifier rubyid_cherrypickable_as_target'>cherrypickable_as_target</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span> <span class='kw'>if</span> <span class='id identifier rubyid_plate_purposes'>plate_purposes</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>  <span class='comment'># Fallback situation for the moment
+  <span class='id identifier rubyid_plate_purposes'>plate_purposes</span> <span class='op'>=</span> <span class='const'>PlatePurpose</span><span class='period'>.</span><span class='id identifier rubyid_cherrypickable_as_target'>cherrypickable_as_target</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span> <span class='kw'>if</span> <span class='id identifier rubyid_plate_purposes'>plate_purposes</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='comment'># Fallback situation for the moment
 </span>  <span class='id identifier rubyid_plate_purposes'>plate_purposes</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_p'>p</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='id identifier rubyid_p'>p</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -177,9 +192,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:40 2016 by
+  Generated on Mon Dec 19 11:16:30 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

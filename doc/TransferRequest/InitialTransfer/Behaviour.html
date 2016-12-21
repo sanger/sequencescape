@@ -127,28 +127,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#perform_transfer_of_contents-instance_method" title="#perform_transfer_of_contents (instance method)">#<strong>perform_transfer_of_contents</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -188,54 +166,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="perform_transfer_of_contents-instance_method">
-  
-    #<strong>perform_transfer_of_contents</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-8
-9
-10
-11
-12
-13
-14
-15</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer_request/initial_transfer.rb', line 8</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_perform_transfer_of_contents'>perform_transfer_of_contents</span>
-  <span class='id identifier rubyid_target_asset'>target_asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='op'>|</span>
-    <span class='id identifier rubyid_aliquot'>aliquot</span> <span class='op'>=</span> <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
-    <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_study_id'>study_id</span> <span class='op'>=</span> <span class='id identifier rubyid_outer_request'>outer_request</span><span class='period'>.</span><span class='id identifier rubyid_initial_study_id'>initial_study_id</span>
-    <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_project_id'>project_id</span> <span class='op'>=</span> <span class='id identifier rubyid_outer_request'>outer_request</span><span class='period'>.</span><span class='id identifier rubyid_initial_project_id'>initial_project_id</span>
-    <span class='id identifier rubyid_aliquot'>aliquot</span>
-  <span class='kw'>end</span> <span class='kw'>unless</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_failed?'>failed?</span> <span class='kw'>or</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_cancelled?'>cancelled?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:43 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

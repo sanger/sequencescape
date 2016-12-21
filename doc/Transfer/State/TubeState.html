@@ -173,8 +173,7 @@
 114
 115
 116
-117
-118</pre>
+117</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 95</span>
@@ -191,7 +190,6 @@
         <span class='id identifier rubyid_join_options'>join_options</span> <span class='op'>=</span> <span class='lbracket'>[</span>
           <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (</span><span class='embexpr_beg'>#{</span><span class='lbracket'>[</span><span class='const'>TransferRequest</span><span class='comma'>,</span> <span class='op'>*</span><span class='const'>TransferRequest</span><span class='period'>.</span><span class='id identifier rubyid_descendants'>descendants</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:inspect</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>,</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>))</span><span class='tstring_end'>&quot;</span></span>
         <span class='rbracket'>]</span>
-
 
         <span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='id identifier rubyid_join_options'>join_options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>transfer_requests_as_target:</span> <span class='lbrace'>{</span> <span class='label'>state:</span> <span class='id identifier rubyid_states'>states</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
       <span class='kw'>else</span>
@@ -213,9 +211,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:29 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

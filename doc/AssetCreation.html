@@ -113,7 +113,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2013,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="PlateCreation.html" title="PlateCreation (class)">PlateCreation</a></span>, <span class='object_link'><a href="PooledPlateCreation.html" title="PooledPlateCreation (class)">PooledPlateCreation</a></span>, <span class='object_link'><a href="TubeCreation.html" title="TubeCreation (class)">TubeCreation</a></span>, <span class='object_link'><a href="TubeFromTubeCreation.html" title="TubeFromTubeCreation (class)">TubeFromTubeCreation</a></span></p>
 </div>
@@ -136,28 +150,6 @@
   <span class="summary_signature">
     
       <a href="#can_create_ancestor_plate%3F-instance_method" title="#can_create_ancestor_plate? (instance method)">#<strong>can_create_ancestor_plate?</strong>(asset, child)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#connect_parent_and_children-instance_method" title="#connect_parent_and_children (instance method)">#<strong>connect_parent_and_children</strong>  &#x21d2; Object </a>
     
 
     
@@ -220,50 +212,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#parent_nil%3F-instance_method" title="#parent_nil? (instance method)">#<strong>parent_nil?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#process_children-instance_method" title="#process_children (instance method)">#<strong>process_children</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -278,7 +226,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Asset/Ownership/ChangesOwner.html" title="Asset::Ownership::ChangesOwner (module)">Asset::Ownership::ChangesOwner</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Asset/Ownership/ChangesOwner.html#assign_owner-instance_method" title="Asset::Ownership::ChangesOwner#assign_owner (method)">#assign_owner</a></span>, <span class='object_link'><a href="Asset/Ownership/ChangesOwner.html#included-class_method" title="Asset::Ownership::ChangesOwner.included (method)">included</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Asset/Ownership/ChangesOwner.html#included-class_method" title="Asset::Ownership::ChangesOwner.included (method)">included</a></span></p>
 
   
   
@@ -289,7 +237,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -371,36 +319,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="connect_parent_and_children-instance_method">
-  
-    #<strong>connect_parent_and_children</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-44
-45
-46</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset_creation.rb', line 44</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_connect_parent_and_children'>connect_parent_and_children</span>
-  <span class='id identifier rubyid_children'>children</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_child'>child</span><span class='op'>|</span> <span class='id identifier rubyid_create_ancestor_asset!'>create_ancestor_asset!</span><span class='lparen'>(</span><span class='id identifier rubyid_parent'>parent</span><span class='comma'>,</span> <span class='id identifier rubyid_child'>child</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="create_ancestor_asset!-instance_method">
   
     #<strong>create_ancestor_asset!</strong>(asset, child)  &#x21d2; <tt>Object</tt> 
@@ -460,100 +378,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="parent_nil?-instance_method">
-  
-    #<strong>parent_nil?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-17
-18
-19</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset_creation.rb', line 17</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_parent_nil?'>parent_nil?</span>
-  <span class='id identifier rubyid_parent'>parent</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="process_children-instance_method">
-  
-    #<strong>process_children</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-29
-30
-31
-32
-33</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset_creation.rb', line 29</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_process_children'>process_children</span>
-  <span class='id identifier rubyid_create_children!'>create_children!</span>
-  <span class='id identifier rubyid_connect_parent_and_children'>connect_parent_and_children</span>
-  <span class='id identifier rubyid_record_creation_of_children'>record_creation_of_children</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:09 2016 by
+  Generated on Mon Dec 19 11:16:59 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

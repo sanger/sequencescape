@@ -105,7 +105,18 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Base class for the all tube purposes</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="../IlluminaC/QcPoolPurpose.html" title="IlluminaC::QcPoolPurpose (class)">IlluminaC::QcPoolPurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/MxTubePurpose.html" title="IlluminaHtp::MxTubePurpose (class)">IlluminaHtp::MxTubePurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/StockTubePurpose.html" title="IlluminaHtp::StockTubePurpose (class)">IlluminaHtp::StockTubePurpose</a></span>, <span class='object_link'><a href="../QcableTubePurpose.html" title="QcableTubePurpose (class)">QcableTubePurpose</a></span>, <span class='object_link'><a href="StandardMx.html" title="Tube::StandardMx (class)">StandardMx</a></span>, <span class='object_link'><a href="StockMx.html" title="Tube::StockMx (class)">StockMx</a></span></p>
 </div>
@@ -229,7 +240,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Tubes of the general types have no stock plate!.</p>
+</div></span>
   
 </li>
 
@@ -247,7 +260,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Purpose.html" title="Purpose (class)">Purpose</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Purpose.html#barcode_type-instance_method" title="Purpose#barcode_type (method)">#barcode_type</a></span>, <span class='object_link'><a href="../Purpose.html#source_plate-instance_method" title="Purpose#source_plate (method)">#source_plate</a></span>, <span class='object_link'><a href="../Purpose.html#target_class-instance_method" title="Purpose#target_class (method)">#target_class</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Purpose.html#barcode_type-instance_method" title="Purpose#barcode_type (method)">#barcode_type</a></span>, <span class='object_link'><a href="../Purpose.html#source_plate-instance_method" title="Purpose#source_plate (method)">#source_plate</a></span></p>
 
   
   
@@ -258,7 +271,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -313,12 +326,12 @@
       <pre class="lines">
 
 
+19
 20
-21
-22</pre>
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_target_class'>target_class</span><span class='period'>.</span><span class='id identifier rubyid_create_with_barcode!'>create_with_barcode!</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span> <span class='id identifier rubyid_tubes'>tubes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_t'>t</span> <span class='rbrace'>}</span>
@@ -343,12 +356,12 @@
       <pre class="lines">
 
 
+15
 16
-17
-18</pre>
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_created_with_request_options'>created_with_request_options</span><span class='lparen'>(</span><span class='id identifier rubyid_tube'>tube</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tube'>tube</span><span class='period'>.</span><span class='id identifier rubyid_creation_request'>creation_request</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:request_options_for_creation</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -373,12 +386,12 @@
       <pre class="lines">
 
 
+11
 12
-13
-14</pre>
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_library_source_plates'>library_source_plates</span><span class='lparen'>(</span><span class='id identifier rubyid__'>_</span><span class='rparen'>)</span>
   <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -403,12 +416,12 @@
       <pre class="lines">
 
 
+23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sibling_tubes'>sibling_tubes</span><span class='lparen'>(</span><span class='id identifier rubyid_tube'>tube</span><span class='rparen'>)</span>
   <span class='kw'>nil</span>
@@ -427,18 +440,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Tubes of the general types have no stock plate!</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+7
 8
-9
-10</pre>
+9</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'app/models/tube/purpose.rb', line 7</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stock_plate'>stock_plate</span><span class='lparen'>(</span><span class='id identifier rubyid__'>_</span><span class='rparen'>)</span>
   <span class='kw'>nil</span>
@@ -453,9 +477,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:07 2016 by
+  Generated on Mon Dec 19 11:16:53 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

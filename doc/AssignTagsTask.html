@@ -105,7 +105,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="AssignTagsToTubesTask.html" title="AssignTagsToTubesTask (class)">AssignTagsToTubesTask</a></span></p>
 </div>
@@ -301,12 +315,12 @@
       <pre class="lines">
 
 
+19
 20
-21
-22</pre>
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_render_element'>create_render_element</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span> <span class='op'>&amp;&amp;</span> <span class='const'>AssignTagsData</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
@@ -331,12 +345,12 @@
       <pre class="lines">
 
 
+32
 33
-34
-35</pre>
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_do_task'>do_task</span><span class='lparen'>(</span><span class='id identifier rubyid_workflow'>workflow</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_workflow'>workflow</span><span class='period'>.</span><span class='id identifier rubyid_do_assign_tags_task'>do_assign_tags_task</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
@@ -361,12 +375,12 @@
       <pre class="lines">
 
 
+8
 9
-10
-11</pre>
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_included_for_render_task'>included_for_render_task</span>
   <span class='lbracket'>[</span><span class='lbrace'>{</span> <span class='label'>requests:</span> <span class='lbracket'>[</span><span class='lbrace'>{</span> <span class='label'>asset:</span> <span class='lbracket'>[</span><span class='symbol'>:asset_groups</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>primary_aliquot:</span> <span class='symbol'>:sample</span> <span class='rbrace'>}</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:target_asset</span><span class='comma'>,</span> <span class='symbol'>:batch_request</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:pipeline</span><span class='rbracket'>]</span>
@@ -391,12 +405,12 @@
       <pre class="lines">
 
 
+23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_partial'>partial</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>assign_tags_batches</span><span class='tstring_end'>&quot;</span></span>
@@ -421,13 +435,13 @@
       <pre class="lines">
 
 
+27
 28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_task.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_render_task'>render_task</span><span class='lparen'>(</span><span class='id identifier rubyid_workflow'>workflow</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='kw'>super</span>
@@ -443,9 +457,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:12 2016 by
+  Generated on Mon Dec 19 11:17:01 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

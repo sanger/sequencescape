@@ -90,7 +90,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -180,28 +194,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#sample_tube_sample_creation-instance_method" title="#sample_tube_sample_creation (instance method)">#<strong>sample_tube_sample_creation</strong>(samples_data, study_id)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -226,14 +218,14 @@
       <pre class="lines">
 
 
-153
-154
-155
-156
-157</pre>
+148
+149
+150
+151
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/multiplexed_library_behaviour.rb', line 153</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/multiplexed_library_behaviour.rb', line 148</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
@@ -266,15 +258,15 @@
       <pre class="lines">
 
 
-159
-160
-161
-162
-163
-164</pre>
+154
+155
+156
+157
+158
+159</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/multiplexed_library_behaviour.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/multiplexed_library_behaviour.rb', line 154</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_generate_mx_library'>generate_mx_library</span>
   <span class='id identifier rubyid_tubes'>tubes</span> <span class='op'>=</span> <span class='id identifier rubyid_generate_tubes'>generate_tubes</span><span class='lparen'>(</span><span class='const'>Tube</span><span class='op'>::</span><span class='const'>Purpose</span><span class='period'>.</span><span class='id identifier rubyid_standard_library_tube'>standard_library_tube</span><span class='rparen'>)</span>
@@ -287,54 +279,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="sample_tube_sample_creation-instance_method">
-  
-    #<strong>sample_tube_sample_creation</strong>(samples_data, study_id)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-166
-167
-168
-169
-170
-171
-172
-173</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/multiplexed_library_behaviour.rb', line 166</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_sample_tube_sample_creation'>sample_tube_sample_creation</span><span class='lparen'>(</span><span class='id identifier rubyid_samples_data'>samples_data</span><span class='comma'>,</span> <span class='id identifier rubyid_study_id'>study_id</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_samples'>samples</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_samples_data'>samples_data</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_barcode'>barcode</span><span class='comma'>,</span> <span class='id identifier rubyid_sanger_sample_id'>sanger_sample_id</span><span class='comma'>,</span> <span class='id identifier rubyid_prefix'>prefix</span><span class='op'>|</span>
-    <span class='id identifier rubyid_create_sample'>create_sample</span><span class='lparen'>(</span><span class='id identifier rubyid_sanger_sample_id'>sanger_sample_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sample'>sample</span><span class='op'>|</span>
-      <span class='id identifier rubyid_sample_tube'>sample_tube</span> <span class='op'>=</span> <span class='const'>LibraryTube</span><span class='period'>.</span><span class='id identifier rubyid_find_by_barcode'>find_by_barcode</span><span class='lparen'>(</span><span class='id identifier rubyid_barcode'>barcode</span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>RecordNotFound</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot find library tube with barcode </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_barcode'>barcode</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-      <span class='id identifier rubyid_sample_tube'>sample_tube</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>sample:</span> <span class='id identifier rubyid_sample'>sample</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:46 2016 by
+  Generated on Mon Dec 19 11:16:34 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>
