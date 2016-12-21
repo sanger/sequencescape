@@ -37,6 +37,6 @@ class CherrypickGroupBySubmissionTask < Task
   def valid_params?(options = {})
     cherrypick_action = options[:cherrypick][:action]
     param_checker_for_pick = "valid_params_for_#{cherrypick_action}_pick?"
-    respond_to?(param_checker_for_pick, true) ? send("valid_params_for_#{options[:cherrypick][:action]}_pick?", options[cherrypick_action]) : false
+    respond_to?(param_checker_for_pick, true) ? send("valid_params_for_#{cherrypick_action}_pick?", options[cherrypick_action]) : false
   end
 end
