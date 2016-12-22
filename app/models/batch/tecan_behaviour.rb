@@ -57,7 +57,7 @@ module Batch::TecanBehaviour
         "src_well"  => [full_source_barcode, request.asset.map.description],
         "dst_well"  => request.target_asset.map.description,
         "volume"    => (request.target_asset.get_picked_volume),
-        "robot_minimum_picking_volume" => (request.target_asset.get_robot_minimum_picking_volume || configatron.tecan_minimum_volume) }
+        "buffer_volume" => (request.target_asset.get_buffer_volume) }
     end
 
     data_object

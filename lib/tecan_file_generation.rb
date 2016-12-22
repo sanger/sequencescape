@@ -97,7 +97,7 @@ module Sanger
           each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
             if total_volume > mapping["volume"]
               dest_name = data_object["destination"][dest_plate_barcode]["name"]
-              volume = [(total_volume - mapping["volume"]), mapping["robot_minimum_picking_volume"]].max
+              volume = mapping["buffer_volume"]
               vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"], plate_details["plate_size"])
               buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
             end

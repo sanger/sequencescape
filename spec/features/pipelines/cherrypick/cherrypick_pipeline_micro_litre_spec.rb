@@ -2,7 +2,7 @@
 require 'rails_helper'
 require 'pry'
 
-feature 'stock transfer in cherrypicking pipeline', js: true do
+feature 'cherrypick pipeline - micro litre', js: true do
   let(:user) { create :admin }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
@@ -29,8 +29,6 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
       end
       plate.wells.each_with_index do |well, index|
         well.well_attribute.update_attributes!(
-          current_volume: 30 + (index % 30),
-          concentration: 205 + (index % 50),
           measured_volume: 30 + (index % 30)
         )
       end
@@ -56,49 +54,7 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
     robot.robot_properties.create(key: 'DEST1', value: "20")
   end
 
-  scenario 'by nano grams per micro litre' do
-    login_user(user)
-    visit pipeline_path(pipeline)
-    check("Select DN1S for batch")
-    check("Select DN10I for batch")
-    check("Select DN5W for batch")
-    first(:select, "action_on_requests").select("Create Batch")
-    first(:button, "Submit").click
-    click_link "Select Plate Template"
-    select("testtemplate", from: "Plate Template")
-    select("Infinium 670k", from: "Output plate purpose")
-    fill_in("nano_grams_per_micro_litre_volume_required", with: "65")
-    fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: "2.0")
-    click_button "Next step"
-    click_button "Next step"
-    select("Genotyping freezer", from: "Location")
-    click_button "Next step"
-    click_button "Release this batch"
-    expect(page).to have_content("Batch released!")
-  end
-
-  scenario 'by nano grams' do
-    login_user(user)
-    visit pipeline_path(pipeline)
-    check("Select DN1S for batch")
-    check("Select DN10I for batch")
-    check("Select DN5W for batch")
-    first(:select, "action_on_requests").select("Create Batch")
-    first(:button, "Submit").click
-    click_link "Select Plate Template"
-    select("testtemplate", from: "Plate Template")
-    select("Infinium 670k", from: "Output plate purpose")
-    choose('cherrypick_action_nano_grams')
-    fill_in("nano_grams_robot_minimum_picking_volume", with: "2.0")
-    click_button "Next step"
-    click_button "Next step"
-    select("Genotyping freezer", from: "Location")
-    click_button "Next step"
-    click_button "Release this batch"
-    expect(page).to have_content("Batch released!")
-  end
-
-  scenario 'by micro litre' do
+  scenario 'required volume is 13' do
     login_user(user)
     visit pipeline_path(pipeline)
     check("Select DN1S for batch")
@@ -110,7 +66,7 @@ feature 'stock transfer in cherrypicking pipeline', js: true do
     select("testtemplate", from: "Plate Template")
     select("Infinium 670k", from: "Output plate purpose")
     choose('cherrypick_action_micro_litre')
-    fill_in("micro_litre_volume_required", with: "14")
+    fill_in("micro_litre_volume_required", with: "13")
     click_button "Next step"
     click_button "Next step"
     select("Genotyping freezer", from: "Location")
