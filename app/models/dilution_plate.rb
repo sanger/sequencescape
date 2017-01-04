@@ -5,21 +5,22 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class DilutionPlate < Plate
-  has_many :pico_descendants, ->() { where(sti_type: [PicoAssayPlate, PicoAssayAPlate, PicoAssayBPlate].map(&:name)) },
-    through: :links_as_ancestor, source: :descendant
+  PICO_TYPES = [PicoAssayPlate, PicoAssayAPlate, PicoAssayBPlate].map(&:name)
 
-  # We have to put the asset_links.direct condition on here, rather than go through :links_as_parent as it seems that
-  # rails doesn't cope with conditions on has_many_through relationships where the relationship itself also have conditions
+  has_many :pico_descendants, ->() { where(sti_type: PICO_TYPES) }, through: :links_as_ancestor, source: :descendant, class_name: 'PicoAssayPlate'
+  has_many :pico_children,    ->() { where(sti_type: PICO_TYPES) }, through: :links_as_parent,   source: :descendant, class_name: 'PicoAssayPlate'
+
+  # Note: joins here fails as it doesn't populate the associations
+  # includes ends up generating invalid sql, as rails doesn't seem to know how to apply conditions to a has_many through
+  # Eager load works just fine however. This effectively uses the join SQL, but populates the association
   scope :with_pico_children,  -> {
-    joins(:pico_descendants).
-    select('`assets`.*').
-    where(asset_links: { direct: true }).
-    uniq
+    eager_load(pico_children: [:barcode_prefix, :plate_metadata]).
+    where.not(pico_children_assets: { id: nil })
   }
 
-  def pico_children
-    pico_descendants.where(['asset_links.direct = ?', true])
-  end
+  scope :for_pico_view, -> {
+    includes(:barcode_prefix, :plate_metadata, :studies)
+  }
 
   def to_pico_hash
     { pico_dilution: {
@@ -30,6 +31,6 @@ class DilutionPlate < Plate
   end
 
   def study_name
-    study.try(:name) || ""
+    studies.map(&:name).join('& ')
   end
 end

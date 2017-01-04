@@ -212,6 +212,7 @@ class Plate < Asset
   def study
     wells.first.try(:study)
   end
+  deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
 
   contains :wells do # , :order => '`assets`.map_id ASC' do
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
