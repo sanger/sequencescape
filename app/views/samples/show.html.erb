@@ -17,7 +17,7 @@
 <% end %>
 
 <% if @sample.accession_number? %>
-  <% add(:menu, "View data stored in ENA" => url_for(configatron.accession_view_url+@sample.ebi_accession_number)) -%>
+  <% add(:menu, "View data stored in ENA" => url_for(configatron.accession.view_url+@sample.ebi_accession_number)) -%>
 <% end %>
 
 <% @sample.studies.each do |study| %>

@@ -244,17 +244,15 @@ private
   # require 'curb'
   include REXML
 
-  def accession_login
+  def accession_options
     raise NotImplemented, "abstract method"
   end
 
   def rest_client_resource
-    rest_client_class.new(URI.parse(configatron.accession_url + accession_login).to_s)
+    rest_client_class.new(configatron.accession.url!, accession_options)
   end
 
   def post_files(file_params)
-    raise StandardError, "Cannot connect to EBI to get accession number. Please configure accession_url in config.yml" if configatron.accession_url.blank?
-
     begin
       rc = rest_client_resource
       if configatron.disable_web_proxy == true

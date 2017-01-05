@@ -9,8 +9,8 @@ class FakeAccessionService
 
   # Unfortunately Webmock doesn't handle multipart files, so we can't access
   # the payload. Instead we set up our own evesdropping Rest Client class
-  # and use that instead. (This used to do class evan on the original class)
-  # but that would end up evesdropping on everything.
+  # and use that instead. If we monkey patch the original class we evesdrop on
+  # everything!
   class EvesdropResource < RestClient::Resource
     def post(payload)
       FakeAccessionService.instance.add_payload(payload)
@@ -27,24 +27,23 @@ class FakeAccessionService
 
         # We actually know what the value of these will be
         # but we include the lookup here, as we're more keen
-        # on where they are source from, rather than what they are
-        accession_url = configatron.accession_url
+        # on where they are sourced from, rather than what they are
+        accession_url = configatron.accession.url!
 
-        # Currently logins are encoded in the URL directly
-        # An HTTP auth system is now available though, so we
-        # should switch once we get the chance.
-        era_login = configatron.era_accession_login
-        ega_login = configatron.ega_accession_login
+        ena_login = [configatron.accession.ena.user!, configatron.accession.ena.password!]
+        ega_login = [configatron.accession.ega.user!, configatron.accession.ega.password!]
 
-        [era_login, ega_login].each do |service_login|
-          stub_request(:post, "#{accession_url}#{service_login}").to_return do |request|
-            response = FakeAccessionService.instance.next!
-            status = response.nil? ? 500 : 200
-            {
-              headers: { 'Content-Type' => 'text/xml' },
-              body: response,
-              status: status
-            }
+        [ena_login, ega_login].each do |service_login|
+          stub_request(:post, accession_url)
+           .with(basic_auth: service_login)
+           .to_return do |request|
+              response = FakeAccessionService.instance.next!
+              status = response.nil? ? 500 : 200
+              {
+                headers: { 'Content-Type' => 'text/xml' },
+                body: response,
+                status: status
+              }
           end
         end
       end
