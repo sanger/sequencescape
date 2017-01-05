@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-
 class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -26,12 +25,12 @@ class AssetsController < ApplicationController
         format.html
       end
       if params[:study_id]
-        format.xml  { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
+        format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
-          format.xml  { render xml: Sample.find(params[:sample_id]).assets.to_xml }
+          format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml  { render xml: ["relations" => { "parents" => @asset.parents, "children" => @asset.children }].to_xml }
+        format.xml { render xml: ["relations" => { "parents" => @asset.parents, "children" => @asset.children }].to_xml }
       end
     end
   end
@@ -54,7 +53,7 @@ class AssetsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render xml: @asset }
+      format.xml { render xml: @asset }
     end
   end
 
@@ -77,7 +76,6 @@ class AssetsController < ApplicationController
   end
 
   def create
-
     count = first_param(:count)
     count = count.present? ? count.to_i : 1
     saved = true
@@ -202,14 +200,14 @@ class AssetsController < ApplicationController
 
   def summary
     @summary = UiHelper::Summary.new({ per_page: 25, page: params[:page] })
-    @summary.load_item(@asset)
+    @summary.load_asset(@asset)
   end
 
   def close
     @asset.closed = !@asset.closed
     @asset.save
     respond_to do |format|
-      if  @asset.closed
+      if @asset.closed
         flash[:notice] = "Asset #{@asset.name} was closed."
       else
         flash[:notice] = "Asset #{@asset.name} was opened."
@@ -252,7 +250,6 @@ class AssetsController < ApplicationController
       flash[:error] = print_job.errors.full_messages.join('; ')
     end
     redirect_to asset_url(@asset)
-
   end
 
   def show_plate
@@ -385,7 +382,7 @@ class AssetsController < ApplicationController
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
       prefix = BarcodePrefix.find_by_prefix(match[1])
       @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2], prefix.id) if prefix
-    elsif /\A[0-9]{1,7}\z/.match(barcode) # Just a number
+    elsif /\A[0-9]{1,7}\z/ =~ barcode # Just a number
       @asset = Asset.find_by_barcode(barcode)
     else
       flash[:error] = "'#{barcode}' is not a recognized barcode format"
@@ -397,7 +394,6 @@ class AssetsController < ApplicationController
       flash[:error] = "Unable to find anything with this barcode: #{barcode}"
       redirect_to action: "find_by_barcode"
     end
-
   end
 
   def create_stocks

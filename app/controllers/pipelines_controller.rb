@@ -83,7 +83,6 @@ class PipelinesController < ApplicationController
     @controls = @pipeline.controls
   end
 
-
   before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
   def prepare_batch_and_pipeline
     @batch    = Batch.find(params[:id])
@@ -92,7 +91,6 @@ class PipelinesController < ApplicationController
   private :prepare_batch_and_pipeline
 
   def summary
-
   end
 
   def finish
@@ -150,6 +148,7 @@ class PipelinesController < ApplicationController
   end
 
   private
+
   def find_pipeline_by_id
     @pipeline = Pipeline.find(params["id"])
   end

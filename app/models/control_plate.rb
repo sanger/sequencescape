@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class ControlPlate < Plate
-
   self.prefix = "DN"
 
   AFFY_WELL_LOCATIONS = ['G1', 'H1']
@@ -19,5 +18,4 @@ class ControlPlate < Plate
     wells.includes(:map).where(maps: { description: AFFY_WELL_LOCATIONS, asset_size: 96 })
   end
   deprecate(affy_wells: 'assumed this was not used, needs map_id fixes')
-
 end

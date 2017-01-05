@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
-class  EgaAccessionService < AccessionService
+class EgaAccessionService < AccessionService
   def provider
     :EGA
   end
@@ -26,7 +26,7 @@ class  EgaAccessionService < AccessionService
   end
 
   def submit_dac_for_user(study, user)
-    submit(user,  Accessionable::Dac.new(study))
+    submit(user, Accessionable::Dac.new(study))
   end
 
   def submit_policy_for_user(study, user)

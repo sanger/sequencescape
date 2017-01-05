@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class ManifestGenerator
-
   QUOTE_CHAR = "!"
   DEFAULT_VOLUME = 13
   DEFAULT_CONCENTRATION = 50
@@ -17,7 +16,7 @@ class ManifestGenerator
   end
 
   def self.generate_manifest_for_plate_ids(plate_ids, study)
-    csv_string = CSV.generate(row_sep: "\n", quote_char: "#{QUOTE_CHAR}") do |csv|
+    csv_string = CSV.generate(row_sep: "\n", quote_char: (QUOTE_CHAR).to_s) do |csv|
       create_header(csv, study)
       row = 1
       plate_ids.each do |plate_id|
@@ -42,26 +41,27 @@ class ManifestGenerator
     replicates        = ""
     tissue_source     = "-"
 
-    ["#{plate_label}",
+    [plate_label.to_s,
      well_map_description(well),
      well_sample_is_control(well),
      construct_sample_label(plate_barcode, well),
      well_sample_species(well),
      well_sample_gender(well),
-     "#{comments}",
+     comments.to_s,
      well_volume(well),
      well_concentration(well),
-     "#{extraction_method}",
-     "#{wga_method}",
-     "#{dna_mass}",
+     extraction_method.to_s,
+     wga_method.to_s,
+     dna_mass.to_s,
      well_sample_parent(well, 'mother'),
      well_sample_parent(well, 'father'),
-     "#{replicates}",
-     "#{tissue_source}"
+     replicates.to_s,
+     tissue_source.to_s
     ]
   end
 
   private
+
   def self.check_well_sample_exists(well)
     raise StandardError, "Sample not found for well #{well.id}" if well.primary_aliquot.nil?
   end
@@ -138,12 +138,11 @@ class ManifestGenerator
     now = Time.new
     csv_obj << ["Institute Name:", "WTSI", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
     csv_obj << ["Date:", "#{now.year}-#{now.month}-#{now.day}"]
-    csv_obj << ["Comments:", "#{study.abbreviation}"]
+    csv_obj << ["Comments:", (study.abbreviation).to_s]
     csv_obj << ["Row", "Institute Plate Label", "Well", "Is Control", "Institute Sample Label", "Species", "Sex", "Comments", "Volume (ul)", "Conc (ng/ul)", "Extraction Method", "WGA Method (if Applicable)", "Mass of DNA used in WGA", "Parent 1", "Parent 2", "Replicate(s)", "Tissue Source"]
   end
 
   def self.remove_empty_quotes(csv_string)
     csv_string.gsub!("#{QUOTE_CHAR}#{QUOTE_CHAR}", "")
   end
-
 end

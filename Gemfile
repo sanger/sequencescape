@@ -51,11 +51,17 @@ group :default do
   gem 'sinatra', require: false
   gem 'rack-acceptable', require: 'rack/acceptable'
   gem 'json'
-  gem 'jrjackson', :platforms => :jruby
+  gem 'jrjackson', platforms: :jruby
   gem 'multi_json'
   gem 'cancan'
 
-  gem 'bunny', '~>0.7'
+  # MarchHare and Bunny are both RabbitMQ clients.
+  # While bunny does work with Jruby, it is not recommended
+  # and we ran into a few issues following the Rails 4 upgrade.
+  # Both have very similar API's and so we switch between then
+  # depending on environment.
+  gem 'march_hare', "~> 2.18.0", platforms: :jruby
+  gem 'bunny', platforms: :mri
 
   gem 'spoon'
   # Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
@@ -103,6 +109,21 @@ group :development do
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
+  #MiniProfiler allows you to see the speed of a request conveniently on the page.
+  #It also shows the SQL queries performed and allows you to profile a specific block of code.
+  gem 'rack-mini-profiler'
+end
+
+group :test do
+  gem 'rspec-rails', require: false
+  # Simplifies shared transactions between server and test threads
+  # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
+  # Essentially does two things:
+  # - Patches rails to share a database connection between threads while Testing
+  # - Pathes rspec to ensure capybara has done its stuff before killing the connection
+  gem 'transactional_capybara'
+  #Rails performance tests
+  gem 'rails-perftest'
 end
 
 group :test,:cucumber do

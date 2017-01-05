@@ -10,5 +10,4 @@ Given /^sequencescape is setup for 5004860$/ do
   library1.parents << sample
   lane = FactoryGirl.create :lane, qc_state: 'pending'
   request_one = FactoryGirl.create :request_with_sequencing_request_type, asset: library1, target_asset: lane, state: 'passed'
-
 end

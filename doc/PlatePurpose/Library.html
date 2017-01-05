@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2013,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
@@ -145,28 +159,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#assign_library_information_to_wells-instance_method" title="#assign_library_information_to_wells (instance method)">#<strong>assign_library_information_to_wells</strong>(plate)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -240,55 +232,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="assign_library_information_to_wells-instance_method">
-  
-    #<strong>assign_library_information_to_wells</strong>(plate)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/library.rb', line 22</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_assign_library_information_to_wells'>assign_library_information_to_wells</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_each_well_and_its_library_request'>each_well_and_its_library_request</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_library_request'>library_request</span><span class='op'>|</span>
-    <span class='id identifier rubyid_library_type'>library_type</span><span class='comma'>,</span> <span class='id identifier rubyid_insert_size'>insert_size</span> <span class='op'>=</span> <span class='id identifier rubyid_library_request'>library_request</span><span class='period'>.</span><span class='id identifier rubyid_library_type'>library_type</span><span class='comma'>,</span> <span class='id identifier rubyid_library_request'>library_request</span><span class='period'>.</span><span class='id identifier rubyid_insert_size'>insert_size</span>
-
-    <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_aliquot'>aliquot</span><span class='op'>|</span>
-      <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_library'>library</span>      <span class='op'>||=</span> <span class='id identifier rubyid_well'>well</span>
-      <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_library_type'>library_type</span> <span class='op'>||=</span> <span class='id identifier rubyid_library_type'>library_type</span>
-      <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_insert_size'>insert_size</span>  <span class='op'>||=</span> <span class='id identifier rubyid_insert_size'>insert_size</span>
-      <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_save!'>save!</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="transition_to-instance_method">
+  <h3 class="signature first" id="transition_to-instance_method">
   
     #<strong>transition_to</strong>(plate, state, user, contents = nil, customer_accepts_responsibility = false)  &#x21d2; <tt>Object</tt> 
   
@@ -324,9 +268,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:37 2016 by
+  Generated on Mon Dec 19 11:16:28 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -85,7 +85,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This module overrides the behaviour of will_paginate so that the requests
+for an individual submission appear on the same page.  It does this by
+first paging the submission IDs, and then limiting the query so that it
+only includes requests from these submissions.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -126,28 +140,6 @@
   <span class="summary_signature">
     
       <a href="#paginated_by_submission-instance_method" title="#paginated_by_submission (instance method)">#<strong>paginated_by_submission</strong>(*args)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#submissions-instance_method" title="#submissions (instance method)">#<strong>submissions</strong>(finder_method, options = {})  &#x21d2; Object </a>
     
 
     
@@ -239,48 +231,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="submissions-instance_method">
-  
-    #<strong>submissions</strong>(finder_method, options = {})  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-40
-41
-42
-43
-44</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline/inbox_grouped_by_submission.rb', line 40</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_submissions'>submissions</span><span class='lparen'>(</span><span class='id identifier rubyid_finder_method'>finder_method</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_with_exclusive_scope'>with_exclusive_scope</span> <span class='kw'>do</span>
-    <span class='id identifier rubyid_ready_in_storage'>ready_in_storage</span><span class='period'>.</span><span class='id identifier rubyid_full_inbox'>full_inbox</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_finder_method'>finder_method</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='label'>select:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DISTINCT submission_id</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>order:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>submission_id ASC</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:44 2016 by
+  Generated on Mon Dec 19 11:16:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

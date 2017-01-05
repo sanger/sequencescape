@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 module IlluminaC::Requests
-
   class LibraryRequest < Request::LibraryCreation
     def role; "#{request_metadata.library_type} #{order.role}"; end
 
@@ -16,7 +15,6 @@ module IlluminaC::Requests
     end
 
     fragment_size_details(:no_default, :no_default)
-
   end
 
   # The following two classes are redundant and are due for removal:
@@ -34,7 +32,6 @@ module IlluminaC::Requests
   end
 
   module Helpers
-
     def create_request_types
       each_request_type do |params|
         RequestType.create!(params)
@@ -104,8 +101,6 @@ module IlluminaC::Requests
         yield(params)
       end
     end
-
   end
   extend Helpers
-
 end

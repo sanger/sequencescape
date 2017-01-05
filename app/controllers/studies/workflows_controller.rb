@@ -48,7 +48,6 @@ class Studies::WorkflowsController < ApplicationController
       format.xml
       format.json { render json: Study.all.to_json }
     end
-
   end
 
   def show_summary
@@ -102,7 +101,7 @@ class Studies::WorkflowsController < ApplicationController
 
   def summary
     s = UiHelper::Summary.new
-    @summary = s.load(@study, @workflow).paginate page: params[:page], order: 'created_at DESC'
+    @summary = s.load(@study, @workflow).paginate page: params[:page], per_page: 30
     # @summary.load(@study, @workflow)
     respond_to do |format|
       format.html
@@ -122,7 +121,7 @@ class Studies::WorkflowsController < ApplicationController
     map = Hash.new { |hash, key| hash[key] = Hash.new 0 } # defining default value for nested hash
     enumerable.each do |e|
       groups = yield(e)
-      groups.each do  |g_id, count|
+      groups.each do |g_id, count|
         map[g_id.to_i][e] = count
       end
     end
@@ -130,6 +129,7 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   private
+
   def discover_study
     @study = Study.find(params[:study_id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?

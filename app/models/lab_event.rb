@@ -16,7 +16,6 @@ class LabEvent < ActiveRecord::Base
 
   scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
 
-
   def unescape_for_descriptors
     self[:descriptors] = (self[:descriptors] || {}).inject({}) do |hash, (key, value)|
       hash[CGI.unescape(key)] = value

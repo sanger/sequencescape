@@ -6,7 +6,6 @@
 
 class ::Endpoints::Lots < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
@@ -14,5 +13,4 @@ class ::Endpoints::Lots < ::Core::Endpoint::Base
     belongs_to(:lot_type, json: 'lot_type', to: 'lot_type')
     belongs_to(:template, json: 'template', to: 'template')
   end
-
 end

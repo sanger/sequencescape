@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class BroadcastEvent::PlateRegister < BroadcastEvent
-
   set_event_type 'plate_register'
 
   # Created when a plate is first registered in Sequencescape be it via plate creators,

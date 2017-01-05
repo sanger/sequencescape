@@ -5,11 +5,9 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class ProductCatalogue::SingleProduct
-
   attr_reader :product
 
   def initialize(catalogue, submission_attributes)
     @product = catalogue.products.first
   end
-
 end

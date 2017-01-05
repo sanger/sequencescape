@@ -7,7 +7,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class AccessionServiceTest < ActiveSupport::TestCase
-
   def assert_tag(tag_label, value)
     acc = Accessionable::Sample.new(@sample)
     tag = acc.tags.detect { |tag| tag.label == tag_label }
@@ -36,7 +35,6 @@ class AccessionServiceTest < ActiveSupport::TestCase
       @sample.sample_metadata.gender = "male"
     end
 
-
     should "expose gender in EGA xml" do
       assert_tag('gender', 'male')
     end
@@ -48,7 +46,6 @@ class AccessionServiceTest < ActiveSupport::TestCase
       @sample = create :sample, studies: [@study]
       @sample.sample_metadata.donor_id = "123456789"
     end
-
 
     should "expose donor_id as subject_id in EGA xml" do
       assert_tag('subject_id', '123456789')

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class AttributesTest < ActiveSupport::TestCase
-
   attr_reader :sample
 
   def setup
@@ -35,5 +34,4 @@ class AttributesTest < ActiveSupport::TestCase
   test "column which has other attribute should return nothing" do
     assert_nil SampleManifestExcel::Attributes.find(:no_attribute_here).value(sample)
   end
-
 end

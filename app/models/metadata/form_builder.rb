@@ -57,7 +57,6 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
   alias_method_chain(:select, :bootstrap)
 
-
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties
   #

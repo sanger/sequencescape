@@ -14,7 +14,6 @@ require File.dirname(__FILE__) + '/exceptions'
 
 module Authorization
   module HardwiredRoles
-
     module UserExtensions
       def self.included(recipient)
         recipient.extend(ClassMethods)
@@ -75,7 +74,5 @@ module Authorization
         end
       end
     end
-
   end
-
 end

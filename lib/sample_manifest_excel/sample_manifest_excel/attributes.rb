@@ -1,10 +1,8 @@
 module SampleManifestExcel
-
   ##
   # Some columns need to extract a value from a sample manifest.
   # This may involve a crazy chain of methods.
   class Attributes
-
     ##
     # Take the column name and return an attribute class.
     # If the column name relates to a column with an attribute

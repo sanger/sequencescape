@@ -122,7 +122,11 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Defines a new subject, specifies the role type and either a method on the
+seed that will return the subject, or a block that gets passed the seed,
+and will return the subject.</p>
+</div></span>
   
 </li>
 
@@ -144,7 +148,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Used when you explicitly expect to receive more than one subject.</p>
+</div></span>
   
 </li>
 
@@ -166,7 +172,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The class expected to seed the messenger.</p>
+</div></span>
   
 </li>
 
@@ -188,7 +196,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The role type that will identify the seed (if applicable).</p>
+</div></span>
   
 </li>
 
@@ -236,6 +246,10 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Defines a new subject, specifies the role type and either a method on the
+seed that will return the subject, or a block that gets passed the seed,
+and will return the subject.</p>
+
 
   </div>
 </div>
@@ -261,14 +275,14 @@
       <pre class="lines">
 
 
+114
+115
 116
 117
-118
-119
-120</pre>
+118</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 114</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_subject'>has_subject</span><span class='lparen'>(</span><span class='id identifier rubyid_role_type'>role_type</span><span class='comma'>,</span> <span class='id identifier rubyid_method'>method</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_subject_associations'>subject_associations</span> <span class='op'>&lt;&lt;</span> <span class='const'>SimpleSingleSubjectAssociation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_role_type'>role_type</span><span class='comma'>,</span> <span class='id identifier rubyid_method'>method</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_method'>method</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -292,6 +306,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Used when you explicitly expect to receive more than one subject</p>
+
 
   </div>
 </div>
@@ -317,14 +333,14 @@
       <pre class="lines">
 
 
+121
+122
 123
 124
-125
-126
-127</pre>
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_subjects'>has_subjects</span><span class='lparen'>(</span><span class='id identifier rubyid_role_type'>role_type</span><span class='comma'>,</span> <span class='id identifier rubyid_method'>method</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_subject_associations'>subject_associations</span> <span class='op'>&lt;&lt;</span> <span class='const'>SimpleManySubjectAssociation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_role_type'>role_type</span><span class='comma'>,</span> <span class='id identifier rubyid_method'>method</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_method'>method</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -345,18 +361,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The class expected to seed the messenger</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-105
-106
-107</pre>
+103
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 105</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_seed_class'>seed_class</span><span class='lparen'>(</span><span class='id identifier rubyid_seed_class'>seed_class</span><span class='rparen'>)</span>
   <span class='ivar'>@seed_class</span> <span class='op'>=</span> <span class='id identifier rubyid_seed_class'>seed_class</span>
@@ -375,18 +402,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The role type that will identify the seed (if applicable)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-110
-111
-112</pre>
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_seed_subject'>seed_subject</span><span class='lparen'>(</span><span class='id identifier rubyid_role_type'>role_type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_subject_associations'>subject_associations</span> <span class='op'>&lt;&lt;</span> <span class='const'>SeedSubjectAssociation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_role_type'>role_type</span><span class='rparen'>)</span>
@@ -411,12 +449,12 @@
       <pre class="lines">
 
 
-129
-130
-131</pre>
+127
+128
+129</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/subject_helpers.rb', line 127</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_subject_associations'>subject_associations</span>
   <span class='ivar'>@subject_associations</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -431,9 +469,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:42 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

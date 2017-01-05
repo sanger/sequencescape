@@ -16,7 +16,6 @@ class Submission::PresenterSkeleton
     attributes.each do |attribute|
       send("#{attribute}=", submission_attributes[attribute])
     end
-
   end
 
   # id accessors need to be explicitly defined...
@@ -55,7 +54,6 @@ class Submission::PresenterSkeleton
       end
     end
   end
-
 
   def each_submission_warning(&block)
     submission.each_submission_warning(&block)

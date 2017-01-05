@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 module PlatesHelper
-
   class AliquotError < StandardError; end
 
   def padded_wells_by_row(plate, overide = nil)
@@ -49,5 +48,4 @@ module PlatesHelper
   def self.event_family_for_pick(plate_purpose_name)
     "picked_well_to_#{plate_purpose_name.tr(' ', "_").downcase}_plate"
   end
-
 end

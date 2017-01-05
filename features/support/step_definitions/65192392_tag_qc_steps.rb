@@ -69,13 +69,11 @@ Given /^I am set up for testing qcable ordering$/ do
   sqc_b = Stamp::StampQcable.new(bed: '2', order: 2, qcable: qccreate.qcables[4])
   stamp_a = Stamp.create!(user: user, tip_lot: '1234556', stamp_qcables: [sqc_a, sqc_b], lot: lot, robot: Robot.last)
 
-
   step 'all of this is happening at exactly "23-Oct-2010 23:20:00+01:00"'
 
   sqc_c = Stamp::StampQcable.new(bed: '5', order: 1, qcable: qccreate.qcables[3])
   sqc_d = Stamp::StampQcable.new(bed: '3', order: 2, qcable: qccreate.qcables[2])
   stamp_b = Stamp.create!(user: user, tip_lot: '1234556', stamp_qcables: [sqc_c, sqc_d], lot: lot, robot: Robot.last)
-
 end
 
 Given /^I have a qcable$/ do
@@ -126,7 +124,6 @@ Given /^I have a qc library created$/ do
   end
   FactoryGirl.create :request_without_submission, asset: stc.children.first, batch: batch
   # Batch.find(12345).batch_requests.create!(:request=>Request.create!(:asset=>stc.children.first),:position=>1)
-
 end
 
 Given /^the library is testing a reporter$/ do

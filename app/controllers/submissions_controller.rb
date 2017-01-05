@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
-
 class SubmissionsController < ApplicationController
 # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
 # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -33,11 +32,10 @@ class SubmissionsController < ApplicationController
     else
       render partial: 'order_errors', layout: false, status: 422
     end
-
   end
 
   def edit
-    @presenter = Submission::SubmissionCreator.new(current_user,  id: params[:id])
+    @presenter = Submission::SubmissionCreator.new(current_user, id: params[:id])
   end
 
   # This method will build a submission then redirect to the submission on completion

@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class SampleManifestMultiplex < BaseTube
-
       attr_reader :sample_manifest
 
       def initialize(options)
@@ -17,8 +15,6 @@ module LabelPrinter
       def tubes
         [sample_manifest.printables]
       end
-
     end
   end
-
 end

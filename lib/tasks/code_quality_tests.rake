@@ -5,7 +5,7 @@ FLAY_DUPLICATION_THRESHOLD = 200
 
 namespace :test do
   desc "Run all static code analysis tasks"
-  task analytics: ["test:analytics:flay", "test:analytics:roodi",  "test:analytics:roodi_strict"]
+  task analytics: ["test:analytics:flay", "test:analytics:roodi", "test:analytics:roodi_strict"]
   namespace :analytics do
     task :load_rails_env do
       require 'config/environment'
@@ -89,7 +89,7 @@ namespace :test do
       super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)' +
         ' -and \( -name "*.rb" -or -name "*.rake" \)' +
         ' -exec ruby -c {} \; ) 2>&1'
-      pipe = IO.popen("#{super_find_cmd}")
+      pipe = IO.popen(super_find_cmd.to_s)
       pipe.each do |line| # From the perspective of the new pseudo terminal
         unless line !~ /Syntax OK/
           putc '.'

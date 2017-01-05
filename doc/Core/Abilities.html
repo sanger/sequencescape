@@ -85,7 +85,44 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>The classes within this namespace are responsible for defining the
+abilities of the user and the application that are accessing the API.</p>
+
+<p>– To maintain the behaviour of the API before this was introduced the logic
+is very straight-forward:</p>
+<ol><li>
+<p>If the application is authorised then everything is possible.</p>
+</li><li>
+<p>If the application is unauthorised then the user capabilities take
+priority.</p>
+</li></ol>
+
+<p>There are several pieces of functionality that are always accessible:</p>
+<ul><li>
+<p>UUID lookups are always available</p>
+</li><li>
+<p>Searches are always available</p>
+</li><li>
+<p>Submissions can be created and updated</p>
+</li><li>
+<p>Sample manifests can be created through studies and updated individually</p>
+</li></ul>
+
+<p>In the future we&#39;ll be able to adjust this and get the right behaviour
+based on the combination of the application and the user.  We&#39;ll also
+be able to extend the application abilities so that they are refined for
+certain applications. ++</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -178,9 +215,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:30 2016 by
+  Generated on Mon Dec 19 11:16:24 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

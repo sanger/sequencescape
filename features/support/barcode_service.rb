@@ -43,7 +43,6 @@ class FakeBarcodeService
   def next_barcode!
     barcodes.shift or raise StandardError, "No more values set!"
   end
-
 end
 
 FakeBarcodeService.install_hooks(self, '@barcode-service')

@@ -76,7 +76,6 @@ class TaskTest < ActiveSupport::TestCase
         @task = MyTask.new
       end
 
-
       should "access define access  method" do
         assert @task.respond_to?(:att)
       end
@@ -141,5 +140,4 @@ class TaskTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

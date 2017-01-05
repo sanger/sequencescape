@@ -9,7 +9,6 @@ class Sample < ActiveRecord::Base
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
 
-
   self.per_page = 500
   include ExternalProperties
   include Identifiable
@@ -83,9 +82,7 @@ class Sample < ActiveRecord::Base
 
   scope :with_name, ->(*names) { where(name: names.flatten) }
 
-
   scope :for_search_query, ->(query, with_includes) {
-
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
@@ -330,7 +327,6 @@ class Sample < ActiveRecord::Base
     attribute(:subject)
     attribute(:disease)
 
-
     with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
       # ena_required_fields.validates_presence_of :sample_common_name
       # ena_required_fields.validates_presence_of :sample_taxon_id
@@ -380,7 +376,6 @@ class Sample < ActiveRecord::Base
   include SampleManifest::InputBehaviour::SampleUpdating
 
   class Metadata
-
     attr_reader :reference_genome_set_by_name
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
@@ -389,9 +384,11 @@ class Sample < ActiveRecord::Base
     def strain_or_line
       sample_strain_att
     end
+
     def sex
       gender && gender.downcase
     end
+
     def species
       sample_common_name
     end
@@ -414,9 +411,7 @@ class Sample < ActiveRecord::Base
       errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
       false
     end
-
   end
-
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
   validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, attr, value|
@@ -470,5 +465,4 @@ class Sample < ActiveRecord::Base
   # and its initial aliquot in the sample manifest.
   delegate :specialized_from_manifest=, to: :primary_receptacle
   delegate :library_information=, to: :primary_receptacle
-
 end

@@ -34,7 +34,6 @@ Given /^I have a PacBio submission$/ do
   step("1 pending delayed jobs are processed")
 end
 
-
 Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
   assert_equal number_of_requests.to_i, PacBioSequencingRequest.count
 end
@@ -42,7 +41,7 @@ end
 Given /^I have a plate for PacBio$/ do
   PlatePurpose.stock_plate_purpose.create!(:without_wells, barcode: 1234567) do |plate|
     plate.wells.build(map: Map.find_by_asset_size_and_description(96, 'A1'), aliquots: SampleTube.find_by_barcode(111).aliquots.map(&:dup))
-    plate.wells.build(map: Map.find_by_asset_size_and_description(96, 'B1'), aliquots: SampleTube.find_by_barcode(222).aliquots.map(&:dup)) if  SampleTube.find_by_barcode(222).present?
+    plate.wells.build(map: Map.find_by_asset_size_and_description(96, 'B1'), aliquots: SampleTube.find_by_barcode(222).aliquots.map(&:dup)) if SampleTube.find_by_barcode(222).present?
     plate.location = Location.find_by_name('PacBio library prep freezer')
     AssetGroup.create!(name: "PacBio group", study: Study.find_by_name('Test study')).assets << plate.wells
   end

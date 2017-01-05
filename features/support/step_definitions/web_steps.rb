@@ -10,7 +10,6 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-
 require 'uri'
 require 'cgi'
 require_relative "../paths"
@@ -167,7 +166,6 @@ Then /^(?:|I )should see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, selec
   end
 end
 
-
 Then /^I should see "(.*?)" once$/ do |text|
   if page.respond_to? :should
     page.should have_content(text, count: 1)
@@ -233,7 +231,7 @@ Then /^the "([^"]*)" checkbox(?: within "([^"]*)")? should be checked$/ do |labe
   with_scope(selector) do
     field_checked = find_field(label)['checked']
     if field_checked.respond_to? :should
-      field_checked.should be_true
+      field_checked.should be true
     else
       assert field_checked
     end
@@ -244,7 +242,7 @@ Then /^the "([^"]*)" checkbox(?: within "([^"]*)")? should not be checked$/ do |
   with_scope(selector) do
     field_checked = find_field(label)['checked']
     if field_checked.respond_to? :should
-      field_checked.should be_false
+      field_checked.should be false
     else
       assert !field_checked
     end
@@ -306,7 +304,6 @@ Then /^Pmb is down$/ do
 end
 
 Then /^Pmb has the required label templates$/ do
-
   body = "{\"data\":[{\"id\":\"1\"}]}"
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template")

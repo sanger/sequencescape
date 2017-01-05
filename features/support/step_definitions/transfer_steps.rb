@@ -72,7 +72,6 @@ Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "(
   template.create!(source: source, destination: destination, user: FactoryGirl.create(:user))
 end
 
-
 def assert_request_state(state, targets, direction, request_class)
   association = (direction == 'to') ? :requests_as_target : :requests_as_source
   assert_equal(

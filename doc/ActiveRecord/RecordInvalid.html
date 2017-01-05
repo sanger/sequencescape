@@ -138,28 +138,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#errors_grouped_by_attribute-instance_method" title="#errors_grouped_by_attribute (instance method)">#<strong>errors_grouped_by_attribute</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -184,47 +162,17 @@
       <pre class="lines">
 
 
-84
 85
 86
-87</pre>
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/service/error_handling.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'app/api/core/service/error_handling.rb', line 85</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_api_error'>api_error</span><span class='lparen'>(</span><span class='id identifier rubyid_response'>response</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_io_handler'>io_handler</span> <span class='op'>=</span> <span class='op'>::</span><span class='const'>Core</span><span class='op'>::</span><span class='const'>Io</span><span class='op'>::</span><span class='const'>Registry</span><span class='period'>.</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_lookup_for_object'>lookup_for_object</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_response'>response</span><span class='period'>.</span><span class='id identifier rubyid_content_error'>content_error</span><span class='lparen'>(</span><span class='int'>422</span><span class='comma'>,</span> <span class='id identifier rubyid_errors_grouped_by_attribute'>errors_grouped_by_attribute</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_attribute'>attribute</span><span class='op'>|</span> <span class='id identifier rubyid_io_handler'>io_handler</span><span class='period'>.</span><span class='id identifier rubyid_json_field_for'>json_field_for</span><span class='lparen'>(</span><span class='id identifier rubyid_attribute'>attribute</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="errors_grouped_by_attribute-instance_method">
-  
-    #<strong>errors_grouped_by_attribute</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-89
-90
-91</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/service/error_handling.rb', line 89</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_errors_grouped_by_attribute'>errors_grouped_by_attribute</span>
-  <span class='const'>Hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_record'>record</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_v'>v</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -236,9 +184,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:59 2016 by
+  Generated on Mon Dec 19 11:17:39 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -7,7 +7,6 @@
 module ModelExtensions::Batch
   def self.included(base)
     base.class_eval do
-
       # This is the new stuff ...
       accepts_nested_attributes_for :requests
 
@@ -59,7 +58,6 @@ module ModelExtensions::Batch
     requests_to_update.each do |request_details|
       Request.find(request_details.first).update_attributes!(asset_id: request_details.last)
     end
-
   end
   private :generate_target_assets_for_requests
 

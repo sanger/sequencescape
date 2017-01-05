@@ -19,5 +19,4 @@ Given /^Pipeline "([^\"]*)" and a setup for submitted at$/ do |name|
   end
 
   request.asset.save!
-
 end

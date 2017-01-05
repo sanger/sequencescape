@@ -56,5 +56,4 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
       request.asset.stock_wells
     end.flatten
   end
-
 end

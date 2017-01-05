@@ -101,7 +101,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -506,7 +520,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_concentration'>concentration</span><span class='lparen'>(</span><span class='id identifier rubyid_location'>location</span><span class='rparen'>)</span>
   <span class='kw'>begin</span>
     <span class='id identifier rubyid_get_row'>get_row</span><span class='lparen'>(</span><span class='id identifier rubyid_location'>location</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='id identifier rubyid_get_column_for_header'>get_column_for_header</span><span class='lparen'>(</span><span class='symbol'>:concentration</span><span class='rparen'>)</span><span class='rbracket'>]</span>
-  <span class='kw'>rescue</span> <span class='const'>NoMethodError</span>  <span class='comment'># Ugh! I want to catch these where they happen
+  <span class='kw'>rescue</span> <span class='const'>NoMethodError</span> <span class='comment'># Ugh! I want to catch these where they happen
 </span>    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>InvalidFile</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -541,7 +555,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each_well_and_parameters'>each_well_and_parameters</span>
   <span class='id identifier rubyid_locations'>locations</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_location_name'>location_name</span><span class='op'>|</span>
-    <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_location_name'>location_name</span><span class='comma'>,</span> <span class='id identifier rubyid_concentration'>concentration</span><span class='lparen'>(</span><span class='id identifier rubyid_location_name'>location_name</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_location_name'>location_name</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>set_concentration:</span> <span class='id identifier rubyid_concentration'>concentration</span><span class='lparen'>(</span><span class='id identifier rubyid_location_name'>location_name</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -764,9 +778,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:29 2016 by
+  Generated on Mon Dec 19 11:17:14 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-
 require "#{Rails.root}/app/models/illumina_b/plate_purposes"
 
 class Search::FindIlluminaBPlatesForUser < Search::FindIlluminaBPlates

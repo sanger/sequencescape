@@ -146,12 +146,12 @@
       <pre class="lines">
 
 
+24
 25
-26
-27</pre>
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/aliquot/aliquotable.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'app/models/aliquot/aliquotable.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_receptacle_alias'>receptacle_alias</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_has_many'>has_many</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_distinct'>distinct</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='label'>through:</span> <span class='symbol'>:aliquots</span><span class='comma'>,</span> <span class='label'>source:</span> <span class='symbol'>:receptacle</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -166,9 +166,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:35 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

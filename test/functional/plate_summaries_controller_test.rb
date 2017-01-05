@@ -4,7 +4,6 @@
 require "test_helper"
 require 'projects_controller'
 
-
 class PlateSummariesControllerTest < ActionController::TestCase
   context "PlateSummariesController" do
     setup do
@@ -28,7 +27,6 @@ class PlateSummariesControllerTest < ActionController::TestCase
       end
 
       context "#index" do
-
         setup do
           create :plate_owner, user: @user, plate: @child_plate_a
         end
@@ -41,7 +39,6 @@ class PlateSummariesControllerTest < ActionController::TestCase
       end
 
       context '#search' do
-
         should "find expected plates" do
           plates = {
             @source_plate_a => [@source_plate_a.sanger_human_barcode,
@@ -62,7 +59,6 @@ class PlateSummariesControllerTest < ActionController::TestCase
         end
 
         context "return users to search page if barcode not found" do
-
           setup do
             @request.env['HTTP_REFERER'] = "back"
             get :search, plate_barcode: "abcd"
@@ -70,12 +66,10 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
           should redirect_to "back"
           should set_flash.to "No suitable plates found for barcode abcd"
-
         end
       end
 
       context '#show' do
-
         setup do
           @collection = create(:custom_metadatum_collection_with_metadata, asset: @child_plate_a, user: @user)
         end
@@ -91,11 +85,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
           assert_response :success
           assert_equal @collection.metadata.count, assigns(:plate).metadata.count
         end
-
       end
-
     end
-
-
   end
 end

@@ -16,7 +16,6 @@ require 'rexml/text'
 # callback could be removed to keep track of sample registrations.
 #++
 class SampleRegistrar < ActiveRecord::Base
-
   # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
   def initialize(attributes = {}, what = {})
     super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys), what)

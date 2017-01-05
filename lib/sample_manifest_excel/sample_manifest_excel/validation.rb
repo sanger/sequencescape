@@ -1,5 +1,4 @@
 module SampleManifestExcel
-
   ##
   # An Excel validation
   # Holds the validation for each column which is added to each column when the spreadsheet is created.
@@ -7,7 +6,6 @@ module SampleManifestExcel
   # - A list of options which relate to options recognised by Excel e.g. errorMessage.
   # - A range name (optional) which will be linked to a range when the spreadsheet is created.
   class Validation
-
     include HashAttributes
 
     set_attributes :options, :range_name
@@ -30,7 +28,6 @@ module SampleManifestExcel
       if attributes[:worksheet].present?
         @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], options)
       end
-
     end
 
     ##
@@ -68,7 +65,5 @@ module SampleManifestExcel
       self.options = source.options.dup
       super
     end
-
   end
-
 end

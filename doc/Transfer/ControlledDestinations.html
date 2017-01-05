@@ -90,7 +90,20 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>The transfer from the source is controlled by some mechanism other than
+user choice.  Essentially an algorithmic transfer, which is recorded so we
+know what happened.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -109,37 +122,6 @@
   <span class="summary_signature">
     
       <a href="#included-class_method" title="included (class method)">.<strong>included</strong>(base)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#each_transfer-instance_method" title="#each_transfer (instance method)">#<strong>each_transfer</strong>(&amp;block)  &#x21d2; Object </a>
     
 
     
@@ -182,16 +164,16 @@
       <pre class="lines">
 
 
+146
 147
 148
 149
 150
 151
-152
-153</pre>
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 146</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
@@ -207,56 +189,12 @@
     
   </div>
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="each_transfer-instance_method">
-  
-    #<strong>each_transfer</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-155
-156
-157
-158
-159
-160
-161</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 155</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_each_transfer'>each_transfer</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_well_to_destination'>well_to_destination</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_destination_and_additional_information'>destination_and_additional_information</span><span class='op'>|</span>
-    <span class='id identifier rubyid_destination'>destination</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_extra_information'>extra_information</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_destination_and_additional_information'>destination_and_additional_information</span><span class='rparen'>)</span>
-    <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_destination'>destination</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_record_transfer'>record_transfer</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_destination'>destination</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_extra_information'>extra_information</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:29 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class PreCapturePool < ActiveRecord::Base
-
   # We build pre capture groups at submission so that they are not affected by failing of wells or
   # re-arraying.
 
@@ -32,7 +31,6 @@ class PreCapturePool < ActiveRecord::Base
   has_many :requests, through: :pooled_requests
 
   class Builder
-
     attr_reader :submission
 
     def initialize(submission)
@@ -77,7 +75,5 @@ class PreCapturePool < ActiveRecord::Base
         order('maps.column_order ASC, id ASC').
         group_by { |r| r.order.pre_cap_group || "o#{r.order_id}" }
     end
-
   end
-
 end

@@ -100,7 +100,38 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>provides a number of methods to manage attributes. The set attributes class
+method allows the user to define attribute accessors. Called like so:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_set_attributes'>set_attributes</span> <span class='symbol'>:attr_1</span><span class='comma'>,</span> <span class='symbol'>:attr_2</span><span class='comma'>,</span> <span class='symbol'>:attr_3</span><span class='comma'>,</span> <span class='label'>defaults:</span> <span class='lbrace'>{</span> <span class='label'>attr_1:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>attr_1</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span>
+</code></pre>
+
+<p>The set_attributes method will define the following methods:</p>
+
+<pre class="code ruby"><code class="ruby">- create_attributes: create an instance variable for each of the passed hash attributes.
+  Any passed attributes that are not defined by set_attributes will raise an error.
+  If an attribute is not defined and a default attribute exists then an instance variables
+  is set to the default.</code></pre>
+<ul><li>
+<p>attributes: A list of defined attributes.</p>
+</li><li>
+<p>default_attributes: A hash of default attributes and their values.</p>
+</li><li>
+<p>update_attributes: update an instance variable for each of the passed hash
+attributes. Will not reset any default attributes. Any passed attributes
+that are not defined by set_attributes are ignored.</p>
+</li></ul>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -142,7 +173,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Two objects are comparable if all of their instance variables that are
+present are comparable.</p>
+</div></span>
   
 </li>
 
@@ -164,7 +198,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>returns an array of the instance variables removing null values.</p>
+</div></span>
   
 </li>
 
@@ -189,19 +225,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Two objects are comparable if all of their instance variables that are
+present are comparable.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-63
-64
-65
-66</pre>
+57
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/hash_attributes.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/hash_attributes.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
@@ -221,18 +269,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>returns an array of the instance variables removing null values.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-56
-57
-58</pre>
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/hash_attributes.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/hash_attributes.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_a'>to_a</span>
   <span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_instance_variable_get'>instance_variable_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>@</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_v'>v</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span>
@@ -247,9 +306,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:46 2016 by
+  Generated on Mon Dec 19 11:16:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

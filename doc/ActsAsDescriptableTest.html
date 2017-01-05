@@ -387,12 +387,12 @@
       <pre class="lines">
 
 
+5
 6
-7
-8</pre>
+7</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/descriptor_test.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/descriptor_test.rb', line 5</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_teardown'>teardown</span>
   <span class='const'>Descriptor</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_descriptor'>descriptor</span><span class='op'>|</span> <span class='id identifier rubyid_descriptor'>descriptor</span><span class='period'>.</span><span class='id identifier rubyid_destroy'>destroy</span> <span class='rbrace'>}</span>
@@ -417,17 +417,17 @@
       <pre class="lines">
 
 
+71
 72
 73
 74
 75
 76
 77
-78
-79</pre>
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_active_descriptors'>test_active_descriptors</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>ActivePost</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -457,6 +457,7 @@
       <pre class="lines">
 
 
+80
 81
 82
 83
@@ -472,11 +473,10 @@
 93
 94
 95
-96
-97</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 80</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_active_descriptors_create'>test_active_descriptors_create</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>ActivePost</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -515,6 +515,8 @@
       <pre class="lines">
 
 
+131
+132
 133
 134
 135
@@ -524,12 +526,10 @@
 139
 140
 141
-142
-143
-144</pre>
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_active_descriptors_remove'>test_active_descriptors_remove</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>ActivePost</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -563,6 +563,7 @@
       <pre class="lines">
 
 
+98
 99
 100
 101
@@ -578,11 +579,10 @@
 111
 112
 113
-114
-115</pre>
+114</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_active_descriptors_sort'>test_active_descriptors_sort</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>ActivePost</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -621,6 +621,7 @@
       <pre class="lines">
 
 
+116
 117
 118
 119
@@ -633,12 +634,10 @@
 126
 127
 128
-129
-130
-131</pre>
+129</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 117</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_active_descriptors_update'>test_active_descriptors_update</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>ActivePost</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -653,7 +652,6 @@
             <span class='rbrace'>}</span>
   <span class='id identifier rubyid_post'>post</span><span class='period'>.</span><span class='id identifier rubyid_update_descriptors'>update_descriptors</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_equal'>assert_equal</span> <span class='int'>3</span><span class='comma'>,</span> <span class='id identifier rubyid_post'>post</span><span class='period'>.</span><span class='id identifier rubyid_descriptors'>descriptors</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -675,6 +673,7 @@
       <pre class="lines">
 
 
+33
 34
 35
 36
@@ -682,11 +681,10 @@
 38
 39
 40
-41
-42</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_add_descriptor'>test_add_descriptor</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -717,6 +715,7 @@
       <pre class="lines">
 
 
+43
 44
 45
 46
@@ -742,11 +741,10 @@
 66
 67
 68
-69
-70</pre>
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_add_multiple_descriptors'>test_add_multiple_descriptors</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -795,6 +793,7 @@
       <pre class="lines">
 
 
+9
 10
 11
 12
@@ -802,11 +801,10 @@
 14
 15
 16
-17
-18</pre>
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/descriptor_test.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/descriptor_test.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_descriptor'>test_descriptor</span>
   <span class='id identifier rubyid_descriptor'>descriptor</span> <span class='op'>=</span> <span class='const'>Descriptor</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -837,6 +835,7 @@
       <pre class="lines">
 
 
+16
 17
 18
 19
@@ -851,11 +850,10 @@
 28
 29
 30
-31
-32</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_descriptor_serialization'>test_descriptor_serialization</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -893,18 +891,18 @@
       <pre class="lines">
 
 
+144
+145
+146
 147
 148
 149
 150
 151
-152
-153
-154
-155</pre>
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'lib/acts_as_descriptable/test/acts_as_descriptable_test.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_test_descriptor_xml'>test_descriptor_xml</span>
   <span class='id identifier rubyid_post'>post</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -925,9 +923,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:48 2016 by
+  Generated on Mon Dec 19 11:17:30 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

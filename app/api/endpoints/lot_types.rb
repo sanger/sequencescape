@@ -6,7 +6,6 @@
 
 class ::Endpoints::LotTypes < ::Core::Endpoint::Base
   model do
-
   end
 
   instance do
@@ -18,5 +17,4 @@ class ::Endpoints::LotTypes < ::Core::Endpoint::Base
       end
     end
   end
-
 end

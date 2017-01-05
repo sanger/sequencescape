@@ -65,7 +65,6 @@ class Admin::StudiesController < ApplicationController
     render partial: "filtered_studies"
   end
 
-
   def managed_update
     @study = Study.find(params[:id])
     redirect_if_not_owner_or_admin(@study)

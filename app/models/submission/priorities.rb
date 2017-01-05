@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 module Submission::Priorities
-
   def self.priorities
     %w(None Low Medium High)
   end
@@ -22,6 +21,4 @@ module Submission::Priorities
       validates_numericality_of :priority, { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 3 }
     end
   end
-
-
 end

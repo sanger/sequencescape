@@ -39,7 +39,6 @@ class Admin::UsersControllerTest < ActionController::TestCase
 
         @user_to_find = FactoryGirl.create :user, first_name: "Some", last_name: "Body", login: "sb1"
         @another_user = FactoryGirl.create :user, first_name: "No", last_name: "One", login: "no1"
-
       end
 
       should "find a user based on name" do

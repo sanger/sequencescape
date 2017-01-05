@@ -15,7 +15,6 @@ class Studies::DocumentsController < ApplicationController
     @documents = @study.documents
   end
 
-
   def new
     @study = Study.find(params[:study_id])
   end

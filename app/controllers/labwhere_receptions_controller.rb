@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class LabwhereReceptionsController < ApplicationController
-
   before_action :login_required, except: [:index, :create]
 
   def index
@@ -25,5 +24,4 @@ class LabwhereReceptionsController < ApplicationController
     end
     redirect_to labwhere_receptions_path, location_id: params[:location_id]
   end
-
 end

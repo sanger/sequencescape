@@ -113,7 +113,18 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>require &#39;curb&#39;</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -133,7 +144,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Apassword-instance_method" title="#:password (instance method)">#<strong>:password</strong>  &#x21d2; Object </a>
+      <a href="#password-instance_method" title="#password (instance method)">#<strong>password</strong>  &#x21d2; Object </a>
     
 
     
@@ -151,7 +162,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :password.</p>
+<p>Returns the value of attribute password.</p>
 </div></span>
   
 </li>
@@ -187,7 +198,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>returns emails of all admins.</p>
+</div></span>
   
 </li>
 
@@ -209,7 +222,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Encrypts some data with the salt.</p>
+</div></span>
   
 </li>
 
@@ -372,29 +387,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#encrypt_password-instance_method" title="#encrypt_password (instance method)">#<strong>encrypt_password</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Encrypts the password with the user salt.</p>
+</div></span>
   
 </li>
 
@@ -482,7 +477,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>User has a relationship by role to these studies.</p>
+</div></span>
   
 </li>
 
@@ -732,28 +729,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#password_required%3F-instance_method" title="#password_required? (instance method)">#<strong>password_required?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#privileged%3F-instance_method" title="#privileged? (instance method)">#<strong>privileged?</strong>(item = nil)  &#x21d2; Boolean </a>
     
 
@@ -900,7 +875,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>These create and unset the fields required for remembering users between
+browser closes.</p>
+</div></span>
   
 </li>
 
@@ -1182,7 +1160,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -1204,7 +1182,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="User/Authentication.html" title="User::Authentication (module)">Authentication</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="User/Authentication.html#authenticated%3F-instance_method" title="User::Authentication#authenticated? (method)">#authenticated?</a></span>, <span class='object_link'><a href="User/Authentication.html#included-class_method" title="User::Authentication.included (method)">included</a></span>, <span class='object_link'><a href="User/Authentication.html#update_profile_via_ldap-instance_method" title="User::Authentication#update_profile_via_ldap (method)">#update_profile_via_ldap</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="User/Authentication.html#authenticated%3F-instance_method" title="User::Authentication#authenticated? (method)">#authenticated?</a></span>, <span class='object_link'><a href="User/Authentication.html#included-class_method" title="User::Authentication.included (method)">included</a></span></p>
 
   
   
@@ -1232,11 +1210,11 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id=":password=-instance_method"></span>
+      <span id="password=-instance_method"></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":password-instance_method">
+  <h3 class="signature first" id="password-instance_method">
   
-    #<strong>:password</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>password</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1245,7 +1223,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :password</p>
+<p>Returns the value of attribute password</p>
 
 
   </div>
@@ -1266,9 +1244,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'app/models/user.rb', line 50</span>
 
-def :password
-  @:password
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_password'>password</span>
+  <span class='ivar'>@password</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1290,18 +1268,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>returns emails of all admins</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+189
 190
-191
-192</pre>
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 190</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 189</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_all_administrators_emails'>all_administrators_emails</span>
   <span class='id identifier rubyid_all_administrators'>all_administrators</span><span class='period'>.</span><span class='id identifier rubyid_pluck'>pluck</span><span class='lparen'>(</span><span class='symbol'>:email</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
@@ -1320,18 +1309,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Encrypts some data with the salt.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+194
 195
-196
-197</pre>
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 194</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_encrypt'>encrypt</span><span class='lparen'>(</span><span class='id identifier rubyid_password'>password</span><span class='comma'>,</span> <span class='id identifier rubyid_salt'>salt</span><span class='rparen'>)</span>
   <span class='const'>Digest</span><span class='op'>::</span><span class='const'>SHA1</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_salt'>salt</span><span class='embexpr_end'>}</span><span class='tstring_content'>--</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_password'>password</span><span class='embexpr_end'>}</span><span class='tstring_content'>--</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -1356,17 +1356,17 @@ end</pre>
       <pre class="lines">
 
 
+242
 243
 244
 245
 246
 247
 248
-249
-250</pre>
+249</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 243</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 242</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_lookup_by_barcode'>lookup_by_barcode</span><span class='lparen'>(</span><span class='id identifier rubyid_user_barcode'>user_barcode</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_barcode'>barcode</span> <span class='op'>=</span> <span class='const'>Barcode</span><span class='period'>.</span><span class='id identifier rubyid_barcode_to_human'>barcode_to_human</span><span class='lparen'>(</span><span class='id identifier rubyid_user_barcode'>user_barcode</span><span class='rparen'>)</span>
@@ -1448,6 +1448,7 @@ end</pre>
       <pre class="lines">
 
 
+231
 232
 233
 234
@@ -1456,11 +1457,10 @@ end</pre>
 237
 238
 239
-240
-241</pre>
+240</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 232</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 231</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_valid_barcode?'>valid_barcode?</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span>
   <span class='kw'>begin</span>
@@ -1468,7 +1468,7 @@ end</pre>
   <span class='kw'>rescue</span>
     <span class='kw'>return</span> <span class='kw'>false</span>
   <span class='kw'>end</span>
-  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_find_by_barcode'>find_by_barcode</span><span class='lparen'>(</span><span class='id identifier rubyid_human_code'>human_code</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='label'>barcode:</span> <span class='id identifier rubyid_human_code'>human_code</span><span class='rparen'>)</span>
 
   <span class='kw'>true</span>
 <span class='kw'>end</span></pre>
@@ -1520,12 +1520,12 @@ end</pre>
       <pre class="lines">
 
 
+184
 185
-186
-187</pre>
+186</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 185</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 184</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_administrator?'>administrator?</span>
   <span class='id identifier rubyid_is_administrator?'>is_administrator?</span>
@@ -1602,12 +1602,12 @@ end</pre>
       <pre class="lines">
 
 
+172
 173
-174
-175</pre>
+174</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 173</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 172</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_data_access_coordinator?'>data_access_coordinator?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data_access_coordinator</span><span class='tstring_end'>&#39;</span></span>
@@ -1626,55 +1626,32 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Encrypts the password with the user salt</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+205
 206
-207
-208</pre>
+207</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 205</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encrypt'>encrypt</span><span class='lparen'>(</span><span class='id identifier rubyid_password'>password</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_encrypt'>encrypt</span><span class='lparen'>(</span><span class='id identifier rubyid_password'>password</span><span class='comma'>,</span> <span class='id identifier rubyid_salt'>salt</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="encrypt_password-instance_method">
-  
-    #<strong>encrypt_password</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-254
-255
-256
-257
-258</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 254</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_encrypt_password'>encrypt_password</span>
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_password'>password</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_salt'>salt</span> <span class='op'>=</span> <span class='const'>Digest</span><span class='op'>::</span><span class='const'>SHA1</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--</span><span class='embexpr_beg'>#{</span><span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='embexpr_end'>}</span><span class='tstring_content'>--</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_login'>login</span><span class='embexpr_end'>}</span><span class='tstring_content'>--</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_new_record?'>new_record?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_crypted_password'>crypted_password</span> <span class='op'>=</span> <span class='id identifier rubyid_encrypt'>encrypt</span><span class='lparen'>(</span><span class='id identifier rubyid_password'>password</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1748,14 +1725,14 @@ end</pre>
       <pre class="lines">
 
 
+220
 221
 222
 223
-224
-225</pre>
+224</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 221</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 220</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_forget_me'>forget_me</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_remember_token_expires_at'>remember_token_expires_at</span> <span class='op'>=</span> <span class='kw'>nil</span>
@@ -1782,12 +1759,12 @@ end</pre>
       <pre class="lines">
 
 
+135
 136
-137
-138</pre>
+137</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 135</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_preference_for'>has_preference_for</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_setting_for?'>setting_for?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
@@ -1806,18 +1783,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>User has a relationship by role to these studies</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+227
 228
-229
-230</pre>
+229</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 228</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 227</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_interesting_studies'>interesting_studies</span>
   <span class='const'>Study</span><span class='period'>.</span><span class='id identifier rubyid_of_interest_to'>of_interest_to</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -1864,12 +1852,12 @@ end</pre>
       <pre class="lines">
 
 
+143
 144
-145
-146</pre>
+145</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 144</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 143</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_internal?'>internal?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>internal</span><span class='tstring_end'>&#39;</span></span>
@@ -1916,12 +1904,12 @@ end</pre>
       <pre class="lines">
 
 
+163
 164
-165
-166</pre>
+165</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 163</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_lab?'>lab?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>lab</span><span class='tstring_end'>&#39;</span></span>
@@ -1968,12 +1956,12 @@ end</pre>
       <pre class="lines">
 
 
+151
 152
-153
-154</pre>
+153</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 152</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 151</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_lab_manager?'>lab_manager?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>lab_manager</span><span class='tstring_end'>&#39;</span></span>
@@ -2011,7 +1999,7 @@ end</pre>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_logout_path'>logout_path</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_authentication'>authentication</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sanger-sso</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_sso_logout_url'>sso_logout_url</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>return</span> <span class='lparen'>(</span><span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_sso_logout_url'>sso_logout_url</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
   <span class='kw'>else</span>
     <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/logout</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
@@ -2058,12 +2046,12 @@ end</pre>
       <pre class="lines">
 
 
+180
 181
-182
-183</pre>
+182</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 181</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 180</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manager?'>manager?</span>
   <span class='id identifier rubyid_is_manager?'>is_manager?</span>
@@ -2110,12 +2098,12 @@ end</pre>
       <pre class="lines">
 
 
+176
 177
-178
-179</pre>
+178</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 176</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manager_or_administrator?'>manager_or_administrator?</span>
   <span class='id identifier rubyid_is_administrator?'>is_administrator?</span> <span class='op'>||</span> <span class='id identifier rubyid_is_manager?'>is_manager?</span>
@@ -2274,14 +2262,14 @@ end</pre>
       <pre class="lines">
 
 
+198
 199
 200
 201
-202
-203</pre>
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 199</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 198</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_new_api_key'>new_api_key</span><span class='lparen'>(</span><span class='id identifier rubyid_length'>length</span> <span class='op'>=</span> <span class='int'>32</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_u'>u</span> <span class='op'>=</span> <span class='const'>Digest</span><span class='op'>::</span><span class='const'>SHA1</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_login'>login</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>0</span><span class='op'>..</span><span class='int'>12</span><span class='rbracket'>]</span>
@@ -2330,69 +2318,17 @@ end</pre>
       <pre class="lines">
 
 
+167
 168
 169
-170
-171</pre>
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_owner?'>owner?</span><span class='lparen'>(</span><span class='id identifier rubyid_item'>item</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='id identifier rubyid_item'>item</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>owner</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_item'>item</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="password_required?-instance_method">
-  
-    #<strong>password_required?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-260
-261
-262</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 260</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_password_required?'>password_required?</span>
-  <span class='id identifier rubyid_crypted_password'>crypted_password</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='op'>||</span> <span class='op'>!</span><span class='id identifier rubyid_password'>password</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2436,12 +2372,12 @@ end</pre>
       <pre class="lines">
 
 
+139
 140
-141
-142</pre>
+141</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 139</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_privileged?'>privileged?</span><span class='lparen'>(</span><span class='id identifier rubyid_item'>item</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_manager_or_administrator?'>manager_or_administrator?</span> <span class='op'>||</span> <span class='id identifier rubyid_owner?'>owner?</span><span class='lparen'>(</span><span class='id identifier rubyid_item'>item</span><span class='rparen'>)</span>
@@ -2658,12 +2594,12 @@ end</pre>
       <pre class="lines">
 
 
+147
 148
-149
-150</pre>
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qa_manager?'>qa_manager?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qa_manager</span><span class='tstring_end'>&#39;</span></span>
@@ -2682,20 +2618,32 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>These create and unset the fields required for remembering users between
+browser closes</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+214
 215
 216
 217
-218
-219</pre>
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 215</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 214</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remember_me'>remember_me</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_remember_token_expires_at'>remember_token_expires_at</span> <span class='op'>=</span> <span class='int'>2</span><span class='period'>.</span><span class='id identifier rubyid_weeks'>weeks</span><span class='period'>.</span><span class='id identifier rubyid_from_now'>from_now</span><span class='period'>.</span><span class='id identifier rubyid_utc'>utc</span>
@@ -2744,12 +2692,12 @@ end</pre>
       <pre class="lines">
 
 
+209
 210
-211
-212</pre>
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 210</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remember_token?'>remember_token?</span>
   <span class='id identifier rubyid_remember_token_expires_at'>remember_token_expires_at</span> <span class='op'>&amp;&amp;</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_utc'>utc</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_remember_token_expires_at'>remember_token_expires_at</span>
@@ -2796,12 +2744,12 @@ end</pre>
       <pre class="lines">
 
 
+159
 160
-161
-162</pre>
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 160</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_slf_gel?'>slf_gel?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>slf_gel</span><span class='tstring_end'>&#39;</span></span>
@@ -2848,12 +2796,12 @@ end</pre>
       <pre class="lines">
 
 
+155
 156
-157
-158</pre>
+157</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 156</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_slf_manager?'>slf_manager?</span>
   <span class='id identifier rubyid_has_role?'>has_role?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>slf_manager</span><span class='tstring_end'>&#39;</span></span>
@@ -2908,12 +2856,12 @@ end</pre>
       <pre class="lines">
 
 
+127
 128
-129
-130</pre>
+129</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 127</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sorted_study_names_and_ids'>sorted_study_names_and_ids</span>
   <span class='id identifier rubyid_interesting_studies'>interesting_studies</span><span class='period'>.</span><span class='id identifier rubyid_alphabetical'>alphabetical</span><span class='period'>.</span><span class='id identifier rubyid_pluck'>pluck</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:id</span><span class='rparen'>)</span>
@@ -3088,12 +3036,12 @@ end</pre>
       <pre class="lines">
 
 
+131
 132
-133
-134</pre>
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'app/models/user.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_workflow_name'>workflow_name</span>
   <span class='id identifier rubyid_workflow'>workflow</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_workflow'>workflow</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
@@ -3108,9 +3056,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:51 2016 by
+  Generated on Mon Dec 19 11:16:37 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -13,7 +13,6 @@
 require 'aasm'
 
 class Qcable < ActiveRecord::Base
-
   include Uuid::Uuidable
   include AASM
   include Qcable::Statemachine
@@ -77,5 +76,4 @@ class Qcable < ActiveRecord::Base
     return true if lot.nil?
     self.asset ||= asset_purpose.create!()
   end
-
 end

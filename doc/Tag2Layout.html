@@ -108,7 +108,20 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Lays out the tags in the specified tag group in a particular pattern.</p>
+
+<p>Applies a single tag 2 to the entire plate</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -128,7 +141,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Alayout_template%3D-instance_method" title="#:layout_template= (instance method)">#<strong>:layout_template=</strong>  &#x21d2; Object </a>
+      <a href="#layout_template-instance_method" title="#layout_template (instance method)">#<strong>layout_template</strong>  &#x21d2; Object </a>
     
 
     
@@ -138,8 +151,6 @@
   
     
     
-      <span class="note title writeonly">writeonly</span>
-    
   
   
   
@@ -147,9 +158,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Sets the attribute :layout_template.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -171,28 +180,6 @@
   <span class="summary_signature">
     
       <a href="#layout_tag2_into_wells-instance_method" title="#layout_tag2_into_wells (instance method)">#<strong>layout_tag2_into_wells</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#layout_template-instance_method" title="#layout_template (instance method)">#<strong>layout_template</strong>  &#x21d2; Object </a>
     
 
     
@@ -246,7 +233,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -274,63 +261,32 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id=""></span>
+      <span id="layout_template=-instance_method"></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":layout_template=-instance_method">
+  <h3 class="signature first" id="layout_template-instance_method">
   
-    #<strong>:layout_template=</strong>(value)  &#x21d2; <tt>Object</tt>  <span class="extras">(writeonly)</span>
-  
-
+    #<strong>layout_template</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Sets the attribute :layout_template</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>value</span>
-      
-      
-        <span class='type'></span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the value to set the attribute :layout_template to.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-
-</div><table class="source_code">
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-13
-14
-15</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tag2_layout.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'app/models/tag2_layout.rb', line 64</span>
 
-def :layout_template=(value)
-  @:layout_template = value
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_layout_template'>layout_template</span>
+  <span class='ivar'>@layout_template</span> <span class='op'>||</span> <span class='const'>Tag2LayoutTemplate</span><span class='period'>.</span><span class='id identifier rubyid_find_by_tag_id'>find_by_tag_id</span><span class='lparen'>(</span><span class='id identifier rubyid_tag'>tag</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -382,36 +338,6 @@ end</pre>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="layout_template-instance_method">
-  
-    #<strong>layout_template</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-64
-65
-66</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tag2_layout.rb', line 64</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_layout_template'>layout_template</span>
-  <span class='ivar'>@layout_template</span> <span class='op'>||</span> <span class='const'>Tag2LayoutTemplate</span><span class='period'>.</span><span class='id identifier rubyid_find_by_tag_id'>find_by_tag_id</span><span class='lparen'>(</span><span class='id identifier rubyid_tag'>tag</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="record_template_use-instance_method">
   
     #<strong>record_template_use</strong>  &#x21d2; <tt>Object</tt> 
@@ -450,9 +376,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:05 2016 by
+  Generated on Mon Dec 19 11:16:50 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

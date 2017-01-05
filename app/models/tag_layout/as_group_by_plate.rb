@@ -5,7 +5,6 @@
 # Assigns multiple tags to each well.
 
 module TagLayout::AsGroupByPlate
-
   attr_writer :tags_per_well
 
   DEFAULT_TAGS_PER_WELL = 4

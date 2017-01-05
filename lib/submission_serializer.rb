@@ -19,7 +19,6 @@
 # }
 
 module SubmissionSerializer
-
   STRAIGHT_CLONE = ['name', 'submission_class_name']
   SP_STRAIGHT_CLONE = [:info_differential, :asset_input_methods, :request_options]
 
@@ -57,7 +56,6 @@ module SubmissionSerializer
   end
 
   def self.construct!(hash)
-
     st = {}
 
     STRAIGHT_CLONE.each do |key|

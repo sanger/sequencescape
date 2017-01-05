@@ -3,7 +3,6 @@
 # or just before the specific one requested.
 namespace :benchmark do
   task setup: :environment do
-
     plate_count = ENV['PLATECOUNT'] || 25
     $stderr.puts "Building WGS submissions ..."
 
@@ -28,7 +27,7 @@ namespace :benchmark do
     [
       'Pulldown WGS'
     ].each do |pipeline|
-      $stderr.puts "#{pipeline}"
+      $stderr.puts pipeline.to_s
 
       $stderr.puts "Building #{plate_count} Plates"
       plate_count.times do
@@ -64,6 +63,5 @@ namespace :benchmark do
       end
       $stderr.puts ""
     end
-
   end
 end

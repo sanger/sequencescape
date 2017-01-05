@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 ##
 # FlexibleSubmissions allow multiplexing based on
 # pooling properties defined on the multiplexed request type
@@ -28,5 +27,4 @@ class FlexibleSubmission < Order
     yield(request_types.first.to_s.to_sym) if mxr.empty?
     nil
   end
-
 end

@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 require './lib/product_helpers'
 
 [

@@ -7,7 +7,6 @@
 require "test_helper"
 
 class PlateTemplateTest < ActiveSupport::TestCase
-
   context "A plate template" do
     [1, 0, "1"].each_with_index do |i, index|
       context "with a control well set to #{i} - #{index}" do
@@ -78,6 +77,5 @@ class PlateTemplateTest < ActiveSupport::TestCase
         assert_equal @old_wells + 2, Well.count
       end
     end
-
   end
 end

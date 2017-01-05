@@ -1,9 +1,7 @@
 
 module LabelPrinter
   module Label
-
     class RobotBeds < BasePlate
-
       attr_reader :plates
 
       def initialize(beds)
@@ -15,7 +13,7 @@ module LabelPrinter
       end
 
       def bottom_right(bed)
-        "#{bed.ean13_barcode}"
+        (bed.ean13_barcode).to_s
       end
     end
   end

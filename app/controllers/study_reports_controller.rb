@@ -47,6 +47,4 @@ class StudyReportsController < ApplicationController
     filename: "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
     disposition: 'attachment')
   end
-
-
 end

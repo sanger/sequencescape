@@ -103,7 +103,18 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>CarrierWave</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -135,7 +146,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>This is where files are stored on upload.</p>
+</div></span>
   
 </li>
 
@@ -258,7 +271,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>store! nils the cache_id after it finishes so we need to remember it for
+deletion.</p>
+</div></span>
   
 </li>
 
@@ -327,7 +343,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>This is where files are stored on upload. We are using callbacks to empty
+it after upload</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -399,15 +427,15 @@
       <pre class="lines">
 
 
+135
 136
 137
 138
 139
-140
-141</pre>
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/uploaders/polymorphic_uploader.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'app/uploaders/polymorphic_uploader.rb', line 135</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_tmp_dir'>delete_tmp_dir</span><span class='lparen'>(</span><span class='id identifier rubyid_new_file'>new_file</span><span class='rparen'>)</span>
   <span class='comment'># make sure we don&#39;t delete other things accidentally by checking the name pattern
@@ -481,18 +509,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>store! nils the cache_id after it finishes so we need to remember it for
+deletion</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+131
 132
-133
-134</pre>
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/uploaders/polymorphic_uploader.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'app/uploaders/polymorphic_uploader.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remember_cache_id'>remember_cache_id</span><span class='lparen'>(</span><span class='id identifier rubyid_new_file'>new_file</span><span class='rparen'>)</span>
   <span class='ivar'>@cache_id_was</span> <span class='op'>=</span> <span class='id identifier rubyid_cache_id'>cache_id</span>
@@ -507,9 +547,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:30 2016 by
+  Generated on Mon Dec 19 11:17:13 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

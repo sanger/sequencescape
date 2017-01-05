@@ -39,5 +39,4 @@ class Api::AssetAuditIO < Api::Base
       map_attribute_to_json_attribute(:prefix, 'plate_barcode_prefix')
     end
   end
-
 end

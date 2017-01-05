@@ -66,7 +66,6 @@ class LibraryTube < Tube
   end
 
   def library_information=(library_information)
-
     library_information[:tag]  = find_tag(library_information[:tag])
     library_information[:tag2] = find_tag(library_information[:tag2]) if library_information[:tag2]
 

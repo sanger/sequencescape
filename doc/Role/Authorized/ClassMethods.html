@@ -168,15 +168,15 @@
       <pre class="lines">
 
 
+57
 58
 59
 60
 61
-62
-63</pre>
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/role.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'app/models/role.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_many_users_through_roles'>has_many_users_through_roles</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_define_method'>define_method</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_pluralize'>pluralize</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -204,15 +204,15 @@
       <pre class="lines">
 
 
+50
 51
 52
 53
 54
-55
-56</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/role.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'app/models/role.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_role_relation'>role_relation</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_role_name'>role_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_scope'>scope</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span> <span class='tlambeg'>{</span>
@@ -230,9 +230,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:27 2016 by
+  Generated on Mon Dec 19 11:16:22 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

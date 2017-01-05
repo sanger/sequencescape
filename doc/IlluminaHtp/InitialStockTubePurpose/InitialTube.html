@@ -122,7 +122,14 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>We find sibling tubes by first finding the outer request type (library
+completion) and the transfer request type We find all outer requests of the
+same type in the submission, and match these up with the transfer requests
+The RIGHT OUTER JOIN ensures we have a null result for any outer requests
+which don&#39;t have matching transfer requests We only pick up open
+requests, just in case a whole tube has failed / been cancelled.</p>
+</div></span>
   
 </li>
 
@@ -189,12 +196,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>We find sibling tubes by first finding the outer request type (library
+completion) and the transfer request type We find all outer requests of the
+same type in the submission, and match these up with the transfer requests
+The RIGHT OUTER JOIN ensures we have a null result for any outer requests
+which don&#39;t have matching transfer requests We only pick up open
+requests, just in case a whole tube has failed / been cancelled.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+29
+30
 31
 32
 33
@@ -211,12 +236,10 @@
 44
 45
 46
-47
-48
-49</pre>
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/illumina_htp/initial_stock_tube_purpose.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'app/models/illumina_htp/initial_stock_tube_purpose.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sibling_tubes'>sibling_tubes</span><span class='lparen'>(</span><span class='id identifier rubyid_tube'>tube</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_tube'>tube</span><span class='period'>.</span><span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -230,7 +253,7 @@
       <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RIGHT OUTER JOIN requests AS outr ON outr.asset_id = tfr.asset_id AND outr.asset_id IS NOT NULL</span><span class='tstring_end'>&#39;</span></span>
     <span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span>
     <span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span>
-      <span class='label'>outr:</span> <span class='lbrace'>{</span> <span class='label'>submission_id:</span> <span class='id identifier rubyid_submission_id'>submission_id</span><span class='comma'>,</span> <span class='label'>request_type_id:</span> <span class='id identifier rubyid_outr_request_type'>outr_request_type</span><span class='comma'>,</span>  <span class='label'>state:</span> <span class='const'>Request</span><span class='op'>::</span><span class='const'>Statemachine</span><span class='op'>::</span><span class='const'>OPENED_STATE</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>outr:</span> <span class='lbrace'>{</span> <span class='label'>submission_id:</span> <span class='id identifier rubyid_submission_id'>submission_id</span><span class='comma'>,</span> <span class='label'>request_type_id:</span> <span class='id identifier rubyid_outr_request_type'>outr_request_type</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='const'>Request</span><span class='op'>::</span><span class='const'>Statemachine</span><span class='op'>::</span><span class='const'>OPENED_STATE</span> <span class='rbrace'>}</span><span class='comma'>,</span>
       <span class='label'>tfr:</span>  <span class='lbrace'>{</span> <span class='label'>request_type_id:</span> <span class='id identifier rubyid_tfr_request_type'>tfr_request_type</span><span class='comma'>,</span> <span class='label'>submission_id:</span> <span class='id identifier rubyid_submission_id'>submission_id</span> <span class='rbrace'>}</span>
     <span class='rparen'>)</span><span class='period'>.</span>
     <span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:uuid_object</span><span class='comma'>,</span> <span class='symbol'>:barcode_prefix</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -257,6 +280,8 @@
       <pre class="lines">
 
 
+13
+14
 15
 16
 17
@@ -264,12 +289,10 @@
 19
 20
 21
-22
-23
-24</pre>
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/illumina_htp/initial_stock_tube_purpose.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/illumina_htp/initial_stock_tube_purpose.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transition_to'>transition_to</span><span class='lparen'>(</span><span class='id identifier rubyid_tube'>tube</span><span class='comma'>,</span> <span class='id identifier rubyid_state'>state</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_customer_accepts_responsibility'>customer_accepts_responsibility</span> <span class='op'>=</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
@@ -323,12 +346,12 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+9
+10
+11</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/illumina_htp/initial_stock_tube_purpose.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'app/models/illumina_htp/initial_stock_tube_purpose.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_transition?'>valid_transition?</span><span class='lparen'>(</span><span class='id identifier rubyid_outer_request'>outer_request</span><span class='comma'>,</span> <span class='id identifier rubyid_target_state'>target_state</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_target_state'>target_state</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>started</span><span class='tstring_end'>&#39;</span></span> <span class='op'>||</span> <span class='id identifier rubyid_outer_request'>outer_request</span><span class='period'>.</span><span class='id identifier rubyid_pending?'>pending?</span>
@@ -343,9 +366,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:47 2016 by
+  Generated on Mon Dec 19 11:16:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

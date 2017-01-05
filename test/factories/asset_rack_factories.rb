@@ -4,8 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 FactoryGirl.define do
-
-
   factory :strip_tube_purpose, class: PlatePurpose do
     name               { FactoryGirl.generate :purpose_name }
     size               "8"
@@ -21,5 +19,4 @@ FactoryGirl.define do
       st.wells.import(st.maps.map { |map| create(:well, map: map) })
     end
   end
-
 end

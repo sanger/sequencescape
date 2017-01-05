@@ -106,7 +106,18 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A list of conditional formattings for a single entity e.g. Column.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -116,7 +127,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aconditional_formattings-instance_method" title="#:conditional_formattings (instance method)">#<strong>:conditional_formattings</strong>  &#x21d2; Object </a>
+      <a href="#conditional_formattings-instance_method" title="#conditional_formattings (instance method)">#<strong>conditional_formattings</strong>  &#x21d2; Object </a>
     
 
     
@@ -136,7 +147,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :conditional_formattings.</p>
+<p>Defaults to an empty hash.</p>
 </div></span>
   
 </li>
@@ -180,28 +191,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#conditional_formattings-instance_method" title="#conditional_formattings (instance method)">#<strong>conditional_formattings</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#create_conditional_formattings-instance_method" title="#create_conditional_formattings (instance method)">#<strong>create_conditional_formattings</strong>(conditional_formattings)  &#x21d2; Object </a>
     
 
@@ -216,7 +205,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>create a new conditional formatting for each item in the passed hash for
+each key.</p>
+</div></span>
   
 </li>
 
@@ -260,7 +252,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Extracts each item.</p>
+</div></span>
   
 </li>
 
@@ -268,7 +262,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(conditional_formattings = {}) {|self| ... } &#x21d2; ConditionalFormattingList </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(conditional_formattings = {}) {|_self| ... } &#x21d2; ConditionalFormattingList </a>
     
 
     
@@ -308,7 +302,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The conditional formattings instance variable needs to be reset to an empty
+hash otherwise the hash is still copied and will not duplicate correctly.</p>
+</div></span>
   
 </li>
 
@@ -330,29 +327,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#reset%21-instance_method" title="#reset! (instance method)">#<strong>reset!</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Collect all of the options for each item in the list.</p>
+</div></span>
   
 </li>
 
@@ -374,7 +351,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>A list has been saved if the options have been passed to a worksheet.</p>
+</div></span>
   
 </li>
 
@@ -396,7 +375,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Forwarding method.</p>
+</div></span>
   
 </li>
 
@@ -412,7 +393,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(conditional_formattings = {}) {|self| ... } &#x21d2; <tt><span class='object_link'><a href="" title="SampleManifestExcel::ConditionalFormattingList (class)">ConditionalFormattingList</a></span></tt> 
+    #<strong>initialize</strong>(conditional_formattings = {}) {|_self| ... } &#x21d2; <tt><span class='object_link'><a href="" title="SampleManifestExcel::ConditionalFormattingList (class)">ConditionalFormattingList</a></span></tt> 
   
 
   
@@ -434,9 +415,29 @@
     <li>
       
       
-        <span class='type'>(<tt>self</tt>)</span>
+        <span class='type'>(<tt>_self</tt>)</span>
       
       
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Yield Parameters:</p>
+<ul class="yieldparam">
+  
+    <li>
+      
+        <span class='name'>_self</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SampleManifestExcel::ConditionalFormattingList (class)">SampleManifestExcel::ConditionalFormattingList</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the object that the method was called on</p>
+</div>
       
     </li>
   
@@ -448,13 +449,13 @@
       <pre class="lines">
 
 
+12
+13
 14
-15
-16
-17</pre>
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_create_conditional_formattings'>create_conditional_formattings</span><span class='lparen'>(</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='rparen'>)</span>
@@ -473,9 +474,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":conditional_formattings-instance_method">
+  <h3 class="signature first" id="conditional_formattings-instance_method">
   
-    #<strong>:conditional_formattings</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>conditional_formattings</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -484,7 +485,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :conditional_formattings</p>
+<p>Defaults to an empty hash</p>
 
 
   </div>
@@ -498,16 +499,16 @@
       <pre class="lines">
 
 
-10
-11
-12</pre>
+19
+20
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 19</span>
 
-def :conditional_formattings
-  @:conditional_formattings
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span>
+  <span class='ivar'>@conditional_formattings</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -535,47 +536,17 @@ end</pre>
       <pre class="lines">
 
 
-80
-81
-82
-83</pre>
+76
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span> <span class='op'>&lt;=&gt;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="conditional_formattings-instance_method">
-  
-    #<strong>conditional_formattings</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-21
-22
-23</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 21</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span>
-  <span class='ivar'>@conditional_formattings</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -591,26 +562,38 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>create a new conditional formatting for each item in the passed hash for
+each key.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+58
+59
+60
+61
 62
 63
 64
 65
 66
 67
-68
-69
-70
-71
-72</pre>
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_conditional_formattings'>create_conditional_formattings</span><span class='lparen'>(</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_cf'>cf</span><span class='op'>|</span>
@@ -643,12 +626,12 @@ end</pre>
       <pre class="lines">
 
 
-25
-26
-27</pre>
+23
+24
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -667,18 +650,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Extracts each item</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-31
-32
-33</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each_item'>each_item</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -697,20 +691,33 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The conditional formattings instance variable needs to be reset to an empty
+hash otherwise the hash is still copied and will not duplicate correctly.
+TODO: extract the behaviour out of all the lists and make it more generic.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-89
-90
-91
-92
-93</pre>
+85
+86
+87
+88
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 85</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_dup'>initialize_dup</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_reset!'>reset!</span>
@@ -731,51 +738,32 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Collect all of the options for each item in the list.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-55
-56
-57</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:options</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="reset!-instance_method">
-  
-    #<strong>reset!</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-97
-98
-99</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 97</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_reset!'>reset!</span>
-  <span class='ivar'>@conditional_formattings</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -794,6 +782,8 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>A list has been saved if the options have been passed to a worksheet.</p>
+
 
   </div>
 </div>
@@ -819,12 +809,12 @@ end</pre>
       <pre class="lines">
 
 
-76
-77
-78</pre>
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_saved?'>saved?</span>
   <span class='ivar'>@saved</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -843,12 +833,27 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Forwarding method. Calls update on each conditional formatting. If the
+attributes contain a worksheet will add all of the options for the list to
+a reference in the worksheet.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+37
+38
 39
 40
 41
@@ -857,12 +862,10 @@ end</pre>
 44
 45
 46
-47
-48
-49</pre>
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update'>update</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_conditional_formatting'>conditional_formatting</span><span class='op'>|</span>
@@ -885,9 +888,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:58 2016 by
+  Generated on Mon Dec 19 11:17:38 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

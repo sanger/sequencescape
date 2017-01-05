@@ -38,7 +38,6 @@ module Submission::AssetSubmissionFinder
   end
 
   def find_tubes_including_samples_for!(details)
-
     prefix_cache = Hash.new { |cache, prefix| cache[prefix] = BarcodePrefix.find_by_prefix(prefix) }
 
     details['barcode'].map do |barcode|

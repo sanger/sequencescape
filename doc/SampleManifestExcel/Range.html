@@ -106,7 +106,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A range of cells signified by a reference. The options are a range of text
+values which are used to validate a value. The first row is the only
+mandatory field everything else can be inferred. Each field that is not
+passed in the initializer is lazy loaded.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -116,7 +130,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aabsolute_reference-instance_method" title="#:absolute_reference (instance method)">#<strong>:absolute_reference</strong>  &#x21d2; Object </a>
+      <a href="#absolute_reference-instance_method" title="#absolute_reference (instance method)">#<strong>absolute_reference</strong>  &#x21d2; Object </a>
     
 
     
@@ -136,7 +150,8 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :absolute_reference.</p>
+<p>An absolute reference is defined as a reference preceded by the name of the
+worksheet to find a reference that is not in the current worksheet e.g.</p>
 </div></span>
   
 </li>
@@ -145,7 +160,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Afirst_cell-instance_method" title="#:first_cell (instance method)">#<strong>:first_cell</strong>  &#x21d2; Object </a>
+      <a href="#first_cell-instance_method" title="#first_cell (instance method)">#<strong>first_cell</strong>  &#x21d2; Object </a>
     
 
     
@@ -165,7 +180,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :first_cell.</p>
+<p>Returns the value of attribute first_cell.</p>
 </div></span>
   
 </li>
@@ -174,7 +189,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Alast_cell-instance_method" title="#:last_cell (instance method)">#<strong>:last_cell</strong>  &#x21d2; Object </a>
+      <a href="#last_cell-instance_method" title="#last_cell (instance method)">#<strong>last_cell</strong>  &#x21d2; Object </a>
     
 
     
@@ -194,7 +209,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :last_cell.</p>
+<p>Returns the value of attribute last_cell.</p>
 </div></span>
   
 </li>
@@ -203,7 +218,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Areference-instance_method" title="#:reference (instance method)">#<strong>:reference</strong>  &#x21d2; Object </a>
+      <a href="#reference-instance_method" title="#reference (instance method)">#<strong>reference</strong>  &#x21d2; Object </a>
     
 
     
@@ -223,7 +238,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :reference.</p>
+<p>The reference for a range is a valid Excel reference e.g.</p>
 </div></span>
   
 </li>
@@ -245,28 +260,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#absolute_reference-instance_method" title="#absolute_reference (instance method)">#<strong>absolute_reference</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#first_cell_reference-instance_method" title="#first_cell_reference (instance method)">#<strong>first_cell_reference</strong>  &#x21d2; Object </a>
     
 
@@ -281,7 +274,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The reference of the first cell.</p>
+</div></span>
   
 </li>
 
@@ -303,7 +298,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If not defined defaults to one.</p>
+</div></span>
   
 </li>
 
@@ -350,7 +347,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>A new instance of Range.</p>
+<p>If the range is valid i.e.</p>
 </div></span>
   
 </li>
@@ -373,7 +370,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If not defined and options are empty is set to first column.</p>
+</div></span>
   
 </li>
 
@@ -395,7 +394,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If not defined is set to the first row.</p>
+</div></span>
   
 </li>
 
@@ -417,29 +418,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#reference-instance_method" title="#reference (instance method)">#<strong>reference</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If not defined is set to an empty hash.</p>
+</div></span>
   
 </li>
 
@@ -461,7 +442,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Return a list of references which are generally used together in other
+classes of the module.</p>
+</div></span>
   
 </li>
 
@@ -483,7 +467,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Set the worksheet name and return the range.</p>
+</div></span>
   
 </li>
 
@@ -505,7 +491,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>A range is only valid if the first row is present.</p>
+</div></span>
   
 </li>
 
@@ -541,7 +529,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns a new instance of Range</p>
+<p>If the range is valid i.e. has a first row then a first cell and last cell
+are created these are used for references.</p>
 
 
   </div>
@@ -555,17 +544,17 @@
       <pre class="lines">
 
 
+17
+18
 19
 20
 21
 22
 23
-24
-25
-26</pre>
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_create_attributes'>create_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
@@ -588,9 +577,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":absolute_reference-instance_method">
+  <h3 class="signature first" id="absolute_reference-instance_method">
   
-    #<strong>:absolute_reference</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>absolute_reference</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -599,7 +588,10 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :absolute_reference</p>
+<p>An absolute reference is defined as a reference preceded by the name of the
+worksheet to find a reference that is not in the current worksheet e.g.
+Sheet1!A1:A100 If the worksheet name is not present just returns the
+reference.</p>
 
 
   </div>
@@ -613,16 +605,16 @@
       <pre class="lines">
 
 
-14
-15
-16</pre>
+76
+77
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 76</span>
 
-def :absolute_reference
-  @:absolute_reference
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_absolute_reference'>absolute_reference</span>
+  <span class='ivar'>@absolute_reference</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -631,9 +623,9 @@ end</pre>
       
       <span id=""></span>
       <div class="method_details ">
-  <h3 class="signature " id=":first_cell-instance_method">
+  <h3 class="signature " id="first_cell-instance_method">
   
-    #<strong>:first_cell</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>first_cell</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -642,7 +634,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :first_cell</p>
+<p>Returns the value of attribute first_cell</p>
 
 
   </div>
@@ -656,16 +648,16 @@ end</pre>
       <pre class="lines">
 
 
-14
-15
-16</pre>
+12
+13
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 12</span>
 
-def :first_cell
-  @:first_cell
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_first_cell'>first_cell</span>
+  <span class='ivar'>@first_cell</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -674,9 +666,9 @@ end</pre>
       
       <span id=""></span>
       <div class="method_details ">
-  <h3 class="signature " id=":last_cell-instance_method">
+  <h3 class="signature " id="last_cell-instance_method">
   
-    #<strong>:last_cell</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>last_cell</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -685,7 +677,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :last_cell</p>
+<p>Returns the value of attribute last_cell</p>
 
 
   </div>
@@ -699,16 +691,16 @@ end</pre>
       <pre class="lines">
 
 
-14
-15
-16</pre>
+12
+13
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 12</span>
 
-def :last_cell
-  @:last_cell
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_last_cell'>last_cell</span>
+  <span class='ivar'>@last_cell</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -717,9 +709,9 @@ end</pre>
       
       <span id=""></span>
       <div class="method_details ">
-  <h3 class="signature " id=":reference-instance_method">
+  <h3 class="signature " id="reference-instance_method">
   
-    #<strong>:reference</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>reference</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -728,7 +720,9 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :reference</p>
+<p>The reference for a range is a valid Excel reference e.g. $A$1:$H$10
+Defined by the fixed reference of the first cell and the fixed reference of
+the last cell.</p>
 
 
   </div>
@@ -742,16 +736,16 @@ end</pre>
       <pre class="lines">
 
 
-14
-15
-16</pre>
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 58</span>
 
-def :reference
-  @:reference
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_reference'>reference</span>
+  <span class='ivar'>@reference</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -765,45 +759,7 @@ end</pre>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="absolute_reference-instance_method">
-  
-    #<strong>absolute_reference</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-78
-79
-80
-81
-82
-83
-84</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 78</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_absolute_reference'>absolute_reference</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_worksheet_name'>worksheet_name</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_worksheet_name'>worksheet_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>!</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_fixed_reference'>fixed_reference</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>else</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_fixed_reference'>fixed_reference</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="first_cell_reference-instance_method">
+  <h3 class="signature first" id="first_cell_reference-instance_method">
   
     #<strong>first_cell_reference</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -811,18 +767,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The reference of the first cell.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-70
-71
-72</pre>
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_first_cell_reference'>first_cell_reference</span>
   <span class='id identifier rubyid_first_cell'>first_cell</span><span class='period'>.</span><span class='id identifier rubyid_reference'>reference</span>
@@ -841,18 +808,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>If not defined defaults to one.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-29
-30
-31</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_first_column'>first_column</span>
   <span class='ivar'>@first_column</span> <span class='op'>||=</span> <span class='int'>1</span>
@@ -877,12 +855,12 @@ end</pre>
       <pre class="lines">
 
 
-64
-65
-66</pre>
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fixed_reference'>fixed_reference</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_first_cell'>first_cell</span><span class='period'>.</span><span class='id identifier rubyid_fixed'>fixed</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_last_cell'>last_cell</span><span class='period'>.</span><span class='id identifier rubyid_fixed'>fixed</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -901,22 +879,35 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>If not defined and options are empty is set to first column. If not defined
+and there are options is set to first column plus the the number of options
+minus one.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+34
+35
 36
 37
 38
 39
-40
-41
-42</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_last_column'>last_column</span>
   <span class='ivar'>@last_column</span> <span class='op'>||=</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -939,18 +930,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>If not defined is set to the first row</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-46
-47
-48</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_last_row'>last_row</span>
   <span class='ivar'>@last_row</span> <span class='op'>||=</span> <span class='id identifier rubyid_first_row'>first_row</span>
@@ -969,51 +971,32 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>If not defined is set to an empty hash.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-52
-53
-54</pre>
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@options</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="reference-instance_method">
-  
-    #<strong>reference</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-60
-61
-62</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 60</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_reference'>reference</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_first_cell'>first_cell</span><span class='period'>.</span><span class='id identifier rubyid_reference'>reference</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_last_cell'>last_cell</span><span class='period'>.</span><span class='id identifier rubyid_reference'>reference</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1029,23 +1012,35 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Return a list of references which are generally used together in other
+classes of the module.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+100
+101
 102
 103
 104
 105
 106
-107
-108
-109</pre>
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_references'>references</span>
   <span class='lbrace'>{</span>
@@ -1069,19 +1064,30 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Set the worksheet name and return the range</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+86
+87
 88
-89
-90
-91</pre>
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_worksheet_name'>set_worksheet_name</span><span class='lparen'>(</span><span class='id identifier rubyid_worksheet_name'>worksheet_name</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_worksheet_name'>worksheet_name</span> <span class='op'>=</span> <span class='id identifier rubyid_worksheet_name'>worksheet_name</span>
@@ -1104,6 +1110,8 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>A range is only valid if the first row is present.</p>
+
 
   </div>
 </div>
@@ -1129,12 +1137,12 @@ end</pre>
       <pre class="lines">
 
 
-95
-96
-97</pre>
+93
+94
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/range.rb', line 93</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid?'>valid?</span>
   <span class='id identifier rubyid_first_row'>first_row</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -1149,9 +1157,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:53 2016 by
+  Generated on Mon Dec 19 11:17:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

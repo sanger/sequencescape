@@ -111,7 +111,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Adefault_namespaces-instance_method" title="#:default_namespaces (instance method)">#<strong>:default_namespaces</strong>  &#x21d2; Object </a>
+      <a href="#default_namespaces-instance_method" title="#default_namespaces (instance method)">#<strong>default_namespaces</strong>  &#x21d2; Object </a>
     
 
     
@@ -129,7 +129,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :default_namespaces.</p>
+<p>an array of default namespaces to past into.</p>
 </div></span>
   
 </li>
@@ -165,7 +165,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>alias for search.</p>
+</div></span>
   
 </li>
 
@@ -187,7 +189,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>find the child node with the given xpath.</p>
+</div></span>
   
 </li>
 
@@ -198,6 +202,8 @@
       <a href="#find_first_with_default_ns-instance_method" title="#find_first_with_default_ns (instance method)">#<strong>find_first_with_default_ns</strong>(xpath_expr, namespace = nil)  &#x21d2; Object </a>
     
 
+    
+      (also: #find_first)
     
   </span>
   
@@ -220,6 +226,8 @@
       <a href="#find_with_default_ns-instance_method" title="#find_with_default_ns (instance method)">#<strong>find_with_default_ns</strong>(xpath_expr, namespace = nil)  &#x21d2; Object </a>
     
 
+    
+      (also: #find)
     
   </span>
   
@@ -253,7 +261,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>alias for inner_xml.</p>
+</div></span>
   
 </li>
 
@@ -275,7 +285,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>return the inner contents of this node as a string.</p>
+</div></span>
   
 </li>
 
@@ -297,7 +309,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>provide a name for the default namespace.</p>
+</div></span>
   
 </li>
 
@@ -319,7 +333,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>register a namespace, of the form “foo:<a
+href="http://example.com/ns">example.com/ns</a>”.</p>
+</div></span>
   
 </li>
 
@@ -341,7 +358,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>find the array of child nodes matching the given xpath.</p>
+</div></span>
   
 </li>
 
@@ -363,7 +382,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>return this node and its contents as an xml string.</p>
+</div></span>
   
 </li>
 
@@ -385,7 +406,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>alias for path.</p>
+</div></span>
   
 </li>
 
@@ -398,11 +421,11 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id=":default_namespaces=-instance_method"></span>
+      <span id="default_namespaces=-instance_method"></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":default_namespaces-instance_method">
+  <h3 class="signature first" id="default_namespaces-instance_method">
   
-    #<strong>:default_namespaces</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>default_namespaces</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -411,7 +434,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :default_namespaces</p>
+<p>an array of default namespaces to past into</p>
 
 
   </div>
@@ -432,9 +455,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/libxml_helper.rb', line 16</span>
 
-def :default_namespaces
-  @:default_namespaces
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_default_namespaces'>default_namespaces</span>
+  <span class='ivar'>@default_namespaces</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -456,7 +479,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>alias for search</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -486,7 +520,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>find the child node with the given xpath</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -513,6 +558,10 @@ end</pre>
     #<strong>find_first_with_default_ns</strong>(xpath_expr, namespace = nil)  &#x21d2; <tt>Object</tt> 
   
 
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='find_first-instance_method'>find_first</span></span>
+    </span>
   
 
   
@@ -543,6 +592,10 @@ end</pre>
     #<strong>find_with_default_ns</strong>(xpath_expr, namespace = nil)  &#x21d2; <tt>Object</tt> 
   
 
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='find-instance_method'>find</span></span>
+    </span>
   
 
   
@@ -576,7 +629,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>alias for inner_xml</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -606,7 +670,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>return the inner contents of this node as a string</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -636,7 +711,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>provide a name for the default namespace</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -678,7 +764,19 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>register a namespace, of the form “foo:<a
+href="http://example.com/ns">example.com/ns</a>”</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -708,7 +806,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>find the array of child nodes matching the given xpath</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -750,7 +859,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>return this node and its contents as an xml string</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -780,7 +900,18 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>alias for path</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -806,9 +937,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:57 2016 by
+  Generated on Mon Dec 19 11:16:44 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

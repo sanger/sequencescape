@@ -195,14 +195,14 @@
       <pre class="lines">
 
 
-32
 33
 34
 35
-36</pre>
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_metadata'>has_metadata</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_method'>method</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_metadata_finders'>metadata_finders</span> <span class='op'>&lt;&lt;</span> <span class='const'>SimpleMetadataFinder</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_method'>method</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_method'>method</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -229,12 +229,12 @@
       <pre class="lines">
 
 
-38
 39
-40</pre>
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata_finders'>metadata_finders</span>
   <span class='ivar'>@metadata_finders</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -249,9 +249,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:43 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

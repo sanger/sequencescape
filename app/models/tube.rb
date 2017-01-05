@@ -84,7 +84,6 @@ class Tube < Aliquot::Receptacle
     purpose.transfer_request_type_from(source.purpose)
   end
 
-
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     barcode    = args.first || attributes[:barcode]
@@ -92,5 +91,4 @@ class Tube < Aliquot::Receptacle
     barcode ||= AssetBarcode.new_barcode
     create!(attributes.merge(barcode: barcode), &block)
   end
-
 end

@@ -120,7 +120,19 @@
   <dl class="constants">
     
       <dt id="ALL_SERVICES_AVAILABLE-constant" class="">ALL_SERVICES_AVAILABLE =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>NOTE: This is partly a hack but it suffices to keep the dynamic ability to
+write endpoints.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
       <dd><pre class="code"><span class='const'>Hash</span><span class='lbracket'>[</span><span class='const'>Dir</span><span class='period'>.</span><span class='id identifier rubyid_glob'>glob</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='comma'>,</span> <span class='qwords_beg'>%w{</span><span class='tstring_content'>app</span><span class='words_sep'> </span><span class='tstring_content'>api</span><span class='words_sep'> </span><span class='tstring_content'>endpoints</span><span class='words_sep'> </span><span class='tstring_content'>**</span><span class='words_sep'> </span><span class='tstring_content'>*.rb</span><span class='words_sep'>}</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_file'>file</span><span class='op'>|</span>
   <span class='id identifier rubyid_handler'>handler</span> <span class='op'>=</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^.+/(endpoints/.+).rb$</span><span class='regexp_end'>}</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\1</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_camelize'>camelize</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span>
@@ -151,7 +163,7 @@
   <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Core/Service.html" title="Core::Service (class)">Core::Service</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Core/Service.html#api_path-instance_method" title="Core::Service#api_path (method)">#api_path</a></span>, <span class='object_link'><a href="../Core/Service.html#api_version_path-class_method" title="Core::Service.api_version_path (method)">api_version_path</a></span>, <span class='object_link'><a href="../Core/Service.html#command-instance_method" title="Core::Service#command (method)">#command</a></span>, <span class='object_link'><a href="../Core/Service.html#handle_not_found%21-instance_method" title="Core::Service#handle_not_found! (method)">#handle_not_found!</a></span>, <span class='object_link'><a href="../Core/Service.html#redirect_to-instance_method" title="Core::Service#redirect_to (method)">#redirect_to</a></span>, <span class='object_link'><a href="../Core/Service.html#redirect_to_multiple_locations-instance_method" title="Core::Service#redirect_to_multiple_locations (method)">#redirect_to_multiple_locations</a></span>, <span class='object_link'><a href="../Core/Service.html#report-instance_method" title="Core::Service#report (method)">#report</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Core/Service.html#api_path-instance_method" title="Core::Service#api_path (method)">#api_path</a></span>, <span class='object_link'><a href="../Core/Service.html#api_version_path-class_method" title="Core::Service.api_version_path (method)">api_version_path</a></span>, <span class='object_link'><a href="../Core/Service.html#command-instance_method" title="Core::Service#command (method)">#command</a></span>, <span class='object_link'><a href="../Core/Service.html#handle_not_found%21-instance_method" title="Core::Service#handle_not_found! (method)">#handle_not_found!</a></span>, <span class='object_link'><a href="../Core/Service.html#redirect_to-instance_method" title="Core::Service#redirect_to (method)">#redirect_to</a></span>, <span class='object_link'><a href="../Core/Service.html#redirect_to_multiple_locations-instance_method" title="Core::Service#redirect_to_multiple_locations (method)">#redirect_to_multiple_locations</a></span></p>
 
   
   
@@ -159,9 +171,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:22 2016 by
+  Generated on Mon Dec 19 11:17:08 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

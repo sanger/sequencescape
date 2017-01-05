@@ -29,7 +29,6 @@ class Rename::ChangeName
   attr_accessor :list_samples_to_rename
   attr_accessor :list_assets_to_rename
 
-
   def initialize(attributes)
     attributes.each { |k, v| self.send(:"#{k}=", v) }
   end
@@ -56,8 +55,8 @@ private
   def perform_rename_action!
     begin
       ActiveRecord::Base.transaction do
-        perform_rename_action_for_sample!  unless sample_rename_absent?
-        perform_rename_action_for_asset!  unless asset_rename_absent?
+        perform_rename_action_for_sample! unless sample_rename_absent?
+        perform_rename_action_for_asset! unless asset_rename_absent?
       end
     rescue ActiveRecord::RecordInvalid => exception
       reload_objects
@@ -79,5 +78,4 @@ private
     end
     self.study.comments.create(description: "Renamed Asset names: " + replace + " to " + with, user_id: user.id)
   end
-
 end

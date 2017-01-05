@@ -20,5 +20,4 @@ class Descriptor < ActiveRecord::Base
     end
     false
   end
-
 end

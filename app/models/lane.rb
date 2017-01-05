@@ -40,5 +40,4 @@ class Lane < Aliquot::Receptacle
   has_one_as_child(:spiked_in_buffer, ->() { where(sti_type: 'SpikedBuffer') })
 
   has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
-
 end

@@ -6,7 +6,6 @@
 
 require "test_helper"
 class LabwhereReceptionsControllerTest < ActionController::TestCase
-
   MockResponse = Struct.new(:valid?, :error)
 
   context "Sample Reception" do
@@ -24,7 +23,6 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
 
     context "#create" do
       context 'with multiple assets' do
-
         setup do
           LabWhereClient::Scan.expects(:create).with(
             location_barcode: 'labwhere_location', user_code: 'ID123', labware_barcodes: ["1220000001831", "1220000002845", "3980000001795"]
@@ -57,7 +55,6 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
       end
 
       context 'with no location' do
-
         setup do
           LabWhereClient::Scan.expects(:create).with(
             location_barcode: '', user_code: 'ID123', labware_barcodes: ["1220000001831", "1220000002845", "3980000001795"]
@@ -88,9 +85,6 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
         should set_flash.to "Locations updated!"
         should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
-
     end
-
   end
-
 end

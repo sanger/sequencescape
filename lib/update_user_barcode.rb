@@ -38,9 +38,9 @@ def read_user_id
 
     f.close
     user_barcode
-
   end
 end
+
 def update_user
   user_to_id = read_user_id
   puts "User number #{User.all.size}"

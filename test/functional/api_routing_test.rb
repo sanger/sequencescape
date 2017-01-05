@@ -106,7 +106,7 @@ class ApiRoutingTest < ActionController::TestCase
         :wells,
         samples: [:sample_tubes]
       ) do |context, core_path, controller|
-        context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(action: :parents,  id: '12345'))
+        context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(action: :parents, id: '12345'))
         context.should route(:get, "#{core_path}/12345/children").to(controller.merge(action: :children, id: '12345'))
 
         # No other method should be allowed to these resources:

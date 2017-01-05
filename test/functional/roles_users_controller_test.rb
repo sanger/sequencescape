@@ -7,8 +7,6 @@
 require "test_helper"
 require 'samples_controller'
 
-
-
 class Admin::Roles::UsersControllerTest < ActionController::TestCase
   context "Admin::Roles::UsersControllercontroller" do
     setup do

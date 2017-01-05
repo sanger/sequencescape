@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2011,2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -248,18 +262,18 @@
       <pre class="lines">
 
 
+23
+24
+25
 26
 27
 28
 29
 30
-31
-32
-33
-34</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
@@ -267,7 +281,7 @@
       <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_encrypt'>encrypt</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
     <span class='comment'># won&#39;t work, because of the salt.
-</span>   <span class='id identifier rubyid_scope'>scope</span> <span class='symbol'>:with_swipecard_code</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_swipecard_codes'>swipecard_codes</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>encrypted_swipecard_code:</span> <span class='id identifier rubyid_swipecard_codes'>swipecard_codes</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_sw'>sw</span><span class='op'>|</span> <span class='id identifier rubyid_encrypt_swipecard_code'>encrypt_swipecard_code</span><span class='lparen'>(</span><span class='id identifier rubyid_sw'>sw</span><span class='rparen'>)</span>   <span class='rbrace'>}</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+</span>   <span class='id identifier rubyid_scope'>scope</span> <span class='symbol'>:with_swipecard_code</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_swipecard_codes'>swipecard_codes</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>encrypted_swipecard_code:</span> <span class='id identifier rubyid_swipecard_codes'>swipecard_codes</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_sw'>sw</span><span class='op'>|</span> <span class='id identifier rubyid_encrypt_swipecard_code'>encrypt_swipecard_code</span><span class='lparen'>(</span><span class='id identifier rubyid_sw'>sw</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -296,12 +310,12 @@
       <pre class="lines">
 
 
-21
-22
-23</pre>
+19
+20
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_compare_swipecard_code'>compare_swipecard_code</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span>
   <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_encrypt_swipecard_code'>encrypt_swipecard_code</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='id identifier rubyid_encrypted_swipecard_code'>encrypted_swipecard_code</span>
@@ -326,11 +340,11 @@
       <pre class="lines">
 
 
-13
-14</pre>
+12
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_swipecard_code'>swipecard_code</span>
 <span class='kw'>end</span></pre>
@@ -354,12 +368,12 @@
       <pre class="lines">
 
 
+8
 9
-10
-11</pre>
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_swipecard_code='>swipecard_code=</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_encrypted_swipecard_code'>encrypted_swipecard_code</span> <span class='op'>=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_encrypt_swipecard_code'>encrypt_swipecard_code</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span>
@@ -406,12 +420,12 @@
       <pre class="lines">
 
 
+15
 16
-17
-18</pre>
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'app/models/swipecardable.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_swipecard_code?'>swipecard_code?</span>
   <span class='id identifier rubyid_encrypted_swipecard_code?'>encrypted_swipecard_code?</span>
@@ -426,9 +440,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:31 2016 by
+  Generated on Mon Dec 19 11:16:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

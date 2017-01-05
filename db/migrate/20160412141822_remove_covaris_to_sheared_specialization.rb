@@ -5,7 +5,6 @@
 
 require './lib/request_class_deprecator'
 class RemoveCovarisToShearedSpecialization < ActiveRecord::Migration
-
   include RequestClassDeprecator
 
   def up

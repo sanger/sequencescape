@@ -20,7 +20,6 @@ Given /^each well in "([^"]*)" has a child sample tube$/ do |study_name|
   RequestFactory.create_assets_requests(SampleTube.all, study)
 end
 
-
 Given /^each well in "([^"]*)" has a child well on a plate$/ do |study_name|
   study = Study.find_by_name(study_name)
   plate = Plate.create!(barcode: "44444", plate_purpose: PlatePurpose.find_by_name('Pulldown'))

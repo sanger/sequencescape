@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2016 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
   <h2>Constant Summary</h2>
@@ -273,7 +287,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="AccessionService.html" title="AccessionService (class)">AccessionService</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="AccessionService.html#accession_dac_xml-instance_method" title="AccessionService#accession_dac_xml (method)">#accession_dac_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_login-instance_method" title="AccessionService#accession_login (method)">#accession_login</a></span>, <span class='object_link'><a href="AccessionService.html#accession_policy_xml-instance_method" title="AccessionService#accession_policy_xml (method)">#accession_policy_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_sample_set_xml_quarantine-instance_method" title="AccessionService#accession_sample_set_xml_quarantine (method)">#accession_sample_set_xml_quarantine</a></span>, <span class='object_link'><a href="AccessionService.html#accession_sample_xml-instance_method" title="AccessionService#accession_sample_xml (method)">#accession_sample_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_study_set_xml_quarantine-instance_method" title="AccessionService#accession_study_set_xml_quarantine (method)">#accession_study_set_xml_quarantine</a></span>, <span class='object_link'><a href="AccessionService.html#accession_study_xml-instance_method" title="AccessionService#accession_study_xml (method)">#accession_study_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_submission_xml-instance_method" title="AccessionService#accession_submission_xml (method)">#accession_submission_xml</a></span>, <span class='object_link'><a href="AccessionService.html#dac_visibility-instance_method" title="AccessionService#dac_visibility (method)">#dac_visibility</a></span>, <span class='object_link'><a href="AccessionService.html#policy_visibility-instance_method" title="AccessionService#policy_visibility (method)">#policy_visibility</a></span>, <span class='object_link'><a href="AccessionService.html#post_files-instance_method" title="AccessionService#post_files (method)">#post_files</a></span>, <span class='object_link'><a href="AccessionService.html#private%3F-instance_method" title="AccessionService#private? (method)">#private?</a></span>, <span class='object_link'><a href="AccessionService.html#rest_client_resource-instance_method" title="AccessionService#rest_client_resource (method)">#rest_client_resource</a></span>, <span class='object_link'><a href="AccessionService.html#sample_visibility-instance_method" title="AccessionService#sample_visibility (method)">#sample_visibility</a></span>, <span class='object_link'><a href="AccessionService.html#study_visibility-instance_method" title="AccessionService#study_visibility (method)">#study_visibility</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="AccessionService.html#accession_dac_xml-instance_method" title="AccessionService#accession_dac_xml (method)">#accession_dac_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_policy_xml-instance_method" title="AccessionService#accession_policy_xml (method)">#accession_policy_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_sample_xml-instance_method" title="AccessionService#accession_sample_xml (method)">#accession_sample_xml</a></span>, <span class='object_link'><a href="AccessionService.html#accession_study_xml-instance_method" title="AccessionService#accession_study_xml (method)">#accession_study_xml</a></span>, <span class='object_link'><a href="AccessionService.html#dac_visibility-instance_method" title="AccessionService#dac_visibility (method)">#dac_visibility</a></span>, <span class='object_link'><a href="AccessionService.html#policy_visibility-instance_method" title="AccessionService#policy_visibility (method)">#policy_visibility</a></span>, <span class='object_link'><a href="AccessionService.html#private%3F-instance_method" title="AccessionService#private? (method)">#private?</a></span>, <span class='object_link'><a href="AccessionService.html#sample_visibility-instance_method" title="AccessionService#sample_visibility (method)">#sample_visibility</a></span>, <span class='object_link'><a href="AccessionService.html#study_visibility-instance_method" title="AccessionService#study_visibility (method)">#study_visibility</a></span></p>
 
   <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
@@ -304,12 +318,12 @@
       <pre class="lines">
 
 
+8
 9
-10
-11</pre>
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='ivar'>@study_id</span> <span class='op'>=</span> <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
@@ -341,10 +355,10 @@
       <pre class="lines">
 
 
-13</pre>
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_provider'>provider</span><span class='semicolon'>;</span> <span class='symbol'>:NONE</span> <span class='kw'>end</span></pre>
     </td>
@@ -389,12 +403,12 @@
       <pre class="lines">
 
 
+14
 15
-16
-17</pre>
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit'>submit</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_accessionables'>accessionables</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>AccessionService</span><span class='op'>::</span><span class='const'>NumberNotRequired</span><span class='comma'>,</span> <span class='const'>I18n</span><span class='period'>.</span><span class='id identifier rubyid_t'>t</span><span class='lparen'>(</span><span class='symbol'>:not_applicable_study</span><span class='comma'>,</span> <span class='label'>scope:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>accession_service.not_required</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -441,12 +455,12 @@
       <pre class="lines">
 
 
+26
 27
-28
-29</pre>
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_dac_for_user'>submit_dac_for_user</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>AccessionService</span><span class='op'>::</span><span class='const'>NumberNotRequired</span><span class='comma'>,</span> <span class='const'>I18n</span><span class='period'>.</span><span class='id identifier rubyid_t'>t</span><span class='lparen'>(</span><span class='symbol'>:not_applicable_study_for_dac</span><span class='comma'>,</span> <span class='label'>scope:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>accession_service.not_required</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -493,12 +507,12 @@
       <pre class="lines">
 
 
+18
 19
-20
-21</pre>
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_sample_for_user'>submit_sample_for_user</span><span class='lparen'>(</span><span class='id identifier rubyid_sample'>sample</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>AccessionService</span><span class='op'>::</span><span class='const'>NumberNotRequired</span><span class='comma'>,</span> <span class='const'>I18n</span><span class='period'>.</span><span class='id identifier rubyid_t'>t</span><span class='lparen'>(</span><span class='symbol'>:not_applicable_study_for_sample</span><span class='comma'>,</span> <span class='label'>scope:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>accession_service.not_required</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>study_id:</span> <span class='ivar'>@study_id</span><span class='rparen'>)</span>
@@ -545,12 +559,12 @@
       <pre class="lines">
 
 
+22
 23
-24
-25</pre>
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'app/models/no_accession_service.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_study_for_user'>submit_study_for_user</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>AccessionService</span><span class='op'>::</span><span class='const'>NumberNotRequired</span><span class='comma'>,</span> <span class='const'>I18n</span><span class='period'>.</span><span class='id identifier rubyid_t'>t</span><span class='lparen'>(</span><span class='symbol'>:not_applicable_study</span><span class='comma'>,</span> <span class='label'>scope:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>accession_service.not_required</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -565,9 +579,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:23 2016 by
+  Generated on Mon Dec 19 11:17:09 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

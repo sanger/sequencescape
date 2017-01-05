@@ -28,5 +28,4 @@ class Submission::SubmissionPresenter < Submission::PresenterSkeleton
     submission.orders.destroy_all
     submission.destroy
   end
-
 end

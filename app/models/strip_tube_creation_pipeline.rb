@@ -5,7 +5,6 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class StripTubeCreationPipeline < Pipeline
-
   INBOX_PARTIAL = 'group_by_parent'
 
   def inbox_partial
@@ -15,5 +14,4 @@ class StripTubeCreationPipeline < Pipeline
   def purpose_information?
     false
   end
-
 end

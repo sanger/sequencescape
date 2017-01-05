@@ -426,15 +426,15 @@
       <pre class="lines">
 
 
-318
-319
-320</pre>
+314
+315
+316</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 318</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 314</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delayed_for_long_time?'>delayed_for_long_time?</span>
-  <span class='const'>DATA_RELEASE_DELAY_PERIODS</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_data_release_delay_period'>data_release_delay_period</span><span class='rparen'>)</span>
+  <span class='const'>DATA_RELEASE_DELAY_PERIODS</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_data_release_delay_period'>data_release_delay_period</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -478,15 +478,15 @@
       <pre class="lines">
 
 
-314
-315
-316</pre>
+310
+311
+312</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 314</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 310</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delayed_for_other_reasons?'>delayed_for_other_reasons?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_data_release_delay_reason'>data_release_delay_reason</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_DELAY_FOR_OTHER</span>
+  <span class='id identifier rubyid_data_release_delay_reason'>data_release_delay_reason</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_DELAY_FOR_OTHER</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -530,15 +530,15 @@
       <pre class="lines">
 
 
-306
-307
-308</pre>
+302
+303
+304</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 306</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 302</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delayed_release?'>delayed_release?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_data_release_timing'>data_release_timing</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_TIMING_DELAYED</span>
+  <span class='id identifier rubyid_data_release_timing'>data_release_timing</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_TIMING_DELAYED</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -582,15 +582,15 @@
       <pre class="lines">
 
 
-302
-303
-304</pre>
+298
+299
+300</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 302</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 298</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_managed?'>managed?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_data_release_strategy'>data_release_strategy</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_STRATEGY_MANAGED</span>
+  <span class='id identifier rubyid_data_release_strategy'>data_release_strategy</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_STRATEGY_MANAGED</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -634,15 +634,15 @@
       <pre class="lines">
 
 
-310
-311
-312</pre>
+306
+307
+308</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 310</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 306</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_never_release?'>never_release?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_data_release_timing'>data_release_timing</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_TIMING_NEVER</span>
+  <span class='id identifier rubyid_data_release_timing'>data_release_timing</span> <span class='op'>==</span> <span class='const'>DATA_RELEASE_TIMING_NEVER</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -686,15 +686,15 @@
       <pre class="lines">
 
 
-346
-347
-348</pre>
+344
+345
+346</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 346</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 344</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_non_standard_agreement?'>non_standard_agreement?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_data_release_standard_agreement'>data_release_standard_agreement</span> <span class='op'>==</span> <span class='const'>NO</span>
+  <span class='id identifier rubyid_data_release_standard_agreement'>data_release_standard_agreement</span> <span class='op'>==</span> <span class='const'>NO</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -738,12 +738,12 @@
       <pre class="lines">
 
 
-298
-299
-300</pre>
+294
+295
+296</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 298</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 294</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_x_and_autosomes?'>remove_x_and_autosomes?</span>
   <span class='id identifier rubyid_remove_x_and_autosomes'>remove_x_and_autosomes</span> <span class='op'>==</span> <span class='const'>YES</span>
@@ -768,16 +768,16 @@
       <pre class="lines">
 
 
+332
 333
 334
-335
-336</pre>
+335</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 333</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 332</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sanity_check_y_separation'>sanity_check_y_separation</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:separate_y_chromosome_data</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot be selected with remove x and autosomes.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_remove_x_and_autosomes?'>remove_x_and_autosomes?</span>
+  <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:separate_y_chromosome_data</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot be selected with remove x and autosomes.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_remove_x_and_autosomes?'>remove_x_and_autosomes?</span>
   <span class='op'>!</span><span class='id identifier rubyid_remove_x_and_autosomes?'>remove_x_and_autosomes?</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -800,13 +800,13 @@
       <pre class="lines">
 
 
+382
+383
 384
-385
-386
-387</pre>
+385</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 384</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 382</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snp_child_studies'>snp_child_studies</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_snp_study_id'>snp_study_id</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -832,13 +832,13 @@
       <pre class="lines">
 
 
+377
+378
 379
-380
-381
-382</pre>
+380</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 379</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snp_parent_study'>snp_parent_study</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_snp_parent_study_id'>snp_parent_study_id</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -886,15 +886,15 @@
       <pre class="lines">
 
 
-350
-351
-352</pre>
+348
+349
+350</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 350</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 348</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_study_type_valid?'>study_type_valid?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:study_type</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>is not specified</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>  <span class='kw'>if</span> <span class='id identifier rubyid_study_type'>study_type</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Not specified</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:study_type</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>is not specified</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_study_type'>study_type</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Not specified</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -938,6 +938,8 @@
       <pre class="lines">
 
 
+352
+353
 354
 355
 356
@@ -950,12 +952,10 @@
 363
 364
 365
-366
-367
-368</pre>
+366</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 354</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 352</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_policy_url?'>valid_policy_url?</span>
   <span class='comment'># Rails 2.3 has no inbuilt URL validation, but rather than rolling our own, we&#39;ll
@@ -967,7 +967,7 @@
     <span class='id identifier rubyid_uri'>uri</span> <span class='op'>=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_dac_policy'>dac_policy</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>URI</span><span class='op'>::</span><span class='const'>InvalidURIError</span> <span class='kw'>if</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_invalid_policy_url_domains'>invalid_policy_url_domains</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_host'>host</span><span class='rparen'>)</span>
   <span class='kw'>rescue</span> <span class='const'>URI</span><span class='op'>::</span><span class='const'>InvalidURIError</span>
-    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:dac_policy</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_dac_policy'>dac_policy</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid URL</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:dac_policy</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_dac_policy'>dac_policy</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid URL</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
     <span class='kw'>return</span> <span class='kw'>false</span>
   <span class='kw'>end</span>
   <span class='kw'>return</span> <span class='kw'>true</span>
@@ -982,9 +982,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:57 2016 by
+  Generated on Mon Dec 19 11:16:42 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

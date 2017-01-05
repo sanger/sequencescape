@@ -164,11 +164,6 @@
   
   
   
-  
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="AuthenticatedSystem.html" title="AuthenticatedSystem (module)">AuthenticatedSystem</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="AuthenticatedSystem.html#access_denied-instance_method" title="AuthenticatedSystem#access_denied (method)">#access_denied</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#admin_login_required-instance_method" title="AuthenticatedSystem#admin_login_required (method)">#admin_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#authorized%3F-instance_method" title="AuthenticatedSystem#authorized? (method)">#authorized?</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#current_user-instance_method" title="AuthenticatedSystem#current_user (method)">#current_user</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#current_user%3D-instance_method" title="AuthenticatedSystem#current_user= (method)">#current_user=</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#get_auth_data-instance_method" title="AuthenticatedSystem#get_auth_data (method)">#get_auth_data</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#included-class_method" title="AuthenticatedSystem.included (method)">included</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#lab_manager_login_required-instance_method" title="AuthenticatedSystem#lab_manager_login_required (method)">#lab_manager_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#logged_in%3F-instance_method" title="AuthenticatedSystem#logged_in? (method)">#logged_in?</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#login_from_cookie-instance_method" title="AuthenticatedSystem#login_from_cookie (method)">#login_from_cookie</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#login_required-instance_method" title="AuthenticatedSystem#login_required (method)">#login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#manager_login_required-instance_method" title="AuthenticatedSystem#manager_login_required (method)">#manager_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#redirect_back_or_default-instance_method" title="AuthenticatedSystem#redirect_back_or_default (method)">#redirect_back_or_default</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#setup_current_user-instance_method" title="AuthenticatedSystem#setup_current_user (method)">#setup_current_user</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#slf_gel_login_required-instance_method" title="AuthenticatedSystem#slf_gel_login_required (method)">#slf_gel_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#slf_manager_login_required-instance_method" title="AuthenticatedSystem#slf_manager_login_required (method)">#slf_manager_login_required</a></span>, <span class='object_link'><a href="AuthenticatedSystem.html#store_location-instance_method" title="AuthenticatedSystem#store_location (method)">#store_location</a></span></p>
-
-  
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -189,20 +184,18 @@
       <pre class="lines">
 
 
+2
 3
 4
 5
-6
-7
-8</pre>
+6</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/qc_files_controller.rb', line 3</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/qc_files_controller.rb', line 2</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_show'>show</span>
   <span class='const'>QcFile</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_retrieve_file'>retrieve_file</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_file'>file</span><span class='op'>|</span>
     <span class='id identifier rubyid_send_file'>send_file</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='label'>content_type:</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_content_type'>content_type</span><span class='comma'>,</span> <span class='label'>filename:</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_filename'>filename</span>
-
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -215,9 +208,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:30 2016 by
+  Generated on Mon Dec 19 11:17:15 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

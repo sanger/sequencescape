@@ -135,7 +135,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The decision as to whether the application requires the user to be
+authenticated is made by the application.</p>
+</div></span>
   
 </li>
 
@@ -188,28 +191,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#registered%3F-instance_method" title="#registered? (instance method)">#<strong>registered?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -222,11 +203,6 @@
   
   
   
-  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Base.html" title="Core::Abilities::Base (class)">Base</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Base.html#abilitise-instance_method" title="Core::Abilities::Base#abilitise (method)">#abilitise</a></span></p>
-
-  
-  
   
   
   
@@ -234,7 +210,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Base/ClassMethods.html" title="Core::Abilities::Base::ClassMethods (module)">Base::ClassMethods</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Base/ClassMethods.html#record-instance_method" title="Core::Abilities::Base::ClassMethods#record (method)">#record</a></span>, <span class='object_link'><a href="Base/ClassMethods.html#recorder_helper-instance_method" title="Core::Abilities::Base::ClassMethods#recorder_helper (method)">#recorder_helper</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Base/ClassMethods.html#recorder_helper-instance_method" title="Core::Abilities::Base::ClassMethods#recorder_helper (method)">#recorder_helper</a></span></p>
 
   <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
@@ -265,13 +241,13 @@
       <pre class="lines">
 
 
+143
 144
 145
-146
-147</pre>
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 144</span>
+      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 143</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='ivar'>@api_application</span> <span class='op'>=</span> <span class='const'>ApiApplication</span><span class='period'>.</span><span class='id identifier rubyid_find_by_key'>find_by_key</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_authorisation_code'>authorisation_code</span><span class='rparen'>)</span>
@@ -298,12 +274,26 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The decision as to whether the application requires the user to be
+authenticated is made by the application.  If it does, however, then the
+user abilities may need to be changed so we need to modify that too.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+181
 182
 183
 184
@@ -313,11 +303,10 @@
 188
 189
 190
-191
-192</pre>
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 182</span>
+      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 181</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_authenticate!'>authenticate!</span><span class='lparen'>(</span><span class='id identifier rubyid_user_ability'>user_ability</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_single_sign_on_cookie'>single_sign_on_cookie</span> <span class='op'>=</span> <span class='ivar'>@request</span><span class='period'>.</span><span class='id identifier rubyid_authentication_code'>authentication_code</span>
@@ -350,67 +339,15 @@
       <pre class="lines">
 
 
+148
 149
-150
-151</pre>
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 148</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_privilege'>privilege</span>
   <span class='ivar'>@api_application</span><span class='period'>.</span><span class='id identifier rubyid_privilege'>privilege</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="registered?-instance_method">
-  
-    #<strong>registered?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-174
-175
-176</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/abilities.rb', line 174</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_registered?'>registered?</span>
-  <span class='ivar'>@api_application</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -422,9 +359,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:04 2016 by
+  Generated on Mon Dec 19 11:16:52 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

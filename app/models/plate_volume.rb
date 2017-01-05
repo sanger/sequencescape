@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
-
 require 'carrierwave'
 
 class PlateVolume < ActiveRecord::Base
@@ -87,6 +86,5 @@ class PlateVolume < ActiveRecord::Base
       self.find_by_uploaded_file_name(filename) or
       ->(filename, file) { PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file) }
     end
-
   end
 end

@@ -15,7 +15,6 @@ module Request::CustomerResponsibility
         self.errors.add(:customer_accepts_responsibility, 'can not be changed once a request is failed.')
         raise ActiveRecord::RecordInvalid, self
       end
-
     end
   end
 end

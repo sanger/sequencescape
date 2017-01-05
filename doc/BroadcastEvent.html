@@ -113,7 +113,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="BroadcastEvent/AssetAudit.html" title="BroadcastEvent::AssetAudit (class)">AssetAudit</a></span>, <span class='object_link'><a href="BroadcastEvent/Batched.html" title="BroadcastEvent::Batched (class)">Batched</a></span>, <span class='object_link'><a href="BroadcastEvent/LibraryComplete.html" title="BroadcastEvent::LibraryComplete (class)">LibraryComplete</a></span>, <span class='object_link'><a href="BroadcastEvent/LibraryStart.html" title="BroadcastEvent::LibraryStart (class)">LibraryStart</a></span>, <span class='object_link'><a href="BroadcastEvent/OrderMade.html" title="BroadcastEvent::OrderMade (class)">OrderMade</a></span>, <span class='object_link'><a href="BroadcastEvent/PlateLibraryComplete.html" title="BroadcastEvent::PlateLibraryComplete (class)">PlateLibraryComplete</a></span>, <span class='object_link'><a href="BroadcastEvent/PlateRegister.html" title="BroadcastEvent::PlateRegister (class)">PlateRegister</a></span>, <span class='object_link'><a href="BroadcastEvent/PlateTransfer.html" title="BroadcastEvent::PlateTransfer (class)">PlateTransfer</a></span>, <span class='object_link'><a href="BroadcastEvent/Reception.html" title="BroadcastEvent::Reception (class)">Reception</a></span>, <span class='object_link'><a href="BroadcastEvent/SequencingQc.html" title="BroadcastEvent::SequencingQc (class)">SequencingQc</a></span>, <span class='object_link'><a href="BroadcastEvent/SequencingStart.html" title="BroadcastEvent::SequencingStart (class)">SequencingStart</a></span>, <span class='object_link'><a href="LibraryEvent.html" title="LibraryEvent (class)">LibraryEvent</a></span></p>
 </div>
@@ -299,7 +313,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns a hash of all metadata.</p>
+</div></span>
   
 </li>
 
@@ -343,7 +359,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns an array of all subjects.</p>
+</div></span>
   
 </li>
 
@@ -365,7 +383,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Prefer email, fall back to login if missing.</p>
+</div></span>
   
 </li>
 
@@ -416,7 +436,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -481,13 +501,13 @@
       <pre class="lines">
 
 
+24
 25
 26
-27
-28</pre>
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BroadcastEvents can not be created directly</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='op'>&lt;</span> <span class='const'>BroadcastEvent</span>
@@ -520,12 +540,12 @@
       <pre class="lines">
 
 
+63
 64
-65
-66</pre>
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_event_type'>event_type</span>
   <span class='ivar'>@event_type</span>
@@ -550,12 +570,12 @@
       <pre class="lines">
 
 
+59
 60
-61
-62</pre>
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_set_event_type'>set_event_type</span><span class='lparen'>(</span><span class='id identifier rubyid_event_type'>event_type</span><span class='rparen'>)</span>
   <span class='ivar'>@event_type</span> <span class='op'>=</span> <span class='id identifier rubyid_event_type'>event_type</span>
@@ -586,12 +606,12 @@
       <pre class="lines">
 
 
+55
 56
-57
-58</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_event_type'>event_type</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_event_type'>event_type</span>
@@ -616,12 +636,12 @@
       <pre class="lines">
 
 
+51
 52
-53
-54</pre>
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_json_root'>json_root</span>
   <span class='const'>EVENT_JSON_ROOT</span>
@@ -640,18 +660,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a hash of all metadata</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+43
 44
-45
-46</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata'>metadata</span>
   <span class='const'>Hash</span><span class='lbracket'>[</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_metadata_finders'>metadata_finders</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_mf'>mf</span><span class='op'>|</span> <span class='id identifier rubyid_mf'>mf</span><span class='period'>.</span><span class='id identifier rubyid_for'>for</span><span class='lparen'>(</span><span class='id identifier rubyid_seed'>seed</span><span class='comma'>,</span> <span class='kw'>self</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rbracket'>]</span>
@@ -676,12 +707,12 @@
       <pre class="lines">
 
 
+47
 48
-49
-50</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_routing_key'>routing_key</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='embexpr_end'>}</span><span class='tstring_content'>.event.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_event_type'>event_type</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -700,20 +731,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns an array of all subjects</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+36
 37
 38
 39
-40
-41</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_subjects'>subjects</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_subject_associations'>subject_associations</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sa'>sa</span><span class='op'>|</span>
@@ -734,19 +776,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Prefer email, fall back to login if missing</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+30
 31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_identifier'>user_identifier</span>
   <span class='kw'>return</span> <span class='const'>UNKNOWN_USER_IDENTIFIER</span> <span class='kw'>if</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='comment'># User has probably been deleted
@@ -762,9 +815,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:11 2016 by
+  Generated on Mon Dec 19 11:17:00 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

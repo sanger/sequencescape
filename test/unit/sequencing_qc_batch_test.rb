@@ -24,7 +24,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
     setup do
       @batch = Object.new
-      @batch.extend(SequencingQcBatch)  # Avoids the self.included callback
+      @batch.extend(SequencingQcBatch) # Avoids the self.included callback
     end
 
     context '#qc_states' do

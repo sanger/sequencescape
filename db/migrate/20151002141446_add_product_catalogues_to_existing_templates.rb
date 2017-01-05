@@ -5,7 +5,6 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
-
   class OrderRole < ActiveRecord::Base
     self.table_name = ('order_roles')
   end

@@ -59,5 +59,4 @@ module SequencingQcPipeline
       "qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)", "qc_completed", self.id, cluster_formation_pipeline_id
     ]).includes(:user)
   end
-
 end

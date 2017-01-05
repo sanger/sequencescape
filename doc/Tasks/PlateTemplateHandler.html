@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -140,72 +154,6 @@
   <span class="summary_signature">
     
       <a href="#do_plate_template_task-instance_method" title="#do_plate_template_task (instance method)">#<strong>do_plate_template_task</strong>(task, params)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#map_parsed_spreadsheet_to_plate-instance_method" title="#map_parsed_spreadsheet_to_plate (instance method)">#<strong>map_parsed_spreadsheet_to_plate</strong>(mapped_plate_wells, batch, plate_size)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#parse_spreadsheet_row-instance_method" title="#parse_spreadsheet_row (instance method)">#<strong>parse_spreadsheet_row</strong>(plate_size, request_id, asset_name, plate_key, destination_well) {|(plate_key, request_id.to_i, location)| ... } &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#parse_uploaded_spreadsheet_layout-instance_method" title="#parse_uploaded_spreadsheet_layout (instance method)">#<strong>parse_uploaded_spreadsheet_layout</strong>(layout_data, plate_size)  &#x21d2; Object </a>
     
 
     
@@ -372,162 +320,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="map_parsed_spreadsheet_to_plate-instance_method">
-  
-    #<strong>map_parsed_spreadsheet_to_plate</strong>(mapped_plate_wells, batch, plate_size)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/plate_template_handler.rb', line 59</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_map_parsed_spreadsheet_to_plate'>map_parsed_spreadsheet_to_plate</span><span class='lparen'>(</span><span class='id identifier rubyid_mapped_plate_wells'>mapped_plate_wells</span><span class='comma'>,</span> <span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_plates'>plates</span> <span class='op'>=</span> <span class='id identifier rubyid_mapped_plate_wells'>mapped_plate_wells</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_plate_key'>plate_key</span><span class='comma'>,</span> <span class='id identifier rubyid_mapped_wells'>mapped_wells</span><span class='op'>|</span>
-    <span class='lparen'>(</span><span class='int'>0</span><span class='op'>...</span><span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
-      <span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_location'>location</span><span class='comma'>,</span> <span class='id identifier rubyid_request_id'>request_id</span> <span class='op'>=</span> <span class='const'>CherrypickTask</span><span class='op'>::</span><span class='const'>EMPTY_WELL</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_mapped_wells'>mapped_wells</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span>
-      <span class='kw'>if</span> <span class='id identifier rubyid_request_id'>request_id</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-        <span class='id identifier rubyid_asset'>asset</span> <span class='op'>=</span> <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_request_id'>request_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span>
-        <span class='id identifier rubyid_well'>well</span>  <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_request_id'>request_id</span><span class='comma'>,</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_barcode'>barcode</span><span class='comma'>,</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_display_name'>display_name</span><span class='rbracket'>]</span>
-      <span class='kw'>end</span>
-      <span class='id identifier rubyid_well'>well</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-
-  <span class='lbracket'>[</span><span class='id identifier rubyid_plates'>plates</span><span class='comma'>,</span> <span class='id identifier rubyid_plates'>plates</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_barcode'>barcode</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='id identifier rubyid_barcode'>barcode</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="parse_spreadsheet_row-instance_method">
-  
-    #<strong>parse_spreadsheet_row</strong>(plate_size, request_id, asset_name, plate_key, destination_well) {|(plate_key, request_id.to_i, location)| ... } &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Yields:</p>
-<ul class="yield">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>(plate_key, request_id.to_i, location)</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-49
-50
-51
-52
-53
-54
-55
-56</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/plate_template_handler.rb', line 49</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_parse_spreadsheet_row'>parse_spreadsheet_row</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_size'>plate_size</span><span class='comma'>,</span> <span class='id identifier rubyid_request_id'>request_id</span><span class='comma'>,</span> <span class='id identifier rubyid_asset_name'>asset_name</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_key'>plate_key</span><span class='comma'>,</span> <span class='id identifier rubyid_destination_well'>destination_well</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_request_id'>request_id</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='kw'>or</span> <span class='id identifier rubyid_request_id'>request_id</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>==</span> <span class='int'>0</span>
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_destination_well'>destination_well</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='kw'>or</span> <span class='id identifier rubyid_destination_well'>destination_well</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>&gt;</span> <span class='int'>0</span>
-
-  <span class='id identifier rubyid_location'>location</span> <span class='op'>=</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_find_by_description_and_asset_size'>find_by_description_and_asset_size</span><span class='lparen'>(</span><span class='id identifier rubyid_destination_well'>destination_well</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='kw'>return</span>
-  <span class='id identifier rubyid_plate_key'>plate_key</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>default plate 1</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_plate_key'>plate_key</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
-  <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_key'>plate_key</span><span class='comma'>,</span> <span class='id identifier rubyid_request_id'>request_id</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='comma'>,</span> <span class='id identifier rubyid_location'>location</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="parse_uploaded_spreadsheet_layout-instance_method">
-  
-    #<strong>parse_uploaded_spreadsheet_layout</strong>(layout_data, plate_size)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-38
-39
-40
-41
-42
-43
-44
-45
-46</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/plate_template_handler.rb', line 38</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_parse_uploaded_spreadsheet_layout'>parse_uploaded_spreadsheet_layout</span><span class='lparen'>(</span><span class='id identifier rubyid_layout_data'>layout_data</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
-  <span class='lparen'>(</span><span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='comma'>,</span> <span class='id identifier rubyid_k'>k</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_k'>k</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_parsed_plates'>parsed_plates</span><span class='op'>|</span>
-    <span class='const'>CSV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_layout_data'>layout_data</span><span class='comma'>,</span> <span class='label'>headers:</span> <span class='symbol'>:first_row</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_row'>row</span><span class='op'>|</span>
-      <span class='id identifier rubyid_parse_spreadsheet_row'>parse_spreadsheet_row</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_size'>plate_size</span><span class='comma'>,</span> <span class='id identifier rubyid_row'>row</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Request ID</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_row'>row</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Sample Name</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_row'>row</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Plate</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_row'>row</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Destination Well</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_plate_key'>plate_key</span><span class='comma'>,</span> <span class='id identifier rubyid_request_id'>request_id</span><span class='comma'>,</span> <span class='id identifier rubyid_location'>location</span><span class='op'>|</span>
-        <span class='id identifier rubyid_parsed_plates'>parsed_plates</span><span class='lbracket'>[</span><span class='id identifier rubyid_plate_key'>plate_key</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_location'>location</span><span class='period'>.</span><span class='id identifier rubyid_column_order'>column_order</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_location'>location</span><span class='comma'>,</span> <span class='id identifier rubyid_request_id'>request_id</span><span class='rbracket'>]</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="render_plate_template_task-instance_method">
   
     #<strong>render_plate_template_task</strong>(task, params)  &#x21d2; <tt>Object</tt> 
@@ -606,9 +398,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:40 2016 by
+  Generated on Mon Dec 19 11:16:30 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

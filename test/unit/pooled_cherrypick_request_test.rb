@@ -7,7 +7,6 @@
 require 'test_helper'
 
 class PooledCherrypickRequestTest < ActiveSupport::TestCase
-
   context "Requests with the same sample and a shared target" do
     setup do
       @study = create :study
@@ -42,7 +41,6 @@ class PooledCherrypickRequestTest < ActiveSupport::TestCase
         expected_sample = @well_a.aliquots.first.sample
         assert_equal expected_sample, @target_well.aliquots.first.sample
       end
-
     end
   end
 end

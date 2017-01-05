@@ -117,7 +117,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="HiSeqSequencingRequest.html" title="HiSeqSequencingRequest (class)">HiSeqSequencingRequest</a></span>, <span class='object_link'><a href="MiSeqSequencingRequest.html" title="MiSeqSequencingRequest (class)">MiSeqSequencingRequest</a></span></p>
 </div>
@@ -194,28 +208,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#clear_cross_projects-instance_method" title="#clear_cross_projects (instance method)">#<strong>clear_cross_projects</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -363,7 +355,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Metadata.html" title="Metadata (module)">Metadata</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Metadata.html#build_association-instance_method" title="Metadata#build_association (method)">#build_association</a></span>, <span class='object_link'><a href="Metadata.html#construct_metadata_class-instance_method" title="Metadata#construct_metadata_class (method)">#construct_metadata_class</a></span>, <span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">#has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#include_tag-instance_method" title="Metadata#include_tag (method)">#include_tag</a></span>, <span class='object_link'><a href="Metadata.html#require_tag-instance_method" title="Metadata#require_tag (method)">#require_tag</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">#has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
 
   
   
@@ -441,7 +433,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -508,12 +500,12 @@
       <pre class="lines">
 
 
+59
 60
-61
-62</pre>
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_delegate_validator'>delegate_validator</span>
   <span class='const'>SequencingRequest</span><span class='op'>::</span><span class='const'>RequestOptionsValidator</span>
@@ -530,39 +522,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="clear_cross_projects-instance_method">
-  
-    #<strong>clear_cross_projects</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-24
-25
-26
-27</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 24</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_clear_cross_projects'>clear_cross_projects</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_initial_project'>initial_project</span> <span class='op'>=</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:cross_project?</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_initial_study'>initial_study</span>   <span class='op'>=</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:cross_study?</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="concentration-instance_method">
+  <h3 class="signature first" id="concentration-instance_method">
   
     #<strong>concentration</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -576,17 +536,17 @@
       <pre class="lines">
 
 
+63
 64
 65
 66
 67
 68
 69
-70
-71</pre>
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_concentration'>concentration</span>
   <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_lab_events_for_batch'>lab_events_for_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -616,22 +576,22 @@
       <pre class="lines">
 
 
+29
 30
 31
 32
 33
 34
 35
-36
-37</pre>
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_assets_for_multiplexing'>create_assets_for_multiplexing</span>
   <span class='id identifier rubyid_barcode'>barcode</span> <span class='op'>=</span> <span class='const'>AssetBarcode</span><span class='period'>.</span><span class='id identifier rubyid_new_barcode'>new_barcode</span>
   <span class='comment'># Needs a sample?
-</span>  <span class='id identifier rubyid_puldown_mx_library'>puldown_mx_library</span> <span class='op'>=</span> <span class='const'>PulldownMultiplexedLibraryTube</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_barcode'>barcode</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>barcode:</span> <span class='id identifier rubyid_barcode'>barcode</span><span class='rparen'>)</span>
+</span>  <span class='id identifier rubyid_puldown_mx_library'>puldown_mx_library</span> <span class='op'>=</span> <span class='const'>PulldownMultiplexedLibraryTube</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_barcode'>barcode</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='label'>barcode:</span> <span class='id identifier rubyid_barcode'>barcode</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_lane'>lane</span> <span class='op'>=</span> <span class='const'>Lane</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_puldown_mx_library'>puldown_mx_library</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
 
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_puldown_mx_library'>puldown_mx_library</span><span class='comma'>,</span> <span class='label'>target_asset:</span> <span class='id identifier rubyid_lane'>lane</span><span class='rparen'>)</span>
@@ -656,12 +616,12 @@
       <pre class="lines">
 
 
+44
 45
-46
-47</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_order='>order=</span><span class='lparen'>(</span><span class='id identifier rubyid__'>_</span><span class='rparen'>)</span>
   <span class='comment'># Do nothing
@@ -708,6 +668,7 @@
       <pre class="lines">
 
 
+48
 49
 50
 51
@@ -716,11 +677,10 @@
 54
 55
 56
-57
-58</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'app/models/sequencing_request.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ready?'>ready?</span>
   <span class='comment'># It&#39;s ready if I don&#39;t have any lib creation requests or if all my lib creation requests are closed and
@@ -742,9 +702,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:18 2016 by
+  Generated on Mon Dec 19 11:17:05 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

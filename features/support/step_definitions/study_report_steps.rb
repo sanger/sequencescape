@@ -27,7 +27,6 @@ Then /^I should see the report for "([^"]*)":$/ do |study_name, expected_results
   expected_results_table.diff!(CSV.parse(page.source))
 end
 
-
 Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_results_table|
   study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   report = study.study_reports.last or raise StandardError, "Study #{study_name.inspect} has no study reports"
@@ -58,10 +57,7 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
   samples[2].external_properties.create!(key: 'genotyping_done', value: "Imported to Illumina: 51| DNAlab completed: 17")
 end
 
-
-
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
-
   plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by_name("Stock Plate"))
   1.upto(24) do |i|
     well = Well.create!(plate: plate, map_id: i)
@@ -77,7 +73,6 @@ Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report.perform
   step("2 pending delayed jobs are processed")
 end
-
 
 Then /^each sample name and sanger ID exists in study "([^"]*)"$/ do |study_name|
   study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"

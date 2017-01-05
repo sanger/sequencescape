@@ -61,5 +61,4 @@ module StudyReport::WellDetails
 
     qc_data
   end
-
 end

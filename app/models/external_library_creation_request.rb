@@ -7,7 +7,6 @@
 # This class doesn't inherit from either library creation class because most of the behaviour is unwanted.
 # For example, we don't know the read length etc. when the request is created
 class ExternalLibraryCreationRequest < SystemRequest
-
   redefine_aasm column: :state, whiny_persistence: true do
     # We have a vastly simplified two state state machine. Requests are passed once the manifest is processed
     state :pending, initial: true

@@ -164,7 +164,7 @@ Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"
       click_button(button)
     end
     fail("No exception raised!")
-  rescue RuntimeError => exception  # 'fail' raises, so we need to check that
+  rescue RuntimeError => exception # 'fail' raises, so we need to check that
     raise
   rescue => exception
     # Good, that was expected

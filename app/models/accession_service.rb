@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class AccessionService
-
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
@@ -79,7 +78,7 @@ class AccessionService
           errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
         else
-          raise AccessionServiceError,  "Could not get accession number. Error in submitted data: #{$!}"
+          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
         end
       ensure
         files.each { |f| f.close } # not really necessary but recommended
@@ -95,7 +94,7 @@ class AccessionService
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
 
-    submit(user,  Accessionable::Sample.new(sample))
+    submit(user, Accessionable::Sample.new(sample))
   end
 
   def submit_study_for_user(study, user)
@@ -103,7 +102,6 @@ class AccessionService
 
     # TODO check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
-
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
@@ -285,5 +283,4 @@ private
       raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
     end
   end
-
 end

@@ -204,6 +204,7 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    march_hare (2.18.0-java)
     metaclass (0.0.4)
     method_source (0.8.2)
     mime-types (2.99.3)
@@ -243,6 +244,8 @@ GEM
     rack (1.6.5)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
+    rack-mini-profiler (0.10.1)
+      rack (>= 1.2.0)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -268,6 +271,7 @@ GEM
       loofah (~> 2.0)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
+    rails-perftest (0.0.6)
     railties (4.2.7.1)
       actionpack (= 4.2.7.1)
       activesupport (= 4.2.7.1)
@@ -283,6 +287,23 @@ GEM
       nokogiri
       rubyzip
       spreadsheet (> 0.6.4)
+    rspec-core (3.5.4)
+      rspec-support (~> 3.5.0)
+    rspec-expectations (3.5.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.5.0)
+    rspec-mocks (3.5.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.5.0)
+    rspec-rails (3.5.2)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec-core (~> 3.5.0)
+      rspec-expectations (~> 3.5.0)
+      rspec-mocks (~> 3.5.0)
+      rspec-support (~> 3.5.0)
+    rspec-support (3.5.0)
     rubocop (0.45.0)
       parser (>= 2.3.1.1, < 3.0)
       powerpack (~> 0.1)
@@ -341,6 +362,8 @@ GEM
     thread_safe (0.3.5-java)
     tilt (2.0.5)
     timecop (0.8.0)
+    transactional_capybara (0.1.0)
+      capybara
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.7.2)
@@ -385,7 +408,7 @@ DEPENDENCIES
   bootstrap-sass
   builder
   bullet
-  bunny (~> 0.7)
+  bunny
   cancan
   capybara
   carrierwave
@@ -410,6 +433,7 @@ DEPENDENCIES
   json
   knapsack
   launchy
+  march_hare (~> 2.18.0)
   mime-types
   mocha
   multi_json
@@ -421,10 +445,13 @@ DEPENDENCIES
   psd_logger!
   puma
   rack-acceptable
+  rack-mini-profiler
   rails
   rails-observers
+  rails-perftest
   rest-client
   roo
+  rspec-rails
   rubocop
   ruby-oci8
   ruby_walk (>= 0.0.3)!
@@ -438,6 +465,7 @@ DEPENDENCIES
   spreadsheet
   therubyrhino
   timecop
+  transactional_capybara
   uglifier (>= 1.0.3)
   uuidtools
   webmock

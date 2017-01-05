@@ -5,13 +5,12 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AliquotIndexer
-
   attr_reader :lane, :aliquots
 
   module AliquotScopes
     def self.included(base)
       base.class_eval do
-        scope :sorted_for_indexing, -> { joins([:tag, :tag2]).reorder('tag2s_aliquots.map_id ASC, tags.map_id ASC') }
+        scope :sorted_for_indexing, -> { includes([:tag, :tag2]).reorder('tag2s_aliquots.map_id ASC, tags.map_id ASC') }
       end
     end
   end

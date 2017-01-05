@@ -85,7 +85,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -142,50 +156,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#generate_json_to_object_mapping-instance_method" title="#generate_json_to_object_mapping (instance method)">#<strong>generate_json_to_object_mapping</strong>(json_to_attribute)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#process_if_present-instance_method" title="#process_if_present (instance method)">#<strong>process_if_present</strong>(json, path) {|(value)| ... } &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -261,251 +231,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="generate_json_to_object_mapping-instance_method">
-  
-    #<strong>generate_json_to_object_mapping</strong>(json_to_attribute)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/io/base/json_formatting_behaviour/input.rb', line 30</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_generate_json_to_object_mapping'>generate_json_to_object_mapping</span><span class='lparen'>(</span><span class='id identifier rubyid_json_to_attribute'>json_to_attribute</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_code'>code</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-
-  <span class='comment'># Split the mappings into two to make things easier.  Read only attributes are easily
-</span>  <span class='comment'># handled right now, provided there is not a read_write one that shares their name.
-</span>  <span class='id identifier rubyid_read_only'>read_only</span><span class='comma'>,</span> <span class='id identifier rubyid_read_write'>read_write</span> <span class='op'>=</span> <span class='id identifier rubyid_json_to_attribute'>json_to_attribute</span><span class='period'>.</span><span class='id identifier rubyid_partition'>partition</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_common_keys'>common_keys</span> <span class='op'>=</span> <span class='id identifier rubyid_read_only'>read_only</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:first</span><span class='rparen'>)</span> <span class='op'>&amp;</span> <span class='id identifier rubyid_read_write'>read_write</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:first</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_read_only'>read_only</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='id identifier rubyid_common_keys'>common_keys</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_concat'>concat</span><span class='lparen'>(</span><span class='id identifier rubyid_read_only'>read_only</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>process_if_present(params, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_json'>json</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>) { |_| raise ReadOnlyAttribute, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_json'>json</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> }</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span><span class='rparen'>)</span>
-
-  <span class='comment'># Now the harder bit: for attribute we need to work out how we would fill in the attribute
-</span>  <span class='comment'># structure for an update_attributes! call.
-</span>  <span class='id identifier rubyid_initial_structure'>initial_structure</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-  <span class='id identifier rubyid_read_write'>read_write</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='id identifier rubyid_attribute'>attribute</span><span class='op'>|</span>
-    <span class='id identifier rubyid_steps'>steps</span>       <span class='op'>=</span> <span class='id identifier rubyid_attribute'>attribute</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_trunk'>trunk</span><span class='comma'>,</span> <span class='id identifier rubyid_leaf'>leaf</span> <span class='op'>=</span> <span class='id identifier rubyid_steps'>steps</span><span class='lbracket'>[</span><span class='int'>0</span><span class='op'>..</span><span class='op'>-</span><span class='int'>2</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_steps'>steps</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span>
-
-    <span class='comment'># This bit ends up with the &#39;path&#39; for the inner bit of the attribute (i.e. if the attribute
-</span>    <span class='comment'># was &#39;a.b.c.d&#39; then the inner bit is &#39;a.b.c&#39; and this path could be &#39;a_attributes,
-</span>    <span class='comment'># b_attributes, c_attributes&#39;) and the final model, or rather association, that we end at.
-</span>    <span class='comment'># &#39;model&#39; is nil if there is no association and we&#39;re assuming that we need a Hash of
-</span>    <span class='comment'># some form.
-</span>    <span class='id identifier rubyid_model'>model</span><span class='comma'>,</span> <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_trunk'>trunk</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id identifier rubyid_model_for_input'>model_for_input</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='lparen'>(</span><span class='id identifier rubyid_model'>model</span><span class='comma'>,</span> <span class='id identifier rubyid_parts'>parts</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
-      <span class='id identifier rubyid_next_model'>next_model</span><span class='comma'>,</span> <span class='id identifier rubyid_next_step'>next_step</span> <span class='op'>=</span>
-        <span class='kw'>if</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-          <span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_step'>step</span><span class='rbracket'>]</span>
-        <span class='kw'>elsif</span> <span class='id identifier rubyid_association'>association</span> <span class='op'>=</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_reflections'>reflections</span><span class='lbracket'>[</span><span class='id identifier rubyid_step'>step</span><span class='rbracket'>]</span>
-          <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Nested attributes only works with belongs_to or has_one</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='symbol'>:belongs_to</span><span class='comma'>,</span> <span class='symbol'>:has_one</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_association'>association</span><span class='period'>.</span><span class='id identifier rubyid_macro'>macro</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
-          <span class='lbracket'>[</span><span class='id identifier rubyid_association'>association</span><span class='period'>.</span><span class='id identifier rubyid_klass'>klass</span><span class='comma'>,</span> <span class='symbol'>:#{</span><span class='id identifier rubyid_step'>step</span><span class='embexpr_end'>}</span><span class='tstring_content'>_attributes</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
-        <span class='kw'>else</span>
-          <span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_step'>step</span><span class='rbracket'>]</span>
-        <span class='kw'>end</span>
-
-      <span class='lbracket'>[</span><span class='id identifier rubyid_next_model'>next_model</span><span class='comma'>,</span> <span class='id identifier rubyid_parts'>parts</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_next_step'>next_step</span><span class='rbracket'>]</span>
-    <span class='kw'>end</span>
-
-    <span class='comment'># Build the necessary structure for the attributes.  The code can also be generated
-</span>    <span class='comment'># based on the information we have generated.  If we ended at an association and the
-</span>    <span class='comment'># leaf is also an association then we have to change the behaviour based on the incoming
-</span>    <span class='comment'># JSON.
-</span>    <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='id identifier rubyid_initial_structure'>initial_structure</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_part'>part</span><span class='comma'>,</span> <span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_part'>part</span><span class='lbracket'>[</span><span class='id identifier rubyid_step'>step</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span> <span class='rbrace'>}</span>
-    <span class='id identifier rubyid_code'>code</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>process_if_present(params, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_json'>json</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>) do |value|</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_code'>code</span> <span class='op'>&lt;&lt;</span> <span class='kw'>if</span> <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  attributes.tap do |section|</span><span class='tstring_end'>&quot;</span></span>
-            <span class='kw'>else</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>.inject(attributes) { |a,s| a[s] }.tap do |section|</span><span class='tstring_end'>&quot;</span></span>
-            <span class='kw'>end</span>
-
-    <span class='id identifier rubyid_code'>code</span> <span class='op'>&lt;&lt;</span> <span class='kw'>if</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>    section[:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_leaf'>leaf</span><span class='embexpr_end'>}</span><span class='tstring_content'>] = value #nil</span><span class='tstring_end'>&quot;</span></span>
-            <span class='kw'>elsif</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:reflections</span><span class='rparen'>)</span> <span class='kw'>and</span> <span class='id identifier rubyid_association'>association</span> <span class='op'>=</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_reflections'>reflections</span><span class='lbracket'>[</span><span class='id identifier rubyid_leaf'>leaf</span><span class='rbracket'>]</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>    handle_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_association'>association</span><span class='period'>.</span><span class='id identifier rubyid_macro'>macro</span><span class='embexpr_end'>}</span><span class='tstring_content'>(section, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_leaf'>leaf</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, value, object)</span><span class='tstring_end'>&quot;</span></span>
-            <span class='kw'>elsif</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:klass</span><span class='rparen'>)</span> <span class='kw'>and</span> <span class='id identifier rubyid_association'>association</span> <span class='op'>=</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_reflections'>reflections</span><span class='lbracket'>[</span><span class='id identifier rubyid_leaf'>leaf</span><span class='rbracket'>]</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>    handle_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_association'>association</span><span class='period'>.</span><span class='id identifier rubyid_macro'>macro</span><span class='embexpr_end'>}</span><span class='tstring_content'>(section, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_leaf'>leaf</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, value, object)</span><span class='tstring_end'>&quot;</span></span>
-            <span class='kw'>else</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>    section[:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_leaf'>leaf</span><span class='embexpr_end'>}</span><span class='tstring_content'>] = value</span><span class='tstring_end'>&quot;</span></span>
-            <span class='kw'>end</span>
-    <span class='id identifier rubyid_code'>code</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  end</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_code'>code</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>end</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_low_level'>low_level</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>-</span><span class='tstring_end'>&#39;</span></span> <span class='op'>*</span> <span class='int'>30</span><span class='rparen'>)</span> <span class='op'>&lt;&lt;</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='op'>&lt;&lt;</span> <span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>-</span><span class='tstring_end'>&#39;</span></span> <span class='op'>*</span> <span class='int'>30</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:low_level</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_low_level'>low_level</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>=</span><span class='tstring_end'>&#39;</span></span> <span class='op'>*</span> <span class='int'>30</span><span class='rparen'>)</span> <span class='op'>&lt;&lt;</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='op'>&lt;&lt;</span> <span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>=</span><span class='tstring_end'>&#39;</span></span> <span class='op'>*</span> <span class='int'>30</span><span class='rparen'>)</span><span class='rparen'>)</span>
-
-  <span class='comment'># Generate the code that the instance will actually use ...
-</span>  <span class='id identifier rubyid_line'>line</span> <span class='op'>=</span> <span class='kw'>__LINE__</span> <span class='op'>+</span> <span class='int'>1</span>
-  <span class='id identifier rubyid_class_eval'>class_eval</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>%Q{
-</span><span class='tstring_content'>    def self.map_parameters_to_attributes(params, object = nil, nested_in_another_model = false)
-      </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_initial_structure'>initial_structure</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>.tap do |attributes|
-        attributes.deep_merge!(super)
-        params = params.fetch(json_root.to_s, {}) unless nested_in_another_model
-        </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>
-      end
-    end
-  </span><span class='tstring_end'>}</span></span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='comma'>,</span> <span class='id identifier rubyid_line'>line</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="process_if_present-instance_method">
-  
-    #<strong>process_if_present</strong>(json, path) {|(value)| ... } &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Yields:</p>
-<ul class="yield">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>(value)</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-113
-114
-115
-116
-117
-118
-119
-120</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/io/base/json_formatting_behaviour/input.rb', line 113</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_process_if_present'>process_if_present</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_current'>current</span><span class='comma'>,</span> <span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
-    <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_current'>current</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:key?</span><span class='rparen'>)</span>    <span class='comment'># Could be nested attribute but not present!
-</span>    <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_current'>current</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_current'>current</span><span class='lbracket'>[</span><span class='id identifier rubyid_step'>step</span><span class='rbracket'>]</span>
-  <span class='kw'>end</span>
-  <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="set_model_for_input-instance_method">
+  <h3 class="signature first" id="set_model_for_input-instance_method">
   
     #<strong>set_model_for_input</strong>(model)  &#x21d2; <tt>Object</tt> 
   
@@ -539,9 +265,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:46 2016 by
+  Generated on Mon Dec 19 11:16:34 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

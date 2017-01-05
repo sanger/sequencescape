@@ -110,7 +110,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -380,50 +394,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#retag_tubes-instance_method" title="#retag_tubes (instance method)">#<strong>retag_tubes</strong>(requests, well_id_tag_id_map)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#tag_tubes-instance_method" title="#tag_tubes (instance method)">#<strong>tag_tubes</strong>(requests, well_id_tag_id_map)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#unlink_tag_instances_from_wells-instance_method" title="#unlink_tag_instances_from_wells (instance method)">#<strong>unlink_tag_instances_from_wells</strong>(requests)  &#x21d2; Object </a>
     
 
@@ -621,16 +591,16 @@
       <pre class="lines">
 
 
+156
 157
 158
 159
 160
 161
-162
-163</pre>
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 156</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_tag_instances_and_link_to_wells'>create_tag_instances_and_link_to_wells</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:tag</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_well_id'>well_id</span><span class='comma'>,</span> <span class='id identifier rubyid_tag_id'>tag_id</span><span class='op'>|</span>
@@ -689,14 +659,14 @@
       <pre class="lines">
 
 
+205
 206
 207
 208
-209
-210</pre>
+209</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 205</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_plates_from_batch'>find_plates_from_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch_id'>batch_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_requests'>requests</span> <span class='op'>=</span> <span class='id identifier rubyid_find_batch_requests'>find_batch_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_batch_id'>batch_id</span><span class='rparen'>)</span>
@@ -723,12 +693,12 @@
       <pre class="lines">
 
 
+164
 165
-166
-167</pre>
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 165</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 164</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_sequencing_requests'>find_sequencing_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_pulldown_requests'>pulldown_requests</span><span class='rparen'>)</span>
   <span class='const'>Request</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>submission_id:</span> <span class='id identifier rubyid_pulldown_requests'>pulldown_requests</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_submission_id'>submission_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_sequencing_request'>sequencing_request</span><span class='op'>|</span> <span class='id identifier rubyid_sequencing_request'>sequencing_request</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>SequencingRequest</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -753,6 +723,7 @@
       <pre class="lines">
 
 
+168
 169
 170
 171
@@ -761,11 +732,10 @@
 174
 175
 176
-177
-178</pre>
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_link_pulldown_indexed_libraries_to_multiplexed_library'>link_pulldown_indexed_libraries_to_multiplexed_library</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_group_requests_by_submission_id'>group_requests_by_submission_id</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_requests_with_same_submission'>requests_with_same_submission</span><span class='op'>|</span>
@@ -797,17 +767,17 @@
       <pre class="lines">
 
 
+211
 212
 213
 214
 215
 216
 217
-218
-219</pre>
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 211</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_map_asset_ids_to_normalised_index_by_submission'>map_asset_ids_to_normalised_index_by_submission</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_submissions_to_index'>submissions_to_index</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -837,6 +807,7 @@
       <pre class="lines">
 
 
+192
 193
 194
 195
@@ -847,11 +818,10 @@
 200
 201
 202
-203
-204</pre>
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 193</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 192</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_map_tags_to_wells'>map_tags_to_wells</span><span class='lparen'>(</span><span class='id identifier rubyid_tag_group'>tag_group</span><span class='comma'>,</span> <span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tags_to_wells'>tags_to_wells</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -933,276 +903,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="retag_tubes-instance_method">
-  
-    #<strong>retag_tubes</strong>(requests, well_id_tag_id_map)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 41</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_retag_tubes'>retag_tubes</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_well_id_tag_id_map'>well_id_tag_id_map</span><span class='rparen'>)</span>
-  <span class='comment'># The first thing we do is build a graph of the transfers that have been made so that we can
-</span>  <span class='comment'># clean it out.  The assets themselves cannot be rebuilt as people may be relying on the assets
-</span>  <span class='comment'># remaining consistent.
-</span>  <span class='id identifier rubyid_source_well_to_intermediate_wells'>source_well_to_intermediate_wells</span><span class='comma'>,</span> <span class='id identifier rubyid_requests_to_destroy'>requests_to_destroy</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
-    <span class='id identifier rubyid_source_well'>source_well</span><span class='comma'>,</span> <span class='id identifier rubyid_target_tube'>target_tube</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='comma'>,</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span>
-
-    <span class='id identifier rubyid_source_to_library'>source_to_library</span> <span class='op'>=</span> <span class='id identifier rubyid_source_well'>source_well</span><span class='period'>.</span><span class='id identifier rubyid_requests_as_source'>requests_as_source</span><span class='period'>.</span><span class='id identifier rubyid_where_is_a?'>where_is_a?</span><span class='lparen'>(</span><span class='const'>TransferRequest</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-    <span class='id identifier rubyid_library_well'>library_well</span>      <span class='op'>=</span> <span class='id identifier rubyid_source_to_library'>source_to_library</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span>
-
-    <span class='id identifier rubyid_library_to_tagged'>library_to_tagged</span> <span class='op'>=</span> <span class='id identifier rubyid_library_well'>library_well</span><span class='period'>.</span><span class='id identifier rubyid_requests_as_source'>requests_as_source</span><span class='period'>.</span><span class='id identifier rubyid_where_is_a?'>where_is_a?</span><span class='lparen'>(</span><span class='const'>TransferRequest</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-    <span class='id identifier rubyid_tagged_well'>tagged_well</span>       <span class='op'>=</span> <span class='id identifier rubyid_library_to_tagged'>library_to_tagged</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span>
-
-    <span class='id identifier rubyid_tagged_to_pooled'>tagged_to_pooled</span>  <span class='op'>=</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='period'>.</span><span class='id identifier rubyid_requests_as_source'>requests_as_source</span><span class='period'>.</span><span class='id identifier rubyid_where_is_a?'>where_is_a?</span><span class='lparen'>(</span><span class='const'>TransferRequest</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-    <span class='id identifier rubyid_pooled_well'>pooled_well</span>       <span class='op'>=</span> <span class='id identifier rubyid_tagged_to_pooled'>tagged_to_pooled</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span>
-
-    <span class='id identifier rubyid_requests_to_destroy'>requests_to_destroy</span><span class='period'>.</span><span class='id identifier rubyid_concat'>concat</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id identifier rubyid_source_to_library'>source_to_library</span><span class='comma'>,</span> <span class='id identifier rubyid_library_to_tagged'>library_to_tagged</span><span class='comma'>,</span> <span class='id identifier rubyid_tagged_to_pooled'>tagged_to_pooled</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_requests_to_destroy'>requests_to_destroy</span><span class='period'>.</span><span class='id identifier rubyid_concat'>concat</span><span class='lparen'>(</span><span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='period'>.</span><span class='id identifier rubyid_requests_as_source'>requests_as_source</span><span class='period'>.</span><span class='id identifier rubyid_where_is_a?'>where_is_a?</span><span class='lparen'>(</span><span class='const'>TransferRequest</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='rparen'>)</span>
-
-    <span class='id identifier rubyid_source_well_to_intermediate_wells'>source_well_to_intermediate_wells</span><span class='lbracket'>[</span><span class='id identifier rubyid_source_well'>source_well</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_library_well'>library_well</span><span class='comma'>,</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='comma'>,</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='comma'>,</span> <span class='id identifier rubyid_target_tube'>target_tube</span><span class='rbracket'>]</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_requests_to_destroy'>requests_to_destroy</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:destroy</span><span class='rparen'>)</span>
-
-  <span class='comment'># Now we can clean out the aliquots of all of the various assets and rebuild the graph so that the
-</span>  <span class='comment'># correct tags are in place.
-</span>  <span class='id identifier rubyid_pooled_well_to_tube'>pooled_well_to_tube</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-  <span class='id identifier rubyid_source_well_to_intermediate_wells'>source_well_to_intermediate_wells</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='op'>|</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_clear'>clear</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_source_well_to_intermediate_wells'>source_well_to_intermediate_wells</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_source_well'>source_well</span><span class='comma'>,</span> <span class='id identifier rubyid_assets'>assets</span><span class='op'>|</span>
-    <span class='id identifier rubyid_library_well'>library_well</span><span class='comma'>,</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='comma'>,</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='comma'>,</span> <span class='id identifier rubyid_tube'>tube</span> <span class='op'>=</span> <span class='id identifier rubyid_assets'>assets</span>
-
-    <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_source_well'>source_well</span><span class='comma'>,</span>  <span class='label'>target_asset:</span> <span class='id identifier rubyid_library_well'>library_well</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_library_well'>library_well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_aliquot'>aliquot</span><span class='op'>|</span> <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>library:</span> <span class='id identifier rubyid_library_well'>library_well</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-
-    <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_library_well'>library_well</span><span class='comma'>,</span> <span class='label'>target_asset:</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='comma'>,</span>  <span class='label'>state:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_tag_id'>tag_id</span> <span class='op'>=</span> <span class='id identifier rubyid_well_id_tag_id_map'>well_id_tag_id_map</span><span class='lbracket'>[</span><span class='id identifier rubyid_source_well'>source_well</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rbracket'>]</span>
-    <span class='const'>Tag</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_tag_id'>tag_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tag!'>tag!</span><span class='lparen'>(</span><span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_tag_id'>tag_id</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-
-    <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='comma'>,</span>  <span class='label'>target_asset:</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='comma'>,</span>  <span class='label'>state:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Pooled well into different tube!</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_tube'>tube</span> <span class='op'>==</span> <span class='lparen'>(</span><span class='id identifier rubyid_pooled_well_to_tube'>pooled_well_to_tube</span><span class='lbracket'>[</span><span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_tube'>tube</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_pooled_well_to_tube'>pooled_well_to_tube</span><span class='lbracket'>[</span><span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_tube'>tube</span>
-  <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_pooled_well_to_tube'>pooled_well_to_tube</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_tube'>tube</span><span class='op'>|</span> <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='label'>target_asset:</span> <span class='id identifier rubyid_tube'>tube</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="tag_tubes-instance_method">
-  
-    #<strong>tag_tubes</strong>(requests, well_id_tag_id_map)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>StandardError</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 89</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_tag_tubes'>tag_tubes</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_well_id_tag_id_map'>well_id_tag_id_map</span><span class='rparen'>)</span>
-  <span class='comment'># to  be compliant with the new pulldown application we have to create intermediate plate and wells
-</span>  <span class='id identifier rubyid_source_plates'>source_plates</span> <span class='op'>=</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:asset</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:plate</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Can only tag based on one source plate</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_source_plates'>source_plates</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>==</span> <span class='int'>1</span>
-  <span class='id identifier rubyid_source_plate'>source_plate</span> <span class='op'>=</span> <span class='id identifier rubyid_source_plates'>source_plates</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
-
-  <span class='id identifier rubyid_well_to_tagged'>well_to_tagged</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-  <span class='id identifier rubyid_tube_to_pool'>tube_to_pool</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-
-  <span class='id identifier rubyid_pooled_plate'>pooled_plate</span>  <span class='op'>=</span> <span class='const'>Plate</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>size:</span> <span class='id identifier rubyid_source_plate'>source_plate</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_library_plate'>library_plate</span> <span class='op'>=</span> <span class='const'>Plate</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>size:</span> <span class='id identifier rubyid_source_plate'>source_plate</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_tag_plate'>tag_plate</span>     <span class='op'>=</span> <span class='const'>Plate</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>size:</span> <span class='id identifier rubyid_source_plate'>source_plate</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
-
-  <span class='id identifier rubyid_source_plate'>source_plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='op'>|</span>
-    <span class='id identifier rubyid_library_well'>library_well</span> <span class='op'>=</span> <span class='const'>Well</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span>
-    <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='label'>target_asset:</span> <span class='id identifier rubyid_library_well'>library_well</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_library_plate'>library_plate</span><span class='period'>.</span><span class='id identifier rubyid_add_well_by_map_description'>add_well_by_map_description</span><span class='lparen'>(</span><span class='id identifier rubyid_library_well'>library_well</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_map_description'>map_description</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_library_well'>library_well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_aliquot'>aliquot</span><span class='op'>|</span> <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>library:</span> <span class='id identifier rubyid_library_well'>library_well</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-
-    <span class='id identifier rubyid_tagged_well'>tagged_well</span> <span class='op'>=</span> <span class='const'>Well</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span>
-    <span class='id identifier rubyid_well_to_tagged'>well_to_tagged</span><span class='lbracket'>[</span><span class='id identifier rubyid_well'>well</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span>
-    <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_library_well'>library_well</span><span class='comma'>,</span> <span class='label'>target_asset:</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_tag_plate'>tag_plate</span><span class='period'>.</span><span class='id identifier rubyid_add_well_by_map_description'>add_well_by_map_description</span><span class='lparen'>(</span><span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_map_description'>map_description</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_tag_id'>tag_id</span> <span class='op'>=</span> <span class='id identifier rubyid_well_id_tag_id_map'>well_id_tag_id_map</span><span class='lbracket'>[</span><span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rbracket'>]</span>
-    <span class='const'>Tag</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_tag_id'>tag_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tag!'>tag!</span><span class='lparen'>(</span><span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_tag_id'>tag_id</span>
-  <span class='kw'>end</span>
-  <span class='lbracket'>[</span><span class='id identifier rubyid_library_plate'>library_plate</span><span class='comma'>,</span> <span class='id identifier rubyid_tag_plate'>tag_plate</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:save!</span><span class='rparen'>)</span>
-
-  <span class='comment'># We could be retagging because someone has changed their minds.
-</span>  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_clear'>clear</span> <span class='rbrace'>}</span>
-
-  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span>
-    <span class='id identifier rubyid_tagged_well'>tagged_well</span> <span class='op'>=</span> <span class='id identifier rubyid_well_to_tagged'>well_to_tagged</span><span class='lbracket'>[</span><span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Well not tagged</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='id identifier rubyid_tube'>tube</span> <span class='op'>=</span> <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span>
-
-    <span class='id identifier rubyid_pooled_well'>pooled_well</span> <span class='op'>=</span> <span class='id identifier rubyid_tube_to_pool'>tube_to_pool</span><span class='lbracket'>[</span><span class='id identifier rubyid_tube'>tube</span><span class='rbracket'>]</span>
-    <span class='kw'>unless</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span>
-      <span class='id identifier rubyid_pooled_well'>pooled_well</span> <span class='op'>=</span> <span class='const'>Well</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span>
-      <span class='id identifier rubyid_tube_to_pool'>tube_to_pool</span><span class='lbracket'>[</span><span class='id identifier rubyid_tube'>tube</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span>
-      <span class='id identifier rubyid_pooled_plate'>pooled_plate</span><span class='period'>.</span><span class='id identifier rubyid_add_well_by_map_description'>add_well_by_map_description</span><span class='lparen'>(</span><span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='comma'>,</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='period'>.</span><span class='id identifier rubyid_map_description'>map_description</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
-
-    <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_tagged_well'>tagged_well</span><span class='comma'>,</span> <span class='label'>target_asset:</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='comment'># transfer between pooled_well and tube needs to be at the end, when all the aliquots are present
-</span>    <span class='comment'># RequestType.transfer.create!(:asset =&gt; pooled_well, :target_asset =&gt; tube)
-</span>  <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_tube_to_pool'>tube_to_pool</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_tube'>tube</span><span class='comma'>,</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='op'>|</span>
-    <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_pooled_well'>pooled_well</span><span class='comma'>,</span> <span class='label'>target_asset:</span> <span class='id identifier rubyid_tube'>tube</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_link_pulldown_indexed_libraries_to_multiplexed_library'>link_pulldown_indexed_libraries_to_multiplexed_library</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="unlink_tag_instances_from_wells-instance_method">
   
     #<strong>unlink_tag_instances_from_wells</strong>(requests)  &#x21d2; <tt>Object</tt> 
@@ -1217,14 +917,14 @@
       <pre class="lines">
 
 
+186
 187
 188
 189
-190
-191</pre>
+190</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unlink_tag_instances_from_wells'>unlink_tag_instances_from_wells</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
@@ -1295,15 +995,15 @@
       <pre class="lines">
 
 
+179
 180
 181
 182
 183
-184
-185</pre>
+184</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 180</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tags_to_wells_task.rb', line 179</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validate_tags_not_repeated_for_submission!'>validate_tags_not_repeated_for_submission!</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_tags_to_wells'>tags_to_wells</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_submission_to_tag'>submission_to_tag</span> <span class='op'>=</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_submission_id'>submission_id</span><span class='comma'>,</span> <span class='id identifier rubyid_tags_to_wells'>tags_to_wells</span><span class='lbracket'>[</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map_id'>map_id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -1321,9 +1021,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:33 2016 by
+  Generated on Mon Dec 19 11:17:17 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -7,7 +7,6 @@
 require "test_helper"
 
 class BarcodeTest < ActiveSupport::TestCase
-
   context "A prefix and a number" do
     setup do
       # Input
@@ -20,7 +19,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should "have a checksum" do
-      assert_equal @checksum,  Barcode.calculate_checksum(@prefix, @number)
+      assert_equal @checksum, Barcode.calculate_checksum(@prefix, @number)
     end
 
     should "generate a barcode" do
@@ -97,7 +96,6 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context "A human readable barcode" do
-
     setup do
       @human_readable_barcode = "PR1234K"
       @invalid_human_barcode = "QQ12345A"
@@ -113,7 +111,5 @@ class BarcodeTest < ActiveSupport::TestCase
         Barcode.human_to_machine_barcode(@invalid_human_barcode)
       end
     end
-
   end
-
 end

@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
   class RequestObserver < ActiveRecord::Observer
-
     def after_create(request)
       request.request_events.create!(
         event_name: 'created',
@@ -29,7 +28,7 @@
 
     def before_destroy(request)
       time = DateTime.now
-      request.current_request_event.expire!(time)  unless request.current_request_event.nil?
+      request.current_request_event.expire!(time) unless request.current_request_event.nil?
       request.request_events.create!(
         event_name: 'destroyed',
         from_state: request.state,
@@ -38,5 +37,4 @@
         current_to: time
       )
     end
-
   end

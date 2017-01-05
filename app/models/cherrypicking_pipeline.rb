@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class CherrypickingPipeline < GenotypingPipeline
-
   self.batch_worksheet = "cherrypick_worksheet"
 
   def custom_inbox_actions
@@ -21,5 +20,4 @@ class CherrypickingPipeline < GenotypingPipeline
       request.reduce_source_volume if request.respond_to?(:reduce_source_volume)
     end
   end
-
 end

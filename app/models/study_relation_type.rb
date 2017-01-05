@@ -17,7 +17,6 @@ class StudyRelationType < ActiveRecord::Base
     all.map { |srt| [srt.name, srt.reversed_name] }.flatten
   end
 
-
   def self.relate_studies_by_name!(name, study, related_study)
     relation_type = find_by_name(name)
     return relation_type.relate_studies!(study, related_study) if relation_type

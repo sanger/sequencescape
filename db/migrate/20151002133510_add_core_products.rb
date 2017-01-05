@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AddCoreProducts < ActiveRecord::Migration
-
 require './lib/product_helpers'
   SINGLE_PRODUCTS = %w(
 MWGS

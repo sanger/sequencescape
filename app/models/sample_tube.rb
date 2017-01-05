@@ -28,5 +28,4 @@ class SampleTube < Tube
   def can_be_created?
     true
   end
-
 end

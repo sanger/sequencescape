@@ -4,7 +4,7 @@
 # Copyright (C) 2015 Genome Research Ltd.
 FactoryGirl.define do
   factory :product_catalogue do
-    name      { |x| FactoryGirl.generate :product_catalogue_name }
+    name { |x| FactoryGirl.generate :product_catalogue_name }
 
     factory :single_product_catalogue do
       selection_behaviour 'SingleProduct'
@@ -28,6 +28,5 @@ FactoryGirl.define do
   end
 
   factory :product_product_catalogue do |pc|
-
   end
 end

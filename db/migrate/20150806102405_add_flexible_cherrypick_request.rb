@@ -5,7 +5,6 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AddFlexibleCherrypickRequest < ActiveRecord::Migration
-
   class RequestType < ActiveRecord::Base
     self.table_name = 'request_types'
   end

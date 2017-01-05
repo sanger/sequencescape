@@ -108,7 +108,29 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Searching is really a behaviour separate from the thing you are search
+against.  For instance, with a call to Asset.all you find all assets;
+except if we removed the asset hierarchy you do not get a search across all
+of the models that made it up.  Instead you want a SearchForAsset model
+that does the correct search behaviour for you.  Well, this is the base for
+that.</p>
+
+<p>You must implement a &#39;scope&#39; method that takes a hash of the
+parameters as a parameter and returns a named scope like object (i.e.
+something the calling code can then call first, last, all or paginate on).
+It is not your search implementations responsibility to decide how many
+things are being searched for.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="Search/FindAssetByBarcode.html" title="Search::FindAssetByBarcode (class)">FindAssetByBarcode</a></span>, <span class='object_link'><a href="Search/FindIlluminaAPlates.html" title="Search::FindIlluminaAPlates (class)">FindIlluminaAPlates</a></span>, <span class='object_link'><a href="Search/FindIlluminaBPlates.html" title="Search::FindIlluminaBPlates (class)">FindIlluminaBPlates</a></span>, <span class='object_link'><a href="Search/FindIlluminaBTubes.html" title="Search::FindIlluminaBTubes (class)">FindIlluminaBTubes</a></span>, <span class='object_link'><a href="Search/FindIlluminaCPlates.html" title="Search::FindIlluminaCPlates (class)">FindIlluminaCPlates</a></span>, <span class='object_link'><a href="Search/FindIlluminaCTubes.html" title="Search::FindIlluminaCTubes (class)">FindIlluminaCTubes</a></span>, <span class='object_link'><a href="Search/FindLotByBatchId.html" title="Search::FindLotByBatchId (class)">FindLotByBatchId</a></span>, <span class='object_link'><a href="Search/FindLotByLotNumber.html" title="Search::FindLotByLotNumber (class)">FindLotByLotNumber</a></span>, <span class='object_link'><a href="Search/FindModelByName.html" title="Search::FindModelByName (class)">FindModelByName</a></span>, <span class='object_link'><a href="Search/FindOutstandingIlluminaBPrePcrPlates.html" title="Search::FindOutstandingIlluminaBPrePcrPlates (class)">FindOutstandingIlluminaBPrePcrPlates</a></span>, <span class='object_link'><a href="Search/FindPlatesForUser.html" title="Search::FindPlatesForUser (class)">FindPlatesForUser</a></span>, <span class='object_link'><a href="Search/FindPulldownPlates.html" title="Search::FindPulldownPlates (class)">FindPulldownPlates</a></span>, <span class='object_link'><a href="Search/FindQcableByBarcode.html" title="Search::FindQcableByBarcode (class)">FindQcableByBarcode</a></span>, <span class='object_link'><a href="Search/FindRobotByBarcode.html" title="Search::FindRobotByBarcode (class)">FindRobotByBarcode</a></span>, <span class='object_link'><a href="Search/FindSourceAssetsByDestinationAssetBarcode.html" title="Search::FindSourceAssetsByDestinationAssetBarcode (class)">FindSourceAssetsByDestinationAssetBarcode</a></span>, <span class='object_link'><a href="Search/FindUserByLogin.html" title="Search::FindUserByLogin (class)">FindUserByLogin</a></span>, <span class='object_link'><a href="Search/FindUserBySwipecardCode.html" title="Search::FindUserBySwipecardCode (class)">FindUserBySwipecardCode</a></span></p>
 </div>
@@ -139,7 +161,7 @@
   <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -167,9 +189,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:58 2016 by
+  Generated on Mon Dec 19 11:16:44 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

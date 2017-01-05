@@ -7,22 +7,17 @@
 require "test_helper"
 
 class QcReportTest < ActiveSupport::TestCase
-
   context "QcReport" do
-
     should belong_to :study
     should belong_to :product_criteria
     should have_many :qc_metrics
     should validate_presence_of :study
     should validate_presence_of :product_criteria
     # Also validates state, but we leave that off here as the state machine auto-populates it
-
   end
 
   context "A QcReport" do
-
     context "including existing" do
-
       setup do
         @study = create :study
         @other_study = create :study
@@ -110,12 +105,10 @@ class QcReportTest < ActiveSupport::TestCase
         assert_includes @qc_report.qc_metrics.map(&:asset), @unreported_sample
         assert_includes @qc_report.qc_metrics.map(&:asset), @other_reported_sample
       end
-
     end
   end
 
   context "QcReport state machine" do
-
     setup do
       @qc_report = create :qc_report
       # Stub out report generation as it advances the state machine

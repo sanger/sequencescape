@@ -225,7 +225,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>return if the Link would need to be send to the accession service.</p>
+</div></span>
   
 </li>
 
@@ -262,14 +264,14 @@
       <pre class="lines">
 
 
-112
 113
 114
 115
-116</pre>
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='comma'>,</span> <span class='id identifier rubyid_role'>role</span><span class='comma'>,</span> <span class='id identifier rubyid_primary'>primary</span> <span class='op'>=</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@study</span> <span class='op'>=</span> <span class='id identifier rubyid_study'>study</span>
@@ -303,7 +305,6 @@
       <pre class="lines">
 
 
-129
 130
 131
 132
@@ -312,10 +313,11 @@
 135
 136
 137
-138</pre>
+138
+139</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 130</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_build'>build</span><span class='lparen'>(</span><span class='id identifier rubyid_xml'>xml</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_db_label'>db_label</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
@@ -347,12 +349,12 @@
       <pre class="lines">
 
 
-140
 141
-142</pre>
+142
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_db_label'>db_label</span>
   <span class='const'>I18n</span><span class='period'>.</span><span class='id identifier rubyid_t'>t</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>metadata.study.metadata.</span><span class='embexpr_beg'>#{</span><span class='ivar'>@role</span><span class='embexpr_end'>}</span><span class='tstring_content'>.ebi_db</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>default:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -377,14 +379,14 @@
       <pre class="lines">
 
 
-123
 124
 125
 126
-127</pre>
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_errors'>errors</span>
   <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_errs'>errs</span><span class='op'>|</span>
@@ -408,6 +410,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>return if the Link would need to be send to the accession service</p>
+
 
   </div>
 </div>
@@ -433,12 +437,12 @@
       <pre class="lines">
 
 
-119
 120
-121</pre>
+121
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/study.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_send?'>to_send?</span>
   <span class='id identifier rubyid_db_label'>db_label</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -453,9 +457,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:22 2016 by
+  Generated on Mon Dec 19 11:17:07 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>
