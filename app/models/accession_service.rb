@@ -263,7 +263,7 @@ private
       rc.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
     end
 
-    payload = file_params.each_with_object do |param, hash|
+    payload = file_params.each_with_object({}) do |param, hash|
       hash[param[:name]] = AccessionedFile.open(param[:local_name]).tap { |f| f.original_filename = param[:remote_name] }
     end
 
