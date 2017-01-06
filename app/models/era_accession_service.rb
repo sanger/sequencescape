@@ -9,12 +9,8 @@ class EraAccessionService < AccessionService
     :ERA
   end
 
-  def accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type)
-    generate_accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type, configatron.era_accession_login)
-  end
-
-  def accession_login
-    configatron.era_accession_login or raise RuntimeError, "Can't find ERA  accession login in configuration file"
+  def accession_options
+    configatron.accession.ena!.to_hash
   end
 
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
