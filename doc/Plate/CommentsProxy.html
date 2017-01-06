@@ -111,7 +111,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aplate-instance_method" title="#:plate (instance method)">#<strong>:plate</strong>  &#x21d2; Object </a>
+      <a href="#plate-instance_method" title="#plate (instance method)">#<strong>plate</strong>  &#x21d2; Object </a>
     
 
     
@@ -131,7 +131,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :plate.</p>
+<p>Returns the value of attribute plate.</p>
 </div></span>
   
 </li>
@@ -233,7 +233,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>We add the comments to each submission to ensure that are available for all
+the requests.</p>
+</div></span>
   
 </li>
 
@@ -303,7 +306,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>By default rails treats sizes for grouped queries different to sizes for
+ungrouped queries.</p>
+</div></span>
   
 </li>
 
@@ -340,12 +346,12 @@
       <pre class="lines">
 
 
-143
-144
-145</pre>
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
   <span class='ivar'>@plate</span> <span class='op'>=</span> <span class='id identifier rubyid_plate'>plate</span>
@@ -378,12 +384,12 @@
       <pre class="lines">
 
 
-151
-152
-153</pre>
+155
+156
+157</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_comment_assn'>comment_assn</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -401,9 +407,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":plate-instance_method">
+  <h3 class="signature first" id="plate-instance_method">
   
-    #<strong>:plate</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>plate</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -412,7 +418,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :plate</p>
+<p>Returns the value of attribute plate</p>
 
 
   </div>
@@ -426,16 +432,16 @@
       <pre class="lines">
 
 
-141
-142
-143</pre>
+145
+146
+147</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 145</span>
 
-def :plate
-  @:plate
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_plate'>plate</span>
+  <span class='ivar'>@plate</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -463,12 +469,12 @@ end</pre>
       <pre class="lines">
 
 
-147
-148
-149</pre>
+151
+152
+153</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 151</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_comment_assn'>comment_assn</span>
   <span class='ivar'>@asn</span> <span class='op'>||=</span> <span class='const'>Comment</span><span class='period'>.</span><span class='id identifier rubyid_for_plate'>for_plate</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
@@ -493,17 +499,17 @@ end</pre>
       <pre class="lines">
 
 
-179
-180
-181
-182
-183</pre>
+186
+187
+188
+189
+190</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 179</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_count'>count</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_s'>s</span> <span class='op'>=</span> <span class='kw'>super</span>
+  <span class='id identifier rubyid_s'>s</span> <span class='op'>=</span> <span class='kw'>super</span><span class='lparen'>(</span><span class='symbol'>:all</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='kw'>if</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:length</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_s'>s</span>
 <span class='kw'>end</span></pre>
@@ -527,13 +533,13 @@ end</pre>
       <pre class="lines">
 
 
-164
-165
-166
-167</pre>
+168
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_submissions'>submissions</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_add_comment'>add_comment</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:description</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:user</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -553,19 +559,33 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>We add the comments to each submission to ensure that are available for all
+the requests. At time of writing, submissions add comments to each request,
+so there are a lot of comments getting created here. (The intent is to
+change this so requests are treated similarly to plates)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-159
-160
-161
-162</pre>
+163
+164
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 163</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_submissions'>submissions</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_add_comment'>add_comment</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:description</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:user</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -585,20 +605,36 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>By default rails treats sizes for grouped queries different to sizes for
+ungrouped queries. Unfortunately plates could end up performing either.
+Grouped return a hash, for which we want the length otherwise we get an
+integer We need to urgently revisit this, as this solution is horrible.
+Adding to the horrible: The :all passed in to the super is to address a
+rails bug with count and custom selects.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-174
-175
-176
-177
-178</pre>
+180
+181
+182
+183
+184</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate.rb', line 180</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_s'>s</span> <span class='op'>=</span> <span class='kw'>super</span>
@@ -615,9 +651,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:56 2016 by
+  Generated on Mon Dec 19 11:16:40 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

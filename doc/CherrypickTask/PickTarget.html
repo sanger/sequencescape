@@ -101,7 +101,20 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>An instance of this class represents the target plate being picked onto. 
+It can have a template and be a partial plate, and so when wells are picked
+into it we need to ensure that we don&#39;t hit the template/partial wells.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="PickTarget/ByColumn.html" title="CherrypickTask::PickTarget::ByColumn (class)">ByColumn</a></span>, <span class='object_link'><a href="PickTarget/ByInterlacedColumn.html" title="CherrypickTask::PickTarget::ByInterlacedColumn (class)">ByInterlacedColumn</a></span>, <span class='object_link'><a href="PickTarget/ByRow.html" title="CherrypickTask::PickTarget::ByRow (class)">ByRow</a></span></p>
 </div>
@@ -160,72 +173,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#add_any_wells_from_template_or_partial-instance_method" title="#add_any_wells_from_template_or_partial (instance method)">#<strong>add_any_wells_from_template_or_partial</strong>(wells)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#add_empty_well-instance_method" title="#add_empty_well (instance method)">#<strong>add_empty_well</strong>(wells)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#complete-instance_method" title="#complete (instance method)">#<strong>complete</strong>(wells)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -293,28 +240,6 @@
     <span class="summary_desc"><div class='inline'>
 <p>A new instance of PickTarget.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#initialize_already_occupied_wells_from-instance_method" title="#initialize_already_occupied_wells_from (instance method)">#<strong>initialize_already_occupied_wells_from</strong>(template, partial)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -438,117 +363,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="add_any_wells_from_template_or_partial-instance_method">
-  
-    #<strong>add_any_wells_from_template_or_partial</strong>(wells)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_task.rb', line 132</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_add_any_wells_from_template_or_partial'>add_any_wells_from_template_or_partial</span><span class='lparen'>(</span><span class='id identifier rubyid_wells'>wells</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_wells'>wells</span> <span class='op'>&lt;&lt;</span> <span class='const'>CherrypickTask</span><span class='op'>::</span><span class='const'>TEMPLATE_EMPTY_WELL</span> <span class='kw'>until</span> <span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>&gt;=</span> <span class='ivar'>@size</span> <span class='kw'>or</span> <span class='ivar'>@used_wells</span><span class='lbracket'>[</span><span class='id identifier rubyid_well_position'>well_position</span><span class='lparen'>(</span><span class='id identifier rubyid_wells'>wells</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@control_well_required</span> <span class='kw'>and</span> <span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>==</span> <span class='lparen'>(</span><span class='ivar'>@size</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
-
-  <span class='comment'># Control well is always in the bottom right corner of the plate
-</span>  <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_create_control_request_view_details'>create_control_request_view_details</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_control_request_view'>control_request_view</span><span class='op'>|</span>
-    <span class='id identifier rubyid_wells'>wells</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_control_request_view'>control_request_view</span>
-    <span class='ivar'>@control_well_required</span> <span class='op'>=</span> <span class='kw'>false</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="add_empty_well-instance_method">
-  
-    #<strong>add_empty_well</strong>(wells)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-144
-145
-146</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_task.rb', line 144</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_add_empty_well'>add_empty_well</span><span class='lparen'>(</span><span class='id identifier rubyid_wells'>wells</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_wells'>wells</span> <span class='op'>&lt;&lt;</span> <span class='const'>CherrypickTask</span><span class='op'>::</span><span class='const'>EMPTY_WELL</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="complete-instance_method">
-  
-    #<strong>complete</strong>(wells)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-107
-108
-109
-110
-111
-112</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_task.rb', line 107</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_complete'>complete</span><span class='lparen'>(</span><span class='id identifier rubyid_wells'>wells</span><span class='rparen'>)</span>
-  <span class='kw'>until</span> <span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>&gt;=</span> <span class='ivar'>@size</span>
-    <span class='id identifier rubyid_add_empty_well'>add_empty_well</span><span class='lparen'>(</span><span class='id identifier rubyid_wells'>wells</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_add_any_wells_from_template_or_partial'>add_any_wells_from_template_or_partial</span><span class='lparen'>(</span><span class='id identifier rubyid_wells'>wells</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="empty?-instance_method">
+  <h3 class="signature first" id="empty?-instance_method">
   
     #<strong>empty?</strong>  &#x21d2; <tt>Boolean</tt> 
   
@@ -652,48 +467,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="initialize_already_occupied_wells_from-instance_method">
-  
-    #<strong>initialize_already_occupied_wells_from</strong>(template, partial)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-118
-119
-120
-121
-122
-123
-124
-125
-126</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_task.rb', line 118</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize_already_occupied_wells_from'>initialize_already_occupied_wells_from</span><span class='lparen'>(</span><span class='id identifier rubyid_template'>template</span><span class='comma'>,</span> <span class='id identifier rubyid_partial'>partial</span><span class='rparen'>)</span>
-  <span class='ivar'>@used_wells</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_wells'>wells</span><span class='op'>|</span>
-    <span class='lbracket'>[</span><span class='id identifier rubyid_partial'>partial</span><span class='comma'>,</span> <span class='id identifier rubyid_template'>template</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_plate'>plate</span><span class='op'>|</span>
-      <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_w'>w</span><span class='op'>|</span> <span class='id identifier rubyid_wells'>wells</span><span class='lbracket'>[</span><span class='id identifier rubyid_w'>w</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_horizontal_plate_position'>horizontal_plate_position</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_w'>w</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span> <span class='rbrace'>}</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-
-  <span class='ivar'>@control_well_required</span> <span class='op'>=</span> <span class='id identifier rubyid_template'>template</span><span class='period'>.</span><span class='id identifier rubyid_control_well?'>control_well?</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_partial'>partial</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='op'>!</span><span class='id identifier rubyid_partial'>partial</span><span class='period'>.</span><span class='id identifier rubyid_control_well_exists?'>control_well_exists?</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="push-instance_method">
   
     #<strong>push</strong>(request_id, plate_barcode, well_location)  &#x21d2; <tt>Object</tt> 
@@ -732,9 +505,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:11 2016 by
+  Generated on Mon Dec 19 11:17:00 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -122,7 +122,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Adds accessors for named fields and attaches documents to them.</p>
+</div></span>
   
 </li>
 
@@ -145,12 +147,24 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Adds accessors for named fields and attaches documents to them</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+14
 15
 16
 17
@@ -165,11 +179,10 @@
 26
 27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/qc_file.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_qc_files'>has_qc_files</span>
   <span class='id identifier rubyid_line'>line</span> <span class='op'>=</span> <span class='kw'>__LINE__</span> <span class='op'>+</span> <span class='int'>1</span>
@@ -182,7 +195,7 @@
       qc_files.create!(opts) unless file.blank?
     end
 
-    def update_concentrations_from(parser)
+    def update_qc_values_with_parser(parser)
       true
     end
   </span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='comma'>,</span> <span class='id identifier rubyid_line'>line</span><span class='rparen'>)</span>
@@ -197,9 +210,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:28 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

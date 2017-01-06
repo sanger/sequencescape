@@ -111,7 +111,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Amigration-instance_method" title="#:migration (instance method)">#<strong>:migration</strong>  &#x21d2; Object </a>
+      <a href="#migration-instance_method" title="#migration (instance method)">#<strong>migration</strong>  &#x21d2; Object </a>
     
 
     
@@ -131,7 +131,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :migration.</p>
+<p>Returns the value of attribute migration.</p>
 </div></span>
   
 </li>
@@ -140,7 +140,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Apurposes-instance_method" title="#:purposes (instance method)">#<strong>:purposes</strong>  &#x21d2; Object </a>
+      <a href="#purposes-instance_method" title="#purposes (instance method)">#<strong>purposes</strong>  &#x21d2; Object </a>
     
 
     
@@ -160,7 +160,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :purposes.</p>
+<p>Returns the value of attribute purposes.</p>
 </div></span>
   
 </li>
@@ -259,13 +259,13 @@
       <pre class="lines">
 
 
+9
 10
 11
-12
-13</pre>
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_purposes'>purposes</span><span class='comma'>,</span> <span class='id identifier rubyid_migration'>migration</span><span class='rparen'>)</span>
   <span class='ivar'>@purposes</span> <span class='op'>=</span> <span class='id identifier rubyid_purposes'>purposes</span>
@@ -284,9 +284,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":migration-instance_method">
+  <h3 class="signature first" id="migration-instance_method">
   
-    #<strong>:migration</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>migration</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -295,7 +295,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :migration</p>
+<p>Returns the value of attribute migration</p>
 
 
   </div>
@@ -309,16 +309,16 @@
       <pre class="lines">
 
 
+7
 8
-9
-10</pre>
+9</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 7</span>
 
-def :migration
-  @:migration
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_migration'>migration</span>
+  <span class='ivar'>@migration</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -327,9 +327,9 @@ end</pre>
       
       <span id=""></span>
       <div class="method_details ">
-  <h3 class="signature " id=":purposes-instance_method">
+  <h3 class="signature " id="purposes-instance_method">
   
-    #<strong>:purposes</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>purposes</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -338,7 +338,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :purposes</p>
+<p>Returns the value of attribute purposes</p>
 
 
   </div>
@@ -352,16 +352,16 @@ end</pre>
       <pre class="lines">
 
 
+7
 8
-9
-10</pre>
+9</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 7</span>
 
-def :purposes
-  @:purposes
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_purposes'>purposes</span>
+  <span class='ivar'>@purposes</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -389,15 +389,15 @@ end</pre>
       <pre class="lines">
 
 
+14
 15
 16
 17
 18
-19
-20</pre>
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/tube_purpose_helper.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to'>to</span><span class='lparen'>(</span><span class='id identifier rubyid_target_purpose'>target_purpose</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_purposes'>purposes</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='op'>|</span>
@@ -415,9 +415,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:05 2016 by
+  Generated on Mon Dec 19 11:16:53 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -153,7 +153,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>related studies.</p>
+</div></span>
   
 </li>
 
@@ -219,7 +221,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>reverse related studies.</p>
+</div></span>
   
 </li>
 
@@ -292,17 +296,17 @@
       <pre class="lines">
 
 
+21
 22
 23
 24
 25
 26
 27
-28
-29</pre>
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='comment'># Related studies
@@ -310,7 +314,7 @@
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:related_studies</span><span class='comma'>,</span> <span class='label'>through:</span> <span class='symbol'>:study_relations</span><span class='comma'>,</span> <span class='label'>class_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Study</span><span class='tstring_end'>&quot;</span></span>
   <span class='comment'># Inverse
 </span>  <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:reversed_study_relations</span><span class='comma'>,</span> <span class='label'>class_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>StudyRelation</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>foreign_key:</span> <span class='symbol'>:related_study_id</span>
-  <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:reversed_related_studies</span><span class='comma'>,</span> <span class='label'>through:</span> <span class='symbol'>:reversed_study_relations</span><span class='comma'>,</span> <span class='label'>class_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Study</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>  <span class='label'>source:</span> <span class='symbol'>:study</span>
+  <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:reversed_related_studies</span><span class='comma'>,</span> <span class='label'>through:</span> <span class='symbol'>:reversed_study_relations</span><span class='comma'>,</span> <span class='label'>class_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Study</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>source:</span> <span class='symbol'>:study</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -332,19 +336,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>related studies</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+31
 32
 33
-34
-35</pre>
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_related_studies_for'>related_studies_for</span><span class='lparen'>(</span><span class='id identifier rubyid_relation_type'>relation_type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_r_id'>r_id</span> <span class='op'>=</span> <span class='id identifier rubyid_relation_type'>relation_type</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>StudyRelationType</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_relation_type'>relation_type</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>:</span> <span class='id identifier rubyid_relation_type'>relation_type</span>
@@ -370,12 +385,12 @@
       <pre class="lines">
 
 
+41
 42
-43
-44</pre>
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_relation_types_for_study'>relation_types_for_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_relations_for_study'>relations_for_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:study_relation_type</span><span class='rparen'>)</span>
@@ -400,13 +415,13 @@
       <pre class="lines">
 
 
+36
 37
 38
-39
-40</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_relations_for_study'>relations_for_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_s_id'>s_id</span> <span class='op'>=</span> <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Study</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>:</span> <span class='id identifier rubyid_id'>id</span>
@@ -426,19 +441,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>reverse related studies</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+46
 47
 48
-49
-50</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reversed_related_studies_for'>reversed_related_studies_for</span><span class='lparen'>(</span><span class='id identifier rubyid_relation_type'>relation_type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_r_id'>r_id</span> <span class='op'>=</span> <span class='id identifier rubyid_relation_type'>relation_type</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>StudyRelationType</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_relation_type'>relation_type</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>:</span> <span class='id identifier rubyid_relation_type'>relation_type</span>
@@ -464,12 +490,12 @@
       <pre class="lines">
 
 
+56
 57
-58
-59</pre>
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reversed_relation_types_for_study'>reversed_relation_types_for_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_reversed_relations_for_study'>reversed_relations_for_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:study_relation_type</span><span class='rparen'>)</span>
@@ -494,13 +520,13 @@
       <pre class="lines">
 
 
+51
 52
 53
-54
-55</pre>
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'app/models/study_relation.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reversed_relations_for_study'>reversed_relations_for_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_s_id'>s_id</span> <span class='op'>=</span> <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Study</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>:</span> <span class='id identifier rubyid_id'>id</span>
@@ -516,9 +542,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:32 2016 by
+  Generated on Mon Dec 19 11:16:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

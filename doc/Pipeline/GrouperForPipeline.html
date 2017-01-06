@@ -106,67 +106,26 @@
   
 </div>
 
-
-
-
-
-
-
-
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
     
-      <a href="#call-instance_method" title="#call (instance method)">#<strong>call</strong>(conditions, variables, group)  &#x21d2; Object </a>
-    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2015 Genome Research Ltd.</p>
 
-    
-  </span>
-  
-  
-  
-  
-  
-  
+
+  </div>
+</div>
+<div class="tags">
   
 
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
+</div>
 
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#grouping-instance_method" title="#grouping (instance method)">#<strong>grouping</strong>  &#x21d2; Object </a>
-    
 
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
 
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
 
-      
-    </ul>
-  
+
 
 
   
@@ -175,108 +134,18 @@
   
   
   
-  
+  <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Grouper.html" title="Pipeline::Grouper (module)">Grouper</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="Grouper.html#all-instance_method" title="Pipeline::Grouper#all (method)">#all</a></span>, <span class='object_link'><a href="Grouper.html#count-instance_method" title="Pipeline::Grouper#count (method)">#count</a></span>, <span class='object_link'><a href="Grouper.html#included-class_method" title="Pipeline::Grouper.included (method)">included</a></span>, <span class='object_link'><a href="Grouper.html#initialize-instance_method" title="Pipeline::Grouper#initialize (method)">#initialize</a></span></p>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="call-instance_method">
-  
-    #<strong>call</strong>(conditions, variables, group)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline/grouper_for_pipeline.rb', line 10</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='comma'>,</span> <span class='id identifier rubyid_variables'>variables</span><span class='comma'>,</span> <span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_condition'>condition</span><span class='comma'>,</span> <span class='id identifier rubyid_keys'>keys</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_group'>group</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_group_by_parent?'>group_by_parent?</span>
-    <span class='id identifier rubyid_condition'>condition</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>tca.container_id=?</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_variables'>variables</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
-  <span class='kw'>end</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_group_by_submission?'>group_by_submission?</span>
-    <span class='id identifier rubyid_condition'>condition</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>requests.submission_id=?</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_variables'>variables</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_conditions'>conditions</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>(</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_condition'>condition</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> AND </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="grouping-instance_method">
-  
-    #<strong>grouping</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-24
-25
-26
-27
-28
-29</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline/grouper_for_pipeline.rb', line 24</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_grouping'>grouping</span>
-  <span class='id identifier rubyid_grouping'>grouping</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_grouping'>grouping</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>tca.container_id</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_group_by_parent?'>group_by_parent?</span>
-  <span class='id identifier rubyid_grouping'>grouping</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>requests.submission_id</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_group_by_submission?'>group_by_submission?</span>
-  <span class='id identifier rubyid_grouping'>grouping</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>,</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:40 2016 by
+  Generated on Mon Dec 19 11:17:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

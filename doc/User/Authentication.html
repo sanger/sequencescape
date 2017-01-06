@@ -90,7 +90,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -150,28 +164,6 @@
   <span class="summary_signature">
     
       <a href="#authenticated%3F-instance_method" title="#authenticated? (instance method)">#<strong>authenticated?</strong>(password)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#update_profile_via_ldap-instance_method" title="#update_profile_via_ldap (instance method)">#<strong>update_profile_via_ldap</strong>  &#x21d2; Object </a>
     
 
     
@@ -295,72 +287,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="update_profile_via_ldap-instance_method">
-  
-    #<strong>update_profile_via_ldap</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/user/authentication.rb', line 20</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_update_profile_via_ldap'>update_profile_via_ldap</span>
-  <span class='id identifier rubyid_ldap'>ldap</span> <span class='op'>=</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>host:</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_ldap_server'>ldap_server</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_ldap_port'>ldap_port</span><span class='rparen'>)</span>
-
-  <span class='id identifier rubyid_filter'>filter</span> <span class='op'>=</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>LDAP</span><span class='op'>::</span><span class='const'>Filter</span><span class='period'>.</span><span class='id identifier rubyid_eq'>eq</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>uid</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_login'>login</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_treebase'>treebase</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ou=people,dc=sanger,dc=ac,dc=uk</span><span class='tstring_end'>&quot;</span></span>
-
-  <span class='id identifier rubyid_ldap_profile'>ldap_profile</span> <span class='op'>=</span> <span class='id identifier rubyid_ldap'>ldap</span><span class='period'>.</span><span class='id identifier rubyid_search'>search</span><span class='lparen'>(</span><span class='label'>base:</span> <span class='id identifier rubyid_treebase'>treebase</span><span class='comma'>,</span> <span class='label'>filter:</span> <span class='id identifier rubyid_filter'>filter</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
-  <span class='comment'># If we have two or more records, something is off with LDAP
-</span>
-  <span class='lbrace'>{</span> <span class='label'>email:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>mail</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>first_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>givenname</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>last_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sn</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_attr'>attr</span><span class='comma'>,</span> <span class='id identifier rubyid_ldap_attr'>ldap_attr</span><span class='op'>|</span>
-    <span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_attr'>attr</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_ldap_profile'>ldap_profile</span><span class='lbracket'>[</span><span class='id identifier rubyid_ldap_attr'>ldap_attr</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_attr'>attr</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
-  <span class='kw'>end</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_save'>save</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_changed?'>changed?</span>
-
-<span class='kw'>rescue</span> <span class='const'>StandardError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
-  <span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_error'>error</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Profile failed for user </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_login'>login</span><span class='embexpr_end'>}</span><span class='tstring_content'>: result code </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ldap'>ldap</span><span class='period'>.</span><span class='id identifier rubyid_get_operation_result'>get_operation_result</span><span class='period'>.</span><span class='id identifier rubyid_code'>code</span><span class='embexpr_end'>}</span><span class='tstring_content'> message </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ldap'>ldap</span><span class='period'>.</span><span class='id identifier rubyid_get_operation_result'>get_operation_result</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_content'> - </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:36 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

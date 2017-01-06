@@ -134,7 +134,19 @@
       <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>default_inbox</span><span class='tstring_end'>&#39;</span></span></pre></dd>
     
       <dt id="ALWAYS_SHOW_RELEASE_ACTIONS-constant" class="">ALWAYS_SHOW_RELEASE_ACTIONS =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>Override this in subclasses if you want to display action links for
+released batches</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
       <dd><pre class="code"><span class='kw'>false</span></pre></dd>
     
@@ -281,7 +293,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>This is the old behaviour for every other pipeline.</p>
+</div></span>
   
 </li>
 
@@ -311,7 +325,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#extract_requests_from_input_params-instance_method" title="#extract_requests_from_input_params (instance method)">#<strong>extract_requests_from_input_params</strong>(params = {})  &#x21d2; Object </a>
+      <a href="#extract_requests_from_input_params-instance_method" title="#extract_requests_from_input_params (instance method)">#<strong>extract_requests_from_input_params</strong>(params)  &#x21d2; Object </a>
     
 
     
@@ -391,7 +405,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>to overwrite by subpipeline if needed.</p>
+</div></span>
   
 </li>
 
@@ -400,72 +416,6 @@
   <span class="summary_signature">
     
       <a href="#grouped_requests-instance_method" title="#grouped_requests (instance method)">#<strong>grouped_requests</strong>(show_held_requests = true)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#grouping_attributes-instance_method" title="#grouping_attributes (instance method)">#<strong>grouping_attributes</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#grouping_function-instance_method" title="#grouping_function (instance method)">#<strong>grouping_function</strong>(option = {})  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#grouping_parser-instance_method" title="#grouping_parser (instance method)">#<strong>grouping_parser</strong>  &#x21d2; Object </a>
     
 
     
@@ -532,28 +482,6 @@
   <span class="summary_signature">
     
       <a href="#inbox_partial-instance_method" title="#inbox_partial (instance method)">#<strong>inbox_partial</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#inbox_scope_on-instance_method" title="#inbox_scope_on (instance method)">#<strong>inbox_scope_on</strong>(inbox_scope)  &#x21d2; Object </a>
     
 
     
@@ -787,7 +715,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>This needs to be re-done a better way.</p>
+</div></span>
   
 </li>
 
@@ -883,7 +813,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#selected_values_from-instance_method" title="#selected_values_from (instance method)">#<strong>selected_values_from</strong>(browser_options)  &#x21d2; Object </a>
+      <a href="#robot_verified%21-instance_method" title="#robot_verified! (instance method)">#<strong>robot_verified!</strong>(batch)  &#x21d2; Object </a>
     
 
     
@@ -982,7 +912,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Pipeline/BatchValidation.html" title="Pipeline::BatchValidation (module)">BatchValidation</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Pipeline/BatchValidation.html#validation_of_batch-instance_method" title="Pipeline::BatchValidation#validation_of_batch (method)">#validation_of_batch</a></span>, <span class='object_link'><a href="Pipeline/BatchValidation.html#validation_of_batch_for_completion-instance_method" title="Pipeline::BatchValidation#validation_of_batch_for_completion (method)">#validation_of_batch_for_completion</a></span>, <span class='object_link'><a href="Pipeline/BatchValidation.html#validation_of_requests-instance_method" title="Pipeline::BatchValidation#validation_of_requests (method)">#validation_of_requests</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Pipeline/BatchValidation.html#validation_of_batch-instance_method" title="Pipeline::BatchValidation#validation_of_batch (method)">#validation_of_batch</a></span>, <span class='object_link'><a href="Pipeline/BatchValidation.html#validation_of_batch_for_completion-instance_method" title="Pipeline::BatchValidation#validation_of_batch_for_completion (method)">#validation_of_batch_for_completion</a></span></p>
 
   
   
@@ -1004,7 +934,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -1082,12 +1012,12 @@
       <pre class="lines">
 
 
-237
 238
-239</pre>
+239
+240</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 237</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 238</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_requests_from_submissions_selected?'>all_requests_from_submissions_selected?</span><span class='lparen'>(</span><span class='id identifier rubyid_request_ids'>request_ids</span><span class='rparen'>)</span>
   <span class='kw'>true</span>
@@ -1134,12 +1064,12 @@
       <pre class="lines">
 
 
-249
 250
-251</pre>
+251
+252</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 249</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 250</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_allow_tag_collision_on_tagging_task?'>allow_tag_collision_on_tagging_task?</span>
   <span class='kw'>true</span>
@@ -1186,12 +1116,12 @@
       <pre class="lines">
 
 
-241
 242
-243</pre>
+243
+244</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 242</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_can_create_stock_assets?'>can_create_stock_assets?</span>
   <span class='kw'>false</span>
@@ -1216,7 +1146,6 @@
       <pre class="lines">
 
 
-167
 168
 169
 170
@@ -1225,10 +1154,11 @@
 173
 174
 175
-176</pre>
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 167</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_completed_request_as_part_of_release_batch'>completed_request_as_part_of_release_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_library_creation?'>library_creation?</span>
@@ -1260,12 +1190,12 @@
       <pre class="lines">
 
 
-72
-73
-74</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_custom_inbox_actions'>custom_inbox_actions</span>
   <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1284,20 +1214,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>This is the old behaviour for every other pipeline.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-115
 116
 117
 118
-119</pre>
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_detach_request_from_batch'>detach_request_from_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_return_for_inbox!'>return_for_inbox!</span>
@@ -1346,12 +1287,12 @@
       <pre class="lines">
 
 
-85
 86
-87</pre>
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_display_next_pipeline?'>display_next_pipeline?</span>
   <span class='kw'>false</span>
@@ -1364,7 +1305,7 @@
       <div class="method_details ">
   <h3 class="signature " id="extract_requests_from_input_params-instance_method">
   
-    #<strong>extract_requests_from_input_params</strong>(params = {})  &#x21d2; <tt>Object</tt> 
+    #<strong>extract_requests_from_input_params</strong>(params)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1376,7 +1317,6 @@
       <pre class="lines">
 
 
-217
 218
 219
 220
@@ -1384,12 +1324,13 @@
 222
 223
 224
-225</pre>
+225
+226</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 217</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 218</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_extract_requests_from_input_params'>extract_requests_from_input_params</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_extract_requests_from_input_params'>extract_requests_from_input_params</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_request_ids'>request_ids</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>request</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
     <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_inputs'>inputs</span><span class='lparen'>(</span><span class='kw'>true</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_selected_values_from'>selected_values_from</span><span class='lparen'>(</span><span class='id identifier rubyid_request_ids'>request_ids</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:first</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>elsif</span> <span class='lparen'>(</span><span class='id identifier rubyid_selected_groups'>selected_groups</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>request_group</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -1418,12 +1359,12 @@
       <pre class="lines">
 
 
-159
 160
-161</pre>
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 160</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_finish_batch'>finish_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_complete!'>complete!</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
@@ -1470,12 +1411,12 @@
       <pre class="lines">
 
 
-102
 103
-104</pre>
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_genotyping?'>genotyping?</span>
   <span class='kw'>false</span>
@@ -1494,21 +1435,32 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>to overwrite by subpipeline if needed</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-155
 156
-157</pre>
+157
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 156</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_option'>option</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='symbol'>:all</span><span class='comma'>,</span> <span class='id identifier rubyid_option'>option</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group_by'>group_by</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_grouping_function'>grouping_function</span><span class='lparen'>(</span><span class='id identifier rubyid_option'>option</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_option'>option</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_group_by'>group_by</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_grouping_function'>grouping_function</span><span class='lparen'>(</span><span class='id identifier rubyid_option'>option</span><span class='rparen'>)</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1530,125 +1482,15 @@
       <pre class="lines">
 
 
-125
 126
-127</pre>
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_grouped_requests'>grouped_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_show_held_requests'>show_held_requests</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_inbox_scope_on'>inbox_scope_on</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_inputs'>inputs</span><span class='lparen'>(</span><span class='id identifier rubyid_show_held_requests'>show_held_requests</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_unbatched'>unbatched</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_inbox_eager_loading'>inbox_eager_loading</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_for_group_by'>for_group_by</span><span class='lparen'>(</span><span class='id identifier rubyid_grouping_attributes'>grouping_attributes</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="grouping_attributes-instance_method">
-  
-    #<strong>grouping_attributes</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-146
-147
-148
-149
-150
-151</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 146</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_grouping_attributes'>grouping_attributes</span>
-  <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_group_key'>group_key</span><span class='op'>|</span>
-    <span class='id identifier rubyid_group_key'>group_key</span><span class='lbracket'>[</span><span class='symbol'>:hl</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:container_id</span> <span class='kw'>if</span> <span class='id identifier rubyid_group_by_parent?'>group_by_parent?</span>
-    <span class='id identifier rubyid_group_key'>group_key</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:submission_id</span> <span class='kw'>if</span> <span class='id identifier rubyid_group_by_submission?'>group_by_submission?</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="grouping_function-instance_method">
-  
-    #<strong>grouping_function</strong>(option = {})  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 134</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_grouping_function'>grouping_function</span><span class='lparen'>(</span><span class='id identifier rubyid_option'>option</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_r'>r</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='lbracket'>[</span><span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_container_id'>container_id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_option'>option</span><span class='lbracket'>[</span><span class='symbol'>:group_by_holder_only</span><span class='rbracket'>]</span>
-
-  <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
-    <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_group_key'>group_key</span><span class='op'>|</span>
-      <span class='id identifier rubyid_group_key'>group_key</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_container_id'>container_id</span>  <span class='kw'>if</span> <span class='id identifier rubyid_group_by_parent?'>group_by_parent?</span>
-      <span class='id identifier rubyid_group_key'>group_key</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_submission_id'>submission_id</span> <span class='kw'>if</span> <span class='id identifier rubyid_group_by_submission?'>group_by_submission?</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="grouping_parser-instance_method">
-  
-    #<strong>grouping_parser</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-207
-208
-209</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 207</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_grouping_parser'>grouping_parser</span>
-  <span class='const'>GrouperForPipeline</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1692,12 +1534,12 @@
       <pre class="lines">
 
 
-191
 192
-193</pre>
+193
+194</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 192</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_controls?'>has_controls?</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_controls'>controls</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>?</span> <span class='kw'>false</span> <span class='op'>:</span> <span class='kw'>true</span>
@@ -1722,12 +1564,12 @@
       <pre class="lines">
 
 
-81
 82
-83</pre>
+83
+84</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inbox_eager_loading'>inbox_eager_loading</span>
   <span class='symbol'>:loaded_for_inbox_display</span>
@@ -1752,45 +1594,15 @@
       <pre class="lines">
 
 
-77
 78
-79</pre>
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inbox_partial'>inbox_partial</span>
   <span class='const'>INBOX_PARTIAL</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="inbox_scope_on-instance_method">
-  
-    #<strong>inbox_scope_on</strong>(inbox_scope)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-129
-130
-131</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 129</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_inbox_scope_on'>inbox_scope_on</span><span class='lparen'>(</span><span class='id identifier rubyid_inbox_scope'>inbox_scope</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_custom_inbox_actions'>custom_inbox_actions</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='id identifier rubyid_inbox_scope'>inbox_scope</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='id identifier rubyid_action'>action</span><span class='op'>|</span> <span class='id identifier rubyid_context'>context</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_action'>action</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1834,12 +1646,12 @@
       <pre class="lines">
 
 
-110
 111
-112</pre>
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 111</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_is_read_length_consistent_for_batch?'>is_read_length_consistent_for_batch?</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='rparen'>)</span>
   <span class='kw'>true</span>
@@ -1886,12 +1698,12 @@
       <pre class="lines">
 
 
-98
 99
-100</pre>
+100
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_library_creation?'>library_creation?</span>
   <span class='kw'>false</span>
@@ -1916,12 +1728,12 @@
       <pre class="lines">
 
 
-227
 228
-229</pre>
+229
+230</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 227</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 228</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_max_number_of_groups'>max_number_of_groups</span>
   <span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:max_number_of_groups</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='int'>0</span>
@@ -1946,12 +1758,12 @@
       <pre class="lines">
 
 
-183
 184
-185</pre>
+185
+186</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 184</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_on_start_batch'>on_start_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='comment'># Do nothing
@@ -1976,11 +1788,11 @@
       <pre class="lines">
 
 
-164
-165</pre>
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 165</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_post_finish_batch'>post_finish_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -2004,12 +1816,12 @@
       <pre class="lines">
 
 
-187
 188
-189</pre>
+189
+190</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 188</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_post_release_batch'>post_release_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='comment'># Do Nothing
@@ -2056,12 +1868,12 @@
       <pre class="lines">
 
 
-203
 204
-205</pre>
+205
+206</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 203</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 204</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_prints_a_worksheet_per_task?'>prints_a_worksheet_per_task?</span>
   <span class='kw'>false</span>
@@ -2108,12 +1920,12 @@
       <pre class="lines">
 
 
-195
 196
-197</pre>
+197
+198</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 196</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pulldown?'>pulldown?</span>
   <span class='kw'>false</span>
@@ -2160,12 +1972,12 @@
       <pre class="lines">
 
 
-199
 200
-201</pre>
+201
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 199</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 200</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_purpose_information?'>purpose_information?</span>
   <span class='kw'>true</span>
@@ -2187,6 +1999,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>This needs to be re-done a better way</p>
+
 
   </div>
 </div>
@@ -2212,12 +2026,12 @@
       <pre class="lines">
 
 
-94
 95
-96</pre>
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc?'>qc?</span>
   <span class='kw'>false</span>
@@ -2242,12 +2056,12 @@
       <pre class="lines">
 
 
-178
 179
-180</pre>
+180
+181</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 179</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release_batch'>release_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_release!'>release!</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
@@ -2272,12 +2086,12 @@
       <pre class="lines">
 
 
-245
 246
-247</pre>
+247
+248</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 245</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 246</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_actions'>request_actions</span>
   <span class='lbracket'>[</span><span class='symbol'>:fail</span><span class='rbracket'>]</span>
@@ -2302,12 +2116,12 @@
       <pre class="lines">
 
 
-68
-69
-70</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_types_including_controls'>request_types_including_controls</span>
   <span class='lbracket'>[</span><span class='id identifier rubyid_control_request_type'>control_request_type</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span> <span class='op'>+</span> <span class='id identifier rubyid_request_types'>request_types</span>
@@ -2354,12 +2168,12 @@
       <pre class="lines">
 
 
-89
 90
-91</pre>
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_requires_position?'>requires_position?</span>
   <span class='kw'>true</span>
@@ -2370,9 +2184,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="selected_values_from-instance_method">
+  <h3 class="signature " id="robot_verified!-instance_method">
   
-    #<strong>selected_values_from</strong>(browser_options)  &#x21d2; <tt>Object</tt> 
+    #<strong>robot_verified!</strong>(batch)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -2384,16 +2198,16 @@
       <pre class="lines">
 
 
-212
-213
-214</pre>
+254
+255
+256</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 254</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_selected_values_from'>selected_values_from</span><span class='lparen'>(</span><span class='id identifier rubyid_browser_options'>browser_options</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_browser_options'>browser_options</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_robot_verified!'>robot_verified!</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='rparen'>)</span>
+  <span class='comment'># Do nothing!
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2436,12 +2250,12 @@
       <pre class="lines">
 
 
-106
 107
-108</pre>
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sequencing?'>sequencing?</span>
   <span class='kw'>false</span>
@@ -2466,12 +2280,12 @@
       <pre class="lines">
 
 
-121
 122
-123</pre>
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 122</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update_detached_request'>update_detached_request</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_remove_unused_assets'>remove_unused_assets</span>
@@ -2518,14 +2332,14 @@
       <pre class="lines">
 
 
-231
 232
 233
 234
-235</pre>
+235
+236</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 231</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline.rb', line 232</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_number_of_checked_request_groups?'>valid_number_of_checked_request_groups?</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_max_number_of_groups'>max_number_of_groups</span><span class='period'>.</span><span class='id identifier rubyid_zero?'>zero?</span>
@@ -2542,9 +2356,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:01 2016 by
+  Generated on Mon Dec 19 11:16:47 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

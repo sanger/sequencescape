@@ -85,7 +85,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -146,15 +160,15 @@
       <pre class="lines">
 
 
+8
 9
 10
 11
 12
-13
-14</pre>
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/extended_validator/species_validator.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/extended_validator/species_validator.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validate_order'>validate_order</span><span class='lparen'>(</span><span class='id identifier rubyid_order'>order</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_bad_samples'>bad_samples</span> <span class='op'>=</span> <span class='id identifier rubyid_order'>order</span><span class='period'>.</span><span class='id identifier rubyid_all_samples'>all_samples</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_taxon_id'>sample_taxon_id</span> <span class='op'>!=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:taxon_id</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -172,9 +186,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:44 2016 by
+  Generated on Mon Dec 19 11:16:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

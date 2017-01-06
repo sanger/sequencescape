@@ -124,72 +124,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#associate_built_requests%21-instance_method" title="#associate_built_requests! (instance method)">#<strong>associate_built_requests!</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#downstream_requests-instance_method" title="#downstream_requests (instance method)">#<strong>downstream_requests</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#generate_target_assets-instance_method" title="#generate_target_assets (instance method)">#<strong>generate_target_assets</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(request_type, multiplier, assets, chain)  &#x21d2; MultiplexedLink </a>
     
 
@@ -235,28 +169,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#source_assets_doublet_with_index-instance_method" title="#source_assets_doublet_with_index (instance method)">#<strong>source_assets_doublet_with_index</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -270,7 +182,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="ChainLink.html" title="Submission::FlexibleRequestGraph::ChainLink (module)">ChainLink</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="ChainLink.html#build%21-class_method" title="Submission::FlexibleRequestGraph::ChainLink.build! (method)">build!</a></span>, <span class='object_link'><a href="ChainLink.html#build%21-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#build! (method)">#build!</a></span>, <span class='object_link'><a href="ChainLink.html#comments-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#comments (method)">#comments</a></span>, <span class='object_link'><a href="ChainLink.html#create_target_asset-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#create_target_asset (method)">#create_target_asset</a></span>, <span class='object_link'><a href="ChainLink.html#included-class_method" title="Submission::FlexibleRequestGraph::ChainLink.included (method)">included</a></span>, <span class='object_link'><a href="ChainLink.html#source_asset_metrics_target_assets-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#source_asset_metrics_target_assets (method)">#source_asset_metrics_target_assets</a></span>, <span class='object_link'><a href="ChainLink.html#target_assets-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#target_assets (method)">#target_assets</a></span>, <span class='object_link'><a href="ChainLink.html#user-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#user (method)">#user</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="ChainLink.html#build%21-class_method" title="Submission::FlexibleRequestGraph::ChainLink.build! (method)">build!</a></span>, <span class='object_link'><a href="ChainLink.html#build%21-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#build! (method)">#build!</a></span>, <span class='object_link'><a href="ChainLink.html#included-class_method" title="Submission::FlexibleRequestGraph::ChainLink.included (method)">included</a></span>, <span class='object_link'><a href="ChainLink.html#target_assets-instance_method" title="Submission::FlexibleRequestGraph::ChainLink#target_assets (method)">#target_assets</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -313,14 +225,14 @@
       <pre class="lines">
 
 
-167
-168
-169
-170
-171</pre>
+162
+163
+164
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 167</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 162</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_request_type'>request_type</span><span class='comma'>,</span> <span class='id identifier rubyid_multiplier'>multiplier</span><span class='comma'>,</span> <span class='id identifier rubyid_assets'>assets</span><span class='comma'>,</span> <span class='id identifier rubyid_chain'>chain</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RequestChainError</span> <span class='kw'>unless</span> <span class='id identifier rubyid_request_type'>request_type</span><span class='period'>.</span><span class='id identifier rubyid_for_multiplexing?'>for_multiplexing?</span>
@@ -340,117 +252,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="associate_built_requests!-instance_method">
-  
-    #<strong>associate_built_requests!</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-192
-193
-194
-195
-196
-197
-198
-199
-200</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 192</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_associate_built_requests!'>associate_built_requests!</span>
-  <span class='id identifier rubyid_downstream_requests'>downstream_requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
-    <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>initial_study:</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_initial_study'>initial_study</span> <span class='op'>!=</span> <span class='id identifier rubyid_study'>study</span>
-    <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>initial_project:</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_initial_project'>initial_project</span> <span class='op'>!=</span> <span class='id identifier rubyid_project'>project</span>
-    <span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_comment'>comment</span><span class='op'>|</span>
-      <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>user:</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='label'>description:</span> <span class='id identifier rubyid_comment'>comment</span><span class='rparen'>)</span>
-    <span class='kw'>end</span> <span class='kw'>if</span> <span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="downstream_requests-instance_method">
-  
-    #<strong>downstream_requests</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-202
-203
-204</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 202</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_downstream_requests'>downstream_requests</span>
-  <span class='id identifier rubyid_target_assets'>target_assets</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:requests</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="generate_target_assets-instance_method">
-  
-    #<strong>generate_target_assets</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-184
-185
-186
-187
-188
-189
-190</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 184</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_generate_target_assets'>generate_target_assets</span>
-  <span class='ivar'>@target_assets_qc_metrics</span> <span class='op'>||=</span> <span class='id identifier rubyid_chain'>chain</span><span class='period'>.</span><span class='id identifier rubyid_multiplexing_assets'>multiplexing_assets</span> <span class='kw'>do</span>
-    <span class='comment'># We yield only if we don&#39;t have any multiplexing assets
-</span>    <span class='id identifier rubyid_all_qc_metrics'>all_qc_metrics</span> <span class='op'>=</span> <span class='id identifier rubyid_source_assets_qc_metrics'>source_assets_qc_metrics</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_doublet'>doublet</span><span class='op'>|</span> <span class='id identifier rubyid_doublet'>doublet</span><span class='period'>.</span><span class='id identifier rubyid_qc_metric'>qc_metric</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
-    <span class='const'>Array</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_request_type'>request_type</span><span class='period'>.</span><span class='id identifier rubyid_pool_count'>pool_count</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Doublet</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_create_target_asset'>create_target_asset</span><span class='comma'>,</span> <span class='id identifier rubyid_all_qc_metrics'>all_qc_metrics</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="multiplexed?-instance_method">
+  <h3 class="signature first" id="multiplexed?-instance_method">
   
     #<strong>multiplexed?</strong>  &#x21d2; <tt>Boolean</tt> 
   
@@ -486,46 +288,12 @@
       <pre class="lines">
 
 
-173</pre>
+168</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 173</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_multiplexed?'>multiplexed?</span><span class='semicolon'>;</span> <span class='kw'>true</span><span class='semicolon'>;</span> <span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="source_assets_doublet_with_index-instance_method">
-  
-    #<strong>source_assets_doublet_with_index</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-177
-178
-179
-180
-181</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 177</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_source_assets_doublet_with_index'>source_assets_doublet_with_index</span>
-  <span class='id identifier rubyid_source_assets_qc_metrics'>source_assets_qc_metrics</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_doublet'>doublet</span><span class='op'>|</span>
-    <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_doublet'>doublet</span><span class='comma'>,</span> <span class='id identifier rubyid_request_type'>request_type</span><span class='period'>.</span><span class='id identifier rubyid_pool_index_for_asset'>pool_index_for_asset</span><span class='lparen'>(</span><span class='id identifier rubyid_doublet'>doublet</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -536,9 +304,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:47 2016 by
+  Generated on Mon Dec 19 11:17:29 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

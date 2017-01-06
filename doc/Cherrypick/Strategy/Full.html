@@ -328,12 +328,12 @@
       <pre class="lines">
 
 
+185
 186
-187
-188</pre>
+187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 185</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='ivar'>@request</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span>
@@ -365,12 +365,12 @@
       <pre class="lines">
 
 
+197
 198
-199
-200</pre>
+199</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 198</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 197</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_barcode'>barcode</span>
   <span class='ivar'>@barcode</span> <span class='op'>||=</span> <span class='ivar'>@request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_sanger_human_barcode'>sanger_human_barcode</span>
@@ -395,12 +395,12 @@
       <pre class="lines">
 
 
+213
 214
-215
-216</pre>
+215</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 214</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 213</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_column_index'>column_index</span>
   <span class='ivar'>@request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_column_order'>column_order</span>
@@ -425,12 +425,12 @@
       <pre class="lines">
 
 
+193
 194
-195
-196</pre>
+195</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_index_in_submission'>index_in_submission</span>
   <span class='ivar'>@index_in_submission</span> <span class='op'>||=</span> <span class='ivar'>@request</span><span class='period'>.</span><span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_index'>index</span><span class='lparen'>(</span><span class='ivar'>@request</span><span class='rparen'>)</span>
@@ -455,12 +455,12 @@
       <pre class="lines">
 
 
+201
 202
-203
-204</pre>
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 202</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 201</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_representation'>representation</span>
   <span class='ivar'>@request</span>
@@ -485,12 +485,12 @@
       <pre class="lines">
 
 
+209
 210
-211
-212</pre>
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 210</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_row_index'>row_index</span>
   <span class='ivar'>@request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_row_order'>row_order</span>
@@ -515,12 +515,12 @@
       <pre class="lines">
 
 
+205
 206
-207
-208</pre>
+207</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 205</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_species'>species</span>
   <span class='ivar'>@request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span><span class='period'>.</span><span class='id identifier rubyid_sample_metadata'>sample_metadata</span><span class='period'>.</span><span class='id identifier rubyid_sample_common_name'>sample_common_name</span> <span class='rbrace'>}</span>
@@ -545,12 +545,12 @@
       <pre class="lines">
 
 
+189
 190
-191
-192</pre>
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 190</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 189</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submission_id'>submission_id</span>
   <span class='ivar'>@submission_id</span> <span class='op'>||=</span> <span class='ivar'>@request</span><span class='period'>.</span><span class='id identifier rubyid_submission_id'>submission_id</span>
@@ -565,9 +565,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:22 2016 by
+  Generated on Mon Dec 19 11:17:08 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

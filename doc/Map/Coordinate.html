@@ -90,7 +90,20 @@
   <dl class="constants">
     
       <dt id="PLATE_DIMENSIONS-constant" class="">PLATE_DIMENSIONS =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>TODO: These methods are only valid for standard plates. Moved them here to
+make that more explicit (even if its not strictly appropriate) They could
+do with refactoring/removing.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
       <dd><pre class="code"><span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='comma'>,</span> <span class='id identifier rubyid_k'>k</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span>
   <span class='int'>96</span>  <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='int'>12</span><span class='comma'>,</span> <span class='int'>8</span><span class='rbracket'>]</span><span class='comma'>,</span>
@@ -130,7 +143,11 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Given the well position described in terms of a direction (vertical or
+horizontal) this function will map it to the alternate positional
+representation, i.e.</p>
+</div></span>
   
 </li>
 
@@ -461,24 +478,43 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Given the well position described in terms of a direction (vertical or
+horizontal) this function will map it to the alternate positional
+representation, i.e. a vertical position will be mapped to a horizontal
+one.  It does this with the divisor and multiplier, which will be reversed
+for the alternate.</p>
+
+<p>NOTE: I don&#39;t like this, it just makes things clearer than it was!
+NOTE: I hate the nil returns but external code would take too long to
+change this time round</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+102
+103
 104
 105
 106
 107
 108
 109
-110
-111
-112</pre>
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alternate_position'>alternate_position</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_dimensions'>dimensions</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_valid_well_position?'>valid_well_position?</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='rparen'>)</span>
@@ -509,16 +545,16 @@
       <pre class="lines">
 
 
+24
+25
 26
 27
 28
 29
-30
-31
-32</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_description_to_horizontal_plate_position'>description_to_horizontal_plate_position</span><span class='lparen'>(</span><span class='id identifier rubyid_well_description'>well_description</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_valid_well_description_and_plate_size?'>valid_well_description_and_plate_size?</span><span class='lparen'>(</span><span class='id identifier rubyid_well_description'>well_description</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
@@ -547,16 +583,16 @@
       <pre class="lines">
 
 
+32
+33
 34
 35
 36
 37
-38
-39
-40</pre>
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_description_to_vertical_plate_position'>description_to_vertical_plate_position</span><span class='lparen'>(</span><span class='id identifier rubyid_well_description'>well_description</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_valid_well_description_and_plate_size?'>valid_well_description_and_plate_size?</span><span class='lparen'>(</span><span class='id identifier rubyid_well_description'>well_description</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
@@ -585,12 +621,12 @@
       <pre class="lines">
 
 
-60
-61
-62</pre>
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_descriptions_for_column'>descriptions_for_column</span><span class='lparen'>(</span><span class='id identifier rubyid_column'>column</span><span class='comma'>,</span> <span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
   <span class='lparen'>(</span><span class='int'>0</span><span class='op'>...</span><span class='id identifier rubyid_plate_length'>plate_length</span><span class='lparen'>(</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_row'>row</span><span class='op'>|</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_location_from_row_and_column'>location_from_row_and_column</span><span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='comma'>,</span> <span class='id identifier rubyid_column'>column</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -615,12 +651,12 @@
       <pre class="lines">
 
 
-56
-57
-58</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_descriptions_for_row'>descriptions_for_row</span><span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='comma'>,</span> <span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
   <span class='lparen'>(</span><span class='int'>1</span><span class='op'>..</span><span class='id identifier rubyid_plate_width'>plate_width</span><span class='lparen'>(</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_column'>column</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_row'>row</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_column'>column</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
@@ -645,15 +681,15 @@
       <pre class="lines">
 
 
+40
+41
 42
 43
 44
-45
-46
-47</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_horizontal_plate_position_to_description'>horizontal_plate_position_to_description</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_valid_plate_position_and_plate_size?'>valid_plate_position_and_plate_size?</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
@@ -681,14 +717,14 @@
       <pre class="lines">
 
 
+76
+77
 78
 79
-80
-81
-82</pre>
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_horizontal_position_to_description'>horizontal_position_to_description</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_width'>width</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_desc_letter'>desc_letter</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='id identifier rubyid_width'>width</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='int'>65</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span>
@@ -715,12 +751,12 @@
       <pre class="lines">
 
 
-84
-85
-86</pre>
+82
+83
+84</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_horizontal_to_vertical'>horizontal_to_vertical</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_alternate_position'>alternate_position</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='comma'>,</span> <span class='symbol'>:width</span><span class='comma'>,</span> <span class='symbol'>:length</span><span class='rparen'>)</span>
@@ -745,12 +781,12 @@
       <pre class="lines">
 
 
-92
-93
-94</pre>
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_location_from_index'>location_from_index</span><span class='lparen'>(</span><span class='id identifier rubyid_index'>index</span><span class='comma'>,</span> <span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_horizontal_plate_position_to_description'>horizontal_plate_position_to_description</span><span class='lparen'>(</span><span class='id identifier rubyid_index'>index</span> <span class='op'>-</span> <span class='int'>1</span><span class='comma'>,</span> <span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
@@ -775,12 +811,12 @@
       <pre class="lines">
 
 
-22
-23
-24</pre>
+20
+21
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_location_from_row_and_column'>location_from_row_and_column</span><span class='lparen'>(</span><span class='id identifier rubyid_row'>row</span><span class='comma'>,</span> <span class='id identifier rubyid_column'>column</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid___'>__</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='lparen'>(</span><span class='CHAR'>?A</span><span class='period'>.</span><span class='id identifier rubyid_getbyte'>getbyte</span><span class='lparen'>(</span><span class='int'>0</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='id identifier rubyid_row'>row</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_column'>column</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -805,12 +841,12 @@
       <pre class="lines">
 
 
-68
-69
-70</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plate_length'>plate_length</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='const'>PLATE_DIMENSIONS</span><span class='lbracket'>[</span><span class='id identifier rubyid_plate_size'>plate_size</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span>
@@ -835,12 +871,12 @@
       <pre class="lines">
 
 
-64
-65
-66</pre>
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plate_width'>plate_width</span><span class='lparen'>(</span><span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='const'>PLATE_DIMENSIONS</span><span class='lbracket'>[</span><span class='id identifier rubyid_plate_size'>plate_size</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
@@ -865,15 +901,15 @@
       <pre class="lines">
 
 
+47
+48
 49
 50
 51
-52
-53
-54</pre>
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_vertical_plate_position_to_description'>vertical_plate_position_to_description</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_valid_plate_position_and_plate_size?'>valid_plate_position_and_plate_size?</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
@@ -901,14 +937,14 @@
       <pre class="lines">
 
 
+70
+71
 72
 73
-74
-75
-76</pre>
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_vertical_position_to_description'>vertical_position_to_description</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_length'>length</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_desc_letter'>desc_letter</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='id identifier rubyid_length'>length</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='int'>65</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span>
@@ -935,12 +971,12 @@
       <pre class="lines">
 
 
-88
-89
-90</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'app/models/map.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_vertical_to_horizontal'>vertical_to_horizontal</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_alternate_position'>alternate_position</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='id identifier rubyid_plate_size'>plate_size</span><span class='comma'>,</span> <span class='symbol'>:length</span><span class='comma'>,</span> <span class='symbol'>:width</span><span class='rparen'>)</span>
@@ -955,9 +991,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:27 2016 by
+  Generated on Mon Dec 19 11:16:22 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

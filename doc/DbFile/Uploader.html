@@ -90,7 +90,19 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This module will set up all required associations and allow mounting
+“polymorphic uploaders”</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -153,7 +165,11 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Mount an uploader on the specified &#39;data&#39; column  - you can use the
+serialisation option for saving the filename in another column - see
+Carrierwave.</p>
+</div></span>
   
 </li>
 
@@ -212,7 +228,20 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Mount an uploader on the specified &#39;data&#39; column</p>
+
+<pre class="code ruby"><code class="ruby">- you can use the serialisation option for saving the filename in another column - see Carrierwave</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -224,19 +253,17 @@
 25
 26
 27
-28
-29</pre>
+28</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/db_file.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_uploaded'>has_uploaded</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_serialization_column'>serialization_column</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:serialization_column</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_data'>data</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_serialization_column'>serialization_column</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:serialization_column</span><span class='comma'>,</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_mount_uploader'>mount_uploader</span> <span class='id identifier rubyid_data'>data</span><span class='comma'>,</span> <span class='const'>PolymorphicUploader</span><span class='comma'>,</span> <span class='label'>mount_on:</span> <span class='id identifier rubyid_serialization_column'>serialization_column</span>
   <span class='kw'>end</span>
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -248,9 +275,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:28 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

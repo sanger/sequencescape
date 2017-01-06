@@ -142,7 +142,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Adds row to a worksheet with particular value, style and type for each
+cell.</p>
+</div></span>
   
 </li>
 
@@ -164,7 +167,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Adds n empty rows.</p>
+</div></span>
   
 </li>
 
@@ -186,7 +191,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Creates a worksheet, empty one in this case.</p>
+</div></span>
   
 </li>
 
@@ -234,7 +241,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Adds axlsx worksheet to a workbook, to a particular place.</p>
+</div></span>
   
 </li>
 
@@ -256,7 +265,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Assigns name to a worksheet depending on axlsx worksheet name.</p>
+</div></span>
   
 </li>
 
@@ -278,7 +289,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Protects worksheet, but sizes of rows and columns can be changed.</p>
+</div></span>
   
 </li>
 
@@ -328,14 +341,14 @@
       <pre class="lines">
 
 
+8
+9
+10
 11
-12
-13
-14
-15</pre>
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_create_attributes'>create_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
@@ -363,18 +376,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Adds row to a worksheet with particular value, style and type for each cell</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-19
-20
-21</pre>
+16
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_row'>add_row</span><span class='lparen'>(</span><span class='id identifier rubyid_values'>values</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_style'>style</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_types'>types</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_axlsx_worksheet'>axlsx_worksheet</span><span class='period'>.</span><span class='id identifier rubyid_add_row'>add_row</span> <span class='id identifier rubyid_values'>values</span><span class='comma'>,</span> <span class='label'>types:</span> <span class='id identifier rubyid_types'>types</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='symbol'>:string</span><span class='rbracket'>]</span> <span class='op'>*</span> <span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='comma'>,</span> <span class='label'>style:</span> <span class='id identifier rubyid_style'>style</span>
@@ -393,18 +417,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Adds n empty rows</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-25
-26
-27</pre>
+22
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_rows'>add_rows</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_n'>n</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span> <span class='id identifier rubyid_add_row'>add_row</span> <span class='rbrace'>}</span>
@@ -423,18 +458,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Creates a worksheet, empty one in this case</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-54
-55
-56</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_worksheet'>create_worksheet</span>
   <span class='id identifier rubyid_insert_axlsx_worksheet'>insert_axlsx_worksheet</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Base</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -453,18 +499,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Adds axlsx worksheet to a workbook, to a particular place.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-48
-49
-50</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_insert_axlsx_worksheet'>insert_axlsx_worksheet</span><span class='lparen'>(</span><span class='id identifier rubyid_index'>index</span> <span class='op'>=</span> <span class='int'>0</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='ivar'>@axlsx_worksheet</span> <span class='op'>||=</span> <span class='id identifier rubyid_workbook'>workbook</span><span class='period'>.</span><span class='id identifier rubyid_insert_worksheet'>insert_worksheet</span><span class='lparen'>(</span><span class='id identifier rubyid_index'>index</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -483,18 +540,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Assigns name to a worksheet depending on axlsx worksheet name. Used to
+assign absolute references to ranges.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-32
-33
-34</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_name'>name</span>
   <span class='ivar'>@name</span> <span class='op'>||=</span> <span class='id identifier rubyid_axlsx_worksheet'>axlsx_worksheet</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
@@ -513,22 +582,33 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Protects worksheet, but sizes of rows and columns can be changed</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+35
+36
+37
 38
 39
 40
-41
-42
-43
-44</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_protect'>protect</span>
   <span class='id identifier rubyid_axlsx_worksheet'>axlsx_worksheet</span><span class='period'>.</span><span class='id identifier rubyid_sheet_protection'>sheet_protection</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sheet_protection'>sheet_protection</span><span class='op'>|</span>
@@ -547,9 +627,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:56 2016 by
+  Generated on Mon Dec 19 11:17:36 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

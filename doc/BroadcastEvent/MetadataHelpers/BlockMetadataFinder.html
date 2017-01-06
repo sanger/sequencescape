@@ -111,7 +111,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Ablock-instance_method" title="#:block (instance method)">#<strong>:block</strong>  &#x21d2; Object </a>
+      <a href="#block-instance_method" title="#block (instance method)">#<strong>block</strong>  &#x21d2; Object </a>
     
 
     
@@ -131,7 +131,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :block.</p>
+<p>Returns the value of attribute block.</p>
 </div></span>
   
 </li>
@@ -140,7 +140,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aname-instance_method" title="#:name (instance method)">#<strong>:name</strong>  &#x21d2; Object </a>
+      <a href="#name-instance_method" title="#name (instance method)">#<strong>name</strong>  &#x21d2; Object </a>
     
 
     
@@ -160,7 +160,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :name.</p>
+<p>Returns the value of attribute name.</p>
 </div></span>
   
 </li>
@@ -284,9 +284,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":block-instance_method">
+  <h3 class="signature first" id="block-instance_method">
   
-    #<strong>:block</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>block</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -295,7 +295,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :block</p>
+<p>Returns the value of attribute block</p>
 
 
   </div>
@@ -316,9 +316,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 21</span>
 
-def :block
-  @:block
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_block'>block</span>
+  <span class='ivar'>@block</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -327,9 +327,9 @@ end</pre>
       
       <span id=""></span>
       <div class="method_details ">
-  <h3 class="signature " id=":name-instance_method">
+  <h3 class="signature " id="name-instance_method">
   
-    #<strong>:name</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>name</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -338,7 +338,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :name</p>
+<p>Returns the value of attribute name</p>
 
 
   </div>
@@ -359,9 +359,9 @@ end</pre>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 21</span>
 
-def :name
-  @:name
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_name'>name</span>
+  <span class='ivar'>@name</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -389,12 +389,12 @@ end</pre>
       <pre class="lines">
 
 
-26
 27
-28</pre>
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'app/models/broadcast_event/metadata_helpers.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='kw'>for</span><span class='lparen'>(</span><span class='id identifier rubyid_seed'>seed</span><span class='comma'>,</span> <span class='id identifier rubyid_event'>event</span><span class='rparen'>)</span>
   <span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_seed'>seed</span><span class='comma'>,</span> <span class='id identifier rubyid_event'>event</span><span class='rparen'>)</span><span class='rbracket'>]</span>
@@ -409,9 +409,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:46 2016 by
+  Generated on Mon Dec 19 11:17:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

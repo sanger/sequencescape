@@ -300,19 +300,19 @@ class AssetsController < ApplicationController
     end
   rescue Submission::ProjectValidation::Error => exception
     respond_to do |format|
-      flash[:error] = exception.message
+      flash[:error] = exception.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
       format.json { render json: exception.message, status: :unprocessable_entity }
     end
   rescue ActiveRecord::RecordNotFound => exception
     respond_to do |format|
-      flash[:error] = exception.message
+      flash[:error] = exception.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
       format.json { render json: exception.message, status: :precondition_failed }
     end
   rescue ActiveRecord::RecordInvalid => exception
     respond_to do |format|
-      flash[:error] = exception.message
+      flash[:error] = exception.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
       format.json { render json: exception.message, status: :precondition_failed }
     end

@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE is distributed under the terms of GNU
+General Public License version 1 or later; Please refer to the LICENSE and
+README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -122,28 +136,6 @@
   <span class="summary_signature">
     
       <a href="#create-instance_method" title="#create (instance method)">#<strong>create</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#discover_program-instance_method" title="#discover_program (instance method)">#<strong>discover_program</strong>  &#x21d2; Object </a>
     
 
     
@@ -210,28 +202,6 @@
   <span class="summary_signature">
     
       <a href="#new-instance_method" title="#new (instance method)">#<strong>new</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#program_params-instance_method" title="#program_params (instance method)">#<strong>program_params</strong>  &#x21d2; Object </a>
     
 
     
@@ -353,36 +323,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="discover_program-instance_method">
-  
-    #<strong>discover_program</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-49
-50
-51</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/programs_controller.rb', line 49</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_discover_program'>discover_program</span>
-  <span class='ivar'>@program</span> <span class='op'>=</span> <span class='const'>Program</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="edit-instance_method">
   
     #<strong>edit</strong>  &#x21d2; <tt>Object</tt> 
@@ -471,36 +411,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="program_params-instance_method">
-  
-    #<strong>program_params</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-53
-54
-55</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/programs_controller.rb', line 53</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_program_params'>program_params</span>
-  <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_require'>require</span><span class='lparen'>(</span><span class='symbol'>:program</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_permit'>permit</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="show-instance_method">
   
     #<strong>show</strong>  &#x21d2; <tt>Object</tt> 
@@ -577,9 +487,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:41 2016 by
+  Generated on Mon Dec 19 11:17:24 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

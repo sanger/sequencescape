@@ -117,7 +117,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Authenticates a user by their login name and unencrypted password.</p>
+</div></span>
   
 </li>
 
@@ -140,7 +142,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Authenticates a user by their login name and unencrypted password.  Returns
+the user or nil.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -153,17 +167,7 @@
 45
 46
 47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58</pre>
+48</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/user/authentication.rb', line 41</span>
@@ -171,19 +175,9 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_authenticate'>authenticate</span><span class='lparen'>(</span><span class='id identifier rubyid_login'>login</span><span class='comma'>,</span> <span class='id identifier rubyid_password'>password</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_authentication'>authentication</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ldap</span><span class='tstring_end'>&quot;</span></span>
     <span class='id identifier rubyid_authenticated'>authenticated</span> <span class='op'>=</span> <span class='id identifier rubyid_authenticate_with_ldap'>authenticate_with_ldap</span><span class='lparen'>(</span><span class='id identifier rubyid_login'>login</span><span class='comma'>,</span> <span class='id identifier rubyid_password'>password</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_authenticated'>authenticated</span> <span class='op'>?</span> <span class='id identifier rubyid_register_or_update_via_ldap'>register_or_update_via_ldap</span><span class='lparen'>(</span><span class='id identifier rubyid_login'>login</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='kw'>nil</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_authenticated'>authenticated</span> <span class='op'>=</span> <span class='id identifier rubyid_authenticate_by_local'>authenticate_by_local</span><span class='lparen'>(</span><span class='id identifier rubyid_login'>login</span><span class='comma'>,</span> <span class='id identifier rubyid_password'>password</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_authenticated'>authenticated</span>
-    <span class='id identifier rubyid_u'>u</span> <span class='op'>=</span> <span class='id identifier rubyid_find_or_create_by'>find_or_create_by</span><span class='lparen'>(</span><span class='label'>login:</span> <span class='id identifier rubyid_login'>login</span><span class='rparen'>)</span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_u'>u</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-      <span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_error'>error</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Failed to find or create user </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_login'>login</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>else</span>
-      <span class='id identifier rubyid_u'>u</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:update_profile_via_ldap</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_u'>u</span><span class='period'>.</span><span class='id identifier rubyid_profile_complete?'>profile_complete?</span>
-    <span class='kw'>end</span>
-    <span class='id identifier rubyid_u'>u</span>
-  <span class='kw'>else</span>
-    <span class='kw'>nil</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -196,9 +190,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:36 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

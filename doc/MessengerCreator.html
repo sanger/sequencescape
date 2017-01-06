@@ -103,7 +103,24 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A messenger creator acts as a message factory for a given for a given
+plate. They are currently triggered by:</p>
+<ol><li>
+<p>Cherrypick batch release</p>
+</li></ol>
 
+<p>They specify both a template (under Api::Messages) and a root</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -122,28 +139,6 @@
   <span class="summary_signature">
     
       <a href="#create%21-instance_method" title="#create! (instance method)">#<strong>create!</strong>(target)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#template_exists%3F-instance_method" title="#template_exists? (instance method)">#<strong>template_exists?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -208,67 +203,15 @@
       <pre class="lines">
 
 
-20
-21
-22</pre>
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/messenger_creator.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'app/models/messenger_creator.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
   <span class='const'>Messenger</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>target:</span> <span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='label'>root:</span> <span class='id identifier rubyid_root'>root</span><span class='comma'>,</span> <span class='label'>template:</span> <span class='id identifier rubyid_template'>template</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="template_exists?-instance_method">
-  
-    #<strong>template_exists?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-26
-27
-28</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/messenger_creator.rb', line 26</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_template_exists?'>template_exists?</span>
-  <span class='kw'>true</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -280,9 +223,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:14 2016 by
+  Generated on Mon Dec 19 11:17:03 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

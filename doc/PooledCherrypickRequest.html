@@ -107,7 +107,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
   <h2>Constant Summary</h2>
@@ -143,28 +157,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#aliquots_for_transfer-instance_method" title="#aliquots_for_transfer (instance method)">#<strong>aliquots_for_transfer</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#shared_attributes-instance_method" title="#shared_attributes (instance method)">#<strong>shared_attributes</strong>  &#x21d2; Object </a>
     
 
@@ -179,7 +171,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns a list of attributes that must match for any given pool.</p>
+</div></span>
   
 </li>
 
@@ -241,7 +235,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Metadata.html" title="Metadata (module)">Metadata</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Metadata.html#build_association-instance_method" title="Metadata#build_association (method)">#build_association</a></span>, <span class='object_link'><a href="Metadata.html#construct_metadata_class-instance_method" title="Metadata#construct_metadata_class (method)">#construct_metadata_class</a></span>, <span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">#has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#include_tag-instance_method" title="Metadata#include_tag (method)">#include_tag</a></span>, <span class='object_link'><a href="Metadata.html#require_tag-instance_method" title="Metadata#require_tag (method)">#require_tag</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">#has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
 
   
   
@@ -319,7 +313,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -372,51 +366,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="aliquots_for_transfer-instance_method">
-  
-    #<strong>aliquots_for_transfer</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/pooled_cherrypick_request.rb', line 21</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_aliquots_for_transfer'>aliquots_for_transfer</span>
-  <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_aliquot'>aliquot</span><span class='op'>|</span>
-    <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_clone'>clone</span><span class='op'>|</span>
-      <span class='id identifier rubyid_clone'>clone</span><span class='period'>.</span><span class='id identifier rubyid_study_id'>study_id</span>   <span class='op'>=</span> <span class='id identifier rubyid_initial_study_id'>initial_study_id</span>   <span class='op'>||</span> <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_study_id'>study_id</span>
-      <span class='id identifier rubyid_clone'>clone</span><span class='period'>.</span><span class='id identifier rubyid_project_id'>project_id</span> <span class='op'>=</span> <span class='id identifier rubyid_initial_project_id'>initial_project_id</span> <span class='op'>||</span> <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_project_id'>project_id</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_candidate_aliquot'>candidate_aliquot</span><span class='op'>|</span>
-    <span class='id identifier rubyid_target_asset'>target_asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_existing_aliquot'>existing_aliquot</span><span class='op'>|</span> <span class='id identifier rubyid_existing_aliquot'>existing_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_equivalent?'>equivalent?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate_aliquot'>candidate_aliquot</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="shared_attributes-instance_method">
+  <h3 class="signature first" id="shared_attributes-instance_method">
   
     #<strong>shared_attributes</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -424,18 +374,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a list of attributes that must match for any given pool. We
+don&#39;t want to place any restrictions on Cherrypicking (Yet).</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+10
 11
-12
-13</pre>
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pooled_cherrypick_request.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'app/models/pooled_cherrypick_request.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shared_attributes'>shared_attributes</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
@@ -460,12 +422,12 @@
       <pre class="lines">
 
 
+14
 15
-16
-17</pre>
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pooled_cherrypick_request.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/pooled_cherrypick_request.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transfer_aliquots'>transfer_aliquots</span>
   <span class='id identifier rubyid_target_asset'>target_asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_aliquots_for_transfer'>aliquots_for_transfer</span>
@@ -480,9 +442,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:34 2016 by
+  Generated on Mon Dec 19 11:17:18 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

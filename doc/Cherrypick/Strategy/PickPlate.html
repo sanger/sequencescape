@@ -155,7 +155,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>This is the size of the plate in the dimension in which we cherrypick.</p>
+</div></span>
   
 </li>
 
@@ -350,12 +352,12 @@
       <pre class="lines">
 
 
+109
 110
-111
-112</pre>
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_purpose'>purpose</span><span class='comma'>,</span> <span class='id identifier rubyid_filled'>filled</span> <span class='op'>=</span> <span class='int'>0</span><span class='comma'>,</span> <span class='id identifier rubyid_species'>species</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='ivar'>@purpose</span><span class='comma'>,</span> <span class='ivar'>@wells</span><span class='comma'>,</span> <span class='ivar'>@species</span> <span class='op'>=</span> <span class='id identifier rubyid_purpose'>purpose</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>Cherrypick</span><span class='op'>::</span><span class='const'>Strategy</span><span class='op'>::</span><span class='const'>Empty</span><span class='rbracket'>]</span> <span class='op'>*</span> <span class='id identifier rubyid_filled'>filled</span><span class='comma'>,</span> <span class='id identifier rubyid_species'>species</span>
@@ -387,12 +389,12 @@
       <pre class="lines">
 
 
+120
 121
-122
-123</pre>
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_available'>available</span>
   <span class='id identifier rubyid_size'>size</span> <span class='op'>-</span> <span class='id identifier rubyid_used'>used</span>
@@ -411,18 +413,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>This is the size of the plate in the dimension in which we cherrypick.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+116
 117
-118
-119</pre>
+118</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 117</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_dimension'>dimension</span>
   <span class='ivar'>@dimension</span> <span class='op'>||=</span> <span class='const'>Map</span><span class='op'>::</span><span class='const'>Coordinate</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:plate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cherrypick_direction'>cherrypick_direction</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>row</span><span class='tstring_end'>&#39;</span></span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>width</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>length</span><span class='tstring_end'>&#39;</span></span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
@@ -447,12 +460,12 @@
       <pre class="lines">
 
 
+134
 135
-136
-137</pre>
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 135</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_overlap'>overlap</span>
   <span class='id identifier rubyid_used'>used</span> <span class='op'>%</span> <span class='id identifier rubyid_dimension'>dimension</span>
@@ -477,12 +490,12 @@
       <pre class="lines">
 
 
+138
 139
-140
-141</pre>
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remainder'>remainder</span>
   <span class='lparen'>(</span><span class='id identifier rubyid_dimension'>dimension</span> <span class='op'>-</span> <span class='id identifier rubyid_overlap'>overlap</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='id identifier rubyid_dimension'>dimension</span>
@@ -507,12 +520,12 @@
       <pre class="lines">
 
 
+130
 131
-132
-133</pre>
+132</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 131</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 130</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_space_after_adding'>space_after_adding</span><span class='lparen'>(</span><span class='id identifier rubyid_plex'>plex</span><span class='rparen'>)</span>
   <span class='lparen'>(</span><span class='id identifier rubyid_available'>available</span> <span class='op'>-</span> <span class='id identifier rubyid_plex'>plex</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='id identifier rubyid_dimension'>dimension</span>
@@ -537,12 +550,12 @@
       <pre class="lines">
 
 
+142
 143
-144
-145</pre>
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_species'>species</span>
   <span class='ivar'>@wells</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:species</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:empty?</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span> <span class='op'>||</span> <span class='ivar'>@species</span>
@@ -567,12 +580,12 @@
       <pre class="lines">
 
 
+146
 147
-148
-149</pre>
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 146</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_a'>to_a</span>
   <span class='ivar'>@wells</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:representation</span><span class='rparen'>)</span>
@@ -597,12 +610,12 @@
       <pre class="lines">
 
 
+126
 127
-128
-129</pre>
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_used'>used</span>
   <span class='ivar'>@wells</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
@@ -617,9 +630,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:22 2016 by
+  Generated on Mon Dec 19 11:17:08 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

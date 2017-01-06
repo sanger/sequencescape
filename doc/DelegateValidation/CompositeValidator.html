@@ -106,7 +106,19 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A composite validator that will perform multiple validations across several
+validator classes.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -233,13 +245,13 @@
       <pre class="lines">
 
 
+94
 95
 96
-97
-98</pre>
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/delegate_validation.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'app/models/delegate_validation.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
   <span class='ivar'>@target</span> <span class='op'>=</span> <span class='id identifier rubyid_target'>target</span>
@@ -272,14 +284,14 @@
       <pre class="lines">
 
 
+88
 89
 90
 91
-92
-93</pre>
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/delegate_validation.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'app/models/delegate_validation.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='const'>CompositeValidator</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_validator_classes'>validator_classes</span><span class='rparen'>)</span>
   <span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>CompositeValidator</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sub_class'>sub_class</span><span class='op'>|</span>
@@ -334,17 +346,17 @@
       <pre class="lines">
 
 
+99
 100
 101
 102
 103
 104
 105
-106
-107</pre>
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/delegate_validation.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'app/models/delegate_validation.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid?'>valid?</span>
   <span class='comment'># We have to run over all validators to get all error messages, then we can check they&#39;re all valid
@@ -364,9 +376,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:20 2016 by
+  Generated on Mon Dec 19 11:17:07 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

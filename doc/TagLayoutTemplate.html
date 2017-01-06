@@ -108,7 +108,20 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This is a layout template for tags.  Think of it as a partially created
+TagLayout, defining only the tag group that will be used and the actual
+TagLayout implementation that will do the work.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -140,29 +153,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#direction_algorithm_class-instance_method" title="#direction_algorithm_class (instance method)">#<strong>direction_algorithm_class</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Create a TagLayout instance that does the actual work of laying out the
+tags.</p>
+</div></span>
   
 </li>
 
@@ -171,50 +165,6 @@
   <span class="summary_signature">
     
       <a href="#stamp_to-instance_method" title="#stamp_to (instance method)">#<strong>stamp_to</strong>(_)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#tag_layout_attributes-instance_method" title="#tag_layout_attributes (instance method)">#<strong>tag_layout_attributes</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#walking_algorithm_class-instance_method" title="#walking_algorithm_class (instance method)">#<strong>walking_algorithm_class</strong>  &#x21d2; Object </a>
     
 
     
@@ -257,7 +207,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -295,7 +245,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Create a TagLayout instance that does the actual work of laying out the
+tags.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -310,36 +272,6 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='const'>TagLayout</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_tag_layout_attributes'>tag_layout_attributes</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="direction_algorithm_class-instance_method">
-  
-    #<strong>direction_algorithm_class</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-31
-32
-33</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tag_layout_template.rb', line 31</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_direction_algorithm_class'>direction_algorithm_class</span>
-  <span class='id identifier rubyid_direction_algorithm'>direction_algorithm</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -376,82 +308,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="tag_layout_attributes-instance_method">
-  
-    #<strong>tag_layout_attributes</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-41
-42
-43
-44
-45
-46
-47</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tag_layout_template.rb', line 41</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_tag_layout_attributes'>tag_layout_attributes</span>
-  <span class='lbrace'>{</span>
-    <span class='label'>tag_group:</span> <span class='id identifier rubyid_tag_group'>tag_group</span><span class='comma'>,</span>
-    <span class='label'>direction_algorithm:</span> <span class='id identifier rubyid_direction_algorithm'>direction_algorithm</span><span class='comma'>,</span>
-    <span class='label'>walking_algorithm:</span> <span class='id identifier rubyid_walking_algorithm'>walking_algorithm</span>
-  <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="walking_algorithm_class-instance_method">
-  
-    #<strong>walking_algorithm_class</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-36
-37
-38</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tag_layout_template.rb', line 36</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_walking_algorithm_class'>walking_algorithm_class</span>
-  <span class='id identifier rubyid_walking_algorithm'>walking_algorithm</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:21 2016 by
+  Generated on Mon Dec 19 11:17:06 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

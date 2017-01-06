@@ -101,7 +101,20 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A simple buffer class that will only retain the most recent version of any
+object pushed into it.  Assumes that equality is what you want for checking
+for things, which works fine with ActiveRecord.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -240,12 +253,12 @@
       <pre class="lines">
 
 
-95
-96
-97</pre>
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 132</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_observer'>observer</span><span class='rparen'>)</span>
   <span class='ivar'>@observer</span><span class='comma'>,</span> <span class='ivar'>@updated</span><span class='comma'>,</span> <span class='ivar'>@deleted</span> <span class='op'>=</span> <span class='id identifier rubyid_observer'>observer</span><span class='comma'>,</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='comma'>,</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -277,22 +290,22 @@
       <pre class="lines">
 
 
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125</pre>
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 150</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span>
@@ -349,12 +362,12 @@
       <pre class="lines">
 
 
-127
-128
-129</pre>
+164
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 164</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_blank?'>blank?</span>
   <span class='ivar'>@updated</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='kw'>and</span> <span class='ivar'>@deleted</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -379,26 +392,26 @@
       <pre class="lines">
 
 
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111</pre>
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='ivar'>@updated</span><span class='period'>.</span><span class='id identifier rubyid_group_by'>group_by</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:first</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_model'>model</span><span class='comma'>,</span> <span class='id identifier rubyid_pairs'>pairs</span><span class='op'>|</span>
     <span class='comment'># Regardless of what the scoping says, we&#39;re going by ID so we always want to do what
 </span>    <span class='comment'># the standard model does.  If we need eager loading we&#39;ll add it.
-</span>    <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:with_exclusive_scope</span><span class='rparen'>)</span> <span class='kw'>do</span>
+</span>    <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_unscoped'>unscoped</span> <span class='kw'>do</span>
       <span class='id identifier rubyid_model'>model</span> <span class='op'>=</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_including_associations_for_json'>including_associations_for_json</span> <span class='kw'>if</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:including_associations_for_json</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_pairs'>pairs</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:last</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_in_groups_of'>in_groups_of</span><span class='lparen'>(</span><span class='id identifier rubyid_configatron'>configatron</span><span class='period'>.</span><span class='id identifier rubyid_amqp'>amqp</span><span class='period'>.</span><span class='id identifier rubyid_burst_size'>burst_size</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_group'>group</span><span class='op'>|</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_group'>group</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
     <span class='kw'>end</span>
@@ -415,9 +428,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:14 2016 by
+  Generated on Mon Dec 19 11:17:01 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

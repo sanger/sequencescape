@@ -90,7 +90,37 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>It&#39;s such a common pattern in the code to have a guard on some our
+validations that this module provides that facility.  You can declare a
+guard with:</p>
 
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_extend'>extend</span> <span class='const'>ValidationStateGuard</span>
+<span class='id identifier rubyid_validation_guard'>validation_guard</span><span class='lparen'>(</span><span class='symbol'>:guard_name</span><span class='rparen'>)</span>
+</code></pre>
+
+<p>This then gives you <strong>private</strong> methods of guard_name,
+guard_name=, and guard_name?  It also adds an after_save callback that
+ensures that guard_name is false so it doesn&#39;t leak.</p>
+
+<p>If you have a method that should enable a guard and then disable it
+afterwards then you can do:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_validation_guarded_by'>validation_guarded_by</span><span class='lparen'>(</span><span class='symbol'>:method_that_needs_guard_enabled</span><span class='comma'>,</span> <span class='symbol'>:guard_name</span><span class='rparen'>)</span>
+</code></pre>
+
+<p>This will set the guard_name to true before the method is called and return
+it to false afterwards.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -275,9 +305,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:37 2016 by
+  Generated on Mon Dec 19 11:16:28 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

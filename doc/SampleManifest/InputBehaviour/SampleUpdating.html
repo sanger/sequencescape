@@ -193,28 +193,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#handle_update_event-instance_method" title="#handle_update_event (instance method)">#<strong>handle_update_event</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#reset_all_attributes_to_previous_values-instance_method" title="#reset_all_attributes_to_previous_values (instance method)">#<strong>reset_all_attributes_to_previous_values</strong>  &#x21d2; Object </a>
     
 
@@ -229,7 +207,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Resets all of the attributes to their previous values.</p>
+</div></span>
   
 </li>
 
@@ -444,38 +424,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="handle_update_event-instance_method">
-  
-    #<strong>handle_update_event</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-104
-105
-106
-107</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/input_behaviour.rb', line 104</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_handle_update_event'>handle_update_event</span>
-  <span class='id identifier rubyid_events'>events</span><span class='period'>.</span><span class='id identifier rubyid_updated_using_sample_manifest!'>updated_using_sample_manifest!</span><span class='lparen'>(</span><span class='id identifier rubyid_user_performing_manifest_update'>user_performing_manifest_update</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='ivar'>@generate_no_update_event</span>
-  <span class='id identifier rubyid_user_performing_manifest_update'>user_performing_manifest_update</span> <span class='op'>=</span> <span class='kw'>nil</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="reset_all_attributes_to_previous_values-instance_method">
   
     #<strong>reset_all_attributes_to_previous_values</strong>  &#x21d2; <tt>Object</tt> 
@@ -484,7 +432,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Resets all of the attributes to their previous values</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -510,9 +469,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:42 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

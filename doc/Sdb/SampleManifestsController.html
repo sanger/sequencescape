@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
@@ -219,28 +233,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#set_sample_manifest_id-instance_method" title="#set_sample_manifest_id (instance method)">#<strong>set_sample_manifest_id</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#show-instance_method" title="#show (instance method)">#<strong>show</strong>  &#x21d2; Object </a>
     
 
@@ -255,7 +247,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Show the manifest.</p>
+</div></span>
   
 </li>
 
@@ -277,7 +271,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Upload the manifest and store it for later processing.</p>
+</div></span>
   
 </li>
 
@@ -286,28 +282,6 @@
   <span class="summary_signature">
     
       <a href="#uploaded_spreadsheet-instance_method" title="#uploaded_spreadsheet (instance method)">#<strong>uploaded_spreadsheet</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#validate_type-instance_method" title="#validate_type (instance method)">#<strong>validate_type</strong>  &#x21d2; Object </a>
     
 
     
@@ -365,15 +339,12 @@
 70
 71
 72
-73
-74
-75</pre>
+73</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/controllers/sdb/sample_manifests_controller.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
-
   <span class='ivar'>@sample_manifest_generator</span> <span class='op'>=</span> <span class='const'>SampleManifestGenerator</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:sample_manifest</span><span class='rbracket'>]</span><span class='comma'>,</span>
                                 <span class='id identifier rubyid_current_user'>current_user</span><span class='comma'>,</span> <span class='const'>SampleManifestExcel</span><span class='period'>.</span><span class='id identifier rubyid_configuration'>configuration</span><span class='rparen'>)</span>
 
@@ -387,7 +358,6 @@
     <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_new_sample_manifest_path'>new_sample_manifest_path</span>
 
   <span class='kw'>end</span>
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -445,15 +415,15 @@
       <pre class="lines">
 
 
+81
+82
 83
 84
 85
-86
-87
-88</pre>
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/sdb/sample_manifests_controller.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/sdb/sample_manifests_controller.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_index'>index</span>
   <span class='id identifier rubyid_pending_sample_manifests'>pending_sample_manifests</span> <span class='op'>=</span> <span class='const'>SampleManifest</span><span class='period'>.</span><span class='id identifier rubyid_pending_manifests'>pending_manifests</span><span class='period'>.</span><span class='id identifier rubyid_paginate'>paginate</span><span class='lparen'>(</span><span class='label'>page:</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:page</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -509,36 +479,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="set_sample_manifest_id-instance_method">
-  
-    #<strong>set_sample_manifest_id</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-91
-92
-93</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/sdb/sample_manifests_controller.rb', line 91</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_set_sample_manifest_id'>set_sample_manifest_id</span>
-  <span class='ivar'>@sample_manifest</span> <span class='op'>=</span> <span class='const'>SampleManifest</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="show-instance_method">
   
     #<strong>show</strong>  &#x21d2; <tt>Object</tt> 
@@ -547,19 +487,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Show the manifest</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+76
+77
 78
-79
-80
-81</pre>
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/sdb/sample_manifests_controller.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/sdb/sample_manifests_controller.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_show'>show</span>
   <span class='ivar'>@study_id</span> <span class='op'>=</span> <span class='ivar'>@sample_manifest</span><span class='period'>.</span><span class='id identifier rubyid_study_id'>study_id</span>
@@ -579,7 +530,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Upload the manifest and store it for later processing</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -670,56 +632,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="validate_type-instance_method">
-  
-    #<strong>validate_type</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-95
-96
-97
-98
-99
-100
-101
-102
-103</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/sdb/sample_manifests_controller.rb', line 95</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_validate_type'>validate_type</span>
-  <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='const'>SampleManifest</span><span class='period'>.</span><span class='id identifier rubyid_supported_asset_type?'>supported_asset_type?</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:type</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:error</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:type</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; is not a supported manifest type.</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>begin</span>
-    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='symbol'>:back</span>
-  <span class='kw'>rescue</span> <span class='const'>ActionController</span><span class='op'>::</span><span class='const'>RedirectBackError</span>
-    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_sample_manifests_path'>sample_manifests_path</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:50 2016 by
+  Generated on Mon Dec 19 11:17:31 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

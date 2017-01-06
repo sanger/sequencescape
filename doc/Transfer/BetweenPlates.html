@@ -115,67 +115,25 @@
   
 </div>
 
-
-
-
-
-
-
-
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
     
-      <a href="#each_transfer-instance_method" title="#each_transfer (instance method)">#<strong>each_transfer</strong>(&amp;block)  &#x21d2; Object </a>
-    
+<p>Picks the specified wells from one plate into the wells of another.  In
+this case transfers is a hash from source to destination well location and
+destination is the target plate for the transfers.</p>
 
-    
-  </span>
-  
-  
-  
-  
-  
-  
+
+  </div>
+</div>
+<div class="tags">
   
 
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
+</div>
 
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#request_type_between-instance_method" title="#request_type_between (instance method)">#<strong>request_type_between</strong>(ignored_a, ignored_b)  &#x21d2; Object </a>
-    
 
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
 
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
 
-      
-    </ul>
-  
+
 
 
   
@@ -185,10 +143,10 @@
   
   
   
-  
+  <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Asset/Ownership/ChangesOwner.html" title="Asset::Ownership::ChangesOwner (module)">Asset::Ownership::ChangesOwner</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Asset/Ownership/ChangesOwner.html#assign_owner-instance_method" title="Asset::Ownership::ChangesOwner#assign_owner (method)">#assign_owner</a></span>, <span class='object_link'><a href="../Asset/Ownership/ChangesOwner.html#included-class_method" title="Asset::Ownership::ChangesOwner.included (method)">included</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Asset/Ownership/ChangesOwner.html#included-class_method" title="Asset::Ownership::ChangesOwner.included (method)">included</a></span></p>
 
   
   
@@ -199,7 +157,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="BuildsStockWellLinks.html" title="Transfer::BuildsStockWellLinks (module)">BuildsStockWellLinks</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="BuildsStockWellLinks.html#build_stock_well_relationships-instance_method" title="Transfer::BuildsStockWellLinks#build_stock_well_relationships (method)">#build_stock_well_relationships</a></span>, <span class='object_link'><a href="BuildsStockWellLinks.html#included-class_method" title="Transfer::BuildsStockWellLinks.included (method)">included</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="BuildsStockWellLinks.html#included-class_method" title="Transfer::BuildsStockWellLinks.included (method)">included</a></span></p>
 
   
   
@@ -232,7 +190,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Transfer.html" title="Transfer (class)">Transfer</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Transfer.html#create_transfer_requests-instance_method" title="Transfer#create_transfer_requests (method)">#create_transfer_requests</a></span>, <span class='object_link'><a href="../Transfer.html#preview%21-class_method" title="Transfer.preview! (method)">preview!</a></span>, <span class='object_link'><a href="../Transfer.html#should_well_not_be_transferred%3F-instance_method" title="Transfer#should_well_not_be_transferred? (method)">#should_well_not_be_transferred?</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Transfer.html#preview%21-class_method" title="Transfer.preview! (method)">preview!</a></span></p>
 
   
   
@@ -243,7 +201,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -268,136 +226,12 @@
   <p class="inherited"><span class='object_link'><a href="../ApiTools.html#as_json-instance_method" title="ApiTools#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../ApiTools.html#for_api-instance_method" title="ApiTools#for_api (method)">#for_api</a></span>, <span class='object_link'><a href="../ApiTools.html#included-class_method" title="ApiTools.included (method)">included</a></span>, <span class='object_link'><a href="../ApiTools.html#list_json-instance_method" title="ApiTools#list_json (method)">#list_json</a></span>, <span class='object_link'><a href="../ApiTools.html#to_xml-instance_method" title="ApiTools#to_xml (method)">#to_xml</a></span>, <span class='object_link'><a href="../ApiTools.html#to_yaml-instance_method" title="ApiTools#to_yaml (method)">#to_yaml</a></span>, <span class='object_link'><a href="../ApiTools.html#url-instance_method" title="ApiTools#url (method)">#url</a></span>, <span class='object_link'><a href="../ApiTools.html#url_name-instance_method" title="ApiTools#url_name (method)">#url_name</a></span></p>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="each_transfer-instance_method">
-  
-    #<strong>each_transfer</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer/between_plates.rb', line 40</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_each_transfer'>each_transfer</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='comment'># Partition the source plate wells into ones that are good and others that are bad.  The
-</span>  <span class='comment'># bad wells will be eliminated after we&#39;ve done the transfers for the good ones.
-</span>  <span class='id identifier rubyid_bad_wells'>bad_wells</span><span class='comma'>,</span> <span class='id identifier rubyid_good_wells'>good_wells</span> <span class='op'>=</span> <span class='id identifier rubyid_source'>source</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_located_at_position'>located_at_position</span><span class='lparen'>(</span><span class='id identifier rubyid_transfers'>transfers</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_with_pool_id'>with_pool_id</span><span class='period'>.</span><span class='id identifier rubyid_partition'>partition</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:should_well_not_be_transferred?</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_source_wells'>source_wells</span>          <span class='op'>=</span> <span class='const'>Hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_good_wells'>good_wells</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_destination_locations'>destination_locations</span> <span class='op'>=</span> <span class='id identifier rubyid_source_wells'>source_wells</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_p'>p</span><span class='op'>|</span> <span class='id identifier rubyid_transfers'>transfers</span><span class='lbracket'>[</span><span class='id identifier rubyid_p'>p</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span>
-  <span class='id identifier rubyid_destination_wells'>destination_wells</span>     <span class='op'>=</span> <span class='const'>Hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_destination'>destination</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_located_at_position'>located_at_position</span><span class='lparen'>(</span><span class='id identifier rubyid_destination_locations'>destination_locations</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_map_description'>map_description</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='rbracket'>]</span>
-
-  <span class='comment'># Build a list of source wells for each destination well.
-</span>  <span class='id identifier rubyid_dest_sources'>dest_sources</span> <span class='op'>=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Array</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_transfers'>transfers</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_dests'>dests</span><span class='op'>|</span> <span class='id identifier rubyid_dests'>dests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_dest'>dest</span><span class='op'>|</span> <span class='id identifier rubyid_dest_sources'>dest_sources</span><span class='lbracket'>[</span><span class='id identifier rubyid_dest'>dest</span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_source'>source</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_destination'>destination</span><span class='period'>.</span><span class='id identifier rubyid_supports_multiple_submissions?'>supports_multiple_submissions?</span>
-
-  <span class='id identifier rubyid_pcg'>pcg</span> <span class='op'>=</span> <span class='id identifier rubyid_source'>source</span><span class='period'>.</span><span class='id identifier rubyid_pre_cap_groups'>pre_cap_groups</span>
-  <span class='id identifier rubyid_location_subs'>location_subs</span> <span class='op'>=</span> <span class='id identifier rubyid_dest_sources'>dest_sources</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_store'>store</span><span class='comma'>,</span> <span class='id identifier rubyid_dest_source'>dest_source</span><span class='op'>|</span>
-    <span class='id identifier rubyid_dest_loc'>dest_loc</span><span class='comma'>,</span> <span class='id identifier rubyid_sources'>sources</span> <span class='op'>=</span> <span class='op'>*</span><span class='id identifier rubyid_dest_source'>dest_source</span>
-    <span class='id identifier rubyid_uuid'>uuid</span><span class='comma'>,</span> <span class='id identifier rubyid_transfer_details'>transfer_details</span> <span class='op'>=</span> <span class='id identifier rubyid_pcg'>pcg</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='lbracket'>[</span><span class='symbol'>:wells</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span> <span class='op'>==</span> <span class='id identifier rubyid_sources'>sources</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span> <span class='rbrace'>}</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Could not find appropriate pool</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_transfer_details'>transfer_details</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='id identifier rubyid_pcg'>pcg</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_uuid'>uuid</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_store'>store</span><span class='lbracket'>[</span><span class='id identifier rubyid_dest_loc'>dest_loc</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_transfer_details'>transfer_details</span><span class='lbracket'>[</span><span class='symbol'>:submission_id</span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_store'>store</span>
-  <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_source_wells'>source_wells</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_location'>location</span><span class='comma'>,</span> <span class='id identifier rubyid_source_well'>source_well</span><span class='op'>|</span>
-    <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_transfers'>transfers</span><span class='lbracket'>[</span><span class='id identifier rubyid_location'>location</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_target_well_location'>target_well_location</span><span class='op'>|</span>
-      <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_source_well'>source_well</span><span class='comma'>,</span> <span class='id identifier rubyid_destination_wells'>destination_wells</span><span class='lbracket'>[</span><span class='id identifier rubyid_target_well_location'>target_well_location</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_location_subs'>location_subs</span><span class='lbracket'>[</span><span class='id identifier rubyid_target_well_location'>target_well_location</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-
-  <span class='comment'># Eliminate any of the transfers that were not made because of the bad source wells
-</span>  <span class='id identifier rubyid_transfers_we_did_not_make'>transfers_we_did_not_make</span> <span class='op'>=</span> <span class='id identifier rubyid_bad_wells'>bad_wells</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='op'>|</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_transfers'>transfers</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='id identifier rubyid_transfers_we_did_not_make'>transfers_we_did_not_make</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="request_type_between-instance_method">
-  
-    #<strong>request_type_between</strong>(ignored_a, ignored_b)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-75
-76
-77</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer/between_plates.rb', line 75</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_request_type_between'>request_type_between</span><span class='lparen'>(</span><span class='id identifier rubyid_ignored_a'>ignored_a</span><span class='comma'>,</span> <span class='id identifier rubyid_ignored_b'>ignored_b</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_destination'>destination</span><span class='period'>.</span><span class='id identifier rubyid_transfer_request_type_from'>transfer_request_type_from</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:30 2016 by
+  Generated on Mon Dec 19 11:17:13 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

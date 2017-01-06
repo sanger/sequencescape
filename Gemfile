@@ -109,6 +109,9 @@ group :development do
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
+  #MiniProfiler allows you to see the speed of a request conveniently on the page.
+  #It also shows the SQL queries performed and allows you to profile a specific block of code.
+  gem 'rack-mini-profiler'
 end
 
 group :test do
@@ -119,6 +122,8 @@ group :test do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
+  #Rails performance tests
+  gem 'rails-perftest'
 end
 
 group :test,:cucumber do

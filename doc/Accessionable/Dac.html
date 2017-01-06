@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
   <h2>Constant Summary</h2>
@@ -119,7 +133,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Acontacts-instance_method" title="#:contacts (instance method)">#<strong>:contacts</strong>  &#x21d2; Object </a>
+      <a href="#contacts-instance_method" title="#contacts (instance method)">#<strong>contacts</strong>  &#x21d2; Object </a>
     
 
     
@@ -139,7 +153,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :contacts.</p>
+<p>Returns the value of attribute contacts.</p>
 </div></span>
   
 </li>
@@ -152,7 +166,7 @@
   
   
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Base.html" title="Accessionable::Base (class)">Base</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Base.html#%3Aaccession_number-instance_method" title="Accessionable::Base#:accession_number (method)">#:accession_number</a></span>, <span class='object_link'><a href="Base.html#%3Adate-instance_method" title="Accessionable::Base#:date (method)">#:date</a></span>, <span class='object_link'><a href="Base.html#%3Adate_short-instance_method" title="Accessionable::Base#:date_short (method)">#:date_short</a></span>, <span class='object_link'><a href="Base.html#%3Aname-instance_method" title="Accessionable::Base#:name (method)">#:name</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Base.html#accession_number-instance_method" title="Accessionable::Base#accession_number (method)">#accession_number</a></span>, <span class='object_link'><a href="Base.html#date-instance_method" title="Accessionable::Base#date (method)">#date</a></span>, <span class='object_link'><a href="Base.html#date_short-instance_method" title="Accessionable::Base#date_short (method)">#date_short</a></span>, <span class='object_link'><a href="Base.html#name-instance_method" title="Accessionable::Base#name (method)">#name</a></span></p>
 
 
   
@@ -342,6 +356,7 @@
       <pre class="lines">
 
 
+9
 10
 11
 12
@@ -353,11 +368,10 @@
 18
 19
 20
-21
-22</pre>
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='ivar'>@study</span> <span class='op'>=</span> <span class='id identifier rubyid_study'>study</span>
@@ -385,9 +399,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":contacts-instance_method">
+  <h3 class="signature first" id="contacts-instance_method">
   
-    #<strong>:contacts</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>contacts</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -396,7 +410,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :contacts</p>
+<p>Returns the value of attribute contacts</p>
 
 
   </div>
@@ -410,16 +424,16 @@
       <pre class="lines">
 
 
+8
 9
-10
-11</pre>
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 8</span>
 
-def :contacts
-  @:contacts
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_contacts'>contacts</span>
+  <span class='ivar'>@contacts</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -447,12 +461,12 @@ end</pre>
       <pre class="lines">
 
 
+63
 64
-65
-66</pre>
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accessionable_id'>accessionable_id</span>
   <span class='ivar'>@study</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
@@ -477,16 +491,16 @@ end</pre>
       <pre class="lines">
 
 
+23
 24
 25
 26
 27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_errors'>errors</span>
   <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_errors'>errors</span><span class='op'>|</span>
@@ -537,12 +551,12 @@ end</pre>
       <pre class="lines">
 
 
+59
 60
-61
-62</pre>
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_protect?'>protect?</span><span class='lparen'>(</span><span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_service'>service</span><span class='period'>.</span><span class='id identifier rubyid_dac_visibility'>dac_visibility</span><span class='lparen'>(</span><span class='ivar'>@study</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='const'>AccessionService</span><span class='op'>::</span><span class='const'>Protect</span>
@@ -567,15 +581,15 @@ end</pre>
       <pre class="lines">
 
 
+52
 53
 54
 55
 56
-57
-58</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update_accession_number!'>update_accession_number!</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='id identifier rubyid_accession_number'>accession_number</span><span class='rparen'>)</span>
   <span class='ivar'>@accession_number</span> <span class='op'>=</span> <span class='id identifier rubyid_accession_number'>accession_number</span>
@@ -603,6 +617,7 @@ end</pre>
       <pre class="lines">
 
 
+31
 32
 33
 34
@@ -621,11 +636,10 @@ end</pre>
 47
 48
 49
-50
-51</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'app/models/accessionable/dac.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_xml'>xml</span>
   <span class='id identifier rubyid_xml'>xml</span> <span class='op'>=</span> <span class='const'>Builder</span><span class='op'>::</span><span class='const'>XmlMarkup</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -657,9 +671,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:15 2016 by
+  Generated on Mon Dec 19 11:17:02 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>
