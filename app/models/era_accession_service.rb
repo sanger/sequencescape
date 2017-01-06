@@ -12,6 +12,7 @@ class EraAccessionService < AccessionService
   def accession_options
     configatron.accession.ena!.to_hash
   end
+
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
   def sample_visibility(sample)
     # sample_hold = sample.sample_sra_hold

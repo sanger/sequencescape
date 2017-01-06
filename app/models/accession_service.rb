@@ -251,36 +251,34 @@ private
   end
 
   def post_files(file_params)
-    begin
-      rc = rest_client_resource
-      if configatron.disable_web_proxy == true
-        RestClient.proxy = ''
-      elsif not configatron.proxy.blank?
-        RestClient.proxy = configatron.proxy
-        # UA required to get through Sanger proxy
-        # Although currently this UA is actually being set elsewhere in the
-        # code as RestClient doesn't pass this header to the proxy.
-        rc.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
-      end
+    rc = rest_client_resource
 
-      payload = {}
-      file_params.map { |p|
-        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap { |f| f.original_filename = p[:remote_name] }
-        }
-      # rc.multipart_form_post = true # RC handles automatically
-      response = rc.post(payload)
-      case response.code
-      when (200...300) # success
-        return response.body.to_s
-      when (400...600)
-        Rails.logger.warn($!)
-        $! = nil
-        raise AccessionServiceError
-      else
-      return ""
-      end
-    rescue StandardError => exception
-      raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
+    if configatron.disable_web_proxy == true
+      RestClient.proxy = ''
+    elsif not configatron.proxy.blank?
+      RestClient.proxy = configatron.proxy
+      # UA required to get through Sanger proxy
+      # Although currently this UA is actually being set elsewhere in the
+      # code as RestClient doesn't pass this header to the proxy.
+      rc.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
     end
+
+    payload = file_params.each_with_object do |param, hash|
+      hash[param[:name]] = AccessionedFile.open(param[:local_name]).tap { |f| f.original_filename = param[:remote_name] }
+    end
+
+    response = rc.post(payload)
+    case response.code
+    when (200...300) # success
+      return response.body.to_s
+    when (400...600)
+      Rails.logger.warn($!)
+      $! = nil
+      raise AccessionServiceError
+    else
+    return ""
+    end
+  rescue StandardError => exception
+    raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
   end
 end
