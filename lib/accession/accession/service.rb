@@ -30,15 +30,15 @@ module Accession
 
     def url
       if valid?
-        return set_url(configatron.ena_accession_login) if ena?
-        return set_url(configatron.ega_accession_login) if ega?
+        return set_url(configatron.accession.ena.user) if ena?
+        return set_url(configatron.accession.ega.user) if ega?
       end
     end
 
   private
 
     def set_url(provider)
-      URI.parse(configatron.accession_url + provider).to_s
+      URI.parse(configatron.accession.url + provider).to_s
     end
   end
 end
