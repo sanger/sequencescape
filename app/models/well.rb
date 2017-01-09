@@ -107,16 +107,14 @@ class Well < Aliquot::Receptacle
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
-  has_one :container_association, foreign_key: :content_id, inverse_of: :well
-  has_one :plate, through: :container_association, inverse_of: :wells
+  has_one :container_association, foreign_key: :content_id
+  has_one :plate, through: :container_association
 
-  # We don't handle this in contained by as identifiable pieces of labware
-  # may still be contained. (Such as if we implement tube racks)
   def labware
     plate
   end
 
-  delegate :location, :location_id, :location_id=, :printable_target, to: :container, allow_nil: true
+  delegate :location, :location_id, :location_id=, :printable_target, to: :plate, allow_nil: true
   self.per_page = 500
 
   has_one :well_attribute, inverse_of: :well
