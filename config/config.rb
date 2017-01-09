@@ -14,8 +14,14 @@ configatron.amqp.maximum_frame = 131072
 configatron.team_name = "LIMS and Informatics"
 configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"
 
-configatron.accession_url = "http://localhost:9999/accession_service/"
-configatron.accession_view_url = "http://localhost:9999/view_accession/"
+configatron.accession do |accession|
+  accession.url = "http://localhost:9999/accession_service/"
+  accession.view_url = "http://localhost:9999/view_accession/"
+  accession.ega.user = "ega_accession_login"
+  accession.ega.password = "ega_accession_password"
+  accession.ena.user = "era_accession_login"
+  accession.ena.password = "era_accession_password"
+end
 
 configatron.admin_email = "admin@test.com"
 configatron.exception_recipients = "exceptions@test.com"

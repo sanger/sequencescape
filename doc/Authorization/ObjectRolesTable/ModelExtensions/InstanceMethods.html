@@ -183,7 +183,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If roles aren&#39;t overriden in model then check roles table.</p>
+</div></span>
   
 </li>
 
@@ -194,6 +196,8 @@
       <a href="#accepts_roles_by%3F-instance_method" title="#accepts_roles_by? (instance method)">#<strong>accepts_roles_by?</strong>(user)  &#x21d2; Boolean </a>
     
 
+    
+      (also: #accepts_role_by?)
     
   </span>
   
@@ -234,12 +238,12 @@
       <pre class="lines">
 
 
-188
-189
-190</pre>
+186
+187
+188</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 188</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accepted_roles_by'>accepted_roles_by</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_roles_for'>roles_for</span> <span class='kw'>self</span>
@@ -264,12 +268,12 @@
       <pre class="lines">
 
 
-179
-180
-181</pre>
+177
+178
+179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 179</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 177</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accepts_no_role'>accepts_no_role</span><span class='lparen'>(</span><span class='id identifier rubyid_role_name'>role_name</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_has_no_role'>has_no_role</span> <span class='id identifier rubyid_role_name'>role_name</span><span class='comma'>,</span> <span class='kw'>self</span>
@@ -294,12 +298,12 @@
       <pre class="lines">
 
 
-175
-176
-177</pre>
+173
+174
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 175</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 173</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accepts_role'>accepts_role</span><span class='lparen'>(</span><span class='id identifier rubyid_role_name'>role_name</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_has_role'>has_role</span> <span class='id identifier rubyid_role_name'>role_name</span><span class='comma'>,</span> <span class='kw'>self</span>
@@ -321,6 +325,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>If roles aren&#39;t overriden in model then check roles table</p>
+
 
   </div>
 </div>
@@ -346,12 +352,12 @@
       <pre class="lines">
 
 
-171
-172
-173</pre>
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 169</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accepts_role?'>accepts_role?</span><span class='lparen'>(</span><span class='id identifier rubyid_role_name'>role_name</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_has_role?'>has_role?</span> <span class='id identifier rubyid_role_name'>role_name</span><span class='comma'>,</span> <span class='kw'>self</span>
@@ -367,6 +373,10 @@
     #<strong>accepts_roles_by?</strong>(user)  &#x21d2; <tt>Boolean</tt> 
   
 
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='accepts_role_by?-instance_method'>accepts_role_by?</span></span>
+    </span>
   
 
   
@@ -398,12 +408,12 @@
       <pre class="lines">
 
 
-183
-184
-185</pre>
+181
+182
+183</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 181</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accepts_roles_by?'>accepts_roles_by?</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_has_roles_for?'>has_roles_for?</span> <span class='kw'>self</span>
@@ -418,9 +428,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:47 2016 by
+  Generated on Mon Dec 19 11:16:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

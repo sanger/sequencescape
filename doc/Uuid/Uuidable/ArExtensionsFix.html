@@ -85,7 +85,22 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>The behaviour of the ar-extensions gem means that the after_create
+callbacks aren&#39;t being executed for any of the rows we create on
+import.  What we need to do is ensure that any rows in the table that do
+not have UUIDs have their UUIDs created, but we also need to do this
+unobtrusively.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -134,51 +149,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#generate_missing_uuids-instance_method" title="#generate_missing_uuids (instance method)">#<strong>generate_missing_uuids</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#import_with_uuid_creation-instance_method" title="#import_with_uuid_creation (instance method)">#<strong>import_with_uuid_creation</strong>(*args, &amp;block)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#records_for_missing_uuids-instance_method" title="#records_for_missing_uuids (instance method)">#<strong>records_for_missing_uuids</strong>(&amp;block)  &#x21d2; Object </a>
     
 
     
@@ -221,12 +192,12 @@
       <pre class="lines">
 
 
-62
-63
-64</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/uuid.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'app/models/uuid.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_extended'>extended</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_singleton_class'>singleton_class</span><span class='period'>.</span><span class='id identifier rubyid_alias_method_chain'>alias_method_chain</span><span class='lparen'>(</span><span class='symbol'>:import</span><span class='comma'>,</span> <span class='symbol'>:uuid_creation</span><span class='rparen'>)</span>
@@ -243,37 +214,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="generate_missing_uuids-instance_method">
-  
-    #<strong>generate_missing_uuids</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-72
-73
-74</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/uuid.rb', line 72</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_generate_missing_uuids'>generate_missing_uuids</span>
-  <span class='id identifier rubyid_records_for_missing_uuids'>records_for_missing_uuids</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_id'>id</span><span class='op'>|</span> <span class='const'>Uuid</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>resouce_type:</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>resource_id:</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='label'>external_id:</span> <span class='const'>Uuid</span><span class='period'>.</span><span class='id identifier rubyid_generate_uuid'>generate_uuid</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="import_with_uuid_creation-instance_method">
+  <h3 class="signature first" id="import_with_uuid_creation-instance_method">
   
     #<strong>import_with_uuid_creation</strong>(*args, &amp;block)  &#x21d2; <tt>Object</tt> 
   
@@ -287,14 +228,14 @@
       <pre class="lines">
 
 
-66
-67
-68
-69
-70</pre>
+70
+71
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/uuid.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'app/models/uuid.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import_with_uuid_creation'>import_with_uuid_creation</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_import_without_uuid_creation'>import_without_uuid_creation</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_results'>results</span><span class='op'>|</span>
@@ -306,56 +247,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="records_for_missing_uuids-instance_method">
-  
-    #<strong>records_for_missing_uuids</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-77
-78
-79
-80
-81
-82
-83
-84
-85</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/uuid.rb', line 77</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_records_for_missing_uuids'>records_for_missing_uuids</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_connection'>connection</span><span class='period'>.</span><span class='id identifier rubyid_select_all'>select_all</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>%Q{
-</span><span class='tstring_content'>    SELECT r.id AS id
-    FROM </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_quoted_table_name'>quoted_table_name</span><span class='embexpr_end'>}</span><span class='tstring_content'> r
-    LEFT OUTER JOIN </span><span class='embexpr_beg'>#{</span><span class='const'>Uuid</span><span class='period'>.</span><span class='id identifier rubyid_quoted_table_name'>quoted_table_name</span><span class='embexpr_end'>}</span><span class='tstring_content'> u
-    ON r.id=u.resource_id AND u.resource_type=&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot;
-    WHERE u.id IS NULL
-  </span><span class='tstring_end'>}</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span> <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_r'>r</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:27 2016 by
+  Generated on Mon Dec 19 11:16:22 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -108,7 +108,18 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A lot type governs the behaviour of a lot</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -202,7 +213,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -246,12 +257,12 @@
       <pre class="lines">
 
 
+23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/lot_type.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'app/models/lot_type.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_lots'>lots</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -276,12 +287,12 @@
       <pre class="lines">
 
 
+27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/lot_type.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'app/models/lot_type.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_printer_type'>printer_type</span>
   <span class='id identifier rubyid_target_purpose'>target_purpose</span><span class='period'>.</span><span class='id identifier rubyid_barcode_printer_type'>barcode_printer_type</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
@@ -306,12 +317,12 @@
       <pre class="lines">
 
 
+19
 20
-21
-22</pre>
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/lot_type.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'app/models/lot_type.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_template_class'>valid_template_class</span>
   <span class='id identifier rubyid_template_class'>template_class</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span>
@@ -326,9 +337,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:00 2016 by
+  Generated on Mon Dec 19 11:16:47 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

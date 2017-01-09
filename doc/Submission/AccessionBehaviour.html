@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -135,28 +149,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#all_samples_have_accession_numbers%3F-instance_method" title="#all_samples_have_accession_numbers? (instance method)">#<strong>all_samples_have_accession_numbers?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -206,50 +198,6 @@
   <span class="summary_signature">
     
       <a href="#request_types_require_accessioning%3F-instance_method" title="#request_types_require_accessioning? (instance method)">#<strong>request_types_require_accessioning?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#test_asset_group-instance_method" title="#test_asset_group (instance method)">#<strong>test_asset_group</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#unaccessioned_samples-instance_method" title="#unaccessioned_samples (instance method)">#<strong>unaccessioned_samples</strong>  &#x21d2; Object </a>
     
 
     
@@ -318,59 +266,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="all_samples_have_accession_numbers?-instance_method">
-  
-    #<strong>all_samples_have_accession_numbers?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-46
-47
-48</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/accession_behaviour.rb', line 46</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_all_samples_have_accession_numbers?'>all_samples_have_accession_numbers?</span>
-  <span class='id identifier rubyid_test_asset_group'>test_asset_group</span><span class='period'>.</span><span class='id identifier rubyid_all_samples_have_accession_numbers?'>all_samples_have_accession_numbers?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="can_check_data_release_and_accession?-instance_method">
+  <h3 class="signature first" id="can_check_data_release_and_accession?-instance_method">
   
     #<strong>can_check_data_release_and_accession?</strong>  &#x21d2; <tt>Boolean</tt> 
   
@@ -523,74 +419,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="test_asset_group-instance_method">
-  
-    #<strong>test_asset_group</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-38
-39
-40</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/accession_behaviour.rb', line 38</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_test_asset_group'>test_asset_group</span>
-  <span class='const'>AssetGroup</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>assets:</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_assets'>assets</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="unaccessioned_samples-instance_method">
-  
-    #<strong>unaccessioned_samples</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-42
-43
-44</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/accession_behaviour.rb', line 42</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_unaccessioned_samples'>unaccessioned_samples</span>
-  <span class='id identifier rubyid_test_asset_group'>test_asset_group</span><span class='period'>.</span><span class='id identifier rubyid_unaccessioned_samples'>unaccessioned_samples</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_sentence'>to_sentence</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:41 2016 by
+  Generated on Mon Dec 19 11:16:31 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -153,7 +153,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the transfer request type to use between this purpose and the
+parent given If no relationship exists, use the default transfer.</p>
+</div></span>
   
 </li>
 
@@ -227,24 +230,14 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Returns the transfer request type to use between this purpose and the
+parent given If no relationship exists, use the default transfer</p>
+
 
   </div>
 </div>
 <div class="tags">
   
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="../../ActiveRecord/RecordNotFound.html" title="ActiveRecord::RecordNotFound (class)">ActiveRecord::RecordNotFound</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
 
 </div><table class="source_code">
   <tr>
@@ -252,18 +245,18 @@
       <pre class="lines">
 
 
-32
 33
 34
 35
-36</pre>
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/purpose.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'app/models/purpose.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transfer_request_type_from'>transfer_request_type_from</span><span class='lparen'>(</span><span class='id identifier rubyid_parent_purpose'>parent_purpose</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_relationship'>relationship</span> <span class='op'>=</span> <span class='id identifier rubyid_parent_relationships'>parent_relationships</span><span class='period'>.</span><span class='id identifier rubyid_find_by_parent_id'>find_by_parent_id</span><span class='lparen'>(</span><span class='id identifier rubyid_parent_purpose'>parent_purpose</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>RecordNotFound</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Couldn&#39;t find relationship between </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_parent_purpose'>parent_purpose</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> and </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_relationship'>relationship</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='kw'>return</span> <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_transfer'>transfer</span> <span class='kw'>if</span> <span class='id identifier rubyid_relationship'>relationship</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_relationship'>relationship</span><span class='period'>.</span><span class='id identifier rubyid_transfer_request_type'>transfer_request_type</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -276,9 +269,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:28 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

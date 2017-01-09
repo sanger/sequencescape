@@ -146,23 +146,23 @@
       <pre class="lines">
 
 
+12
 13
 14
 15
 16
 17
-18
-19</pre>
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_acts_as_authorized_user'>acts_as_authorized_user</span><span class='lparen'>(</span><span class='id identifier rubyid_roles_relationship_opts'>roles_relationship_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:user_role_bindings</span><span class='comma'>,</span> <span class='label'>class_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Role::UserRole</span><span class='tstring_end'>&#39;</span></span>
   <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:roles</span><span class='comma'>,</span> <span class='id identifier rubyid_roles_relationship_opts'>roles_relationship_opts</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='label'>through:</span> <span class='symbol'>:user_role_bindings</span><span class='comma'>,</span> <span class='label'>source:</span> <span class='symbol'>:role</span><span class='rparen'>)</span>
 <span class='comment'>#          has_and_belongs_to_many :roles, roles_relationship_opts
 </span>  <span class='id identifier rubyid_include'>include</span> <span class='const'>Authorization</span><span class='op'>::</span><span class='const'>ObjectRolesTable</span><span class='op'>::</span><span class='const'>UserExtensions</span><span class='op'>::</span><span class='const'>InstanceMethods</span>
-  <span class='id identifier rubyid_include'>include</span> <span class='const'>Authorization</span><span class='op'>::</span><span class='const'>Identity</span><span class='op'>::</span><span class='const'>UserExtensions</span><span class='op'>::</span><span class='const'>InstanceMethods</span>   <span class='comment'># Provides all kinds of dynamic sugar via method_missing
+  <span class='id identifier rubyid_include'>include</span> <span class='const'>Authorization</span><span class='op'>::</span><span class='const'>Identity</span><span class='op'>::</span><span class='const'>UserExtensions</span><span class='op'>::</span><span class='const'>InstanceMethods</span> <span class='comment'># Provides all kinds of dynamic sugar via method_missing
 </span><span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -174,9 +174,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:47 2016 by
+  Generated on Mon Dec 19 11:16:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

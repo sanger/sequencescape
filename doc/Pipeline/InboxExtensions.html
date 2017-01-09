@@ -85,7 +85,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -139,7 +153,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Used by the Pipeline class to retrieve the list of requests that are coming
+into the pipeline.</p>
+</div></span>
   
 </li>
 
@@ -190,14 +207,12 @@
 27
 28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/pipeline/inbox_extensions.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inbox'>inbox</span><span class='lparen'>(</span><span class='id identifier rubyid_show_held_requests'>show_held_requests</span> <span class='op'>=</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='id identifier rubyid_current_page'>current_page</span> <span class='op'>=</span> <span class='int'>1</span><span class='comma'>,</span> <span class='id identifier rubyid_action'>action</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-
   <span class='id identifier rubyid_requests'>requests</span> <span class='op'>=</span> <span class='id identifier rubyid_proxy_association'>proxy_association</span><span class='period'>.</span><span class='id identifier rubyid_scope'>scope</span>
   <span class='id identifier rubyid_pipeline'>pipeline</span> <span class='op'>=</span> <span class='id identifier rubyid_proxy_association'>proxy_association</span><span class='period'>.</span><span class='id identifier rubyid_owner'>owner</span>
   <span class='comment'># Build a list of methods to invoke to build the correct request list
@@ -234,18 +249,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Used by the Pipeline class to retrieve the list of requests that are coming
+into the pipeline.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+33
 34
-35
-36</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/pipeline/inbox_extensions.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'app/models/pipeline/inbox_extensions.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inputs'>inputs</span><span class='lparen'>(</span><span class='id identifier rubyid_show_held_requests'>show_held_requests</span> <span class='op'>=</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_ready_in_storage'>ready_in_storage</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_show_held_requests'>show_held_requests</span> <span class='op'>?</span> <span class='symbol'>:full_inbox</span> <span class='op'>:</span> <span class='symbol'>:pipeline_pending</span><span class='rparen'>)</span>
@@ -260,9 +287,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:39 2016 by
+  Generated on Mon Dec 19 11:16:30 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

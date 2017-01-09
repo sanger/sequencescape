@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -261,6 +275,7 @@
       <pre class="lines">
 
 
+26
 27
 28
 29
@@ -269,11 +284,10 @@
 32
 33
 34
-35
-36</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_find_by_barcode'>find_by_barcode</span><span class='lparen'>(</span><span class='id identifier rubyid_barcode'>barcode</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_batch_id'>batch_id</span> <span class='op'>=</span> <span class='int'>0</span>
@@ -311,12 +325,12 @@
       <pre class="lines">
 
 
+46
 47
-48
-49</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_new_descriptor'>add_new_descriptor</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_descriptor'>add_descriptor</span> <span class='const'>Descriptor</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>value:</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
@@ -341,17 +355,17 @@
       <pre class="lines">
 
 
+37
 38
 39
 40
 41
 42
 43
-44
-45</pre>
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_descriptor_value_for'>descriptor_value_for</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_descriptors'>descriptors</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_desc'>desc</span><span class='op'>|</span>
@@ -381,15 +395,15 @@
       <pre class="lines">
 
 
+19
 20
 21
 22
 23
-24
-25</pre>
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'app/models/lab_event.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unescape_for_descriptors'>unescape_for_descriptors</span>
   <span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:descriptors</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:descriptors</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_hash'>hash</span><span class='comma'>,</span> <span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='op'>|</span>
@@ -407,9 +421,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:02 2016 by
+  Generated on Mon Dec 19 11:16:48 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

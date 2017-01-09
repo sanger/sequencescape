@@ -2,17 +2,13 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
-class  EgaAccessionService < AccessionService
-
-  self.priority = 2
-  self.operational = true
-
+class EgaAccessionService < AccessionService
   def provider
     :EGA
   end
 
-  def accession_login
-    configatron.ega_accession_login or raise RuntimeError, "Can't find EGA accession login in configuration file"
+  def accession_options
+    configatron.accession.ega!.to_hash
   end
 
   def sample_visibility(sample)

@@ -103,7 +103,19 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Advanced Product Criteria can have &#39;unprocessable&#39; thresholds as
+well as fails.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
@@ -111,6 +123,16 @@
         
       </dt>
       <dd><pre class="code"><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>failed</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>unprocessable</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span></pre></dd>
+    
+      <dt id="TARGET_PLATE_PURPOSES-constant" class="">TARGET_PLATE_PURPOSES =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>target_plate_purposes</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+    
+      <dt id="CONFIG_KEYS-constant" class="">CONFIG_KEYS =
+        
+      </dt>
+      <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>TARGET_PLATE_PURPOSES</span><span class='rbracket'>]</span></pre></dd>
     
   </dl>
 
@@ -129,7 +151,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aqc_decision-instance_method" title="#:qc_decision (instance method)">#<strong>:qc_decision</strong>  &#x21d2; Object </a>
+      <a href="#qc_decision-instance_method" title="#qc_decision (instance method)">#<strong>qc_decision</strong>  &#x21d2; Object </a>
     
 
     
@@ -149,7 +171,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :qc_decision.</p>
+<p>Returns the value of attribute qc_decision.</p>
 </div></span>
   
 </li>
@@ -162,9 +184,40 @@
   
   
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Basic.html" title="ProductCriteria::Basic (class)">Basic</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Basic.html#%3Acomment-instance_method" title="ProductCriteria::Basic#:comment (method)">#:comment</a></span>, <span class='object_link'><a href="Basic.html#%3Aparams-instance_method" title="ProductCriteria::Basic#:params (method)">#:params</a></span>, <span class='object_link'><a href="Basic.html#%3Apassed-instance_method" title="ProductCriteria::Basic#:passed (method)">#:passed</a></span>, <span class='object_link'><a href="Basic.html#%3Avalues-instance_method" title="ProductCriteria::Basic#:values (method)">#:values</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Basic.html#comment-instance_method" title="ProductCriteria::Basic#comment (method)">#comment</a></span>, <span class='object_link'><a href="Basic.html#params-instance_method" title="ProductCriteria::Basic#params (method)">#params</a></span>, <span class='object_link'><a href="Basic.html#passed-instance_method" title="ProductCriteria::Basic#passed (method)">#passed</a></span>, <span class='object_link'><a href="Basic.html#values-instance_method" title="ProductCriteria::Basic#values (method)">#values</a></span></p>
 
 
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#headers-class_method" title="headers (class method)">.<strong>headers</strong>(configuration)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
   
     <h2>
       Instance Method Summary
@@ -230,7 +283,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Basic.html" title="ProductCriteria::Basic (class)">Basic</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Basic.html#available_criteria-class_method" title="ProductCriteria::Basic.available_criteria (method)">available_criteria</a></span>, <span class='object_link'><a href="Basic.html#comparison_for-instance_method" title="ProductCriteria::Basic#comparison_for (method)">#comparison_for</a></span>, <span class='object_link'><a href="Basic.html#conflicting_gender_markers-instance_method" title="ProductCriteria::Basic#conflicting_gender_markers (method)">#conflicting_gender_markers</a></span>, <span class='object_link'><a href="Basic.html#conflicting_marker%3F-instance_method" title="ProductCriteria::Basic#conflicting_marker? (method)">#conflicting_marker?</a></span>, <span class='object_link'><a href="Basic.html#fetch_attribute-instance_method" title="ProductCriteria::Basic#fetch_attribute (method)">#fetch_attribute</a></span>, <span class='object_link'><a href="Basic.html#headers-class_method" title="ProductCriteria::Basic.headers (method)">headers</a></span>, <span class='object_link'><a href="Basic.html#initialize-instance_method" title="ProductCriteria::Basic#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="Basic.html#known_marker%3F-instance_method" title="ProductCriteria::Basic#known_marker? (method)">#known_marker?</a></span>, <span class='object_link'><a href="Basic.html#message_for-instance_method" title="ProductCriteria::Basic#message_for (method)">#message_for</a></span>, <span class='object_link'><a href="Basic.html#method_for-instance_method" title="ProductCriteria::Basic#method_for (method)">#method_for</a></span>, <span class='object_link'><a href="Basic.html#metrics-instance_method" title="ProductCriteria::Basic#metrics (method)">#metrics</a></span>, <span class='object_link'><a href="Basic.html#plate_barcode-instance_method" title="ProductCriteria::Basic#plate_barcode (method)">#plate_barcode</a></span>, <span class='object_link'><a href="Basic.html#qc_decision-instance_method" title="ProductCriteria::Basic#qc_decision (method)">#qc_decision</a></span>, <span class='object_link'><a href="Basic.html#sample-instance_method" title="ProductCriteria::Basic#sample (method)">#sample</a></span>, <span class='object_link'><a href="Basic.html#sample_gender-instance_method" title="ProductCriteria::Basic#sample_gender (method)">#sample_gender</a></span>, <span class='object_link'><a href="Basic.html#total_micrograms-instance_method" title="ProductCriteria::Basic#total_micrograms (method)">#total_micrograms</a></span>, <span class='object_link'><a href="Basic.html#well_attribute-instance_method" title="ProductCriteria::Basic#well_attribute (method)">#well_attribute</a></span>, <span class='object_link'><a href="Basic.html#well_location-instance_method" title="ProductCriteria::Basic#well_location (method)">#well_location</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Basic.html#available_criteria-class_method" title="ProductCriteria::Basic.available_criteria (method)">available_criteria</a></span>, <span class='object_link'><a href="Basic.html#concentration_from_normalization-instance_method" title="ProductCriteria::Basic#concentration_from_normalization (method)">#concentration_from_normalization</a></span>, <span class='object_link'><a href="Basic.html#conflicting_gender_markers-instance_method" title="ProductCriteria::Basic#conflicting_gender_markers (method)">#conflicting_gender_markers</a></span>, <span class='object_link'><a href="Basic.html#initialize-instance_method" title="ProductCriteria::Basic#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="Basic.html#metrics-instance_method" title="ProductCriteria::Basic#metrics (method)">#metrics</a></span>, <span class='object_link'><a href="Basic.html#most_recent_concentration_from_target_well_by_updating_date-instance_method" title="ProductCriteria::Basic#most_recent_concentration_from_target_well_by_updating_date (method)">#most_recent_concentration_from_target_well_by_updating_date</a></span>, <span class='object_link'><a href="Basic.html#plate_barcode-instance_method" title="ProductCriteria::Basic#plate_barcode (method)">#plate_barcode</a></span>, <span class='object_link'><a href="Basic.html#sample_gender-instance_method" title="ProductCriteria::Basic#sample_gender (method)">#sample_gender</a></span>, <span class='object_link'><a href="Basic.html#total_micrograms-instance_method" title="ProductCriteria::Basic#total_micrograms (method)">#total_micrograms</a></span>, <span class='object_link'><a href="Basic.html#well_location-instance_method" title="ProductCriteria::Basic#well_location (method)">#well_location</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -244,9 +297,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":qc_decision-instance_method">
+  <h3 class="signature first" id="qc_decision-instance_method">
   
-    #<strong>:qc_decision</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>qc_decision</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -255,7 +308,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :qc_decision</p>
+<p>Returns the value of attribute qc_decision</p>
 
 
   </div>
@@ -269,16 +322,16 @@
       <pre class="lines">
 
 
-12
-13
-14</pre>
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/product_criteria/advanced.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'app/models/product_criteria/advanced.rb', line 10</span>
 
-def :qc_decision
-  @:qc_decision
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_qc_decision'>qc_decision</span>
+  <span class='ivar'>@qc_decision</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -286,6 +339,42 @@ end</pre>
     
   </div>
 
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="headers-class_method">
+  
+    .<strong>headers</strong>(configuration)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+19
+20
+21</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/product_criteria/advanced.rb', line 19</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_headers'>headers</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='rparen'>)</span>
+  <span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='period'>.</span><span class='id identifier rubyid_slice'>slice</span><span class='lparen'>(</span><span class='op'>*</span><span class='const'>STATE_ORDER</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_reduce'>reduce</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:merge</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span> <span class='op'>+</span> <span class='lbracket'>[</span><span class='symbol'>:comment</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -306,14 +395,6 @@ end</pre>
       <pre class="lines">
 
 
-22
-23
-24
-25
-26
-27
-28
-29
 30
 31
 32
@@ -323,10 +404,18 @@ end</pre>
 36
 37
 38
-39</pre>
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/product_criteria/advanced.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'app/models/product_criteria/advanced.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assess!'>assess!</span>
   <span class='ivar'>@qc_decision</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>passed</span><span class='tstring_end'>&#39;</span></span>
@@ -366,14 +455,14 @@ end</pre>
       <pre class="lines">
 
 
-16
-17
-18
-19
-20</pre>
+24
+25
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/product_criteria/advanced.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'app/models/product_criteria/advanced.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_invalid'>invalid</span><span class='lparen'>(</span><span class='id identifier rubyid_attribute'>attribute</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_decision'>decision</span><span class='rparen'>)</span>
   <span class='ivar'>@qc_decision</span> <span class='op'>=</span> <span class='id identifier rubyid_decision'>decision</span>
@@ -390,9 +479,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:35 2016 by
+  Generated on Mon Dec 19 11:17:18 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

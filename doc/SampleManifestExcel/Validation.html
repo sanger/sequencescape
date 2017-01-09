@@ -106,7 +106,26 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>An Excel validation Holds the validation for each column which is added to
+each column when the spreadsheet is created. Consists of:</p>
+<ul><li>
+<p>A list of options which relate to options recognised by Excel e.g.
+errorMessage.</p>
+</li><li>
+<p>A range name (optional) which will be linked to a range when the
+spreadsheet is created.</p>
+</li></ul>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -138,7 +157,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>A validation object is never empty.</p>
+</div></span>
   
 </li>
 
@@ -160,7 +181,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>formula1 is defined within the options.</p>
+</div></span>
   
 </li>
 
@@ -230,7 +253,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If the range name is present then a range is required for the validation.</p>
+</div></span>
   
 </li>
 
@@ -252,7 +277,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If the worksheet has been updated then we can assume that the validation
+has been saved to a worksheet.</p>
+</div></span>
   
 </li>
 
@@ -274,7 +302,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The range is updated when the measurements of a worksheet is defined.</p>
+</div></span>
   
 </li>
 
@@ -296,7 +326,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Validation is only valid if there are some options.</p>
+</div></span>
   
 </li>
 
@@ -346,12 +378,12 @@
       <pre class="lines">
 
 
-15
-16
-17</pre>
+13
+14
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_create_attributes'>create_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
@@ -380,6 +412,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>A validation object is never empty</p>
+
 
   </div>
 </div>
@@ -405,12 +439,12 @@
       <pre class="lines">
 
 
-56
-57
-58</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_empty?'>empty?</span>
   <span class='kw'>false</span>
@@ -429,18 +463,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>formula1 is defined within the options</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-44
-45
-46</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_formula1'>formula1</span>
   <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:formula1</span><span class='rbracket'>]</span>
@@ -465,13 +510,13 @@
       <pre class="lines">
 
 
-67
-68
-69
-70</pre>
+64
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_dup'>initialize_dup</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_source'>source</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
@@ -494,6 +539,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>If the range name is present then a range is required for the validation</p>
+
 
   </div>
 </div>
@@ -519,12 +566,12 @@
       <pre class="lines">
 
 
-38
-39
-40</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_range_required?'>range_required?</span>
   <span class='id identifier rubyid_range_name'>range_name</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -546,6 +593,9 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>If the worksheet has been updated then we can assume that the validation
+has been saved to a worksheet.</p>
+
 
   </div>
 </div>
@@ -571,12 +621,12 @@
       <pre class="lines">
 
 
-63
-64
-65</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_saved?'>saved?</span>
   <span class='ivar'>@worksheet_validation</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -595,25 +645,38 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The range is updated when the measurements of a worksheet is defined. If a
+range is required the the formula1 is set to the absolute raference of the
+range. If a worksheet is passed then the data validation is added using the
+reference is passed and the options for the validation.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+23
+24
 25
 26
 27
 28
 29
 30
-31
-32
-33
-34</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update'>update</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_range_required?'>range_required?</span>
@@ -623,7 +686,6 @@
   <span class='kw'>if</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:worksheet</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
     <span class='ivar'>@worksheet_validation</span> <span class='op'>=</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:worksheet</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_add_data_validation'>add_data_validation</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='symbol'>:reference</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -642,6 +704,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Validation is only valid if there are some options</p>
+
 
   </div>
 </div>
@@ -667,12 +731,12 @@
       <pre class="lines">
 
 
-50
-51
-52</pre>
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/validation.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid?'>valid?</span>
   <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -687,9 +751,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:55 2016 by
+  Generated on Mon Dec 19 11:17:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

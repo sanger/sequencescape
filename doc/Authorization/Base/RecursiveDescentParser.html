@@ -85,7 +85,41 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Parses and evaluates an authorization expression and returns
+<code>true</code> or <code>false</code>. This recursive descent parses uses
+two instance variables:</p>
 
+<pre class="code ruby"><code class="ruby">@stack --&gt; a stack with the top holding the boolean expression resulting from the parsing</code></pre>
+
+<p>The authorization expression is defined by the following grammar:</p>
+
+<pre class="code ruby"><code class="ruby">       &lt;expr&gt; ::= (&lt;expr&gt;) | not &lt;expr&gt; | &lt;term&gt; or &lt;expr&gt; | &lt;term&gt; and &lt;expr&gt; | &lt;term&gt;
+       &lt;term&gt; ::= &lt;role&gt; | &lt;role&gt; &lt;preposition&gt; &lt;model&gt;
+&lt;preposition&gt; ::= of | for | in | on | to | at | by
+      &lt;model&gt; ::= /:*\w+/
+       &lt;role&gt; ::= /\w+/ | /&#39;.*&#39;/</code></pre>
+
+<p>There are really two values we must track: (1) whether the expression is
+valid according to the grammar (2) the evaluated results –&gt; true/false
+on the permission queries The first is embedded in the control logic
+because we want short-circuiting. If an expression has been parsed and the
+permission is false, we don&#39;t want to try different ways of parsing.
+Note that this implementation of a recursive descent parser is meant to be
+simple and doesn&#39;t allow arbitrary nesting of parentheses. It supports
+up to 5 levels of nesting. It also won&#39;t handle some types of
+expressions (A or B) and C, which has to be rewritten as C and (A or B) so
+the parenthetical expressions are in the tail.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
@@ -297,7 +331,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Descend down parenthesis (allow up to 5 levels of nesting).</p>
+</div></span>
   
 </li>
 
@@ -319,7 +355,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Parse &lt;role&gt; of the User-like object.</p>
+</div></span>
   
 </li>
 
@@ -341,7 +379,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Parse &lt;role&gt; of &lt;model&gt;.</p>
+</div></span>
   
 </li>
 
@@ -392,17 +432,17 @@
       <pre class="lines">
 
 
+154
+155
+156
 157
 158
 159
 160
-161
-162
-163
-164</pre>
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 154</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_and'>parse_and</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span> <span class='op'>=~</span> <span class='const'>AND_REGEX</span>
@@ -454,14 +494,14 @@
       <pre class="lines">
 
 
+123
+124
+125
 126
-127
-128
-129
-130</pre>
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 123</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_authorization_expression'>parse_authorization_expression</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='ivar'>@stack</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -488,16 +528,16 @@
       <pre class="lines">
 
 
+129
+130
+131
 132
 133
 134
-135
-136
-137
-138</pre>
+135</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_expr'>parse_expr</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_parse_parenthesis'>parse_parenthesis</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span> <span class='kw'>or</span>
@@ -526,16 +566,16 @@
       <pre class="lines">
 
 
+137
+138
+139
 140
 141
 142
-143
-144
-145
-146</pre>
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 137</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_not'>parse_not</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span> <span class='op'>=~</span> <span class='const'>NOT_REGEX</span>
@@ -564,17 +604,17 @@
       <pre class="lines">
 
 
+145
+146
+147
 148
 149
 150
 151
-152
-153
-154
-155</pre>
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 145</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_or'>parse_or</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span> <span class='op'>=~</span> <span class='const'>OR_REGEX</span>
@@ -598,18 +638,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Descend down parenthesis (allow up to 5 levels of nesting)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-167
-168
-169</pre>
+164
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 167</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 164</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_parenthesis'>parse_parenthesis</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_str'>str</span> <span class='op'>=~</span> <span class='const'>PARENTHESES_REGEX</span> <span class='op'>?</span> <span class='id identifier rubyid_parse_expr'>parse_expr</span><span class='lparen'>(</span><span class='backref'>$1</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='kw'>false</span>
@@ -628,12 +679,26 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Parse &lt;role&gt; of the User-like object</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+190
+191
+192
 193
 194
 195
@@ -644,13 +709,10 @@
 200
 201
 202
-203
-204
-205
-206</pre>
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 193</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 190</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_role'>parse_role</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span> <span class='op'>=~</span> <span class='const'>ROLE_REGEX</span>
@@ -680,12 +742,26 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Parse &lt;role&gt; of &lt;model&gt;</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+174
+175
+176
 177
 178
 179
@@ -696,13 +772,10 @@
 184
 185
 186
-187
-188
-189
-190</pre>
+187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 174</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_role_of_model'>parse_role_of_model</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span> <span class='op'>=~</span> <span class='const'>ROLE_OF_MODEL_REGEX</span>
@@ -738,13 +811,13 @@
       <pre class="lines">
 
 
-171
-172
-173
-174</pre>
+168
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'lib/rails-authorization-plugin/lib/publishare/parser.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse_term'>parse_term</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_parse_role_of_model'>parse_role_of_model</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span> <span class='kw'>or</span>
@@ -760,9 +833,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:45 2016 by
+  Generated on Mon Dec 19 11:16:34 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

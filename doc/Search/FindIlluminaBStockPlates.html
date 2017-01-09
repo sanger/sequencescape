@@ -114,39 +114,6 @@
 
 
 
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#illumina_b_plate_purposes-instance_method" title="#illumina_b_plate_purposes (instance method)">#<strong>illumina_b_plate_purposes</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
-
 
   
   
@@ -154,10 +121,10 @@
   
   
   
-  
+  <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="FindIlluminaBPlates.html" title="Search::FindIlluminaBPlates (class)">FindIlluminaBPlates</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="FindIlluminaBPlates.html#freezer-instance_method" title="Search::FindIlluminaBPlates#freezer (method)">#freezer</a></span>, <span class='object_link'><a href="FindIlluminaBPlates.html#scope-instance_method" title="Search::FindIlluminaBPlates#scope (method)">#scope</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="FindIlluminaBPlates.html#scope-instance_method" title="Search::FindIlluminaBPlates#scope (method)">#scope</a></span></p>
 
   
   
@@ -174,7 +141,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -199,48 +166,12 @@
   <p class="inherited"><span class='object_link'><a href="../ApiTools.html#as_json-instance_method" title="ApiTools#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../ApiTools.html#for_api-instance_method" title="ApiTools#for_api (method)">#for_api</a></span>, <span class='object_link'><a href="../ApiTools.html#included-class_method" title="ApiTools.included (method)">included</a></span>, <span class='object_link'><a href="../ApiTools.html#list_json-instance_method" title="ApiTools#list_json (method)">#list_json</a></span>, <span class='object_link'><a href="../ApiTools.html#to_xml-instance_method" title="ApiTools#to_xml (method)">#to_xml</a></span>, <span class='object_link'><a href="../ApiTools.html#to_yaml-instance_method" title="ApiTools#to_yaml (method)">#to_yaml</a></span>, <span class='object_link'><a href="../ApiTools.html#url-instance_method" title="ApiTools#url (method)">#url</a></span>, <span class='object_link'><a href="../ApiTools.html#url_name-instance_method" title="ApiTools#url_name (method)">#url_name</a></span></p>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="illumina_b_plate_purposes-instance_method">
-  
-    #<strong>illumina_b_plate_purposes</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-11
-12
-13</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/search/find_illumina_b_stock_plates.rb', line 11</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_illumina_b_plate_purposes'>illumina_b_plate_purposes</span>
-  <span class='const'>PlatePurpose</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='lbracket'>[</span><span class='const'>IlluminaB</span><span class='op'>::</span><span class='const'>PlatePurposes</span><span class='op'>::</span><span class='const'>STOCK_PLATE_PURPOSE</span><span class='comma'>,</span> <span class='const'>IlluminaHtp</span><span class='op'>::</span><span class='const'>PlatePurposes</span><span class='op'>::</span><span class='const'>STOCK_PLATE_PURPOSE</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_concat'>concat</span><span class='lparen'>(</span><span class='const'>Pulldown</span><span class='op'>::</span><span class='const'>PlatePurposes</span><span class='op'>::</span><span class='const'>STOCK_PLATE_PURPOSES</span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:49 2016 by
+  Generated on Mon Dec 19 11:17:31 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

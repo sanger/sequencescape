@@ -93,7 +93,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd>SharedBehaviour::Deprecatable, SharedBehaviour::Immutable, SharedBehaviour::Indestructable</dd>
+      <dd><span class='object_link'><a href="HasBehaviour.html" title="HasBehaviour (module)">HasBehaviour</a></span>, SharedBehaviour::Deprecatable, SharedBehaviour::Immutable, SharedBehaviour::Indestructable</dd>
   </dl>
   
   
@@ -108,7 +108,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015,2016 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -146,29 +160,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#assess-instance_method" title="#assess (instance method)">#<strong>assess</strong>(asset)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#behaviour_exists%3F-instance_method" title="#behaviour_exists? (instance method)">#<strong>behaviour_exists?</strong>  &#x21d2; Boolean </a>
+      <a href="#assess-instance_method" title="#assess (instance method)">#<strong>assess</strong>(asset, target_wells = nil)  &#x21d2; Object </a>
     
 
     
@@ -212,7 +204,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#set_version_number-instance_method" title="#set_version_number (instance method)">#<strong>set_version_number</strong>  &#x21d2; Object </a>
+      <a href="#target_plate_purposes-instance_method" title="#target_plate_purposes (instance method)">#<strong>target_plate_purposes</strong>  &#x21d2; Object </a>
     
 
     
@@ -246,6 +238,17 @@
   
   
   
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="HasBehaviour.html" title="HasBehaviour (module)">HasBehaviour</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="HasBehaviour.html#included-class_method" title="HasBehaviour.included (method)">included</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="ActiveRecord/Base.html" title="ActiveRecord::Base (class)">ActiveRecord::Base</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="ActiveRecord/Base.html#find_by_id_or_name-class_method" title="ActiveRecord::Base.find_by_id_or_name (method)">find_by_id_or_name</a></span>, <span class='object_link'><a href="ActiveRecord/Base.html#find_by_id_or_name%21-class_method" title="ActiveRecord::Base.find_by_id_or_name! (method)">find_by_id_or_name!</a></span>, <span class='object_link'><a href="ActiveRecord/Base.html#routing_key-instance_method" title="ActiveRecord::Base#routing_key (method)">#routing_key</a></span>, <span class='object_link'><a href="ActiveRecord/Base.html#transaction_with_amqp-class_method" title="ActiveRecord::Base.transaction_with_amqp (method)">transaction_with_amqp</a></span></p>
 
@@ -268,7 +271,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="assess-instance_method">
   
-    #<strong>assess</strong>(asset)  &#x21d2; <tt>Object</tt> 
+    #<strong>assess</strong>(asset, target_wells = nil)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -280,81 +283,15 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/product_criteria.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/models/product_criteria.rb', line 41</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_assess'>assess</span><span class='lparen'>(</span><span class='id identifier rubyid_asset'>asset</span><span class='rparen'>)</span>
-  <span class='const'>ProductCriteria</span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='id identifier rubyid_behaviour'>behaviour</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='comma'>,</span> <span class='id identifier rubyid_asset'>asset</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="behaviour_exists?-instance_method">
-  
-    #<strong>behaviour_exists?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/product_criteria.rb', line 47</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_behaviour_exists?'>behaviour_exists?</span>
-  <span class='comment'># We can&#39;t use const_defined? here as it doesn&#39;t trigger rails autoloading.
-</span>  <span class='comment'># We could probably use the autoloading API more directly, but it doesn&#39;t
-</span>  <span class='comment'># seem to be intended to be used outside of Rails itself.
-</span>  <span class='const'>ProductCriteria</span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='id identifier rubyid_behaviour'>behaviour</span><span class='rparen'>)</span>
-  <span class='kw'>true</span>
-<span class='kw'>rescue</span> <span class='const'>NameError</span>
-  <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:behaviour</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_behaviour'>behaviour</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not recognized</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='kw'>false</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_assess'>assess</span><span class='lparen'>(</span><span class='id identifier rubyid_asset'>asset</span><span class='comma'>,</span> <span class='id identifier rubyid_target_wells'>target_wells</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_with_behaviour'>with_behaviour</span><span class='lparen'>(</span><span class='id identifier rubyid_behaviour'>behaviour</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='comma'>,</span> <span class='id identifier rubyid_asset'>asset</span><span class='comma'>,</span> <span class='id identifier rubyid_target_wells'>target_wells</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -376,15 +313,15 @@
       <pre class="lines">
 
 
-41
-42
-43</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/product_criteria.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'app/models/product_criteria.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_headers'>headers</span>
-  <span class='const'>ProductCriteria</span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='id identifier rubyid_behaviour'>behaviour</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_headers'>headers</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='rparen'>)</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_with_behaviour'>with_behaviour</span><span class='lparen'>(</span><span class='id identifier rubyid_behaviour'>behaviour</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_headers'>headers</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -392,9 +329,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="set_version_number-instance_method">
+  <h3 class="signature " id="target_plate_purposes-instance_method">
   
-    #<strong>set_version_number</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>target_plate_purposes</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -406,17 +343,15 @@
       <pre class="lines">
 
 
-58
-59
-60
-61</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/product_criteria.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'app/models/product_criteria.rb', line 37</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_set_version_number'>set_version_number</span>
-  <span class='id identifier rubyid_v'>v</span> <span class='op'>=</span> <span class='id identifier rubyid_product'>product</span><span class='period'>.</span><span class='id identifier rubyid_product_criteria'>product_criteria</span><span class='period'>.</span><span class='id identifier rubyid_for_stage'>for_stage</span><span class='lparen'>(</span><span class='id identifier rubyid_stage'>stage</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span> <span class='op'>+</span> <span class='int'>1</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='id identifier rubyid_v'>v</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_target_plate_purposes'>target_plate_purposes</span>
+  <span class='id identifier rubyid_configuration'>configuration</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>target_plate_purposes</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -428,9 +363,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:13 2016 by
+  Generated on Mon Dec 19 11:17:01 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

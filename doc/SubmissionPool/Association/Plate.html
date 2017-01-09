@@ -151,6 +151,8 @@
       <pre class="lines">
 
 
+11
+12
 13
 14
 15
@@ -179,18 +181,13 @@
 38
 39
 40
-41
-42
-43
-44
-45</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission_pool.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission_pool.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
-
     <span class='comment'># Rails 4 takes scopes as second argument, we can probably also tidy up and remove the counter_sql
 </span>    <span class='comment'># as it is the :group by seems to throw rails, and distinct will throw off out count.
 </span>    <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:submission_pools</span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>submissions.*, requests.id AS outer_request_id</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_group'>group</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>submissions.id</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span> <span class='rbrace'>}</span><span class='comma'>,</span>
@@ -218,7 +215,6 @@
     <span class='kw'>def</span> <span class='id identifier rubyid_submission_pools'>submission_pools</span>
       <span class='const'>SubmissionPool</span><span class='period'>.</span><span class='id identifier rubyid_for_plate'>for_plate</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
-
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -231,9 +227,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:33 2016 by
+  Generated on Mon Dec 19 11:16:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -175,7 +175,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>—.</p>
+</div></span>
   
 </li>
 
@@ -197,7 +199,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>tags and tag have been moved to the appropriate assets.</p>
+</div></span>
   
 </li>
 
@@ -287,7 +291,7 @@
     <span class='comment'># Shouldn&#39;t be used . Here for compatibility with the previous code
 </span>    <span class='comment'># having request having one sample
 </span>    <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:samples</span><span class='comma'>,</span> <span class='label'>through:</span> <span class='symbol'>:asset</span>
-    <span class='id identifier rubyid_deprecate'>deprecate</span> <span class='symbol'>:samples</span><span class='comma'>,</span>  <span class='symbol'>:sample_ids</span>
+    <span class='id identifier rubyid_deprecate'>deprecate</span> <span class='symbol'>:samples</span><span class='comma'>,</span> <span class='symbol'>:sample_ids</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -360,7 +364,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <hr>
+
 
   </div>
 </div>
@@ -410,7 +415,23 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>tags and tag have been moved to the appropriate assets. I don&#39;t think
+that they are used anywhere else apart from the batch xml and can therefore
+probably be removed.</p>
+<hr>
+
+<p>Nope, they are used all over the place.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -496,9 +517,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:41 2016 by
+  Generated on Mon Dec 19 11:16:31 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

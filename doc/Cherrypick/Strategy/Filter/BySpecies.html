@@ -101,7 +101,23 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Orders the plexes such that plexes with the same species as the plate come
+first, ensuring that the plate has species closely packed.  We&#39;re going
+to assume that if the well has multiple samples in it, then any of those
+species is a good choice.  Ordering is maintained within plexes, that is,
+appropriate plexes bubble to the top but maintain their relative ordering;
+this means filters that apply an ordering can be used before this.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -120,28 +136,6 @@
   <span class="summary_signature">
     
       <a href="#call-instance_method" title="#call (instance method)">#<strong>call</strong>(plexes, current_plate)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#species_for_plex-instance_method" title="#species_for_plex (instance method)">#<strong>species_for_plex</strong>(plex)  &#x21d2; Object </a>
     
 
     
@@ -223,44 +217,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="species_for_plex-instance_method">
-  
-    #<strong>species_for_plex</strong>(plex)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-76
-77
-78</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/strategy.rb', line 76</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_species_for_plex'>species_for_plex</span><span class='lparen'>(</span><span class='id identifier rubyid_plex'>plex</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_plex'>plex</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:species</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:22 2016 by
+  Generated on Mon Dec 19 11:17:08 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

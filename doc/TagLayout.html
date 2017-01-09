@@ -108,7 +108,25 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Lays out the tags in the specified tag group in a particular pattern.</p>
+
+<p>In pulldown they use only one set of tags and put them into wells in a
+particular pattern: by columns, or by rows.  Depending on the size of the
+tag group that is used by the layout template it either repeats (for
+example, 8 tags in the group laid out in columns would repeat the tags
+across the plate), or it doesn&#39;t (for example, a 96 tag group would
+occupy an entire 96 well plate).</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="TagLayout/ByPools.html" title="TagLayout::ByPools (class)">ByPools</a></span></p>
 </div>
@@ -116,7 +134,7 @@
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="TagLayout/InColumns.html" title="TagLayout::InColumns (module)">InColumns</a></span>, <span class='object_link'><a href="TagLayout/InInverseColumns.html" title="TagLayout::InInverseColumns (module)">InInverseColumns</a></span>, <span class='object_link'><a href="TagLayout/InInverseRows.html" title="TagLayout::InInverseRows (module)">InInverseRows</a></span>, <span class='object_link'><a href="TagLayout/InRows.html" title="TagLayout::InRows (module)">InRows</a></span>, <span class='object_link'><a href="TagLayout/WalkManualWellsByPools.html" title="TagLayout::WalkManualWellsByPools (module)">WalkManualWellsByPools</a></span>, <span class='object_link'><a href="TagLayout/WalkManualWellsOfPlate.html" title="TagLayout::WalkManualWellsOfPlate (module)">WalkManualWellsOfPlate</a></span>, <span class='object_link'><a href="TagLayout/WalkWellsByPools.html" title="TagLayout::WalkWellsByPools (module)">WalkWellsByPools</a></span>, <span class='object_link'><a href="TagLayout/WalkWellsOfPlate.html" title="TagLayout::WalkWellsOfPlate (module)">WalkWellsOfPlate</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="TagLayout/AsGroupByPlate.html" title="TagLayout::AsGroupByPlate (module)">AsGroupByPlate</a></span>, <span class='object_link'><a href="TagLayout/InColumns.html" title="TagLayout::InColumns (module)">InColumns</a></span>, <span class='object_link'><a href="TagLayout/InInverseColumns.html" title="TagLayout::InInverseColumns (module)">InInverseColumns</a></span>, <span class='object_link'><a href="TagLayout/InInverseRows.html" title="TagLayout::InInverseRows (module)">InInverseRows</a></span>, <span class='object_link'><a href="TagLayout/InRows.html" title="TagLayout::InRows (module)">InRows</a></span>, <span class='object_link'><a href="TagLayout/WalkManualWellsByPools.html" title="TagLayout::WalkManualWellsByPools (module)">WalkManualWellsByPools</a></span>, <span class='object_link'><a href="TagLayout/WalkManualWellsOfPlate.html" title="TagLayout::WalkManualWellsOfPlate (module)">WalkManualWellsOfPlate</a></span>, <span class='object_link'><a href="TagLayout/WalkWellsByPools.html" title="TagLayout::WalkWellsByPools (module)">WalkWellsByPools</a></span>, <span class='object_link'><a href="TagLayout/WalkWellsOfPlate.html" title="TagLayout::WalkWellsOfPlate (module)">WalkWellsOfPlate</a></span>
     
   
     
@@ -186,51 +204,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#layout_tags_into_wells-instance_method" title="#layout_tags_into_wells (instance method)">#<strong>layout_tags_into_wells</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#walking_by%3D-instance_method" title="#walking_by= (instance method)">#<strong>walking_by=</strong>(walk)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#wells_in_walking_order-instance_method" title="#wells_in_walking_order (instance method)">#<strong>wells_in_walking_order</strong>  &#x21d2; Object </a>
     
 
     
@@ -262,7 +236,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Asset/Ownership/ChangesOwner.html" title="Asset::Ownership::ChangesOwner (module)">Asset::Ownership::ChangesOwner</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Asset/Ownership/ChangesOwner.html#assign_owner-instance_method" title="Asset::Ownership::ChangesOwner#assign_owner (method)">#assign_owner</a></span>, <span class='object_link'><a href="Asset/Ownership/ChangesOwner.html#included-class_method" title="Asset::Ownership::ChangesOwner.included (method)">included</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Asset/Ownership/ChangesOwner.html#included-class_method" title="Asset::Ownership::ChangesOwner.included (method)">included</a></span></p>
 
   
   
@@ -274,7 +248,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -404,64 +378,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="layout_tags_into_wells-instance_method">
-  
-    #<strong>layout_tags_into_wells</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tag_layout.rb', line 84</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_layout_tags_into_wells'>layout_tags_into_wells</span>
-  <span class='comment'># Make sure that the substitutions requested by the user are handled before applying the tags
-</span>  <span class='comment'># to the wells.
-</span>
-  <span class='id identifier rubyid_tag_map_id_to_tag'>tag_map_id_to_tag</span> <span class='op'>=</span> <span class='const'>ActiveSupport</span><span class='op'>::</span><span class='const'>OrderedHash</span><span class='lbracket'>[</span><span class='id identifier rubyid_tag_group'>tag_group</span><span class='period'>.</span><span class='id identifier rubyid_tags'>tags</span><span class='period'>.</span><span class='id identifier rubyid_sort_by'>sort_by</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:map_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_tag'>tag</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_tag'>tag</span><span class='period'>.</span><span class='id identifier rubyid_map_id'>map_id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_tag'>tag</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_tags'>tags</span>              <span class='op'>=</span> <span class='id identifier rubyid_tag_map_id_to_tag'>tag_map_id_to_tag</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_tag'>tag</span><span class='op'>|</span> <span class='id identifier rubyid_substitutions'>substitutions</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_tag_map_id_to_tag'>tag_map_id_to_tag</span><span class='lbracket'>[</span><span class='id identifier rubyid_substitutions'>substitutions</span><span class='lbracket'>[</span><span class='id identifier rubyid_k'>k</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='id identifier rubyid_tag'>tag</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_walk_wells'>walk_wells</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_index'>index</span><span class='op'>|</span>
-    <span class='id identifier rubyid_tags'>tags</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_index'>index</span> <span class='op'>+</span> <span class='id identifier rubyid_initial_tag'>initial_tag</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='id identifier rubyid_tags'>tags</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_tag!'>tag!</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='kw'>end</span>
-
-  <span class='comment'># We can now check that the pools do not contain duplicate tags.
-</span>  <span class='id identifier rubyid_pool_to_tag'>pool_to_tag</span> <span class='op'>=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='comma'>,</span> <span class='id identifier rubyid_k'>k</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_k'>k</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_walk_in_pools'>walk_in_pools</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_pool_id'>pool_id</span><span class='comma'>,</span> <span class='id identifier rubyid_wells'>wells</span><span class='op'>|</span>
-    <span class='id identifier rubyid_pool_to_tag'>pool_to_tag</span><span class='lbracket'>[</span><span class='id identifier rubyid_pool_id'>pool_id</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='op'>|</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:tag</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:base</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>duplicate tags within a pool</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_pool_to_tag'>pool_to_tag</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span><span class='op'>|</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>&gt;</span> <span class='int'>1</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="walking_by=-instance_method">
   
     #<strong>walking_by=</strong>(walk)  &#x21d2; <tt>Object</tt> 
@@ -508,51 +424,23 @@
 69
 70
 71
-72</pre>
+72
+73</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/tag_layout.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_walking_by='>walking_by=</span><span class='lparen'>(</span><span class='id identifier rubyid_walk'>walk</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_walking_algorithm'>walking_algorithm</span> <span class='op'>=</span> <span class='lbrace'>{</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wells in pools</span><span class='tstring_end'>&#39;</span></span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkWellsByPools</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wells of plate</span><span class='tstring_end'>&#39;</span></span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkWellsOfPlate</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>manual by pool</span><span class='tstring_end'>&#39;</span></span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkManualWellsByPools</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>manual by plate</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkManualWellsOfPlate</span><span class='tstring_end'>&#39;</span></span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wells in pools</span><span class='tstring_end'>&#39;</span></span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkWellsByPools</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wells of plate</span><span class='tstring_end'>&#39;</span></span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkWellsOfPlate</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>manual by pool</span><span class='tstring_end'>&#39;</span></span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkManualWellsByPools</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>as group by plate</span><span class='tstring_end'>&#39;</span></span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::AsGroupByPlate</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>manual by plate</span><span class='tstring_end'>&#39;</span></span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TagLayout::WalkManualWellsOfPlate</span><span class='tstring_end'>&#39;</span></span>
   <span class='rbrace'>}</span><span class='lbracket'>[</span><span class='id identifier rubyid_walk'>walk</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:base</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_walk'>walk</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a recognised walking method</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_walking_algorithm'>walking_algorithm</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>RecordInvalid</span><span class='comma'>,</span> <span class='kw'>self</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_walking_algorithm'>walking_algorithm</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_extend'>extend</span><span class='lparen'>(</span><span class='id identifier rubyid_walking_algorithm'>walking_algorithm</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="wells_in_walking_order-instance_method">
-  
-    #<strong>wells_in_walking_order</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-75
-76
-77</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tag_layout.rb', line 75</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_wells_in_walking_order'>wells_in_walking_order</span>
-  <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:in_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_direction'>direction</span><span class='period'>.</span><span class='id identifier rubyid_tr'>tr</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>_</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>_major_order</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -564,9 +452,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:04 2016 by
+  Generated on Mon Dec 19 11:16:50 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

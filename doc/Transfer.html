@@ -108,7 +108,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="Transfer/BetweenPlateAndTubes.html" title="Transfer::BetweenPlateAndTubes (class)">BetweenPlateAndTubes</a></span>, <span class='object_link'><a href="Transfer/BetweenPlates.html" title="Transfer::BetweenPlates (class)">BetweenPlates</a></span>, <span class='object_link'><a href="Transfer/BetweenPlatesBySubmission.html" title="Transfer::BetweenPlatesBySubmission (class)">BetweenPlatesBySubmission</a></span>, <span class='object_link'><a href="Transfer/BetweenSpecificTubes.html" title="Transfer::BetweenSpecificTubes (class)">BetweenSpecificTubes</a></span>, <span class='object_link'><a href="Transfer/BetweenTubesBySubmission.html" title="Transfer::BetweenTubesBySubmission (class)">BetweenTubesBySubmission</a></span>, <span class='object_link'><a href="Transfer/FromPlateToTube.html" title="Transfer::FromPlateToTube (class)">FromPlateToTube</a></span></p>
 </div>
@@ -163,59 +177,6 @@
       
     </ul>
   
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#create_transfer_requests-instance_method" title="#create_transfer_requests (instance method)">#<strong>create_transfer_requests</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#should_well_not_be_transferred%3F-instance_method" title="#should_well_not_be_transferred? (instance method)">#<strong>should_well_not_be_transferred?</strong>(well)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
 
 
   
@@ -227,7 +188,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -271,6 +232,7 @@
       <pre class="lines">
 
 
+194
 195
 196
 197
@@ -278,11 +240,10 @@
 199
 200
 201
-202
-203</pre>
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 194</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_preview!'>preview!</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_transfer'>transfer</span><span class='op'>|</span>
@@ -300,116 +261,12 @@
     
   </div>
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="create_transfer_requests-instance_method">
-  
-    #<strong>create_transfer_requests</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-182
-183
-184
-185
-186
-187
-188
-189
-190
-191
-192</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 182</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_create_transfer_requests'>create_transfer_requests</span>
-  <span class='comment'># Note: submission is optional. Unlike methods, blocks don&#39;t support default argument
-</span>  <span class='comment'># values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
-</span>  <span class='id identifier rubyid_each_transfer'>each_transfer</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_destination'>destination</span><span class='comma'>,</span> <span class='id identifier rubyid_submission'>submission</span><span class='op'>|</span>
-    <span class='id identifier rubyid_request_type_between'>request_type_between</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_destination'>destination</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span>
-      <span class='label'>asset:</span> <span class='id identifier rubyid_source'>source</span><span class='comma'>,</span>
-      <span class='label'>target_asset:</span> <span class='id identifier rubyid_destination'>destination</span><span class='comma'>,</span>
-      <span class='label'>submission_id:</span> <span class='id identifier rubyid_submission'>submission</span> <span class='op'>||</span> <span class='id identifier rubyid_source'>source</span><span class='period'>.</span><span class='id identifier rubyid_pool_id'>pool_id</span>
-    <span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="should_well_not_be_transferred?-instance_method">
-  
-    #<strong>should_well_not_be_transferred?</strong>(well)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-206
-207
-208</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer.rb', line 206</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_should_well_not_be_transferred?'>should_well_not_be_transferred?</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='kw'>or</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='kw'>or</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_failed?'>failed?</span> <span class='kw'>or</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_cancelled?'>cancelled?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:01 2016 by
+  Generated on Mon Dec 19 11:16:47 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -111,7 +111,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aall-instance_method" title="#:all (instance method)">#<strong>:all</strong>  &#x21d2; Object </a>
+      <a href="#all-instance_method" title="#all (instance method)">#<strong>all</strong>  &#x21d2; Object </a>
     
 
     
@@ -131,7 +131,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :all.</p>
+<p>Returns the value of attribute all.</p>
 </div></span>
   
 </li>
@@ -274,19 +274,19 @@
       <pre class="lines">
 
 
+61
+62
+63
 64
 65
 66
 67
 68
 69
-70
-71
-72
-73</pre>
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_columns'>columns</span><span class='comma'>,</span> <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='comma'>,</span> <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='rparen'>)</span>
   <span class='ivar'>@all</span> <span class='op'>=</span> <span class='const'>ColumnList</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_columns'>columns</span><span class='comma'>,</span> <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
@@ -311,9 +311,9 @@
       
       <span id=""></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":all-instance_method">
+  <h3 class="signature first" id="all-instance_method">
   
-    #<strong>:all</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>all</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -322,7 +322,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :all</p>
+<p>Returns the value of attribute all</p>
 
 
   </div>
@@ -336,16 +336,16 @@
       <pre class="lines">
 
 
-62
-63
-64</pre>
+59
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 59</span>
 
-def :all
-  @:all
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_all'>all</span>
+  <span class='ivar'>@all</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -373,13 +373,13 @@ end</pre>
       <pre class="lines">
 
 
-84
-85
-86
-87</pre>
+80
+81
+82
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 80</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
@@ -405,12 +405,12 @@ end</pre>
       <pre class="lines">
 
 
-79
-80
-81</pre>
+76
+77
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span>
@@ -435,12 +435,12 @@ end</pre>
       <pre class="lines">
 
 
-75
-76
-77</pre>
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/configuration.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manifest_types'>manifest_types</span>
   <span class='ivar'>@manifest_types</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -455,9 +455,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:56 2016 by
+  Generated on Mon Dec 19 11:17:36 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

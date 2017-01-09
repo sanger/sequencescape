@@ -122,7 +122,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Currently only plates can be owned.</p>
+</div></span>
   
 </li>
 
@@ -176,12 +178,26 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Currently only plates can be owned.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+39
+40
+41
 42
 43
 44
@@ -189,19 +205,13 @@
 46
 47
 48
-49
-50
-51
-52
-53
-54</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset/ownership.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'app/models/asset/ownership.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
-
     <span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:plate_owner</span>
     <span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:owner</span><span class='comma'>,</span> <span class='label'>source:</span> <span class='symbol'>:user</span><span class='comma'>,</span> <span class='label'>through:</span> <span class='symbol'>:plate_owner</span>
 
@@ -209,7 +219,6 @@
         <span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='symbol'>:plate_owner</span><span class='rparen'>)</span><span class='period'>.</span>
         <span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>plate_owners:</span> <span class='lbrace'>{</span> <span class='label'>user_id:</span> <span class='id identifier rubyid_user'>user</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
       <span class='rbrace'>}</span>
-
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -238,16 +247,16 @@
       <pre class="lines">
 
 
+51
+52
+53
+54
+55
 56
-57
-58
-59
-60
-61
-62</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/asset/ownership.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'app/models/asset/ownership.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_change_owner_to'>change_owner_to</span><span class='lparen'>(</span><span class='id identifier rubyid_owner'>owner</span><span class='comma'>,</span> <span class='id identifier rubyid_source_event'>source_event</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_plate_owner'>plate_owner</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -266,9 +275,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:33 2016 by
+  Generated on Mon Dec 19 11:16:26 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

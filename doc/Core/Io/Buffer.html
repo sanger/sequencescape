@@ -101,7 +101,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -141,29 +155,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#force_flush-instance_method" title="#force_flush (instance method)">#<strong>force_flush</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(stream) {|(self)| ... } &#x21d2; Buffer </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(stream) {|_self| ... } &#x21d2; Buffer </a>
     
 
     
@@ -217,7 +209,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(stream) {|(self)| ... } &#x21d2; <tt><span class='object_link'><a href="" title="Core::Io::Buffer (class)">Buffer</a></span></tt> 
+    #<strong>initialize</strong>(stream) {|_self| ... } &#x21d2; <tt><span class='object_link'><a href="" title="Core::Io::Buffer (class)">Buffer</a></span></tt> 
   
 
   
@@ -239,9 +231,29 @@
     <li>
       
       
-        <span class='type'>(<tt>(self)</tt>)</span>
+        <span class='type'>(<tt>_self</tt>)</span>
       
       
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Yield Parameters:</p>
+<ul class="yieldparam">
+  
+    <li>
+      
+        <span class='name'>_self</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Core::Io::Buffer (class)">Core::Io::Buffer</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the object that the method was called on</p>
+</div>
       
     </li>
   
@@ -314,38 +326,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="force_flush-instance_method">
-  
-    #<strong>force_flush</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-25
-26
-27
-28</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/io/buffer.rb', line 25</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_force_flush'>force_flush</span>
-  <span class='ivar'>@stream</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='ivar'>@buffer</span><span class='period'>.</span><span class='id identifier rubyid_string'>string</span><span class='rparen'>)</span>
-  <span class='ivar'>@buffer</span><span class='period'>.</span><span class='id identifier rubyid_reopen'>reopen</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="write-instance_method">
   
     #<strong>write</strong>(value)  &#x21d2; <tt>Object</tt> 
@@ -382,9 +362,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:04 2016 by
+  Generated on Mon Dec 19 11:16:52 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

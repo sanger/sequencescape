@@ -270,7 +270,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aapproval-instance_method" title="#:approval (instance method)">#<strong>:approval</strong>  &#x21d2; Object </a>
+      <a href="#approval-instance_method" title="#approval (instance method)">#<strong>approval</strong>  &#x21d2; Object </a>
     
 
     
@@ -288,7 +288,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :approval.</p>
+<p>Returns the value of attribute approval.</p>
 </div></span>
   
 </li>
@@ -297,7 +297,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Arun_count-instance_method" title="#:run_count (instance method)">#<strong>:run_count</strong>  &#x21d2; Object </a>
+      <a href="#run_count-instance_method" title="#run_count (instance method)">#<strong>run_count</strong>  &#x21d2; Object </a>
     
 
     
@@ -315,7 +315,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :run_count.</p>
+<p>Returns the value of attribute run_count.</p>
 </div></span>
   
 </li>
@@ -324,7 +324,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Atotal_price-instance_method" title="#:total_price (instance method)">#<strong>:total_price</strong>  &#x21d2; Object </a>
+      <a href="#total_price-instance_method" title="#total_price (instance method)">#<strong>total_price</strong>  &#x21d2; Object </a>
     
 
     
@@ -342,7 +342,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :total_price.</p>
+<p>Returns the value of attribute total_price.</p>
 </div></span>
   
 </li>
@@ -452,7 +452,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#asset_progress-instance_method" title="#asset_progress (instance method)">#<strong>asset_progress</strong>(assets = nil) {|(self.initial_requests.asset_statistics(wheres))| ... } &#x21d2; Object </a>
+      <a href="#asset_progress-instance_method" title="#asset_progress (instance method)">#<strong>asset_progress</strong>(assets = nil) {|self.initial_requests.asset_statistics(wheres)| ... } &#x21d2; Object </a>
     
 
     
@@ -466,7 +466,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Yields information on the state of all assets in a convenient fashion for
+displaying in a table.</p>
+</div></span>
   
 </li>
 
@@ -752,7 +755,12 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the study owner (user) if exists or nil TODO - Should be “owners”
+and return all owners or empty array - done TODO - Look into this is the
+person that created it really the owner? If so, then an owner should be
+created when a study is created.</p>
+</div></span>
   
 </li>
 
@@ -782,7 +790,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#request_progress-instance_method" title="#request_progress (instance method)">#<strong>request_progress</strong> {|(self.initial_requests.progress_statistics)| ... } &#x21d2; Object </a>
+      <a href="#request_progress-instance_method" title="#request_progress (instance method)">#<strong>request_progress</strong> {|self.initial_requests.progress_statistics| ... } &#x21d2; Object </a>
     
 
     
@@ -796,7 +804,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Yields information on the state of all request types in a convenient
+fashion for displaying in a table.</p>
+</div></span>
   
 </li>
 
@@ -818,29 +829,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#set_default_ethical_approval-instance_method" title="#set_default_ethical_approval (instance method)">#<strong>set_default_ethical_approval</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Yields information on the state of all samples in a convenient fashion for
+displaying in a table.</p>
+</div></span>
   
 </li>
 
@@ -862,7 +854,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Used by EventfulMailer.</p>
+</div></span>
   
 </li>
 
@@ -936,7 +930,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#unprocessed_submissions%3F-instance_method" title="#unprocessed_submissions? (instance method)">#<strong>unprocessed_submissions?</strong>  &#x21d2; Boolean </a>
+      <a href="#text_comments-instance_method" title="#text_comments (instance method)">#<strong>text_comments</strong>  &#x21d2; Object </a>
     
 
     
@@ -958,7 +952,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#valid_ethically_approved%3F-instance_method" title="#valid_ethically_approved? (instance method)">#<strong>valid_ethically_approved?</strong>  &#x21d2; Boolean </a>
+      <a href="#unprocessed_submissions%3F-instance_method" title="#unprocessed_submissions? (instance method)">#<strong>unprocessed_submissions?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -1038,7 +1032,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>We only need to validate the field if we are enforcing data release.</p>
+</div></span>
   
 </li>
 
@@ -1078,7 +1074,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Metadata.html" title="Metadata (module)">Metadata</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Metadata.html#build_association-instance_method" title="Metadata#build_association (method)">build_association</a></span>, <span class='object_link'><a href="Metadata.html#construct_metadata_class-instance_method" title="Metadata#construct_metadata_class (method)">construct_metadata_class</a></span>, <span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#include_tag-instance_method" title="Metadata#include_tag (method)">include_tag</a></span>, <span class='object_link'><a href="Metadata.html#require_tag-instance_method" title="Metadata#require_tag (method)">require_tag</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
 
   
   
@@ -1190,7 +1186,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -1213,7 +1209,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="StudyReport/StudyDetails.html" title="StudyReport::StudyDetails (module)">StudyReport::StudyDetails</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="StudyReport/StudyDetails.html#each_stock_well_id_in_study_in_batches-instance_method" title="StudyReport::StudyDetails#each_stock_well_id_in_study_in_batches (method)">#each_stock_well_id_in_study_in_batches</a></span>, <span class='object_link'><a href="StudyReport/StudyDetails.html#handle_wells-instance_method" title="StudyReport::StudyDetails#handle_wells (method)">#handle_wells</a></span>, <span class='object_link'><a href="StudyReport/StudyDetails.html#progress_report_header-instance_method" title="StudyReport::StudyDetails#progress_report_header (method)">#progress_report_header</a></span>, <span class='object_link'><a href="StudyReport/StudyDetails.html#progress_report_on_all_assets-instance_method" title="StudyReport::StudyDetails#progress_report_on_all_assets (method)">#progress_report_on_all_assets</a></span>, <span class='object_link'><a href="StudyReport/StudyDetails.html#well_batch_from-instance_method" title="StudyReport::StudyDetails#well_batch_from (method)">#well_batch_from</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="StudyReport/StudyDetails.html#each_stock_well_id_in_study_in_batches-instance_method" title="StudyReport::StudyDetails#each_stock_well_id_in_study_in_batches (method)">#each_stock_well_id_in_study_in_batches</a></span>, <span class='object_link'><a href="StudyReport/StudyDetails.html#progress_report_header-instance_method" title="StudyReport::StudyDetails#progress_report_header (method)">#progress_report_header</a></span>, <span class='object_link'><a href="StudyReport/StudyDetails.html#progress_report_on_all_assets-instance_method" title="StudyReport::StudyDetails#progress_report_on_all_assets (method)">#progress_report_on_all_assets</a></span></p>
 
   
   
@@ -1241,11 +1237,11 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id=":approval=-instance_method"></span>
+      <span id="approval=-instance_method"></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":approval-instance_method">
+  <h3 class="signature first" id="approval-instance_method">
   
-    #<strong>:approval</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>approval</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1254,7 +1250,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :approval</p>
+<p>Returns the value of attribute approval</p>
 
 
   </div>
@@ -1268,27 +1264,27 @@
       <pre class="lines">
 
 
-56
-57
-58</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 52</span>
 
-def :approval
-  @:approval
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_approval'>approval</span>
+  <span class='ivar'>@approval</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
 </div>
     
       
-      <span id=":run_count=-instance_method"></span>
+      <span id="run_count=-instance_method"></span>
       <div class="method_details ">
-  <h3 class="signature " id=":run_count-instance_method">
+  <h3 class="signature " id="run_count-instance_method">
   
-    #<strong>:run_count</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>run_count</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1297,7 +1293,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :run_count</p>
+<p>Returns the value of attribute run_count</p>
 
 
   </div>
@@ -1311,27 +1307,27 @@ end</pre>
       <pre class="lines">
 
 
-57
-58
-59</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 53</span>
 
-def :run_count
-  @:run_count
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_run_count'>run_count</span>
+  <span class='ivar'>@run_count</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
 </div>
     
       
-      <span id=":total_price=-instance_method"></span>
+      <span id="total_price=-instance_method"></span>
       <div class="method_details ">
-  <h3 class="signature " id=":total_price-instance_method">
+  <h3 class="signature " id="total_price-instance_method">
   
-    #<strong>:total_price</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>total_price</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1340,7 +1336,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :total_price</p>
+<p>Returns the value of attribute total_price</p>
 
 
   </div>
@@ -1354,16 +1350,16 @@ end</pre>
       <pre class="lines">
 
 
-58
-59
-60</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 54</span>
 
-def :total_price
-  @:total_price
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_total_price'>total_price</span>
+  <span class='ivar'>@total_price</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1555,7 +1551,7 @@ end</pre>
       <div class="method_details ">
   <h3 class="signature " id="asset_progress-instance_method">
   
-    #<strong>asset_progress</strong>(assets = nil) {|(self.initial_requests.asset_statistics(wheres))| ... } &#x21d2; <tt>Object</tt> 
+    #<strong>asset_progress</strong>(assets = nil) {|self.initial_requests.asset_statistics(wheres)| ... } &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1564,6 +1560,9 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Yields information on the state of all assets in a convenient fashion for
+displaying in a table.</p>
+
 
   </div>
 </div>
@@ -1575,7 +1574,7 @@ end</pre>
     <li>
       
       
-        <span class='type'>(<tt>(self.initial_requests.asset_statistics(wheres))</tt>)</span>
+        <span class='type'>(<tt>self.initial_requests.asset_statistics(wheres)</tt>)</span>
       
       
       
@@ -1589,14 +1588,14 @@ end</pre>
       <pre class="lines">
 
 
-438
-439
 440
 441
-442</pre>
+442
+443
+444</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 438</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 440</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_asset_progress'>asset_progress</span><span class='lparen'>(</span><span class='id identifier rubyid_assets'>assets</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_wheres'>wheres</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -1623,8 +1622,6 @@ end</pre>
       <pre class="lines">
 
 
-415
-416
 417
 418
 419
@@ -1634,10 +1631,12 @@ end</pre>
 423
 424
 425
-426</pre>
+426
+427
+428</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 415</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 417</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_completed'>completed</span><span class='lparen'>(</span><span class='id identifier rubyid_workflow'>workflow</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_rts'>rts</span> <span class='op'>=</span> <span class='id identifier rubyid_workflow'>workflow</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span> <span class='op'>?</span> <span class='id identifier rubyid_workflow'>workflow</span><span class='period'>.</span><span class='id identifier rubyid_request_types'>request_types</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:id</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:id</span><span class='rparen'>)</span>
@@ -1701,12 +1700,12 @@ end</pre>
       <pre class="lines">
 
 
-457
-458
-459</pre>
+459
+460
+461</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 457</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 459</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_dac_refname'>dac_refname</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>DAC for study - </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> - #</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -1791,18 +1790,18 @@ end</pre>
       <pre class="lines">
 
 
+150
+151
+152
+153
 154
 155
 156
 157
-158
-159
-160
-161
-162</pre>
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 154</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 150</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each_well_for_qc_report_in_batches'>each_well_for_qc_report_in_batches</span><span class='lparen'>(</span><span class='id identifier rubyid_exclude_existing'>exclude_existing</span><span class='comma'>,</span> <span class='id identifier rubyid_product_criteria'>product_criteria</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base_scope'>base_scope</span> <span class='op'>=</span> <span class='const'>Well</span><span class='period'>.</span><span class='id identifier rubyid_on_plate_purpose'>on_plate_purpose</span><span class='lparen'>(</span><span class='const'>PlatePurpose</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='const'>STOCK_PLATE_PURPOSES</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span>
@@ -1919,12 +1918,12 @@ end</pre>
       <pre class="lines">
 
 
-480
-481
-482</pre>
+482
+483
+484</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 480</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 482</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_locale'>locale</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_funding_source'>funding_source</span>
@@ -1983,17 +1982,17 @@ end</pre>
       <pre class="lines">
 
 
+407
+408
 409
 410
-411
-412
-413</pre>
+411</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 409</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 407</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mark_active'>mark_active</span>
-  <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_active?'>active?</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_active?'>active?</span>
     <span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Study activation failed! </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='rbrace'>}</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -2017,17 +2016,17 @@ end</pre>
       <pre class="lines">
 
 
+401
+402
 403
 404
-405
-406
-407</pre>
+405</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 403</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 401</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mark_deactive'>mark_deactive</span>
-  <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_inactive?'>inactive?</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_inactive?'>inactive?</span>
     <span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Study deactivation failed! </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='rbrace'>}</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -2045,18 +2044,32 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the study owner (user) if exists or nil TODO - Should be “owners”
+and return all owners or empty array - done TODO - Look into this is the
+person that created it really the owner? If so, then an owner should be
+created when a study is created.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-476
-477
-478</pre>
+478
+479
+480</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 476</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 478</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_owner'>owner</span>
   <span class='id identifier rubyid_owners'>owners</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
@@ -2099,7 +2112,7 @@ end</pre>
       <div class="method_details ">
   <h3 class="signature " id="request_progress-instance_method">
   
-    #<strong>request_progress</strong> {|(self.initial_requests.progress_statistics)| ... } &#x21d2; <tt>Object</tt> 
+    #<strong>request_progress</strong> {|self.initial_requests.progress_statistics| ... } &#x21d2; <tt>Object</tt> 
   
 
   
@@ -2108,6 +2121,9 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Yields information on the state of all request types in a convenient
+fashion for displaying in a table.</p>
+
 
   </div>
 </div>
@@ -2119,7 +2135,7 @@ end</pre>
     <li>
       
       
-        <span class='type'>(<tt>(self.initial_requests.progress_statistics)</tt>)</span>
+        <span class='type'>(<tt>self.initial_requests.progress_statistics</tt>)</span>
       
       
       
@@ -2133,12 +2149,12 @@ end</pre>
       <pre class="lines">
 
 
-433
-434
-435</pre>
+435
+436
+437</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 433</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 435</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_progress'>request_progress</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>yield</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_initial_requests'>initial_requests</span><span class='period'>.</span><span class='id identifier rubyid_progress_statistics'>progress_statistics</span><span class='rparen'>)</span>
@@ -2157,22 +2173,34 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Yields information on the state of all samples in a convenient fashion for
+displaying in a table.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-445
-446
 447
 448
 449
 450
-451</pre>
+451
+452
+453</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 445</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 447</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sample_progress'>sample_progress</span><span class='lparen'>(</span><span class='id identifier rubyid_samples'>samples</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_samples'>samples</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
@@ -2180,38 +2208,6 @@ end</pre>
   <span class='kw'>else</span>
     <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>aliquots:</span> <span class='lbrace'>{</span> <span class='label'>sample_id:</span> <span class='id identifier rubyid_samples'>samples</span><span class='period'>.</span><span class='id identifier rubyid_pluck'>pluck</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_sample_statistics_new'>sample_statistics_new</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="set_default_ethical_approval-instance_method">
-  
-    #<strong>set_default_ethical_approval</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-125
-126
-127
-128</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 125</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_set_default_ethical_approval'>set_default_ethical_approval</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_ethically_approved'>ethically_approved</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_ethical_approval_required?'>ethical_approval_required?</span> <span class='op'>?</span> <span class='kw'>false</span> <span class='op'>:</span> <span class='kw'>nil</span>
-  <span class='kw'>true</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2227,18 +2223,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Used by EventfulMailer</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-467
-468
-469</pre>
+469
+470
+471</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 467</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 469</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_study'>study</span>
   <span class='kw'>self</span>
@@ -2263,12 +2270,12 @@ end</pre>
       <pre class="lines">
 
 
-453
-454
-455</pre>
+455
+456
+457</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 453</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 455</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_study_status'>study_status</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_inactive?'>inactive?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>closed</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>open</span><span class='tstring_end'>&quot;</span></span>
@@ -2323,15 +2330,45 @@ end</pre>
       <pre class="lines">
 
 
-428
-429
-430</pre>
+430
+431
+432</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 428</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 430</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submissions_for_workflow'>submissions_for_workflow</span><span class='lparen'>(</span><span class='id identifier rubyid_workflow'>workflow</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_orders'>orders</span><span class='period'>.</span><span class='id identifier rubyid_for_workflow'>for_workflow</span><span class='lparen'>(</span><span class='id identifier rubyid_workflow'>workflow</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_include_for_study_view'>include_for_study_view</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:submission</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="text_comments-instance_method">
+  
+    #<strong>text_comments</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+413
+414
+415</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 413</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_text_comments'>text_comments</span>
+  <span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_c'>c</span><span class='op'>|</span> <span class='id identifier rubyid_c'>c</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span> <span class='kw'>unless</span> <span class='id identifier rubyid_c'>c</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2375,69 +2412,17 @@ end</pre>
       <pre class="lines">
 
 
-461
-462
 463
-464</pre>
+464
+465
+466</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 461</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 463</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unprocessed_submissions?'>unprocessed_submissions?</span>
   <span class='comment'># TODO[mb14] optimize if needed
 </span>  <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_orders'>orders</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_o'>o</span><span class='op'>|</span> <span class='id identifier rubyid_o'>o</span><span class='period'>.</span><span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_o'>o</span><span class='period'>.</span><span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_unprocessed?'>unprocessed?</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="valid_ethically_approved?-instance_method">
-  
-    #<strong>valid_ethically_approved?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-119
-120
-121</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 119</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_valid_ethically_approved?'>valid_ethically_approved?</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_ethical_approval_required?'>ethical_approval_required?</span> <span class='op'>?</span> <span class='op'>!</span><span class='id identifier rubyid_ethically_approved'>ethically_approved</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>:</span> <span class='id identifier rubyid_ethically_approved'>ethically_approved</span> <span class='op'>!=</span> <span class='kw'>false</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2495,15 +2480,15 @@ end</pre>
       <pre class="lines">
 
 
+108
+109
+110
+111
 112
-113
-114
-115
-116
-117</pre>
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validate_ethically_approved'>validate_ethically_approved</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_valid_ethically_approved?'>valid_ethically_approved?</span>
@@ -2525,21 +2510,32 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>We only need to validate the field if we are enforcing data release</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-391
-392
-393</pre>
+389
+390
+391</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 391</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 389</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validating_ena_required_fields_with_enforce_data_release='>validating_ena_required_fields_with_enforce_data_release=</span><span class='lparen'>(</span><span class='id identifier rubyid_state'>state</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_validating_ena_required_fields_without_enforce_data_release'>validating_ena_required_fields_without_enforce_data_release</span> <span class='op'>=</span> <span class='id identifier rubyid_state'>state</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_enforce_data_release'>enforce_data_release</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_validating_ena_required_fields_without_enforce_data_release'>validating_ena_required_fields_without_enforce_data_release</span> <span class='op'>=</span> <span class='id identifier rubyid_state'>state</span> <span class='kw'>if</span> <span class='id identifier rubyid_enforce_data_release'>enforce_data_release</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2561,15 +2557,15 @@ end</pre>
       <pre class="lines">
 
 
+394
+395
 396
 397
 398
-399
-400
-401</pre>
+399</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 396</span>
+      <pre class="code"><span class="info file"># File 'app/models/study.rb', line 394</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_warnings'>warnings</span>
   <span class='comment'># These studies are now invalid, but the warning should remain until existing studies are fixed.
@@ -2587,9 +2583,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:57 2016 by
+  Generated on Mon Dec 19 11:16:42 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

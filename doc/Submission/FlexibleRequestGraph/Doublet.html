@@ -103,7 +103,22 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A doublet couples a source asset to a particular qc metric. This allows us
+to pass the qc_metric downstream, without relying on maintaining assets at
+each step. This is important as not only to some requests generate their
+assets on the fly, but we&#39;d need to make sure that we had all
+appropriate well links and asset links in place.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -220,12 +235,12 @@
       <pre class="lines">
 
 
+14
 15
-16
-17</pre>
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_asset'>asset</span>
   <span class='ivar'>@asset</span>
@@ -281,12 +296,12 @@
       <pre class="lines">
 
 
+14
 15
-16
-17</pre>
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'app/models/submission/flexible_request_graph.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc_metric'>qc_metric</span>
   <span class='ivar'>@qc_metric</span>
@@ -302,9 +317,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:47 2016 by
+  Generated on Mon Dec 19 11:17:29 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

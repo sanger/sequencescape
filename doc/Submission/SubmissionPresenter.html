@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -135,7 +149,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Deleting a Submission should also delete all associated Orders.</p>
+</div></span>
   
 </li>
 
@@ -241,7 +257,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="PresenterSkeleton.html" title="Submission::PresenterSkeleton (class)">PresenterSkeleton</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="PresenterSkeleton.html#cross_compatible%3F-instance_method" title="Submission::PresenterSkeleton#cross_compatible? (method)">#cross_compatible?</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#id-instance_method" title="Submission::PresenterSkeleton#id (method)">#id</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#id%3D-instance_method" title="Submission::PresenterSkeleton#id= (method)">#id=</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#initialize-instance_method" title="Submission::PresenterSkeleton#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#lanes_from_request_counting-instance_method" title="Submission::PresenterSkeleton#lanes_from_request_counting (method)">#lanes_from_request_counting</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#lanes_from_request_options-instance_method" title="Submission::PresenterSkeleton#lanes_from_request_options (method)">#lanes_from_request_options</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#lanes_of_sequencing-instance_method" title="Submission::PresenterSkeleton#lanes_of_sequencing (method)">#lanes_of_sequencing</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#method_missing-instance_method" title="Submission::PresenterSkeleton#method_missing (method)">#method_missing</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#order_projects-instance_method" title="Submission::PresenterSkeleton#order_projects (method)">#order_projects</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#order_studies-instance_method" title="Submission::PresenterSkeleton#order_studies (method)">#order_studies</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="PresenterSkeleton.html#cross_compatible%3F-instance_method" title="Submission::PresenterSkeleton#cross_compatible? (method)">#cross_compatible?</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#each_submission_warning-instance_method" title="Submission::PresenterSkeleton#each_submission_warning (method)">#each_submission_warning</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#id-instance_method" title="Submission::PresenterSkeleton#id (method)">#id</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#id%3D-instance_method" title="Submission::PresenterSkeleton#id= (method)">#id=</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#initialize-instance_method" title="Submission::PresenterSkeleton#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#lanes_of_sequencing-instance_method" title="Submission::PresenterSkeleton#lanes_of_sequencing (method)">#lanes_of_sequencing</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#order_projects-instance_method" title="Submission::PresenterSkeleton#order_projects (method)">#order_projects</a></span>, <span class='object_link'><a href="PresenterSkeleton.html#order_studies-instance_method" title="Submission::PresenterSkeleton#order_studies (method)">#order_studies</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -253,7 +269,7 @@
   <p class="notice super">
     This class handles dynamic methods through the <tt>method_missing</tt> method
     
-      in the class <span class='object_link'><a href="PresenterSkeleton.html#method_missing-instance_method" title="Submission::PresenterSkeleton#method_missing (method)">Submission::PresenterSkeleton</a></span>
+      in the class <span class='object_link'>Submission::PresenterSkeleton</span>
     
   </p>
   
@@ -273,7 +289,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Deleting a Submission should also delete all associated Orders.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -409,7 +436,7 @@
       <pre class="code"><span class="info file"># File 'app/models/submission/submission_presenter.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_template_name'>template_name</span>
-  <span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_orders'>orders</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_template_name'>template_name</span>
+  <span class='id identifier rubyid_order'>order</span><span class='period'>.</span><span class='id identifier rubyid_template_name'>template_name</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -421,9 +448,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:44 2016 by
+  Generated on Mon Dec 19 11:17:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

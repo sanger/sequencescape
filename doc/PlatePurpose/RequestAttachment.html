@@ -78,7 +78,7 @@
   
   <dl>
     <dt>Included in:</dt>
-    <dd><span class='object_link'><a href="../IlluminaC/LibPcrXpPurpose.html" title="IlluminaC::LibPcrXpPurpose (class)">IlluminaC::LibPcrXpPurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/LibraryCompleteOnQcPurpose.html" title="IlluminaHtp::LibraryCompleteOnQcPurpose (class)">IlluminaHtp::LibraryCompleteOnQcPurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/NormalizedPlatePurpose.html" title="IlluminaHtp::NormalizedPlatePurpose (class)">IlluminaHtp::NormalizedPlatePurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/TransferablePlatePurpose.html" title="IlluminaHtp::TransferablePlatePurpose (class)">IlluminaHtp::TransferablePlatePurpose</a></span></dd>
+    <dd><span class='object_link'><a href="../IlluminaC/AlLibsTaggedPurpose.html" title="IlluminaC::AlLibsTaggedPurpose (class)">IlluminaC::AlLibsTaggedPurpose</a></span>, <span class='object_link'><a href="../IlluminaC/LibPcrXpPurpose.html" title="IlluminaC::LibPcrXpPurpose (class)">IlluminaC::LibPcrXpPurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/LibraryCompleteOnQcPurpose.html" title="IlluminaHtp::LibraryCompleteOnQcPurpose (class)">IlluminaHtp::LibraryCompleteOnQcPurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/NormalizedPlatePurpose.html" title="IlluminaHtp::NormalizedPlatePurpose (class)">IlluminaHtp::NormalizedPlatePurpose</a></span>, <span class='object_link'><a href="../IlluminaHtp/TransferablePlatePurpose.html" title="IlluminaHtp::TransferablePlatePurpose (class)">IlluminaHtp::TransferablePlatePurpose</a></span></dd>
   </dl>
   
 
@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -204,16 +218,16 @@
       <pre class="lines">
 
 
+48
+49
+50
+51
 52
 53
-54
-55
-56
-57
-58</pre>
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/request_attachment.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/request_attachment.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
@@ -248,6 +262,7 @@
       <pre class="lines">
 
 
+13
 14
 15
 16
@@ -280,14 +295,10 @@
 43
 44
 45
-46
-47
-48
-49
-50</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/request_attachment.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/request_attachment.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connect_requests'>connect_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_state'>state</span><span class='comma'>,</span> <span class='id identifier rubyid_contents'>contents</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_state'>state</span> <span class='op'>==</span> <span class='id identifier rubyid_connect_on'>connect_on</span>
@@ -296,12 +307,10 @@
   <span class='id identifier rubyid_wells'>wells</span> <span class='op'>=</span> <span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_located_at'>located_at</span><span class='lparen'>(</span><span class='id identifier rubyid_contents'>contents</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_contents'>contents</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
 
   <span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_include_stock_wells'>include_stock_wells</span><span class='period'>.</span><span class='id identifier rubyid_include_requests_as_target'>include_requests_as_target</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_target_well'>target_well</span><span class='op'>|</span>
-
     <span class='id identifier rubyid_source_wells'>source_wells</span> <span class='op'>=</span> <span class='id identifier rubyid_target_well'>target_well</span><span class='period'>.</span><span class='id identifier rubyid_stock_wells'>stock_wells</span>
     <span class='id identifier rubyid_submission_ids'>submission_ids</span> <span class='op'>=</span> <span class='id identifier rubyid_target_well'>target_well</span><span class='period'>.</span><span class='id identifier rubyid_requests_as_target'>requests_as_target</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:submission_id</span><span class='rparen'>)</span>
 
     <span class='id identifier rubyid_source_wells'>source_wells</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_source_well'>source_well</span><span class='op'>|</span>
-
       <span class='comment'># We may have multiple requests out of each well, however we&#39;re only concerned
 </span>      <span class='comment'># about those associated with the active submission.
 </span>      <span class='id identifier rubyid_upstream'>upstream</span> <span class='op'>=</span> <span class='id identifier rubyid_source_well'>source_well</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span>
@@ -322,7 +331,6 @@
 
       <span class='id identifier rubyid_upstream'>upstream</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>target_asset:</span> <span class='id identifier rubyid_target_well'>target_well</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_upstream'>upstream</span><span class='period'>.</span><span class='id identifier rubyid_pass!'>pass!</span>
-
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -346,13 +354,13 @@
       <pre class="lines">
 
 
+8
 9
 10
-11
-12</pre>
+11</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/request_attachment.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/request_attachment.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transition_to'>transition_to</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_state'>state</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='id identifier rubyid_contents'>contents</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_customer_accepts_responsibility'>customer_accepts_responsibility</span> <span class='op'>=</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='kw'>super</span>
@@ -368,9 +376,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:43 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

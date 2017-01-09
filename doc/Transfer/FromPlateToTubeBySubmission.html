@@ -107,7 +107,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>At the end of the pulldown pipeline the wells of the final plate are
+transferred, individually, into MX library tubes.  Each well is effectively
+a pool of the stock wells, once they&#39;ve been through the pipeline, so
+the mapping needs to be based on the original submissions.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
   <h2>Constant Summary</h2>
@@ -120,39 +134,6 @@
 
 
 
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#locate_mx_library_tube_for-instance_method" title="#locate_mx_library_tube_for (instance method)">#<strong>locate_mx_library_tube_for</strong>(well, stock_wells)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
-
 
   
   
@@ -160,10 +141,10 @@
   
   
   
-  
+  <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="BetweenPlateAndTubes.html" title="Transfer::BetweenPlateAndTubes (class)">BetweenPlateAndTubes</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="BetweenPlateAndTubes.html#barcode_to_hash-instance_method" title="Transfer::BetweenPlateAndTubes#barcode_to_hash (method)">#barcode_to_hash</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#build_asset_links-instance_method" title="Transfer::BetweenPlateAndTubes#build_asset_links (method)">#build_asset_links</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#build_well_to_tube_transfers-instance_method" title="Transfer::BetweenPlateAndTubes#build_well_to_tube_transfers (method)">#build_well_to_tube_transfers</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#record_transfer-instance_method" title="Transfer::BetweenPlateAndTubes#record_transfer (method)">#record_transfer</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#request_type_between-instance_method" title="Transfer::BetweenPlateAndTubes#request_type_between (method)">#request_type_between</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#transfers-instance_method" title="Transfer::BetweenPlateAndTubes#transfers (method)">#transfers</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#tube_name_for-instance_method" title="Transfer::BetweenPlateAndTubes#tube_name_for (method)">#tube_name_for</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#tube_to_hash-instance_method" title="Transfer::BetweenPlateAndTubes#tube_to_hash (method)">#tube_to_hash</a></span>, <span class='object_link'><a href="BetweenPlateAndTubes.html#well_to_destination-instance_method" title="Transfer::BetweenPlateAndTubes#well_to_destination (method)">#well_to_destination</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="BetweenPlateAndTubes.html#transfers-instance_method" title="Transfer::BetweenPlateAndTubes#transfers (method)">#transfers</a></span></p>
 
   
   
@@ -174,7 +155,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="ControlledDestinations.html" title="Transfer::ControlledDestinations (module)">ControlledDestinations</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="ControlledDestinations.html#each_transfer-instance_method" title="Transfer::ControlledDestinations#each_transfer (method)">#each_transfer</a></span>, <span class='object_link'><a href="ControlledDestinations.html#included-class_method" title="Transfer::ControlledDestinations.included (method)">included</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="ControlledDestinations.html#included-class_method" title="Transfer::ControlledDestinations.included (method)">included</a></span></p>
 
   
   
@@ -185,7 +166,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Transfer.html" title="Transfer (class)">Transfer</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Transfer.html#create_transfer_requests-instance_method" title="Transfer#create_transfer_requests (method)">#create_transfer_requests</a></span>, <span class='object_link'><a href="../Transfer.html#preview%21-class_method" title="Transfer.preview! (method)">preview!</a></span>, <span class='object_link'><a href="../Transfer.html#should_well_not_be_transferred%3F-instance_method" title="Transfer#should_well_not_be_transferred? (method)">#should_well_not_be_transferred?</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Transfer.html#preview%21-class_method" title="Transfer.preview! (method)">preview!</a></span></p>
 
   
   
@@ -196,7 +177,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -221,56 +202,12 @@
   <p class="inherited"><span class='object_link'><a href="../ApiTools.html#as_json-instance_method" title="ApiTools#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../ApiTools.html#for_api-instance_method" title="ApiTools#for_api (method)">#for_api</a></span>, <span class='object_link'><a href="../ApiTools.html#included-class_method" title="ApiTools.included (method)">included</a></span>, <span class='object_link'><a href="../ApiTools.html#list_json-instance_method" title="ApiTools#list_json (method)">#list_json</a></span>, <span class='object_link'><a href="../ApiTools.html#to_xml-instance_method" title="ApiTools#to_xml (method)">#to_xml</a></span>, <span class='object_link'><a href="../ApiTools.html#to_yaml-instance_method" title="ApiTools#to_yaml (method)">#to_yaml</a></span>, <span class='object_link'><a href="../ApiTools.html#url-instance_method" title="ApiTools#url (method)">#url</a></span>, <span class='object_link'><a href="../ApiTools.html#url_name-instance_method" title="ApiTools#url_name (method)">#url_name</a></span></p>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="locate_mx_library_tube_for-instance_method">
-  
-    #<strong>locate_mx_library_tube_for</strong>(well, stock_wells)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-14
-15
-16
-17
-18
-19
-20</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/transfer/from_plate_to_tube_by_submission.rb', line 14</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_locate_mx_library_tube_for'>locate_mx_library_tube_for</span><span class='lparen'>(</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_stock_wells'>stock_wells</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_stock_wells'>stock_wells</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='id identifier rubyid_current_submission'>current_submission</span> <span class='op'>=</span> <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_creation_request'>creation_request</span><span class='period'>.</span><span class='id identifier rubyid_submission_id'>submission_id</span>
-  <span class='id identifier rubyid_stock_wells'>stock_wells</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_requests_as_source'>requests_as_source</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
-    <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_submission_id'>submission_id</span> <span class='op'>==</span> <span class='id identifier rubyid_current_submission'>current_submission</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Tube</span><span class='rparen'>)</span>
-  <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:target_asset</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:52 2016 by
+  Generated on Mon Dec 19 11:17:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -173,6 +187,7 @@
       <pre class="lines">
 
 
+8
 9
 10
 11
@@ -276,12 +291,10 @@
 109
 110
 111
-112
-113
-114</pre>
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/set_descriptors_handler.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/set_descriptors_handler.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_do_set_descriptors_task'>do_set_descriptors_task</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='ivar'>@batch</span> <span class='op'>=</span> <span class='const'>Batch</span><span class='period'>.</span><span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='symbol'>:requests</span><span class='comma'>,</span> <span class='symbol'>:pipeline</span><span class='comma'>,</span> <span class='symbol'>:lab_events</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:batch_id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -331,11 +344,11 @@
               <span class='kw'>end</span>
             <span class='kw'>end</span>
 
-            <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:descriptors</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+            <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:descriptors</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
               <span class='comment'># Descriptors: create description for event
 </span>
-              <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_descriptors'>descriptors</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:descriptors</span><span class='rbracket'>]</span>
-              <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_descriptor_fields'>descriptor_fields</span> <span class='op'>=</span> <span class='id identifier rubyid_ordered_fields'>ordered_fields</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:fields</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+              <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_descriptors'>descriptors</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:descriptors</span><span class='rbracket'>]</span>
+              <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_descriptor_fields'>descriptor_fields</span> <span class='op'>=</span> <span class='id identifier rubyid_ordered_fields'>ordered_fields</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:requests</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:fields</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 
             <span class='kw'>end</span>
 
@@ -375,7 +388,6 @@
       <span class='kw'>end</span>
     <span class='kw'>end</span>
 
-
     <span class='kw'>if</span> <span class='id identifier rubyid_updated'>updated</span> <span class='op'>==</span> <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span>
       <span class='id identifier rubyid_eventify_batch'>eventify_batch</span> <span class='ivar'>@batch</span><span class='comma'>,</span> <span class='ivar'>@task</span>
       <span class='kw'>return</span> <span class='kw'>true</span>
@@ -409,6 +421,8 @@
       <pre class="lines">
 
 
+114
+115
 116
 117
 118
@@ -420,14 +434,10 @@
 124
 125
 126
-127
-128
-129
-130
-131</pre>
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/set_descriptors_handler.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/set_descriptors_handler.rb', line 114</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_render_set_descriptors_task'>render_set_descriptors_task</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='ivar'>@batch</span> <span class='op'>=</span> <span class='const'>Batch</span><span class='period'>.</span><span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='symbol'>:requests</span><span class='comma'>,</span> <span class='symbol'>:pipeline</span><span class='comma'>,</span> <span class='symbol'>:lab_events</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:batch_id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -442,8 +452,6 @@
   <span class='kw'>else</span>
     <span class='ivar'>@values</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:values</span><span class='rbracket'>]</span>
   <span class='kw'>end</span>
-
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -455,9 +463,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:41 2016 by
+  Generated on Mon Dec 19 11:16:31 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

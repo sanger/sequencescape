@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -117,28 +131,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#bait_library_supplier_params-instance_method" title="#bait_library_supplier_params (instance method)">#<strong>bait_library_supplier_params</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -166,28 +158,6 @@
   <span class="summary_signature">
     
       <a href="#destroy-instance_method" title="#destroy (instance method)">#<strong>destroy</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#discover_bait_library_supplier-instance_method" title="#discover_bait_library_supplier (instance method)">#<strong>discover_bait_library_supplier</strong>  &#x21d2; Object </a>
     
 
     
@@ -283,37 +253,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="bait_library_supplier_params-instance_method">
-  
-    #<strong>bait_library_supplier_params</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-61
-62
-63</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 61</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_bait_library_supplier_params'>bait_library_supplier_params</span>
-  <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_require'>require</span><span class='lparen'>(</span><span class='symbol'>:bait_library_supplier</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_permit'>permit</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="create-instance_method">
+  <h3 class="signature first" id="create-instance_method">
   
     #<strong>create</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -327,6 +267,7 @@
       <pre class="lines">
 
 
+18
 19
 20
 21
@@ -337,11 +278,10 @@
 26
 27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
   <span class='ivar'>@bait_library_supplier</span> <span class='op'>=</span> <span class='const'>BaitLibrary</span><span class='op'>::</span><span class='const'>Supplier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bait_library_supplier_params'>bait_library_supplier_params</span><span class='rparen'>)</span>
@@ -375,6 +315,7 @@
       <pre class="lines">
 
 
+42
 43
 44
 45
@@ -388,11 +329,10 @@
 53
 54
 55
-56
-57</pre>
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_destroy'>destroy</span>
   <span class='kw'>if</span> <span class='ivar'>@bait_library_supplier</span><span class='period'>.</span><span class='id identifier rubyid_bait_libraries'>bait_libraries</span><span class='period'>.</span><span class='id identifier rubyid_visible'>visible</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span> <span class='op'>&gt;</span> <span class='int'>0</span>
@@ -415,36 +355,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="discover_bait_library_supplier-instance_method">
-  
-    #<strong>discover_bait_library_supplier</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-65
-66
-67</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 65</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_discover_bait_library_supplier'>discover_bait_library_supplier</span>
-  <span class='ivar'>@bait_library_supplier</span> <span class='op'>=</span> <span class='const'>BaitLibrary</span><span class='op'>::</span><span class='const'>Supplier</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="edit-instance_method">
   
     #<strong>edit</strong>  &#x21d2; <tt>Object</tt> 
@@ -459,11 +369,11 @@
       <pre class="lines">
 
 
-16
-17</pre>
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_edit'>edit</span>
 <span class='kw'>end</span></pre>
@@ -487,12 +397,12 @@
       <pre class="lines">
 
 
+11
 12
-13
-14</pre>
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_new'>new</span>
   <span class='ivar'>@bait_library_supplier</span> <span class='op'>=</span> <span class='const'>BaitLibrary</span><span class='op'>::</span><span class='const'>Supplier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -517,6 +427,7 @@
       <pre class="lines">
 
 
+31
 32
 33
 34
@@ -525,11 +436,10 @@
 37
 38
 39
-40
-41</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/bait_libraries/bait_library_suppliers_controller.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update'>update</span>
   <span class='id identifier rubyid_respond_to'>respond_to</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_format'>format</span><span class='op'>|</span>
@@ -551,9 +461,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:58 2016 by
+  Generated on Mon Dec 19 11:17:38 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

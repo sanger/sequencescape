@@ -148,7 +148,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If this returns true then we check values that have not been set, otherwise
+we can ignore them.</p>
+</div></span>
   
 </li>
 
@@ -179,28 +182,6 @@
   <span class="summary_signature">
     
       <a href="#request_types_delegate_validator-instance_method" title="#request_types_delegate_validator (instance method)">#<strong>request_types_delegate_validator</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#validate_request_options%3F-instance_method" title="#validate_request_options? (instance method)">#<strong>validate_request_options?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -282,6 +263,10 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>If this returns true then we check values that have not been set, otherwise
+we can ignore them.  This would mean that we should not require values that
+are unset, until we&#39;re moving out of the building state.</p>
+
 
   </div>
 </div>
@@ -386,66 +371,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="validate_request_options?-instance_method">
-  
-    #<strong>validate_request_options?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-19
-20
-21</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/model_extensions/order.rb', line 19</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_validate_request_options?'>validate_request_options?</span>
-  <span class='kw'>not</span> <span class='id identifier rubyid_building?'>building?</span> <span class='kw'>or</span> <span class='kw'>not</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_request_options'>request_options</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:48 2016 by
+  Generated on Mon Dec 19 11:16:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

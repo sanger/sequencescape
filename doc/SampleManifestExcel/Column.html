@@ -106,7 +106,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Column creates a particular column with all the information about this
+column (name, heading, value, type, attribute, should it be locked or
+unlocked, position of the column, validation, conditional formatting rules)
+A column is only valid if it has a name and heading.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -126,7 +140,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Aattribute-instance_method" title="#:attribute (instance method)">#<strong>:attribute</strong>  &#x21d2; Object </a>
+      <a href="#%3D+Attributes.find%28name%29+if+valid%3F-instance_method" title="#= Attributes.find(name) if valid? (instance method)">#<strong>= Attributes.find(name) if valid?</strong>( = Attributes.find(name))  &#x21d2; Object </a>
     
 
     
@@ -135,7 +149,30 @@
   
   
     
-      <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#range-instance_method" title="#range (instance method)">#<strong>range</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
     
     
   
@@ -146,7 +183,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :attribute.</p>
+<p>Returns the value of attribute range.</p>
 </div></span>
   
 </li>
@@ -155,7 +192,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3Arange-instance_method" title="#:range (instance method)">#<strong>:range</strong>  &#x21d2; Object </a>
+      <a href="#validation-instance_method" title="#validation (instance method)">#<strong>validation</strong>  &#x21d2; Object </a>
     
 
     
@@ -163,8 +200,6 @@
   
   
   
-    
-      <span class="note title readonly">readonly</span>
     
     
   
@@ -175,7 +210,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute :range.</p>
+<p>Defaults to a NullValidation object.</p>
 </div></span>
   
 </li>
@@ -242,7 +277,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Some columns relate to a specific value.</p>
+</div></span>
   
 </li>
 
@@ -264,7 +301,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>If argument is a conditional formatting list copy it otherwise create a new
+conditional formatting list.</p>
+</div></span>
   
 </li>
 
@@ -320,28 +360,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#range%3D-instance_method" title="#range= (instance method)">#<strong>range=</strong>(attributes)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#set_number-instance_method" title="#set_number (instance method)">#<strong>set_number</strong>(number)  &#x21d2; Object </a>
     
 
@@ -356,7 +374,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Set the column number and return the column.</p>
+</div></span>
   
 </li>
 
@@ -378,7 +398,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Some columns need to be unlocked so data can be entered.</p>
+</div></span>
   
 </li>
 
@@ -400,7 +422,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Create a column range based on the first column, first row and last low If
+the column has a validation range return it or return a NullRange.</p>
+</div></span>
   
 </li>
 
@@ -422,51 +447,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#validation-instance_method" title="#validation (instance method)">#<strong>validation</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#validation%3D-instance_method" title="#validation= (instance method)">#<strong>validation=</strong>(validation)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Check whether a column has been updated with all of the references,
+validations etc.</p>
+</div></span>
   
 </li>
 
@@ -517,16 +501,18 @@
       <pre class="lines">
 
 
-22
-23
 24
 25
-26</pre>
+26
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@validation</span> <span class='op'>=</span> <span class='const'>NullValidation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
   <span class='id identifier rubyid_create_attributes'>create_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
 
   <span class='comment'># @attribute = Attributes.find(name) if valid?
@@ -542,54 +528,39 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id=""></span>
+      <span id="= Attributes.find(name) if valid?=-instance_method"></span>
       <div class="method_details first">
-  <h3 class="signature first" id=":attribute-instance_method">
+  <h3 class="signature first" id="= Attributes.find(name) if valid?-instance_method">
   
-    #<strong>:attribute</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
-  
-
+    #<strong>= Attributes.find(name) if valid?</strong>( = Attributes.find(name))  &#x21d2; <tt>Object</tt> 
   
 
   
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Returns the value of attribute :attribute</p>
 
-
-  </div>
-</div>
-<div class="tags">
   
-
-</div><table class="source_code">
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-151
-152
-153</pre>
+</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 28</span>
 
-def :attribute
-  @:attribute
-end</pre>
+</pre>
     </td>
   </tr>
 </table>
 </div>
     
       
-      <span id=""></span>
+      <span id="range=-instance_method"></span>
       <div class="method_details ">
-  <h3 class="signature " id=":range-instance_method">
+  <h3 class="signature " id="range-instance_method">
   
-    #<strong>:range</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>range</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -598,7 +569,7 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute :range</p>
+<p>Returns the value of attribute range</p>
 
 
   </div>
@@ -612,16 +583,59 @@ end</pre>
       <pre class="lines">
 
 
-16
-17
-18</pre>
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 14</span>
 
-def :range
-  @:range
-end</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_range'>range</span>
+  <span class='ivar'>@range</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="validation=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="validation-instance_method">
+  
+    #<strong>validation</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Defaults to a NullValidation object</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 18</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_validation'>validation</span>
+  <span class='ivar'>@validation</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -649,12 +663,12 @@ end</pre>
       <pre class="lines">
 
 
-121
-122
-123</pre>
+118
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_build_arguments'>build_arguments</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='rparen'>)</span>
   <span class='const'>ArgumentBuilder</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span>
@@ -679,18 +693,35 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Some columns relate to a specific value. If that is null we return the
+column value. def attribute_value(sample)</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_attribute'>attribute</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span><span class='lparen'>(</span><span class='id identifier rubyid_sample'>sample</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_value'>value</span>
+</code></pre>
+
+<p>end</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-72
-73
-74</pre>
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_attribute_value'>attribute_value</span><span class='lparen'>(</span><span class='id identifier rubyid_detail'>detail</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_detail'>detail</span><span class='lbracket'>[</span><span class='id identifier rubyid_attribute'>attribute</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_value'>value</span>
@@ -709,22 +740,34 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>If argument is a conditional formatting list copy it otherwise create a new
+conditional formatting list</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-42
-43
-44
 45
 46
 47
-48</pre>
+48
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_conditional_formattings='>conditional_formattings=</span><span class='lparen'>(</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='rparen'>)</span>
   <span class='ivar'>@conditional_formattings</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
@@ -753,59 +796,21 @@ end</pre>
       <pre class="lines">
 
 
+111
+112
+113
 114
 115
-116
-117
-118
-119</pre>
+116</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 111</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_dup'>initialize_dup</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_range'>range</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_validation'>validation</span> <span class='op'>=</span> <span class='id identifier rubyid_source'>source</span><span class='period'>.</span><span class='id identifier rubyid_validation'>validation</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span> <span class='op'>=</span> <span class='id identifier rubyid_source'>source</span><span class='period'>.</span><span class='id identifier rubyid_conditional_formattings'>conditional_formattings</span>
   <span class='kw'>super</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="range=-instance_method">
-  
-    #<strong>range=</strong>(attributes)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-52
-53
-54
-55
-56
-57
-58</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 52</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_range='>range=</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
-  <span class='ivar'>@range</span> <span class='op'>=</span> <span class='kw'>unless</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-    <span class='const'>Range</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
-  <span class='kw'>else</span>
-    <span class='const'>NullRange</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
-  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -821,19 +826,30 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Set the column number and return the column</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-109
-110
-111
-112</pre>
+106
+107
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 106</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_number'>set_number</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_number'>number</span> <span class='op'>=</span> <span class='id identifier rubyid_number'>number</span>
@@ -856,6 +872,8 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Some columns need to be unlocked so data can be entered.</p>
+
 
   </div>
 </div>
@@ -881,12 +899,12 @@ end</pre>
       <pre class="lines">
 
 
-62
-63
-64</pre>
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unlocked?'>unlocked?</span>
   <span class='id identifier rubyid_unlocked'>unlocked</span>
@@ -905,12 +923,29 @@ end</pre>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Create a column range based on the first column, first row and last low If
+the column has a validation range return it or return a NullRange. Update
+the column validation using the passed worksheet and found range. Update
+the conditional formatting based on a range and worksheet.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+90
+91
+92
 93
 94
 95
@@ -920,13 +955,10 @@ end</pre>
 99
 100
 101
-102
-103
-104
-105</pre>
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 93</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update'>update</span><span class='lparen'>(</span><span class='id identifier rubyid_first_row'>first_row</span><span class='comma'>,</span> <span class='id identifier rubyid_last_row'>last_row</span><span class='comma'>,</span> <span class='id identifier rubyid_ranges'>ranges</span><span class='comma'>,</span> <span class='id identifier rubyid_worksheet'>worksheet</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_range'>range</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>first_column:</span> <span class='id identifier rubyid_number'>number</span><span class='comma'>,</span> <span class='label'>first_row:</span> <span class='id identifier rubyid_first_row'>first_row</span><span class='comma'>,</span> <span class='label'>last_row:</span> <span class='id identifier rubyid_last_row'>last_row</span> <span class='rbrace'>}</span>
@@ -958,6 +990,9 @@ end</pre>
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Check whether a column has been updated with all of the references,
+validations etc.</p>
+
 
   </div>
 </div>
@@ -983,83 +1018,15 @@ end</pre>
       <pre class="lines">
 
 
-84
-85
-86</pre>
+81
+82
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_updated?'>updated?</span>
   <span class='ivar'>@updated</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="validation-instance_method">
-  
-    #<strong>validation</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-78
-79
-80</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 78</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_validation'>validation</span>
-  <span class='ivar'>@validation</span> <span class='op'>||</span> <span class='const'>NullValidation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="validation=-instance_method">
-  
-    #<strong>validation=</strong>(validation)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-31
-32
-33
-34
-35
-36
-37</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/column.rb', line 31</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_validation='>validation=</span><span class='lparen'>(</span><span class='id identifier rubyid_validation'>validation</span><span class='rparen'>)</span>
-  <span class='ivar'>@validation</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_validation'>validation</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
-    <span class='const'>Validation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_validation'>validation</span><span class='rparen'>)</span>
-  <span class='kw'>else</span>
-    <span class='id identifier rubyid_validation'>validation</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
-  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1071,9 +1038,9 @@ end</pre>
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:53 2016 by
+  Generated on Mon Dec 19 11:17:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>
