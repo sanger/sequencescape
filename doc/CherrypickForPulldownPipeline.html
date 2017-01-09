@@ -114,7 +114,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="FlexibleCherrypickPipeline.html" title="FlexibleCherrypickPipeline (class)">FlexibleCherrypickPipeline</a></span></p>
 </div>
@@ -246,28 +260,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#request_types_and_submissions_for-instance_method" title="#request_types_and_submissions_for (instance method)">#<strong>request_types_and_submissions_for</strong>(requests)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#update_detached_request-instance_method" title="#update_detached_request (instance method)">#<strong>update_detached_request</strong>(batch, request)  &#x21d2; Object </a>
     
 
@@ -290,7 +282,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#validation_of_requests-instance_method" title="#validation_of_requests (instance method)">#<strong>validation_of_requests</strong>(requests) {|(&#39;cannot be mixed across pulldown pipelines&#39;)| ... } &#x21d2; Object </a>
+      <a href="#validation_of_requests-instance_method" title="#validation_of_requests (instance method)">#<strong>validation_of_requests</strong>(requests) {|&#39;cannot be mixed across pulldown pipelines&#39;| ... } &#x21d2; Object </a>
     
 
     
@@ -304,7 +296,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Validates that the requests in the batch lead into the same pipeline.</p>
+</div></span>
   
 </li>
 
@@ -333,7 +327,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="CherrypickingPipeline.html" title="CherrypickingPipeline (class)">CherrypickingPipeline</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="CherrypickingPipeline.html#custom_inbox_actions-instance_method" title="CherrypickingPipeline#custom_inbox_actions (method)">#custom_inbox_actions</a></span>, <span class='object_link'><a href="CherrypickingPipeline.html#inbox_eager_loading-instance_method" title="CherrypickingPipeline#inbox_eager_loading (method)">#inbox_eager_loading</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="CherrypickingPipeline.html#custom_inbox_actions-instance_method" title="CherrypickingPipeline#custom_inbox_actions (method)">#custom_inbox_actions</a></span>, <span class='object_link'><a href="CherrypickingPipeline.html#inbox_eager_loading-instance_method" title="CherrypickingPipeline#inbox_eager_loading (method)">#inbox_eager_loading</a></span>, <span class='object_link'><a href="CherrypickingPipeline.html#robot_verified%21-instance_method" title="CherrypickingPipeline#robot_verified! (method)">#robot_verified!</a></span></p>
 
   
   
@@ -355,7 +349,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Pipeline.html" title="Pipeline (class)">Pipeline</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Pipeline.html#allow_tag_collision_on_tagging_task%3F-instance_method" title="Pipeline#allow_tag_collision_on_tagging_task? (method)">#allow_tag_collision_on_tagging_task?</a></span>, <span class='object_link'><a href="Pipeline.html#can_create_stock_assets%3F-instance_method" title="Pipeline#can_create_stock_assets? (method)">#can_create_stock_assets?</a></span>, <span class='object_link'><a href="Pipeline.html#completed_request_as_part_of_release_batch-instance_method" title="Pipeline#completed_request_as_part_of_release_batch (method)">#completed_request_as_part_of_release_batch</a></span>, <span class='object_link'><a href="Pipeline.html#custom_inbox_actions-instance_method" title="Pipeline#custom_inbox_actions (method)">#custom_inbox_actions</a></span>, <span class='object_link'><a href="Pipeline.html#detach_request_from_batch-instance_method" title="Pipeline#detach_request_from_batch (method)">#detach_request_from_batch</a></span>, <span class='object_link'><a href="Pipeline.html#extract_requests_from_input_params-instance_method" title="Pipeline#extract_requests_from_input_params (method)">#extract_requests_from_input_params</a></span>, <span class='object_link'><a href="Pipeline.html#finish_batch-instance_method" title="Pipeline#finish_batch (method)">#finish_batch</a></span>, <span class='object_link'><a href="Pipeline.html#genotyping%3F-instance_method" title="Pipeline#genotyping? (method)">#genotyping?</a></span>, <span class='object_link'><a href="Pipeline.html#group_requests-instance_method" title="Pipeline#group_requests (method)">#group_requests</a></span>, <span class='object_link'><a href="Pipeline.html#grouped_requests-instance_method" title="Pipeline#grouped_requests (method)">#grouped_requests</a></span>, <span class='object_link'><a href="Pipeline.html#grouping_attributes-instance_method" title="Pipeline#grouping_attributes (method)">#grouping_attributes</a></span>, <span class='object_link'><a href="Pipeline.html#grouping_function-instance_method" title="Pipeline#grouping_function (method)">#grouping_function</a></span>, <span class='object_link'><a href="Pipeline.html#grouping_parser-instance_method" title="Pipeline#grouping_parser (method)">#grouping_parser</a></span>, <span class='object_link'><a href="Pipeline.html#has_controls%3F-instance_method" title="Pipeline#has_controls? (method)">#has_controls?</a></span>, <span class='object_link'><a href="Pipeline.html#inbox_eager_loading-instance_method" title="Pipeline#inbox_eager_loading (method)">#inbox_eager_loading</a></span>, <span class='object_link'><a href="Pipeline.html#inbox_partial-instance_method" title="Pipeline#inbox_partial (method)">#inbox_partial</a></span>, <span class='object_link'><a href="Pipeline.html#inbox_scope_on-instance_method" title="Pipeline#inbox_scope_on (method)">#inbox_scope_on</a></span>, <span class='object_link'><a href="Pipeline.html#is_read_length_consistent_for_batch%3F-instance_method" title="Pipeline#is_read_length_consistent_for_batch? (method)">#is_read_length_consistent_for_batch?</a></span>, <span class='object_link'><a href="Pipeline.html#library_creation%3F-instance_method" title="Pipeline#library_creation? (method)">#library_creation?</a></span>, <span class='object_link'><a href="Pipeline.html#max_number_of_groups-instance_method" title="Pipeline#max_number_of_groups (method)">#max_number_of_groups</a></span>, <span class='object_link'><a href="Pipeline.html#on_start_batch-instance_method" title="Pipeline#on_start_batch (method)">#on_start_batch</a></span>, <span class='object_link'><a href="Pipeline.html#prints_a_worksheet_per_task%3F-instance_method" title="Pipeline#prints_a_worksheet_per_task? (method)">#prints_a_worksheet_per_task?</a></span>, <span class='object_link'><a href="Pipeline.html#pulldown%3F-instance_method" title="Pipeline#pulldown? (method)">#pulldown?</a></span>, <span class='object_link'><a href="Pipeline.html#purpose_information%3F-instance_method" title="Pipeline#purpose_information? (method)">#purpose_information?</a></span>, <span class='object_link'><a href="Pipeline.html#qc%3F-instance_method" title="Pipeline#qc? (method)">#qc?</a></span>, <span class='object_link'><a href="Pipeline.html#release_batch-instance_method" title="Pipeline#release_batch (method)">#release_batch</a></span>, <span class='object_link'><a href="Pipeline.html#request_actions-instance_method" title="Pipeline#request_actions (method)">#request_actions</a></span>, <span class='object_link'><a href="Pipeline.html#request_types_including_controls-instance_method" title="Pipeline#request_types_including_controls (method)">#request_types_including_controls</a></span>, <span class='object_link'><a href="Pipeline.html#requires_position%3F-instance_method" title="Pipeline#requires_position? (method)">#requires_position?</a></span>, <span class='object_link'><a href="Pipeline.html#selected_values_from-instance_method" title="Pipeline#selected_values_from (method)">#selected_values_from</a></span>, <span class='object_link'><a href="Pipeline.html#sequencing%3F-instance_method" title="Pipeline#sequencing? (method)">#sequencing?</a></span>, <span class='object_link'><a href="Pipeline.html#valid_number_of_checked_request_groups%3F-instance_method" title="Pipeline#valid_number_of_checked_request_groups? (method)">#valid_number_of_checked_request_groups?</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Pipeline.html#allow_tag_collision_on_tagging_task%3F-instance_method" title="Pipeline#allow_tag_collision_on_tagging_task? (method)">#allow_tag_collision_on_tagging_task?</a></span>, <span class='object_link'><a href="Pipeline.html#can_create_stock_assets%3F-instance_method" title="Pipeline#can_create_stock_assets? (method)">#can_create_stock_assets?</a></span>, <span class='object_link'><a href="Pipeline.html#completed_request_as_part_of_release_batch-instance_method" title="Pipeline#completed_request_as_part_of_release_batch (method)">#completed_request_as_part_of_release_batch</a></span>, <span class='object_link'><a href="Pipeline.html#custom_inbox_actions-instance_method" title="Pipeline#custom_inbox_actions (method)">#custom_inbox_actions</a></span>, <span class='object_link'><a href="Pipeline.html#detach_request_from_batch-instance_method" title="Pipeline#detach_request_from_batch (method)">#detach_request_from_batch</a></span>, <span class='object_link'><a href="Pipeline.html#extract_requests_from_input_params-instance_method" title="Pipeline#extract_requests_from_input_params (method)">#extract_requests_from_input_params</a></span>, <span class='object_link'><a href="Pipeline.html#finish_batch-instance_method" title="Pipeline#finish_batch (method)">#finish_batch</a></span>, <span class='object_link'><a href="Pipeline.html#genotyping%3F-instance_method" title="Pipeline#genotyping? (method)">#genotyping?</a></span>, <span class='object_link'><a href="Pipeline.html#group_requests-instance_method" title="Pipeline#group_requests (method)">#group_requests</a></span>, <span class='object_link'><a href="Pipeline.html#grouped_requests-instance_method" title="Pipeline#grouped_requests (method)">#grouped_requests</a></span>, <span class='object_link'><a href="Pipeline.html#has_controls%3F-instance_method" title="Pipeline#has_controls? (method)">#has_controls?</a></span>, <span class='object_link'><a href="Pipeline.html#inbox_eager_loading-instance_method" title="Pipeline#inbox_eager_loading (method)">#inbox_eager_loading</a></span>, <span class='object_link'><a href="Pipeline.html#inbox_partial-instance_method" title="Pipeline#inbox_partial (method)">#inbox_partial</a></span>, <span class='object_link'><a href="Pipeline.html#is_read_length_consistent_for_batch%3F-instance_method" title="Pipeline#is_read_length_consistent_for_batch? (method)">#is_read_length_consistent_for_batch?</a></span>, <span class='object_link'><a href="Pipeline.html#library_creation%3F-instance_method" title="Pipeline#library_creation? (method)">#library_creation?</a></span>, <span class='object_link'><a href="Pipeline.html#max_number_of_groups-instance_method" title="Pipeline#max_number_of_groups (method)">#max_number_of_groups</a></span>, <span class='object_link'><a href="Pipeline.html#on_start_batch-instance_method" title="Pipeline#on_start_batch (method)">#on_start_batch</a></span>, <span class='object_link'><a href="Pipeline.html#prints_a_worksheet_per_task%3F-instance_method" title="Pipeline#prints_a_worksheet_per_task? (method)">#prints_a_worksheet_per_task?</a></span>, <span class='object_link'><a href="Pipeline.html#pulldown%3F-instance_method" title="Pipeline#pulldown? (method)">#pulldown?</a></span>, <span class='object_link'><a href="Pipeline.html#purpose_information%3F-instance_method" title="Pipeline#purpose_information? (method)">#purpose_information?</a></span>, <span class='object_link'><a href="Pipeline.html#qc%3F-instance_method" title="Pipeline#qc? (method)">#qc?</a></span>, <span class='object_link'><a href="Pipeline.html#release_batch-instance_method" title="Pipeline#release_batch (method)">#release_batch</a></span>, <span class='object_link'><a href="Pipeline.html#request_actions-instance_method" title="Pipeline#request_actions (method)">#request_actions</a></span>, <span class='object_link'><a href="Pipeline.html#request_types_including_controls-instance_method" title="Pipeline#request_types_including_controls (method)">#request_types_including_controls</a></span>, <span class='object_link'><a href="Pipeline.html#requires_position%3F-instance_method" title="Pipeline#requires_position? (method)">#requires_position?</a></span>, <span class='object_link'><a href="Pipeline.html#robot_verified%21-instance_method" title="Pipeline#robot_verified! (method)">#robot_verified!</a></span>, <span class='object_link'><a href="Pipeline.html#sequencing%3F-instance_method" title="Pipeline#sequencing? (method)">#sequencing?</a></span>, <span class='object_link'><a href="Pipeline.html#valid_number_of_checked_request_groups%3F-instance_method" title="Pipeline#valid_number_of_checked_request_groups? (method)">#valid_number_of_checked_request_groups?</a></span></p>
 
   
   
@@ -389,7 +383,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -599,36 +593,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="request_types_and_submissions_for-instance_method">
-  
-    #<strong>request_types_and_submissions_for</strong>(requests)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-36
-37
-38</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick_for_pulldown_pipeline.rb', line 36</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_request_types_and_submissions_for'>request_types_and_submissions_for</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:request_type_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='comma'>,</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:submission_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="update_detached_request-instance_method">
   
     #<strong>update_detached_request</strong>(batch, request)  &#x21d2; <tt>Object</tt> 
@@ -665,7 +629,7 @@
       <div class="method_details ">
   <h3 class="signature " id="validation_of_requests-instance_method">
   
-    #<strong>validation_of_requests</strong>(requests) {|(&#39;cannot be mixed across pulldown pipelines&#39;)| ... } &#x21d2; <tt>Object</tt> 
+    #<strong>validation_of_requests</strong>(requests) {|&#39;cannot be mixed across pulldown pipelines&#39;| ... } &#x21d2; <tt>Object</tt> 
   
 
   
@@ -674,6 +638,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Validates that the requests in the batch lead into the same pipeline.</p>
+
 
   </div>
 </div>
@@ -685,7 +651,7 @@
     <li>
       
       
-        <span class='type'>(<tt>('cannot be mixed across pulldown pipelines')</tt>)</span>
+        <span class='type'>(<tt>'cannot be mixed across pulldown pipelines'</tt>)</span>
       
       
       
@@ -711,7 +677,7 @@
       <pre class="code"><span class="info file"># File 'app/models/cherrypick_for_pulldown_pipeline.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validation_of_requests'>validation_of_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>super</span>  <span class='comment'># Could throw, which means that the rest of this function does not get executed
+  <span class='kw'>super</span> <span class='comment'># Could throw, which means that the rest of this function does not get executed
 </span>
   <span class='kw'>yield</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot be mixed across pulldown pipelines</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
     <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_next_requests'>next_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:request_type</span><span class='rparen'>)</span>
@@ -727,9 +693,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:45 2016 by
+  Generated on Mon Dec 19 11:17:28 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

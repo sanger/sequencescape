@@ -105,7 +105,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -319,12 +333,12 @@
       <pre class="lines">
 
 
+28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_render_element'>create_render_element</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span> <span class='op'>&amp;&amp;</span> <span class='const'>AssignTubesToWellsData</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
@@ -349,12 +363,12 @@
       <pre class="lines">
 
 
+36
 37
-38
-39</pre>
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_do_task'>do_task</span><span class='lparen'>(</span><span class='id identifier rubyid_workflow'>workflow</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_workflow'>workflow</span><span class='period'>.</span><span class='id identifier rubyid_do_assign_requests_to_multiplexed_wells_task'>do_assign_requests_to_multiplexed_wells_task</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
@@ -379,12 +393,12 @@
       <pre class="lines">
 
 
+20
 21
-22
-23</pre>
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_included_for_do_task'>included_for_do_task</span>
   <span class='lbracket'>[</span><span class='lbrace'>{</span> <span class='label'>requests:</span> <span class='symbol'>:asset</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:pipeline</span><span class='rbracket'>]</span>
@@ -409,12 +423,12 @@
       <pre class="lines">
 
 
+24
 25
-26
-27</pre>
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_included_for_render_task'>included_for_render_task</span>
   <span class='lbracket'>[</span><span class='lbrace'>{</span> <span class='label'>requests:</span> <span class='symbol'>:asset</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:pipeline</span><span class='rbracket'>]</span>
@@ -439,12 +453,12 @@
       <pre class="lines">
 
 
+16
 17
-18
-19</pre>
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_partial'>partial</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>assign_tubes_to_wells</span><span class='tstring_end'>&quot;</span></span>
@@ -469,12 +483,12 @@
       <pre class="lines">
 
 
+32
 33
-34
-35</pre>
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'app/models/assign_tubes_to_multiplexed_wells_task.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_render_task'>render_task</span><span class='lparen'>(</span><span class='id identifier rubyid_workflow'>workflow</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='kw'>super</span>
@@ -489,9 +503,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:51 2016 by
+  Generated on Mon Dec 19 11:17:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

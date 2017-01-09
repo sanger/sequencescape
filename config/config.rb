@@ -14,8 +14,14 @@ configatron.amqp.maximum_frame = 131072
 configatron.team_name = "LIMS and Informatics"
 configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"
 
-configatron.accession_url = "http://localhost:9999/accession_service/"
-configatron.accession_view_url = "http://localhost:9999/view_accession/"
+configatron.accession do |accession|
+  accession.url = "http://localhost:9999/accession_service/"
+  accession.view_url = "http://localhost:9999/view_accession/"
+  accession.ega.user = "ega_accession_login"
+  accession.ega.password = "ega_accession_password"
+  accession.ena.user = "era_accession_login"
+  accession.ena.password = "era_accession_password"
+end
 
 configatron.admin_email = "admin@test.com"
 configatron.exception_recipients = "exceptions@test.com"
@@ -33,8 +39,6 @@ configatron.default_policy_title = "Default Policy Title"
 configatron.fluidigm_data.source = "directory"
 configatron.fluidigm_data.directory = "#{Rails.root}/data/fluidigm"
 configatron.irods_audience = "http://localhost:3000"
-configatron.ega_accession_login = "ega_accession_login"
-configatron.era_accession_login = "era_accession_login"
 configatron.login_url = "/login"
 configatron.mail_prefix = "[DEVELOPMENT]"
 configatron.pac_bio_instrument_api = "http://example.com"

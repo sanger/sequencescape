@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -288,14 +302,14 @@
       <pre class="lines">
 
 
+192
 193
 194
 195
-196
-197</pre>
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/cherrypick_handler.rb', line 193</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/cherrypick_handler.rb', line 192</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_control_request_and_add_to_batch'>create_control_request_and_add_to_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='comma'>,</span> <span class='id identifier rubyid_control_param'>control_param</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_control_request'>control_request</span> <span class='op'>=</span> <span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_create_control_request_from_well'>create_control_request_from_well</span><span class='lparen'>(</span><span class='id identifier rubyid_control_param'>control_param</span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Control request not created!</span><span class='tstring_end'>&quot;</span></span>
@@ -423,8 +437,7 @@
 187
 188
 189
-190
-191</pre>
+190</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/tasks/cherrypick_handler.rb', line 89</span>
@@ -506,7 +519,6 @@
           <span class='id identifier rubyid_plate_and_requests'>plate_and_requests</span><span class='lbracket'>[</span><span class='id identifier rubyid_plate'>plate</span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_request'>request</span>
           <span class='id identifier rubyid_used_requests'>used_requests</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_request'>request</span>
         <span class='kw'>end</span>
-
       <span class='kw'>end</span>
 
       <span class='comment'># At this point we can consider ourselves finished with the partial plate
@@ -736,9 +748,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:39 2016 by
+  Generated on Mon Dec 19 11:16:29 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

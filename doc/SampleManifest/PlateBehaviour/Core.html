@@ -112,7 +112,7 @@
   <h2>Instance Attribute Summary</h2>
   
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Base.html" title="SampleManifest::PlateBehaviour::Base (class)">Base</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Base.html#%3Aplates-instance_method" title="SampleManifest::PlateBehaviour::Base#:plates (method)">#:plates</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Base.html#plates-instance_method" title="SampleManifest::PlateBehaviour::Base#plates (method)">#plates</a></span></p>
 
 
   
@@ -246,7 +246,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Base.html" title="SampleManifest::PlateBehaviour::Base (class)">Base</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Base.html#generate_wells_for_plates-instance_method" title="SampleManifest::PlateBehaviour::Base#generate_wells_for_plates (method)">#generate_wells_for_plates</a></span>, <span class='object_link'><a href="Base.html#initialize-instance_method" title="SampleManifest::PlateBehaviour::Base#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="Base.html#validate_sample_container-instance_method" title="SampleManifest::PlateBehaviour::Base#validate_sample_container (method)">#validate_sample_container</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Base.html#initialize-instance_method" title="SampleManifest::PlateBehaviour::Base#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="Base.html#validate_sample_container-instance_method" title="SampleManifest::PlateBehaviour::Base#validate_sample_container (method)">#validate_sample_container</a></span></p>
 
   
   
@@ -285,6 +285,7 @@
       <pre class="lines">
 
 
+118
 119
 120
 121
@@ -293,11 +294,10 @@
 124
 125
 126
-127
-128</pre>
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_details'>details</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_samples'>samples</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sample'>sample</span><span class='op'>|</span>
@@ -329,12 +329,12 @@
       <pre class="lines">
 
 
+93
 94
-95
-96</pre>
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 93</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_generate_wells'>generate_wells</span><span class='lparen'>(</span><span class='id identifier rubyid_well_data'>well_data</span><span class='comma'>,</span> <span class='id identifier rubyid_plates'>plates</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_generate_wells_for_plates'>generate_wells_for_plates</span><span class='lparen'>(</span><span class='id identifier rubyid_well_data'>well_data</span><span class='comma'>,</span> <span class='id identifier rubyid_plates'>plates</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='ivar'>@manifest</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:generate_wells</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -359,6 +359,7 @@
       <pre class="lines">
 
 
+97
 98
 99
 100
@@ -369,11 +370,10 @@
 105
 106
 107
-108
-109</pre>
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 97</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_io_samples'>io_samples</span>
   <span class='id identifier rubyid_samples'>samples</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sample'>sample</span><span class='op'>|</span>
@@ -407,12 +407,12 @@
       <pre class="lines">
 
 
+129
 130
-131
-132</pre>
+131</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_printables'>printables</span>
   <span class='id identifier rubyid_samples'>samples</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_primary_receptacle'>primary_receptacle</span><span class='period'>.</span><span class='id identifier rubyid_plate'>plate</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
@@ -437,16 +437,16 @@
       <pre class="lines">
 
 
+110
 111
 112
 113
 114
 115
-116
-117</pre>
+116</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/plate_behaviour.rb', line 110</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_updated_by!'>updated_by!</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='id identifier rubyid_samples'>samples</span><span class='rparen'>)</span>
   <span class='comment'># It&#39;s more efficient to look for the wells with the samples than to look for the assets from the samples
@@ -465,9 +465,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:44 2016 by
+  Generated on Mon Dec 19 11:17:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

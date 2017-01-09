@@ -76,6 +76,11 @@
   
 
   
+  <dl>
+    <dt>Included in:</dt>
+    <dd><span class='object_link'><a href="../BasicHandler.html" title="Core::Endpoint::BasicHandler (class)">Core::Endpoint::BasicHandler</a></span></dd>
+  </dl>
+  
 
   
   <dl>
@@ -85,12 +90,37 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
       <dt id="NullHandler-constant" class="">NullHandler =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>Handler that behaves like it never deals with any URLs</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
       <dd><pre class="code"><span class='const'>Object</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_handler'>handler</span><span class='op'>|</span>
   <span class='lbracket'>[</span><span class='symbol'>:create</span><span class='comma'>,</span> <span class='symbol'>:read</span><span class='comma'>,</span> <span class='symbol'>:update</span><span class='comma'>,</span> <span class='symbol'>:delete</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_action'>action</span><span class='op'>|</span>
@@ -121,28 +151,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#_handler_for-instance_method" title="#_handler_for (instance method)">#<strong>_handler_for</strong>(segment)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#actions-instance_method" title="#actions (instance method)">#<strong>actions</strong>(object, options)  &#x21d2; Object </a>
     
 
@@ -165,51 +173,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#handler_for-instance_method" title="#handler_for (instance method)">#<strong>handler_for</strong>(segment)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#register_handler-instance_method" title="#register_handler (instance method)">#<strong>register_handler</strong>(segment, handler)  &#x21d2; Object </a>
     
 
     
@@ -260,37 +224,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="_handler_for-instance_method">
-  
-    #<strong>_handler_for</strong>(segment)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-50
-51
-52</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/endpoint/basic_handler/handlers.rb', line 50</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid__handler_for'>_handler_for</span><span class='lparen'>(</span><span class='id identifier rubyid_segment'>segment</span><span class='rparen'>)</span>
-  <span class='ivar'>@handlers</span><span class='lbracket'>[</span><span class='id identifier rubyid_segment'>segment</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="actions-instance_method">
+  <h3 class="signature first" id="actions-instance_method">
   
     #<strong>actions</strong>(object, options)  &#x21d2; <tt>Object</tt> 
   
@@ -334,38 +268,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="handler_for-instance_method">
-  
-    #<strong>handler_for</strong>(segment)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-44
-45
-46
-47</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/endpoint/basic_handler/handlers.rb', line 44</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_handler_for'>handler_for</span><span class='lparen'>(</span><span class='id identifier rubyid_segment'>segment</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_segment'>segment</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='id identifier rubyid__handler_for'>_handler_for</span><span class='lparen'>(</span><span class='id identifier rubyid_segment'>segment</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>NullHandler</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="initialize-instance_method">
   
     #<strong>initialize</strong>  &#x21d2; <tt>Object</tt> 
@@ -391,36 +293,6 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span>
   <span class='kw'>super</span>
   <span class='ivar'>@handlers</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="register_handler-instance_method">
-  
-    #<strong>register_handler</strong>(segment, handler)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-39
-40
-41</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/endpoint/basic_handler/handlers.rb', line 39</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_register_handler'>register_handler</span><span class='lparen'>(</span><span class='id identifier rubyid_segment'>segment</span><span class='comma'>,</span> <span class='id identifier rubyid_handler'>handler</span><span class='rparen'>)</span>
-  <span class='ivar'>@handlers</span><span class='lbracket'>[</span><span class='id identifier rubyid_segment'>segment</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_handler'>handler</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -462,9 +334,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:43 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

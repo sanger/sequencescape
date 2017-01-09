@@ -85,7 +85,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -139,7 +153,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns descriptor from params, if it&#39;s not there try the @study.</p>
+</div></span>
   
 </li>
 
@@ -183,7 +199,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns a link to any available request comments with “None” as a default
+value.</p>
+</div></span>
   
 </li>
 
@@ -300,15 +319,15 @@
       <pre class="lines">
 
 
+39
 40
 41
 42
 43
-44
-45</pre>
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_batch_tag_index'>batch_tag_index</span>
   <span class='ivar'>@tag_hash</span> <span class='op'>||=</span> <span class='const'>Hash</span><span class='lbracket'>[</span>
@@ -330,20 +349,33 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns descriptor from params, if it&#39;s not there try the @study. If
+@study&#39;s not set or it doesn&#39;t hold the descriptor, return a blank
+string…</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+11
 12
 13
 14
-15
-16</pre>
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_descriptor_value'>descriptor_value</span><span class='lparen'>(</span><span class='id identifier rubyid_descriptor'>descriptor</span><span class='rparen'>)</span>
   <span class='comment'># Refactored to remove reliance on @values
@@ -370,16 +402,16 @@
       <pre class="lines">
 
 
+52
 53
 54
 55
 56
 57
-58
-59</pre>
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_gel_qc_select_box'>gel_qc_select_box</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='id identifier rubyid_status'>status</span><span class='comma'>,</span> <span class='id identifier rubyid_html_options'>html_options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_blank'>blank</span> <span class='op'>=</span> <span class='id identifier rubyid_html_options'>html_options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:generate_blank</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;option&gt;&lt;/option&gt;</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
@@ -402,22 +434,34 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a link to any available request comments with “None” as a default
+value.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+19
 20
 21
 22
 23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_link_to_comments'>link_to_comments</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
    <span class='id identifier rubyid_link_to_if'>link_to_if</span><span class='lparen'>(</span>
@@ -446,12 +490,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_not_so_shorten'>not_so_shorten</span><span class='lparen'>(</span><span class='id identifier rubyid_string'>string</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_truncate'>truncate</span> <span class='id identifier rubyid_string'>string</span><span class='comma'>,</span> <span class='int'>15</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>...</span><span class='tstring_end'>&quot;</span></span>
@@ -476,14 +520,14 @@
       <pre class="lines">
 
 
+46
 47
 48
 49
-50
-51</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc_select_box'>qc_select_box</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='id identifier rubyid_status'>status</span><span class='comma'>,</span> <span class='id identifier rubyid_html_options'>html_options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_select_options'>select_options</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pass</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>fail</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
@@ -510,12 +554,12 @@
       <pre class="lines">
 
 
+27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shorten'>shorten</span><span class='lparen'>(</span><span class='id identifier rubyid_string'>string</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_truncate'>truncate</span> <span class='id identifier rubyid_string'>string</span><span class='comma'>,</span> <span class='int'>10</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>...</span><span class='tstring_end'>&quot;</span></span>
@@ -540,12 +584,12 @@
       <pre class="lines">
 
 
+35
 36
-37
-38</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'app/helpers/lab_interface/workflows_helper.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tag_index_for'>tag_index_for</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_batch_tag_index'>batch_tag_index</span><span class='lbracket'>[</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset_id'>asset_id</span><span class='rbracket'>]</span>
@@ -560,9 +604,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:42 2016 by
+  Generated on Mon Dec 19 11:16:31 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
@@ -264,7 +278,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Plate is an option parameter for a target plate.</p>
+</div></span>
   
 </li>
 
@@ -273,28 +289,6 @@
   <span class="summary_signature">
     
       <a href="#do_assign_tubes_to_wells_task-instance_method" title="#do_assign_tubes_to_wells_task (instance method)">#<strong>do_assign_tubes_to_wells_task</strong>(task, params)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#find_incompatible_wells-instance_method" title="#find_incompatible_wells (instance method)">#<strong>find_incompatible_wells</strong>(params)  &#x21d2; Object </a>
     
 
     
@@ -423,28 +417,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#wells_with_duplicates-instance_method" title="#wells_with_duplicates (instance method)">#<strong>wells_with_duplicates</strong>(params)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -469,12 +441,12 @@
       <pre class="lines">
 
 
-126
-127
-128</pre>
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 123</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_well_positions_for_library_tube'>all_well_positions_for_library_tube</span><span class='lparen'>(</span><span class='id identifier rubyid_tubes_to_well_positions'>tubes_to_well_positions</span><span class='comma'>,</span> <span class='id identifier rubyid_library_tube'>library_tube</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tubes_to_well_positions'>tubes_to_well_positions</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_tube_to_well'>tube_to_well</span><span class='op'>|</span> <span class='id identifier rubyid_tube_to_well'>tube_to_well</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='id identifier rubyid_library_tube'>library_tube</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_tube_to_well'>tube_to_well</span><span class='op'>|</span> <span class='id identifier rubyid_tube_to_well'>tube_to_well</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -499,12 +471,12 @@
       <pre class="lines">
 
 
-140
-141
-142</pre>
+137
+138
+139</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 137</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assets_from_requests'>assets_from_requests</span>
   <span class='ivar'>@afr</span> <span class='op'>||=</span> <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span> <span class='rbrace'>}</span>
@@ -529,15 +501,15 @@
       <pre class="lines">
 
 
-148
-149
-150</pre>
+145
+146
+147</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 145</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assets_from_requests_sorted_by_id'>assets_from_requests_sorted_by_id</span>
-  <span class='ivar'>@asbi</span> <span class='op'>||=</span> <span class='id identifier rubyid_assets_from_requests'>assets_from_requests</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>&lt;=&gt;</span> <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='rbrace'>}</span>
+  <span class='ivar'>@asbi</span> <span class='op'>||=</span> <span class='id identifier rubyid_assets_from_requests'>assets_from_requests</span><span class='period'>.</span><span class='id identifier rubyid_sort_by'>sort_by</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:id</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -559,14 +531,14 @@
       <pre class="lines">
 
 
+117
+118
+119
 120
-121
-122
-123
-124</pre>
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assign_requests_to_well'>assign_requests_to_well</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
@@ -593,6 +565,9 @@
       <pre class="lines">
 
 
+149
+150
+151
 152
 153
 154
@@ -604,13 +579,10 @@
 160
 161
 162
-163
-164
-165
-166</pre>
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 152</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 149</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_calculate_number_of_wells_library_needs_to_use'>calculate_number_of_wells_library_needs_to_use</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tubes_for_wells'>tubes_for_wells</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -647,16 +619,16 @@
       <pre class="lines">
 
 
+71
+72
+73
 74
 75
 76
-77
-78
-79
-80</pre>
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_do_assign_pick_volume_task'>do_assign_pick_volume_task</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span>
@@ -679,12 +651,25 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Plate is an option parameter for a target plate. Used in multiplexed
+cherrypicking. In its absence a plate is created</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+44
 45
 46
 47
@@ -709,16 +694,12 @@
 66
 67
 68
-69
-70
-71
-72</pre>
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_do_assign_requests_to_multiplexed_wells_task'>do_assign_requests_to_multiplexed_wells_task</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='id identifier rubyid_plate'>plate</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-
   <span class='id identifier rubyid_plate'>plate</span> <span class='op'>||=</span> <span class='id identifier rubyid_find_or_create_plate'>find_or_create_plate</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_purpose'>purpose</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_well_hash'>well_hash</span> <span class='op'>=</span> <span class='const'>Hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_wells'>wells</span><span class='period'>.</span><span class='id identifier rubyid_located_at'>located_at</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:request_locations</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_w'>w</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_w'>w</span><span class='period'>.</span><span class='id identifier rubyid_map_description'>map_description</span><span class='comma'>,</span> <span class='id identifier rubyid_w'>w</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='rbracket'>]</span>
@@ -736,7 +717,6 @@
     <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:error</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Incompatible requests in </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_incompatible_wells'>incompatible_wells</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>,</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>return</span> <span class='kw'>false</span>
   <span class='kw'>end</span>
-
 
   <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
     <span class='id identifier rubyid_target_well'>target_well</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:request_locations</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span>
@@ -788,8 +768,7 @@
 37
 38
 39
-40
-41</pre>
+40</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 17</span>
@@ -812,52 +791,11 @@
         <span class='id identifier rubyid_well'>well</span> <span class='op'>=</span> <span class='id identifier rubyid_find_target_asset_from_requests'>find_target_asset_from_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_requests_for_library'>requests_for_library</span><span class='rparen'>)</span>
         <span class='id identifier rubyid_well'>well</span><span class='period'>.</span><span class='id identifier rubyid_update_attributes!'>update_attributes!</span><span class='lparen'>(</span><span class='label'>map:</span> <span class='const'>Map</span><span class='period'>.</span><span class='id identifier rubyid_find_by_description_and_asset_size'>find_by_description_and_asset_size</span><span class='lparen'>(</span><span class='id identifier rubyid_well_position'>well_position</span><span class='comma'>,</span> <span class='int'>96</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>plate:</span> <span class='id identifier rubyid_plate'>plate</span><span class='rparen'>)</span>
         <span class='id identifier rubyid_assign_requests_to_well'>assign_requests_to_well</span><span class='lparen'>(</span><span class='id identifier rubyid_requests_for_library'>requests_for_library</span><span class='comma'>,</span> <span class='id identifier rubyid_well'>well</span><span class='rparen'>)</span>
-
       <span class='kw'>end</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
   <span class='kw'>true</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="find_incompatible_wells-instance_method">
-  
-    #<strong>find_incompatible_wells</strong>(params)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-101
-102
-103
-104
-105
-106
-107
-108</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 101</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_find_incompatible_wells'>find_incompatible_wells</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_invalid_wells'>invalid_wells</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_group_by'>group_by</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:request_locations</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_requests'>requests</span><span class='op'>|</span>
-    <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span> <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_shared_attributes'>shared_attributes</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span> <span class='op'>&lt;=</span> <span class='int'>1</span>
-    <span class='id identifier rubyid_invalid_wells'>invalid_wells</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_well'>well</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_invalid_wells'>invalid_wells</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -879,13 +817,13 @@
       <pre class="lines">
 
 
-111
-112
-113
-114</pre>
+108
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_or_create_plate'>find_or_create_plate</span><span class='lparen'>(</span><span class='id identifier rubyid_purpose'>purpose</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_first_request'>first_request</span> <span class='op'>=</span> <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
@@ -911,12 +849,12 @@
       <pre class="lines">
 
 
-116
-117
-118</pre>
+113
+114
+115</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_target_asset_from_requests'>find_target_asset_from_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_requests'>requests</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_target_asset'>target_asset</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_asset'>asset</span><span class='op'>|</span> <span class='op'>!</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
@@ -977,18 +915,18 @@
       <pre class="lines">
 
 
+127
+128
+129
 130
 131
 132
 133
 134
-135
-136
-137
-138</pre>
+135</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 127</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tubes_to_wells'>tubes_to_wells</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tubes_to_well_positions'>tubes_to_well_positions</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1019,69 +957,15 @@
       <pre class="lines">
 
 
-144
-145
-146</pre>
+141
+142
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 144</span>
+      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uniq_assets_from_requests'>uniq_assets_from_requests</span>
   <span class='ivar'>@uafr</span> <span class='op'>||=</span> <span class='id identifier rubyid_assets_from_requests'>assets_from_requests</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="wells_with_duplicates-instance_method">
-  
-    #<strong>wells_with_duplicates</strong>(params)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/tasks/assign_tubes_to_wells_handler.rb', line 84</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_wells_with_duplicates'>wells_with_duplicates</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_invalid_wells'>invalid_wells</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='ivar'>@batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_group_by'>group_by</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:request_locations</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_well'>well</span><span class='comma'>,</span> <span class='id identifier rubyid_requests'>requests</span><span class='op'>|</span>
-    <span class='id identifier rubyid_all_aliquots'>all_aliquots</span> <span class='op'>=</span> <span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span> <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span>
-    <span class='comment'># Push each aliquot onto an array as long as it doesn&#39;t match an aliquot already on the array
-</span>    <span class='id identifier rubyid_unique_aliquots'>unique_aliquots</span> <span class='op'>=</span> <span class='id identifier rubyid_all_aliquots'>all_aliquots</span><span class='period'>.</span><span class='id identifier rubyid_reduce'>reduce</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_selected_aliquots'>selected_aliquots</span><span class='comma'>,</span> <span class='id identifier rubyid_candidate'>candidate</span><span class='op'>|</span>
-      <span class='id identifier rubyid_selected_aliquots'>selected_aliquots</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_candidate'>candidate</span> <span class='kw'>unless</span> <span class='id identifier rubyid_selected_aliquots'>selected_aliquots</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_existing_aliquot'>existing_aliquot</span><span class='op'>|</span> <span class='id identifier rubyid_existing_aliquot'>existing_aliquot</span><span class='period'>.</span><span class='id identifier rubyid_equivalent?'>equivalent?</span><span class='lparen'>(</span><span class='id identifier rubyid_candidate'>candidate</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-      <span class='id identifier rubyid_selected_aliquots'>selected_aliquots</span>
-    <span class='kw'>end</span>
-    <span class='comment'># uniq! returns any duplicates, or nil if there are none
-</span>    <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_unique_aliquots'>unique_aliquots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:tag_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_uniq!'>uniq!</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='id identifier rubyid_invalid_wells'>invalid_wells</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_well'>well</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_invalid_wells'>invalid_wells</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1093,9 +977,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:44 2016 by
+  Generated on Mon Dec 19 11:16:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

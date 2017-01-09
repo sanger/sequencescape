@@ -108,7 +108,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2013,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="PlatePurpose.html" title="PlatePurpose (class)">PlatePurpose</a></span>, <span class='object_link'><a href="Tube/Purpose.html" title="Tube::Purpose (class)">Tube::Purpose</a></span></p>
 </div>
@@ -181,28 +195,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#target_class-instance_method" title="#target_class (instance method)">#<strong>target_class</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -216,7 +208,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -271,12 +263,12 @@
       <pre class="lines">
 
 
-51
 52
-53</pre>
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/purpose.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'app/models/purpose.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_barcode_type'>barcode_type</span>
   <span class='id identifier rubyid_barcode_printer_type'>barcode_printer_type</span><span class='period'>.</span><span class='id identifier rubyid_printer_type_id'>printer_type_id</span>
@@ -301,45 +293,15 @@
       <pre class="lines">
 
 
-43
 44
-45</pre>
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/purpose.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'app/models/purpose.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_source_plate'>source_plate</span><span class='lparen'>(</span><span class='id identifier rubyid_asset'>asset</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_source_purpose_id'>source_purpose_id</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span> <span class='op'>?</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_ancestor_of_purpose'>ancestor_of_purpose</span><span class='lparen'>(</span><span class='id identifier rubyid_source_purpose_id'>source_purpose_id</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_stock_plate'>stock_plate</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="target_class-instance_method">
-  
-    #<strong>target_class</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-66
-67
-68</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/purpose.rb', line 66</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_target_class'>target_class</span>
-  <span class='id identifier rubyid_target_type'>target_type</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -351,9 +313,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:59 2016 by
+  Generated on Mon Dec 19 11:16:46 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

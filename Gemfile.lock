@@ -244,6 +244,8 @@ GEM
     rack (1.6.5)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
+    rack-mini-profiler (0.10.1)
+      rack (>= 1.2.0)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -269,6 +271,7 @@ GEM
       loofah (~> 2.0)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
+    rails-perftest (0.0.6)
     railties (4.2.7.1)
       actionpack (= 4.2.7.1)
       activesupport (= 4.2.7.1)
@@ -443,8 +446,10 @@ DEPENDENCIES
   psd_logger!
   puma
   rack-acceptable
+  rack-mini-profiler
   rails
   rails-observers
+  rails-perftest
   rest-client
   roo
   rspec-json_expectations

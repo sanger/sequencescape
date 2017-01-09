@@ -85,7 +85,22 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Use in migrations to degrecate request classes Usage: include
+RequestClassDeprecator deprecate_class(&#39;ClassName&#39;,options) options
+an otional hash { new_type: The new request type for affected requests.
+&#39;transfer&#39; by default state_change: Hash of from_state =&gt;
+to_state applied to affected requests }</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -178,6 +193,7 @@
       <pre class="lines">
 
 
+24
 25
 26
 27
@@ -201,15 +217,12 @@
 45
 46
 47
-48
-49
-50</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/request_class_deprecator.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/request_class_deprecator.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_deprecate_class'>deprecate_class</span><span class='lparen'>(</span><span class='id identifier rubyid_request_class_name'>request_class_name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-
   <span class='id identifier rubyid_state_changes'>state_changes</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:state_change</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_request_type'>new_request_type</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:new_type</span><span class='comma'>,</span> <span class='id identifier rubyid_transfer_request'>transfer_request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_class_name'>new_class_name</span> <span class='op'>=</span> <span class='id identifier rubyid_new_request_type'>new_request_type</span><span class='period'>.</span><span class='id identifier rubyid_request_class_name'>request_class_name</span>
@@ -254,12 +267,12 @@
       <pre class="lines">
 
 
+20
 21
-22
-23</pre>
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/request_class_deprecator.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'lib/request_class_deprecator.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transfer_request'>transfer_request</span>
   <span class='const'>RequestType</span><span class='period'>.</span><span class='id identifier rubyid_find_by_key!'>find_by_key!</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>transfer</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -274,9 +287,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:33 2016 by
+  Generated on Mon Dec 19 11:16:26 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

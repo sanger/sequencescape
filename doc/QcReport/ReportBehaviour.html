@@ -97,125 +97,14 @@
 
 
 
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
 
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#generate_report-instance_method" title="#generate_report (instance method)">#<strong>generate_report</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
-
-
-
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="generate_report-instance_method">
-  
-    #<strong>generate_report</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_report.rb', line 92</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_generate_report'>generate_report</span>
-  <span class='kw'>begin</span>
-    <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_each_well_for_qc_report_in_batches'>each_well_for_qc_report_in_batches</span><span class='lparen'>(</span><span class='id identifier rubyid_exclude_existing'>exclude_existing</span><span class='comma'>,</span> <span class='id identifier rubyid_product_criteria'>product_criteria</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_assets'>assets</span><span class='op'>|</span>
-      <span class='comment'># This transaction is inside the block as otherwise large reports experience issues
-</span>      <span class='comment'># with high memory usage. In the event that an exception is raised the most
-</span>      <span class='comment'># recent set of decisions will be rolled back, and the report will be re-queued.
-</span>      <span class='comment'># The rescue event clears out the remaining metrics, this avoids the risk of duplicate
-</span>      <span class='comment'># metric on complete reports (Although wont help if, say, the database connection fails)
-</span>      <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
-        <span class='id identifier rubyid_assets'>assets</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_asset'>asset</span><span class='op'>|</span>
-          <span class='id identifier rubyid_criteria'>criteria</span> <span class='op'>=</span> <span class='id identifier rubyid_product_criteria'>product_criteria</span><span class='period'>.</span><span class='id identifier rubyid_assess'>assess</span><span class='lparen'>(</span><span class='id identifier rubyid_asset'>asset</span><span class='rparen'>)</span>
-          <span class='const'>QcMetric</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>asset:</span> <span class='id identifier rubyid_asset'>asset</span><span class='comma'>,</span> <span class='label'>qc_decision:</span> <span class='id identifier rubyid_criteria'>criteria</span><span class='period'>.</span><span class='id identifier rubyid_qc_decision'>qc_decision</span><span class='comma'>,</span> <span class='label'>metrics:</span> <span class='id identifier rubyid_criteria'>criteria</span><span class='period'>.</span><span class='id identifier rubyid_metrics'>metrics</span><span class='comma'>,</span> <span class='label'>qc_report:</span> <span class='kw'>self</span><span class='rparen'>)</span>
-        <span class='kw'>end</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
-    <span class='id identifier rubyid_generation_complete!'>generation_complete!</span>
-
-  <span class='kw'>rescue</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
-    <span class='comment'># If something goes wrong, requeue the report and re-raise the exception
-</span>    <span class='id identifier rubyid_qc_metrics'>qc_metrics</span><span class='period'>.</span><span class='id identifier rubyid_clear'>clear</span>
-    <span class='id identifier rubyid_requeue!'>requeue!</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='id identifier rubyid_e'>e</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:29 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

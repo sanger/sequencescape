@@ -129,37 +129,6 @@
       
     </ul>
   
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#configure_state_machine-instance_method" title="#configure_state_machine (instance method)">#<strong>configure_state_machine</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
 
 
 
@@ -182,16 +151,16 @@
       <pre class="lines">
 
 
+10
 11
 12
 13
 14
 15
-16
-17</pre>
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/state_machine.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/state_machine.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_extended'>extended</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
@@ -207,88 +176,12 @@
     
   </div>
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="configure_state_machine-instance_method">
-  
-    #<strong>configure_state_machine</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/state_machine.rb', line 19</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_configure_state_machine'>configure_state_machine</span>
-  <span class='id identifier rubyid_aasm'>aasm</span> <span class='label'>column:</span> <span class='symbol'>:state</span><span class='comma'>,</span> <span class='label'>whiny_persistence:</span> <span class='kw'>true</span> <span class='kw'>do</span>
-
-    <span class='id identifier rubyid_state'>state</span> <span class='symbol'>:pending</span><span class='comma'>,</span> <span class='label'>initial:</span> <span class='kw'>true</span>
-    <span class='id identifier rubyid_state'>state</span> <span class='symbol'>:processing</span>
-    <span class='id identifier rubyid_state'>state</span> <span class='symbol'>:failed</span>
-    <span class='id identifier rubyid_state'>state</span> <span class='symbol'>:completed</span>
-
-    <span class='comment'># State Machine events
-</span>    <span class='id identifier rubyid_event'>event</span> <span class='symbol'>:start</span> <span class='kw'>do</span>
-      <span class='id identifier rubyid_transitions'>transitions</span> <span class='label'>to:</span> <span class='symbol'>:processing</span><span class='comma'>,</span> <span class='label'>from:</span> <span class='lbracket'>[</span><span class='symbol'>:pending</span><span class='comma'>,</span> <span class='symbol'>:failed</span><span class='comma'>,</span> <span class='symbol'>:completed</span><span class='comma'>,</span> <span class='symbol'>:processing</span><span class='rbracket'>]</span>
-    <span class='kw'>end</span>
-
-    <span class='id identifier rubyid_event'>event</span> <span class='symbol'>:finished</span> <span class='kw'>do</span>
-      <span class='id identifier rubyid_transitions'>transitions</span> <span class='label'>to:</span> <span class='symbol'>:completed</span><span class='comma'>,</span> <span class='label'>from:</span> <span class='lbracket'>[</span><span class='symbol'>:processing</span><span class='rbracket'>]</span>
-    <span class='kw'>end</span>
-
-    <span class='id identifier rubyid_event'>event</span> <span class='symbol'>:fail</span> <span class='kw'>do</span>
-      <span class='id identifier rubyid_transitions'>transitions</span> <span class='label'>to:</span> <span class='symbol'>:failed</span><span class='comma'>,</span> <span class='label'>from:</span> <span class='lbracket'>[</span><span class='symbol'>:processing</span><span class='rbracket'>]</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:41 2016 by
+  Generated on Mon Dec 19 11:16:30 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

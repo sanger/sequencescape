@@ -91,10 +91,20 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Parsers/BioanalysisCsvParser.html" title="Parsers::BioanalysisCsvParser (class)">BioanalysisCsvParser</a></span>, <span class='object_link'><a href="Parsers/IscXtenParser.html" title="Parsers::IscXtenParser (class)">IscXtenParser</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Parsers/BioanalysisCsvParser.html" title="Parsers::BioanalysisCsvParser (class)">BioanalysisCsvParser</a></span>, <span class='object_link'><a href="Parsers/IscXtenParser.html" title="Parsers::IscXtenParser (class)">IscXtenParser</a></span>, <span class='object_link'><a href="Parsers/QuantParser.html" title="Parsers::QuantParser (class)">QuantParser</a></span>
     
   
 </p>
+
+  <h2>Constant Summary</h2>
+  <dl class="constants">
+    
+      <dt id="ENCODINGS-constant" class="">ENCODINGS =
+        
+      </dt>
+      <dd><pre class="code"><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>iso-8859-1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>utf-8</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>utf-16</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+    
+  </dl>
 
 
 
@@ -109,6 +119,28 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse_with_fallback_encodings-class_method" title="parse_with_fallback_encodings (class method)">.<strong>parse_with_fallback_encodings</strong>(content)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -142,7 +174,61 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="parser_for-class_method">
+  <h3 class="signature first" id="parse_with_fallback_encodings-class_method">
+  
+    .<strong>parse_with_fallback_encodings</strong>(content)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/parsers.rb', line 26</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_parse_with_fallback_encodings'>parse_with_fallback_encodings</span><span class='lparen'>(</span><span class='id identifier rubyid_content'>content</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_encodings'>encodings</span> <span class='op'>=</span> <span class='const'>ENCODINGS</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
+  <span class='kw'>begin</span>
+    <span class='const'>CSV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_content'>content</span><span class='rparen'>)</span>
+  <span class='kw'>rescue</span> <span class='const'>ArgumentError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_exception'>exception</span>
+    <span class='comment'># Fetch the next fallback encoding
+</span>    <span class='id identifier rubyid_encoding'>encoding</span> <span class='op'>=</span> <span class='id identifier rubyid_encodings'>encodings</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span>
+    <span class='comment'># Re-raise the exception if we&#39;ve run out
+</span>    <span class='id identifier rubyid_raise'>raise</span> <span class='id identifier rubyid_exception'>exception</span> <span class='kw'>if</span> <span class='id identifier rubyid_encoding'>encoding</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='comment'># Force the new encoding
+</span>    <span class='id identifier rubyid_content'>content</span><span class='period'>.</span><span class='id identifier rubyid_force_encoding'>force_encoding</span><span class='lparen'>(</span><span class='id identifier rubyid_encoding'>encoding</span><span class='rparen'>)</span>
+    <span class='comment'># Try again
+</span>    <span class='kw'>retry</span> <span class='kw'>unless</span> <span class='id identifier rubyid_encoding'>encoding</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parser_for-class_method">
   
     .<strong>parser_for</strong>(filename, content_type, content)  &#x21d2; <tt>Object</tt> 
   
@@ -156,9 +242,6 @@
       <pre class="lines">
 
 
-10
-11
-12
 13
 14
 15
@@ -166,18 +249,23 @@
 17
 18
 19
-20</pre>
+20
+21
+22
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/parsers.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'app/models/parsers.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_parser_for'>parser_for</span><span class='lparen'>(</span><span class='id identifier rubyid_filename'>filename</span><span class='comma'>,</span> <span class='id identifier rubyid_content_type'>content_type</span><span class='comma'>,</span> <span class='id identifier rubyid_content'>content</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_filename'>filename</span><span class='period'>.</span><span class='id identifier rubyid_ends_with?'>ends_with?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.csv</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_content_type'>content_type</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text/csv</span><span class='tstring_end'>&#39;</span></span>
- <span class='comment'># While CSV tries to detect line endings, it isn&#39;t so great with some excel
+  <span class='comment'># While CSV tries to detect line endings, it isn&#39;t so great with some excel
 </span>  <span class='comment'># exported CSVs, where a mix of \n and \r\n are used in the same document
 </span>  <span class='comment'># This converts everything to \n before processing
-</span>  <span class='id identifier rubyid_cleaned_content'>cleaned_content</span> <span class='op'>=</span> <span class='id identifier rubyid_content'>content</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\r\n?</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_csv'>csv</span> <span class='op'>=</span> <span class='const'>CSV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_cleaned_content'>cleaned_content</span><span class='rparen'>)</span>
+</span>  <span class='id identifier rubyid_cleaned_content'>cleaned_content</span> <span class='op'>=</span> <span class='const'>LinefeedFix</span><span class='period'>.</span><span class='id identifier rubyid_scrub!'>scrub!</span><span class='lparen'>(</span><span class='id identifier rubyid_content'>content</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_csv'>csv</span> <span class='op'>=</span> <span class='id identifier rubyid_parse_with_fallback_encodings'>parse_with_fallback_encodings</span><span class='lparen'>(</span><span class='id identifier rubyid_cleaned_content'>cleaned_content</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='const'>Parsers</span><span class='op'>::</span><span class='const'>QuantParser</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Parsers</span><span class='op'>::</span><span class='const'>QuantParser</span><span class='period'>.</span><span class='id identifier rubyid_is_quant_file?'>is_quant_file?</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='const'>Parsers</span><span class='op'>::</span><span class='const'>BioanalysisCsvParser</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Parsers</span><span class='op'>::</span><span class='const'>BioanalysisCsvParser</span><span class='period'>.</span><span class='id identifier rubyid_is_bioanalyzer?'>is_bioanalyzer?</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='const'>Parsers</span><span class='op'>::</span><span class='const'>IscXtenParser</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Parsers</span><span class='op'>::</span><span class='const'>IscXtenParser</span><span class='period'>.</span><span class='id identifier rubyid_is_isc_xten_file?'>is_isc_xten_file?</span><span class='lparen'>(</span><span class='id identifier rubyid_csv'>csv</span><span class='rparen'>)</span>
   <span class='kw'>nil</span>
@@ -192,9 +280,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:28 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

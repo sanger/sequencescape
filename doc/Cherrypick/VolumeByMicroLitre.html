@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -104,28 +118,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#check_inputs_to_volume_to_cherrypick_by_micro_litre%21-instance_method" title="#check_inputs_to_volume_to_cherrypick_by_micro_litre! (instance method)">#<strong>check_inputs_to_volume_to_cherrypick_by_micro_litre!</strong>(volume_required)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -159,59 +151,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="check_inputs_to_volume_to_cherrypick_by_micro_litre!-instance_method">
-  
-    #<strong>check_inputs_to_volume_to_cherrypick_by_micro_litre!</strong>(volume_required)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="../Cherrypick.html#VolumeError-constant" title="Cherrypick::VolumeError (constant)">Cherrypick::VolumeError</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-22
-23
-24</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/cherrypick/volume_by_micro_litre.rb', line 22</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_check_inputs_to_volume_to_cherrypick_by_micro_litre!'>check_inputs_to_volume_to_cherrypick_by_micro_litre!</span><span class='lparen'>(</span><span class='id identifier rubyid_volume_required'>volume_required</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Cherrypick</span><span class='op'>::</span><span class='const'>VolumeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Volume required (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_volume_required'>volume_required</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>) is invalid for cherrypicking by micro litre</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_volume_required'>volume_required</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='op'>||</span> <span class='id identifier rubyid_volume_required'>volume_required</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>&lt;=</span> <span class='float'>0.0</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="volume_to_cherrypick_by_micro_litre-instance_method">
+  <h3 class="signature first" id="volume_to_cherrypick_by_micro_litre-instance_method">
   
     #<strong>volume_to_cherrypick_by_micro_litre</strong>(volume_required, robot_minimum_picking_volume = 0.0)  &#x21d2; <tt>Object</tt> 
   
@@ -265,9 +205,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:43 2016 by
+  Generated on Mon Dec 19 11:16:32 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

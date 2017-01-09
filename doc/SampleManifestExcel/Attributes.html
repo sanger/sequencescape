@@ -101,7 +101,19 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Some columns need to extract a value from a sample manifest. This may
+involve a crazy chain of methods.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -143,7 +155,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Take the column name and return an attribute class.</p>
+</div></span>
   
 </li>
 
@@ -166,12 +180,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Take the column name and return an attribute class. If the column name
+relates to a column with an attribute return a new object of that class
+which when passed a sample will return the correct value. If it isn&#39;t
+an attribute it will return a NullObject which will return a null value
+when passed a sample.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+13
+14
 15
 16
 17
@@ -183,12 +214,10 @@
 23
 24
 25
-26
-27
-28</pre>
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/attributes.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/attributes.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_column_name'>column_name</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_column_name'>column_name</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
@@ -214,9 +243,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:55 2016 by
+  Generated on Mon Dec 19 11:17:36 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

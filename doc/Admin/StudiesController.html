@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -157,7 +171,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>TODO: remove unneeded code.</p>
+</div></span>
   
 </li>
 
@@ -188,28 +204,6 @@
   <span class="summary_signature">
     
       <a href="#managed_update-instance_method" title="#managed_update (instance method)">#<strong>managed_update</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#redirect_if_not_owner_or_admin-instance_method" title="#redirect_if_not_owner_or_admin (instance method)">#<strong>redirect_if_not_owner_or_admin</strong>(study)  &#x21d2; Object </a>
     
 
     
@@ -357,7 +351,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>TODO: remove unneeded code</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -469,6 +474,7 @@
       <pre class="lines">
 
 
+68
 69
 70
 71
@@ -485,11 +491,10 @@
 82
 83
 84
-85
-86</pre>
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/studies_controller.rb', line 69</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/studies_controller.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_managed_update'>managed_update</span>
   <span class='ivar'>@study</span> <span class='op'>=</span> <span class='const'>Study</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -508,42 +513,6 @@
   <span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Failed to update attributes: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@study</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='rbrace'>}</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:error</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Failed to update attributes for study!</span><span class='tstring_end'>&quot;</span></span>
   <span class='id identifier rubyid_render'>render</span> <span class='label'>action:</span> <span class='symbol'>:show</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='ivar'>@study</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='kw'>and</span> <span class='kw'>return</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="redirect_if_not_owner_or_admin-instance_method">
-  
-    #<strong>redirect_if_not_owner_or_admin</strong>(study)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-100
-101
-102
-103
-104
-105</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/studies_controller.rb', line 100</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_redirect_if_not_owner_or_admin'>redirect_if_not_owner_or_admin</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_owner?'>owner?</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_is_administrator?'>is_administrator?</span>
-    <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:error</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Study details can only be altered by the owner (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_login'>login</span><span class='embexpr_end'>}</span><span class='tstring_content'>) or an administrator</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_study_path'>study_path</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -597,6 +566,7 @@
       <pre class="lines">
 
 
+87
 88
 89
 90
@@ -604,11 +574,10 @@
 92
 93
 94
-95
-96</pre>
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/admin/studies_controller.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/admin/studies_controller.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sort'>sort</span>
   <span class='ivar'>@studies</span> <span class='op'>=</span> <span class='const'>Study</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_sort_by'>sort_by</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_study'>study</span><span class='op'>|</span> <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='rbrace'>}</span>
@@ -665,9 +634,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:39 2016 by
+  Generated on Mon Dec 19 11:17:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -178,28 +178,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#create_manifest_types-instance_method" title="#create_manifest_types (instance method)">#<strong>create_manifest_types</strong>(manifest_types)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#each-instance_method" title="#each (instance method)">#<strong>each</strong>(&amp;block)  &#x21d2; Object </a>
     
 
@@ -244,7 +222,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(manifest_types = {}) {|self| ... } &#x21d2; ManifestTypeList </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(manifest_types = {}) {|_self| ... } &#x21d2; ManifestTypeList </a>
     
 
     
@@ -322,7 +300,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(manifest_types = {}) {|self| ... } &#x21d2; <tt><span class='object_link'><a href="" title="SampleManifestExcel::ManifestTypeList (class)">ManifestTypeList</a></span></tt> 
+    #<strong>initialize</strong>(manifest_types = {}) {|_self| ... } &#x21d2; <tt><span class='object_link'><a href="" title="SampleManifestExcel::ManifestTypeList (class)">ManifestTypeList</a></span></tt> 
   
 
   
@@ -344,9 +322,29 @@
     <li>
       
       
-        <span class='type'>(<tt>self</tt>)</span>
+        <span class='type'>(<tt>_self</tt>)</span>
       
       
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Yield Parameters:</p>
+<ul class="yieldparam">
+  
+    <li>
+      
+        <span class='name'>_self</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SampleManifestExcel::ManifestTypeList (class)">SampleManifestExcel::ManifestTypeList</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the object that the method was called on</p>
+</div>
       
     </li>
   
@@ -358,13 +356,13 @@
       <pre class="lines">
 
 
+6
 7
 8
-9
-10</pre>
+9</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 6</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_manifest_types'>manifest_types</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_create_manifest_types'>create_manifest_types</span><span class='lparen'>(</span><span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='rparen'>)</span>
@@ -397,13 +395,13 @@
       <pre class="lines">
 
 
+38
 39
 40
-41
-42</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
@@ -429,6 +427,7 @@
       <pre class="lines">
 
 
+27
 28
 29
 30
@@ -437,11 +436,10 @@
 33
 34
 35
-36
-37</pre>
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_by_asset_type'>by_asset_type</span><span class='lparen'>(</span><span class='id identifier rubyid_asset_type'>asset_type</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>unless</span> <span class='id identifier rubyid_asset_type'>asset_type</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -450,44 +448,6 @@
       <span class='kw'>if</span> <span class='id identifier rubyid_manifest_type'>manifest_type</span><span class='period'>.</span><span class='id identifier rubyid_asset_type'>asset_type</span> <span class='op'>==</span> <span class='id identifier rubyid_asset_type'>asset_type</span>
         <span class='id identifier rubyid_list'>list</span><span class='period'>.</span><span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='lbracket'>[</span><span class='id identifier rubyid_k'>k</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_manifest_type'>manifest_type</span>
       <span class='kw'>end</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="create_manifest_types-instance_method">
-  
-    #<strong>create_manifest_types</strong>(manifest_types)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-69
-70
-71
-72
-73
-74
-75</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 69</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_create_manifest_types'>create_manifest_types</span><span class='lparen'>(</span><span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_mf'>mf</span><span class='op'>|</span>
-    <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_manifest_type'>manifest_type</span><span class='op'>|</span>
-      <span class='id identifier rubyid_mf'>mf</span><span class='lbracket'>[</span><span class='id identifier rubyid_k'>k</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>ManifestType</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_manifest_type'>manifest_type</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -511,12 +471,12 @@
       <pre class="lines">
 
 
+11
 12
-13
-14</pre>
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -541,12 +501,12 @@
       <pre class="lines">
 
 
+19
 20
-21
-22</pre>
+21</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span>
@@ -571,12 +531,12 @@
       <pre class="lines">
 
 
+15
 16
-17
-18</pre>
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manifest_types'>manifest_types</span>
   <span class='ivar'>@manifest_types</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -601,12 +561,12 @@
       <pre class="lines">
 
 
+23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'lib/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_a'>to_a</span>
   <span class='id identifier rubyid_manifest_types'>manifest_types</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_a</span><span class='rparen'>)</span>
@@ -621,9 +581,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:57 2016 by
+  Generated on Mon Dec 19 11:17:37 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

@@ -90,7 +90,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -131,28 +145,6 @@
   <span class="summary_signature">
     
       <a href="#generate_tubes-instance_method" title="#generate_tubes (instance method)">#<strong>generate_tubes</strong>(purpose)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#tube_sample_creation-instance_method" title="#tube_sample_creation (instance method)">#<strong>tube_sample_creation</strong>(samples_data, study_id)  &#x21d2; Object </a>
     
 
     
@@ -276,54 +268,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="tube_sample_creation-instance_method">
-  
-    #<strong>tube_sample_creation</strong>(samples_data, study_id)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-36
-37
-38
-39
-40
-41
-42
-43</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/sample_manifest/shared_tube_behaviour.rb', line 36</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_tube_sample_creation'>tube_sample_creation</span><span class='lparen'>(</span><span class='id identifier rubyid_samples_data'>samples_data</span><span class='comma'>,</span> <span class='id identifier rubyid_study_id'>study_id</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_samples'>samples</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_samples_data'>samples_data</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_barcode'>barcode</span><span class='comma'>,</span> <span class='id identifier rubyid_sanger_sample_id'>sanger_sample_id</span><span class='comma'>,</span> <span class='id identifier rubyid_prefix'>prefix</span><span class='op'>|</span>
-    <span class='id identifier rubyid_create_sample'>create_sample</span><span class='lparen'>(</span><span class='id identifier rubyid_sanger_sample_id'>sanger_sample_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_sample'>sample</span><span class='op'>|</span>
-      <span class='id identifier rubyid_sample_tube'>sample_tube</span> <span class='op'>=</span> <span class='const'>Tube</span><span class='period'>.</span><span class='id identifier rubyid_find_by_barcode'>find_by_barcode</span><span class='lparen'>(</span><span class='id identifier rubyid_barcode'>barcode</span><span class='rparen'>)</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>RecordNotFound</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Cannot find sample tube with barcode </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_barcode'>barcode</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-      <span class='id identifier rubyid_sample_tube'>sample_tube</span><span class='period'>.</span><span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>sample:</span> <span class='id identifier rubyid_sample'>sample</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:45 2016 by
+  Generated on Mon Dec 19 11:16:33 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

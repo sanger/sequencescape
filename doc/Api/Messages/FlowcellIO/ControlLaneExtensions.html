@@ -151,6 +151,10 @@
       <pre class="lines">
 
 
+64
+65
+66
+67
 68
 69
 70
@@ -189,19 +193,13 @@
 103
 104
 105
-106
-107
-108
-109
-110
-111</pre>
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/api/messages/flowcell_io.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'app/models/api/messages/flowcell_io.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
-
     <span class='kw'>def</span> <span class='id identifier rubyid_position'>position</span>
       <span class='id identifier rubyid_batch_request'>batch_request</span><span class='period'>.</span><span class='id identifier rubyid_position'>position</span>
     <span class='kw'>end</span>
@@ -225,6 +223,7 @@
     <span class='kw'>def</span> <span class='id identifier rubyid_spiked_in_buffer'>spiked_in_buffer</span>
       <span class='kw'>false</span>
     <span class='kw'>end</span>
+
     <span class='kw'>def</span> <span class='id identifier rubyid_external_release'>external_release</span>
      <span class='kw'>false</span>
     <span class='kw'>end</span>
@@ -240,7 +239,6 @@
     <span class='kw'>def</span> <span class='id identifier rubyid_request_purpose_key'>request_purpose_key</span>
       <span class='id identifier rubyid_request_purpose'>request_purpose</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:key</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
-
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -253,9 +251,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:47 2016 by
+  Generated on Mon Dec 19 11:16:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

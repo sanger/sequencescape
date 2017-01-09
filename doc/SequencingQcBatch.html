@@ -90,20 +90,50 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE is distributed under the terms of GNU
+General Public License version 1 or later; Please refer to the LICENSE and
+README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011 Genome Research Ltd. Place to put Illumina QC code
+to be refactored</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   <dl class="constants">
     
       <dt id="VALID_QC_STATES-constant" class="">VALID_QC_STATES =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>NOTE: Be careful that the length of these do not exceed 25 characters,
+otherwise you will have to alter the batches.qc_state field in the DB to
+accommodate.  FYI, 25 characters is:</p>
+
+<pre class="code ruby"><code class="ruby">&lt;-----------------------&gt;</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
-      <dd><pre class="code"><span class='lbracket'>[</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_pending</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_submitted</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_manual</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_manual_in_progress</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_completed</span><span class='tstring_end'>&quot;</span></span>
-<span class='rbracket'>]</span></pre></dd>
+      <dd><pre class="code"><span class='qwords_beg'>%w(
+</span><span class='tstring_content'>qc_pending</span><span class='words_sep'>
+</span><span class='tstring_content'>qc_submitted</span><span class='words_sep'>
+</span><span class='tstring_content'>qc_manual</span><span class='words_sep'>
+</span><span class='tstring_content'>qc_manual_in_progress</span><span class='words_sep'>
+</span><span class='tstring_content'>qc_completed</span><span class='words_sep'>
+</span><span class='tstring_end'>)</span></span></pre></dd>
     
   </dl>
 
@@ -199,28 +229,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#assets_qc_tasks_results-instance_method" title="#assets_qc_tasks_results (instance method)">#<strong>assets_qc_tasks_results</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#formatted_batch_qc_details-instance_method" title="#formatted_batch_qc_details (instance method)">#<strong>formatted_batch_qc_details</strong>  &#x21d2; Object </a>
     
 
@@ -235,7 +243,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Format qc_info on batch for JSON.</p>
+</div></span>
   
 </li>
 
@@ -257,7 +267,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Cron job specific checker.</p>
+</div></span>
   
 </li>
 
@@ -288,28 +300,6 @@
   <span class="summary_signature">
     
       <a href="#qc_manual_in_progress-instance_method" title="#qc_manual_in_progress (instance method)">#<strong>qc_manual_in_progress</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#qc_pipeline_update-instance_method" title="#qc_pipeline_update (instance method)">#<strong>qc_pipeline_update</strong>  &#x21d2; Object </a>
     
 
     
@@ -411,7 +401,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns qc_states used.</p>
+</div></span>
   
 </li>
 
@@ -433,7 +425,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>View based check to display batches with results.</p>
+</div></span>
   
 </li>
 
@@ -455,7 +449,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>POST /batches/submit_to_qc_queue/:id.xml.</p>
+</div></span>
   
 </li>
 
@@ -484,16 +480,16 @@
       <pre class="lines">
 
 
+72
 73
 74
 75
 76
 77
-78
-79</pre>
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_adjacent_state_helper'>adjacent_state_helper</span><span class='lparen'>(</span><span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='id identifier rubyid_offset'>offset</span><span class='comma'>,</span> <span class='id identifier rubyid_delimiter'>delimiter</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_define_method'>define_method</span><span class='lparen'>(</span><span class='symbol'>:qc_</span><span class='embexpr_beg'>#{</span> <span class='id identifier rubyid_direction'>direction</span> <span class='embexpr_end'>}</span><span class='tstring_content'>_state</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -530,15 +526,13 @@
 23
 24
 25
-26
-27</pre>
+26</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_instance_eval'>instance_eval</span> <span class='kw'>do</span>
-
     <span class='comment'># TODO[xxx]: Isn&#39;t qc_state supposed to be initialised to &#39;qc_pending&#39; rather than blank?
 </span>    <span class='id identifier rubyid_validates_inclusion_of'>validates_inclusion_of</span> <span class='symbol'>:qc_state</span><span class='comma'>,</span> <span class='label'>in:</span> <span class='const'>VALID_QC_STATES</span><span class='comma'>,</span> <span class='label'>allow_blank:</span> <span class='kw'>true</span>
 
@@ -566,15 +560,15 @@
       <pre class="lines">
 
 
+85
 86
 87
 88
 89
-90
-91</pre>
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 85</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_state_transition_helper'>state_transition_helper</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='comment'># TODO[xxx]: Really we should restrict the state transitions
@@ -594,59 +588,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="assets_qc_tasks_results-instance_method">
-  
-    #<strong>assets_qc_tasks_results</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-192
-193
-194
-195
-196
-197
-198
-199
-200
-201
-202
-203
-204
-205</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 192</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_assets_qc_tasks_results'>assets_qc_tasks_results</span>
-  <span class='id identifier rubyid_auto_qc_pipeline'>auto_qc_pipeline</span> <span class='op'>=</span> <span class='const'>Pipeline</span><span class='period'>.</span><span class='id identifier rubyid_firind_by!'>firind_by!</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>quality control</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>automated:</span> <span class='kw'>true</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_qc_workflow'>qc_workflow</span> <span class='op'>=</span> <span class='const'>LabInterface</span><span class='op'>::</span><span class='const'>Workflow</span><span class='period'>.</span><span class='id identifier rubyid_find_by_pipeline_id'>find_by_pipeline_id</span> <span class='id identifier rubyid_auto_qc_pipeline'>auto_qc_pipeline</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
-  <span class='id identifier rubyid_qc_tasks'>qc_tasks</span> <span class='op'>=</span> <span class='id identifier rubyid_qc_workflow'>qc_workflow</span><span class='period'>.</span><span class='id identifier rubyid_tasks'>tasks</span>
-  <span class='id identifier rubyid_results'>results</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_qc_tasks'>qc_tasks</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_task'>task</span><span class='op'>|</span>
-    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
-      <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-        <span class='id identifier rubyid_results'>results</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_has_passed'>has_passed</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_task'>task</span><span class='rparen'>)</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-  <span class='kw'>return</span> <span class='id identifier rubyid_results'>results</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="formatted_batch_qc_details-instance_method">
+  <h3 class="signature first" id="formatted_batch_qc_details-instance_method">
   
     #<strong>formatted_batch_qc_details</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -654,12 +596,24 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Format qc_info on batch for JSON</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+159
 160
 161
 162
@@ -687,11 +641,10 @@
 184
 185
 186
-187
-188</pre>
+187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 160</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_formatted_batch_qc_details'>formatted_batch_qc_details</span>
   <span class='id identifier rubyid_batch'>batch</span> <span class='op'>=</span> <span class='kw'>self</span>
@@ -700,19 +653,19 @@
 
   <span class='kw'>if</span> <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span>
     <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_item'>item</span><span class='op'>|</span>
-      <span class='id identifier rubyid_temp_variable'>temp_variable</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_item'>item</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_item'>item</span>
+      <span class='id identifier rubyid_temp_variable'>temp_variable</span><span class='lbracket'>[</span><span class='id identifier rubyid_item'>item</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_item'>item</span>
       <span class='kw'>if</span> <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_qc_pipeline'>qc_pipeline</span><span class='period'>.</span><span class='id identifier rubyid_previous_pipeline'>previous_pipeline</span>
         <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_qc_pipeline'>qc_pipeline</span><span class='period'>.</span><span class='id identifier rubyid_previous_pipeline'>previous_pipeline</span><span class='period'>.</span><span class='id identifier rubyid_workflow'>workflow</span><span class='period'>.</span><span class='id identifier rubyid_tasks'>tasks</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_task'>task</span><span class='op'>|</span>
           <span class='id identifier rubyid_item'>item</span><span class='period'>.</span><span class='id identifier rubyid_lab_events'>lab_events</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_event'>event</span><span class='op'>|</span>
             <span class='kw'>if</span> <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span> <span class='op'>==</span> <span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
               <span class='id identifier rubyid_grouped_descriptors'>grouped_descriptors</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-              <span class='id identifier rubyid_grouped_descriptors'>grouped_descriptors</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+              <span class='id identifier rubyid_grouped_descriptors'>grouped_descriptors</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
               <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_descriptors'>descriptors</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_descriptor'>descriptor</span><span class='op'>|</span>
                 <span class='kw'>unless</span> <span class='id identifier rubyid_excluding_descriptors'>excluding_descriptors</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_descriptor'>descriptor</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
-                  <span class='id identifier rubyid_grouped_descriptors'>grouped_descriptors</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_descriptor'>descriptor</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_descriptor'>descriptor</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span>
+                  <span class='id identifier rubyid_grouped_descriptors'>grouped_descriptors</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_descriptor'>descriptor</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_descriptor'>descriptor</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span>
                 <span class='kw'>end</span>
               <span class='kw'>end</span>
-              <span class='id identifier rubyid_temp_variable'>temp_variable</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_item'>item</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_data</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_grouped_descriptors'>grouped_descriptors</span>
+              <span class='id identifier rubyid_temp_variable'>temp_variable</span><span class='lbracket'>[</span><span class='id identifier rubyid_item'>item</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_data</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_grouped_descriptors'>grouped_descriptors</span>
             <span class='kw'>end</span>
           <span class='kw'>end</span>
         <span class='kw'>end</span>
@@ -739,6 +692,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Cron job specific checker</p>
+
 
   </div>
 </div>
@@ -764,17 +719,17 @@
       <pre class="lines">
 
 
+48
 49
 50
 51
 52
 53
 54
-55
-56</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_migrate_to_manual_qc?'>migrate_to_manual_qc?</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_assets_qc_tasks_results'>assets_qc_tasks_results</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='kw'>true</span><span class='rparen'>)</span>
@@ -826,12 +781,12 @@
       <pre class="lines">
 
 
+97
 98
-99
-100</pre>
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 97</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_processing_in_manual_qc?'>processing_in_manual_qc?</span>
   <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qc_manual_in_progress</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qc_manual</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_qc_state'>qc_state</span><span class='rparen'>)</span>
@@ -856,49 +811,17 @@
       <pre class="lines">
 
 
+113
 114
 115
-116
-117</pre>
+116</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc_manual_in_progress'>qc_manual_in_progress</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_qc_state'>qc_state</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_manual_in_progress</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_save'>save</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="qc_pipeline_update-instance_method">
-  
-    #<strong>qc_pipeline_update</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-119
-120
-121
-122</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 119</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_qc_pipeline_update'>qc_pipeline_update</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_qc_pipeline'>qc_pipeline</span> <span class='op'>=</span> <span class='const'>Pipeline</span><span class='period'>.</span><span class='id identifier rubyid_find_by_name_and_automated'>find_by_name_and_automated</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>quality control</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>true</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_qc_state'>qc_state</span>    <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qc_pending</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -920,13 +843,13 @@
       <pre class="lines">
 
 
+101
 102
 103
-104
-105</pre>
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc_pipeline_workflow_id'>qc_pipeline_workflow_id</span>
   <span class='id identifier rubyid_pipeline'>pipeline</span> <span class='op'>=</span> <span class='const'>Pipeline</span><span class='period'>.</span><span class='id identifier rubyid_find_by!'>find_by!</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>quality control</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>automated:</span> <span class='kw'>true</span><span class='rparen'>)</span>
@@ -952,6 +875,7 @@
       <pre class="lines">
 
 
+62
 63
 64
 65
@@ -959,11 +883,10 @@
 67
 68
 69
-70
-71</pre>
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc_previous_state!'>qc_previous_state!</span><span class='lparen'>(</span><span class='id identifier rubyid_current_user'>current_user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_previous_state'>previous_state</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_qc_previous_state'>qc_previous_state</span>
@@ -994,15 +917,15 @@
       <pre class="lines">
 
 
+106
 107
 108
 109
 110
-111
-112</pre>
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 106</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc_ready_for_manual'>qc_ready_for_manual</span>
   <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
@@ -1024,18 +947,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns qc_states used</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+58
 59
-60
-61</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_qc_states'>qc_states</span>
   <span class='const'>VALID_QC_STATES</span>
@@ -1057,6 +991,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>View based check to display batches with results</p>
+
 
   </div>
 </div>
@@ -1082,17 +1018,17 @@
       <pre class="lines">
 
 
+38
 39
 40
 41
 42
 43
 44
-45
-46</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_show_in_manual_qc?'>show_in_manual_qc?</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_assets_qc_tasks_results'>assets_qc_tasks_results</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>&gt;</span> <span class='int'>1</span>
@@ -1116,12 +1052,24 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>POST /batches/submit_to_qc_queue/:id.xml</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+125
 126
 127
 128
@@ -1152,11 +1100,10 @@
 153
 154
 155
-156
-157</pre>
+156</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'lib/sequencing_qc_batch.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_to_qc_queue'>submit_to_qc_queue</span>
   <span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_debug'>debug</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Batch </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_content'> attempting to be added to QC queue. State is </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_qc_state'>qc_state</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -1175,7 +1122,7 @@
       <span class='id identifier rubyid_h_doc'>h_doc</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>batch</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
       <span class='id identifier rubyid_h_doc'>h_doc</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>keys</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
       <span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_descriptors'>descriptors</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
-        <span class='id identifier rubyid_h_doc'>h_doc</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>keys</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span>
+        <span class='id identifier rubyid_h_doc'>h_doc</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>keys</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span>
       <span class='kw'>end</span>
       <span class='id identifier rubyid_doc'>doc</span> <span class='op'>=</span> <span class='id identifier rubyid_h_doc'>h_doc</span><span class='period'>.</span><span class='id identifier rubyid_to_xml'>to_xml</span><span class='lparen'>(</span><span class='label'>root:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>criteria</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>skip_types:</span> <span class='kw'>true</span><span class='rparen'>)</span>
       <span class='comment'># A *Hacky* solution to get the XML readable for Chainlink
@@ -1200,9 +1147,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:31 2016 by
+  Generated on Mon Dec 19 11:16:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

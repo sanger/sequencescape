@@ -133,7 +133,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Error handling should help if uploader was mounted to a model with no
+content_type.</p>
+</div></span>
   
 </li>
 
@@ -142,28 +145,6 @@
   <span class="summary_signature">
     
       <a href="#content_type%3D-instance_method" title="#content_type= (instance method)">#<strong>content_type=</strong>(type)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#current_data-instance_method" title="#current_data (instance method)">#<strong>current_data</strong>  &#x21d2; Object </a>
     
 
     
@@ -199,51 +180,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#destroy_file-instance_method" title="#destroy_file (instance method)">#<strong>destroy_file</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#each_slice-instance_method" title="#each_slice (instance method)">#<strong>each_slice</strong>(data)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Remove the file.</p>
+</div></span>
   
 </li>
 
@@ -291,7 +230,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the current path of the file.</p>
+</div></span>
   
 </li>
 
@@ -313,7 +254,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Reads the contents of the file.</p>
+</div></span>
   
 </li>
 
@@ -357,7 +300,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Stores the file in the DbFiles model - split across many rows if size &gt;
+200KB.</p>
+</div></span>
   
 </li>
 
@@ -379,7 +325,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Would returns the url.</p>
+</div></span>
   
 </li>
 
@@ -451,7 +399,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Error handling should help if uploader was mounted to a model with no
+content_type</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -507,36 +467,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="current_data-instance_method">
-  
-    #<strong>current_data</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-79
-80
-81</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/uploaders/polymorphic_uploader.rb', line 79</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_current_data'>current_data</span>
-  <span class='ivar'>@uploader</span><span class='period'>.</span><span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_db_files'>db_files</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:data</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="delete-instance_method">
   
     #<strong>delete</strong>  &#x21d2; <tt>Object</tt> 
@@ -545,7 +475,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Remove the file</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -567,86 +508,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="destroy_file-instance_method">
-  
-    #<strong>destroy_file</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-84
-85
-86
-87
-88</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/uploaders/polymorphic_uploader.rb', line 84</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_destroy_file'>destroy_file</span>
-  <span class='ivar'>@uploader</span><span class='period'>.</span><span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_db_files'>db_files</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_db_file'>db_file</span><span class='op'>|</span>
-    <span class='id identifier rubyid_db_file'>db_file</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="each_slice-instance_method">
-  
-    #<strong>each_slice</strong>(data)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/uploaders/polymorphic_uploader.rb', line 91</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_each_slice'>each_slice</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_max_part_size'>max_part_size</span> <span class='op'>=</span> <span class='int'>200</span><span class='period'>.</span><span class='id identifier rubyid_kilobytes'>kilobytes</span>
-  <span class='id identifier rubyid_beginning'>beginning</span> <span class='op'>=</span> <span class='int'>0</span><span class='semicolon'>;</span>
-  <span class='id identifier rubyid_left'>left</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
-  <span class='kw'>while</span> <span class='id identifier rubyid_left'>left</span> <span class='op'>&gt;</span> <span class='int'>0</span>
-    <span class='id identifier rubyid_part_size'>part_size</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_left'>left</span><span class='comma'>,</span> <span class='id identifier rubyid_max_part_size'>max_part_size</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_min'>min</span>
-    <span class='kw'>yield</span> <span class='id identifier rubyid_beginning'>beginning</span><span class='comma'>,</span> <span class='id identifier rubyid_part_size'>part_size</span>
-    <span class='id identifier rubyid_beginning'>beginning</span> <span class='op'>+=</span> <span class='id identifier rubyid_part_size'>part_size</span>
-    <span class='id identifier rubyid_left'>left</span> <span class='op'>-=</span> <span class='id identifier rubyid_part_size'>part_size</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="path-instance_method">
   
     #<strong>path</strong>  &#x21d2; <tt>Object</tt> 
@@ -655,7 +516,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the current path of the file</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -685,7 +557,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Reads the contents of the file</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -745,7 +628,19 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Stores the file in the DbFiles model - split across many rows if size &gt;
+200KB</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -788,6 +683,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Would returns the url</p>
+
 
   </div>
 </div>
@@ -833,9 +730,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:30 2016 by
+  Generated on Mon Dec 19 11:17:13 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

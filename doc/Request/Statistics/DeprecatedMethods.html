@@ -254,7 +254,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>TODO - Move these to named scope on Request.</p>
+</div></span>
   
 </li>
 
@@ -481,7 +483,18 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>TODO - Move these to named scope on Request</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -517,12 +530,12 @@
       <pre class="lines">
 
 
-38
 39
-40</pre>
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request/statistics.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'app/models/request/statistics.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_total_requests_report'>total_requests_report</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_group'>group</span><span class='lparen'>(</span><span class='symbol'>:request_type_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span>
@@ -537,9 +550,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:34 2016 by
+  Generated on Mon Dec 19 11:16:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

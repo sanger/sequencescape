@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2013,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -209,16 +223,16 @@
       <pre class="lines">
 
 
+8
 9
 10
 11
 12
 13
-14
-15</pre>
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/request_observer.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/observers/request_observer.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_after_create'>after_create</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_request_events'>request_events</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span>
@@ -247,6 +261,7 @@
       <pre class="lines">
 
 
+29
 30
 31
 32
@@ -256,15 +271,14 @@
 36
 37
 38
-39
-40</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/request_observer.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'app/observers/request_observer.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_before_destroy'>before_destroy</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_time'>time</span> <span class='op'>=</span> <span class='const'>DateTime</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span>
-  <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_current_request_event'>current_request_event</span><span class='period'>.</span><span class='id identifier rubyid_expire!'>expire!</span><span class='lparen'>(</span><span class='id identifier rubyid_time'>time</span><span class='rparen'>)</span>  <span class='kw'>unless</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_current_request_event'>current_request_event</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_current_request_event'>current_request_event</span><span class='period'>.</span><span class='id identifier rubyid_expire!'>expire!</span><span class='lparen'>(</span><span class='id identifier rubyid_time'>time</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_current_request_event'>current_request_event</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_request_events'>request_events</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span>
     <span class='label'>event_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>destroyed</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
     <span class='label'>from_state:</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_state'>state</span><span class='comma'>,</span>
@@ -293,6 +307,7 @@
       <pre class="lines">
 
 
+16
 17
 18
 19
@@ -303,11 +318,10 @@
 24
 25
 26
-27
-28</pre>
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/request_observer.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'app/observers/request_observer.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_before_save'>before_save</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_new_record?'>new_record?</span> <span class='op'>||</span> <span class='op'>!</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_changed'>changed</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>state</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -331,9 +345,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:22 2016 by
+  Generated on Mon Dec 19 11:17:08 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

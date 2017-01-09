@@ -108,7 +108,20 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>An instance of this class is responsible for dealing with a particular
+named action on a resource.  It is as though this instance is actually part
+of the instance that it was registered within.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -122,28 +135,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#core_path-instance_method" title="#core_path (instance method)">#<strong>core_path</strong>(*args)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -167,28 +158,6 @@
     <span class="summary_desc"><div class='inline'>
 <p>A new instance of Handler.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#owner_for-instance_method" title="#owner_for (instance method)">#<strong>owner_for</strong>(request, object)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -247,84 +216,12 @@
 </div>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="core_path-instance_method">
-  
-    #<strong>core_path</strong>(*args)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-25
-26
-27
-28</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/endpoint/basic_handler/actions/bound/handler.rb', line 25</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_core_path'>core_path</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_unshift'>unshift</span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:to</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-  <span class='ivar'>@owner</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:core_path</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="owner_for-instance_method">
-  
-    #<strong>owner_for</strong>(request, object)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-18
-19
-20
-21
-22</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/endpoint/basic_handler/actions/bound/handler.rb', line 18</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_owner_for'>owner_for</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_endpoint_for_object'>endpoint_for_object</span><span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_instance_handler'>instance_handler</span>
-<span class='kw'>rescue</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_exception'>exception</span>
-  <span class='ivar'>@owner</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:55 2016 by
+  Generated on Mon Dec 19 11:17:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

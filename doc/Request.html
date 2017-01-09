@@ -125,7 +125,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Request/ChangeDecision.html" title="Request::ChangeDecision (class)">ChangeDecision</a></span>, <span class='object_link'><a href="Request/Multiplexing.html" title="Request::Multiplexing (class)">Multiplexing</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Request/ChangeDecision.html" title="Request::ChangeDecision (class)">ChangeDecision</a></span>, <span class='object_link'><a href="Request/LibraryCreation.html" title="Request::LibraryCreation (class)">LibraryCreation</a></span>, <span class='object_link'><a href="Request/Multiplexing.html" title="Request::Multiplexing (class)">Multiplexing</a></span>
     
   
 </p>
@@ -134,7 +134,20 @@
   <dl class="constants">
     
       <dt id="PERMISSABLE_NEXT_REQUESTS-constant" class="">PERMISSABLE_NEXT_REQUESTS =
-        
+        <div class="docstring">
+  <div class="discussion">
+    
+<p>This is used for the default next or previous request check.  It means that
+if the caller does not specify a block then we can use this one in its
+place.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
       </dt>
       <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_pending?'>pending?</span> <span class='kw'>or</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_blocked?'>blocked?</span> <span class='rbrace'>}</span></pre></dd>
     
@@ -249,7 +262,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>TODO: There is probably a MUCH better way of getting this information.</p>
+</div></span>
   
 </li>
 
@@ -257,7 +272,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#group_requests-class_method" title="group_requests (class method)">.<strong>group_requests</strong>(finder_method, options = {})  &#x21d2; Object </a>
+      <a href="#group_requests-class_method" title="group_requests (class method)">.<strong>group_requests</strong>(options = {})  &#x21d2; Object </a>
     
 
     
@@ -764,7 +779,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The options that are required for creation.</p>
+</div></span>
   
 </li>
 
@@ -918,7 +935,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The date at which the submission was made.</p>
+</div></span>
   
 </li>
 
@@ -984,7 +1003,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Adds any pool information to the structure so that it can be reported to
+client applications.</p>
+</div></span>
   
 </li>
 
@@ -1090,7 +1112,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Metadata.html" title="Metadata (module)">Metadata</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Metadata.html#build_association-instance_method" title="Metadata#build_association (method)">build_association</a></span>, <span class='object_link'><a href="Metadata.html#construct_metadata_class-instance_method" title="Metadata#construct_metadata_class (method)">construct_metadata_class</a></span>, <span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#include_tag-instance_method" title="Metadata#include_tag (method)">include_tag</a></span>, <span class='object_link'><a href="Metadata.html#require_tag-instance_method" title="Metadata#require_tag (method)">require_tag</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Metadata.html#has_metadata-instance_method" title="Metadata#has_metadata (method)">has_metadata</a></span>, <span class='object_link'><a href="Metadata.html#required_tags-class_method" title="Metadata.required_tags (method)">required_tags</a></span></p>
 
   
   
@@ -1168,7 +1190,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -1257,12 +1279,12 @@
       <pre class="lines">
 
 
-516
-517
-518</pre>
+498
+499
+500</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 516</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 498</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_accessioning_required?'>accessioning_required?</span>
   <span class='kw'>false</span>
@@ -1287,12 +1309,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_delegate_validator'>delegate_validator</span>
   <span class='const'>DelegateValidation</span><span class='op'>::</span><span class='const'>AlwaysValidValidator</span>
@@ -1317,12 +1339,12 @@
       <pre class="lines">
 
 
-317
-318
-319</pre>
+303
+304
+305</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 317</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 303</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_for_study'>for_study</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='const'>Request</span><span class='period'>.</span><span class='id identifier rubyid_for_study_id'>for_study_id</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
@@ -1341,19 +1363,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>TODO: There is probably a MUCH better way of getting this information. This
+is just a rewrite of the old approach</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-345
-346
-347
-348</pre>
+329
+330
+331
+332</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 345</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 329</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_target_plate_ids'>get_target_plate_ids</span><span class='lparen'>(</span><span class='id identifier rubyid_request_ids'>request_ids</span><span class='rparen'>)</span>
   <span class='const'>ContainerAssociation</span><span class='period'>.</span><span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>INNER JOIN requests ON content_id = target_asset_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span>
@@ -1367,7 +1401,7 @@
       <div class="method_details ">
   <h3 class="signature " id="group_requests-class_method">
   
-    .<strong>group_requests</strong>(finder_method, options = {})  &#x21d2; <tt>Object</tt> 
+    .<strong>group_requests</strong>(options = {})  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1379,22 +1413,21 @@
       <pre class="lines">
 
 
-269
-270
-271
-272
-273
-274
-275
-276
-277
-278
-279</pre>
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 269</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 255</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_finder_method'>finder_method</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_group_requests'>group_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_target'>target</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:by_target</span><span class='rbracket'>]</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>target_asset_id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>asset_id</span><span class='tstring_end'>&#39;</span></span>
   <span class='id identifier rubyid_groupings'>groupings</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:group</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
@@ -1402,8 +1435,7 @@
   <span class='id identifier rubyid_joins'>joins</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>INNER JOIN container_associations tca ON tca.content_id=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_target'>target</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span>
   <span class='id identifier rubyid_readonly'>readonly</span><span class='lparen'>(</span><span class='kw'>false</span><span class='rparen'>)</span><span class='period'>.</span>
   <span class='id identifier rubyid_preload'>preload</span><span class='lparen'>(</span><span class='symbol'>:request_metadata</span><span class='rparen'>)</span><span class='period'>.</span>
-  <span class='id identifier rubyid_group'>group</span><span class='lparen'>(</span><span class='id identifier rubyid_groupings'>groupings</span><span class='rparen'>)</span><span class='period'>.</span>
-  <span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_finder_method'>finder_method</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_group'>group</span><span class='lparen'>(</span><span class='id identifier rubyid_groupings'>groupings</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1425,12 +1457,12 @@
       <pre class="lines">
 
 
-431
-432
-433</pre>
+414
+415
+416</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 431</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 414</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_number_expected_for_submission_id_and_request_type_id'>number_expected_for_submission_id_and_request_type_id</span><span class='lparen'>(</span><span class='id identifier rubyid_submission_id'>submission_id</span><span class='comma'>,</span> <span class='id identifier rubyid_request_type_id'>request_type_id</span><span class='rparen'>)</span>
   <span class='const'>Request</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>submission_id:</span> <span class='id identifier rubyid_submission_id'>submission_id</span><span class='comma'>,</span> <span class='label'>request_type_id:</span> <span class='id identifier rubyid_request_type_id'>request_type_id</span><span class='rparen'>)</span>
@@ -1461,12 +1493,12 @@
       <pre class="lines">
 
 
-427
-428
-429</pre>
+410
+411
+412</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 427</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 410</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_comment'>add_comment</span><span class='lparen'>(</span><span class='id identifier rubyid_comment'>comment</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='lbrace'>{</span> <span class='label'>description:</span> <span class='id identifier rubyid_comment'>comment</span><span class='comma'>,</span> <span class='label'>user:</span> <span class='id identifier rubyid_user'>user</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -1491,15 +1523,15 @@
       <pre class="lines">
 
 
-204
-205
-206
-207
-208
-209</pre>
+191
+192
+193
+194
+195
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 204</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_associated_studies'>associated_studies</span>
   <span class='kw'>return</span> <span class='lbracket'>[</span><span class='id identifier rubyid_initial_study'>initial_study</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_initial_study'>initial_study</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span>
@@ -1549,12 +1581,12 @@
       <pre class="lines">
 
 
-464
-465
-466</pre>
+447
+448
+449</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 464</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 447</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cancelable?'>cancelable?</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_batch_request'>batch_request</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_pending?'>pending?</span> <span class='op'>||</span> <span class='id identifier rubyid_blocked?'>blocked?</span><span class='rparen'>)</span>
@@ -1579,12 +1611,12 @@
       <pre class="lines">
 
 
-460
-461
-462</pre>
+443
+444
+445</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 460</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 443</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_copy'>copy</span>
   <span class='const'>RequestFactory</span><span class='period'>.</span><span class='id identifier rubyid_copy_request'>copy_request</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -1609,12 +1641,12 @@
       <pre class="lines">
 
 
-164
-165
-166</pre>
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 153</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_request_event'>current_request_event</span>
   <span class='id identifier rubyid_request_events'>request_events</span><span class='period'>.</span><span class='id identifier rubyid_current'>current</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span>
@@ -1639,12 +1671,12 @@
       <pre class="lines">
 
 
-481
-482
-483</pre>
+464
+465
+466</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 481</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 464</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_customer_accepts_responsibility!'>customer_accepts_responsibility!</span>
   <span class='comment'># Do nothing
@@ -1669,12 +1701,12 @@
       <pre class="lines">
 
 
-389
-390
-391</pre>
+372
+373
+374</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 389</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 372</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_event_with_key_value'>event_with_key_value</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>false</span> <span class='op'>:</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_lab_events'>lab_events</span><span class='period'>.</span><span class='id identifier rubyid_with_descriptor'>with_descriptor</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
@@ -1699,19 +1731,19 @@
       <pre class="lines">
 
 
-449
-450
-451
-452
-453
-454
-455
-456
-457
-458</pre>
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 449</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 432</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_format_qc_information'>format_qc_information</span>
   <span class='kw'>return</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_lab_events'>lab_events</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -1743,15 +1775,15 @@
       <pre class="lines">
 
 
-364
-365
-366
-367
-368
-369</pre>
+347
+348
+349
+350
+351
+352</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 364</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 347</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_value'>get_value</span><span class='lparen'>(</span><span class='id identifier rubyid_request_information_type'>request_information_type</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_request_metadata'>request_metadata</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='id identifier rubyid_request_information_type'>request_information_type</span><span class='period'>.</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
@@ -1779,12 +1811,12 @@
       <pre class="lines">
 
 
-381
-382
-383</pre>
+364
+365
+366</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 381</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 364</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_has_passed'>has_passed</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='comma'>,</span> <span class='id identifier rubyid_task'>task</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_lab_events_for_batch'>lab_events_for_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_event'>event</span><span class='op'>|</span> <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_description'>description</span> <span class='op'>==</span> <span class='id identifier rubyid_task'>task</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='rbrace'>}</span>
@@ -1809,12 +1841,12 @@
       <pre class="lines">
 
 
-385
-386
-387</pre>
+368
+369
+370</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 385</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 368</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_lab_events_for_batch'>lab_events_for_batch</span><span class='lparen'>(</span><span class='id identifier rubyid_batch'>batch</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_lab_events'>lab_events</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>batch_id:</span> <span class='id identifier rubyid_batch'>batch</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
@@ -1861,12 +1893,12 @@
       <pre class="lines">
 
 
-528
-529
-530</pre>
+510
+511
+512</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 528</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 510</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_library_creation?'>library_creation?</span>
   <span class='kw'>false</span>
@@ -1891,10 +1923,10 @@
       <pre class="lines">
 
 
-532</pre>
+514</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 532</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 514</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manifest_processed!'>manifest_processed!</span><span class='semicolon'>;</span> <span class='kw'>end</span></pre>
     </td>
@@ -1917,30 +1949,30 @@
       <pre class="lines">
 
 
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
 397
 398
 399
-400
-401
-402
-403
-404
-405
-406
-407
-408
-409
-410
-411
-412
-413
-414
-415
-416
-417</pre>
+400</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 397</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 380</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_next_requests'>next_requests</span><span class='lparen'>(</span><span class='id identifier rubyid_pipeline'>pipeline</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='comment'># TODO remove pipeline parameters
@@ -1983,12 +2015,12 @@
       <pre class="lines">
 
 
-423
-424
-425</pre>
+406
+407
+408</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 423</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 406</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_previous_failed_requests'>previous_failed_requests</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_asset'>asset</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_previous_failed_request'>previous_failed_request</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id identifier rubyid_previous_failed_request'>previous_failed_request</span><span class='period'>.</span><span class='id identifier rubyid_failed?'>failed?</span> <span class='kw'>or</span> <span class='id identifier rubyid_previous_failed_request'>previous_failed_request</span><span class='period'>.</span><span class='id identifier rubyid_blocked?'>blocked?</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -2013,12 +2045,12 @@
       <pre class="lines">
 
 
-473
-474
-475</pre>
+456
+457
+458</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 473</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 456</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_priority'>priority</span>
   <span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:priority</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='int'>0</span>
@@ -2043,13 +2075,13 @@
       <pre class="lines">
 
 
-186
-187
-188
-189</pre>
+173
+174
+175
+176</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 173</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_project='>project=</span><span class='lparen'>(</span><span class='id identifier rubyid_project'>project</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_project'>project</span>
@@ -2097,13 +2129,13 @@
       <pre class="lines">
 
 
-168
-169
-170
-171</pre>
+157
+158
+159
+160</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 157</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_project_id='>project_id=</span><span class='lparen'>(</span><span class='id identifier rubyid_project_id'>project_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RuntimeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Initial project already set</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_initial_project_id'>initial_project_id</span>
@@ -2151,12 +2183,12 @@
       <pre class="lines">
 
 
-520
-521
-522</pre>
+502
+503
+504</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 520</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 502</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ready?'>ready?</span>
   <span class='kw'>true</span>
@@ -2181,17 +2213,17 @@
       <pre class="lines">
 
 
-440
-441
-442
-443
-444
-445
-446
-447</pre>
+423
+424
+425
+426
+427
+428
+429
+430</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 440</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 423</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_unused_assets'>remove_unused_assets</span>
   <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
@@ -2215,18 +2247,37 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The options that are required for creation.  In other words, the truly
+required options that must be filled in and cannot be changed if the asset
+we&#39;re creating is used downstream.  For example, a library tube
+definitely has to have fragment_size_required_from,
+fragment_size_required_to and library_type and these cannot be changed once
+the library has been made.</p>
+
+<p>– Side note: really this information should be stored on the asset itself,
+which suggests there is a discrepancy in our model somewhere. ++</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-360
-361
-362</pre>
+343
+344
+345</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 360</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 343</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_options_for_creation'>request_options_for_creation</span>
   <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -2273,12 +2324,12 @@
       <pre class="lines">
 
 
-477
-478
-479</pre>
+460
+461
+462</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 477</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 460</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_type_updatable?'>request_type_updatable?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_request_type'>new_request_type</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_pending?'>pending?</span>
@@ -2325,13 +2376,13 @@
       <pre class="lines">
 
 
-435
-436
-437
-438</pre>
+418
+419
+420
+421</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 435</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 418</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_return_pending_to_inbox!'>return_pending_to_inbox!</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Can only return pending requests, request is </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_state'>state</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_pending?'>pending?</span>
@@ -2357,12 +2408,12 @@
       <pre class="lines">
 
 
-512
-513
-514</pre>
+494
+495
+496</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 512</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 494</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_role'>role</span>
   <span class='id identifier rubyid_order'>order</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:role</span><span class='rparen'>)</span>
@@ -2387,13 +2438,13 @@
       <pre class="lines">
 
 
-199
-200
-201
-202</pre>
+186
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 199</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_study='>study=</span><span class='lparen'>(</span><span class='id identifier rubyid_study'>study</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_study'>study</span>
@@ -2441,13 +2492,13 @@
       <pre class="lines">
 
 
-194
-195
-196
-197</pre>
+181
+182
+183
+184</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 181</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_study_id='>study_id=</span><span class='lparen'>(</span><span class='id identifier rubyid_study_id'>study_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RuntimeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Initial study already set</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_initial_study_id'>initial_study_id</span>
@@ -2473,15 +2524,15 @@
       <pre class="lines">
 
 
-174
-175
-176
-177
-178
-179</pre>
+162
+163
+164
+165
+166
+167</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 162</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submission_plate_count'>submission_plate_count</span>
   <span class='id identifier rubyid_submission'>submission</span><span class='period'>.</span><span class='id identifier rubyid_requests'>requests</span><span class='period'>.</span>
@@ -2503,21 +2554,34 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The date at which the submission was made. In most cases this will be
+similar to the request&#39;s created_at timestamp. We go via submission to
+ensure that copied requests bear the original timestamp.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-505
-506
-507
-508
-509
-510</pre>
+487
+488
+489
+490
+491
+492</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 505</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 487</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submitted_at'>submitted_at</span>
   <span class='comment'># Hopefully we shouldn&#39;t get any requests that don&#39;t have a submission. But validation is turned off, so
@@ -2545,12 +2609,12 @@
       <pre class="lines">
 
 
-524
-525
-526</pre>
+506
+507
+508</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 524</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 506</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_target_purpose'>target_purpose</span>
   <span class='kw'>nil</span>
@@ -2575,12 +2639,12 @@
       <pre class="lines">
 
 
-419
-420
-421</pre>
+402
+403
+404</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 419</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 402</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_target_tube'>target_tube</span>
   <span class='id identifier rubyid_target_asset'>target_asset</span> <span class='kw'>if</span> <span class='id identifier rubyid_target_asset'>target_asset</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Tube</span><span class='rparen'>)</span>
@@ -2599,18 +2663,30 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Adds any pool information to the structure so that it can be reported to
+client applications</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-495
-496
-497</pre>
+477
+478
+479</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 495</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 477</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update_pool_information'>update_pool_information</span><span class='lparen'>(</span><span class='id identifier rubyid_pool_information'>pool_information</span><span class='rparen'>)</span>
   <span class='comment'># Does not need anything here
@@ -2635,13 +2711,13 @@
       <pre class="lines">
 
 
-468
-469
-470
-471</pre>
+451
+452
+453
+454</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 468</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 451</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update_priority'>update_priority</span>
   <span class='id identifier rubyid_priority'>priority</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_priority'>priority</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='int'>4</span>
@@ -2667,12 +2743,12 @@
       <pre class="lines">
 
 
-181
-182
-183</pre>
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 181</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 169</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_update_responsibilities!'>update_responsibilities!</span>
   <span class='comment'># Do nothing
@@ -2697,12 +2773,12 @@
       <pre class="lines">
 
 
-45
-46
-47</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validator_for'>validator_for</span><span class='lparen'>(</span><span class='id identifier rubyid_request_option'>request_option</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_request_type'>request_type</span><span class='period'>.</span><span class='id identifier rubyid_request_type_validators'>request_type_validators</span><span class='period'>.</span><span class='id identifier rubyid_find_by_request_option!'>find_by_request_option!</span><span class='lparen'>(</span><span class='id identifier rubyid_request_option'>request_option</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
@@ -2727,18 +2803,18 @@
       <pre class="lines">
 
 
-371
-372
-373
-374
-375
-376
-377
-378
-379</pre>
+354
+355
+356
+357
+358
+359
+360
+361
+362</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 371</span>
+      <pre class="code"><span class="info file"># File 'app/models/request.rb', line 354</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_value_for'>value_for</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_batch'>batch</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_rit'>rit</span> <span class='op'>=</span> <span class='const'>RequestInformationType</span><span class='period'>.</span><span class='id identifier rubyid_find_by_name'>find_by_name</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -2759,9 +2835,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:00 2016 by
+  Generated on Mon Dec 19 11:16:45 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

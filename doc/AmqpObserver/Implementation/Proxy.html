@@ -101,7 +101,20 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>A very simply proxy around the observer such that it will ensure the
+exchange is activated. This should mean that `AmqpObserver.instance
+&lt;&lt; record` will work, even without the surrounding transaction.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -196,12 +209,12 @@
       <pre class="lines">
 
 
-136
-137
-138</pre>
+173
+174
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 173</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_observer'>observer</span><span class='rparen'>)</span>
   <span class='ivar'>@observer</span> <span class='op'>=</span> <span class='id identifier rubyid_observer'>observer</span>
@@ -233,22 +246,22 @@
       <pre class="lines">
 
 
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155</pre>
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'app/observers/amqp_observer.rb', line 180</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_record'>record</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_activate_exchange'>activate_exchange</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_exchange'>exchange</span><span class='op'>|</span>
@@ -273,9 +286,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:14 2016 by
+  Generated on Mon Dec 19 11:17:01 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

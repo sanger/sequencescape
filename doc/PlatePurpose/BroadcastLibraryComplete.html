@@ -90,44 +90,27 @@
   
 </div>
 
-
-
-
-
-
-
-
-  
-    <h2>
-      Class Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
     
-      <a href="#included-class_method" title="included (class method)">.<strong>included</strong>(base)  &#x21d2; Object </a>
-    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2016 Genome Research Ltd.</p>
 
-    
-  </span>
-  
-  
-  
-  
-  
-  
+
+  </div>
+</div>
+<div class="tags">
   
 
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
+</div>
 
-      
-    </ul>
+
+
+
+
+
   
     <h2>
       Instance Method Summary
@@ -135,50 +118,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#generate_events_for-instance_method" title="#generate_events_for (instance method)">#<strong>generate_events_for</strong>(plate, orders, user)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#prepare_library_complete-instance_method" title="#prepare_library_complete (instance method)">#<strong>prepare_library_complete</strong>(plate, user)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -207,118 +146,12 @@
 
 
 
-  <div id="class_method_details" class="method_details_list">
-    <h2>Class Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="included-class_method">
-  
-    .<strong>included</strong>(base)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-26
-27
-28
-29
-30</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/broadcast_library_complete.rb', line 26</span>
-
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
-    <span class='id identifier rubyid_class_attribute'>class_attribute</span> <span class='symbol'>:connect_on</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="generate_events_for-instance_method">
-  
-    #<strong>generate_events_for</strong>(plate, orders, user)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-20
-21
-22
-23
-24</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/broadcast_library_complete.rb', line 20</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_generate_events_for'>generate_events_for</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_orders'>orders</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_orders'>orders</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_order_id'>order_id</span><span class='op'>|</span>
-    <span class='const'>BroadcastEvent</span><span class='op'>::</span><span class='const'>PlateLibraryComplete</span><span class='period'>.</span><span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span><span class='label'>seed:</span> <span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='label'>user:</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='label'>properties:</span> <span class='lbrace'>{</span> <span class='label'>order_id:</span> <span class='id identifier rubyid_order_id'>order_id</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="prepare_library_complete-instance_method">
-  
-    #<strong>prepare_library_complete</strong>(plate, user)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-15
-16
-17
-18</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/broadcast_library_complete.rb', line 15</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_prepare_library_complete'>prepare_library_complete</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_orders'>orders</span> <span class='op'>=</span> <span class='id identifier rubyid_plate'>plate</span><span class='period'>.</span><span class='id identifier rubyid_orders_as_target'>orders_as_target</span><span class='period'>.</span><span class='id identifier rubyid_pluck'>pluck</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_generate_events_for'>generate_events_for</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_orders'>orders</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="transition_to-instance_method">
+  <h3 class="signature first" id="transition_to-instance_method">
   
     #<strong>transition_to</strong>(plate, state, user, contents = nil, customer_accepts_responsibility = false)  &#x21d2; <tt>Object</tt> 
   
@@ -332,13 +165,13 @@
       <pre class="lines">
 
 
+7
 8
 9
-10
-11</pre>
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/broadcast_library_complete.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'app/models/plate_purpose/broadcast_library_complete.rb', line 7</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transition_to'>transition_to</span><span class='lparen'>(</span><span class='id identifier rubyid_plate'>plate</span><span class='comma'>,</span> <span class='id identifier rubyid_state'>state</span><span class='comma'>,</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span> <span class='id identifier rubyid_contents'>contents</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_customer_accepts_responsibility'>customer_accepts_responsibility</span> <span class='op'>=</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='kw'>super</span>
@@ -354,9 +187,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:45 2016 by
+  Generated on Mon Dec 19 11:16:34 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

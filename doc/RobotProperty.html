@@ -103,12 +103,125 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
 
 
 
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#barcode-instance_method" title="#barcode (instance method)">#<strong>barcode</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#ean13_barcode-instance_method" title="#ean13_barcode (instance method)">#<strong>ean13_barcode</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sanger_human_barcode-instance_method" title="#sanger_human_barcode (instance method)">#<strong>sanger_human_barcode</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sti_type-instance_method" title="#sti_type (instance method)">#<strong>sti_type</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
 
 
   
@@ -117,7 +230,7 @@
   
   
   
-  <h2>Method Summary</h2>
+  
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="ActiveRecord/Base.html" title="ActiveRecord::Base (class)">ActiveRecord::Base</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="ActiveRecord/Base.html#find_by_id_or_name-class_method" title="ActiveRecord::Base.find_by_id_or_name (method)">find_by_id_or_name</a></span>, <span class='object_link'><a href="ActiveRecord/Base.html#find_by_id_or_name%21-class_method" title="ActiveRecord::Base.find_by_id_or_name! (method)">find_by_id_or_name!</a></span>, <span class='object_link'><a href="ActiveRecord/Base.html#routing_key-instance_method" title="ActiveRecord::Base#routing_key (method)">#routing_key</a></span>, <span class='object_link'><a href="ActiveRecord/Base.html#transaction_with_amqp-class_method" title="ActiveRecord::Base.transaction_with_amqp (method)">transaction_with_amqp</a></span></p>
@@ -134,12 +247,156 @@
   <p class="inherited"><span class='object_link'><a href="ApiTools.html#as_json-instance_method" title="ApiTools#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="ApiTools.html#for_api-instance_method" title="ApiTools#for_api (method)">#for_api</a></span>, <span class='object_link'><a href="ApiTools.html#included-class_method" title="ApiTools.included (method)">included</a></span>, <span class='object_link'><a href="ApiTools.html#list_json-instance_method" title="ApiTools#list_json (method)">#list_json</a></span>, <span class='object_link'><a href="ApiTools.html#to_xml-instance_method" title="ApiTools#to_xml (method)">#to_xml</a></span>, <span class='object_link'><a href="ApiTools.html#to_yaml-instance_method" title="ApiTools#to_yaml (method)">#to_yaml</a></span>, <span class='object_link'><a href="ApiTools.html#url-instance_method" title="ApiTools#url (method)">#url</a></span>, <span class='object_link'><a href="ApiTools.html#url_name-instance_method" title="ApiTools#url_name (method)">#url_name</a></span></p>
 
 
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="barcode-instance_method">
+  
+    #<strong>barcode</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32
+33</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/robot_property.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_barcode'>barcode</span>
+  <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="ean13_barcode-instance_method">
+  
+    #<strong>ean13_barcode</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/robot_property.rb', line 14</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_ean13_barcode'>ean13_barcode</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='id identifier rubyid_str'>str</span> <span class='op'>=</span> <span class='const'>Barcode</span><span class='period'>.</span><span class='id identifier rubyid_calculate_barcode'>calculate_barcode</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BD</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>==</span> <span class='int'>12</span>
+      <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0</span><span class='tstring_end'>&#39;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_str'>str</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_str'>str</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sanger_human_barcode-instance_method">
+  
+    #<strong>sanger_human_barcode</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27
+28</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/robot_property.rb', line 25</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sanger_human_barcode'>sanger_human_barcode</span>
+  <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BD</span><span class='tstring_end'>&#39;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>+</span> <span class='const'>Barcode</span><span class='period'>.</span><span class='id identifier rubyid_calculate_checksum'>calculate_checksum</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BD</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sti_type-instance_method">
+  
+    #<strong>sti_type</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/models/robot_property.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sti_type'>sti_type</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:10 2016 by
+  Generated on Mon Dec 19 11:16:58 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

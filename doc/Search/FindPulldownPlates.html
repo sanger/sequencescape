@@ -105,7 +105,21 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2011,2012,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="FindPulldownPlatesForUser.html" title="Search::FindPulldownPlatesForUser (class)">FindPulldownPlatesForUser</a></span>, <span class='object_link'><a href="FindPulldownStockPlates.html" title="Search::FindPulldownStockPlates (class)">FindPulldownStockPlates</a></span></p>
 </div>
@@ -123,28 +137,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#pulldown_plate_purposes-instance_method" title="#pulldown_plate_purposes (instance method)">#<strong>pulldown_plate_purposes</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -187,7 +179,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Uuid/Uuidable.html" title="Uuid::Uuidable (module)">Uuid::Uuidable</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#ensure_uuid_created-instance_method" title="Uuid::Uuidable#ensure_uuid_created (method)">#ensure_uuid_created</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Uuid/Uuidable.html#included-class_method" title="Uuid::Uuidable.included (method)">included</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#unsaved_uuid%21-instance_method" title="Uuid::Uuidable#unsaved_uuid! (method)">#unsaved_uuid!</a></span>, <span class='object_link'><a href="../Uuid/Uuidable.html#uuid-instance_method" title="Uuid::Uuidable#uuid (method)">#uuid</a></span></p>
 
   
   
@@ -217,37 +209,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="pulldown_plate_purposes-instance_method">
-  
-    #<strong>pulldown_plate_purposes</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-14
-15
-16</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/models/search/find_pulldown_plates.rb', line 14</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_pulldown_plate_purposes'>pulldown_plate_purposes</span>
-  <span class='const'>PlatePurpose</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='const'>Pulldown</span><span class='op'>::</span><span class='const'>PlatePurposes</span><span class='op'>::</span><span class='const'>PLATE_PURPOSE_FLOWS</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="scope-instance_method">
+  <h3 class="signature first" id="scope-instance_method">
   
     #<strong>scope</strong>(criteria)  &#x21d2; <tt>Object</tt> 
   
@@ -285,9 +247,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:37 2016 by
+  Generated on Mon Dec 19 11:17:20 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

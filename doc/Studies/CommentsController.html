@@ -103,7 +103,21 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2015 Genome Research Ltd.</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -144,28 +158,6 @@
   <span class="summary_signature">
     
       <a href="#destroy-instance_method" title="#destroy (instance method)">#<strong>destroy</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#discover_study-instance_method" title="#discover_study (instance method)">#<strong>discover_study</strong>  &#x21d2; Object </a>
     
 
     
@@ -291,36 +283,6 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="discover_study-instance_method">
-  
-    #<strong>discover_study</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-33
-34
-35</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/studies/comments_controller.rb', line 33</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_discover_study'>discover_study</span>
-  <span class='ivar'>@study</span> <span class='op'>=</span> <span class='const'>Study</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:study_id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="index-instance_method">
   
     #<strong>index</strong>  &#x21d2; <tt>Object</tt> 
@@ -343,7 +305,7 @@
       <pre class="code"><span class="info file"># File 'app/controllers/studies/comments_controller.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_index'>index</span>
-  <span class='ivar'>@comments</span> <span class='op'>=</span> <span class='ivar'>@study</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:create_at</span><span class='rparen'>)</span>
+  <span class='ivar'>@comments</span> <span class='op'>=</span> <span class='ivar'>@study</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_order'>order</span><span class='lparen'>(</span><span class='symbol'>:created_at</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -355,9 +317,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:22:45 2016 by
+  Generated on Mon Dec 19 11:17:27 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

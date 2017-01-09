@@ -90,7 +90,21 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2012,2013,2015 Genome Research Ltd.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -227,14 +241,14 @@
       <pre class="lines">
 
 
+44
+45
 46
 47
-48
-49
-50</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_on_downstream_aliquots'>on_downstream_aliquots</span><span class='lparen'>(</span><span class='id identifier rubyid_aliquots_to_remove'>aliquots_to_remove</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_requests_as_source'>requests_as_source</span><span class='period'>.</span><span class='id identifier rubyid_with_target'>with_target</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
@@ -261,13 +275,13 @@
       <pre class="lines">
 
 
+50
+51
 52
-53
-54
-55</pre>
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_process_aliquots'>process_aliquots</span><span class='lparen'>(</span><span class='id identifier rubyid_aliquots_to_remove'>aliquots_to_remove</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_aliquots'>new_aliquots</span> <span class='op'>=</span> <span class='id identifier rubyid_remove_matching_aliquots'>remove_matching_aliquots</span><span class='lparen'>(</span><span class='id identifier rubyid_aliquots_to_remove'>aliquots_to_remove</span><span class='rparen'>)</span>
@@ -293,17 +307,16 @@
       <pre class="lines">
 
 
+36
 37
 38
 39
 40
 41
-42
-43
-44</pre>
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_downstream_aliquots'>remove_downstream_aliquots</span>
   <span class='comment'># On the target asset of the failed request.
@@ -311,7 +324,6 @@
     <span class='id identifier rubyid_target_aliquots'>target_aliquots</span> <span class='op'>=</span> <span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_aliquot'>aliquot</span><span class='op'>|</span> <span class='const'>AliquotRecord</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_aliquot'>aliquot</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
     <span class='id identifier rubyid_on_downstream_aliquots'>on_downstream_aliquots</span><span class='lparen'>(</span><span class='id identifier rubyid_target_aliquots'>target_aliquots</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -333,6 +345,8 @@
       <pre class="lines">
 
 
+55
+56
 57
 58
 59
@@ -347,18 +361,13 @@
 68
 69
 70
-71
-72
-73
-74
-75</pre>
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'app/models/aliquot/remover.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_matching_aliquots'>remove_matching_aliquots</span><span class='lparen'>(</span><span class='id identifier rubyid_aliquots_to_remove'>aliquots_to_remove</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_aliquots_to_remove'>aliquots_to_remove</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_aliquot_to_remove'>aliquot_to_remove</span><span class='op'>|</span>
-
     <span class='id identifier rubyid_to_remove'>to_remove</span> <span class='op'>=</span> <span class='id identifier rubyid_aliquots'>aliquots</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_aliquot'>aliquot</span><span class='op'>|</span>
       <span class='id identifier rubyid_aliquot'>aliquot</span><span class='period'>.</span><span class='id identifier rubyid_matches?'>matches?</span><span class='lparen'>(</span><span class='id identifier rubyid_aliquot_to_remove'>aliquot_to_remove</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
@@ -372,7 +381,6 @@
     <span class='kw'>else</span> <span class='comment'># We have noting to remove
 </span>      <span class='kw'>nil</span>
     <span class='kw'>end</span>
-
   <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -385,9 +393,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:33 2016 by
+  Generated on Mon Dec 19 11:16:26 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

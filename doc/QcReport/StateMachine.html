@@ -161,6 +161,9 @@
       <pre class="lines">
 
 
+21
+22
+23
 24
 25
 26
@@ -210,27 +213,17 @@
 70
 71
 72
-73
-74
-75
-76
-77
-78
-79
-80
-81</pre>
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/qc_report.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'app/models/qc_report.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
-
     <span class='comment'># When adding new states, please make sure you update the config/locals/en.yml file
 </span>    <span class='comment'># with decriptions.
 </span>
     <span class='id identifier rubyid_aasm'>aasm</span> <span class='label'>column:</span> <span class='symbol'>:state</span><span class='comma'>,</span> <span class='label'>whiny_persistence:</span> <span class='kw'>true</span> <span class='kw'>do</span>
-
     <span class='comment'># A report has just been created and is awaiting processing. There is probably a corresponding delayed job
 </span>    <span class='id identifier rubyid_state'>state</span> <span class='symbol'>:queued</span><span class='comma'>,</span> <span class='label'>initial:</span> <span class='kw'>true</span>
 
@@ -269,7 +262,6 @@
 </span>      <span class='id identifier rubyid_event'>event</span> <span class='symbol'>:proceed_decision</span> <span class='kw'>do</span>
         <span class='id identifier rubyid_transitions'>transitions</span> <span class='label'>from:</span> <span class='lbracket'>[</span><span class='symbol'>:complete</span><span class='comma'>,</span> <span class='symbol'>:awaiting_proceed</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>to:</span> <span class='symbol'>:complete</span>
       <span class='kw'>end</span>
-
     <span class='kw'>end</span>
 
     <span class='kw'>def</span> <span class='id identifier rubyid_available?'>available?</span>
@@ -277,9 +269,7 @@
     <span class='kw'>end</span>
 
     <span class='id identifier rubyid_extend'>extend</span> <span class='const'>ClassMethods</span>
-
   <span class='kw'>end</span>
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -291,9 +281,9 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:29 2016 by
+  Generated on Mon Dec 19 11:16:23 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>

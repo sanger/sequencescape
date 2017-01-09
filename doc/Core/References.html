@@ -90,90 +90,35 @@
   
 </div>
 
-
-
-
-
-
-
-
-  
-    <h2>
-      Instance Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
     
-      <a href="#discard_all_references-instance_method" title="#discard_all_references (instance method)">#<strong>discard_all_references</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-    </ul>
-  
+<p>This file is part of SEQUENCESCAPE; it is distributed under the terms of
+GNU General Public License version 1 or later; Please refer to the LICENSE
+and README files for information on licensing and authorship of this file.
+Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.</p>
 
 
-
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="discard_all_references-instance_method">
-  
-    #<strong>discard_all_references</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-11
-12
-13</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'app/api/core/references.rb', line 11</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_discard_all_references'>discard_all_references</span>
-  <span class='id identifier rubyid_instance_variables'>instance_variables</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='op'>|</span> <span class='id identifier rubyid_instance_variable_set'>instance_variable_set</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
+</div>
+<div class="tags">
+  
+
+</div>
+
+
+
+
+
+
+
 
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 25 15:21:31 2016 by
+  Generated on Mon Dec 19 11:16:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.3.1).
+  0.9.5 (ruby-2.3.3).
 </div>
 
     </div>
