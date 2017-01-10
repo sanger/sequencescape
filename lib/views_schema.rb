@@ -9,7 +9,7 @@ module ViewsSchema
       if query.respond_to?(:fetch_hash)
         query.fetch_hash["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
       else
-        definition = query.first[1].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
+        definition = query.first["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
       end
       yield(name, definition)
     end
