@@ -41,32 +41,32 @@ module Attributable
   end
 
   def instance_defaults
-    self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute.name] = attribute.default_from(self) if attribute.validator? }
+    attribute_details.each_with_object({}) do |attribute, hash|
+      hash[attribute.name] = attribute.default_from(self) if attribute.validator?
     end
   end
 
   def attribute_value_pairs
-    self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute] = attribute.from(self) }
+    attribute_details.each_with_object({}) do |attribute, hash|
+      hash[attribute] = attribute.from(self)
     end
   end
 
   def association_value_pairs
-    self.class.association_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute] = attribute.from(self) }
+    association_details.each_with_object({}) do |attribute, hash|
+      hash[attribute] = attribute.from(self)
     end
   end
 
   def field_infos
-    self.class.attribute_details.map do |detail|
+    attribute_details.map do |detail|
       detail.to_field_info(nil, self)
     end
   end
 
   def required?(field)
-    attribute   = self.class.attribute_details.detect { |attribute| attribute.name == field }
-    attribute ||= self.class.association_details.detect { |association| :"#{association.name}_id" == field }
+    attribute   = attribute_details.detect { |attribute| attribute.name == field }
+    attribute ||= association_details.detect { |association| :"#{association.name}_id" == field }
     attribute.try(:required?)
   end
 
@@ -90,8 +90,8 @@ module Attributable
     end
 
     def defaults
-      attribute_details.inject({}) do |hash, attribute|
-        hash.tap { hash[attribute.name] = attribute.default }
+      attribute_details.each_with_object({}) do |attribute, hash|
+        hash[attribute.name] = attribute.default
       end
     end
 
