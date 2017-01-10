@@ -14,7 +14,8 @@ describe '/api/1/tube/purposes' do
       "tube_purpose":{
         "name":"Test Purpose",
         "target_type":"MultiplexedLibraryTube",
-        "parent_uuids": ["#{parent_purpose.uuid}"]
+        "parents": ["#{parent_purpose.uuid}"],
+        "type": "IlluminaHtp::InitialStockTubePurpose"
       }
     }}
   end
@@ -36,6 +37,11 @@ describe '/api/1/tube/purposes' do
     api_request :post, subject, payload
     expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
     expect(status).to eq(response_code)
+  end
+
+  it 'allows custom types to be defined' do
+    api_request :post, subject, payload
+    expect(Tube::Purpose.last).to be_a(IlluminaHtp::InitialStockTubePurpose)
   end
 
   # Move into a helper as this expands

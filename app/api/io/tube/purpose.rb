@@ -11,8 +11,9 @@ class Io::Tube::Purpose < Core::Io::Base
 
   define_attribute_and_json_mapping("
     name  <=> name
-    parent_uuids <= parent_uuids
-    child_uuids <= child_uuids
+    parent_purposes <= parents
+    child_purposes <= children
     target_type <= target_type
+    type <= type
   ")
 end
