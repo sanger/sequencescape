@@ -173,7 +173,7 @@ module IlluminaHtp::PlatePurposes
       raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
       stock_plate = create_plate_purpose(
         flow.shift,
-        can_be_considered_a_stock_plate: true,
+        stock_plate: true,
         default_state: 'passed',
         cherrypickable_target: true,
         cherrypick_filters: [
@@ -248,7 +248,7 @@ module IlluminaHtp::PlatePurposes
         name: plate_purpose_name,
         cherrypickable_target: false,
         cherrypick_direction: 'column',
-        can_be_considered_a_stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
+        stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
         asset_shape_id: AssetShape.default.id
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type

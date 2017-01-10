@@ -15,7 +15,7 @@ ActiveRecord::Base.transaction do
     stock_plate_purpose = PlatePurpose::Input.create!(
       name: flow.shift,
       default_state: 'passed',
-      can_be_considered_a_stock_plate: true,
+      stock_plate: true,
       cherrypick_filters: [
         'Cherrypick::Strategy::Filter::ByOverflow',
         'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',

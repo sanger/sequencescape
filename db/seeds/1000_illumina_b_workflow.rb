@@ -245,7 +245,7 @@ re_request = RequestType.create!(
       RequestType.find_by_key!('illumina_b_hiseq_x_paired_end_sequencing').acceptable_plate_purposes << PlatePurpose.create!(
         name: 'Strip Tube Purpose',
         target_type: 'StripTube',
-        can_be_considered_a_stock_plate: false,
+        stock_plate: false,
         cherrypickable_target: false,
         cherrypickable_source: false,
         barcode_printer_type: BarcodePrinterType.find_by_name("96 Well Plate"),

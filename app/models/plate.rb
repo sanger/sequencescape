@@ -703,7 +703,7 @@ class Plate < Asset
 
   def stock_plate?
     return true if self.plate_purpose.nil?
-    self.plate_purpose.can_be_considered_a_stock_plate? && self.plate_purpose.attatched?(self)
+    self.plate_purpose.stock_plate? && self.plate_purpose.attatched?(self)
   end
 
   def stock_plate

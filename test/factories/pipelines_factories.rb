@@ -442,7 +442,7 @@ FactoryGirl.define do
       end
 
       factory :input_plate_purpose, class: PlatePurpose::Input do |plate_purpose|
-        can_be_considered_a_stock_plate true
+        stock_plate true
       end
     end
   end

@@ -64,7 +64,7 @@ class CherrypickRequest < TransferRequest
   after_create :build_stock_well_links
 
   def build_stock_well_links
-    stock_wells = asset.plate.try(:plate_purpose).try(:can_be_considered_a_stock_plate?) ? [asset] : asset.stock_wells
+    stock_wells = asset.plate.try(:plate_purpose).try(:stock_plate?) ? [asset] : asset.stock_wells
     target_asset.stock_wells.attach!(stock_wells)
   end
   private :build_stock_well_links

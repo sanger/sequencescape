@@ -12,7 +12,7 @@ class Io::PlatePurpose < Core::Io::Base
     name <=> name
     lifespan <=> lifespan
     cherrypickable_target <=> cherrypickable_target
-    can_be_considered_a_stock_plate <=> stock_plate
+    stock_plate <=> stock_plate
     input_plate <= input_plate
     parent_purposes <= parents
     child_purposes <= children

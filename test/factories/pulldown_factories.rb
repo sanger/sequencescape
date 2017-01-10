@@ -195,7 +195,7 @@ FactoryGirl.define do
   # Plate creations
   factory(:pooling_plate_purpose, class: PlatePurpose) do |plate_purpose|
     name 'Pooling plate purpose'
-    can_be_considered_a_stock_plate true
+    stock_plate true
     after(:create) do |plate_purpose|
       plate_purpose.child_relationships.create!(child: create(:child_plate_purpose), transfer_request_type: create(:pooling_transfer))
       plate_purpose.child_relationships.create!(child: create(:initial_downstream_plate_purpose), transfer_request_type: create(:pooling_transfer))

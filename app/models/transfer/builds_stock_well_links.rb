@@ -15,7 +15,7 @@ module Transfer::BuildsStockWellLinks
   # or they are the stock wells of our source well. We build from the source plate to avoid repeated
   # creation of links on future transfers
   def build_stock_well_relationships
-    stock_well_picker = source.plate_purpose.can_be_considered_a_stock_plate? ? ->(a) { [a] } : ->(a) { a.stock_wells }
+    stock_well_picker = source.plate_purpose.stock_plate? ? ->(a) { [a] } : ->(a) { a.stock_wells }
     eligable = destination.wells.map(&:id)
     Hash.new { |h, v| h[v] = Array.new }.tap do |t|
       source.wells.each do |well|
