@@ -218,9 +218,6 @@ module IlluminaHtp::PlatePurposes
       end
     end
 
-    def destroy_branches
-    end
-
     def purpose_for(name)
       self::PLATE_PURPOSE_TYPE[name] || raise("NO class configured for #{name}")
     end

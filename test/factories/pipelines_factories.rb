@@ -450,6 +450,10 @@ FactoryGirl.define do
   factory :purpose do |purpose|
     name { generate :purpose_name }
     target_type 'Asset'
+
+    factory :stock_purpose do
+      stock_plate true
+    end
   end
 
   factory(:tube_purpose, class: Tube::Purpose) do |purpose|
