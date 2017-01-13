@@ -63,7 +63,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
         asset: stock_plate.wells.first,
         target_asset: well_target,
         request_metadata_attributes: {
-            target_purpose_id: PlatePurpose.find_by_name("Fluidigm 192-24").id
+            target_purpose_id: PlatePurpose.find_by!(name: "Fluidigm 192-24").id
           }
         })
       plate_target

@@ -28,6 +28,9 @@ class Request < ActiveRecord::Base
 
   self.inheritance_column = "sti_type"
 
+  class_attribute :customer_request
+  self.customer_request = false
+
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
@@ -43,6 +46,10 @@ class Request < ActiveRecord::Base
   end
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
+
+  def customer_request?
+    customer_request
+  end
 
    scope :for_pipeline, ->(pipeline) {
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
@@ -140,7 +147,7 @@ class Request < ActiveRecord::Base
   # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
   has_many :qc_metric_requests
   has_many :qc_metrics, through: :qc_metric_requests
-  has_many :request_events, ->() { order(:current_from) }
+  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }

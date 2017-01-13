@@ -86,6 +86,7 @@ class Plate < Asset
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
+  has_many :transfer_requests_as_source, through: :wells
 
   scope :include_for_show, ->() {
     includes(

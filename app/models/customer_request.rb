@@ -6,6 +6,8 @@
 
 # A class for requests that have some business meaning outside of Sequencescape
 class CustomerRequest < Request
+  self.customer_request = true
+
   def update_responsibilities!
     return if qc_metrics.stock_metric.empty?
     self.customer_accepts_responsibility! if qc_metrics.stock_metric.all?(&:poor_quality_proceed)

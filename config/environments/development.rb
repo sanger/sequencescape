@@ -35,7 +35,7 @@ Sequencescape::Application.configure do
 
   config.time_zone = 'London'
 
-  config.active_record.observers = [:request_observer]
+  config.active_record.observers = [:customer_request_observer]
 
   # Set TEST_RABBIT_MQ to enable the amqp_observer for debugging.
   # You'll need a local rabbit MQ server running

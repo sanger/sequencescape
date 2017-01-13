@@ -23,7 +23,7 @@ class TransferRequest::InitialTransfer < TransferRequest
 
     # Requests are already loaded when this is used, hence filtering in Ruby rather than using scopes.
     def outer_request
-      asset.requests.detect { |r| r.library_creation? && r.submission_id == self.submission_id }
+      asset.requests.detect { |r| r.customer_request? && r.submission_id == self.submission_id }
     end
   end
 

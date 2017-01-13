@@ -149,6 +149,14 @@ class Submission < ActiveRecord::Base
     orders.any? { |o| RequestType.find(o.request_types).any?(&:for_multiplexing?) }
   end
 
+  # Attempts to find the multiplexed asset (usually a multiplexed library tube) associated
+  # with the submission. Useful when trying to pool requests into a pre-existing tube at the
+  # end of the process.
+  def multiplexed_asset
+    # All our multiplexed requests end up in a single asset, so we don't care which one we find.
+    requests.joins(:request_type).find_by(request_types: { for_multiplexing: true }).target_asset
+  end
+
   def multiplex_started_passed
     multiplex_started_passed_result = false
     if self.multiplexed?

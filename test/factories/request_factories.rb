@@ -198,8 +198,8 @@ FactoryGirl.define do
   end
 
   factory :initial_transfer_request, class: TransferRequest::InitialTransfer do
-    asset        { |asset| asset.association(:well) }
-    target_asset        { |asset| asset.association(:well) }
+    asset { |asset| asset.association(:well) }
+    target_asset { |asset| asset.association(:well) }
     request_purpose
   end
 end

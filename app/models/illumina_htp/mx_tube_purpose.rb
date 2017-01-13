@@ -32,7 +32,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect { |r| r.asset.present? }.asset.plate
+    tube.requests_as_target.where_is_a?(CustomerRequest).where.not(requests: {asset_id: nil}).first.asset.plate
   end
 
   def library_source_plates(tube)

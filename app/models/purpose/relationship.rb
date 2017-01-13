@@ -13,7 +13,7 @@ class Purpose::Relationship < ActiveRecord::Base
     # Returns the transfer request type to use between this purpose and the parent given
     # If no relationship exists, use the default transfer
     def transfer_request_type_from(parent_purpose)
-      relationship = parent_relationships.find_by_parent_id(parent_purpose.id)
+      relationship = parent_relationships.find_by(parent_id: parent_purpose.id)
       return parent_purpose.default_transfer if relationship.nil?
       relationship.transfer_request_type
     end

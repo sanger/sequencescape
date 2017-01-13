@@ -46,5 +46,5 @@ Sequencescape::Application.configure do
   config.allow_concurrency = false
 
   # config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
-  config.active_record.observers = [:request_observer]
+  config.active_record.observers = [:customer_request_observer]
 end

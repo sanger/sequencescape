@@ -33,9 +33,10 @@ class WorkCompletion < ActiveRecord::Base
       target_well.stock_wells.each do |source_well|
         # We may have multiple requests out of each well, however we're only concerned
         # about those associated with the active submission.
+
         upstream = source_well.requests.detect do |r|
-          r.is_a?(IlluminaHtp::Requests::StdLibraryRequest) && submission_ids.include?(r.submission_id)
-        end
+          r.library_creation? && submission_ids.include?(r.submission_id)
+        end || raise("Could not find matching upstream requests for #{target_well.map_description}")
 
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through

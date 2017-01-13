@@ -3,7 +3,7 @@
 # files, such as pipelines and in the catch all factory folder.
 # Create all new plate factories here, and move others as you find them,
 # especially if you change them, otherwise merges could get messy.
-require 'pry'
+
 # The factories in here, at time of writing could do with a bit of TLC.
 FactoryGirl.define do
   factory :plate do
