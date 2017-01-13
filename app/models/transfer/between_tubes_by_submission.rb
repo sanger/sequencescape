@@ -17,7 +17,7 @@ class Transfer::BetweenTubesBySubmission < Transfer
 
   def ensure_destination_setup
     self.destination = source.submission.multiplexed_asset
-    errors.add(:destination,'could not be found.') if destination.nil?
+    errors.add(:destination, 'could not be found.') if destination.nil?
   end
 
   after_create :update_destination_tube_name

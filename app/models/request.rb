@@ -521,7 +521,6 @@ class Request < ActiveRecord::Base
   def manifest_processed!; end
 end
 
-require_dependency 'customer_request'
 require_dependency 'system_request'
 require_dependency 'pooled_cherrypick_request'
 require_dependency 'illumina_b/requests'

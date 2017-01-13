@@ -1,10 +1,10 @@
-  # This file is part of SEQUENCESCAPE; it is distributed under the terms of
-  # GNU General Public License version 1 or later;
-  # Please refer to the LICENSE and README files for information on licensing and
-  # authorship of this file.
-  # Copyright (C) 2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015 Genome Research Ltd.
 
-  class CustomerRequestObserver < ActiveRecord::Observer
+class CustomerRequestObserver < ActiveRecord::Observer
     def after_create(request)
       request.request_events.create!(
         event_name: 'created',
@@ -17,7 +17,7 @@
       return if request.new_record? || !request.changed.include?('state')
       from_state = request.changes['state'].first
       time = DateTime.now
-      request.current_request_event.expire!(time) unless request.current_request_event.nil?
+      request.current_request_event&.expire!(time)
       request.request_events.create!(
         event_name: 'state_changed',
         from_state: from_state,
@@ -28,7 +28,7 @@
 
     def before_destroy(request)
       time = DateTime.now
-      request.current_request_event.expire!(time) unless request.current_request_event.nil?
+      request.current_request_event&.expire!(time)
       request.request_events.create!(
         event_name: 'destroyed',
         from_state: request.state,
