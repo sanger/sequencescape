@@ -301,7 +301,7 @@ class AssetsController < ApplicationController
     respond_to do |format|
       flash[:notice] = 'Created request'
 
-      format.html { redirect_to new_request_for_current_asset }
+      format.html { redirect_to asset_path(@asset) }
       format.json { render json: submission.requests, status: :created }
     end
   rescue Submission::ProjectValidation::Error => exception
