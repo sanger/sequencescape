@@ -15,7 +15,7 @@ class StudiesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
   before_action :login_required
-  before_action :admin_login_required, only: [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
+  before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
   before_action :manager_login_required, only: [:close, :open, :related_studies, :relate_study, :unrelate_study]
 
   around_filter :rescue_validation, only: [:close, :open]
@@ -319,53 +319,6 @@ class StudiesController < ApplicationController
 
    def state
      @study = Study.find(params[:id])
-   end
-
-   def new_plate_submission
-     @study = Study.find(params[:id])
-   end
-
-   def create_plate_submission
-     @study = Study.find(params[:id])
-     @project = Project.find(params[:studies][:project])
-
-     plates = []
-     params[:studies][:barcodes].scan(/\d+/).each do |plate_barcode|
-       plate = Plate.find_by_barcode(plate_barcode)
-       unless plate.nil?
-         plates << plate
-       else
-         @study.errors.add("Plate", "Couldnt find plate #{plate_barcode}")
-       end
-     end
-
-     if @study.errors.count > 0
-       flash[:error] = "Error submitting your plates"
-       respond_to do |format|
-         format.html { render action: "new_plate_submission" }
-         format.xml  { render xml: flash, status: :unprocessable_entity }
-         format.json { render json: flash, status: :unprocessable_entity }
-       end
-       return
-     else
-       Plate.create_plates_submission(@project, @study, plates, current_user)
-     end
-
-     if @study.errors.count > 0
-       flash[:error] = "Error submitting your plates"
-       respond_to do |format|
-         format.html { render action: "new_plate_submission" }
-         format.xml  { render xml: flash, status: :unprocessable_entity }
-         format.json { render json: flash, status: :unprocessable_entity }
-       end
-     else
-       flash[:notice] = "Your plates have been submitted"
-       respond_to do |format|
-         format.html { render action: "new_plate_submission" }
-         format.xml  { render xml: @study, status: :created, location: @study }
-         format.json { render json: @study, status: :created, location: @study }
-       end
-     end
    end
 
    def self.role_helper(name, success_action, error_action, &block)

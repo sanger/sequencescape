@@ -48,19 +48,6 @@ class StudiesControllerTest < ActionController::TestCase
       should render_template :new
     end
 
-    context "#new_plate_submission" do
-      setup do
-        @study = FactoryGirl.create(:study)
-        @project = FactoryGirl.create(:project)
-        @user.is_administrator
-        @user.save
-        get :new_plate_submission, id: @study.id
-      end
-
-      should respond_with :success
-      should render_template :new_plate_submission
-    end
-
     context "#create" do
       setup do
         @request_type_1 = FactoryGirl.create :request_type

@@ -227,7 +227,7 @@ class Plate < Asset
   deprecate :study
 
   has_many :container_associations, foreign_key: :container_id
-  has_many :wells, through: :container_associations do
+  has_many :wells, through: :container_associations, inverse_of: :plate do
     def import(records)
       ActiveRecord::Base.transaction do
         records.map(&:save!)
@@ -441,7 +441,7 @@ class Plate < Asset
 
   def add_well_holder(well)
     children << well
-    well.plate = self
+    wells << well
   end
 
   def add_well(well, row = nil, col = nil)
@@ -453,12 +453,12 @@ class Plate < Asset
 
   def add_well_by_map_description(well, map_description)
     add_well_holder(well)
-    well.map = Map.find_by_description_and_asset_size(map_description, size)
+    well.map = Map.find_by(description: map_description, asset_size: size)
     well.save!
   end
 
   def add_and_save_well(well, row = nil, col = nil)
-    self.add_well(well, row, col)
+    add_well(well, row, col)
     well.save!
   end
 
@@ -622,51 +622,10 @@ class Plate < Asset
     end
   end
 
-  def create_plate_submission(project, study, user, current_time)
-    LinearSubmission.build!(
-      study: study,
-      project: project,
-      workflow: genotyping_submission_workflow,
-      user: user,
-      assets: wells,
-      request_types: submission_workflow_request_type_ids(genotyping_submission_workflow)
-    )
-  end
-
-  def submission_workflow_request_type_ids(submission_workflow)
-    submission_workflow.request_types.map(&:id)
-  end
-
-  def genotyping_submission_workflow
-    Submission::Workflow.find_by_key("microarray_genotyping")
-  end
-
-  def self.create_plates_submission(project, study, plates, user)
-    return false if user.nil? || project.nil? || study.nil?
-    current_time = Time.now
-
-    project.save
-    plates.each do |plate|
-      plate.generate_plate_submission(project, study, user, current_time)
-    end
-
-    true
-  end
-
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
     wells.any? do |well|
       well.aliquots.any? { |aliquot| aliquot.sample.present? and not aliquot.sample.sample_metadata.gender.blank? }
-    end
-  end
-
-  def generate_plate_submission(project, study, user, current_time)
-    submission = self.create_plate_submission(project, study, user, current_time)
-    if submission
-      self.events.create!(message: I18n.t('studies.submissions.plate.event.success', barcode: self.barcode, submission_id: submission.id), created_by: user.login)
-    else
-      self.events.create!(message: I18n.t('studies.submissions.plate.event.failed', barcode: self.barcode), created_by: user.login)
-      study.errors.add("plate_barcode", "Couldnt create submission for plate #{plate_barcode}")
     end
   end
 
@@ -713,7 +672,7 @@ class Plate < Asset
 
   def lookup_stock_plate
     spp = PlatePurpose.considered_stock_plate.pluck(:id)
-    self.ancestors.order('created_at DESC').where(plate_purpose_id: spp).first
+    ancestors.order(created_at: :desc).where(plate_purpose_id: spp).first
   end
   private :lookup_stock_plate
 
@@ -722,8 +681,8 @@ class Plate < Asset
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
-    return self if self.plate_purpose_id == ancestor_purpose_id
-    self.ancestors.order('created_at DESC').where(plate_purpose_id: ancestor_purpose_id).first
+    return self if plate_purpose_id == ancestor_purpose_id
+    ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
@@ -732,7 +691,7 @@ class Plate < Asset
   end
 
   def child_dilution_plates_filtered_by_type(parent_model)
-    self.children.select { |p| p.is_a?(parent_model) }
+    children.select { |p| p.is_a?(parent_model) }
   end
 
   def children_of_dilution_plates(parent_model, child_model)
@@ -782,7 +741,7 @@ class Plate < Asset
   end
 
   def number_of_blank_samples
-    self.wells.with_blank_samples.count
+    wells.with_blank_samples.count
   end
 
   def default_plate_size
@@ -798,18 +757,19 @@ class Plate < Asset
   end
 
   def valid_positions?(positions)
-    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).where_plate_shape(self.asset_shape).all.map(&:description).sort.uniq, positions.sort.uniq
-    unique_positions_on_plate == unique_positions_from_caller
+    expected_count = positions.uniq.length
+    found_count = maps.where_description(positions).distinct.count
+    expected_count == found_count
   end
 
   def name_for_label
-    self.name
+    name
   end
 
   def set_plate_name_and_size
-    self.name = "Plate #{barcode}" if self.name.blank?
-    self.size = default_plate_size if self.size.nil?
-    self.location = Location.find_by_name("Sample logistics freezer") if self.location_id.nil?
+    self.name = "Plate #{barcode}" if name.blank?
+    self.size = default_plate_size if size.nil?
+    self.location = Location.find_by_name("Sample logistics freezer") if location_id.nil?
   end
   private :set_plate_name_and_size
 

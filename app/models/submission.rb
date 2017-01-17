@@ -28,7 +28,7 @@ class Submission < ActiveRecord::Base
   has_many :comments_from_requests, through: :requests, source: :comments
 
   def comments
-    orders.pluck(:comments)
+    orders.pluck(:comments).compact
   end
 
   def add_comment(description, user)

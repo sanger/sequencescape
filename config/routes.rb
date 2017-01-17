@@ -123,8 +123,6 @@ Sequencescape::Application.routes.draw do
       get :suppliers
       get :assembly
       put :assembly
-      get :new_plate_submission
-      post :create_plate_submission
       post :close
       post :open
       get :follow

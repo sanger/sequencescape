@@ -69,8 +69,23 @@ FactoryGirl.define do
       end
 
       after(:create) do |plate, evaluator|
-        evaluator.occupied_map_locations.each do |map|
-          create(:untagged_well, map: map, plate: plate)
+        plate.wells = evaluator.occupied_map_locations.map do |map|
+          create(:untagged_well, map: map)
+        end
+      end
+    end
+
+    factory :plate_with_empty_wells do
+      transient do
+        well_count 8
+        occupied_map_locations do
+          Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count))
+        end
+      end
+
+      after(:create) do |plate, evaluator|
+        plate.wells = evaluator.occupied_map_locations.map do |map|
+          create(:empty_well, map: map)
         end
       end
     end

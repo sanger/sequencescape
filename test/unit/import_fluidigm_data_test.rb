@@ -76,6 +76,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       @plate1 = create_plate_with_fluidigm("12345671", '1381832088', @stock_plate)
       @plate2 = create_plate_with_fluidigm("12345672", "1234567891", @stock_plate)
     end
+
     context "before uploading the fluidigm file to a corresponding plate" do
       should "we get this plate inside the requiring_fluidigm_data scope" do
         @plates_requiring_fluidigm = Plate.requiring_fluidigm_data
@@ -83,6 +84,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
         assert_equal true, @plates_requiring_fluidigm.include?(@plate2)
       end
     end
+
     context "after uploading the fluidigm file" do
       setup do
         @plate1.apply_fluidigm_data(@fluidigm_file)
