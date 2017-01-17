@@ -235,12 +235,14 @@ class Plate < Asset
         post_import(records.map { |r| [proxy_association.owner.id, r['id']] })
       end
     end
+    deprecate :import # Legacy pre-jruby method to handle bulk import
 
     def attach(records)
       ActiveRecord::Base.transaction do
-        records.each { |r| ContainerAssociation.create!(container_id: proxy_association.owner.id, content_id: r.id) }
+        proxy_association.owner.wells << records
       end
     end
+    deprecate :attach # Legacy pre-jruby method to handle bulk import
 
     def connect(content)
       ContainerAssociation.create!(container: proxy_association.owner, content: content)
