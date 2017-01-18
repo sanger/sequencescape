@@ -91,12 +91,11 @@ group :default do
 end
 
 group :warehouse do
-  #the most recent one that actually compiles
-  gem 'ruby-oci8', :platforms => :mri
+  # Used to connect to oracle databases for some data import
+  gem 'ruby-oci8', platforms: :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   # any newer version requires ruby-oci8 => 2.0.1
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
-
 end
 
 group :development do
@@ -109,8 +108,8 @@ group :development do
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
   gem 'rubocop', require: false
-  #MiniProfiler allows you to see the speed of a request conveniently on the page.
-  #It also shows the SQL queries performed and allows you to profile a specific block of code.
+  # MiniProfiler allows you to see the speed of a request conveniently on the page.
+  # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
 end
 
@@ -122,7 +121,7 @@ group :test do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
-  #Rails performance tests
+  # Rails performance tests
   gem 'rails-perftest'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.

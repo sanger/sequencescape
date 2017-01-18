@@ -33,7 +33,7 @@ class PurposeTest < ActiveSupport::TestCase
         @other_purpose = create :stock_purpose
       end
 
-      should 'return a generic transfer request' do
+      should 'return a initial transfer request' do
         assert_equal RequestType.initial_transfer, @purpose.transfer_request_type_from(@other_purpose)
       end
     end
