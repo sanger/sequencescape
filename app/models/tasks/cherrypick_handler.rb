@@ -75,14 +75,20 @@ module Tasks::CherrypickHandler
     @robot_id = params[:robot_id]
     @robot = Robot.find(@robot_id)
     @plate_type = params[:plate_type]
-    @nano_grams_per_micro_litre_volume_required = params[:nano_grams_per_micro_litre][:volume_required]
-    @nano_grams_per_micro_litre_concentration_required = params[:nano_grams_per_micro_litre][:concentration_required]
-    @nano_grams_per_micro_litre_robot_minimum_picking_volume = params[:nano_grams_per_micro_litre][:robot_minimum_picking_volume]
-    @nano_grams_minimum_volume = params[:nano_grams][:minimum_volume]
-    @nano_grams_maximum_volume = params[:nano_grams][:maximum_volume]
-    @nano_grams_total_nano_grams = params[:nano_grams][:total_nano_grams]
-    @nano_grams_robot_minimum_picking_volume = params[:nano_grams][:robot_minimum_picking_volume]
-    @micro_litre_volume_required = params[:micro_litre][:volume_required]
+    if params[:nano_grams_per_micro_litre]
+      @nano_grams_per_micro_litre_volume_required = params[:nano_grams_per_micro_litre][:volume_required]
+      @nano_grams_per_micro_litre_concentration_required = params[:nano_grams_per_micro_litre][:concentration_required]
+      @nano_grams_per_micro_litre_robot_minimum_picking_volume = params[:nano_grams_per_micro_litre][:robot_minimum_picking_volume]
+    end
+    if params[:nano_grams]
+      @nano_grams_minimum_volume = params[:nano_grams][:minimum_volume]
+      @nano_grams_maximum_volume = params[:nano_grams][:maximum_volume]
+      @nano_grams_total_nano_grams = params[:nano_grams][:total_nano_grams]
+      @nano_grams_robot_minimum_picking_volume = params[:nano_grams][:robot_minimum_picking_volume]
+    end
+    if params[:micro_litre]
+      @micro_litre_volume_required = params[:micro_litre][:volume_required]
+    end
     @cherrypick_action = params[:cherrypick][:action]
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
