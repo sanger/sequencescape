@@ -16,6 +16,7 @@ module Cherrypick::VolumeByMicroLitre
       well_attribute.requested_volume = volume_required.to_f
       well_attribute.buffer_volume    = 0
       well_attribute.picked_volume    = volume_to_pick
+      well_attribute.robot_minimum_picking_volume = robot_minimum_picking_volume
     end
   end
 

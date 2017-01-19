@@ -5,8 +5,7 @@ Feature: RobotVerification
   the correct number of plates on, and then to check the barcodes scanned.
 
   Scenario: 3 source plates should be ordered by bed number and scanner has CR suffix
-    Given the minimum robot pick is 1.0
-    Given I have a released cherrypicking batch with 3 plates
+    Given I have a released cherrypicking batch with 3 plates and the minimum robot pick is "1.0"
     And user "user" has a user barcode of "ID41440E"
 
     Given I am on the robot verification page
@@ -127,8 +126,7 @@ C; DEST1 = 1220099999705
     """
 
   Scenario: Robot minimum volumes should be considered
-    Given the minimum robot pick is 5.0
-    Given I have a released cherrypicking batch with 2 samples
+    Given I have a released cherrypicking batch with 2 samples and the minimum robot pick is "5.0"
     And user "user" has a user barcode of "ID41440E"
 
     Given I am on the robot verification page
@@ -201,8 +199,7 @@ C; DEST1 = 1220099999705
     """
 
 Scenario: Source volumes should be updated once
-    Given the minimum robot pick is 5.0
-    Given I have a released cherrypicking batch with 2 samples
+    Given I have a released cherrypicking batch with 2 samples and the minimum robot pick is "5.0"
     And user "user" has a user barcode of "ID41440E"
 
     Given I am on the robot verification page
@@ -310,8 +307,7 @@ Scenario: Source volumes should be updated once
 
 
   Scenario: Robot minimum volumes should be considered for water
-    Given the minimum robot pick is 5.0
-    Given I have a released low concentration cherrypicking batch with 2 samples
+    Given I have a released low concentration cherrypicking batch with 2 samples and the minimum robot pick is "5.0"
     And user "user" has a user barcode of "ID41440E"
 
     Given I am on the robot verification page
@@ -385,8 +381,7 @@ C; DEST1 = 1220099999705
 
 
   Scenario: Barcode scanners with carriage return should not submit page until end
-    Given the minimum robot pick is 1.0
-    Given I have a released cherrypicking batch
+    Given I have a released cherrypicking batch with 96 samples and the minimum robot pick is "1.0"
     And user "user" has a user barcode of "ID41440E"
 
     Given I am on the robot verification page

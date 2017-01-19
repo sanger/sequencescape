@@ -39,9 +39,9 @@ Feature: Pick a ng quantity using the Tecan robot
     When I follow "Cherrypick Group By Submission"
     And the last batch is sorted in row order
     And I fill in the following:
-      | Minimum Volume    | 10   |
-      | Maximum Volume    | 50   |
-      | Quantity to pick  | 1000 |
+      | nano_grams_minimum_volume    | 10   |
+      | nano_grams_maximum_volume    | 50   |
+      | nano_grams_total_nano_grams  | 1000 |
     And I select "Pulldown" from "Plate Purpose"
     And "Pulldown" plate purpose picks with "Cherrypick::Strategy::Filter::InRowOrder"
     When I choose "Pick by ng"
@@ -168,9 +168,9 @@ Feature: Pick a ng quantity using the Tecan robot
     When I follow "Cherrypick Group By Submission"
     When I choose "Pick by ng"
     And I fill in the following:
-      | Minimum Volume    | 10   |
-      | Maximum Volume    | 50   |
-      | Quantity to pick  | 1000 |
+      | nano_grams_minimum_volume    | 10   |
+      | nano_grams_maximum_volume    | 50   |
+      | nano_grams_total_nano_grams  | 1000 |
     And I press "Next step"
     Then I should see "Missing measured concentration for well DN222J:B2"
 
@@ -187,9 +187,9 @@ Feature: Pick a ng quantity using the Tecan robot
      When I follow "Cherrypick Group By Submission"
      When I choose "Pick by ng"
      And I fill in the following:
-       | Minimum Volume    | 10   |
-       | Maximum Volume    | 50   |
-       | Quantity to pick  | 1000 |
+      | nano_grams_minimum_volume    | 10   |
+      | nano_grams_maximum_volume    | 50   |
+      | nano_grams_total_nano_grams  | 1000 |
      And I press "Next step"
     Then I should see "Missing measured volume for well DN222J:B2"
 
@@ -204,9 +204,9 @@ Feature: Pick a ng quantity using the Tecan robot
      And I press the first "Submit"
      When I follow "Cherrypick Group By Submission"
      And I fill in the following:
-       | Minimum Volume    | <minimum_volume>   |
-       | Maximum Volume    | <maximum_volume>   |
-       | Quantity to pick  | <target_ng>        |
+       | nano_grams_minimum_volume    | <minimum_volume>   |
+       | nano_grams_maximum_volume    | <maximum_volume>   |
+       | nano_grams_total_nano_grams  | <target_ng>        |
      When I choose "Pick by ng"
      And I press "Next step"
      Then I should see "Invalid values typed in"
