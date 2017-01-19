@@ -38,9 +38,9 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And I press the first "Submit"
     When I follow "Select Plate Template"
     And I fill in the following:
-      | Minimum Volume    | 10   |
-      | Maximum Volume    | 50   |
-      | Quantity to pick  | 1000 |
+      | nano_grams_minimum_volume    | 10   |
+      | nano_grams_maximum_volume    | 50   |
+      | nano_grams_total_nano_grams  | 1000 |
     And I choose "Pick by ng"
     And I press "Next step"
     When I press "Next step"
