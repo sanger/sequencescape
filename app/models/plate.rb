@@ -303,12 +303,12 @@ class Plate < Asset
 
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
     def walk_in_column_major_order(&block)
-      self.in_column_major_order.each { |well| yield(well, well.map.column_order) }
+      sin_column_major_order.each { |well| yield(well, well.map.column_order) }
     end
 
     # Walks the wells A1, A2, ... B1, B2, ... H12
     def walk_in_row_major_order(&block)
-      self.in_row_major_order.each { |well| yield(well, well.map.row_order) }
+      in_row_major_order.each { |well| yield(well, well.map.row_order) }
     end
 
     def in_preferred_order
@@ -465,7 +465,7 @@ class Plate < Asset
   end
 
   def find_well_by_name(well_name)
-    self.wells.located_at_position(well_name).first
+    wells.located_at_position(well_name).first
   end
   alias :find_well_by_map_description :find_well_by_name
 
@@ -490,12 +490,12 @@ class Plate < Asset
   end
 
   def set_plate_type(result)
-    self.add_descriptor(Descriptor.new({ name: "Plate Type", value: result }))
-    self.save
+    add_descriptor(Descriptor.new({ name: "Plate Type", value: result }))
+    save
   end
 
   def stock_plate_name
-    (self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : self.get_plate_type
+    (get_plate_type == "Stock Plate" || get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : self.get_plate_type
   end
 
   def details
