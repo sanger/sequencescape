@@ -9,10 +9,9 @@ feature 'cherrypick pipeline - nano grams', js: true do
   let(:location) { Location.find_by_name("Sample logistics freezer") }
   let(:pipeline_name) { 'Cherrypick' }
   let(:pipeline) { Pipeline.find_by_name(pipeline_name) }
-  let(:plate1) { create :plate, barcode: "1", location: location }
-  let(:plate2) { create :plate, barcode: "10", location: location }
-  let(:plate3) { create :plate, barcode: "5", location: location }
-  let(:asset_group) { create :asset_group, study: study }
+  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: "1", location: location }
+  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: "10", location: location }
+  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: "5", location: location }
   let(:plates) { [plate1, plate2, plate3] }
   let(:submission_template) { SubmissionTemplate.find_by_name(pipeline_name) }
   let(:workflow) { Submission::Workflow.find_by_key('microarray_genotyping') }
@@ -21,12 +20,8 @@ feature 'cherrypick pipeline - nano grams', js: true do
   let!(:plate_template) { create :plate_template }
 
   before(:each) do
-    plates.each do |plate|
-      asset_group.assets << (1..2).map do |index|
-        create(:well, plate: plate, map_id: index).tap do |well|
-          well.aliquots.create!(sample: create(:sample, name: "Sample_#{plate.barcode}_#{index}"), study: study)
-        end
-      end
+    assets = plates.each_with_object([]) do |plate, assets|
+      assets.concat(plate.wells)
       plate.wells.each_with_index do |well, index|
         well.well_attribute.update_attributes!(
           current_volume: 30 + (index % 30),
@@ -40,7 +35,7 @@ feature 'cherrypick pipeline - nano grams', js: true do
       project: project,
       workflow: workflow,
       user: user,
-      assets: asset_group.assets
+      assets: assets
     )
     Delayed::Worker.new.work_off
 
