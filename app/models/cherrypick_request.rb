@@ -57,7 +57,7 @@ class CherrypickRequest < TransferRequest
   alias_method :on_cancelled, :on_failed
 
   def perform_transfer_of_contents
-    on_started # Ensures we set the study/project
+    transfer_aliquots # Ensures we set the study/project
   end
   private :perform_transfer_of_contents
 
