@@ -642,10 +642,6 @@ FactoryGirl.define do
     end
   end
 
-  factory :plate_barcode do
-    sequence(:barcode) { |i| i }
-  end
-
   factory :barcode_printer_type do
   end
 
