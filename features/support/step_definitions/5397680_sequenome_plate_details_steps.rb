@@ -24,7 +24,8 @@ Given /^I have created a sequenom plate$/ do
 
   seq_plate = SequenomQcPlate.new(
     plate_prefix: "QC",
-    user_barcode: '2470000100730'
+    user_barcode: '2470000100730',
+    purpose: PlatePurpose.find_by(name: "Sequenom")
   )
   seq_plate.compute_and_set_name(input_plate_names)
 
@@ -39,7 +40,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
     barcode: Barcode.number_to_human(plate_barcode.to_s),
     plate_purpose: PlatePurpose.find_by_name(plate_purpose_name)
   )
-  sample = FactoryGirl.create :sample, name: "#{plate_barcode}_x"
+  sample = FactoryGirl.create :sample_with_gender, name: "#{plate_barcode}_x"
 
   1.upto(number_of_wells.to_i) do |i|
     new_plate.wells.create!(map_id: i).aliquots.create!(sample: sample)

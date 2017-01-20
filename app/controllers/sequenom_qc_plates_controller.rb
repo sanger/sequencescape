@@ -35,10 +35,9 @@ class SequenomQcPlatesController < ApplicationController
         sequenom_qc_plate = SequenomQcPlate.new(
           plate_prefix: params[:plate_prefix],
           gender_check_bypass: gender_check_bypass,
-          user_barcode: user_barcode
+          user_barcode: user_barcode,
+          purpose: PlatePurpose.find_by_name("Sequenom")
         )
-        # TODO: create a factory object
-
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
         errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k => v) }
