@@ -13,7 +13,7 @@ describe '/api/1/work_completions' do
   context '#post' do
     let(:payload) do
       %{{
-        "work_completions":{
+        "work_completion":{
           "target": "#{target_plate.uuid}",
           "user": "#{user.uuid}",
           "submissions": ["#{target_submission.uuid}"]
@@ -23,7 +23,7 @@ describe '/api/1/work_completions' do
 
     let(:response_body) {
       %{{
-        "work_completions": {
+        "work_completion": {
           "actions": {},
           "target": {
             "uuid": "#{target_plate.uuid}",
