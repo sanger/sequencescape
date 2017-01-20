@@ -56,7 +56,8 @@ module Batch::TecanBehaviour
       data_object["destination"][full_destination_barcode]["mapping"] << {
         "src_well"  => [full_source_barcode, request.asset.map.description],
         "dst_well"  => request.target_asset.map.description,
-        "volume"    => (request.target_asset.get_picked_volume) }
+        "volume"    => (request.target_asset.get_picked_volume),
+        "buffer_volume" => (request.target_asset.get_buffer_volume) }
     end
 
     data_object

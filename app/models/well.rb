@@ -224,6 +224,9 @@ class Well < Aliquot::Receptacle
   delegate_to_well_attribute(:picked_volume)
   writer_for_well_attribute_as_float(:picked_volume)
 
+  delegate_to_well_attribute(:robot_minimum_picking_volume)
+  writer_for_well_attribute_as_float(:robot_minimum_picking_volume)
+
   delegate_to_well_attribute(:gender_markers)
 
   def update_qc_values_with_hash(updated_data)

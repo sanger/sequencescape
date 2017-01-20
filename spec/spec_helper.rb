@@ -20,8 +20,11 @@
 require 'factory_girl'
 require 'capybara/rspec'
 require 'capybara/poltergeist'
+require 'webmock/rspec'
 
 Capybara.javascript_driver = :poltergeist
+
+WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

@@ -1841,24 +1841,25 @@ ActiveRecord::Schema.define(version: 20170118164446) do
   end
 
   create_table "well_attributes", force: :cascade do |t|
-    t.integer  "well_id",          limit: 4
-    t.string   "gel_pass",         limit: 20
-    t.float    "concentration",    limit: 24
-    t.float    "current_volume",   limit: 24
-    t.float    "buffer_volume",    limit: 24
-    t.float    "requested_volume", limit: 24
-    t.float    "picked_volume",    limit: 24
+    t.integer  "well_id",                      limit: 4
+    t.string   "gel_pass",                     limit: 20
+    t.float    "concentration",                limit: 24
+    t.float    "current_volume",               limit: 24
+    t.float    "buffer_volume",                limit: 24
+    t.float    "requested_volume",             limit: 24
+    t.float    "picked_volume",                limit: 24
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "pico_pass",        limit: 255, default: "ungraded", null: false
-    t.integer  "sequenom_count",   limit: 4
-    t.string   "study_id",         limit: 255
-    t.string   "gender_markers",   limit: 255
-    t.string   "gender",           limit: 255
-    t.float    "measured_volume",  limit: 24
-    t.float    "initial_volume",   limit: 24
-    t.float    "molarity",         limit: 24
-    t.float    "rin",              limit: 24
+    t.string   "pico_pass",                    limit: 255, default: "ungraded", null: false
+    t.integer  "sequenom_count",               limit: 4
+    t.string   "study_id",                     limit: 255
+    t.string   "gender_markers",               limit: 255
+    t.string   "gender",                       limit: 255
+    t.float    "measured_volume",              limit: 24
+    t.float    "initial_volume",               limit: 24
+    t.float    "molarity",                     limit: 24
+    t.float    "rin",                          limit: 24
+    t.float    "robot_minimum_picking_volume", limit: 24
   end
 
   add_index "well_attributes", ["well_id"], name: "index_well_attributes_on_well_id", using: :btree
