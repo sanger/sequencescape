@@ -626,9 +626,7 @@ class Plate < Asset
 
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
-    wells.any? do |well|
-      well.aliquots.any? { |aliquot| aliquot.sample.present? and not aliquot.sample.sample_metadata.gender.blank? }
-    end
+    contained_samples.with_gender.any?
   end
 
   def create_sample_tubes

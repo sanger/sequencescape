@@ -81,6 +81,7 @@ class Sample < ActiveRecord::Base
   private :safe_to_destroy
 
   scope :with_name, ->(*names) { where(name: names.flatten) }
+  scope :with_gender, ->(*names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query, ->(query, with_includes) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
