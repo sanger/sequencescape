@@ -205,6 +205,11 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose.create!(name: plate_name)
 end
 
+Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purpose_name|
+  purpose = Purpose.find_by(name: purpose_name) || FactoryGirl.create(:plate_purpose, name: purpose_name)
+  FactoryGirl.create(:plate, name: name, purpose: purpose)
+end
+
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by_name!(name)
   plate_purpose.create!(name: plate_name, barcode: barcode)
@@ -241,8 +246,8 @@ end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by_barcode(plate_barcode)
-  1.upto(number_of_wells.to_i) do |i|
-    Well.create!(plate: plate, map_id: i).aliquots.create!(sample: FactoryGirl.create(:sample))
+  plate.wells = Array.new(number_of_wells.to_i) do |i|
+    build :untagged_well, map_id: i + 1
   end
 end
 
