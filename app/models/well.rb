@@ -107,8 +107,8 @@ class Well < Aliquot::Receptacle
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
 
-  has_one :container_association, foreign_key: :content_id
-  has_one :plate, through: :container_association
+  has_one :container_association, foreign_key: :content_id, inverse_of: :well
+  has_one :plate, through: :container_association, inverse_of: :wells
 
   def labware
     plate
