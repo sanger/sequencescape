@@ -25,7 +25,8 @@ FactoryGirl.define do
   end
 
   factory :plate_creator, class: Plate::Creator do
-    name                { |t| FactoryGirl.generate :plate_creator_name }
+    name                { |t| generate :plate_creator_name }
+    plate_purpose
   end
 
   factory :control_plate do

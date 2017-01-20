@@ -30,7 +30,7 @@ end
 
 Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
   pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
-  pipeline.requests.each { |request| request.asset.container.update_attributes!(location: pipeline.location) }
+  pipeline.requests.each { |request| request.asset.labware.update_attributes!(location: pipeline.location) }
 end
 
 When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
@@ -98,7 +98,7 @@ def build_batch_for(name, count, &block)
   assets = (1..count.to_i).map do |_|
     asset_attributes = {}
     if submission_details.key?(:holder_type)
-      asset_attributes[:container] = FactoryGirl.create(submission_details[:holder_type], location_id: pipeline.location_id)
+      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type], location_id: pipeline.location_id)
       asset_attributes[:map_id] = 1
     else
       asset_attributes[:location_id] = pipeline.location_id

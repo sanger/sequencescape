@@ -269,9 +269,17 @@ FactoryGirl.define do
       wells { [FactoryGirl.create(:well_with_sample_and_plate)] }
       assets { [wells.first.plate] }
     end
+
+    factory :sample_with_gender do
+      association :sample_metadata, factory: :sample_metadata_with_gender
+    end
   end
 
   factory :sample_metadata, class: Sample::Metadata do
+    factory :sample_metadata_with_gender do
+      gender :male
+    end
+
     factory :sample_metadata_for_api do
       organism "organism"
       cohort "cohort"
