@@ -303,7 +303,7 @@ class Plate < Asset
 
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
     def walk_in_column_major_order(&block)
-      sin_column_major_order.each { |well| yield(well, well.map.column_order) }
+      in_column_major_order.each { |well| yield(well, well.map.column_order) }
     end
 
     # Walks the wells A1, A2, ... B1, B2, ... H12

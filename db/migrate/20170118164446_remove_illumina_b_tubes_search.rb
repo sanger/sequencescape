@@ -6,7 +6,8 @@ class RemoveIlluminaBTubesSearch < ActiveRecord::Migration
   def up
     Search.find_by_name("Find Illumina-B tubes").try(:destroy)
   end
+
   def down
-    Search.create!(name:"Find Illumina-B tubes", type:'Search::FindIlluminaBTubes')
+    Search.create!(name: "Find Illumina-B tubes", type: 'Search::FindIlluminaBTubes')
   end
 end

@@ -44,7 +44,7 @@ class CreatorTest < ActiveSupport::TestCase
     assert_equal 1, Plate.count - plate_count
     child = parent.reload.children.first
 
-    assert_equal creator_purpose, child_purpose
+    assert_equal creator_purpose, child.purpose
 
     parent.wells.each_with_index do |well, i|
       matching_aliquots = (well.aliquots.first =~ child.wells[i].aliquots.first)

@@ -42,7 +42,7 @@ Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |st
 end
 
 Given(/^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |plate_barcode, study_name, number_of_samples, asset_group_name|
-  purpose = create :plate_purpose
+  purpose = FactoryGirl.create :plate_purpose
   purpose_name = purpose.name
   step(%Q{I have a "#{purpose_name}" plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "#{asset_group_name}"})
 end

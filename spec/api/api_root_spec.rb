@@ -383,7 +383,6 @@ describe '/api/1/' do
   end
 
   context '#get unauthorized' do
-
     let(:user) { create :user }
 
     let(:response_body) {

@@ -39,6 +39,7 @@ Style/NumericLiterals:
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*'
+    - 'spec/**/*'
     - 'config/routes.rb'
 
 # Enforces the new rails 5 style. Re-enable on Rails 5 upgrade.
