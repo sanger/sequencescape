@@ -7,6 +7,21 @@
 require 'linefeed_fix'
 
 module SampleManifest::InputBehaviour
+
+  Process = Struct.new(:sample_manifest_id, :user_id, :override_sample_information) do
+    def perform
+      sample_manifest.process_job(user,override_sample_information)
+    end
+
+    def sample_manifest
+      SampleManifest.find(sample_manifest_id)
+    end
+
+    def user
+      User.find(user_id)
+    end
+  end
+
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
       csv        = CSV.parse(LinefeedFix.scrub!(spreadsheet_file.read))
@@ -127,7 +142,6 @@ module SampleManifest::InputBehaviour
     base.class_eval do
       include ManifestUtil
       extend ClassMethods
-      handle_asynchronously :process
 
       # Ensure that we can override previous manifest information when required
       extend ValidationStateGuard
@@ -137,6 +151,10 @@ module SampleManifest::InputBehaviour
       has_many :samples
       accepts_nested_attributes_for :samples
       alias_method_chain(:update_attributes!, :sample_manifest)
+
+      # Can be removed once the initial changes have gone live.
+      # Ensures code remains backwards compatible for existing jobs.
+      alias_method :process_without_delay, :process
     end
   end
 
@@ -198,8 +216,12 @@ module SampleManifest::InputBehaviour
   end
   private :each_csv_row
 
-  # Always allow 'empty' samples to be updated, but non-empty samples need to have the override checkbox set for an update to occur
   def process(user_updating_manifest, override_sample_information = false)
+    Delayed::Job.enqueue SampleManifest::InputBehaviour::Process.new(self.id, user_updating_manifest.id, override_sample_information)
+  end
+
+  # Always allow 'empty' samples to be updated, but non-empty samples need to have the override checkbox set for an update to occur
+  def process_job(user_updating_manifest, override_sample_information = false)
     self.start!
 
     samples_to_updated_attributes, sample_errors = [], []
