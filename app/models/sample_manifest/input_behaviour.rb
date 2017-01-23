@@ -266,6 +266,16 @@ module SampleManifest::InputBehaviour
   rescue ActiveRecord::RecordInvalid => exception
     errors.add(:base, exception.message)
     fail_with_errors!(errors.full_messages)
+  rescue ActiveRecord::StatementInvalid => exception
+    # This tends to get raised in cases of character encoding issues. If we don't
+    # handle it here, then the delayed job tires to handle it, but just ends up
+    # generating its own invalid SQL. This results in the delayed job dying,
+    # and needs manual intervention to recover. This is intended merely as a fix
+    # for the delayed job worker death, and not the underlying issue.
+    # https://github.com/collectiveidea/delayed_job/issues/774
+    # It is possible to monkey patch with the solution suggested by philister
+    scrubbed_message = exception.message.encode('ISO-8859-1',invalid: :replace)
+    fail_with_errors!(["Failed to update information in database: #{scrubbed_message}"])
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)
   end
@@ -273,7 +283,7 @@ module SampleManifest::InputBehaviour
   def fail_with_errors!(errors)
     reload
     self.last_errors = errors
-    self.fail!
+    fail!
   end
   private :fail_with_errors!
 
