@@ -7,10 +7,9 @@
 require 'linefeed_fix'
 
 module SampleManifest::InputBehaviour
-
   Process = Struct.new(:sample_manifest_id, :user_id, :override_sample_information) do
     def perform
-      sample_manifest.process_job(user,override_sample_information)
+      sample_manifest.process_job(user, override_sample_information)
     end
 
     def sample_manifest
@@ -296,7 +295,7 @@ module SampleManifest::InputBehaviour
     # for the delayed job worker death, and not the underlying issue.
     # https://github.com/collectiveidea/delayed_job/issues/774
     # It is possible to monkey patch with the solution suggested by philister
-    scrubbed_message = exception.message.encode('ISO-8859-1',invalid: :replace)
+    scrubbed_message = exception.message.encode('ISO-8859-1', invalid: :replace)
     fail_with_errors!(["Failed to update information in database: #{scrubbed_message}"])
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)
