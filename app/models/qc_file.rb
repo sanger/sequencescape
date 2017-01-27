@@ -60,7 +60,7 @@ class QcFile < ActiveRecord::Base
   private
 
   def parser
-    @parser ||= Parsers.parser_for(uploaded_data.filename, content_type, current_data)
+    @parser ||= Parsers.parser_for(filename, content_type, current_data)
   end
 
   def store_file_extracted_data
