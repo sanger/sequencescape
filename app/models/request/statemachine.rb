@@ -212,11 +212,11 @@ module Request::Statemachine
   end
 
   def open?
-    ["pending", "started"].include?(self.state)
+    %w(pending started).include?(self.state)
   end
 
   def cancellable?
-    ["pending", "cancelled"].include?(self.state)
+    %w(pending cancelled).include?(self.state)
   end
 
   def transition_to(target_state)

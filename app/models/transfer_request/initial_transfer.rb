@@ -30,7 +30,7 @@ class TransferRequest::InitialTransfer < TransferRequest
   # This is not included in the behaviour module to avoid affecting
   # pacbio unnecessarily. THis is triggered by the state machine.
   def on_started
-    outer_request.start!
+    outer_request.start! if outer_request.pending?
   end
 
   include Behaviour
