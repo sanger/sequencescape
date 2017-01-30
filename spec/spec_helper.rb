@@ -21,6 +21,7 @@ require 'factory_girl'
 require 'capybara/rspec'
 require 'capybara/poltergeist'
 require 'webmock/rspec'
+Dir[File.dirname(__FILE__) + '/features/helpers/*.rb'].each {|file| require file }
 
 Capybara.javascript_driver = :poltergeist
 

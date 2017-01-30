@@ -57,6 +57,8 @@ Sequencescape::Application.routes.draw do
     end
   end
 
+  resources :stock_stampers, only: [:new, :create]
+
   scope 'npg_actions', module: 'npg_actions' do
     resources :assets, only: [] do
       post :pass_qc_state, action: :pass, format: :xml

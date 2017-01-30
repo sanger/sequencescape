@@ -13,6 +13,20 @@ FactoryGirl.define do
     end
   end
 
+  factory :plate_with_3_wells, parent: :plate do
+    size 96
+    after(:create) do |plate|
+      plate.wells.import(
+        %w(A1 B2 E6).map do |location|
+          map = Map.where_description(location).
+            where_plate_size(plate.size).
+            where_plate_shape(AssetShape.default).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
+        end
+      )
+    end
+  end
+
   factory :lib_pcr_xp_plate, parent: :plate do
     size 96
     plate_purpose { |_| PlatePurpose.find_by_name('Lib PCR-XP') }
