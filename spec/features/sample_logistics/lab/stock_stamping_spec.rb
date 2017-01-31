@@ -25,7 +25,7 @@ feature 'stamping of stock', js: true do
     fill_in("Scan destination plate", with: plate.ean13_barcode)
     select("ABgene_0800", from: "stock_stamper_source_plate_type")
     select("ABgene_0765", from: "stock_stamper_destination_plate_type")
-    select("500", from: "stock_stamper_destination_plate_maximum_volume")
+    fill_in("Destination plate maximum volume", with: 500)
     click_button "Generate TECAN file"
     expect(page).to have_content("Stamping of stock")
 

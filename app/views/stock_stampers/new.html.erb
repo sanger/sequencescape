@@ -1,3 +1,5 @@
+<% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
+
 <h2>Stamping of stock</h2>
 
 <%= form_for(:stock_stamper, url: {action: "create"}) do |f| %>
@@ -11,39 +13,39 @@
     </thead>
     <tbody>
       <tr>
-         <td><%=f.label :user, 'Scan user ID' %></td>
-         <td><%= f.text_field :user, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stampers_user','stock_stampers_source_plate')" %></td>
+         <td><%=f.label :user_barcode, 'Scan user ID' %></td>
+         <td><%= f.text_field :user_barcode, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stamper_user_barcode','stock_stamper_source_plate_barcode')" %></td>
       </tr>
       <tr>
-         <td><%= f.label :source_plate, 'Scan source plate barcode' %></td>
-         <td><%= f.text_field :source_plate, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stampers_source_plate','stock_stampers_destination_plate')" %></td>
+         <td><%= f.label :source_plate_barcode, 'Scan source plate' %></td>
+         <td><%= f.text_field :source_plate_barcode, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stamper_source_plate_barcode','stock_stamper_destination_plate_barcode')" %></td>
       </tr>
       <tr>
-         <td><%= f.label :destination_plate, 'Scan destination plate' %></td>
-         <td><%= f.text_field :destination_plate %></td>
+         <td><%= f.label :destination_plate_barcode, 'Scan destination plate' %></td>
+         <td><%= f.text_field :destination_plate_barcode %></td>
       </tr>
     </tbody>
   </table>
   <br>
 
   <div class="form-group">
-    <%= f.label :source_plate_type, 'Source plate type' %>
-    <%= f.select "source_plate_type", options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name)) %>
+    <%= f.label :source_plate_type, 'Source plate type: ' %>
+    <%= f.select :source_plate_type, options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name), @stock_stamper.source_plate_type) %>
   </div>
 
   <div class="form-group">
-    <%= f.label :destination_plate_type, 'Destination plate type' %>
-    <%= f.select "destination_plate_type", options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name)) %>
+    <%= f.label :destination_plate_type, 'Destination plate type: ' %>
+    <%= f.select :destination_plate_type, options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name), @stock_stamper.destination_plate_type) %>
   </div>
 
   <div class="form-group">
-    <%= f.label :destination_plate_maximum_volume, 'Destination plate maximum volume' %>
-    <%= f.select "destination_plate_maximum_volume", options_for_select([180, 280, 500, 800], 800) %>
+    <%= f.label :destination_plate_maximum_volume, 'Destination plate maximum volume:' %>
+    <%= f.number_field :destination_plate_maximum_volume, step: 10, value: @stock_stamper.destination_plate_maximum_volume %>
   </div>
 
   <div class="form-group">
-    <%= f.label :overage, 'Overage' %>
-    <%= f.number_field :overage, step: 0.1, value: 1.2 %>
+    <%= f.label :overage, "'Overage' (multiply current volume by):" %>
+    <%= f.number_field :overage, step: 0.1, value: @stock_stamper.overage %>
   </div>
 
   <div class="form-group">

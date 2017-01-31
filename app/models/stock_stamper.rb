@@ -2,37 +2,42 @@ class StockStamper
 
   include ActiveModel::Model
 
-  attr_accessor :user, :source_plate, :source_plate_type, :destination_plate, :destination_plate_type, :destination_plate_maximum_volume, :overage
+  attr_accessor :user, :user_barcode, :plate, :source_plate_barcode, :source_plate_type, :destination_plate_barcode, :destination_plate_type, :destination_plate_maximum_volume, :overage
 
-  validates_presence_of :source_plate_type, :destination_plate_type, :destination_plate_maximum_volume, :overage
+  validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type, :destination_plate_barcode, :destination_plate_type, :destination_plate_maximum_volume, :overage
 
-  validates :source_plate, presence: { message: 'barcode invalid' }
-  validates :destination_plate, presence: { message: 'barcode invalid' }
+  validates :plate, presence: { message: 'barcode invalid' }
   validates :user, presence: { message: 'barcode invalid' }
   validate :plates_barcodes_should_be_identical
+
+  def initialize(attributes={overage: 1.2})
+    super
+    create_plate
+    create_user
+  end
 
   def generate_tecan_gwl_file_as_text
     Sanger::Robots::Tecan::Generator.mapping(generate_tecan_data, 0)
   end
 
   def generate_tecan_data
-    source_barcode = "#{source_plate.barcode_for_tecan}_s"
-    destination_barcode = "#{source_plate.barcode_for_tecan}_d"
+    source_barcode = "#{plate.barcode_for_tecan}_s"
+    destination_barcode = "#{plate.barcode_for_tecan}_d"
     data_object = {
       "user" => user.login,
       "time" => Time.now,
       "source" => {
-        source_barcode => { "name" => source_plate_type.tr('_', "\s"), "plate_size" => source_plate.size }
+        source_barcode => { "name" => source_plate_type.tr('_', "\s"), "plate_size" => plate.size }
       },
       "destination" => {
         destination_barcode => {
           "name" => destination_plate_type.tr('_', "\s"),
-          "plate_size" => source_plate.size,
+          "plate_size" => plate.size,
           "mapping" => []
         }
       }
     }
-    source_plate.wells.each do |well|
+    plate.wells.each do |well|
       if well.get_current_volume
         data_object["destination"][destination_barcode]["mapping"] << {
           "src_well"  => [source_barcode, well.map.description],
@@ -45,29 +50,27 @@ class StockStamper
     data_object
   end
 
+  def create_asset_audit_event
+    AssetAudit.create(asset_id: plate.id, key: 'stamping_of_stock', message: "Process 'Stamping of stock' performed", created_by: user.login)
+  end
+
+  private
+
   def volume(well)
     [well.get_current_volume*overage.to_f, destination_plate_maximum_volume.to_f].min
   end
 
-  def create_asset_audit_event
-    AssetAudit.create(asset_id: source_plate.id, key: 'stamping_of_stock', message: "Process 'Stamping of stock' performed", created_by: user.login)
+  def create_plate
+    @plate = Plate.find_by(barcode: Barcode.number_to_human(source_plate_barcode))
   end
 
-  def source_plate=(source_plate)
-    @source_plate = Plate.find_by(barcode: Barcode.number_to_human(source_plate))
-  end
-
-  def destination_plate=(destination_plate)
-    @destination_plate = Plate.find_by(barcode: Barcode.number_to_human(destination_plate))
-  end
-
-  def user=(user)
-    @user = User.find_by(barcode: Barcode.barcode_to_human!(user, 'ID')) if User.valid_barcode?(user)
+  def create_user
+    @user = User.find_by(barcode: Barcode.barcode_to_human!(user_barcode, 'ID')) if User.valid_barcode?(user_barcode)
   end
 
   def plates_barcodes_should_be_identical
-    return unless source_plate.present? && destination_plate.present?
-    errors.add(:plates_barcodes, "are not identical") unless source_plate.ean13_barcode == destination_plate.ean13_barcode
+    return unless source_plate_barcode.present? && destination_plate_barcode.present?
+    errors.add(:plates_barcodes, "are not identical") unless source_plate_barcode == destination_plate_barcode
   end
 
 end

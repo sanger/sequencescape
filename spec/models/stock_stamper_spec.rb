@@ -4,17 +4,16 @@ require 'timecop'
 
 describe StockStamper do
 
-  let!(:plate) { create :plate_with_3_wells, barcode: 1 }
-  let!(:plate2) { create :plate_with_3_wells, barcode: 2 }
+  let(:plate) { create :plate_with_3_wells, barcode: 1 }
   let!(:user) { create :user, login: 'abc', barcode: "ID41440E" }
 
   before(:each) do
-    @attributes = {user: "2470041440697",
-              source_plate: plate.ean13_barcode,
-              destination_plate: plate.ean13_barcode,
+    @attributes = {user_barcode: "2470041440697",
+              source_plate_barcode: plate.ean13_barcode,
+              destination_plate_barcode: plate.ean13_barcode,
               source_plate_type: 'ABgene_0765',
               destination_plate_type: 'ABgene_0800',
-              destination_plate_maximum_volume: '100',
+              destination_plate_maximum_volume: '17',
               overage: 1.2}
     @stock_stamper = StockStamper.new(@attributes)
     new_time = Time.local(2008, 9, 1, 12, 0, 0)
@@ -43,7 +42,7 @@ describe StockStamper do
                               "A1"
                             ],
                             "dst_well" => "A1",
-                            "volume" => 18.0,
+                            "volume" => 17.0,
                             "buffer_volume" => 0.0
                           },
                           {
@@ -52,7 +51,7 @@ describe StockStamper do
                               "B2"
                             ],
                             "dst_well" => "B2",
-                            "volume" => 18.0,
+                            "volume" => 17.0,
                             "buffer_volume" => 0.0
                           },
                           {
@@ -61,7 +60,7 @@ describe StockStamper do
                               "E6"
                             ],
                             "dst_well" => "E6",
-                            "volume" => 18.0,
+                            "volume" => 17.0,
                             "buffer_volume" => 0.0
                           }
                         ]
@@ -72,26 +71,24 @@ describe StockStamper do
 
   describe 'it verifies the plates' do
 
-    it 'should not be valid without plates, user, plates types, destination plate maximum volume and overage' do
+    let(:plate2) { create :plate_with_3_wells, barcode: 2 }
+
+    it 'should not be valid without plates, user, plates types, destination plate maximum volume' do
       invalid_stock_stamper = StockStamper.new
       expect(invalid_stock_stamper.valid?).to be false
-      expect(invalid_stock_stamper.errors.messages.length).to eq 7
-      expect(invalid_stock_stamper.errors.full_messages).to include "User barcode invalid"
-      expect(invalid_stock_stamper.errors.full_messages).to include "Source plate barcode invalid"
-      expect(invalid_stock_stamper.errors.full_messages).to include "Destination plate barcode invalid"
+      expect(invalid_stock_stamper.errors.messages.length).to eq 8
     end
 
-    it 'should not be valid if user barcode or plate barcodes are invalid' do
-      invalid_stock_stamper = StockStamper.new(@attributes.merge(source_plate: '123', destination_plate: '234', user: '345'))
+    it 'should not be valid if user barcode or plate barcode are invalid' do
+      invalid_stock_stamper = StockStamper.new(@attributes.merge(source_plate_barcode: '123', destination_plate_barcode: '234', user_barcode: '345'))
       expect(invalid_stock_stamper.valid?).to be false
       expect(invalid_stock_stamper.errors.messages.length).to eq 3
       expect(invalid_stock_stamper.errors.full_messages).to include "User barcode invalid"
-      expect(invalid_stock_stamper.errors.full_messages).to include "Source plate barcode invalid"
-      expect(invalid_stock_stamper.errors.full_messages).to include "Destination plate barcode invalid"
+      expect(invalid_stock_stamper.errors.full_messages).to include "Plate barcode invalid"
     end
 
     it 'should not be valid if plates barcodes are not identical' do
-      invalid_stock_stamper = StockStamper.new(@attributes.merge(destination_plate: plate2.ean13_barcode))
+      invalid_stock_stamper = StockStamper.new(@attributes.merge(destination_plate_barcode: plate2.ean13_barcode))
       expect(invalid_stock_stamper.valid?).to be false
       expect(invalid_stock_stamper.errors.messages.length).to eq 1
       expect(invalid_stock_stamper.errors.full_messages).to include "Plates barcodes are not identical"
@@ -99,8 +96,8 @@ describe StockStamper do
 
     it 'should be valid if correct attributes provided' do
       expect(@stock_stamper.valid?).to be true
-      expect(@stock_stamper.source_plate).to be_a Plate
-      expect(@stock_stamper.destination_plate).to be_a Plate
+      expect(@stock_stamper.plate).to be_a Plate
+      expect(@stock_stamper.user).to be_a User
     end
 
   end
@@ -119,8 +116,8 @@ describe StockStamper do
 
     it 'should create asset_audit on plate' do
       @stock_stamper.create_asset_audit_event
-      expect(@stock_stamper.destination_plate.asset_audits.length).to eq 1
-      expect(@stock_stamper.destination_plate.asset_audits.first.message).to eq "Process 'Stamping of stock' performed"
+      expect(@stock_stamper.plate.asset_audits.length).to eq 1
+      expect(@stock_stamper.plate.asset_audits.first.message).to eq "Process 'Stamping of stock' performed"
     end
 
   end
