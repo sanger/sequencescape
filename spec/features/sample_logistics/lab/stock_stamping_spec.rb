@@ -3,7 +3,6 @@ require 'rails_helper'
 require 'pry'
 
 feature 'stamping of stock', js: true do
-
   include FeatureHelpers
 
   let(:user) { create :admin, barcode: "ID41440E" }
@@ -33,5 +32,4 @@ feature 'stamping of stock', js: true do
     expect(page).to have_content("Activity Logging")
     expect(page).to have_content("Process 'Stamping of stock' performed")
   end
-
 end

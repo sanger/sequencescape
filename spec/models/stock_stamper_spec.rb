@@ -3,18 +3,17 @@ require 'pry'
 require 'timecop'
 
 describe StockStamper do
-
   let(:plate) { create :plate_with_3_wells, barcode: 1 }
   let!(:user) { create :user, login: 'abc', barcode: "ID41440E" }
 
   before(:each) do
-    @attributes = {user_barcode: "2470041440697",
+    @attributes = { user_barcode: "2470041440697",
               source_plate_barcode: plate.ean13_barcode,
               destination_plate_barcode: plate.ean13_barcode,
               source_plate_type: 'ABgene_0765',
               destination_plate_type: 'ABgene_0800',
               destination_plate_maximum_volume: '17',
-              overage: 1.2}
+              overage: 1.2 }
     @stock_stamper = StockStamper.new(@attributes)
     new_time = Time.local(2008, 9, 1, 12, 0, 0)
     Timecop.freeze(new_time)
@@ -31,7 +30,7 @@ describe StockStamper do
                     },
                     "destination" =>
                     {
-                      "#{plate.ean13_barcode}_d"=>
+                      "#{plate.ean13_barcode}_d" =>
                       {
                         "name" => "ABgene 0800",
                         "plate_size" => 96,
@@ -70,7 +69,6 @@ describe StockStamper do
   end
 
   describe 'it verifies the plates' do
-
     let(:plate2) { create :plate_with_3_wells, barcode: 2 }
 
     it 'should not be valid without plates, user, plates types, destination plate maximum volume' do
@@ -99,11 +97,9 @@ describe StockStamper do
       expect(@stock_stamper.plate).to be_a Plate
       expect(@stock_stamper.user).to be_a User
     end
-
   end
 
   describe 'generate tecan file' do
-
     it 'should generate the right tecan data' do
       expect(@stock_stamper.generate_tecan_data).to eq @tecan_data
     end
@@ -119,11 +115,9 @@ describe StockStamper do
       expect(@stock_stamper.plate.asset_audits.length).to eq 1
       expect(@stock_stamper.plate.asset_audits.first.message).to eq "Process 'Stamping of stock' performed"
     end
-
   end
 
   after do
     Timecop.return
   end
-
 end

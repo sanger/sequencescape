@@ -1,5 +1,4 @@
 class StockStamper
-
   include ActiveModel::Model
 
   attr_accessor :user, :user_barcode, :plate, :source_plate_barcode, :source_plate_type, :destination_plate_barcode, :destination_plate_type, :destination_plate_maximum_volume, :overage
@@ -10,7 +9,7 @@ class StockStamper
   validates :user, presence: { message: 'barcode invalid' }
   validate :plates_barcodes_should_be_identical
 
-  def initialize(attributes={overage: 1.2})
+  def initialize(attributes = { overage: 1.2 })
     super
     create_plate
     create_user
@@ -38,14 +37,13 @@ class StockStamper
       }
     }
     plate.wells.each do |well|
-      if well.get_current_volume
-        data_object["destination"][destination_barcode]["mapping"] << {
-          "src_well"  => [source_barcode, well.map.description],
-          "dst_well"  => well.map.description,
-          "volume"    => volume(well),
-          "buffer_volume" => well.get_buffer_volume
-        }
-      end
+      next unless well.get_current_volume
+      data_object["destination"][destination_barcode]["mapping"] << {
+        "src_well"  => [source_barcode, well.map.description],
+        "dst_well"  => well.map.description,
+        "volume"    => volume(well),
+        "buffer_volume" => well.get_buffer_volume
+      }
     end
     data_object
   end
@@ -57,7 +55,7 @@ class StockStamper
   private
 
   def volume(well)
-    [well.get_current_volume*overage.to_f, destination_plate_maximum_volume.to_f].min
+    [well.get_current_volume * overage.to_f, destination_plate_maximum_volume.to_f].min
   end
 
   def create_plate
@@ -72,5 +70,4 @@ class StockStamper
     return unless source_plate_barcode.present? && destination_plate_barcode.present?
     errors.add(:plates_barcodes, "are not identical") unless source_plate_barcode == destination_plate_barcode
   end
-
 end
