@@ -19,10 +19,6 @@ class Robot < ActiveRecord::Base
 
   scope :include_properties, -> { includes(:robot_properties) }
 
-  def minimum_volume
-    configatron.tecan_minimum_volume
-  end
-
   def max_beds
     max_plates_property.try(:value).to_i
   end

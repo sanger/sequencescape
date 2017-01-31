@@ -8,7 +8,6 @@ module Sanger
       class Generator
         def self.mapping(data_object, total_volume)
           raise ArgumentError, "data_object needs to conform to an interface. WIP" if data_object.nil?
-
           dest_barcode_index = barcode_to_plate_index(data_object["destination"])
 
           source_barcode_index = source_barcode_to_plate_index(data_object["destination"])
@@ -98,7 +97,7 @@ module Sanger
           each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
             if total_volume > mapping["volume"]
               dest_name = data_object["destination"][dest_plate_barcode]["name"]
-              volume = [(total_volume - mapping["volume"]), configatron.tecan_minimum_volume].max
+              volume = mapping["buffer_volume"]
               vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"], plate_details["plate_size"])
               buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
             end

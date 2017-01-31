@@ -39,7 +39,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I follow "Cherrypick Group By Submission"
      And I choose "Pick by µl"
      And I fill in the following:
-        | Volume  | <volume>   |
+        | micro_litre_volume_required  | <volume>   |
      And I select "Pulldown" from "Plate Purpose"
      And I press "Next step"
 
@@ -134,25 +134,25 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
 
     When I choose "Pick by µl"
      And I fill in the following:
-        | Volume  |     |
+        | micro_litre_volume_required  |     |
      And I press "Next step"
     Then I should see "Invalid values typed in"
 
     When I choose "Pick by µl"
      And I fill in the following:
-        | Volume  |  abc  |
+        | micro_litre_volume_required  |  abc  |
      And I press "Next step"
     Then I should see "Invalid values typed in"
 
     When I choose "Pick by µl"
      And I fill in the following:
-        | Volume  |  0  |
+        | micro_litre_volume_required |  0  |
      And I press "Next step"
     Then I should see "Invalid values typed in"
 
     When I choose "Pick by µl"
      And I fill in the following:
-        | Volume  |  -1  |
+        | micro_litre_volume_required |  -1  |
      And I press "Next step"
     Then I should see "Invalid values typed in"
 
@@ -178,7 +178,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
 
     When I choose "Pick by µl"
      And I fill in the following:
-        | Volume  |  <volume>  |
+        | micro_litre_volume_required |  <volume>  |
 
    	 And I press "Next step"
    	 And I press "Next step"
