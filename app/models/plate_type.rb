@@ -1,5 +1,4 @@
 class PlateType < ActiveRecord::Base
-
   validates_presence_of :name, :maximum_volume
 
   class << self
@@ -8,7 +7,7 @@ class PlateType < ActiveRecord::Base
     end
 
     def names_and_maximum_volumes
-      PlateType.all.map {|pt| "#{pt.name}: #{pt.maximum_volume}"}.join(', ')
+      PlateType.all.map { |pt| "#{pt.name}: #{pt.maximum_volume}" }.join(', ')
     end
   end
 end

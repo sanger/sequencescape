@@ -1,5 +1,4 @@
 class StockStampersController < ApplicationController
-
   def new
     @stock_stamper = StockStamper.new
   end

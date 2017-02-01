@@ -68,7 +68,6 @@ describe StockStamper do
   end
 
   describe 'it verifies the plates' do
-
     it 'should not be valid without plates barcodes, user barcode, plates types' do
       invalid_stock_stamper = StockStamper.new
       expect(invalid_stock_stamper.valid?).to be false
@@ -92,7 +91,6 @@ describe StockStamper do
   end
 
   describe 'generate tecan file' do
-
     it 'should generate the right tecan data' do
       expect(@stock_stamper.generate_tecan_data).to eq @tecan_data
     end
