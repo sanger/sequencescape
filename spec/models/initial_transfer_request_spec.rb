@@ -43,7 +43,7 @@ describe TransferRequest::InitialTransfer do
   end
 
   context 'with a started outer request' do
-    let(:library_state) { 'started'}
+    let(:library_state) { 'started' }
 
     it 'transitions without changing the library request' do
       subject.pass!
