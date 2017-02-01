@@ -5,14 +5,14 @@ class StockStamper
 
   validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type, :destination_plate_barcode, :destination_plate_type, :destination_plate_maximum_volume, :overage
 
-  validates :plate, presence: { message: 'barcode invalid' }
-  validates :user, presence: { message: 'barcode invalid' }
+  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: "source_plate_barcode.present?"
+  validates :user, presence: { message: 'is not registered in sequencescape' }, if: "user_barcode.present?"
   validate :plates_barcodes_should_be_identical
 
   def initialize(attributes = { overage: 1.2 })
+    self.plate = attributes[:source_plate_barcode]
+    self.user = attributes[:user_barcode]
     super
-    create_plate
-    create_user
   end
 
   def generate_tecan_gwl_file_as_text
@@ -58,12 +58,12 @@ class StockStamper
     [well.get_current_volume * overage.to_f, destination_plate_maximum_volume.to_f].min
   end
 
-  def create_plate
-    @plate = Plate.find_by(barcode: Barcode.number_to_human(source_plate_barcode))
+  def plate=(plate)
+    @plate = Plate.find_by(barcode: Barcode.number_to_human(plate))
   end
 
-  def create_user
-    @user = User.find_by(barcode: Barcode.barcode_to_human!(user_barcode, 'ID')) if User.valid_barcode?(user_barcode)
+  def user=(user)
+    @user = User.find_by(barcode: Barcode.barcode_to_human!(user, 'ID')) if User.valid_barcode?(user)
   end
 
   def plates_barcodes_should_be_identical

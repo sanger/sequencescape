@@ -18,7 +18,7 @@ feature 'stamping of stock', js: true do
     fill_in("Scan destination plate", with: plate2.ean13_barcode)
     click_button "Generate TECAN file"
     expect(page).to have_content("Plates barcodes are not identical")
-    expect(page).to have_content("User barcode invalid")
+    expect(page).to have_content("User barcode can't be blank")
     fill_in("Scan user ID", with: "2470041440697")
     fill_in("Scan source plate", with: plate.ean13_barcode)
     fill_in("Scan destination plate", with: plate.ean13_barcode)

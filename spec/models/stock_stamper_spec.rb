@@ -71,18 +71,18 @@ describe StockStamper do
   describe 'it verifies the plates' do
     let(:plate2) { create :plate_with_3_wells, barcode: 2 }
 
-    it 'should not be valid without plates, user, plates types, destination plate maximum volume' do
+    it 'should not be valid without plates barcodes, user barcode, plates types, destination plate maximum volume' do
       invalid_stock_stamper = StockStamper.new
       expect(invalid_stock_stamper.valid?).to be false
-      expect(invalid_stock_stamper.errors.messages.length).to eq 8
+      expect(invalid_stock_stamper.errors.messages.length).to eq 6
     end
 
     it 'should not be valid if user barcode or plate barcode are invalid' do
       invalid_stock_stamper = StockStamper.new(@attributes.merge(source_plate_barcode: '123', destination_plate_barcode: '234', user_barcode: '345'))
       expect(invalid_stock_stamper.valid?).to be false
       expect(invalid_stock_stamper.errors.messages.length).to eq 3
-      expect(invalid_stock_stamper.errors.full_messages).to include "User barcode invalid"
-      expect(invalid_stock_stamper.errors.full_messages).to include "Plate barcode invalid"
+      expect(invalid_stock_stamper.errors.full_messages).to include "User is not registered in sequencescape"
+      expect(invalid_stock_stamper.errors.full_messages).to include "Plate is not registered in sequencescape"
     end
 
     it 'should not be valid if plates barcodes are not identical' do
