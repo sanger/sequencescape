@@ -29,18 +29,14 @@
   <br>
 
   <div class="form-group">
-    <%= f.label :source_plate_type, 'Source plate type: ' %>
-    <%= f.select :source_plate_type, options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name), @stock_stamper.source_plate_type) %>
+    <%= f.label :source_plate_type_name, 'Source plate type: ' %>
+    <%= f.select :source_plate_type_name, options_for_select(PlateType.all.map(&:name), @stock_stamper.source_plate_type_name) %>
   </div>
 
   <div class="form-group">
-    <%= f.label :destination_plate_type, 'Destination plate type: ' %>
-    <%= f.select :destination_plate_type, options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name), @stock_stamper.destination_plate_type) %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :destination_plate_maximum_volume, 'Destination plate maximum volume:' %>
-    <%= f.number_field :destination_plate_maximum_volume, step: 10, value: @stock_stamper.destination_plate_maximum_volume %>
+    <%= f.label :destination_plate_type_name, 'Destination plate type: ' %>
+    <%= f.select :destination_plate_type_name, options_for_select(PlateType.all.map(&:name), @stock_stamper.destination_plate_type_name) %><br>
+    Maximum volumes for plate types are: <%= PlateType.names_and_maximum_volumes%>
   </div>
 
   <div class="form-group">

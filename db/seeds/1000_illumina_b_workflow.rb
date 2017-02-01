@@ -247,7 +247,6 @@ re_request = RequestType.create!(
         target_type: 'StripTube',
         can_be_considered_a_stock_plate: false,
         cherrypickable_target: false,
-        cherrypickable_source: false,
         barcode_printer_type: BarcodePrinterType.find_by_name("96 Well Plate"),
         cherrypick_direction: 'column',
         size: 8,

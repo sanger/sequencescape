@@ -1,16 +1,18 @@
 class StockStamper
   include ActiveModel::Model
 
-  attr_accessor :user, :user_barcode, :plate, :source_plate_barcode, :source_plate_type, :destination_plate_barcode, :destination_plate_type, :destination_plate_maximum_volume, :overage
+  attr_accessor :user, :user_barcode, :plate, :plate_type, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
 
-  validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type, :destination_plate_barcode, :destination_plate_type, :destination_plate_maximum_volume, :overage
+  validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
 
-  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: "source_plate_barcode.present?"
+  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: "destination_plate_barcode.present?"
+  validates :plate_type, presence: { message: 'is not registered in sequencescape' }, if: "destination_plate_type_name.present?"
   validates :user, presence: { message: 'is not registered in sequencescape' }, if: "user_barcode.present?"
   validate :plates_barcodes_should_be_identical
 
   def initialize(attributes = { overage: 1.2 })
-    self.plate = attributes[:source_plate_barcode]
+    self.plate = attributes[:destination_plate_barcode]
+    self.plate_type = attributes[:destination_plate_type_name]
     self.user = attributes[:user_barcode]
     super
   end
@@ -26,11 +28,11 @@ class StockStamper
       "user" => user.login,
       "time" => Time.now,
       "source" => {
-        source_barcode => { "name" => source_plate_type.tr('_', "\s"), "plate_size" => plate.size }
+        source_barcode => { "name" => source_plate_type_name.tr('_', "\s"), "plate_size" => plate.size }
       },
       "destination" => {
         destination_barcode => {
-          "name" => destination_plate_type.tr('_', "\s"),
+          "name" => destination_plate_type_name.tr('_', "\s"),
           "plate_size" => plate.size,
           "mapping" => []
         }
@@ -55,11 +57,15 @@ class StockStamper
   private
 
   def volume(well)
-    [well.get_current_volume * overage.to_f, destination_plate_maximum_volume.to_f].min
+    [well.get_current_volume * overage.to_f, plate_type.maximum_volume.to_f].min
   end
 
   def plate=(plate)
     @plate = Plate.find_by(barcode: Barcode.number_to_human(plate))
+  end
+
+  def plate_type=(plate_type)
+    @plate_type = PlateType.find_by(name: plate_type)
   end
 
   def user=(user)

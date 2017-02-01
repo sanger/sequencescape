@@ -79,6 +79,8 @@ module Sequencescape
     config.i18n.load_path = Dir[File.join(Rails.root, %w{config locales metadata *.{rb,yml}})]
     I18n.enforce_available_locales = false
 
+    config.cherrypickable_default_type = 'ABgene_0800'
+
     # Jruby 1.7 seems to try and use the http.proxyX settings, but ignores the noProxyHost ENV.
     if defined?(ENV_JAVA)
       ENV_JAVA['http.proxyHost'] = nil

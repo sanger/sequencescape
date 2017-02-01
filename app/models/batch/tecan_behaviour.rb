@@ -45,7 +45,7 @@ module Batch::TecanBehaviour
       end
       if data_object["destination"][full_destination_barcode].nil?
         data_object["destination"][full_destination_barcode] = {
-          "name" => PlatePurpose.cherrypickable_default_type.first.name.tr('_', "\s"),
+          "name" => PlateType.cherrypickable_default_type.tr('_', "\s"),
           "plate_size" => request.target_asset.plate.size
         }
       end

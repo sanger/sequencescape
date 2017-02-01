@@ -24,6 +24,10 @@ FactoryGirl.define do
           create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
         end
       )
+      plate.wells.each do |well|
+        well.well_attribute.current_volume = 160
+        well.save
+      end
     end
   end
 

@@ -53,7 +53,7 @@
     <table cellspacing='0' cellpadding='0'>
       <tr>
         <td>Source Plates Type:</td>
-        <td><%= select_tag "plate_type", options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name)) %></td>
+        <td><%= select_tag "plate_type", options_for_select(PlateType.all.map(&:name)) %></td>
       </tr>
       <tr>
         <td><label for="robot_id">Picking Robot</label>:</td>

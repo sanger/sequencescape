@@ -10,9 +10,8 @@ describe StockStamper do
     @attributes = { user_barcode: "2470041440697",
               source_plate_barcode: plate.ean13_barcode,
               destination_plate_barcode: plate.ean13_barcode,
-              source_plate_type: 'ABgene_0765',
-              destination_plate_type: 'ABgene_0800',
-              destination_plate_maximum_volume: '17',
+              source_plate_type_name: 'ABgene_0765',
+              destination_plate_type_name: 'ABgene_0800',
               overage: 1.2 }
     @stock_stamper = StockStamper.new(@attributes)
     new_time = Time.local(2008, 9, 1, 12, 0, 0)
@@ -41,7 +40,7 @@ describe StockStamper do
                               "A1"
                             ],
                             "dst_well" => "A1",
-                            "volume" => 17.0,
+                            "volume" => 180.0,
                             "buffer_volume" => 0.0
                           },
                           {
@@ -50,7 +49,7 @@ describe StockStamper do
                               "B2"
                             ],
                             "dst_well" => "B2",
-                            "volume" => 17.0,
+                            "volume" => 180.0,
                             "buffer_volume" => 0.0
                           },
                           {
@@ -59,7 +58,7 @@ describe StockStamper do
                               "E6"
                             ],
                             "dst_well" => "E6",
-                            "volume" => 17.0,
+                            "volume" => 180.0,
                             "buffer_volume" => 0.0
                           }
                         ]
@@ -69,12 +68,11 @@ describe StockStamper do
   end
 
   describe 'it verifies the plates' do
-    let(:plate2) { create :plate_with_3_wells, barcode: 2 }
 
-    it 'should not be valid without plates barcodes, user barcode, plates types, destination plate maximum volume' do
+    it 'should not be valid without plates barcodes, user barcode, plates types' do
       invalid_stock_stamper = StockStamper.new
       expect(invalid_stock_stamper.valid?).to be false
-      expect(invalid_stock_stamper.errors.messages.length).to eq 6
+      expect(invalid_stock_stamper.errors.messages.length).to eq 5
     end
 
     it 'should not be valid if user barcode or plate barcode are invalid' do
@@ -83,12 +81,6 @@ describe StockStamper do
       expect(invalid_stock_stamper.errors.messages.length).to eq 3
       expect(invalid_stock_stamper.errors.full_messages).to include "User is not registered in sequencescape"
       expect(invalid_stock_stamper.errors.full_messages).to include "Plate is not registered in sequencescape"
-    end
-
-    it 'should not be valid if plates barcodes are not identical' do
-      invalid_stock_stamper = StockStamper.new(@attributes.merge(destination_plate_barcode: plate2.ean13_barcode))
-      expect(invalid_stock_stamper.valid?).to be false
-      expect(invalid_stock_stamper.errors.messages.length).to eq 1
       expect(invalid_stock_stamper.errors.full_messages).to include "Plates barcodes are not identical"
     end
 
@@ -100,6 +92,7 @@ describe StockStamper do
   end
 
   describe 'generate tecan file' do
+
     it 'should generate the right tecan data' do
       expect(@stock_stamper.generate_tecan_data).to eq @tecan_data
     end

@@ -322,9 +322,6 @@ end
 (1..5).each do |index|
   PlatePurpose.create!(name: "Aliquot #{index}", qc_display: true, can_be_considered_a_stock_plate: true, cherrypickable_target: true)
 end
-PlatePurpose.create!(name: "ABgene_0765", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
-PlatePurpose.create!(name: "ABgene_0800", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: true)
-PlatePurpose.create!(name: "FluidX075", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
 
 # Build the links between the parent and child plate purposes
 relationships = {
@@ -412,7 +409,6 @@ PlatePurpose.create!(
   default_state: 'pending',
   barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
   cherrypickable_target: false,
-  cherrypickable_source: false,
   size: 96,
   asset_shape: AssetShape.find_by_name('Standard'),
   barcode_for_tecan: 'ean13_barcode'
