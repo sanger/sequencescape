@@ -29,16 +29,13 @@ module Accession
     end
 
     def url
-      if valid?
-        return set_url(configatron.accession.ena.user) if ena?
-        return set_url(configatron.accession.ega.user) if ega?
-      end
+      configatron.accession.url! if valid?
     end
 
-  private
-
-    def set_url(provider)
-      URI.parse(configatron.accession.url + provider).to_s
+    def login
+      return configatron.accession.ega!.to_hash if ega?
+      return configatron.accession.ena!.to_hash if ena?
     end
+
   end
 end

@@ -17,7 +17,7 @@ module Accession
       @submission = submission
 
       if valid?
-        @resource = rest_client.new(submission.service.url)
+        @resource = rest_client.new(submission.service.url, submission.service.login)
         set_proxy
       end
     end

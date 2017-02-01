@@ -45,4 +45,15 @@ RSpec.describe Accession::Service, type: :model, accession: true do
     expect(service.broker).to eq("EGA")
   end
 
+  it "can have a user and password" do
+    service = Accession::Service.new("open")
+    expect(service.login).to eq(configatron.accession.ena!.to_hash)
+
+    service = Accession::Service.new("managed")
+    expect(service.login).to eq(configatron.accession.ega!.to_hash)
+
+    service = Accession::Service.new("closed")
+    expect(service.login).to be_nil
+  end
+
 end
