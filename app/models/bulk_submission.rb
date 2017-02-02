@@ -8,9 +8,7 @@
 class ActiveRecord::Base
   class << self
     def find_by_id_or_name!(id, name)
-      return find(id) unless id.blank?
-      raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name!(name)
+      find_by_id_or_name(id, name) || raise(ActiveRecord::RecordNotFound, "Could not find #{self.name}: #{id || name}")
     end
 
     def find_by_id_or_name(id, name)
@@ -58,7 +56,7 @@ class BulkSubmission
 
   def initialize(attrs = {})
     self.spreadsheet = attrs[:spreadsheet]
-    self.encoding = attrs.fetch(:encoding,DEFAULT_ENCODING)
+    self.encoding = attrs.fetch(:encoding, DEFAULT_ENCODING)
   end
 
   include ManifestUtil
@@ -80,7 +78,7 @@ class BulkSubmission
   rescue CSV::MalformedCSVError
     errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
   rescue Encoding::InvalidByteSequenceError
-    errors.add(:encoding,"didn't match for the provided file.")
+    errors.add(:encoding, "didn't match for the provided file.")
   end
 
   def headers
@@ -142,7 +140,7 @@ class BulkSubmission
     @completed_submissions = {}
 
     csv_content = spreadsheet.read
-    @csv_rows = CSV.parse(csv_content.encode!('utf-8',encoding))
+    @csv_rows = CSV.parse(csv_content.encode!('utf-8', encoding))
 
     if spreadsheet_valid?
       submission_details = submission_structure
