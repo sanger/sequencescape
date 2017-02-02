@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class BarcodePrinterTest < ActiveSupport::TestCase
-
   attr_reader :barcode_printer, :printer_for_384_wells_plate
 
   def setup
@@ -14,7 +13,6 @@ class BarcodePrinterTest < ActiveSupport::TestCase
     assert printer_for_384_wells_plate.plate384_printer?
   end
 
-
   test "should register printer in PMB after create" do
     configatron.register_printers_automatically = true
     RestClient.expects(:get)
@@ -23,11 +21,10 @@ class BarcodePrinterTest < ActiveSupport::TestCase
               .returns("{\"data\":[]}")
     RestClient.expects(:post)
               .with('http://localhost:9292/v1/printers',
-                        {"data"=>{"attributes"=>{"name" => "test_printer"}}}.to_json,
+                        { "data" => { "attributes" => { "name" => "test_printer" } } }.to_json,
                         content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
               .returns(201)
     create :barcode_printer, name: 'test_printer'
     configatron.register_printers_automatically = false
   end
-
 end

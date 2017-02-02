@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 require 'configatron'
 
 configatron.amqp.url = "amqp://guest:guest@localhost:5672"
@@ -12,8 +14,14 @@ configatron.amqp.maximum_frame = 131072
 configatron.team_name = "LIMS and Informatics"
 configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"
 
-configatron.accession_url = "http://localhost:9999/accession_service/"
-configatron.accession_view_url = "http://localhost:9999/view_accession/"
+configatron.accession do |accession|
+  accession.url = "http://localhost:9999/accession_service/"
+  accession.view_url = "http://localhost:9999/view_accession/"
+  accession.ega.user = "ega_accession_login"
+  accession.ega.password = "ega_accession_password"
+  accession.ena.user = "era_accession_login"
+  accession.ena.password = "era_accession_password"
+end
 
 configatron.admin_email = "admin@test.com"
 configatron.exception_recipients = "exceptions@test.com"
@@ -31,8 +39,6 @@ configatron.default_policy_title = "Default Policy Title"
 configatron.fluidigm_data.source = "directory"
 configatron.fluidigm_data.directory = "#{Rails.root}/data/fluidigm"
 configatron.irods_audience = "http://localhost:3000"
-configatron.ega_accession_login = "ega_accession_login"
-configatron.era_accession_login = "era_accession_login"
 configatron.login_url = "/login"
 configatron.mail_prefix = "[DEVELOPMENT]"
 configatron.pac_bio_instrument_api = "http://example.com"
@@ -50,10 +56,10 @@ configatron.tecan_files_location = "#{Rails.root}/data"
 configatron.tecan_minimum_volume = 1.0
 
 configatron.external_applications = [
-  ['High Throughput Pipeline','http://www.example.com'],
-  ['Generic Lims','http://www.example.com'],
-  ['Gatekeeper','http://www.example.com'],
-  ['Crier','http://www.example.com']
+  ['High Throughput Pipeline', 'http://www.example.com'],
+  ['Generic Lims', 'http://www.example.com'],
+  ['Gatekeeper', 'http://www.example.com'],
+  ['Crier', 'http://www.example.com']
 ]
 
 if Rails.env == 'development'
@@ -104,7 +110,7 @@ if Rails.env == 'development'
 
   configatron.register_printers_automatically = false
 end
-if (Rails.env == 'test')||(Rails.env == 'cucumber')
+if (Rails.env == 'test') || (Rails.env == 'cucumber')
 
   # configatron.asset_audits_url = NOT DEFINED
 

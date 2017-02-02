@@ -1,9 +1,7 @@
 require './test/test_helper'
 require 'csv'
 
-
 class QuantParserTest < ActiveSupport::TestCase
-
   def read_file(filename)
     content = nil
     File.open(filename, "r") do |fd|
@@ -13,10 +11,8 @@ class QuantParserTest < ActiveSupport::TestCase
   end
 
   context "Parser" do
-
     context "With a valid csv file" do
       setup do
-
         @filename = Rails.root.to_s + "/test/data/quant_test.csv"
         @content = read_file @filename
 
@@ -26,17 +22,15 @@ class QuantParserTest < ActiveSupport::TestCase
       end
 
       should "return a QuantParser" do
-        assert Parsers.parser_for(@filename,nil,@content).is_a?(Parsers::QuantParser)
+        assert Parsers.parser_for(@filename, nil, @content).is_a?(Parsers::QuantParser)
       end
-
-
 
       context "processing the file" do
         setup do
-          @parser = Parsers.parser_for(@filename,nil,@content)
+          @parser = Parsers.parser_for(@filename, nil, @content)
           @barcode = "999991"
           @plate = PlatePurpose.find_by_name("Stock Plate").plates.create!
-          @plate.update_attributes(:barcode => @barcode)
+          @plate.update_attributes(barcode: @barcode)
           @plate.wells.construct!
           @plate.wells.each do |well|
             well.set_concentration(30)
@@ -45,9 +39,9 @@ class QuantParserTest < ActiveSupport::TestCase
         end
 
         should "update well attributes with the file contents" do
-          [["A1",35,7.5],
-            ["A2",56,8.1],
-            ["A3",89,4.3]].each do |location, concentration, rin|
+          [["A1", 35, 7.5],
+           ["A2", 56, 8.1],
+           ["A3", 89, 4.3]].each do |location, concentration, rin|
               assert_equal concentration, @plate.wells.located_at(location).first.get_concentration
           end
         end
@@ -61,7 +55,6 @@ class QuantParserTest < ActiveSupport::TestCase
 
     context "With an actual example csv file" do
       setup do
-
         @filename = Rails.root.to_s + "/test/data/quant_test_example.csv"
         @content = read_file @filename
 
@@ -71,15 +64,15 @@ class QuantParserTest < ActiveSupport::TestCase
       end
 
       should "return a QuantParser" do
-        assert Parsers.parser_for(@filename,nil,@content).is_a?(Parsers::QuantParser)
+        assert Parsers.parser_for(@filename, nil, @content).is_a?(Parsers::QuantParser)
       end
 
       context "processing the file" do
         setup do
-          @parser = Parsers.parser_for(@filename,nil,@content)
+          @parser = Parsers.parser_for(@filename, nil, @content)
           @barcode = "999991"
           @plate = PlatePurpose.find_by_name("Stock Plate").plates.create!
-          @plate.update_attributes(:barcode => @barcode)
+          @plate.update_attributes(barcode: @barcode)
           @plate.wells.construct!
           @plate.wells.each do |well|
             well.set_concentration(30)
@@ -88,9 +81,9 @@ class QuantParserTest < ActiveSupport::TestCase
         end
 
         should "update well attributes with the file contents" do
-          [["A1",134.47,7.5],
-            ["A2",81.96,8.1],
-            ["A3",36.76,4.3]].each do |location, concentration, rin|
+          [["A1", 134.47, 7.5],
+           ["A2", 81.96, 8.1],
+           ["A3", 36.76, 4.3]].each do |location, concentration, rin|
               assert_equal concentration, @plate.wells.located_at(location).first.get_concentration
           end
         end

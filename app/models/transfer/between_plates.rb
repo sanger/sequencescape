@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 # Picks the specified wells from one plate into the wells of another.  In this case transfers
 # is a hash from source to destination well location and destination is the target plate for
@@ -44,13 +46,13 @@ class Transfer::BetweenPlates < Transfer
     destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map_description, well] }]
 
     # Build a list of source wells for each destination well.
-    dest_sources = Hash.new {|h,i| h[i] = Array.new }
-    transfers.each {|source,dests| dests.each {|dest| dest_sources[dest] << source }} if destination.supports_multiple_submissions?
+    dest_sources = Hash.new { |h, i| h[i] = Array.new }
+    transfers.each { |source, dests| dests.each { |dest| dest_sources[dest] << source } } if destination.supports_multiple_submissions?
 
     pcg = source.pre_cap_groups
     location_subs = dest_sources.inject({}) do |store, dest_source|
       dest_loc, sources = *dest_source
-      uuid, transfer_details = pcg.detect {|k,v| v[:wells].sort == sources.sort}
+      uuid, transfer_details = pcg.detect { |k, v| v[:wells].sort == sources.sort }
       raise StandardError, "Could not find appropriate pool" if transfer_details.nil?
       pcg.delete(uuid)
       store[dest_loc] = transfer_details[:submission_id]
@@ -59,13 +61,13 @@ class Transfer::BetweenPlates < Transfer
 
     source_wells.each do |location, source_well|
       Array(transfers[location]).flatten.each do |target_well_location|
-        yield(source_well, destination_wells[target_well_location],location_subs[target_well_location])
+        yield(source_well, destination_wells[target_well_location], location_subs[target_well_location])
       end
     end
 
     # Eliminate any of the transfers that were not made because of the bad source wells
     transfers_we_did_not_make = bad_wells.map { |well| well.map.description }
-    transfers.delete_if { |k,_| transfers_we_did_not_make.include?(k) }
+    transfers.delete_if { |k, _| transfers_we_did_not_make.include?(k) }
   end
   private :each_transfer
 
@@ -75,4 +77,3 @@ class Transfer::BetweenPlates < Transfer
   end
   private :request_type_between
 end
-

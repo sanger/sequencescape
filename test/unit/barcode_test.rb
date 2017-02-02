@@ -1,24 +1,25 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
 class BarcodeTest < ActiveSupport::TestCase
-
   context "A prefix and a number" do
     setup do
-      #Input
+      # Input
       @prefix = "PR"
       @number = 1234
 
-      #Expected results
+      # Expected results
       @checksum = "K"
       @human = "#{@prefix}#{@number}#{@checksum}"
     end
 
     should "have a checksum" do
-      assert_equal @checksum,  Barcode.calculate_checksum(@prefix, @number)
+      assert_equal @checksum, Barcode.calculate_checksum(@prefix, @number)
     end
 
     should "generate a barcode" do
@@ -42,7 +43,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should_eventually "be splittable" do
-      prefix, number, check =  Barcode.split_barcode(@barcode)
+      prefix, number, check = Barcode.split_barcode(@barcode)
       assert_equal "247", prefix
       assert_equal 2, number
       assert_equal "799", check
@@ -95,7 +96,6 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context "A human readable barcode" do
-
     setup do
       @human_readable_barcode = "PR1234K"
       @invalid_human_barcode = "QQ12345A"
@@ -103,7 +103,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should "convert to the correct machine barcode" do
-      assert_equal(@expected_machine_barcode,Barcode.human_to_machine_barcode(@human_readable_barcode))
+      assert_equal(@expected_machine_barcode, Barcode.human_to_machine_barcode(@human_readable_barcode))
     end
 
     should "raise an exception with an invalid barcode" do
@@ -111,7 +111,5 @@ class BarcodeTest < ActiveSupport::TestCase
         Barcode.human_to_machine_barcode(@invalid_human_barcode)
       end
     end
-
   end
-
 end

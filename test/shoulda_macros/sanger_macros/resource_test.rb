@@ -1,28 +1,36 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Sanger
   module Testing
     module Controller
       module Macros
+        RESTFUL_ACTIONS = %w(index new create show update destroy edit).freeze
+
         def resource_test(resource_name, params = {})
           params.symbolize_keys!
           resource_name = resource_name.to_sym
 
-          restful_actions = ['index','new','create','show','update','destroy','edit']
-          ignore_actions  = params[:ignore_actions] || []
-          actions         = params[:actions] || (restful_actions - ignore_actions)
-          path_prefix     = params[:with_prefix]||""
+          ignore_actions   = params[:ignore_actions] || []
+          actions          = params[:actions] || (RESTFUL_ACTIONS - ignore_actions)
+          untested_actions = (RESTFUL_ACTIONS - ignore_actions) - actions
+          path_prefix      = params[:with_prefix] || ""
+
           raise Exception.new, ":actions need to be an Array" unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
-          formats         = params[:formats] || ['html','xml', 'json']
+          formats         = params[:formats] || ['html', 'xml', 'json']
 
           context 'should be a resource' do
             setup do
               @factory_options = params[:defaults] || {}
               @create_options  = params[:defaults] || {}
+              @update_options  = (params[:defaults] || {}).reject do |k, v|
+                params.fetch(:protect_on_update, []).include?(k)
+              end.deep_merge!(params.fetch(:extra_on_update, {}))
               @input_params = {}
             end
 
@@ -54,7 +62,7 @@ module Sanger
               index_url = "#{parent_resource}_#{resource_name.to_s.pluralize}_path(@#{parent_resource})"
 
               setup do
-                parent       = create parent_resource
+                parent = create parent_resource
 
                 @factory_options.merge!(
                   parent_resource.to_sym => parent
@@ -78,11 +86,11 @@ module Sanger
                 @user = case
                   when user_details.is_a?(Symbol) then create(user_details)
                   when user_details.is_a?(Proc) then user_details.call
-                  else raise StandardError, "You are potentially creating objects outside of a transaction: #{ user_details.inspect }"
+                  else raise StandardError, "You are potentially creating objects outside of a transaction: #{user_details.inspect}"
                 end
 
                 # All our things need a user to be logged in
-                @controller.stubs(:current_user).returns(@user)
+                session[:user] = @user.id
                 @controller.stubs(:logged_in?).returns(@user)
               end
               if actions.include?('index')
@@ -107,12 +115,11 @@ module Sanger
               if actions.include?('create')
                 context "should create" do
                   setup do
-                    local_params = @input_params
-                    local_params[resource_name] = @create_options
-                    post :create, local_params
+                    @input_params[resource_name] = @create_options
+                    post :create, @input_params
                   end
-                  #assert eval "@object".valid?
-                  should redirect_to("show page"){ eval(show_url) }
+                  # assert eval "@object".valid?
+                  should redirect_to("show page") { eval(show_url) }
                 end
               end
 
@@ -120,9 +127,8 @@ module Sanger
                 context "should show #{resource_name}" do
                   setup do
                     @object = create resource_name, @factory_options
-                    local_params = @input_params
-                    local_params[:id] = @object.id
-                    get :show, local_params
+                    @input_params[:id] = @object.id
+                    get :show, @input_params
                   end
                   should respond_with :success
                 end
@@ -132,9 +138,8 @@ module Sanger
                 context "should get edit" do
                   setup do
                     @object = create resource_name, @factory_options
-                    local_params = @input_params
-                    local_params[:id] = @object.id
-                    get :edit, local_params
+                    @input_params[:id] = @object.id
+                    get :edit, @input_params
                   end
                   should respond_with :success
                 end
@@ -144,12 +149,11 @@ module Sanger
                 context "should update" do
                   setup do
                     @object = create resource_name
-                    local_params = @input_params
-                    local_params[resource_name] = @create_options
-                    local_params[:id] = @object.id
-                    put :update, local_params
+                    @input_params[resource_name] = @create_options
+                    @input_params[:id] = @object.id
+                    put :update, @input_params
                   end
-                  should redirect_to("show page"){ eval(show_url) }
+                  should redirect_to("show page") { eval(show_url) }
                 end
               end
 
@@ -157,28 +161,16 @@ module Sanger
                 context "should destroy" do
                   setup do
                     @object = create resource_name
-                    local_params = @input_params
-                    local_params[:id] = @object.id
-                    delete :destroy, local_params
+                    @input_params[:id] = @object.id
+                    delete :destroy, @input_params
                   end
-                  should redirect_to("index page"){ eval(index_url) }
+                  should redirect_to("index page") { eval(index_url) }
                 end
-
-                # context "destroy without object in database" do
-                #   setup do
-                #     assert_raise ActiveRecord::RecordNotFound do
-                #       # Should this be a POST/PUT?
-                #       delete :destroy, :id => -1
-                #     end
-                #   end
-                #   should_not set_the_flash
-                # end
               end
 
-              untested_actions = (restful_actions - ignore_actions) - actions
               context "should not have untested action" do
                 untested_actions.each do |action|
-                  should "#{action}" do
+                  should action.to_s do
                     assert_raise AbstractController::ActionNotFound do
                       get action
                     end
@@ -191,7 +183,7 @@ module Sanger
                   context "should show status" do
                     setup do
                       @object = create resource_name
-                      get :status, :id => @object.id
+                      get :status, id: @object.id
                     end
                     should respond_with :success
                   end
@@ -204,13 +196,12 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = "application/xml"
-                        local_params = @input_params
-                        get :index, local_params
+                        get :index, @input_params
                       end
                       should respond_with :success
                       should "have api version attribute on root object" do
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}", :attributes => {:api_version => "0.6"}
-                        assert_tag :tag => "#{resource_name.to_s.pluralize}"
+                        assert_tag tag: (resource_name.to_s.pluralize).to_s, attributes: { api_version: "0.6" }
+                        assert_tag tag: (resource_name.to_s.pluralize).to_s
                       end
                     end
                   end
@@ -219,14 +210,13 @@ module Sanger
                       setup do
                         @request.accept = "application/xml"
                         @object = create resource_name, @factory_options
-                        local_params = @input_params
-                        local_params[:id] = @object.id
-                        get :show, local_params
+                        @input_params[:id] = @object.id
+                        get :show, @input_params
                       end
                       should respond_with :success
                       should "show xml" do
-                        assert_tag :tag => "#{resource_name}", :attributes => {:api_version => RELEASE.api_version}
-                        assert_tag :tag => "#{resource_name}"
+                        assert_tag tag: resource_name.to_s, attributes: { api_version: RELEASE.api_version }
+                        assert_tag tag: resource_name.to_s
                       end
                     end
                   end
@@ -237,8 +227,7 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = "text/x-json"
-                        local_params = @input_params
-                        get :index, local_params
+                        get :index, @input_params
                       end
                       should respond_with :success
                       should "be JSON" do
@@ -251,9 +240,8 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = "text/x-json"
-                        local_params = @input_params
-                        local_params[:id] = @object.id
-                        get :show, local_params
+                        @input_params[:id] = @object.id
+                        get :show, @input_params
                       end
                       should respond_with :success
                       should "be JSON" do

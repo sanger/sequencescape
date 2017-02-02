@@ -1,24 +1,23 @@
 require 'test_helper'
 
 class PrintJobTest < ActiveSupport::TestCase
-
   attr_reader :print_job, :plates, :plate, :plate_purpose, :barcode_printer, :attributes
 
   def setup
     @barcode_printer = create :barcode_printer
-    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
     @plates = [(create :child_plate)]
     @plate = plates[0]
     @plate_purpose = plate.plate_purpose
-    @attributes = {printer_name: barcode_printer.name,
-                labels: {body:
-                  [{main_label:
-                    {top_left: "#{Date.today.strftime("%e-%^b-%Y")}",
-                    bottom_left: "#{plate.sanger_human_barcode}",
-                    top_right: "#{plate_purpose.name.to_s}",
+    @attributes = { printer_name: barcode_printer.name,
+                labels: { body:
+                  [{ main_label:
+                    { top_left: (Date.today.strftime("%e-%^b-%Y")).to_s,
+                    bottom_left: (plate.sanger_human_barcode).to_s,
+                    top_right: (plate_purpose.name).to_s,
                     bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
-                    top_far_right: "#{plate.parent.try(:barcode)}",
-                    barcode: "#{plate.ean13_barcode}"}}]
+                    top_far_right: (plate.parent.try(:barcode)).to_s,
+                    barcode: (plate.ean13_barcode).to_s } }]
                   },
                 label_template_id: 15,
                 }
@@ -54,7 +53,7 @@ class PrintJobTest < ActiveSupport::TestCase
 
   test "#execute is false if while printing a label for multiplex sample manifest there is no mx_tube" do
     manifest = create :sample_manifest, asset_type: 'multiplexed_library', count: 1
-    options = {sample_manifest: manifest, only_first_label: false}
+    options = { sample_manifest: manifest, only_first_label: false }
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::SampleManifestRedirect, options)
     refute print_job.execute
     assert_equal 1, print_job.errors.count
@@ -72,5 +71,4 @@ class PrintJobTest < ActiveSupport::TestCase
     refute print_job.execute
     assert_equal 1, print_job.errors.count
   end
-
 end

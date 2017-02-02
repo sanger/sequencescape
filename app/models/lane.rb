@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Lane < Aliquot::Receptacle
   include Api::LaneIO::Extensions
@@ -32,11 +34,10 @@ class Lane < Aliquot::Receptacle
 
   extend Metadata
   has_metadata do
-    attribute(:release_reason, :in => LIST_REASONS)
+    attribute(:release_reason, in: LIST_REASONS)
   end
 
-  has_one_as_child(:spiked_in_buffer, :conditions => { :sti_type => 'SpikedBuffer' })
+  has_one_as_child(:spiked_in_buffer, ->() { where(sti_type: 'SpikedBuffer') })
 
-  has_many :aliquot_indicies, :inverse_of => :lane, :class_name => 'AliquotIndex'
-
+  has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
 end

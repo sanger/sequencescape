@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class PicoAssayPlate < Plate
   self.prefix = "PA"
@@ -52,16 +54,14 @@ class PicoAssayPlate < Plate
     end
   end
 
-
   def upload_pico_results(state, failure_reason, well_details)
     return false if state.nil? || well_details.blank? || stock_plate().nil?
 
     ActiveRecord::Base.transaction do
       event = stock_plate.events.create_pico!(state)
       # Adds a failure reason if it is available.
-      event.update_attributes(:descriptor_key => failure_reason) unless failure_reason.nil?
+      event.update_attributes(descriptor_key: failure_reason) unless failure_reason.nil?
       well_details.each { |details| WellDetail.new(details[:well], self).grade_as!(state) }
     end
   end
-
 end

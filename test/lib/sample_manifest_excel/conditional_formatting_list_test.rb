@@ -1,13 +1,12 @@
 require 'test_helper'
 
 class ConditionalFormattingListTest < ActiveSupport::TestCase
-
   include SampleManifestExcel::Helpers
 
   attr_reader :conditional_formatting_list, :rules, :worksheet, :options
 
   def setup
-    folder = File.join("test","data", "sample_manifest_excel", "extract")
+    folder = File.join("test", "data", "sample_manifest_excel", "extract")
     @rules = load_file(folder, "conditional_formattings")
     @conditional_formatting_list = SampleManifestExcel::ConditionalFormattingList.new(rules)
     @worksheet = Axlsx::Workbook.new.add_worksheet
@@ -41,7 +40,7 @@ class ConditionalFormattingListTest < ActiveSupport::TestCase
     refute conditional_formatting_list.saved?
   end
 
-  #TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.
+  # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.
   test "#update with formula should correctly assign the formula to the worksheet" do
     conditional_formatting_list = SampleManifestExcel::ConditionalFormattingList.new(rule_1: FactoryGirl.attributes_for(:conditional_formatting_with_formula))
     conditional_formatting_list.update(options)
@@ -61,5 +60,4 @@ class ConditionalFormattingListTest < ActiveSupport::TestCase
     conditional_formatting_list.update(options)
     refute dup.each_item.any? { |conditional_formatting| conditional_formatting.styled? }
   end
-
 end

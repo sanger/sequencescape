@@ -1,11 +1,11 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 
 module IlluminaHtp::Requests
-
   class StdLibraryRequest < Request::LibraryCreation
-
     fragment_size_details(:no_default, :no_default)
 
     # Ensure that the bait library information is also included in the pool information.
@@ -18,12 +18,11 @@ module IlluminaHtp::Requests
     def role
       order.role
     end
-
   end
 
   class SharedLibraryPrep < StdLibraryRequest
     def target_tube
-      @target_tube ||= submission.next_requests(self).detect {|r| r.target_tube }.try(:target_tube)
+      @target_tube ||= submission.next_requests(self).detect { |r| r.target_tube }.try(:target_tube)
     end
 
     def on_failed
@@ -33,14 +32,13 @@ module IlluminaHtp::Requests
     validate :valid_purpose?
     def valid_purpose?
       return true if request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
-      errors.add(:asset,"#{asset.plate.purpose.name} is not a suitable plate purpose.")
+      errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
       false
     end
 
     def failed_downstream!
       change_decision! unless failed?
     end
-
   end
 
   class LibraryCompletion < StdLibraryRequest
@@ -51,5 +49,4 @@ module IlluminaHtp::Requests
     end
     include FailUpstream
   end
-
 end

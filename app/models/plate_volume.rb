@@ -1,14 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
-
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 require 'carrierwave'
 
 class PlateVolume < ActiveRecord::Base
   extend DbFile::Uploader
 
-  has_uploaded :uploaded, { :serialization_column => "uploaded_file_name" }
+  has_uploaded :uploaded, { serialization_column: "uploaded_file_name" }
 
   before_save :calculate_barcode_from_filename
   after_save :update_well_volumes
@@ -26,9 +27,9 @@ class PlateVolume < ActiveRecord::Base
     location_to_well = plate.wells.map_from_locations
 
     extract_well_volumes do |well_description, volume|
-      map  = Map.find_for_cell_location(well_description,plate.size) or raise "Cannot find location for #{well_description.inspect} on plate size #{plate.size}"
+      map  = Map.find_for_cell_location(well_description, plate.size) or raise "Cannot find location for #{well_description.inspect} on plate size #{plate.size}"
       well = location_to_well[map]
-      well.well_attribute.update_attributes!(:measured_volume => volume.to_f) if well.present?
+      well.well_attribute.update_attributes!(measured_volume: volume.to_f) if well.present?
     end
   end
   private :update_well_volumes
@@ -49,7 +50,7 @@ class PlateVolume < ActiveRecord::Base
     return unless update_required?(file.stat.mtime)
     db_files.map(&:destroy)
     self.reload
-    update_attributes!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file)
+    update_attributes!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
   end
 
   class << self
@@ -83,8 +84,7 @@ class PlateVolume < ActiveRecord::Base
 
     def find_for_filename(filename)
       self.find_by_uploaded_file_name(filename) or
-      ->(filename, file) { PlateVolume.create!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file) }
+      ->(filename, file) { PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file) }
     end
-
   end
 end

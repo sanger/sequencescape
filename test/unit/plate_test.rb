@@ -1,14 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require "test_helper"
 
 class PlateTest < ActiveSupport::TestCase
-
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = "12345678"
-    PlatePurpose.find_by_name("Cherrypicked").create!(:do_not_create_wells,{:name => "Cherrypicked #{barcode}", :size => 192,:barcode => barcode,:plate_metadata_attributes=>{:fluidigm_barcode=>fluidigm_barcode}})
+    purpose = create :plate_purpose
+    purpose.create!(:do_not_create_wells, { name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode } })
   end
 
   context "" do
@@ -24,7 +26,6 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     context "#fluidigm_barcode" do
-
       should "check that I cannot create a plate with a fluidigm barcode different from 10 characters" do
         assert_raises(ActiveRecord::RecordInvalid) { create_plate_with_fluidigm("12345678") }
       end
@@ -34,11 +35,11 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     context "#add_well" do
-      [ [96,7,11], [384,15,23] ].each do |plate_size, row_size,col_size|
+      [[96, 7, 11], [384, 15, 23]].each do |plate_size, row_size, col_size|
         context "for #{plate_size} plate" do
           setup do
             @well = Well.new
-            @plate =Plate.new(:name => "Test Plate", :size => plate_size, :purpose=>Purpose.find_by_name('Stock Plate'))
+            @plate = Plate.new(name: "Test Plate", size: plate_size, purpose: Purpose.find_by_name('Stock Plate'))
           end
           context "with valid row and col combinations" do
             (0..row_size).step(1) do |row|
@@ -56,8 +57,8 @@ class PlateTest < ActiveSupport::TestCase
     context "#sample?" do
       setup do
         @plate = create :plate
-        @sample = create :sample, :name=>"abc"
-        @well_asset = Well.create!.tap { |well| well.aliquots.create!(:sample => @sample) }
+        @sample = create :sample, name: "abc"
+        @well_asset = Well.create!.tap { |well| well.aliquots.create!(sample: @sample) }
         @plate.add_and_save_well @well_asset
       end
       should "find the sample name if its valid" do
@@ -70,9 +71,9 @@ class PlateTest < ActiveSupport::TestCase
 
     context "#control_well_exists?" do
       setup do
-        @control_plate = create :control_plate, :barcode => 134443
-        map = Map.find_by_description_and_asset_size("A1",96)
-        @control_well_asset = Well.new(:map => map)
+        @control_plate = create :control_plate, barcode: 134443
+        map = Map.find_by_description_and_asset_size("A1", 96)
+        @control_well_asset = Well.new(map: map)
         @control_plate.add_and_save_well @control_well_asset
         @control_plate.reload
       end
@@ -81,7 +82,7 @@ class PlateTest < ActiveSupport::TestCase
           @plate_cw = Plate.create!
           @plate_cw.add_and_save_well Well.new
           @plate_cw.reload
-          create :well_request, :asset => @control_well_asset, :target_asset => @plate_cw.child
+          create :well_request, asset: @control_well_asset, target_asset: @plate_cw.child
         end
         should "return true" do
           assert @plate_cw.control_well_exists?
@@ -106,7 +107,7 @@ class PlateTest < ActiveSupport::TestCase
       @well1 = Well.new
       @plate1 = create :plate
       @plate1.add_and_save_well(@well1)
-      @request1 = create :well_request, :asset => @well1
+      @request1 = create :well_request, asset: @well1
     end
 
     context "with 1 request" do
@@ -121,12 +122,12 @@ class PlateTest < ActiveSupport::TestCase
       setup do
         @well2 = Well.new
         @plate1.add_and_save_well(@well2)
-        @request2 = create :well_request, :asset => @well2
+        @request2 = create :well_request, asset: @well2
       end
       context "with a valid well assets" do
         should "return a single plate ID" do
-          assert Plate.plate_ids_from_requests([@request1,@request2]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request2,@request1]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request1, @request2]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request2, @request1]).include?(@plate1.id)
         end
       end
     end
@@ -136,29 +137,28 @@ class PlateTest < ActiveSupport::TestCase
         @well2 = Well.new
         @plate2 = create :plate
         @plate2.add_and_save_well(@well2)
-        @request2 = create :well_request, :asset => @well2
+        @request2 = create :well_request, asset: @well2
         @well3 = Well.new
         @plate1.add_and_save_well(@well3)
-        @request3 = create :well_request, :asset => @well3
+        @request3 = create :well_request, asset: @well3
       end
       context "with a valid well assets" do
         should "return 2 plate IDs" do
-          assert Plate.plate_ids_from_requests([@request1,@request2,@request3]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request1,@request2,@request3]).include?(@plate2.id)
-          assert Plate.plate_ids_from_requests([@request3,@request1,@request2]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request3,@request1,@request2]).include?(@plate2.id)
+          assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate2.id)
+          assert Plate.plate_ids_from_requests([@request3, @request1, @request2]).include?(@plate1.id)
+          assert Plate.plate_ids_from_requests([@request3, @request1, @request2]).include?(@plate2.id)
         end
       end
     end
-
   end
 
   context "Plate priority" do
     setup do
       @plate = create :transfer_plate
       user = create(:user)
-      @plate.wells.each_with_index do |well,index|
-        create :request, :asset=>well, :submission=>Submission.create!(:priority => index+1, :user => user)
+      @plate.wells.each_with_index do |well, index|
+        create :request, asset: well, submission: Submission.create!(priority: index + 1, user: user)
       end
     end
 
@@ -172,9 +172,9 @@ class PlateTest < ActiveSupport::TestCase
       @plate1 = create :plate
       @plate2 = create :plate
       @plate3 = create :plate
-      @workflow = create :submission_workflow,:key => 'microarray_genotyping'
-      @request_type_1 = create :well_request_type, :workflow => @workflow
-      @request_type_2 = create :well_request_type, :workflow => @workflow
+      @workflow = create :submission_workflow, key: 'microarray_genotyping'
+      @request_type_1 = create :well_request_type, workflow: @workflow
+      @request_type_2 = create :well_request_type, workflow: @workflow
       @workflow.request_types << @request_type_1
       @workflow.request_types << @request_type_2
       @study = create :study
@@ -182,7 +182,7 @@ class PlateTest < ActiveSupport::TestCase
       @user = create :user
       @current_time = Time.now
 
-      [@plate1, @plate2,@plate3].each do |plate|
+      [@plate1, @plate2, @plate3].each do |plate|
         2.times do
           plate.add_and_save_well(Well.new)
         end
@@ -191,22 +191,22 @@ class PlateTest < ActiveSupport::TestCase
     context "#generate_plate_submission(project, study, user, current_time)" do
       context "with valid inputs" do
         setup do
-          @event_count =  Event.count
-          @submission_count =  Submission.count
+          @event_count = Event.count
+          @submission_count = Submission.count
           @request_count =  Request.count
           @plate1.generate_plate_submission(@project, @study, @user, @current_time)
         end
 
  should "change Event.count by 1" do
-   assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+   assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
 end
 
  should "change Submission.count by 1" do
-   assert_equal 1,  Submission.count  - @submission_count, "Expected Submission.count to change by 1"
+   assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
 end
 
  should "change Request.count by 0" do
-   assert_equal 0,  Request.count  - @request_count, "Expected Request.count to change by 0"
+   assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
 end
         should "not set study.errors" do
           assert_equal 0, @study.errors.count
@@ -219,21 +219,21 @@ end
         context "and 1 plate" do
           setup do
             @event_count =  Event.count
-          @submission_count =  Submission.count
+          @submission_count = Submission.count
           @request_count =  Request.count
             Plate.create_plates_submission(@project, @study, [@plate1], @user)
           end
 
  should "change Event.count by 1" do
-   assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
+   assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
 end
 
  should "change Submission.count by 1" do
-   assert_equal 1,  Submission.count  - @submission_count, "Expected Submission.count to change by 1"
+   assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
 end
 
  should "change Request.count by 0" do
-   assert_equal 0,  Request.count  - @request_count, "Expected Request.count to change by 0"
+   assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
 end
           should "not set study.errors" do
             assert_equal 0, @study.errors.count
@@ -242,21 +242,21 @@ end
         context "and 3 plates" do
           setup do
             @event_count =  Event.count
-          @submission_count =  Submission.count
+          @submission_count = Submission.count
           @request_count =  Request.count
-            Plate.create_plates_submission(@project, @study, [@plate1,@plate3,@plate2], @user)
+            Plate.create_plates_submission(@project, @study, [@plate1, @plate3, @plate2], @user)
           end
 
  should "change Event.count by 3" do
-   assert_equal 3,  Event.count  - @event_count, "Expected Event.count to change by 3"
+   assert_equal 3,  Event.count - @event_count, "Expected Event.count to change by 3"
 end
 
  should "change Submission.count by 3" do
-   assert_equal 3,  Submission.count  - @submission_count, "Expected Submission.count to change by 3"
+   assert_equal 3,  Submission.count - @submission_count, "Expected Submission.count to change by 3"
 end
 
  should "change Request.count by 0" do
-   assert_equal 0,  Request.count  - @request_count, "Expected Request.count to change by 0"
+   assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
 end
           should "not set study.errors" do
             assert_equal 0, @study.errors.count
@@ -265,16 +265,16 @@ end
         context "and no plates" do
           setup do
             @event_count =  Event.count
-          @submission_count =  Submission.count
+          @submission_count = Submission.count
             Plate.create_plates_submission(@project, @study, [], @user)
           end
 
  should "change Event.count by 0" do
-   assert_equal 0,  Event.count  - @event_count, "Expected Event.count to change by 0"
+   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
 end
 
  should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count  - @submission_count, "Expected Submission.count to change by 0"
+   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
 end
           should "not set study.errors" do
             assert_equal 0, @study.errors.count
@@ -286,52 +286,51 @@ end
         context "where user is nil" do
           setup do
             @event_count =  Event.count
-          @submission_count =  Submission.count
+          @submission_count = Submission.count
             Plate.create_plates_submission(@project, @study, [@plate1], nil)
           end
 
  should "change Event.count by 0" do
-   assert_equal 0,  Event.count  - @event_count, "Expected Event.count to change by 0"
+   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
 end
 
  should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count  - @submission_count, "Expected Submission.count to change by 0"
+   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
 end
         end
         context "where project is nil" do
           setup do
             @event_count =  Event.count
-          @submission_count =  Submission.count
+          @submission_count = Submission.count
           @request_count =  Request.count
             Plate.create_plates_submission(nil, @study, [@plate1], @user)
           end
 
  should "change Event.count by 0" do
-   assert_equal 0,  Event.count  - @event_count, "Expected Event.count to change by 0"
+   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
 end
 
  should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count  - @submission_count, "Expected Submission.count to change by 0"
+   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
 end
         end
         context "where study is nil" do
           setup do
             @event_count =  Event.count
-          @submission_count =  Submission.count
+          @submission_count = Submission.count
           @request_count =  Request.count
             Plate.create_plates_submission(@project, nil, [@plate1], @user)
           end
 
  should "change Event.count by 0" do
-   assert_equal 0,  Event.count  - @event_count, "Expected Event.count to change by 0"
+   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
 end
 
  should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count  - @submission_count, "Expected Submission.count to change by 0"
+   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
 end
         end
       end
-
     end
 
     context "A Plate" do
@@ -353,7 +352,7 @@ end
         end
 
         should "return any qc data" do
-          assert @plate.qc_files.count ==1
+          assert @plate.qc_files.count == 1
           File.open("test/data/manifests/mismatched_plate.csv") do |file|
             assert_equal file.read, @plate.qc_files.first.uploaded_data.file.read
           end
@@ -369,27 +368,25 @@ end
         end
 
         should "return multiple qc data" do
-          assert @plate.qc_files.count ==2
+          assert @plate.qc_files.count == 2
         end
       end
-
     end
 
     context "with existing well data" do
-
       class MockParser
         def each_well_and_parameters
-          yield('B1',{:set_concentration =>'2', :set_molarity => '3'})
-          yield('C1',{:set_concentration =>'4', :set_molarity => '5'})
+          yield('B1', { set_concentration: '2', set_molarity: '3' })
+          yield('C1', { set_concentration: '4', set_molarity: '5' })
         end
       end
 
       setup do
         @plate = Plate.new
         @plate.wells.build([
-          {:map=>Map.find_by_description('A1')},
-          {:map=>Map.find_by_description('B1')},
-          {:map=>Map.find_by_description('C1')}
+          { map: Map.find_by_description('A1') },
+          { map: Map.find_by_description('B1') },
+          { map: Map.find_by_description('C1') }
         ])
         @plate.wells.first.set_concentration('12')
         @plate.wells.first.set_molarity('34')
@@ -399,15 +396,15 @@ end
       end
 
       should 'update new wells' do
-        assert_equal 2.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_concentration
-        assert_equal 3.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_molarity
-        assert_equal 4.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_concentration
-        assert_equal 5.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_molarity
+        assert_equal 2.0, @plate.wells.detect { |w| w.map_description == 'B1' }.reload.get_concentration
+        assert_equal 3.0, @plate.wells.detect { |w| w.map_description == 'B1' }.reload.get_molarity
+        assert_equal 4.0, @plate.wells.detect { |w| w.map_description == 'C1' }.reload.get_concentration
+        assert_equal 5.0, @plate.wells.detect { |w| w.map_description == 'C1' }.reload.get_molarity
       end
 
       should 'no clear existing data' do
-        assert_equal 12.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_concentration
-        assert_equal 34.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_molarity
+        assert_equal 12.0, @plate.wells.detect { |w| w.map_description == 'A1' }.reload.get_concentration
+        assert_equal 34.0, @plate.wells.detect { |w| w.map_description == 'A1' }.reload.get_molarity
       end
     end
   end
@@ -438,16 +435,13 @@ end
   context "tubes are created from plate" do
     should "send print request" do
       plate = create :plate
-      10.times {plate.add_and_save_well(create :well_with_sample_and_without_plate)}
+      10.times { plate.add_and_save_well(create :well_with_sample_and_without_plate) }
       barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({'data' => [{'id' => 15}]})
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
 
       RestClient.expects(:post)
 
       plate.create_sample_tubes_and_print_barcodes(barcode_printer)
     end
   end
-
 end
-
-

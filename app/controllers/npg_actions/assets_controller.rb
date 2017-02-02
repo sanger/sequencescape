@@ -1,27 +1,25 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class NpgActions::AssetsController < ApplicationController
-  before_filter :login_required, :except => [ :pass, :fail ]
-  before_filter :find_asset, :only => [ :pass, :fail ]
-  before_filter :find_request, :only => [ :pass, :fail ]
+  before_action :login_required, except: [:pass, :fail]
+  before_action :find_asset, only: [:pass, :fail]
+  before_action :find_request, only: [:pass, :fail]
+  before_action :npg_action_invalid?, only: [:pass, :fail]
+  before_action :xml_valid?, only: [:pass, :fail]
 
-  rescue_from(ActiveRecord::RecordNotFound, :with => :rescue_error)
-
-  before_filter :npg_action_invalid?, :only => [ :pass, :fail ]
-
-
-  before_filter :xml_valid?, :only => [:pass, :fail]
-
+  rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
 
   XmlInvalid = Class.new(StandardError)
-  rescue_from(XmlInvalid, :with => :rescue_error)
+  rescue_from(XmlInvalid, with: :rescue_error)
 
   NPGActionInvalid = Class.new(StandardError)
-  rescue_from(NPGActionInvalid, :with => :rescue_error_internal_server_error)
+  rescue_from(NPGActionInvalid, with: :rescue_error_internal_server_error)
 
-  #this procedure build a procedure called "state". In this casa: pass and fail.
+  # this procedure build a procedure called "state". In this casa: pass and fail.
   def self.construct_action_for_qc_state(state)
     line = __LINE__ + 1
     class_eval(%Q{
@@ -53,7 +51,7 @@ class NpgActions::AssetsController < ApplicationController
   construct_action_for_qc_state("pass")
   construct_action_for_qc_state("fail")
 
-private
+  private
 
   def find_asset
     @asset ||= Asset.find(params[:asset_id])
@@ -71,7 +69,7 @@ private
   end
 
   def npg_action_invalid?
-   @asset  ||= Asset.find(params[:asset_id])
+   @asset ||= Asset.find(params[:asset_id])
    request = @asset.source_request
    npg_events = Event.npg_events(request.id)
    raise NPGActionInvalid, "NPG user run this action. Please, contact USG" if npg_events.size > 0
@@ -79,13 +77,13 @@ private
 
   def rescue_error(exception)
     respond_to do |format|
-      format.xml { render :xml => "<error><message>#{exception.message}</message></error>", :status => "404" }
+      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: "404" }
     end
   end
 
   def rescue_error_internal_server_error(exception)
     respond_to do |format|
-      format.xml { render :xml => "<error><message>#{exception.message}</message></error>", :status => "500" }
+      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: "500" }
     end
   end
 end

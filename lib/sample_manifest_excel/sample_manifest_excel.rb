@@ -1,7 +1,6 @@
 ##
 # Creates a Sample Manifest Excel spreadsheet from a Sample Manifest object
 module SampleManifestExcel
-
   require_relative "sample_manifest_excel/hash_attributes"
   require_relative "sample_manifest_excel/core_extensions"
   require_relative "sample_manifest_excel/null_range"
@@ -23,7 +22,7 @@ module SampleManifestExcel
 
   module Helpers
     def load_file(folder, filename)
-      YAML::load_file(File.join(Rails.root, folder,"#{filename}.yml")).with_indifferent_access
+      YAML::load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
     end
   end
 
@@ -44,5 +43,4 @@ module SampleManifestExcel
   def self.reset!
     @configuration = Configuration.new
   end
-
 end

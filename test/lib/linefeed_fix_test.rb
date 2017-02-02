@@ -2,11 +2,9 @@ require_relative '../test_helper'
 require './lib/linefeed_fix'
 
 class LinefeedFixTest < ActiveSupport::TestCase
-
   context 'LinefeedFix' do
-
     setup do
-      File.open(Rails.root+'test/data/bad.csv') do |f|
+      File.open(Rails.root + 'test/data/bad.csv') do |f|
         @string = f.read
       end
     end

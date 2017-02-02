@@ -5,7 +5,7 @@ class AddVolumeUpdateTable < ActiveRecord::Migration
         t.integer :target_id
         t.string :created_by
         t.float :volume_change
-        t.timestamps null:false
+        t.timestamps null: false
       end
     end
   end

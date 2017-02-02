@@ -12,18 +12,18 @@ Feature: Access samples through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
   @read
   Scenario: Reading the JSON for a UUID
     Given a sample called "testing_the_api" with UUID "00000000-1111-2222-3333-444444444444"
+      And the fields of the sample_metadata for the sample called "testing_the_api" are prepopulated
       And the sample called "testing_the_api" is Male
       And the GC content of the sample called "testing_the_api" is Neutral
       And the DNA source of the sample called "testing_the_api" is Genomic
       And the SRA status of the sample called "testing_the_api" is Hold
       And the sample called "testing_the_api" is 10 weeks old
       And the dosage of the sample called "testing_the_api" is 10 something
-      And the fields of the sample_metadata for the sample called "testing_the_api" are prepopulated
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -125,6 +125,7 @@ And I have a "full" authorised user with the key "cucumber"
 @read
   Scenario: JSON rendering bug
     Given a sample called "testing_the_api" with UUID "00000000-1111-2222-3333-444444444444"
+      And the fields of the sample_metadata for the sample called "testing_the_api" are prepopulated
       And the sample called "testing_the_api" is Male
       And the GC content of the sample called "testing_the_api" is Neutral
       And the DNA source of the sample called "testing_the_api" is Genomic
@@ -132,7 +133,6 @@ And I have a "full" authorised user with the key "cucumber"
       And the sample called "testing_the_api" is 10 weeks old
       And the dosage of the sample called "testing_the_api" is 10 something
       And the description of the sample called "testing_the_api" contains quotes
-      And the fields of the sample_metadata for the sample called "testing_the_api" are prepopulated
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -155,4 +155,3 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
-

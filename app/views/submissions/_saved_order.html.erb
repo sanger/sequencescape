@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
 <%= panel('success',title:"Order added to submission at: #{order.created_at.to_formatted_s(:day_full_with_time)}") do %>
   <%- form ||= nil %>
@@ -37,7 +39,7 @@
   <% unless order.request_types.blank? %>
     <h4>Request types:</h4>
     <ul id="request_types_for_submission">
-      <% RequestType.find(order.request_types,:order=>'request_types.order ASC').each do |request_type| %>
+      <% RequestType.order(:order).find(order.request_types).each do |request_type| %>
         <li><%= request_description(presenter, request_type) %></li>
       <% end %>
     </ul>

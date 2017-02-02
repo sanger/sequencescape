@@ -1,8 +1,6 @@
 module SampleManifestExcel
-
   # A collection of columns
   class ColumnList
-
     include Enumerable
     include Comparable
 
@@ -68,7 +66,7 @@ module SampleManifestExcel
     # Returns a number of a next column based on the number of columns
     # that already exist in the list
     def next_number
-      columns.count+1
+      columns.count + 1
     end
 
     # Defaults to an empty hash
@@ -83,11 +81,11 @@ module SampleManifestExcel
     ##
     # A forwarding method - Update each column in the list of columns.
     def update(first_row, last_row, ranges, worksheet)
-       each {|k, column| column.update(first_row, last_row, ranges, worksheet)}
+       each { |k, column| column.update(first_row, last_row, ranges, worksheet) }
     end
 
     def <=>(other)
-      return unless other.is_a?(self.class) 
+      return unless other.is_a?(self.class)
       columns <=> other.columns
     end
 
@@ -104,18 +102,17 @@ module SampleManifestExcel
     end
 
     def create_columns(columns, conditional_formattings)
-      columns.each do |k,v|
+      columns.each do |k, v|
         begin
           if v.kind_of?(Hash)
             add SampleManifestExcel::Column.new(SampleManifestExcel::Column.build_arguments(v, k, conditional_formattings))
           else
             copy k, v
           end
-        rescue TypeError => e 
+        rescue TypeError => e
           puts "column can't be created for #{k}: #{e.message}"
         end
       end
     end
-
   end
 end

@@ -1,25 +1,28 @@
 module SampleManifestExcel
-
   ##
   # Column creates a particular column with all the information about this column (name, heading,
   # value, type, attribute, should it be locked or unlocked, position of the column,
   # validation, conditional formatting rules)
   # A column is only valid if it has a name and heading.
   class Column
-
     include HashAttributes
     include ActiveModel::Validations
 
     set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute,
-                    defaults: {number: 0, type: :string, conditional_formattings: {}}
+                    defaults: { number: 0, type: :string, conditional_formattings: {} }
 
     attr_reader :range
+
+    ##
+    # Defaults to a NullValidation object
+    attr_reader :validation
 
     validates_presence_of :name, :heading
 
     delegate :range_name, to: :validation
 
     def initialize(attributes = {})
+      @validation = NullValidation.new
       create_attributes(attributes)
 
       # @attribute = Attributes.find(name) if valid?
@@ -74,12 +77,6 @@ module SampleManifestExcel
     end
 
     ##
-    # Defaults to a NullValidation object
-    def validation
-      @validation || NullValidation.new
-    end
-
-    ##
     # Check whether a column has been updated with all of the references, validations etc.
     def updated?
       @updated
@@ -91,9 +88,9 @@ module SampleManifestExcel
     # Update the column validation using the passed worksheet and found range.
     # Update the conditional formatting based on a range and worksheet.
     def update(first_row, last_row, ranges, worksheet)
-      self.range = {first_column: number, first_row: first_row, last_row: last_row}
+      self.range = { first_column: number, first_row: first_row, last_row: last_row }
 
-      range = ranges.find_by(range_name)  || NullRange.new
+      range = ranges.find_by(range_name) || NullRange.new
       validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
 
       conditional_formattings.update(
@@ -123,7 +120,6 @@ module SampleManifestExcel
     end
 
     class ArgumentBuilder
-
       attr_reader :arguments
 
       def initialize(args, key, default_conditional_formattings)
@@ -149,7 +145,5 @@ module SampleManifestExcel
   private
 
     attr_reader :attribute
-
   end
-
 end

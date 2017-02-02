@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require 'timecop'
 
@@ -8,7 +10,7 @@ class Timecop
   class << self
     # Block the use of Timecop.freeze as it upsets the Capybara...
     def freeze_with_warning(time)
-      raise "\n\n#{'*'*90}\nTimecop.freeze() interferes with Capybara's javascript timeouts.\nCould you either use Timecop.travel instead or not use JavaScript in this scenario?  \n\n#{'*'*90}\n\n"
+      raise "\n\n#{'*' * 90}\nTimecop.freeze() interferes with Capybara's javascript timeouts.\nCould you either use Timecop.travel instead or not use JavaScript in this scenario?  \n\n#{'*' * 90}\n\n"
     end
   end
 end

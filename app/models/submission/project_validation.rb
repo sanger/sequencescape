@@ -1,19 +1,21 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 module Submission::ProjectValidation
   def self.included(base)
     base.class_eval do
       # We probably want to move this validation
-      validates_each(:project, :if => :checking_project?) do |record, attr, project|
-        record.errors.add(:base,"Project #{project.name} is not approved")                 unless project.approved?
-        record.errors.add(:base,"Project #{project.name} is not active")                   unless project.active?
-        record.errors.add(:base,"Project #{project.name} does not have a budget division") unless project.actionable?
+      validates_each(:project, if: :checking_project?) do |record, attr, project|
+        record.errors.add(:base, "Project #{project.name} is not approved")                 unless project.approved?
+        record.errors.add(:base, "Project #{project.name} is not active")                   unless project.active?
+        record.errors.add(:base, "Project #{project.name} does not have a budget division") unless project.actionable?
       end
 
-      validates_each(:project, :if => :validating?) do |record, attr, project|
-        record.errors.add(:base,"Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}")  unless project.submittable?
+      validates_each(:project, if: :validating?) do |record, attr, project|
+        record.errors.add(:base, "Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}") unless project.submittable?
       end
 
       after_create :confirm_validity!
@@ -58,16 +60,14 @@ module Submission::ProjectValidation
   # Hack to be able to build order
   # from pulled data
   def save_after_unmarshalling
-    @saving_without_validation=true
-    save_without_validation
-    @saving_without_validation=false
+    @saving_without_validation = true
+    save(validate: false)
+    @saving_without_validation = false
   end
-
 
   def confirm_validity!
     return if @saving_without_validation
     check_project_details!
   end
   private :confirm_validity!
-
 end

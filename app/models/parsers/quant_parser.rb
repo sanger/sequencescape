@@ -31,19 +31,19 @@ class Parsers::QuantParser
     end
 
     def headers_section
-      @content[self.class.headers_index(@content)+1]
+      @content[self.class.headers_index(@content) + 1]
     end
 
     def data_section
-      @content.slice(self.class.headers_index(@content)+2, @content.length)
+      @content.slice(self.class.headers_index(@content) + 2, @content.length)
     end
 
     def localization_text(attribute_name)
-      I18n.t(:label,scope:[:metadata,:well,:metadata,attribute_name],default:attribute_name)
+      I18n.t(:label, scope: [:metadata, :well, :metadata, attribute_name], default: attribute_name)
     end
 
     def column_maps
-     @column_maps ||=  {
+     @column_maps ||= {
         "concentration" => :set_concentration,
         "volume"        => :set_current_volume,
         "rin"           => :set_rin
@@ -62,7 +62,6 @@ class Parsers::QuantParser
     end
 
     def qc_values_for_row(row)
-      Hash[method_set_list.zip(row).reject{|header, value| header.nil?}]
+      Hash[method_set_list.zip(row).reject { |header, value| header.nil? }]
     end
-
 end

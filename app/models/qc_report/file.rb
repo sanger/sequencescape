@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.
 
 class QcReport::File
-
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'
   FILE_VERSION_KEY = 'Sequencescape QC Report'
@@ -18,7 +19,7 @@ class QcReport::File
 
   attr_reader :errors, :filename, :mime_type
 
-  def initialize(file,set_decision,filename=nil,mime_type=ACCEPTED_MIMETYPE)
+  def initialize(file, set_decision, filename = nil, mime_type = ACCEPTED_MIMETYPE)
     @file = file
     @filename = filename || File.basename(file.path)
     @mime_type = mime_type
@@ -71,7 +72,7 @@ class QcReport::File
   # This should ONLY be called after the headers have been read out.
   # This puts the column headers at the top of the remaining csv file
   def body_csv
-    @body_csv ||= CSV.new(@file,:headers=>:first_row, :header_converters => [:symbol] )
+    @body_csv ||= CSV.new(@file, headers: :first_row, header_converters: [:symbol])
   end
 
   def each_group_of_decisions
@@ -103,9 +104,9 @@ class QcReport::File
   end
 
   def process_line(line)
-    qc_decision = (line[:qc_decision]||"").strip
-    proceed = (line[:proceed]||"").strip
-    {:qc_decision=>qc_decision, :proceed=>proceed }
+    qc_decision = (line[:qc_decision] || "").strip
+    proceed = (line[:proceed] || "").strip
+    { qc_decision: qc_decision, proceed: proceed }
   end
 
   def invalid(message)
@@ -117,7 +118,7 @@ class QcReport::File
   # as it should be a bit faster to capture the most common problems (ie. uploading an xls)
   # The FasterCSV read-mes even indicate that its pretty poor at handling invalid CSVs.
   def is_a_csv?
-    File.extname(filename).gsub('.','') == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
+    File.extname(filename).delete('.') == ACCEPTED_EXTENSTION || mime_type == ACCEPTED_MIMETYPE
   end
 
   def is_a_report?
@@ -133,11 +134,10 @@ class QcReport::File
     header_parser = CSV.new(@file)
     lines_read = 0
     while (row = header_parser.shift) && is_header?(row) && lines_read < MAXIMUM_HEADER_SIZE
-      headers[row[0]] = (row[1]||'').strip
+      headers[row[0]] = (row[1] || '').strip
       lines_read += 1
     end
     invalid('Please make sure there is an empty line before the column headers.') if lines_read >= MAXIMUM_HEADER_SIZE
     @headers = headers
   end
-
 end

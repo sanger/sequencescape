@@ -6,9 +6,9 @@
 <% suffix = "_#{File.read(File.join(Rails.root, 'database_suffix'))}".strip rescue nil %>
 
 mysql: &MYSQL
-  adapter: mysql
+  adapter: <%= defined?(JRuby) ? "mysql" : "mysql2" %>
   username: root
-  password:
+  password: <%= ENV['DBPASSWORD'] %>
   encoding: utf8
   properties:
     characterSetResults: utf8

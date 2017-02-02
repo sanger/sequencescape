@@ -41,9 +41,9 @@ Feature: Picking more than 13 minimum volume should render in tecan file
     When I select "testtemplate" from "Plate Template"
     And I choose "Pick by ng"
     And I fill in the following:
-      | Minimum Volume    | 20   |
-      | Maximum Volume    | 150   |
-      | Quantity to pick  | 10000 |
+      | nano_grams_minimum_volume    | 20    |
+      | nano_grams_maximum_volume    | 150   |
+      | nano_grams_total_nano_grams  | 10000 |
     And I press "Next step"
 		When I press "Next step"
 		And I press "Next step"

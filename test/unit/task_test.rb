@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -43,7 +45,7 @@ class TaskTest < ActiveSupport::TestCase
       should "save them" do
         descriptor_count = Descriptor.count
         @task.save
-        assert_equal descriptor_count+1, Descriptor.count
+        assert_equal descriptor_count + 1, Descriptor.count
       end
 
       should "get descriptor with a default value" do
@@ -54,7 +56,7 @@ class TaskTest < ActiveSupport::TestCase
 
   context "A Task subclass" do
     setup do
-      class MyTask  < Task
+      class MyTask < Task
       end
     end
     teardown do
@@ -74,7 +76,6 @@ class TaskTest < ActiveSupport::TestCase
         @task = MyTask.new
       end
 
-
       should "access define access  method" do
         assert @task.respond_to?(:att)
       end
@@ -90,12 +91,12 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should "set subclass_attributes via attribute" do
-        @task.att= "value"
+        @task.att = "value"
         assert_equal "value", @task.get_subclass_attribute_value(:att)
       end
 
       should "get subclass_attributes via attribute" do
-        @task.att= "value"
+        @task.att = "value"
         assert_equal "value", @task.att
       end
 
@@ -106,7 +107,7 @@ class TaskTest < ActiveSupport::TestCase
       context "and default value" do
         setup do
           class MyTask
-            set_subclass_attribute :att_with_default, :default => "default_value"
+            set_subclass_attribute :att_with_default, default: "default_value"
           end
         end
         should "use default value if subclass_attribute not set" do
@@ -117,7 +118,7 @@ class TaskTest < ActiveSupport::TestCase
       context "with a saved value" do
         setup do
           @initial_value = "initial_value"
-          @task.att= @initial_value
+          @task.att = @initial_value
           @task.save
         end
 
@@ -139,5 +140,4 @@ class TaskTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

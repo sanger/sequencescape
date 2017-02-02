@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Core::Endpoint::BasicHandler::Associations::BelongsTo
   class Handler
@@ -12,8 +14,8 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     end
 
     def endpoint_details(object, &block)
-      object = @throughs.inject(object) { |t,s| t.send(s) }.send(@name) || return
-      block.call(@options[:json].to_s, endpoint_for_object(object), object)
+      object = @throughs.inject(object) { |t, s| t.send(s) }.send(@name) || return
+      yield(@options[:json].to_s, endpoint_for_object(object), object)
     end
     private :endpoint_details
 
@@ -26,7 +28,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
         @endpoint_helper = endpoint_helper
       end
 
-      delegate :endpoint_details, :to => :@endpoint
+      delegate :endpoint_details, to: :@endpoint
 
       def merge(node)
         super(node) { |children| self.class.new(@endpoint_helper, children) }

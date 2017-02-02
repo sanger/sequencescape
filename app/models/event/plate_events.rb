@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module Event::PlateEvents
   def gel_qc_date
@@ -33,13 +35,12 @@ module Event::PlateEvents
   end
 
   def event_from_database(key)
-    events.where(family:key).pluck(:content).last
+    events.where(family: key).pluck(:content).last
   end
   private :event_from_database
 
   def event_from_object(key)
-    events.reverse.detect {|e| e.family == key }.try(:content)
+    events.reverse.detect { |e| e.family == key }.try(:content)
   end
   private :event_from_object
-
 end

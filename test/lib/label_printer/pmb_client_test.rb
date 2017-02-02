@@ -1,50 +1,66 @@
 require 'test_helper'
 
 class PmbClientTest < ActiveSupport::TestCase
-
   attr_reader :labels
 
   def setup
-    @labels = {"header"=> {"header_text_1"=> "header_text_1","header_text_2"=> "header_text_2"},"footer"=> {"footer_text_1"=> "footer_text_1", "footer_text_2"=> "footer_text_2"},"body"=> [{"location"=> {"location"=> "location","parent_location"=> "parent_location","barcode"=> "barcode"}},{"location"=> {"location"=> "location","parent_location"=> "parent_location","barcode"=> "barcode"}}]}
+    @labels = {
+      "header" => {
+        "header_text_1" => "header_text_1", "header_text_2" => "header_text_2"
+      },
+      "footer" => {
+        "footer_text_1" => "footer_text_1", "footer_text_2" => "footer_text_2"
+      },
+      "body" => [
+        { "location" => {
+          "location" => "location",
+            "parent_location" => "parent_location",
+            "barcode" => "barcode"
+        } },
+        { "location" => {
+          "location" => "location",
+            "parent_location" => "parent_location",
+            "barcode" => "barcode"
+        } }
+      ]
+    }
   end
 
-  test "should have base url"  do
+  test "should have base url" do
     assert LabelPrinter::PmbClient.base_url
   end
 
   test "sends a print job to the API" do
-
-    attributes = {"printer_name" => "d304bc",
+    attributes = { "printer_name" => "d304bc",
                   "label_template_id" => 1,
-                  "labels" => labels}
+                  "labels" => labels }
 
     RestClient.expects(:post).with('http://localhost:9292/v1/print_jobs',
-                        {"data"=>{"attributes"=>attributes}}.to_json,
+                        { "data" => { "attributes" => attributes } }.to_json,
                         content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
     .returns(201)
 
     assert_equal 201, LabelPrinter::PmbClient.print(attributes)
-
   end
 
   test "should inform if attributes are missing" do
     RestClient.expects(:post).raises(RestClient::UnprocessableEntity)
-    assert_raises(LabelPrinter::PmbException) {LabelPrinter::PmbClient.print({})}
+    assert_raises(LabelPrinter::PmbException) { LabelPrinter::PmbClient.print({}) }
   end
 
   test "should inform if Pmb is too busy" do
     RestClient.expects(:post).raises(RestClient::ServiceUnavailable)
-    assert_raises(LabelPrinter::PmbException) {LabelPrinter::PmbClient.print({})}
+    assert_raises(LabelPrinter::PmbException) { LabelPrinter::PmbClient.print({}) }
   end
 
   test "should inform if something is wrong with Pmb" do
     RestClient.expects(:post).raises(RestClient::InternalServerError)
-    assert_raises(LabelPrinter::PmbException) {LabelPrinter::PmbClient.print({})}
+    assert_raises(LabelPrinter::PmbException) { LabelPrinter::PmbClient.print({}) }
   end
 
   test "should inform if pmb is down" do
     RestClient.expects(:post).raises(Errno::ECONNREFUSED)
-    err = assert_raises(LabelPrinter::PmbException) {LabelPrinter::PmbClient.print({})}
+    err = assert_raises(LabelPrinter::PmbException) { LabelPrinter::PmbClient.print({}) }
     assert_equal "PrintMyBarcode service is down", err.message
   end
 
@@ -64,7 +80,7 @@ class PmbClientTest < ActiveSupport::TestCase
               .returns("{\"data\":[]}")
     RestClient.expects(:post)
               .with('http://localhost:9292/v1/printers',
-                        {"data"=>{"attributes"=>{"name" => "test_printer"}}}.to_json,
+                        { "data" => { "attributes" => { "name" => "test_printer" } } }.to_json,
                         content_type: "application/vnd.api+json", accept: "application/vnd.api+json")
               .returns(201)
     assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer')
@@ -87,6 +103,4 @@ class PmbClientTest < ActiveSupport::TestCase
     pretty_errors = 'Printer: Something is wrong, Something else is wrong; Labels: Something is wrong'
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end
-
-
 end

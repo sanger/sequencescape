@@ -1,14 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 require "test_helper"
 
 class SubmissionTest < ActiveSupport::TestCase
-
-  def orders_compatible?(a, b, key=nil)
+  def orders_compatible?(a, b, key = nil)
     begin
-      submission = Submission.new(:user => create(:user),:orders => [a,b])
+      submission = Submission.new(user: create(:user), orders: [a, b])
       submission.save!
       true
     rescue ActiveRecord::RecordInvalid => exception
@@ -21,9 +22,8 @@ class SubmissionTest < ActiveSupport::TestCase
   end
 
   context "#priority" do
-
     setup do
-      @submission = Submission.new(:user => create(:user))
+      @submission = Submission.new(user: create(:user))
     end
 
     should "be 0 by default" do
@@ -40,27 +40,26 @@ class SubmissionTest < ActiveSupport::TestCase
       @submission.priority = 4
       assert_equal false, @submission.valid?
     end
-
   end
 
   context "#orders compatible" do
     setup do
-      @study1 =  create :study
+      @study1 = create :study
       @study2 = create :study
 
       @project =  create :project
       @project2 = create :project
 
       @asset1 = create :empty_sample_tube
-      @asset1.aliquots.create!(:sample => create(:sample, :studies => [@study1]))
+      @asset1.aliquots.create!(sample: create(:sample, studies: [@study1]))
       @asset2 = create :empty_sample_tube
-      @asset2.aliquots.create!(:sample => create(:sample, :studies => [@study2]))
+      @asset2.aliquots.create!(sample: create(:sample, studies: [@study2]))
 
-      @reference_genome1 = create :reference_genome, :name => "genome 1"
-      @reference_genome2 = create :reference_genome, :name => "genome 2"
+      @reference_genome1 = create :reference_genome, name: "genome 1"
+      @reference_genome2 = create :reference_genome, name: "genome 2"
 
-      @order1 = create :order, :study => @study1, :assets => [@asset1], :project => @project
-      @order2 = create :order,:study => @study2, :assets => [@asset2], :project => @project
+      @order1 = create :order, study: @study1, assets: [@asset1], project: @project
+      @order2 = create :order, study: @study2, assets: [@asset2], project: @project
     end
 
     context "with compatible requests" do
@@ -91,7 +90,7 @@ class SubmissionTest < ActiveSupport::TestCase
 
       context "and incompatible request options" do
         setup do
-          @order1.request_options = {:option => "value"}
+          @order1.request_options = { option: "value" }
         end
 
         should "be incompatible" do
@@ -108,7 +107,6 @@ class SubmissionTest < ActiveSupport::TestCase
           assert_equal false, orders_compatible?(@order1, @order2)
         end
       end
-
     end
   end
 end

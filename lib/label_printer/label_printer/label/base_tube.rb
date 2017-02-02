@@ -1,17 +1,15 @@
 module LabelPrinter
   module Label
-
     class BaseTube
-
       include Label::MultipleLabels
 
       def create_label(tube)
-        {top_line: top_line(tube),
+        { top_line: top_line(tube),
           middle_line: middle_line(tube),
           bottom_line: bottom_line,
           round_label_top_line: round_label_top_line(tube),
           round_label_bottom_line: round_label_bottom_line(tube),
-          barcode: barcode(tube)}
+          barcode: barcode(tube) }
       end
 
       def top_line(tube)
@@ -48,7 +46,6 @@ module LabelPrinter
       def date_today
         Date.today.strftime("%e-%^b-%Y")
       end
-
     end
   end
 end

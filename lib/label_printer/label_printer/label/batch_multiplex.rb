@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
     class BatchMultiplex < BaseTube
-
       attr_reader :count, :printable, :batch
 
       def initialize(options)
@@ -17,12 +15,10 @@ module LabelPrinter
 
       def tubes
         if batch.multiplexed?
-          ids = printable.select{|id, check| check == 'on'}.keys
+          ids = printable.select { |id, check| check == 'on' }.keys
           Asset.find ids
         end
       end
-
     end
-
   end
 end

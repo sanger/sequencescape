@@ -1,21 +1,19 @@
 require 'test_helper'
 
 class ConditionalFormattingTest < ActiveSupport::TestCase
-
   attr_reader :rule, :worksheet, :conditional_formatting
 
   def setup
     @worksheet = Axlsx::Workbook.new.add_worksheet
-    @rule = { style: { bg_color: '82CAFA', type: :dxf}, options: { option1: "some_value", option2: "another_value"}}.with_indifferent_access
+    @rule = { style: { bg_color: '82CAFA', type: :dxf }, options: { option1: "some_value", option2: "another_value" } }.with_indifferent_access
   end
 
   test "should be comparable" do
     assert_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule)
-    refute_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule.merge(options: {option1: "another_value"}))
+    refute_equal SampleManifestExcel::ConditionalFormatting.new(rule), SampleManifestExcel::ConditionalFormatting.new(rule.merge(options: { option1: "another_value" }))
   end
 
   context "without formula" do
-
     setup do
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule)
     end
@@ -46,16 +44,14 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
       conditional_formatting.update(worksheet: worksheet)
       refute dup.styled?
     end
-
   end
 
   context "with formula" do
-
     attr_reader :options, :formula, :references
 
     setup do
       @references = build(:range).references
-      @formula = { type: :len, operator: "<", operand: 333}
+      @formula = { type: :len, operator: "<", operand: 333 }
       @conditional_formatting = SampleManifestExcel::ConditionalFormatting.new(rule.merge(formula: formula))
     end
 
@@ -81,7 +77,5 @@ class ConditionalFormattingTest < ActiveSupport::TestCase
       refute_equal conditional_formatting.options, dup.options
       refute_equal conditional_formatting.formula, dup.formula
     end
-
   end
-
 end

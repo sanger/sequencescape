@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class PacBioLibraryTube < Tube
   include Api::PacBioLibraryTubeIO::Extensions
@@ -13,9 +15,8 @@ class PacBioLibraryTube < Tube
     attribute(:movie_length)
   end
 
-
   def protocols_for_select
-    ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id]}.tap do |protocols|
+    ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id] }.tap do |protocols|
       reference_genome = primary_aliquot.sample.sample_reference_genome
       protocols.unshift([reference_genome.name, reference_genome.id]) if reference_genome.present?
     end

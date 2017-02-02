@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class RobotVerification
-
   attr_reader :errors
 
   def validate_barcode_params(barcode_hash)
@@ -19,7 +20,7 @@ class RobotVerification
     batch.tecan_layout_plate_barcodes(plate_barcode)
   end
 
-  def valid_source_plates_on_robot?(beds, plates, robot, batch,all_expected_plate_layout)
+  def valid_source_plates_on_robot?(beds, plates, robot, batch, all_expected_plate_layout)
     valid_plates_on_robot?(beds, plates, "SCRC", robot, batch, all_expected_plate_layout[1])
   end
 
@@ -30,7 +31,7 @@ class RobotVerification
   def valid_plates_on_robot?(beds, plates, bed_prefix, robot, batch, expected_plate_layout)
     return false if expected_plate_layout.blank?
     expected_plate_layout.each do |plate_barcode, bed_number|
-      scanned_bed_barcode = Barcode.number_to_human(beds["#{bed_number}"].strip)
+      scanned_bed_barcode = Barcode.number_to_human(beds[bed_number.to_s].strip)
       expected_bed_barcode = robot.robot_properties.find_by_key!("#{bed_prefix}#{bed_number}")
       return false if expected_bed_barcode.nil?
       return false if scanned_bed_barcode != expected_bed_barcode.value
@@ -41,8 +42,8 @@ class RobotVerification
   end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
-    return false if ! valid_source_plates_on_robot?(params[:bed_barcodes],params[:plate_barcodes], robot,batch,expected_plate_layout)
-    return false if ! valid_destination_plates_on_robot?(params[:destination_bed_barcodes],params[:destination_plate_barcodes], robot,batch,expected_plate_layout)
+    return false if !valid_source_plates_on_robot?(params[:bed_barcodes], params[:plate_barcodes], robot, batch, expected_plate_layout)
+    return false if !valid_destination_plates_on_robot?(params[:destination_bed_barcodes], params[:destination_plate_barcodes], robot, batch, expected_plate_layout)
 
     true
   end
@@ -64,12 +65,12 @@ class RobotVerification
 
     if valid_plate_locations?(params, batch, robot, expected_plate_layout)
       batch.events.create(
-        :message => I18n.t("bed_verification.layout.valid", :plate_barcode => destination_plate_barcode),
-        :created_by => user.login)
+        message: I18n.t("bed_verification.layout.valid", plate_barcode: destination_plate_barcode),
+        created_by: user.login)
     else
       batch.events.create(
-        :message => I18n.t("bed_verification.layout.invalid", :plate_barcode => destination_plate_barcode),
-        :created_by => user.login)
+        message: I18n.t("bed_verification.layout.invalid", plate_barcode: destination_plate_barcode),
+        created_by: user.login)
       @errors << "Bed layout invalid"
       return false
     end

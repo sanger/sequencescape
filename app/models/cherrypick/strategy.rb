@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class Cherrypick::Strategy
   PickFailureError = Class.new(StandardError)
@@ -37,10 +39,10 @@ class Cherrypick::Strategy
     # Orders the plexes by the optimum fitting
     class BestFit
       def call(plexes, current_plate)
-        comparator = ->(l,r) { r.size <=> l.size }
+        comparator = ->(l, r) { r.size <=> l.size }
         comparator = lambda do |left, right|
           left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
-          sorted_fill =  left_fill <=> right_fill
+          sorted_fill = left_fill <=> right_fill
           sorted_fill = right.size <=> left.size if sorted_fill.zero?
           sorted_fill
         end unless current_plate.overlap.zero?
@@ -59,7 +61,7 @@ class Cherrypick::Strategy
         species = current_plate.species
         return plexes if species.empty?
 
-        plexes.each_with_index.sort do |(left,left_index), (right,right_index)|
+        plexes.each_with_index.sort do |(left, left_index), (right, right_index)|
           left_species, right_species = species_for_plex(left), species_for_plex(right)
           left_in, right_in = species & left_species, species & right_species
           case
@@ -94,7 +96,6 @@ class Cherrypick::Strategy
       end
     end
 
-
     class InColumnOrder
       def call(plexes, current_plate)
         plexes.map do |plex|
@@ -109,7 +110,7 @@ class Cherrypick::Strategy
       @purpose, @wells, @species = purpose, [Cherrypick::Strategy::Empty] * filled, species
     end
 
-    delegate :size, :cherrypick_direction, :to => :@purpose
+    delegate :size, :cherrypick_direction, to: :@purpose
 
     # This is the size of the plate in the dimension in which we cherrypick.
     def dimension
@@ -120,7 +121,7 @@ class Cherrypick::Strategy
       size - used
     end
 
-    delegate :empty?, :inspect, :concat, :to => :@wells
+    delegate :empty?, :inspect, :concat, to: :@wells
 
     def used
       @wells.size
@@ -218,7 +219,7 @@ class Cherrypick::Strategy
     @purpose = purpose
   end
 
-  delegate :cherrypick_filters, :to => :@purpose
+  delegate :cherrypick_filters, to: :@purpose
   private :cherrypick_filters
 
   def pick(requests, robot, plate = nil)
@@ -246,7 +247,7 @@ class Cherrypick::Strategy
     last_well, species = plate.wells.in_preferred_order.reject { |w| w.aliquots.empty? }.last, []
     species = last_well.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }.uniq.sort if last_well.present?
 
-    PickPlate.new(@purpose, boundary_index+1, species)
+    PickPlate.new(@purpose, boundary_index + 1, species)
   end
   private :wrap_plate
 
@@ -295,8 +296,8 @@ class Cherrypick::Strategy
       filter.call(plexes, current_plate)
     end
 
-    return [ [Cherrypick::Strategy::Empty] * current_plate.remainder, requests ] if candidate_plexes.empty?
-    [ candidate_plexes.first, requests - candidate_plexes.first ]
+    return [[Cherrypick::Strategy::Empty] * current_plate.remainder, requests] if candidate_plexes.empty?
+    [candidate_plexes.first, requests - candidate_plexes.first]
   end
   private :choose_next_plex_from
 end

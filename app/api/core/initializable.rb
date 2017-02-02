@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module Core::Initializable
   class Initializer
@@ -11,13 +13,13 @@ module Core::Initializable
     class << self
       def delegated_attribute_writer(*names)
         names.each do |name|
-          class_eval(%Q{def #{name}=(value) ; @owner.instance_variable_set(:@#{name}, value) ; end})
+          class_eval("def #{name}=(value) ; @owner.instance_variable_set(:@#{name}, value) ; end")
         end
         delegate_to_owner(*names)
       end
 
       def delegate_to_owner(*names)
-        names.push(:to => :@owner)
+        names.push(to: :@owner)
         delegate(*names)
       end
     end
@@ -45,4 +47,3 @@ module Core::Initializable
     end
   end
 end
-
