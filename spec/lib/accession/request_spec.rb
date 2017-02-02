@@ -26,7 +26,7 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     configatron.disable_web_proxy = true
     request = Accession::Request.new(submission)
     expect(RestClient.proxy).to_not be_present
-    expect(request.resource.options).to be_empty
+    expect(request.resource.options.has_key?(:headers)).to be_falsey
 
     configatron.disable_web_proxy = proxy
     configatron.proxy = nil
