@@ -30,12 +30,12 @@
 
   <div class="form-group">
     <%= f.label :source_plate_type_name, 'Source plate type: ' %>
-    <%= f.select :source_plate_type_name, options_for_select(PlateType.all.map(&:name), @stock_stamper.source_plate_type_name) %>
+    <%= f.select :source_plate_type_name, options_for_select(PlateType.pluck(:name), @stock_stamper.source_plate_type_name) %>
   </div>
 
   <div class="form-group">
     <%= f.label :destination_plate_type_name, 'Destination plate type: ' %>
-    <%= f.select :destination_plate_type_name, options_for_select(PlateType.all.map(&:name), @stock_stamper.destination_plate_type_name) %><br>
+    <%= f.select :destination_plate_type_name, options_for_select(PlateType.pluck(:name), @stock_stamper.destination_plate_type_name) %><br>
     Maximum volumes for plate types are: <%= PlateType.names_and_maximum_volumes%>
   </div>
 
