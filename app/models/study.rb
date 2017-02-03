@@ -194,7 +194,7 @@ class Study < ActiveRecord::Base
     DATA_RELEASE_DELAY_FOR_OTHER
   ]
 
-  DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months']
+  DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months', '18 months']
   DATA_RELEASE_DELAY_SHORT = ['3 months']
   DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
 
