@@ -360,17 +360,11 @@ class Asset < ActiveRecord::Base
   end
 
   def assign_relationships(parents, child)
-    if parents.kind_of?(Array) && child.kind_of?(Asset)
-      parents.each do |parent|
-        parent.children.delete(child)
-      end
-
-      AssetLink.create_edge(self, child)
-
-      parents.each do |parent|
-        AssetLink.create_edge(parent, self)
-      end
+    parents.each do |parent|
+      parent.children.delete(child)
+      AssetLink.create_edge(parent, self)
     end
+    AssetLink.create_edge(self, child)
   end
 
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
