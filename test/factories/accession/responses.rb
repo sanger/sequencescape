@@ -1,3 +1,5 @@
+require File.join(Rails.root, "spec", "support", "mock_accession")
+
 include MockAccession
 
 FactoryGirl.define do

@@ -142,5 +142,6 @@ class SampleTest < ActiveSupport::TestCase
       end
 
     end
+  end
 
 end
