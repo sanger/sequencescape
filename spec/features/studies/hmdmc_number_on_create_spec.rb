@@ -5,7 +5,7 @@ require 'pry'
 feature 'Studies controller' do
   let(:user) { create :admin }
 
-  scenario 'managed study can not be created without hmdmc number', js: true do
+  scenario 'managed can be created with an hmdmc number', js: true do
     login_user user
     visit new_study_path
     select("Open (ENA)", from: "study_study_metadata_attributes_data_release_strategy")
