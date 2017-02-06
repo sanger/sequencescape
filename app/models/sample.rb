@@ -55,7 +55,7 @@ class Sample < ActiveRecord::Base
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
   validates_uniqueness_of :name, on: :create, message: "already in use", unless: :sample_manifest_id?
 
-  validate :name_unchanged, if: :name_changed?, on: :update
+  # validate :name_unchanged, if: :name_changed?, on: :update
 
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
@@ -79,6 +79,8 @@ class Sample < ActiveRecord::Base
     return false
   end
   private :safe_to_destroy
+
+  after_save :accession
 
   scope :with_name, ->(*names) { where(name: names.flatten) }
 
@@ -270,6 +272,10 @@ class Sample < ActiveRecord::Base
     else # old value
       ""
     end
+  end
+
+  def accession
+    Delayed::Job.enqueue SampleAccessioningJob.new(self) if valid?
   end
 
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']

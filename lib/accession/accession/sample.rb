@@ -48,9 +48,6 @@ module Accession
           xml.SAMPLE_NAME {
             tag_groups[:sample_name].each do |k, tag|
               xml.tag!(tag.label, tag.value)
-              # xml.send(tag.label, tag.value)
-              # xml.TAG tag.label
-              # xml.VALUE tag.value
             end
           }
           xml.SAMPLE_ATTRIBUTES {
