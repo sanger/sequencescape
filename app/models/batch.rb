@@ -19,6 +19,7 @@ class Batch < ActiveRecord::Base
   has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, inverse_of: :batch
   has_many :requests, ->() { distinct }, through: :batch_requests, inverse_of: :batch
   has_many :assets, through: :requests, source: :target_asset
+  has_many :target_assets, through: :requests
   has_many :source_assets, ->() { distinct }, through: :requests, source: :asset
   has_many :submissions, ->() { distinct }, through: :requests
   has_many :orders, ->() { distinct }, through: :submissions
@@ -270,9 +271,9 @@ class Batch < ActiveRecord::Base
 
   def mpx_library_name
     mpx_name = ""
-    if self.multiplexed? && self.requests.size > 0
-      mpx_library_tube = self.requests[0].target_asset.child
-      if !mpx_library_tube.nil?
+    if multiplexed? && requests.size > 0
+      mpx_library_tube = requests.first.target_asset.child
+      if mpx_library_tube.present?
         mpx_name = mpx_library_tube.name
       end
     end
@@ -280,7 +281,7 @@ class Batch < ActiveRecord::Base
   end
 
   def display_tags?
-    self.multiplexed?
+    multiplexed?
   end
 
   # Returns meaningful events excluding discriptors/descriptor_fields clutter

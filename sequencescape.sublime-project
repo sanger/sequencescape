@@ -12,7 +12,8 @@
         "pids",
         "work",
         "db/archived_migrations",
-        ".yardoc"
+        ".yardoc",
+        "doc"
       ],
       "file_exclude_patterns":[
         ".swp",

@@ -257,16 +257,6 @@ class AssetsController < ApplicationController
 
   before_action :prepare_asset, only: [:new_request, :create_request]
 
-  def prepare_asset
-    @asset = Asset.find(params[:id])
-  end
-  private :prepare_asset
-
-  def new_request_for_current_asset
-    new_request_asset_path(@asset, { study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id) })
-  end
-  private :new_request_for_current_asset
-
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
     @study = @asset.studies.first
@@ -396,22 +386,15 @@ class AssetsController < ApplicationController
     end
   end
 
-  def create_stocks
-    params[:assets].each do |id, params|
-      asset = Asset.find(id)
-      stock_asset = asset.create_stock_asset!(
-        name: params[:name],
-        volume: params[:volume],
-        concentration: params[:concentration]
-      )
-      stock_asset.assign_relationships(asset.parents, asset)
-    end
+  private
 
-    batch = Batch.find(params[:batch_id])
-    redirect_to batch_path(batch)
+  def prepare_asset
+    @asset = Asset.find(params[:id])
   end
 
-  private
+  def new_request_for_current_asset
+    new_request_asset_path(@asset, { study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id) })
+  end
 
   def discover_asset
     @asset = Asset.includes(requests: :request_metadata).find(params[:id])

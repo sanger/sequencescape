@@ -472,11 +472,11 @@ class Asset < ActiveRecord::Base
   end
 
   def spiked_in_buffer
-    return nil
+    nil
   end
 
   def has_stock_asset?
-    return false
+    false
   end
 
   def has_many_requests?

@@ -128,7 +128,11 @@ FactoryGirl.define do
     end
 
     after(:create) do |batch, evaluator|
-      create_list(:batch_request, evaluator.request_count, batch: batch)
+      batch.batch_requests = create_list(:batch_request, evaluator.request_count, batch: batch)
+    end
+
+    factory :multiplexed_batch do
+      association(:pipeline, factory: :multiplexed_pipeline )
     end
   end
 
@@ -176,6 +180,10 @@ FactoryGirl.define do
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal') if pipeline.workflow.nil?
+    end
+
+    factory :multiplexed_pipeline do
+      multiplexed true
     end
   end
 
