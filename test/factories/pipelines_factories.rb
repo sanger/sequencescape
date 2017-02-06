@@ -132,7 +132,7 @@ FactoryGirl.define do
     end
 
     factory :multiplexed_batch do
-      association(:pipeline, factory: :multiplexed_pipeline )
+      association(:pipeline, factory: :multiplexed_pipeline)
     end
   end
 

@@ -2,7 +2,6 @@
 # the products of batches. Originally this behaviour
 # was on BathcesController#new_stock_assets.
 class StockAssetsController < ApplicationController
-
   before_action :find_batch, only: :new
 
   def new
@@ -16,15 +15,12 @@ class StockAssetsController < ApplicationController
 
         if candidate_multiplexed_library.nil?
           redirect_to batch_path(@batch), alert: "There's no multiplexed library tube available to have a stock tube."
+        elsif candidate_multiplexed_library.has_stock_asset? || candidate_multiplexed_library.is_a_stock_asset?
+          redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
         else
-
-          if candidate_multiplexed_library.has_stock_asset? || candidate_multiplexed_library.is_a_stock_asset?
-            redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
-          else
-            batch_assets = [candidate_multiplexed_library]
-          end
-
+          batch_assets = [candidate_multiplexed_library]
         end
+
       else
         batch_assets = @batch.target_assets.reject { |a| a.has_stock_asset? }
         if batch_assets.empty?

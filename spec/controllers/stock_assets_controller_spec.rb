@@ -2,9 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe StockAssetsController do
-
   describe "GET new" do
-
     let(:current_user) { create :user }
 
     shared_examples "an inactive endpoint" do
@@ -39,7 +37,7 @@ RSpec.describe StockAssetsController do
 
       context "with stock tube already existing" do
         before(:each) do
-          batch.reload.requests.each {|r| r.target_asset.parents << create(:stock_library_tube) }
+          batch.reload.requests.each { |r| r.target_asset.parents << create(:stock_library_tube) }
         end
 
         let(:warning) { 'Stock tubes have already been created' }
@@ -56,7 +54,6 @@ RSpec.describe StockAssetsController do
       end
 
       context "with mx tubes" do
-
         let(:multiplexed_library_tube) { create :multiplexed_library_tube }
 
         before(:each) do
@@ -97,9 +94,9 @@ RSpec.describe StockAssetsController do
 
     it 'creates the required stock assets' do
       post :create, { batch_id: batch.id, assets: {
-        library_tube_1.id => {name: 'My stock 1', volume: '100', concentration: '200' },
-        library_tube_2.id => {name: 'My stock 2', volume: '100', concentration: '200' }
-      }}, { user: current_user.id }
+        library_tube_1.id => { name: 'My stock 1', volume: '100', concentration: '200' },
+        library_tube_2.id => { name: 'My stock 2', volume: '100', concentration: '200' }
+      } }, { user: current_user.id }
       expect(response).to redirect_to(batch)
       expect(flash[:notice]).to eq("2 stock tubes created")
       expect(library_tube_1.reload.parents.first).to be_a(StockLibraryTube)
