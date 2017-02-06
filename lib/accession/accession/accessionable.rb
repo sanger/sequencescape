@@ -15,7 +15,11 @@ module Accession
     end
 
     def filename
-      @filename ||= "#{ebi_alias}-#{date}.#{schema_type}.xml"
+      @filename ||= "#{ebi_alias_datestamped}.#{schema_type}.xml"
+    end
+
+    def ebi_alias_datestamped
+      "#{ebi_alias}-#{date}"
     end
 
     def to_xml
@@ -26,7 +30,7 @@ module Accession
 
     def to_file
       AccessionableFile.open("#{schema_type}_file").tap do |f|
-        f.write(to_xml)
+        f.write(to_xml << "\n")
         f.original_filename = filename
       end
     end

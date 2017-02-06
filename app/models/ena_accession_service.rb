@@ -11,6 +11,10 @@ class EnaAccessionService < AccessionService
     :ENA
   end
 
+  def accession_options
+    configatron.accession.ena!.to_hash
+  end
+
   def accession_login
     configatron.ena_accession_login or raise RuntimeError,  "Can't find ENA  accession login in configuration file"
   end

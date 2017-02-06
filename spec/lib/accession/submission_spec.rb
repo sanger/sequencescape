@@ -24,7 +24,7 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     submission_xml = xml.at("SUBMISSION")
     expect(submission_xml.attribute("center_name").value).to eq(Accession::CENTER_NAME)
     expect(submission_xml.attribute("broker_name").value).to eq(submission.service.broker)
-    expect(submission_xml.attribute("alias").value).to eq(submission.sample.submission_alias)
+    expect(submission_xml.attribute("alias").value).to eq(submission.sample.ebi_alias_datestamped)
     expect(submission_xml.attribute("submission_date").value).to eq(submission.date)
 
     contact_xml = xml.at("CONTACT")
@@ -33,6 +33,8 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     end
 
     expect(xml.at(submission.service.visibility)).to be_present
+
+    expect(xml.at("ACTIONS").children.length).to eq(2)
 
     action_xml = xml.at("ADD")
     expect(action_xml.attribute("source").value).to eq(submission.sample.filename)
@@ -43,6 +45,7 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     payload = Accession::Submission.new(user, sample).payload
     expect(payload.count).to eq(2)
     expect(payload.all? { |_, file| File.file?(file)}).to be_truthy
+    expect(payload.all? { |key, _| key.match(/\p{Lower}/).nil? }).to be_truthy
   end
 
   it "should post the submission and return an appropriate response" do

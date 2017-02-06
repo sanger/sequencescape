@@ -7,6 +7,8 @@ module Accession
 
     delegate :accessioned?, to: :response
 
+    delegate :ebi_alias, :ebi_alias_datestamped, to: :sample
+
     validates_presence_of :user, :sample
     validate :check_sample, if: proc { |s| s.sample.present? }
 
@@ -28,7 +30,7 @@ module Accession
         XML_NAMESPACE,
         center_name: CENTER_NAME,
         broker_name: service.broker,
-        alias: sample.submission_alias,
+        alias: sample.ebi_alias_datestamped,
         submission_date: date
         ) {
           xml.CONTACTS {
@@ -38,6 +40,8 @@ module Accession
         xml.ACTIONS {
           xml.ACTION {
             xml.ADD(source: sample.filename, schema: sample.schema_type)
+          }
+          xml.ACTION {
             xml.tag!(service.visibility)
           }
         }
@@ -67,7 +71,7 @@ module Accession
       def initialize(accessionables)
         @files = {}.tap do |f|
           accessionables.each do |accessionable|
-            f[accessionable.schema_type] = accessionable.to_file
+            f[accessionable.schema_type.upcase] = accessionable.to_file
           end
         end
       end

@@ -58,7 +58,6 @@ class AccessionService
             { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
           end
          )
-
         Rails::logger.debug { xml_result }
         raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result =~ /(Server error|Auth required|Login failed)/
 
@@ -177,6 +176,7 @@ private
   end
 
   def post_files(file_params)
+
     rc = rest_client_resource
 
     if configatron.disable_web_proxy == true

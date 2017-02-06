@@ -69,16 +69,18 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
 
   it "should create some xml with valid attributes" do
     sample = Accession::Sample.new(tag_list, create(:sample_for_accessioning_with_open_study))
-
     xml = Nokogiri::XML::Document.parse(sample.to_xml)
+
+    expect(xml.at("SAMPLE_SET").at("SAMPLE").at("SAMPLE_ATTRIBUTES")).to_not be_nil
 
     expect(xml.at("SAMPLE").attribute("alias").value).to eq(sample.ebi_alias)
     expect(xml.at("TITLE").text).to eq(sample.title)
 
     tags = sample.tags.by_group[:sample_name]
     sample_name_tags = xml.at("SAMPLE_NAME")
-    expect(sample_name_tags.search("TAG").collect(&:text)).to eq(tags.labels)
-    expect(sample_name_tags.search("VALUE").collect(&:text)).to eq(tags.values)
+    tags.each do |label, tag|
+      expect(sample_name_tags.search(tag.label).children.first.text).to eq(tag.value)
+    end
 
     sample_attributes_tags = xml.at("SAMPLE_ATTRIBUTES")
 

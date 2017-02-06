@@ -45,28 +45,30 @@ module Accession
       xml.SAMPLE_SET(XML_NAMESPACE) {
         xml.SAMPLE(alias: ebi_alias) {
           xml.TITLE title if title.present?
-        }
-        xml.SAMPLE_NAME {
-          tag_groups[:sample_name].each do |k, tag|
-            xml.TAG tag.label
-            xml.VALUE tag.value
-          end
-        }
-        xml.SAMPLE_ATTRIBUTES {
-          tag_groups[:sample_attributes].each do |k, tag|
-            xml.SAMPLE_ATTRIBUTE {
-              xml.TAG tag.label
-              xml.VALUE tag.value
-            }
-          end
-          if service.ena?
-            tag_groups[:array_express].each do |k, tag|
+          xml.SAMPLE_NAME {
+            tag_groups[:sample_name].each do |k, tag|
+              xml.tag!(tag.label, tag.value)
+              # xml.send(tag.label, tag.value)
+              # xml.TAG tag.label
+              # xml.VALUE tag.value
+            end
+          }
+          xml.SAMPLE_ATTRIBUTES {
+            tag_groups[:sample_attributes].each do |k, tag|
               xml.SAMPLE_ATTRIBUTE {
-                xml.TAG tag.array_express_label
+                xml.TAG tag.label
                 xml.VALUE tag.value
               }
             end
-          end
+            if service.ena?
+              tag_groups[:array_express].each do |k, tag|
+                xml.SAMPLE_ATTRIBUTE {
+                  xml.TAG tag.array_express_label
+                  xml.VALUE tag.value
+                }
+              end
+            end
+          }
         }
       }
       xml.target!
