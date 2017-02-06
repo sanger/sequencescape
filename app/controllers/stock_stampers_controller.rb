@@ -6,15 +6,19 @@ class StockStampersController < ApplicationController
   def create
     @stock_stamper = StockStamper.new(stock_stamper_params)
     if @stock_stamper.valid?
-      file_content = @stock_stamper.generate_tecan_gwl_file_as_text
+      @stock_stamper.generate_tecan_gwl_file_as_text
       @stock_stamper.create_asset_audit_event
-      send_data file_content, type: "text/plain",
-        filename: "stock_stamper_#{@stock_stamper.plate.ean13_barcode}.gwl",
-        disposition: 'attachment'
+      flash.now[:notice] = 'Success! You can generate the TECAN file now.'
     else
-      flash[:error] = @stock_stamper.errors.full_messages
+      flash.now[:error] = @stock_stamper.errors.full_messages
       render :new
     end
+  end
+
+  def generate_tecan_file
+    send_data params[:file_content], type: "text/plain",
+      filename: "stock_stamper_#{params[:plate_barcode]}.gwl",
+      disposition: 'attachment'
   end
 
   def stock_stamper_params

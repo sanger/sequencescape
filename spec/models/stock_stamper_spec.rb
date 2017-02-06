@@ -98,7 +98,8 @@ describe StockStamper do
     it 'should generate the right tecan file' do
       file = File.open(configatron.tecan_files_location + "/tecan/" + "stock_stamper.gwl", "rb")
       expected_output = file.read
-      expect(@stock_stamper.generate_tecan_gwl_file_as_text).to eq expected_output
+      @stock_stamper.generate_tecan_gwl_file_as_text
+      expect(@stock_stamper.file_content).to eq expected_output
     end
 
     it 'should create asset_audit on plate' do

@@ -1,7 +1,7 @@
 class StockStamper
   include ActiveModel::Model
 
-  attr_accessor :user, :user_barcode, :plate, :plate_type, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
+  attr_accessor :user, :user_barcode, :plate, :plate_type, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage, :file_content
 
   validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
 
@@ -18,7 +18,7 @@ class StockStamper
   end
 
   def generate_tecan_gwl_file_as_text
-    Sanger::Robots::Tecan::Generator.mapping(generate_tecan_data, 0)
+    @file_content = Sanger::Robots::Tecan::Generator.mapping(generate_tecan_data, 0)
   end
 
   def generate_tecan_data

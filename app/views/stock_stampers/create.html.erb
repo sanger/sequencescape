@@ -1,0 +1,14 @@
+<% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
+
+<h2>Stamping of stock</h2>
+
+<%= form_for(:stock_stamper, url: {action: "generate_tecan_file"}) do |f| %>
+
+  <%= hidden_field_tag 'file_content', @stock_stamper.file_content %>
+  <%= hidden_field_tag 'plate_barcode', @stock_stamper.destination_plate_barcode %>
+
+  <div class="form-group">
+    <%= f.submit "Generate TECAN file" %>
+  </div>
+
+<% end %>

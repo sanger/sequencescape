@@ -57,7 +57,11 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :stock_stampers, only: [:new, :create]
+  resources :stock_stampers, only: [:new, :create] do
+    collection do
+      post :generate_tecan_file
+    end
+  end
 
   scope 'npg_actions', module: 'npg_actions' do
     resources :assets, only: [] do
