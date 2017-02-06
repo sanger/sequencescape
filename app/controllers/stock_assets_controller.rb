@@ -12,20 +12,21 @@ class StockAssetsController < ApplicationController
       batch_assets = []
 
       if @batch.multiplexed?
-        unless @batch.requests.first.target_asset.children.empty?
-          multiplexed_library = @batch.requests.first.target_asset.children.first
+        candidate_multiplexed_library = @batch.target_assets.first.children.first
 
-          if !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
-            batch_assets = [multiplexed_library]
-          else
-            redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
-          end
-        else
+        if candidate_multiplexed_library.nil?
           redirect_to batch_path(@batch), alert: "There's no multiplexed library tube available to have a stock tube."
+        else
+
+          if candidate_multiplexed_library.has_stock_asset? || candidate_multiplexed_library.is_a_stock_asset?
+            redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
+          else
+            batch_assets = [candidate_multiplexed_library]
+          end
+
         end
       else
         batch_assets = @batch.target_assets.reject { |a| a.has_stock_asset? }
-        # batch_assets.reject! { |a| a.has_stock_asset? }
         if batch_assets.empty?
           redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
         end
