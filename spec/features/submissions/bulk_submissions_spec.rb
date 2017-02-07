@@ -41,7 +41,6 @@ feature 'Bulk submission', js: false do
         let(:expected_content) { ["Bulk submission successfully made", "Your submissions:"] }
         it_behaves_like 'bulk submission file upload'
       end
-
       # context "Uploading a valid file with bait library specified should set the bait library name" do
       #   # Given I have a well called "testing123"
       #   # And the sample in the last well is registered under the study "abc123_study"
@@ -53,7 +52,6 @@ feature 'Bulk submission', js: false do
       #   it_behaves_like 'bulk submission file upload'
       # end
     end
-
 
     context "Uploading a valid file with gb expected specified should set the gb expected" do
         let(:file_name) { '2_valid_rows.csv' }
