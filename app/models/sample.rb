@@ -5,7 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'rexml/text'
-require 'pry'
 class Sample < ActiveRecord::Base
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
