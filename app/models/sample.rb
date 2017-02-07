@@ -5,6 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'rexml/text'
+require 'pry'
 class Sample < ActiveRecord::Base
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
@@ -55,7 +56,7 @@ class Sample < ActiveRecord::Base
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
   validates_uniqueness_of :name, on: :create, message: "already in use", unless: :sample_manifest_id?
 
-  # validate :name_unchanged, if: :name_changed?, on: :update
+  validate :name_unchanged, if: :name_changed?, on: :update
 
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
@@ -275,7 +276,7 @@ class Sample < ActiveRecord::Base
   end
 
   def accession
-    Delayed::Job.enqueue SampleAccessioningJob.new(self) if valid?
+    Delayed::Job.enqueue SampleAccessioningJob.new(self) #if valid?
   end
 
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']

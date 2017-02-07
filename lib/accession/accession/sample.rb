@@ -75,13 +75,9 @@ module Accession
       sample.uuid
     end
 
-    def submission_alias
-      "#{ebi_alias} - #{date}"
-    end
-
     def update_accession_number(accession_number)
       sample.sample_metadata.sample_ebi_accession_number = accession_number
-      sample.save!
+      sample.save
     end
 
     def accessioned?
