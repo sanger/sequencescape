@@ -64,10 +64,7 @@ FactoryGirl.define do
 
   factory(:full_stock_plate, class: Plate) do |plate|
     size 96
-
-    after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.stock_plate_purpose
-    end
+    plate_purpose { PlatePurpose.stock_plate_purpose }
 
     after(:create) do |plate|
       plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).all.map { |map| create(:well, map: map) })
@@ -76,10 +73,7 @@ FactoryGirl.define do
 
   factory(:partial_plate, class: Plate) do |plate|
     size 96
-
-    after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.stock_plate_purpose
-    end
+    plate_purpose { PlatePurpose.stock_plate_purpose }
 
     after(:create) do |plate|
       plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0, 48).map { |map| create(:well, map: map) })
@@ -88,10 +82,7 @@ FactoryGirl.define do
 
   factory(:two_column_plate, class: Plate) do |plate|
     size 96
-
-    after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.stock_plate_purpose
-    end
+    plate_purpose { PlatePurpose.stock_plate_purpose }
 
     after(:create) do |plate|
       plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0, 16).map { |map| create(:well, map: map) })
@@ -100,7 +91,7 @@ FactoryGirl.define do
 
   factory(:full_plate_with_samples, parent: :full_plate) do |plate|
     after(:create) do |plate|
-      plate.wells.each { |well| well.aliquots.create!(sample: create(:sample)) }
+      plate.wells.each { |well| create :aliquot, receptacle: well }
     end
   end
 

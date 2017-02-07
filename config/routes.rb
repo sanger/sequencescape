@@ -11,7 +11,7 @@ Sequencescape::Application.routes.draw do
   mount Api::RootService.new => '/api/1'
 
   resources :samples do
-    resources :assets
+    resources :assets, except: :destroy
     resources :comments
     resources :studies
 
@@ -140,7 +140,7 @@ Sequencescape::Application.routes.draw do
       post :unrelate_study
     end
 
-    resources :assets
+    resources :assets, except: :destroy
 
     resources :sample_registration, only: [:index, :new, :create], controller: "studies/sample_registration" do
       collection do

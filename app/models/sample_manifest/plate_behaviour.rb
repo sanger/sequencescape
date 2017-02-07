@@ -154,7 +154,7 @@ module SampleManifest::PlateBehaviour
     study_abbreviation = self.study.abbreviation
 
     well_data = []
-    plates    = (0...self.count).map do |_|
+    plates    = Array.new(self.count) do
       Plate.create_with_barcode!(plate_purpose: stock_plate_purpose)
     end.sort_by(&:barcode).map do |plate|
       plate.tap do |plate|
