@@ -66,7 +66,7 @@ class BatchTest < ActiveSupport::TestCase
 
     should "change BatchRequest.count by 2" do
    assert_equal 2, BatchRequest.count - @batchrequest_count, "Expected BatchRequest.count to change by 2"
-end
+    end
   end
 
   context 'modifying request positions within a batch' do
@@ -662,13 +662,13 @@ end
       context 'once started' do
         setup do
          @batch.update_attributes!(state: 'started')
-       end
+        end
 
        should 'raise an exception' do
           assert_raise AASM::InvalidTransition do
             @batch.reset!(@user)
           end
-        end
+       end
       end
     end
 

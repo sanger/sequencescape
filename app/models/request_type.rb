@@ -81,7 +81,7 @@ class RequestType < ActiveRecord::Base
          AND deprecated IS FALSE',
          asset.asset_type_for_request_types.name
       ])
-  }
+                              }
 
   # Helper method for generating a request constructor, like 'create!'
   def self.request_constructor(name, options = {})

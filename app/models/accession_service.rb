@@ -44,7 +44,7 @@ class AccessionService
             Rails::logger.debug { file.each_line.to_a.join("\n") }
 
             { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
-          end
+                                end
          )
 
         Rails::logger.debug { xml_result }
@@ -172,8 +172,8 @@ private
             xml.STUDY_TYPE(existing_study_type: Study::Other_type, new_study_type: study_type)
           end
         }
-            }
       }
+    }
     return xml.target!
   end
 

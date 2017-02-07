@@ -69,7 +69,7 @@ class PlatesControllerTest < ActionController::TestCase
           end
           should respond_with :redirect
           should set_flash.to(/Created/)
-        end
+       end
 
         context "Create a Plate" do
           context "with one source plate" do

@@ -110,7 +110,7 @@ Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpre
     end
     expected_results_table.diff!(actual_table)
    end
- end
+end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
   expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : "" } })

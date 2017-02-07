@@ -43,7 +43,7 @@ class Accessionable::Dac < Accessionable::Base
          att[:telephone] = tel if (tel = contact[:telephone])
         end)
       end
-    }
+      }
       }
     }
     return xml.target!

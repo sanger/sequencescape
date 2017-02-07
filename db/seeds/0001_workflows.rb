@@ -124,7 +124,7 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
     request_type.order              = 1
     request_type.multiples_allowed  = false
     request_type.request_class_name = LibraryCreationRequest.name
-  end
+         end
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Library preparation') do |workflow|
     workflow.locale = 'External'

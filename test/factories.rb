@@ -333,7 +333,7 @@ FactoryGirl.define do
       after(:build) { |request_type|
       request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
       request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-    }
+      }
   end
 
   factory :plate_based_multiplexed_library_creation_request_type, class: RequestType do
@@ -348,7 +348,7 @@ FactoryGirl.define do
       after(:build) { |request_type|
       request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
       request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-    }
+      }
   end
 
   factory :sample do

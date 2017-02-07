@@ -86,7 +86,7 @@ class Transfer < ActiveRecord::Base
             else
               {}
             end
-          }
+                          }
         end
       end
     end
@@ -109,10 +109,10 @@ class Transfer < ActiveRecord::Base
             else
               all
             end
-          }
+                          }
          scope :without_finished_tubes, ->(purpose) {
             where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'", purpose.map(&:id)])
-          }
+                                        }
         end
       end
     end

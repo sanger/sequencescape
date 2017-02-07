@@ -78,7 +78,7 @@ class Batch < ActiveRecord::Base
       conditions = ['user_id=?', user.id]
     end
     where(conditions)
-  }
+                          }
 
   scope :includes_for_ui,    -> { limit(5).includes(:user) }
   scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }

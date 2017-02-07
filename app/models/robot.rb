@@ -15,7 +15,7 @@ class Robot < ActiveRecord::Base
  scope :with_machine_barcode, ->(barcode) {
     return none unless Barcode.prefix_from_barcode(barcode) == prefix
     where(barcode: Barcode.number_to_human(barcode))
-  }
+                              }
 
   scope :include_properties, -> { includes(:robot_properties) }
 

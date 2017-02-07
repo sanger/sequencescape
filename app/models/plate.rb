@@ -319,7 +319,7 @@ class Plate < Asset
       'wrr.id IN (?)',
       requests.map(&:id)
     ])
-  }
+                       }
 
   scope :output_by_batch, ->(batch) {
       joins({

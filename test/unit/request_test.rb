@@ -161,7 +161,7 @@ class RequestTest < ActiveSupport::TestCase
        should "be pending" do
          assert @new_request.pending?
        end
-     end
+    end
 
     context "#workflow" do
       setup do

@@ -27,7 +27,7 @@ class LocationAssociation < ActiveRecord::Base
 
        scope :located_in, ->(location) {
           joins(:location_association).where(location_associations: { location_id: location })
-        }
+                          }
 
         # TODO:  not optimal
         def location_id=(l_id)

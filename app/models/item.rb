@@ -26,7 +26,7 @@ class Item < ActiveRecord::Base
 
  scope :for_search_query, ->(query, with_includes) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
-  }
+                          }
 
   before_validation :set_version, on: :create
 

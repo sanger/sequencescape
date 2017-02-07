@@ -199,15 +199,15 @@ class PlateTest < ActiveSupport::TestCase
 
  should "change Event.count by 1" do
    assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
-end
+ end
 
  should "change Submission.count by 1" do
    assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
-end
+ end
 
  should "change Request.count by 0" do
    assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
-end
+ end
         should "not set study.errors" do
           assert_equal 0, @study.errors.count
         end
@@ -226,15 +226,15 @@ end
 
  should "change Event.count by 1" do
    assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
-end
+ end
 
  should "change Submission.count by 1" do
    assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
-end
+ end
 
  should "change Request.count by 0" do
    assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
-end
+ end
           should "not set study.errors" do
             assert_equal 0, @study.errors.count
           end
@@ -249,15 +249,15 @@ end
 
  should "change Event.count by 3" do
    assert_equal 3,  Event.count - @event_count, "Expected Event.count to change by 3"
-end
+ end
 
  should "change Submission.count by 3" do
    assert_equal 3,  Submission.count - @submission_count, "Expected Submission.count to change by 3"
-end
+ end
 
  should "change Request.count by 0" do
    assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
-end
+ end
           should "not set study.errors" do
             assert_equal 0, @study.errors.count
           end
@@ -271,11 +271,11 @@ end
 
  should "change Event.count by 0" do
    assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
+ end
 
  should "change Submission.count by 0" do
    assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
+ end
           should "not set study.errors" do
             assert_equal 0, @study.errors.count
           end
@@ -292,11 +292,11 @@ end
 
  should "change Event.count by 0" do
    assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
+ end
 
  should "change Submission.count by 0" do
    assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
+ end
         end
         context "where project is nil" do
           setup do
@@ -308,11 +308,11 @@ end
 
  should "change Event.count by 0" do
    assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
+ end
 
  should "change Submission.count by 0" do
    assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
+ end
         end
         context "where study is nil" do
           setup do
@@ -324,11 +324,11 @@ end
 
  should "change Event.count by 0" do
    assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
+ end
 
  should "change Submission.count by 0" do
    assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
+ end
         end
       end
     end
@@ -370,7 +370,7 @@ end
         should "return multiple qc data" do
           assert @plate.qc_files.count == 2
         end
-      end
+     end
     end
 
     context "with existing well data" do

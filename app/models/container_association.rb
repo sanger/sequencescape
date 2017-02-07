@@ -70,7 +70,7 @@ class ContainerAssociation < ActiveRecord::Base
         def maps
           Map.where_plate_size(size).where_plate_shape(asset_shape)
         end
-      end
+    end
 
       scope :"include_#{content_name}", -> { includes(:contents) } do
         def to_include

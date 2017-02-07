@@ -8,7 +8,7 @@ module Identifiable
     base.instance_eval do
      scope :with_identifier, ->(t) {
         includes(:identifiers).where(identifiers: { resource_name: t })
-      }
+                             }
 
     scope :sync_identifier, ->(t) {
       joins("INNER JOIN identifiers sid ON sid.identifiable_id=samples.id AND sid.identifiable_type IN (#{[self, *self.descendants].map(&:name).map(&:inspect).join(',')})").

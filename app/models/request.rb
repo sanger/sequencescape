@@ -48,7 +48,7 @@ class Request < ActiveRecord::Base
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
       where(['prt.pipeline_id=?', pipeline.id]).
       readonly(false)
-  }
+                        }
 
   scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
@@ -200,7 +200,7 @@ class Request < ActiveRecord::Base
 
  scope :request_type, ->(request_type) {
     where(request_type_id: request_type)
-  }
+                      }
 
   scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
   scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
@@ -268,7 +268,7 @@ class Request < ActiveRecord::Base
   scope :for_study_ids, ->(ids) {
        joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
        where(['al.study_id IN (?)', ids]).uniq
-   }
+                        }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
 
@@ -313,7 +313,7 @@ class Request < ActiveRecord::Base
 
   scope :for_search_query, ->(query, with_includes) {
      where(['id=?', query])
-   }
+                           }
 
    scope :find_all_target_asset, ->(target_asset_id) {
      where(['target_asset_id = ?', target_asset_id.to_s])

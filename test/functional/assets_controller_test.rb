@@ -33,7 +33,7 @@ class AssetsControllerTest < ActionController::TestCase
 
      should "change Asset.count by 1" do
        assert_equal 1, Asset.count - @asset_count, "Expected Asset.count to change by 1"
-    end
+     end
   end
 
   context "an asset_id" do

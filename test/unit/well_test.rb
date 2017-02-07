@@ -54,7 +54,7 @@ class WellTest < ActiveSupport::TestCase
     context "with sequenom_count results" do
       setup do
        @well.well_attribute.update_attributes!(sequenom_count: 5)
-     end
+      end
 
      should "add an event if its changed" do
       @well.update_sequenom_count!(10, 'MSPEC')
@@ -63,8 +63,8 @@ class WellTest < ActiveSupport::TestCase
       @well.update_sequenom_count!(10, 'SNP')
       assert_equal 1, @well.events.count
       assert 'MSPEC', @well.events.last.content
+     end
     end
-  end
 
   context "without sequenom_count results" do
     should "add an event if its changed" do
@@ -334,7 +334,7 @@ class WellTest < ActiveSupport::TestCase
         end
       end
     end
-    end
+  end
     context 'proceed test' do
       setup do
         @our_product_criteria = create :product_criteria

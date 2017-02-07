@@ -6,7 +6,7 @@
 
 When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)"$/ do |sample_name, study_from_name, study_to_name|
   step %Q{I move sample "#{sample_name}" from study "#{study_from_name}" to "#{study_to_name}", to asset group "new asset group" and submission ""}
-  end
+end
 
 When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset group "([^\"]*)" and submission "([^\"]*)"$/ do |sample_name, study_from_name, study_to_name, asset_group, submission_id|
   step(%Q{I am on the show page for sample "#{sample_name}"})
@@ -25,7 +25,7 @@ When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset gr
 
   step %Q{I select "#{submission_id}" from "submission_id"} if submission_id.present?
   step 'I press "Move Sample"'
-  end
+end
 
  When /^I move samples between studies using the spreadsheet "([^\"]*)"$/ do |file_name|
   step("I am on the sample move using spreadsheet page")

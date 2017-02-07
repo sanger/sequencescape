@@ -389,7 +389,7 @@ Given /^a study named "([^\"]+)" exists for accession/ do |study_name|
     step %Q{the description of study "#{study_name}" is "To find out if something is broken"}
     step %Q{the abstract of study "#{study_name}" is "Ok, not ok?"}
   step %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
-  end
+end
 Given /^a study named "([^\"]+)" exists for array express/ do |study_name|
   step(%Q{a study named "#{study_name}" exists for accession})
   step %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}

@@ -34,7 +34,7 @@ class Accessionable::Policy < Accessionable::Base
       xml.TITLE self.title
       xml.DAC_REF(accession: self.dac_accession_number)
       xml.POLICY_FILE self.policy_url
-    }
+      }
     }
     return xml.target!
   end

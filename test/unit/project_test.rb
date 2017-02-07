@@ -106,6 +106,6 @@ class ProjectTest < ActiveSupport::TestCase
         assert_equal 1, @submission.pending_requests(@request_type_3)
         assert_equal 8, @submission.total_requests(@request_type)
       end
-    end
+   end
   end
 end

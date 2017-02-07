@@ -310,7 +310,7 @@ class StudiesController < ApplicationController
 
        flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
        redirect_to(study_path(@study))
-       end
+     end
    end
 
    def sra

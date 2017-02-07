@@ -131,7 +131,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
        should "change Event.count by 1" do
          assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
-      end
+       end
 
       context ": send email to project manager" do
         should 'Have sent an email' do
@@ -173,7 +173,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
        should "change Event.count by 1" do
          assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
-      end
+       end
 
       context "send email to project manager" do
         should 'Have sent an email' do
@@ -206,7 +206,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
        should "change Event.count by 1" do
          assert_equal 1,  Event.count  - @event_count, "Expected Event.count to change by 1"
-      end
+       end
 
       context "send email to project manager" do
         should 'Have sent an email' do

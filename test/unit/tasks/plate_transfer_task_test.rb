@@ -54,11 +54,11 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
          should "change Plate.count by 1" do
            assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
-        end
+         end
 
          should "change TransferRequest.count by 6" do
            assert_equal 6,  TransferRequest.count - @transferrequest_count, "Expected TransferRequest.count to change by 6"
-        end
+         end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
@@ -90,7 +90,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
          should "change Plate.count by 1" do
            assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
-        end
+         end
 
         should 'find the existing plate' do
         end

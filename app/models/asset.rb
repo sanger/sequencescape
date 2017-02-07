@@ -141,7 +141,7 @@ class Asset < ActiveRecord::Base
     else
       where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
     end
-  }
+                          }
 
  scope :with_name, ->(*names) { where(name: names.flatten) }
 
@@ -405,7 +405,7 @@ class Asset < ActiveRecord::Base
 
       where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact]).
       joins(query_details[:joins].compact.uniq)
-  }
+                              }
 
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
@@ -419,7 +419,7 @@ class Asset < ActiveRecord::Base
     else
       none
     end
-  }
+                                            }
 
   def self.find_from_any_barcode(source_barcode)
     if source_barcode.blank?

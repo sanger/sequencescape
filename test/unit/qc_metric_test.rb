@@ -34,7 +34,7 @@ class QcMetricTest < ActiveSupport::TestCase
           qc = create :qc_metric, qc_decision: qc_state, proceed: proceed_state
           assert_equal poor_quality_proceed, qc.poor_quality_proceed
         end
-      end
+    end
   end
 
   context 'A QcMetric' do

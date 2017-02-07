@@ -59,7 +59,7 @@ class Qcable < ActiveRecord::Base
 
     where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact]).
     joins(query_details[:joins].compact.uniq)
-  }
+                              }
 
   def stamp_index
     return nil if stamp_qcable.nil?

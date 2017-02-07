@@ -101,7 +101,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
 
       should "change AssetGroup.count by -1" do
        assert_equal(-1, AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by -1")
-     end
+      end
 
       should "change Study.count by 0" do
         assert_equal 0,  Study.count - @study_count, "Expected Study.count to change by 0"

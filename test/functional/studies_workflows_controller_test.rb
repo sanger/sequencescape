@@ -29,6 +29,6 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
 
         should respond_with :success
         should render_template :show
-      end
+     end
   end
 end

@@ -26,6 +26,6 @@ class Studies::EventsControllerTest < ActionController::TestCase
         end
         should respond_with :success
         should render_template :index
-      end
+     end
   end
 end

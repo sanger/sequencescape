@@ -27,7 +27,7 @@ module ModelExtensions::Well
                 ]
               }
             )
-    }
+                                 }
     end
   end
 end

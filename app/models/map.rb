@@ -130,7 +130,7 @@ class Map < ActiveRecord::Base
         asset_size: plate_size,
         asset_shape_id: asset_shape.id
     )
-  }
+                               }
 
   scope :where_description, ->(*descriptions) { where(description: descriptions.flatten) }
   scope :where_plate_size,  ->(size) { where(asset_size: size) }

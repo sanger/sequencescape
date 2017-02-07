@@ -73,7 +73,7 @@ module Accessionable
             study.build(xml)
           end
         } unless self.related_studies.blank?
-      }
+        }
       xml.STUDY_ATTRIBUTES {
         self.tags.each do |tag|
         xml.STUDY_ATTRIBUTE {
@@ -81,7 +81,7 @@ module Accessionable
         }
         end
       } unless self.tags.blank?
-      }
+        }
       }
       return xml.target!
     end
@@ -133,7 +133,7 @@ module Accessionable
         xml.RELATED_LINK {
           xml.DB db_label
           xml.ID @study.ebi_accession_number
-      }
+        }
         xml.IS_PRIMARY @primary
       }
     end

@@ -22,13 +22,6 @@ Lint/AssignmentInCondition:
     - 'lib/tasks/sql_filter.rb'
     - 'lib/update_user_barcode.rb'
 
-# Offense count: 100
-# Cop supports --auto-correct.
-# Configuration parameters: AlignWith, SupportedStyles.
-# SupportedStyles: either, start_of_block, start_of_line
-Lint/BlockAlignment:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Lint/DeprecatedClassMethods:

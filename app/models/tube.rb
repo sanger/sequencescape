@@ -39,7 +39,7 @@ class Tube < Aliquot::Receptacle
 
  scope :with_purpose, ->(*purposes) {
     where(plate_purpose_id: purposes.flatten.map(&:id))
-  }
+                      }
 
   def submission
     submissions.first

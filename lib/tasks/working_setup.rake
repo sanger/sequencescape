@@ -34,7 +34,7 @@ namespace :working do
        Purpose.find(2).create!.tap do |plate|
           plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_stock_well_#{w.map.description}", studies: [study])) }
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
-        end
+       end
         8.times do |i|
           Purpose.find_by(name: 'Cherrypicked').create!(location: locations[:htp]).tap do |plate|
             plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_cp#{i}_well_#{w.map.description}", studies: [study])) }
@@ -183,6 +183,6 @@ namespace :working do
   end
 
   WorkingSetupSeeder.new.seed
+    end
   end
- end
 end
