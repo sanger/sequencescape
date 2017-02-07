@@ -36,18 +36,16 @@ module ::Core::Io::Json::Grammar
     end
 
     def merge_children_with(node)
-      Hash[
-        (node.children.keys + @children.keys).uniq.map do |k|
-          cloned = case
-          when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
-          when @children.key?(k)                          then @children[k]
-          when node.children.key?(k)                      then node.children[k]
-          else raise "Odd, how did that happen?"
-          end
+      (node.children.keys + @children.keys).uniq.each_with_object({}) do |k, store|
+        cloned = case
+                 when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
+                 when @children.key?(k)                          then @children[k]
+                 when node.children.key?(k)                      then node.children[k]
+                 else raise "Odd, how did that happen?"
+                 end
 
-          [k, cloned]
-        end
-      ]
+        store[k] = cloned
+      end
     end
 
     def inspect
