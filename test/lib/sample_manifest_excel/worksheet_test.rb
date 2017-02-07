@@ -148,7 +148,7 @@ class WorksheetTest < ActiveSupport::TestCase
   end
 
   def teardown
-    File.delete('test.xlsx') if File.exists?('test.xlsx')
+    File.delete('test.xlsx') if File.exist?('test.xlsx')
     SampleManifestExcel.reset!
   end
 
