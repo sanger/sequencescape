@@ -123,11 +123,11 @@ class Submission < ActiveRecord::Base
 
   def safe_to_delete?
     ActiveSupport::Deprecation.warn "Submission#safe_to_delete? may not recognise all states"
-    unless ready?
+    if ready?
+      return true
+    else
       requests_in_progress = requests.select { |r| r.state != 'pending' || r.state != 'waiting' }
       requests_in_progress.empty? ? true : false
-    else
-      return true
     end
   end
 

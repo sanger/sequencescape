@@ -1259,25 +1259,6 @@ Style/TrivialAccessors:
     - 'lib/informatics/lib/informatics/support/options.rb'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
 
-# Offense count: 24
-# Cop supports --auto-correct.
-Style/UnlessElse:
-  Exclude:
-    - 'app/controllers/assets_controller.rb'
-    - 'app/controllers/batches_controller.rb'
-    - 'app/controllers/samples_controller.rb'
-    - 'app/controllers/studies/workflows_controller.rb'
-    - 'app/controllers/studies_controller.rb'
-    - 'app/helpers/application_helper.rb'
-    - 'app/models/asset.rb'
-    - 'app/models/plate.rb'
-    - 'app/models/project.rb'
-    - 'app/models/submission.rb'
-    - 'lib/informatics/lib/informatics/controller_helper.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/column.rb'
-    - 'lib/tasks/code_quality_tests.rake'
-    - 'lib/tasks/request.rake'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/VariableInterpolation:

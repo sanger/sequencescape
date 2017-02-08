@@ -152,7 +152,11 @@ module ApplicationHelper
 
     if request_type
 
-      unless cache.blank?
+      if cache.blank?
+        total = object.requests.request_type(request_type).size
+        passed = object.requests.request_type(request_type).passed.count
+        failed = object.requests.request_type(request_type).failed.count
+      else
         passed_cache = cache[:passed]
         failed_cache = cache[:failed]
         total_cache  = cache[:total]
@@ -161,10 +165,6 @@ module ApplicationHelper
         passed = passed_cache[request_type][object.id]
         failed = failed_cache[request_type][object.id]
 
-      else
-        total = object.requests.request_type(request_type).size
-        passed = object.requests.request_type(request_type).passed.count
-        failed = object.requests.request_type(request_type).failed.count
       end
     else
       total = object.requests.request_type(request_type).size
@@ -209,7 +209,9 @@ module ApplicationHelper
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
     objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
     count   = objects.inject(0) { |sum, object| sum + object.errors.count }
-    unless count.zero?
+    if count.zero?
+      ""
+    else
       error_messages = objects.map { |object| object.errors.full_messages.map { |msg| content_tag(:div, msg) } }.join
       [content_tag(:td, class: 'error item') do
         "Your #{params.first} has not been created."
@@ -217,8 +219,6 @@ module ApplicationHelper
       content_tag(:td, class: 'error') do
         raw(error_messages)
       end].join.html_safe
-    else
-      ""
     end
   end
 

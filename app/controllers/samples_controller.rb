@@ -68,11 +68,11 @@ class SamplesController < ApplicationController
   def release
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
-      unless @sample.released?
+      if @sample.released?
+        flash[:notice] = "Sample '#{@sample.name}' already publically released"
+      else
         @sample.release
         flash[:notice] = "Sample '#{@sample.name}' publically released"
-      else
-        flash[:notice] = "Sample '#{@sample.name}' already publically released"
       end
       redirect_to sample_path(@sample)
     end

@@ -53,10 +53,10 @@ module SampleManifestExcel
     ##
     # Creates a new Range object.
     def range=(attributes)
-      @range = unless attributes.empty?
-                 Range.new(attributes)
-               else
+      @range = if attributes.empty?
                  NullRange.new
+               else
+                 Range.new(attributes)
                end
     end
 

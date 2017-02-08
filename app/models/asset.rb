@@ -411,10 +411,10 @@ class Asset < ActiveRecord::Base
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
       source_asset_ids = destination_asset.parents.map(&:id)
-      unless source_asset_ids.empty?
-         where(id: source_asset_ids)
-      else
+      if source_asset_ids.empty?
         none
+      else
+         where(id: source_asset_ids)
       end
     else
       none

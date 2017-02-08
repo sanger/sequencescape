@@ -250,7 +250,10 @@ class BatchesController < ApplicationController
 
   def fail_items
     ActiveRecord::Base.transaction do
-      unless params[:failure][:reason].empty?
+      if params[:failure][:reason].empty?
+        flash[:error] = "Please specify a failure reason for this batch"
+        redirect_to action: :fail, id: @batch.id
+      else
         reason = params[:failure][:reason]
         comment = params[:failure][:comment]
         requests = params[:requested_fail] || {}
@@ -259,9 +262,7 @@ class BatchesController < ApplicationController
         # Check to see if the user is trying to remove AND fail the same request.
         diff = requests_for_removal.keys & requests.keys
 
-        unless diff.empty?
-          flash[:error] = "Fail and remove were both selected for the following - #{diff.to_sentence} this is not supported."
-        else
+        if diff.empty?
           if requests.empty? && requests_for_removal.empty?
             flash[:error] = "Please select an item to fail or remove"
           else
@@ -275,11 +276,10 @@ class BatchesController < ApplicationController
               flash[:notice] = "#{requests_for_removal.keys.to_sentence} removed."
             end
           end
+        else
+          flash[:error] = "Fail and remove were both selected for the following - #{diff.to_sentence} this is not supported."
         end
         redirect_to action: "fail", id: @batch.id
-      else
-        flash[:error] = "Please specify a failure reason for this batch"
-        redirect_to action: :fail, id: @batch.id
       end
     end
   end
@@ -364,23 +364,20 @@ class BatchesController < ApplicationController
 
   def print_multiplex_labels
     request = @batch.requests.first
-    unless request.tag_number.nil?
-      if !request.target_asset.nil? && !request.target_asset.children.empty?
-        # We are trying to find the MX library tube or the stock MX library
-        # tube. I've added a filter so it doesn't pick up Lanes.
-        children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) }
-        if children.empty?
-          @asset = request.target_asset.children.last
-        else
-          @asset = request.target_asset.children.last.children.last
-        end
+    if request.tag_number.nil?
+      flash[:error] = "No tags have been assigned."
+    elsif request.target_asset.present? && request.target_asset.children.present?
+      # We are trying to find the MX library tube or the stock MX library
+      # tube. I've added a filter so it doesn't pick up Lanes.
+      children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) }
+      if children.empty?
+        @asset = request.target_asset.children.last
       else
-        flash[:notice] = "There is no multiplexed library available."
+        @asset = request.target_asset.children.last.children.last
       end
     else
-      flash[:error] = "No tags have been assigned."
+      flash[:notice] = "There is no multiplexed library available."
     end
-    # @assets = @batch.multiplexed_items_with_unique_library_ids
   end
 
   def print_stock_multiplex_labels
@@ -430,7 +427,9 @@ class BatchesController < ApplicationController
   end
 
   def print_barcodes
-    unless @batch.requests.empty?
+    if @batch.requests.empty?
+      flash[:notice] = "Your batch contains no requests."
+    else
       print_job = LabelPrinter::PrintJob.new(params[:printer],
                                           LabelPrinter::Label::BatchTube,
                                           stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
@@ -440,8 +439,6 @@ class BatchesController < ApplicationController
         flash[:error] = print_job.errors.full_messages.join('; ')
       end
 
-    else
-      flash[:notice] = "Your batch contains no requests."
     end
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
@@ -550,15 +547,11 @@ class BatchesController < ApplicationController
     @batch = Batch.find(params[:id])
     unless @batch.requests.empty?
       @batch_assets = []
-      unless @batch.multiplexed?
-        @batch_assets = @batch.requests.map(&:target_asset)
-        @batch_assets.delete_if { |a| a.has_stock_asset? }
-        if @batch_assets.empty?
-          flash[:error] = "Stock tubes already exist for everything."
+      if @batch.multiplexed?
+        if @batch.requests.first.target_asset.children.empty?
+          flash[:error] = "There's no multiplexed library tube available to have a stock tube."
           redirect_to batch_path(@batch)
-        end
-      else
-        unless @batch.requests.first.target_asset.children.empty?
+        else
           multiplexed_library = @batch.requests.first.target_asset.children.first
 
           if !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
@@ -567,8 +560,12 @@ class BatchesController < ApplicationController
             flash[:error] = "Already has a Stock tube."
             redirect_to batch_path(@batch)
           end
-        else
-          flash[:error] = "There's no multiplexed library tube available to have a stock tube."
+        end
+      else
+        @batch_assets = @batch.requests.map(&:target_asset)
+        @batch_assets.delete_if { |a| a.has_stock_asset? }
+        if @batch_assets.empty?
+          flash[:error] = "Stock tubes already exist for everything."
           redirect_to batch_path(@batch)
         end
       end

@@ -127,10 +127,10 @@ class Project < ActiveRecord::Base
 
   def owners
     role = roles.detect { |r| r.name == "owner" }
-    unless role.nil?
-      role.users
-    else
+    if role.nil?
       []
+    else
+      role.users
     end
   end
 
@@ -141,10 +141,10 @@ class Project < ActiveRecord::Base
 
   def manager
     role = roles.detect { |r| r.name == "manager" }
-    unless role.nil?
-      role.users.first
-    else
+    if role.nil?
       nil
+    else
+      role.users.first
     end
   end
 

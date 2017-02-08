@@ -176,11 +176,11 @@ class AssetsController < ApplicationController
       joint_params = params.fetch(:asset, {}).merge(params.fetch(:lane, {}))
       if @asset.update_attributes(joint_params)
         flash[:notice] = 'Asset was successfully updated.'
-        unless params[:lab_view]
+        if params[:lab_view]
+          format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
+        else
           format.html { redirect_to(action: :show, id: @asset.id) }
           format.xml  { head :ok }
-        else
-          format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
         end
       else
         format.html { render action: "edit" }

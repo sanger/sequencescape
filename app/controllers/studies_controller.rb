@@ -332,10 +332,10 @@ class StudiesController < ApplicationController
      plates = []
      params[:studies][:barcodes].scan(/\d+/).each do |plate_barcode|
        plate = Plate.find_by_barcode(plate_barcode)
-       unless plate.nil?
-         plates << plate
-       else
+       if plate.nil?
          @study.errors.add("Plate", "Couldnt find plate #{plate_barcode}")
+       else
+         plates << plate
        end
      end
 

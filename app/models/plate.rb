@@ -511,18 +511,18 @@ class Plate < Asset
 
     CSV.foreach(file_location) do |row|
       map = Map.find_for_cell_location(row.first, plate.size)
-      unless row.last.strip.blank?
+      if row.last.strip.blank?
+        well = plate.wells.create(map_id: map.id)
+      else
         asset = Asset.find_by_two_dimensional_barcode(row.last.strip)
-        unless asset.nil?
+        if asset.nil?
+          well = plate.wells.create(map_id: map.id)
+        else
           well = plate.wells.create(sample: asset.sample, map_id: map.id)
           well.name = "#{asset} #{well.id}"
           well.save
           AssetLink.create_edge(asset, well)
-        else
-          well = plate.wells.create(map_id: map.id)
         end
-      else
-        well = plate.wells.create(map_id: map.id)
       end
     end
     plate

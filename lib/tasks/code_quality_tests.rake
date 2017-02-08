@@ -49,11 +49,11 @@ namespace :test do
       # puts files.join("\n")
       flay.process(*check_files.uniq)
 
-      unless flay.masses.empty?
+      if flay.masses.empty?
+        puts "OK"
+      else
         flay.report
         raise "#{flay.masses.size} chunks of code have a duplicate mass > #{FLAY_DUPLICATION_THRESHOLD}"
-      else
-        puts "OK"
       end
     end
 
@@ -91,11 +91,11 @@ namespace :test do
         ' -exec ruby -c {} \; ) 2>&1'
       pipe = IO.popen(super_find_cmd.to_s)
       pipe.each do |line| # From the perspective of the new pseudo terminal
-        unless line !~ /Syntax OK/
-          putc '.'
-        else
+        if line !~ /Syntax OK/
           putc "W"
           warnings << line
+        else
+          putc '.'
         end
         STDOUT.flush
       end

@@ -18,9 +18,7 @@ namespace :requests do
           puts "    ------------------------------------------------------"
         end
       when "Pending"
-        unless request.fail? && request.complete?
-          # puts "PENDING => @request.current_status is  PENDING"
-        else
+        if request.fail? && request.complete?
           puts "# PENDING => fail value: #{request.fail}, complete value: #{request.complete}, request ID: #{request.id}"
           puts "    ------------------------------------------------------"
         end
