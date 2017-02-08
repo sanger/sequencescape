@@ -113,12 +113,6 @@ Lint/UnderscorePrefixedVariableName:
   Exclude:
     - 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_default_list.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/UnneededSplatExpansion:
-  Exclude:
-    - 'features/support/step_definitions/samples_steps.rb'
-
 # Offense count: 1
 Lint/UnreachableCode:
   Exclude:

@@ -133,12 +133,12 @@ end
 
 Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  sample.sample_metadata.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
+  sample.sample_metadata.update_attributes(Hash[attr_name, (value unless value == "empty")])
 end
 
 Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  sample.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
+  sample.update_attributes(Hash[attr_name, (value unless value == "empty")])
 end
 
 Then /^the sample "([^\"]+)" should exist$/ do |name|
