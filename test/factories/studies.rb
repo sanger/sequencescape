@@ -26,28 +26,27 @@ FactoryGirl.define do
   end
 
   factory(:managed_study, parent: :study) do
-
     transient do
       accession_number nil
     end
 
-    sequence(:name) {|n| "Study#{n}: Manages" }
+    sequence(:name) { |n| "Study#{n}: Manages" }
     state 'active'
-    
-    after(:create) do |study,evaluator|
+
+    after(:create) do |study, evaluator|
       study.study_metadata.update_attributes!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
     end
   end
-  factory(:open_study, parent: :study) do
 
+  factory(:open_study, parent: :study) do
     transient do
       accession_number nil
     end
 
-    sequence(:name) {|n| "Study#{n}: Open" }
+    sequence(:name) { |n| "Study#{n}: Open" }
     state 'active'
 
-    after(:create) do |study,evaluator|
+    after(:create) do |study, evaluator|
       study.study_metadata.update_attributes!(data_release_strategy: 'open', study_ebi_accession_number: evaluator.accession_number)
     end
   end

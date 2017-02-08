@@ -3,14 +3,15 @@
 #Copyright (C) 2016 Genome Research Ltd.
 
 class UnsuitableAccessionService < AccessionService
-
   self.no_study_accession_needed = true
 
   def initialize(studies)
     @study_ids = studies.map(&:id)
   end
 
-  def provider; :unsuitable end
+  def provider
+    :unsuitable
+  end
 
   def submit(user, *accessionables)
     raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study,:scope=>'accession_service.unsuitable',study_ids:@study_ids.to_sentence)
@@ -27,5 +28,4 @@ class UnsuitableAccessionService < AccessionService
   def submit_dac_for_user(study, user)
     raise StandardError, "UnsuitableAccessionService should only be used for samples. This is a problem with Sequencescape and should be reported."
   end
-
 end

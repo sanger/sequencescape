@@ -68,7 +68,7 @@ class Study < ActiveRecord::Base
   has_many :study_samples, inverse_of: :study
   has_many :orders
   has_many :submissions, through: :orders
-  has_many :samples, through: :study_samples
+  has_many :samples, through: :study_samples, inverse_of: :studies
   has_many :batches
 
   has_many :asset_groups
@@ -198,7 +198,7 @@ class Study < ActiveRecord::Base
   DATA_RELEASE_DELAY_SHORT = ['3 months']
   DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
 
-  scope :for_sample_accessioning, ->() { 
+  scope :for_sample_accessioning, ->() {
           joins(:study_metadata)
           .where("study_metadata.study_ebi_accession_number <> ''")
           .where(study_metadata: { data_release_strategy:  [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ], data_release_timing: Study::DATA_RELEASE_TIMINGS})

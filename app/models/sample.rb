@@ -123,7 +123,7 @@ class Sample < ActiveRecord::Base
   scope :without_accession, ->() {
     # Pick up samples where the accession number is either NULL or blank.
     # MySQL automatically trims '  ' so '  '=''
-    joins(:sample_metadata).where(sample_metadata:{sample_ebi_accession_number:[nil,'']})
+    joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
   }
 
   def self.by_name(sample_id)
@@ -189,8 +189,6 @@ class Sample < ActiveRecord::Base
     return has_ebi_accession_number
   end
 
-
-
   # TODO: remove as this is no longer needed (validation of name change will fail)
   # On update, checks if updating the name is possible
   def name_change?(new_name)
@@ -251,11 +249,12 @@ class Sample < ActiveRecord::Base
     supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
+  # Return the highest priority accession service
   def accession_service
-    services = studies.group_by {|s| s.accession_service.priority }
+    services = studies.group_by { |s| s.accession_service.priority }
     return UnsuitableAccessionService.new([]) if services.empty?
     highest_priority = services.keys.max
-    suitable_study = services[highest_priority].detect {|study| study.send_samples_to_service? }
+    suitable_study = services[highest_priority].detect { |study| study.send_samples_to_service? }
     return suitable_study.accession_service if suitable_study
     UnsuitableAccessionService.new(services[highest_priority])
   end
